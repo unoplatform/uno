@@ -20,14 +20,14 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Controls.GroupStyle SelectGroupStyle(object group, uint level)
 		{
-			throw new global::System.NotImplementedException("The member GroupStyle GroupStyleSelector.SelectGroupStyle(object group, uint level) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GroupStyle%20GroupStyleSelector.SelectGroupStyle%28object%20group%2C%20uint%20level%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.GroupStyleSelector", "GroupStyle GroupStyleSelector.SelectGroupStyle(object group, uint level)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual global::Microsoft.UI.Xaml.Controls.GroupStyle SelectGroupStyleCore(object group, uint level)
 		{
-			throw new global::System.NotImplementedException("The member GroupStyle GroupStyleSelector.SelectGroupStyleCore(object group, uint level) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GroupStyle%20GroupStyleSelector.SelectGroupStyleCore%28object%20group%2C%20uint%20level%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.GroupStyleSelector", "GroupStyle GroupStyleSelector.SelectGroupStyleCore(object group, uint level)");
 		}
 #endif
 	}

@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandRadioStateChange> MobileBroadbandRadioStateChangeTriggerDetails.RadioStateChanges is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMobileBroadbandRadioStateChange%3E%20MobileBroadbandRadioStateChangeTriggerDetails.RadioStateChanges");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandRadioStateChangeTriggerDetails", "IReadOnlyList<MobileBroadbandRadioStateChange> MobileBroadbandRadioStateChangeTriggerDetails.RadioStateChanges");
 			}
 		}
 #endif

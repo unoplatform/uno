@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackSessionVideoConstrictionReason MediaPlaybackSessionOutputDegradationPolicyState.VideoConstrictionReason is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackSessionVideoConstrictionReason%20MediaPlaybackSessionOutputDegradationPolicyState.VideoConstrictionReason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSessionOutputDegradationPolicyState", "MediaPlaybackSessionVideoConstrictionReason MediaPlaybackSessionOutputDegradationPolicyState.VideoConstrictionReason");
 			}
 		}
 #endif

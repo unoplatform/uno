@@ -14,7 +14,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.CrlSign is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CertificateKeyUsages.CrlSign");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.CrlSign");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.DataEncipherment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CertificateKeyUsages.DataEncipherment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.DataEncipherment");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.DigitalSignature is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CertificateKeyUsages.DigitalSignature");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.DigitalSignature");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.EncipherOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CertificateKeyUsages.EncipherOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.EncipherOnly");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.KeyAgreement is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CertificateKeyUsages.KeyAgreement");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.KeyAgreement");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.KeyCertificateSign is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CertificateKeyUsages.KeyCertificateSign");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.KeyCertificateSign");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.KeyEncipherment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CertificateKeyUsages.KeyEncipherment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.KeyEncipherment");
 			}
 			set
 			{
@@ -112,7 +112,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateKeyUsages.NonRepudiation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CertificateKeyUsages.NonRepudiation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateKeyUsages", "bool CertificateKeyUsages.NonRepudiation");
 			}
 			set
 			{

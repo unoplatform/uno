@@ -19,7 +19,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SphericalVideoFrameFormat VideoTransformSphericalProjection.FrameFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SphericalVideoFrameFormat%20VideoTransformSphericalProjection.FrameFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformSphericalProjection", "SphericalVideoFrameFormat VideoTransformSphericalProjection.FrameFormat");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double VideoTransformSphericalProjection.HorizontalFieldOfViewInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20VideoTransformSphericalProjection.HorizontalFieldOfViewInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformSphericalProjection", "double VideoTransformSphericalProjection.HorizontalFieldOfViewInDegrees");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VideoTransformSphericalProjection.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VideoTransformSphericalProjection.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformSphericalProjection", "bool VideoTransformSphericalProjection.IsEnabled");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SphericalVideoProjectionMode VideoTransformSphericalProjection.ProjectionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SphericalVideoProjectionMode%20VideoTransformSphericalProjection.ProjectionMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformSphericalProjection", "SphericalVideoProjectionMode VideoTransformSphericalProjection.ProjectionMode");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Quaternion VideoTransformSphericalProjection.ViewOrientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Quaternion%20VideoTransformSphericalProjection.ViewOrientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformSphericalProjection", "Quaternion VideoTransformSphericalProjection.ViewOrientation");
 			}
 			set
 			{

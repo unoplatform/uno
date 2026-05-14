@@ -14,7 +14,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<HttpNameValueHeaderValue> HttpCredentialsHeaderValue.Parameters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CHttpNameValueHeaderValue%3E%20HttpCredentialsHeaderValue.Parameters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "IList<HttpNameValueHeaderValue> HttpCredentialsHeaderValue.Parameters");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpCredentialsHeaderValue.Scheme is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpCredentialsHeaderValue.Scheme");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "string HttpCredentialsHeaderValue.Scheme");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpCredentialsHeaderValue.Token is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpCredentialsHeaderValue.Token");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "string HttpCredentialsHeaderValue.Token");
 			}
 		}
 #endif
@@ -58,21 +58,21 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue Parse(string input)
 		{
-			throw new global::System.NotImplementedException("The member HttpCredentialsHeaderValue HttpCredentialsHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpCredentialsHeaderValue%20HttpCredentialsHeaderValue.Parse%28string%20input%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "HttpCredentialsHeaderValue HttpCredentialsHeaderValue.Parse(string input)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue credentialsHeaderValue)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpCredentialsHeaderValue.TryParse(string input, out HttpCredentialsHeaderValue credentialsHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpCredentialsHeaderValue.TryParse%28string%20input%2C%20out%20HttpCredentialsHeaderValue%20credentialsHeaderValue%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "bool HttpCredentialsHeaderValue.TryParse(string input, out HttpCredentialsHeaderValue credentialsHeaderValue)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpCredentialsHeaderValue.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpCredentialsHeaderValue.ToString%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "string HttpCredentialsHeaderValue.ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpCredentialsHeaderValue.Parameters.get

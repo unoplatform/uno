@@ -19,7 +19,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UnsupportedAppRequirementReasons UnsupportedAppRequirement.Reasons is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UnsupportedAppRequirementReasons%20UnsupportedAppRequirement.Reasons");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.UnsupportedAppRequirement", "UnsupportedAppRequirementReasons UnsupportedAppRequirement.Reasons");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UnsupportedAppRequirement.Requirement is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UnsupportedAppRequirement.Requirement");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.UnsupportedAppRequirement", "string UnsupportedAppRequirement.Requirement");
 			}
 		}
 #endif

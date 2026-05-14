@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintTicketFeature.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintTicketFeature.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketFeature", "string PrintTicketFeature.DisplayName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintTicketFeature.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintTicketFeature.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketFeature", "string PrintTicketFeature.Name");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PrintTicketOption> PrintTicketFeature.Options is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPrintTicketOption%3E%20PrintTicketFeature.Options");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketFeature", "IReadOnlyList<PrintTicketOption> PrintTicketFeature.Options");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTicketFeatureSelectionType PrintTicketFeature.SelectionType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTicketFeatureSelectionType%20PrintTicketFeature.SelectionType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketFeature", "PrintTicketFeatureSelectionType PrintTicketFeature.SelectionType");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintTicketFeature.XmlNamespace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintTicketFeature.XmlNamespace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketFeature", "string PrintTicketFeature.XmlNamespace");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IXmlNode PrintTicketFeature.XmlNode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IXmlNode%20PrintTicketFeature.XmlNode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketFeature", "IXmlNode PrintTicketFeature.XmlNode");
 			}
 		}
 #endif
@@ -77,14 +77,14 @@ namespace Windows.Graphics.Printing.PrintTicket
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Printing.PrintTicket.PrintTicketOption GetOption(string name, string xmlNamespace)
 		{
-			throw new global::System.NotImplementedException("The member PrintTicketOption PrintTicketFeature.GetOption(string name, string xmlNamespace) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTicketOption%20PrintTicketFeature.GetOption%28string%20name%2C%20string%20xmlNamespace%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketFeature", "PrintTicketOption PrintTicketFeature.GetOption(string name, string xmlNamespace)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Printing.PrintTicket.PrintTicketOption GetSelectedOption()
 		{
-			throw new global::System.NotImplementedException("The member PrintTicketOption PrintTicketFeature.GetSelectedOption() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTicketOption%20PrintTicketFeature.GetSelectedOption%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketFeature", "PrintTicketOption PrintTicketFeature.GetSelectedOption()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

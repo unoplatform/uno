@@ -14,7 +14,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmbiosInformation.SerialNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmbiosInformation.SerialNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SmbiosInformation", "string SmbiosInformation.SerialNumber");
 			}
 		}
 #endif

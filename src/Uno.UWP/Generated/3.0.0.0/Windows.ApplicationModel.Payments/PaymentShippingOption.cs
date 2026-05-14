@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentCurrencyAmount PaymentShippingOption.Amount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentCurrencyAmount%20PaymentShippingOption.Amount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentShippingOption", "PaymentCurrencyAmount PaymentShippingOption.Amount");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PaymentShippingOption.IsSelected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PaymentShippingOption.IsSelected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentShippingOption", "bool PaymentShippingOption.IsSelected");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentShippingOption.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentShippingOption.Label");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentShippingOption", "string PaymentShippingOption.Label");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentShippingOption.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentShippingOption.Tag");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentShippingOption", "string PaymentShippingOption.Tag");
 			}
 			set
 			{

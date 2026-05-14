@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RfcommConnectionTriggerDetails.Incoming is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RfcommConnectionTriggerDetails.Incoming");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails", "bool RfcommConnectionTriggerDetails.Incoming");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothDevice RfcommConnectionTriggerDetails.RemoteDevice is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothDevice%20RfcommConnectionTriggerDetails.RemoteDevice");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails", "BluetoothDevice RfcommConnectionTriggerDetails.RemoteDevice");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StreamSocket RfcommConnectionTriggerDetails.Socket is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StreamSocket%20RfcommConnectionTriggerDetails.Socket");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.RfcommConnectionTriggerDetails", "StreamSocket RfcommConnectionTriggerDetails.Socket");
 			}
 		}
 #endif

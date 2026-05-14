@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Inking.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkPresenter CoreWetStrokeUpdateSource.InkPresenter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkPresenter%20CoreWetStrokeUpdateSource.InkPresenter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "InkPresenter CoreWetStrokeUpdateSource.InkPresenter");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.UI.Input.Inking.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource Create(global::Windows.UI.Input.Inking.InkPresenter inkPresenter)
 		{
-			throw new global::System.NotImplementedException("The member CoreWetStrokeUpdateSource CoreWetStrokeUpdateSource.Create(InkPresenter inkPresenter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWetStrokeUpdateSource%20CoreWetStrokeUpdateSource.Create%28InkPresenter%20inkPresenter%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource", "CoreWetStrokeUpdateSource CoreWetStrokeUpdateSource.Create(InkPresenter inkPresenter)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource.WetStrokeCanceled.add

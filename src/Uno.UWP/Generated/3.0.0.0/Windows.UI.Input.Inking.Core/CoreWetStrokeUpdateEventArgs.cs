@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Inking.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWetStrokeDisposition CoreWetStrokeUpdateEventArgs.Disposition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWetStrokeDisposition%20CoreWetStrokeUpdateEventArgs.Disposition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs", "CoreWetStrokeDisposition CoreWetStrokeUpdateEventArgs.Disposition");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.UI.Input.Inking.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<InkPoint> CoreWetStrokeUpdateEventArgs.NewInkPoints is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CInkPoint%3E%20CoreWetStrokeUpdateEventArgs.NewInkPoints");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs", "IList<InkPoint> CoreWetStrokeUpdateEventArgs.NewInkPoints");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Input.Inking.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWetStrokeUpdateEventArgs.PointerId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWetStrokeUpdateEventArgs.PointerId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateEventArgs", "uint CoreWetStrokeUpdateEventArgs.PointerId");
 			}
 		}
 #endif

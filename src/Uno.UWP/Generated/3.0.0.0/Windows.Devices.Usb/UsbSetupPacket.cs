@@ -14,7 +14,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint UsbSetupPacket.Index is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20UsbSetupPacket.Index");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbSetupPacket", "uint UsbSetupPacket.Index");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint UsbSetupPacket.Length is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20UsbSetupPacket.Length");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbSetupPacket", "uint UsbSetupPacket.Length");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbSetupPacket.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20UsbSetupPacket.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbSetupPacket", "byte UsbSetupPacket.Request");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbControlRequestType UsbSetupPacket.RequestType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbControlRequestType%20UsbSetupPacket.RequestType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbSetupPacket", "UsbControlRequestType UsbSetupPacket.RequestType");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint UsbSetupPacket.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20UsbSetupPacket.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbSetupPacket", "uint UsbSetupPacket.Value");
 			}
 			set
 			{

@@ -19,7 +19,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint WebViewControlDeferredPermissionRequest.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20WebViewControlDeferredPermissionRequest.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlDeferredPermissionRequest", "uint WebViewControlDeferredPermissionRequest.Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebViewControlPermissionType WebViewControlDeferredPermissionRequest.PermissionType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebViewControlPermissionType%20WebViewControlDeferredPermissionRequest.PermissionType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlDeferredPermissionRequest", "WebViewControlPermissionType WebViewControlDeferredPermissionRequest.PermissionType");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri WebViewControlDeferredPermissionRequest.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20WebViewControlDeferredPermissionRequest.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlDeferredPermissionRequest", "Uri WebViewControlDeferredPermissionRequest.Uri");
 			}
 		}
 #endif

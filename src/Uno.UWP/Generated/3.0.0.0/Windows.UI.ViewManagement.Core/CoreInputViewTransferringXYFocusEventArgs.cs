@@ -19,7 +19,7 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreInputViewXYFocusTransferDirection CoreInputViewTransferringXYFocusEventArgs.Direction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreInputViewXYFocusTransferDirection%20CoreInputViewTransferringXYFocusEventArgs.Direction");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "CoreInputViewXYFocusTransferDirection CoreInputViewTransferringXYFocusEventArgs.Direction");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreInputViewTransferringXYFocusEventArgs.KeepPrimaryViewVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreInputViewTransferringXYFocusEventArgs.KeepPrimaryViewVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "bool CoreInputViewTransferringXYFocusEventArgs.KeepPrimaryViewVisible");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect CoreInputViewTransferringXYFocusEventArgs.Origin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20CoreInputViewTransferringXYFocusEventArgs.Origin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "Rect CoreInputViewTransferringXYFocusEventArgs.Origin");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreInputViewTransferringXYFocusEventArgs.TransferHandled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreInputViewTransferringXYFocusEventArgs.TransferHandled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "bool CoreInputViewTransferringXYFocusEventArgs.TransferHandled");
 			}
 			set
 			{

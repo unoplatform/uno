@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VoiceCommandConfirmationResult.Confirmed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VoiceCommandConfirmationResult.Confirmed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandConfirmationResult", "bool VoiceCommandConfirmationResult.Confirmed");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StreamSocketListenerControl StreamSocketListener.Control is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StreamSocketListenerControl%20StreamSocketListener.Control");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketListener", "StreamSocketListenerControl StreamSocketListener.Control");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StreamSocketListenerInformation StreamSocketListener.Information is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StreamSocketListenerInformation%20StreamSocketListener.Information");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketListener", "StreamSocketListenerInformation StreamSocketListener.Information");
 			}
 		}
 #endif
@@ -40,14 +40,14 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction BindServiceNameAsync(string localServiceName)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StreamSocketListener.BindServiceNameAsync(string localServiceName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20StreamSocketListener.BindServiceNameAsync%28string%20localServiceName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketListener", "IAsyncAction StreamSocketListener.BindServiceNameAsync(string localServiceName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction BindEndpointAsync(global::Windows.Networking.HostName localHostName, string localServiceName)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StreamSocketListener.BindEndpointAsync(HostName localHostName, string localServiceName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20StreamSocketListener.BindEndpointAsync%28HostName%20localHostName%2C%20string%20localServiceName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketListener", "IAsyncAction StreamSocketListener.BindEndpointAsync(HostName localHostName, string localServiceName)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketListener.ConnectionReceived.add
@@ -63,21 +63,21 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction BindServiceNameAsync(string localServiceName, global::Windows.Networking.Sockets.SocketProtectionLevel protectionLevel)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StreamSocketListener.BindServiceNameAsync(string localServiceName, SocketProtectionLevel protectionLevel) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20StreamSocketListener.BindServiceNameAsync%28string%20localServiceName%2C%20SocketProtectionLevel%20protectionLevel%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketListener", "IAsyncAction StreamSocketListener.BindServiceNameAsync(string localServiceName, SocketProtectionLevel protectionLevel)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction BindServiceNameAsync(string localServiceName, global::Windows.Networking.Sockets.SocketProtectionLevel protectionLevel, global::Windows.Networking.Connectivity.NetworkAdapter adapter)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StreamSocketListener.BindServiceNameAsync(string localServiceName, SocketProtectionLevel protectionLevel, NetworkAdapter adapter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20StreamSocketListener.BindServiceNameAsync%28string%20localServiceName%2C%20SocketProtectionLevel%20protectionLevel%2C%20NetworkAdapter%20adapter%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketListener", "IAsyncAction StreamSocketListener.BindServiceNameAsync(string localServiceName, SocketProtectionLevel protectionLevel, NetworkAdapter adapter)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction CancelIOAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StreamSocketListener.CancelIOAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20StreamSocketListener.CancelIOAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketListener", "IAsyncAction StreamSocketListener.CancelIOAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

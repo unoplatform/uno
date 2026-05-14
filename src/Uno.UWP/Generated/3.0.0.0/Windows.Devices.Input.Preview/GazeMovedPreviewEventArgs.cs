@@ -19,7 +19,7 @@ namespace Windows.Devices.Input.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GazePointPreview GazeMovedPreviewEventArgs.CurrentPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GazePointPreview%20GazeMovedPreviewEventArgs.CurrentPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs", "GazePointPreview GazeMovedPreviewEventArgs.CurrentPoint");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Input.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GazeMovedPreviewEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GazeMovedPreviewEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs", "bool GazeMovedPreviewEventArgs.Handled");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Input.Preview
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.Devices.Input.Preview.GazePointPreview> GetIntermediatePoints()
 		{
-			throw new global::System.NotImplementedException("The member IList<GazePointPreview> GazeMovedPreviewEventArgs.GetIntermediatePoints() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CGazePointPreview%3E%20GazeMovedPreviewEventArgs.GetIntermediatePoints%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs", "IList<GazePointPreview> GazeMovedPreviewEventArgs.GetIntermediatePoints()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeMovedPreviewEventArgs.CurrentPoint.get

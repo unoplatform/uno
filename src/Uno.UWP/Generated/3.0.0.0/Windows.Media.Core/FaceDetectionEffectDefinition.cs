@@ -14,7 +14,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string FaceDetectionEffectDefinition.ActivatableClassId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FaceDetectionEffectDefinition.ActivatableClassId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffectDefinition", "string FaceDetectionEffectDefinition.ActivatableClassId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FaceDetectionMode FaceDetectionEffectDefinition.DetectionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FaceDetectionMode%20FaceDetectionEffectDefinition.DetectionMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffectDefinition", "FaceDetectionMode FaceDetectionEffectDefinition.DetectionMode");
 			}
 			set
 			{
@@ -38,7 +38,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet FaceDetectionEffectDefinition.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPropertySet%20FaceDetectionEffectDefinition.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffectDefinition", "IPropertySet FaceDetectionEffectDefinition.Properties");
 			}
 		}
 #endif
@@ -48,7 +48,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FaceDetectionEffectDefinition.SynchronousDetectionEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FaceDetectionEffectDefinition.SynchronousDetectionEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffectDefinition", "bool FaceDetectionEffectDefinition.SynchronousDetectionEnabled");
 			}
 			set
 			{

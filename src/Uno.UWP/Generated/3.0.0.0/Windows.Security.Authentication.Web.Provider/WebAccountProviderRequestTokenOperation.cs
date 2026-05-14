@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset WebAccountProviderRequestTokenOperation.CacheExpirationTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20WebAccountProviderRequestTokenOperation.CacheExpirationTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation", "DateTimeOffset WebAccountProviderRequestTokenOperation.CacheExpirationTime");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccountProviderOperationKind WebAccountProviderRequestTokenOperation.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccountProviderOperationKind%20WebAccountProviderRequestTokenOperation.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation", "WebAccountProviderOperationKind WebAccountProviderRequestTokenOperation.Kind");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebProviderTokenRequest WebAccountProviderRequestTokenOperation.ProviderRequest is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebProviderTokenRequest%20WebAccountProviderRequestTokenOperation.ProviderRequest");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation", "WebProviderTokenRequest WebAccountProviderRequestTokenOperation.ProviderRequest");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<WebProviderTokenResponse> WebAccountProviderRequestTokenOperation.ProviderResponses is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CWebProviderTokenResponse%3E%20WebAccountProviderRequestTokenOperation.ProviderResponses");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderRequestTokenOperation", "IList<WebProviderTokenResponse> WebAccountProviderRequestTokenOperation.ProviderResponses");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoFrame PerceptionInfraredFrame.VideoFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoFrame%20PerceptionInfraredFrame.VideoFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrame", "VideoFrame PerceptionInfraredFrame.VideoFrame");
 			}
 		}
 #endif

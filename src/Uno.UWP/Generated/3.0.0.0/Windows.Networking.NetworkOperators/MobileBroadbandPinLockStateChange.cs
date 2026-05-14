@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MobileBroadbandPinLockStateChange.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MobileBroadbandPinLockStateChange.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandPinLockStateChange", "string MobileBroadbandPinLockStateChange.DeviceId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MobileBroadbandPinLockState MobileBroadbandPinLockStateChange.PinLockState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandPinLockState%20MobileBroadbandPinLockStateChange.PinLockState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandPinLockStateChange", "MobileBroadbandPinLockState MobileBroadbandPinLockStateChange.PinLockState");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MobileBroadbandPinType MobileBroadbandPinLockStateChange.PinType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandPinType%20MobileBroadbandPinLockStateChange.PinType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandPinLockStateChange", "MobileBroadbandPinType MobileBroadbandPinLockStateChange.PinType");
 			}
 		}
 #endif

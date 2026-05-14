@@ -19,7 +19,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint WebViewControlPermissionRequest.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20WebViewControlPermissionRequest.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlPermissionRequest", "uint WebViewControlPermissionRequest.Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebViewControlPermissionType WebViewControlPermissionRequest.PermissionType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebViewControlPermissionType%20WebViewControlPermissionRequest.PermissionType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlPermissionRequest", "WebViewControlPermissionType WebViewControlPermissionRequest.PermissionType");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebViewControlPermissionState WebViewControlPermissionRequest.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebViewControlPermissionState%20WebViewControlPermissionRequest.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlPermissionRequest", "WebViewControlPermissionState WebViewControlPermissionRequest.State");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri WebViewControlPermissionRequest.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20WebViewControlPermissionRequest.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlPermissionRequest", "Uri WebViewControlPermissionRequest.Uri");
 			}
 		}
 #endif

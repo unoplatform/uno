@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string FileOpenPickerActivatedEventArgs.CallerPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FileOpenPickerActivatedEventArgs.CallerPackageFamilyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs", "string FileOpenPickerActivatedEventArgs.CallerPackageFamilyName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FileOpenPickerUI FileOpenPickerActivatedEventArgs.FileOpenPickerUI is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileOpenPickerUI%20FileOpenPickerActivatedEventArgs.FileOpenPickerUI");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs", "FileOpenPickerUI FileOpenPickerActivatedEventArgs.FileOpenPickerUI");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationKind FileOpenPickerActivatedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivationKind%20FileOpenPickerActivatedEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs", "ActivationKind FileOpenPickerActivatedEventArgs.Kind");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState FileOpenPickerActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ApplicationExecutionState%20FileOpenPickerActivatedEventArgs.PreviousExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs", "ApplicationExecutionState FileOpenPickerActivatedEventArgs.PreviousExecutionState");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen FileOpenPickerActivatedEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SplashScreen%20FileOpenPickerActivatedEventArgs.SplashScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs", "SplashScreen FileOpenPickerActivatedEventArgs.SplashScreen");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User FileOpenPickerActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20FileOpenPickerActivatedEventArgs.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.FileOpenPickerActivatedEventArgs", "User FileOpenPickerActivatedEventArgs.User");
 			}
 		}
 #endif

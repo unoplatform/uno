@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactDataProviderConnection ContactDataProviderTriggerDetails.Connection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactDataProviderConnection%20ContactDataProviderTriggerDetails.Connection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderTriggerDetails", "ContactDataProviderConnection ContactDataProviderTriggerDetails.Connection");
 			}
 		}
 #endif

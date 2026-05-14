@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point? LauncherUIOptions.InvocationPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%3F%20LauncherUIOptions.InvocationPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherUIOptions", "Point? LauncherUIOptions.InvocationPoint");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Placement LauncherUIOptions.PreferredPlacement is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Placement%20LauncherUIOptions.PreferredPlacement");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherUIOptions", "Placement LauncherUIOptions.PreferredPlacement");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect? LauncherUIOptions.SelectionRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%3F%20LauncherUIOptions.SelectionRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherUIOptions", "Rect? LauncherUIOptions.SelectionRect");
 			}
 			set
 			{

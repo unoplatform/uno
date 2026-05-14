@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserActivitySession.ActivityId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserActivitySession.ActivityId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivitySession", "string UserActivitySession.ActivityId");
 			}
 		}
 #endif

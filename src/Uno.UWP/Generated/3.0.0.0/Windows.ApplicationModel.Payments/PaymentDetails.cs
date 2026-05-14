@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PaymentItem> PaymentDetails.DisplayItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPaymentItem%3E%20PaymentDetails.DisplayItems");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentDetails", "IReadOnlyList<PaymentItem> PaymentDetails.DisplayItems");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PaymentDetailsModifier> PaymentDetails.Modifiers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPaymentDetailsModifier%3E%20PaymentDetails.Modifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentDetails", "IReadOnlyList<PaymentDetailsModifier> PaymentDetails.Modifiers");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PaymentShippingOption> PaymentDetails.ShippingOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPaymentShippingOption%3E%20PaymentDetails.ShippingOptions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentDetails", "IReadOnlyList<PaymentShippingOption> PaymentDetails.ShippingOptions");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentItem PaymentDetails.Total is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentItem%20PaymentDetails.Total");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentDetails", "PaymentItem PaymentDetails.Total");
 			}
 			set
 			{

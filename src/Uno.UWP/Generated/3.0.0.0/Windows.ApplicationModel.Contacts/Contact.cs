@@ -15,7 +15,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Contact.AggregateId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Contact.AggregateId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Contact", "string Contact.AggregateId");
 			}
 		}
 #endif
@@ -25,7 +25,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ContactConnectedServiceAccount> Contact.ConnectedServiceAccounts is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CContactConnectedServiceAccount%3E%20Contact.ConnectedServiceAccounts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Contact", "IList<ContactConnectedServiceAccount> Contact.ConnectedServiceAccounts");
 			}
 		}
 #endif
@@ -35,7 +35,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Contact.ContactListId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Contact.ContactListId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Contact", "string Contact.ContactListId");
 			}
 		}
 #endif
@@ -45,7 +45,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> Contact.DataSuppliers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20Contact.DataSuppliers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Contact", "IList<string> Contact.DataSuppliers");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset Contact.DisplayPictureUserUpdateTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20Contact.DisplayPictureUserUpdateTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Contact", "DateTimeOffset Contact.DisplayPictureUserUpdateTime");
 			}
 			set
 			{
@@ -72,7 +72,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<IContactField> Contact.Fields is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CIContactField%3E%20Contact.Fields");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Contact", "IList<IContactField> Contact.Fields");
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ContactDate> Contact.ImportantDates is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CContactDate%3E%20Contact.ImportantDates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Contact", "IList<ContactDate> Contact.ImportantDates");
 			}
 		}
 #endif
@@ -97,7 +97,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Contact.IsAggregate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Contact.IsAggregate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Contact", "bool Contact.IsAggregate");
 			}
 		}
 #endif
@@ -107,7 +107,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Contact.IsDisplayPictureManuallySet is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Contact.IsDisplayPictureManuallySet");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Contact", "bool Contact.IsDisplayPictureManuallySet");
 			}
 		}
 #endif
@@ -117,7 +117,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Contact.IsMe is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Contact.IsMe");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Contact", "bool Contact.IsMe");
 			}
 		}
 #endif
@@ -127,7 +127,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ContactJobInfo> Contact.JobInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CContactJobInfo%3E%20Contact.JobInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Contact", "IList<ContactJobInfo> Contact.JobInfo");
 			}
 		}
 #endif
@@ -140,7 +140,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Contact.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Contact.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Contact", "string Contact.Name");
 			}
 			set
 			{
@@ -157,7 +157,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet Contact.ProviderProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPropertySet%20Contact.ProviderProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Contact", "IPropertySet Contact.ProviderProperties");
 			}
 		}
 #endif
@@ -167,7 +167,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Contact.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Contact.RemoteId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Contact", "string Contact.RemoteId");
 			}
 			set
 			{
@@ -181,7 +181,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Contact.RingToneToken is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Contact.RingToneToken");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Contact", "string Contact.RingToneToken");
 			}
 			set
 			{
@@ -195,7 +195,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ContactSignificantOther> Contact.SignificantOthers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CContactSignificantOther%3E%20Contact.SignificantOthers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Contact", "IList<ContactSignificantOther> Contact.SignificantOthers");
 			}
 		}
 #endif
@@ -206,7 +206,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Contact.SortName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Contact.SortName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Contact", "string Contact.SortName");
 			}
 		}
 #endif
@@ -217,7 +217,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Contact.TextToneToken is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Contact.TextToneToken");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Contact", "string Contact.TextToneToken");
 			}
 			set
 			{
@@ -232,7 +232,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ContactWebsite> Contact.Websites is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CContactWebsite%3E%20Contact.Websites");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Contact", "IList<ContactWebsite> Contact.Websites");
 			}
 		}
 #endif
@@ -242,7 +242,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Contact.YomiDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Contact.YomiDisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Contact", "string Contact.YomiDisplayName");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppBroadcastViewerCountChangedEventArgs.ViewerCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppBroadcastViewerCountChangedEventArgs.ViewerCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastViewerCountChangedEventArgs", "uint AppBroadcastViewerCountChangedEventArgs.ViewerCount");
 			}
 		}
 #endif

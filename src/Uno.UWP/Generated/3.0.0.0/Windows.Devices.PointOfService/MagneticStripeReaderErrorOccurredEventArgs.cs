@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UnifiedPosErrorData MagneticStripeReaderErrorOccurredEventArgs.ErrorData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UnifiedPosErrorData%20MagneticStripeReaderErrorOccurredEventArgs.ErrorData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "UnifiedPosErrorData MagneticStripeReaderErrorOccurredEventArgs.ErrorData");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagneticStripeReaderReport MagneticStripeReaderErrorOccurredEventArgs.PartialInputData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MagneticStripeReaderReport%20MagneticStripeReaderErrorOccurredEventArgs.PartialInputData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "MagneticStripeReaderReport MagneticStripeReaderErrorOccurredEventArgs.PartialInputData");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagneticStripeReaderTrackErrorType MagneticStripeReaderErrorOccurredEventArgs.Track1Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MagneticStripeReaderTrackErrorType%20MagneticStripeReaderErrorOccurredEventArgs.Track1Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "MagneticStripeReaderTrackErrorType MagneticStripeReaderErrorOccurredEventArgs.Track1Status");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagneticStripeReaderTrackErrorType MagneticStripeReaderErrorOccurredEventArgs.Track2Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MagneticStripeReaderTrackErrorType%20MagneticStripeReaderErrorOccurredEventArgs.Track2Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "MagneticStripeReaderTrackErrorType MagneticStripeReaderErrorOccurredEventArgs.Track2Status");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagneticStripeReaderTrackErrorType MagneticStripeReaderErrorOccurredEventArgs.Track3Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MagneticStripeReaderTrackErrorType%20MagneticStripeReaderErrorOccurredEventArgs.Track3Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "MagneticStripeReaderTrackErrorType MagneticStripeReaderErrorOccurredEventArgs.Track3Status");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagneticStripeReaderTrackErrorType MagneticStripeReaderErrorOccurredEventArgs.Track4Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MagneticStripeReaderTrackErrorType%20MagneticStripeReaderErrorOccurredEventArgs.Track4Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "MagneticStripeReaderTrackErrorType MagneticStripeReaderErrorOccurredEventArgs.Track4Status");
 			}
 		}
 #endif

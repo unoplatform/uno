@@ -19,7 +19,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebUINavigatedOperation WebUINavigatedEventArgs.NavigatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebUINavigatedOperation%20WebUINavigatedEventArgs.NavigatedOperation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUINavigatedEventArgs", "WebUINavigatedOperation WebUINavigatedEventArgs.NavigatedOperation");
 			}
 		}
 #endif

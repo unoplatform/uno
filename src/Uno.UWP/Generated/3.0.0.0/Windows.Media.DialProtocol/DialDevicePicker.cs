@@ -14,7 +14,7 @@ namespace Windows.Media.DialProtocol
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DevicePickerAppearance DialDevicePicker.Appearance is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DevicePickerAppearance%20DialDevicePicker.Appearance");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevicePicker", "DevicePickerAppearance DialDevicePicker.Appearance");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.DialProtocol
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DialDevicePickerFilter DialDevicePicker.Filter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DialDevicePickerFilter%20DialDevicePicker.Filter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevicePicker", "DialDevicePickerFilter DialDevicePicker.Filter");
 			}
 		}
 #endif
@@ -54,14 +54,14 @@ namespace Windows.Media.DialProtocol
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.DialProtocol.DialDevice> PickSingleDialDeviceAsync(global::Windows.Foundation.Rect selection)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DialDevice> DialDevicePicker.PickSingleDialDeviceAsync(Rect selection) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDialDevice%3E%20DialDevicePicker.PickSingleDialDeviceAsync%28Rect%20selection%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevicePicker", "IAsyncOperation<DialDevice> DialDevicePicker.PickSingleDialDeviceAsync(Rect selection)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.DialProtocol.DialDevice> PickSingleDialDeviceAsync(global::Windows.Foundation.Rect selection, global::Windows.UI.Popups.Placement preferredPlacement)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DialDevice> DialDevicePicker.PickSingleDialDeviceAsync(Rect selection, Placement preferredPlacement) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDialDevice%3E%20DialDevicePicker.PickSingleDialDeviceAsync%28Rect%20selection%2C%20Placement%20preferredPlacement%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevicePicker", "IAsyncOperation<DialDevice> DialDevicePicker.PickSingleDialDeviceAsync(Rect selection, Placement preferredPlacement)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

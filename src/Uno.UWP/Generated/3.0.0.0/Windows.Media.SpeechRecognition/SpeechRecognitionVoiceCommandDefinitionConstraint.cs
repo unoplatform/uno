@@ -19,7 +19,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpeechRecognitionVoiceCommandDefinitionConstraint.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpeechRecognitionVoiceCommandDefinitionConstraint.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionVoiceCommandDefinitionConstraint", "bool SpeechRecognitionVoiceCommandDefinitionConstraint.IsEnabled");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintProbability SpeechRecognitionVoiceCommandDefinitionConstraint.Probability is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognitionConstraintProbability%20SpeechRecognitionVoiceCommandDefinitionConstraint.Probability");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionVoiceCommandDefinitionConstraint", "SpeechRecognitionConstraintProbability SpeechRecognitionVoiceCommandDefinitionConstraint.Probability");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpeechRecognitionVoiceCommandDefinitionConstraint.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SpeechRecognitionVoiceCommandDefinitionConstraint.Tag");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionVoiceCommandDefinitionConstraint", "string SpeechRecognitionVoiceCommandDefinitionConstraint.Tag");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintType SpeechRecognitionVoiceCommandDefinitionConstraint.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognitionConstraintType%20SpeechRecognitionVoiceCommandDefinitionConstraint.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionVoiceCommandDefinitionConstraint", "SpeechRecognitionConstraintType SpeechRecognitionVoiceCommandDefinitionConstraint.Type");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint FrameFocusCapabilities.Max is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20FrameFocusCapabilities.Max");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameFocusCapabilities", "uint FrameFocusCapabilities.Max");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint FrameFocusCapabilities.Min is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20FrameFocusCapabilities.Min");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameFocusCapabilities", "uint FrameFocusCapabilities.Min");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint FrameFocusCapabilities.Step is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20FrameFocusCapabilities.Step");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameFocusCapabilities", "uint FrameFocusCapabilities.Step");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FrameFocusCapabilities.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FrameFocusCapabilities.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameFocusCapabilities", "bool FrameFocusCapabilities.Supported");
 			}
 		}
 #endif

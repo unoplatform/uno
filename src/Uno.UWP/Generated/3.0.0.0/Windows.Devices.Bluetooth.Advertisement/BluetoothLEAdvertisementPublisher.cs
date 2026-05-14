@@ -14,7 +14,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisement BluetoothLEAdvertisementPublisher.Advertisement is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothLEAdvertisement%20BluetoothLEAdvertisementPublisher.Advertisement");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisher", "BluetoothLEAdvertisement BluetoothLEAdvertisementPublisher.Advertisement");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementPublisher.IncludeTransmitPowerLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothLEAdvertisementPublisher.IncludeTransmitPowerLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisher", "bool BluetoothLEAdvertisementPublisher.IncludeTransmitPowerLevel");
 			}
 			set
 			{
@@ -38,7 +38,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementPublisher.IsAnonymous is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothLEAdvertisementPublisher.IsAnonymous");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisher", "bool BluetoothLEAdvertisementPublisher.IsAnonymous");
 			}
 			set
 			{
@@ -52,7 +52,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member short? BluetoothLEAdvertisementPublisher.PreferredTransmitPowerLevelInDBm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=short%3F%20BluetoothLEAdvertisementPublisher.PreferredTransmitPowerLevelInDBm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisher", "short? BluetoothLEAdvertisementPublisher.PreferredTransmitPowerLevelInDBm");
 			}
 			set
 			{
@@ -66,7 +66,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisementPublisherStatus BluetoothLEAdvertisementPublisher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothLEAdvertisementPublisherStatus%20BluetoothLEAdvertisementPublisher.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisher", "BluetoothLEAdvertisementPublisherStatus BluetoothLEAdvertisementPublisher.Status");
 			}
 		}
 #endif
@@ -76,7 +76,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementPublisher.UseExtendedAdvertisement is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothLEAdvertisementPublisher.UseExtendedAdvertisement");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisher", "bool BluetoothLEAdvertisementPublisher.UseExtendedAdvertisement");
 			}
 			set
 			{

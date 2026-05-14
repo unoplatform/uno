@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> ClipboardContentOptions.HistoryFormats is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20ClipboardContentOptions.HistoryFormats");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardContentOptions", "IList<string> ClipboardContentOptions.HistoryFormats");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClipboardContentOptions.IsAllowedInHistory is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClipboardContentOptions.IsAllowedInHistory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardContentOptions", "bool ClipboardContentOptions.IsAllowedInHistory");
 			}
 			set
 			{
@@ -38,7 +38,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClipboardContentOptions.IsRoamable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClipboardContentOptions.IsRoamable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardContentOptions", "bool ClipboardContentOptions.IsRoamable");
 			}
 			set
 			{
@@ -52,7 +52,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> ClipboardContentOptions.RoamingFormats is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20ClipboardContentOptions.RoamingFormats");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardContentOptions", "IList<string> ClipboardContentOptions.RoamingFormats");
 			}
 		}
 #endif

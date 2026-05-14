@@ -14,7 +14,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ProtectionPolicyAuditAction ProtectionPolicyAuditInfo.Action is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProtectionPolicyAuditAction%20ProtectionPolicyAuditInfo.Action");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "ProtectionPolicyAuditAction ProtectionPolicyAuditInfo.Action");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProtectionPolicyAuditInfo.DataDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProtectionPolicyAuditInfo.DataDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "string ProtectionPolicyAuditInfo.DataDescription");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProtectionPolicyAuditInfo.SourceDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProtectionPolicyAuditInfo.SourceDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "string ProtectionPolicyAuditInfo.SourceDescription");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProtectionPolicyAuditInfo.TargetDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProtectionPolicyAuditInfo.TargetDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "string ProtectionPolicyAuditInfo.TargetDescription");
 			}
 			set
 			{

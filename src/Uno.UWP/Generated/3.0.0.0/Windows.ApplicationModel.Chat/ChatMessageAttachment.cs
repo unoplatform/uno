@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference ChatMessageAttachment.DataStreamReference is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20ChatMessageAttachment.DataStreamReference");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageAttachment", "IRandomAccessStreamReference ChatMessageAttachment.DataStreamReference");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ChatMessageAttachment.GroupId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ChatMessageAttachment.GroupId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageAttachment", "uint ChatMessageAttachment.GroupId");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChatMessageAttachment.MimeType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatMessageAttachment.MimeType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageAttachment", "string ChatMessageAttachment.MimeType");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChatMessageAttachment.OriginalFileName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatMessageAttachment.OriginalFileName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageAttachment", "string ChatMessageAttachment.OriginalFileName");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChatMessageAttachment.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatMessageAttachment.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageAttachment", "string ChatMessageAttachment.Text");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference ChatMessageAttachment.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20ChatMessageAttachment.Thumbnail");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageAttachment", "IRandomAccessStreamReference ChatMessageAttachment.Thumbnail");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ChatMessageAttachment.TransferProgress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ChatMessageAttachment.TransferProgress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageAttachment", "double ChatMessageAttachment.TransferProgress");
 			}
 			set
 			{

@@ -14,7 +14,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<SyndicationAttribute> SyndicationText.AttributeExtensions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CSyndicationAttribute%3E%20SyndicationText.AttributeExtensions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationText", "IList<SyndicationAttribute> SyndicationText.AttributeExtensions");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SyndicationText.BaseUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20SyndicationText.BaseUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationText", "Uri SyndicationText.BaseUri");
 			}
 			set
 			{
@@ -38,7 +38,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ISyndicationNode> SyndicationText.ElementExtensions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CISyndicationNode%3E%20SyndicationText.ElementExtensions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationText", "IList<ISyndicationNode> SyndicationText.ElementExtensions");
 			}
 		}
 #endif
@@ -48,7 +48,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationText.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationText.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationText", "string SyndicationText.Language");
 			}
 			set
 			{
@@ -62,7 +62,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationText.NodeName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationText.NodeName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationText", "string SyndicationText.NodeName");
 			}
 			set
 			{
@@ -76,7 +76,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationText.NodeNamespace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationText.NodeNamespace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationText", "string SyndicationText.NodeNamespace");
 			}
 			set
 			{
@@ -90,7 +90,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationText.NodeValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationText.NodeValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationText", "string SyndicationText.NodeValue");
 			}
 			set
 			{
@@ -104,7 +104,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationText.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationText.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationText", "string SyndicationText.Text");
 			}
 			set
 			{
@@ -118,7 +118,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationText.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationText.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationText", "string SyndicationText.Type");
 			}
 			set
 			{
@@ -132,7 +132,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member XmlDocument SyndicationText.Xml is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XmlDocument%20SyndicationText.Xml");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationText", "XmlDocument SyndicationText.Xml");
 			}
 			set
 			{
@@ -168,7 +168,7 @@ namespace Windows.Web.Syndication
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.XmlDocument GetXmlDocument(global::Windows.Web.Syndication.SyndicationFormat format)
 		{
-			throw new global::System.NotImplementedException("The member XmlDocument SyndicationText.GetXmlDocument(SyndicationFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XmlDocument%20SyndicationText.GetXmlDocument%28SyndicationFormat%20format%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationText", "XmlDocument SyndicationText.GetXmlDocument(SyndicationFormat format)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Syndication.SyndicationText.AttributeExtensions.get

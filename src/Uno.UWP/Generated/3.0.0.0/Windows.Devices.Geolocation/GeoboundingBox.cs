@@ -14,7 +14,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AltitudeReferenceSystem GeoboundingBox.AltitudeReferenceSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AltitudeReferenceSystem%20GeoboundingBox.AltitudeReferenceSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeoboundingBox", "AltitudeReferenceSystem GeoboundingBox.AltitudeReferenceSystem");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BasicGeoposition GeoboundingBox.Center is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BasicGeoposition%20GeoboundingBox.Center");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeoboundingBox", "BasicGeoposition GeoboundingBox.Center");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GeoshapeType GeoboundingBox.GeoshapeType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GeoshapeType%20GeoboundingBox.GeoshapeType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeoboundingBox", "GeoshapeType GeoboundingBox.GeoshapeType");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double GeoboundingBox.MaxAltitude is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20GeoboundingBox.MaxAltitude");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeoboundingBox", "double GeoboundingBox.MaxAltitude");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double GeoboundingBox.MinAltitude is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20GeoboundingBox.MinAltitude");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeoboundingBox", "double GeoboundingBox.MinAltitude");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BasicGeoposition GeoboundingBox.NorthwestCorner is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BasicGeoposition%20GeoboundingBox.NorthwestCorner");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeoboundingBox", "BasicGeoposition GeoboundingBox.NorthwestCorner");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BasicGeoposition GeoboundingBox.SoutheastCorner is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BasicGeoposition%20GeoboundingBox.SoutheastCorner");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeoboundingBox", "BasicGeoposition GeoboundingBox.SoutheastCorner");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint GeoboundingBox.SpatialReferenceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20GeoboundingBox.SpatialReferenceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeoboundingBox", "uint GeoboundingBox.SpatialReferenceId");
 			}
 		}
 #endif
@@ -116,21 +116,21 @@ namespace Windows.Devices.Geolocation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Geolocation.GeoboundingBox TryCompute(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Geolocation.BasicGeoposition> positions)
 		{
-			throw new global::System.NotImplementedException("The member GeoboundingBox GeoboundingBox.TryCompute(IEnumerable<BasicGeoposition> positions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GeoboundingBox%20GeoboundingBox.TryCompute%28IEnumerable%3CBasicGeoposition%3E%20positions%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeoboundingBox", "GeoboundingBox GeoboundingBox.TryCompute(IEnumerable<BasicGeoposition> positions)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Geolocation.GeoboundingBox TryCompute(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Geolocation.BasicGeoposition> positions, global::Windows.Devices.Geolocation.AltitudeReferenceSystem altitudeRefSystem)
 		{
-			throw new global::System.NotImplementedException("The member GeoboundingBox GeoboundingBox.TryCompute(IEnumerable<BasicGeoposition> positions, AltitudeReferenceSystem altitudeRefSystem) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GeoboundingBox%20GeoboundingBox.TryCompute%28IEnumerable%3CBasicGeoposition%3E%20positions%2C%20AltitudeReferenceSystem%20altitudeRefSystem%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeoboundingBox", "GeoboundingBox GeoboundingBox.TryCompute(IEnumerable<BasicGeoposition> positions, AltitudeReferenceSystem altitudeRefSystem)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Geolocation.GeoboundingBox TryCompute(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Geolocation.BasicGeoposition> positions, global::Windows.Devices.Geolocation.AltitudeReferenceSystem altitudeRefSystem, uint spatialReferenceId)
 		{
-			throw new global::System.NotImplementedException("The member GeoboundingBox GeoboundingBox.TryCompute(IEnumerable<BasicGeoposition> positions, AltitudeReferenceSystem altitudeRefSystem, uint spatialReferenceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GeoboundingBox%20GeoboundingBox.TryCompute%28IEnumerable%3CBasicGeoposition%3E%20positions%2C%20AltitudeReferenceSystem%20altitudeRefSystem%2C%20uint%20spatialReferenceId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeoboundingBox", "GeoboundingBox GeoboundingBox.TryCompute(IEnumerable<BasicGeoposition> positions, AltitudeReferenceSystem altitudeRefSystem, uint spatialReferenceId)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.AltitudeReferenceSystem.get

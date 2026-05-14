@@ -19,7 +19,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AudioFileOutputNode.ConsumeInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AudioFileOutputNode.ConsumeInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioFileOutputNode", "bool AudioFileOutputNode.ConsumeInput");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<IAudioEffectDefinition> AudioFileOutputNode.EffectDefinitions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CIAudioEffectDefinition%3E%20AudioFileOutputNode.EffectDefinitions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioFileOutputNode", "IList<IAudioEffectDefinition> AudioFileOutputNode.EffectDefinitions");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioEncodingProperties AudioFileOutputNode.EncodingProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioEncodingProperties%20AudioFileOutputNode.EncodingProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioFileOutputNode", "AudioEncodingProperties AudioFileOutputNode.EncodingProperties");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IStorageFile AudioFileOutputNode.File is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IStorageFile%20AudioFileOutputNode.File");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioFileOutputNode", "IStorageFile AudioFileOutputNode.File");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaEncodingProfile AudioFileOutputNode.FileEncodingProfile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaEncodingProfile%20AudioFileOutputNode.FileEncodingProfile");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioFileOutputNode", "MediaEncodingProfile AudioFileOutputNode.FileEncodingProfile");
 			}
 		}
 #endif
@@ -73,7 +73,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AudioFileOutputNode.OutgoingGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioFileOutputNode.OutgoingGain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioFileOutputNode", "double AudioFileOutputNode.OutgoingGain");
 			}
 			set
 			{
@@ -85,7 +85,7 @@ namespace Windows.Media.Audio
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Transcoding.TranscodeFailureReason> FinalizeAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<TranscodeFailureReason> AudioFileOutputNode.FinalizeAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CTranscodeFailureReason%3E%20AudioFileOutputNode.FinalizeAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioFileOutputNode", "IAsyncOperation<TranscodeFailureReason> AudioFileOutputNode.FinalizeAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

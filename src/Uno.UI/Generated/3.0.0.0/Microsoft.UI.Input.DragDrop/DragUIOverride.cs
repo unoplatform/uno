@@ -19,7 +19,7 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DragUIOverride.Caption is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DragUIOverride.Caption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragUIOverride", "string DragUIOverride.Caption");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DragUIOverride.IsCaptionVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DragUIOverride.IsCaptionVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragUIOverride", "bool DragUIOverride.IsCaptionVisible");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DragUIOverride.IsContentVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DragUIOverride.IsContentVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragUIOverride", "bool DragUIOverride.IsContentVisible");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DragUIOverride.IsGlyphVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DragUIOverride.IsGlyphVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragUIOverride", "bool DragUIOverride.IsGlyphVisible");
 			}
 			set
 			{

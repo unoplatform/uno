@@ -19,7 +19,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CertificateStore.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CertificateStore.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateStore", "string CertificateStore.Name");
 			}
 		}
 #endif

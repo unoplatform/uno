@@ -19,7 +19,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 ChildSiteLink.ActualSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20ChildSiteLink.ActualSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "Vector2 ChildSiteLink.ActualSize");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentAutomationOptions ChildSiteLink.AutomationOption is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentAutomationOptions%20ChildSiteLink.AutomationOption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "ContentAutomationOptions ChildSiteLink.AutomationOption");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object ChildSiteLink.AutomationProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ChildSiteLink.AutomationProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "object ChildSiteLink.AutomationProvider");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DispatcherQueue ChildSiteLink.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherQueue%20ChildSiteLink.DispatcherQueue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "DispatcherQueue ChildSiteLink.DispatcherQueue");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChildSiteLink.IsClosed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChildSiteLink.IsClosed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "bool ChildSiteLink.IsClosed");
 			}
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Matrix4x4 ChildSiteLink.LocalToParentTransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix4x4%20ChildSiteLink.LocalToParentTransformMatrix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "Matrix4x4 ChildSiteLink.LocalToParentTransformMatrix");
 			}
 			set
 			{
@@ -91,7 +91,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentIsland ChildSiteLink.Parent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIsland%20ChildSiteLink.Parent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "ContentIsland ChildSiteLink.Parent");
 			}
 		}
 #endif
@@ -101,7 +101,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChildSiteLink.ProcessesKeyboardInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChildSiteLink.ProcessesKeyboardInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "bool ChildSiteLink.ProcessesKeyboardInput");
 			}
 			set
 			{
@@ -115,7 +115,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChildSiteLink.ProcessesPointerInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChildSiteLink.ProcessesPointerInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "bool ChildSiteLink.ProcessesPointerInput");
 			}
 			set
 			{
@@ -129,7 +129,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentSiteView ChildSiteLink.SiteView is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentSiteView%20ChildSiteLink.SiteView");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "ContentSiteView ChildSiteLink.SiteView");
 			}
 		}
 #endif
@@ -137,14 +137,14 @@ namespace Microsoft.UI.Content
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Content.ChildSiteLink Create(global::Microsoft.UI.Content.ContentIsland parent, global::Microsoft.UI.Composition.ContainerVisual placementVisual)
 		{
-			throw new global::System.NotImplementedException("The member ChildSiteLink ChildSiteLink.Create(ContentIsland parent, ContainerVisual placementVisual) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChildSiteLink%20ChildSiteLink.Create%28ContentIsland%20parent%2C%20ContainerVisual%20placementVisual%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "ChildSiteLink ChildSiteLink.Create(ContentIsland parent, ContainerVisual placementVisual)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Content.ChildSiteLink CreateForSystemVisual(global::Microsoft.UI.Content.ContentIsland parent, global::Windows.UI.Composition.ContainerVisual placementVisual)
 		{
-			throw new global::System.NotImplementedException("The member ChildSiteLink ChildSiteLink.CreateForSystemVisual(ContentIsland parent, ContainerVisual placementVisual) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChildSiteLink%20ChildSiteLink.CreateForSystemVisual%28ContentIsland%20parent%2C%20ContainerVisual%20placementVisual%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ChildSiteLink", "ChildSiteLink ChildSiteLink.CreateForSystemVisual(ContentIsland parent, ContainerVisual placementVisual)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

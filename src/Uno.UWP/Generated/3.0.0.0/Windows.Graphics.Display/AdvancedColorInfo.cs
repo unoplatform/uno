@@ -19,7 +19,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point AdvancedColorInfo.BluePrimary is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20AdvancedColorInfo.BluePrimary");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.AdvancedColorInfo", "Point AdvancedColorInfo.BluePrimary");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AdvancedColorKind AdvancedColorInfo.CurrentAdvancedColorKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AdvancedColorKind%20AdvancedColorInfo.CurrentAdvancedColorKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.AdvancedColorInfo", "AdvancedColorKind AdvancedColorInfo.CurrentAdvancedColorKind");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point AdvancedColorInfo.GreenPrimary is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20AdvancedColorInfo.GreenPrimary");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.AdvancedColorInfo", "Point AdvancedColorInfo.GreenPrimary");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float AdvancedColorInfo.MaxAverageFullFrameLuminanceInNits is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20AdvancedColorInfo.MaxAverageFullFrameLuminanceInNits");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.AdvancedColorInfo", "float AdvancedColorInfo.MaxAverageFullFrameLuminanceInNits");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float AdvancedColorInfo.MaxLuminanceInNits is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20AdvancedColorInfo.MaxLuminanceInNits");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.AdvancedColorInfo", "float AdvancedColorInfo.MaxLuminanceInNits");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float AdvancedColorInfo.MinLuminanceInNits is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20AdvancedColorInfo.MinLuminanceInNits");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.AdvancedColorInfo", "float AdvancedColorInfo.MinLuminanceInNits");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point AdvancedColorInfo.RedPrimary is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20AdvancedColorInfo.RedPrimary");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.AdvancedColorInfo", "Point AdvancedColorInfo.RedPrimary");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float AdvancedColorInfo.SdrWhiteLevelInNits is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20AdvancedColorInfo.SdrWhiteLevelInNits");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.AdvancedColorInfo", "float AdvancedColorInfo.SdrWhiteLevelInNits");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point AdvancedColorInfo.WhitePoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20AdvancedColorInfo.WhitePoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.AdvancedColorInfo", "Point AdvancedColorInfo.WhitePoint");
 			}
 		}
 #endif
@@ -107,14 +107,14 @@ namespace Windows.Graphics.Display
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsHdrMetadataFormatCurrentlySupported(global::Windows.Graphics.Display.HdrMetadataFormat format)
 		{
-			throw new global::System.NotImplementedException("The member bool AdvancedColorInfo.IsHdrMetadataFormatCurrentlySupported(HdrMetadataFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AdvancedColorInfo.IsHdrMetadataFormatCurrentlySupported%28HdrMetadataFormat%20format%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.AdvancedColorInfo", "bool AdvancedColorInfo.IsHdrMetadataFormatCurrentlySupported(HdrMetadataFormat format)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsAdvancedColorKindAvailable(global::Windows.Graphics.Display.AdvancedColorKind kind)
 		{
-			throw new global::System.NotImplementedException("The member bool AdvancedColorInfo.IsAdvancedColorKindAvailable(AdvancedColorKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AdvancedColorInfo.IsAdvancedColorKindAvailable%28AdvancedColorKind%20kind%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.AdvancedColorInfo", "bool AdvancedColorInfo.IsAdvancedColorKindAvailable(AdvancedColorKind kind)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.BluePrimary.get

@@ -19,7 +19,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsBinaryMessage SmsReceivedEventDetails.BinaryMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsBinaryMessage%20SmsReceivedEventDetails.BinaryMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsReceivedEventDetails", "SmsBinaryMessage SmsReceivedEventDetails.BinaryMessage");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsReceivedEventDetails.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsReceivedEventDetails.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsReceivedEventDetails", "string SmsReceivedEventDetails.DeviceId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsMessageClass SmsReceivedEventDetails.MessageClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageClass%20SmsReceivedEventDetails.MessageClass");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsReceivedEventDetails", "SmsMessageClass SmsReceivedEventDetails.MessageClass");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SmsReceivedEventDetails.MessageIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SmsReceivedEventDetails.MessageIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsReceivedEventDetails", "uint SmsReceivedEventDetails.MessageIndex");
 			}
 		}
 #endif

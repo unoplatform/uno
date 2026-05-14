@@ -14,7 +14,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.AllowUnsigned is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.AllowUnsigned");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.AllowUnsigned");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.DeferRegistrationWhenPackagesAreInUse is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.DeferRegistrationWhenPackagesAreInUse");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.DeferRegistrationWhenPackagesAreInUse");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> AddPackageOptions.DependencyPackageUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CUri%3E%20AddPackageOptions.DependencyPackageUris");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "IList<Uri> AddPackageOptions.DependencyPackageUris");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.DeveloperMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.DeveloperMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.DeveloperMode");
 			}
 			set
 			{
@@ -66,7 +66,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri AddPackageOptions.ExternalLocationUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20AddPackageOptions.ExternalLocationUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "Uri AddPackageOptions.ExternalLocationUri");
 			}
 			set
 			{
@@ -80,7 +80,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.ForceAppShutdown is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.ForceAppShutdown");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.ForceAppShutdown");
 			}
 			set
 			{
@@ -94,7 +94,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.ForceTargetAppShutdown is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.ForceTargetAppShutdown");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.ForceTargetAppShutdown");
 			}
 			set
 			{
@@ -108,7 +108,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.ForceUpdateFromAnyVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.ForceUpdateFromAnyVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.ForceUpdateFromAnyVersion");
 			}
 			set
 			{
@@ -122,7 +122,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.InstallAllResources is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.InstallAllResources");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.InstallAllResources");
 			}
 			set
 			{
@@ -136,7 +136,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> AddPackageOptions.OptionalPackageFamilyNames is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20AddPackageOptions.OptionalPackageFamilyNames");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "IList<string> AddPackageOptions.OptionalPackageFamilyNames");
 			}
 		}
 #endif
@@ -146,7 +146,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> AddPackageOptions.OptionalPackageUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CUri%3E%20AddPackageOptions.OptionalPackageUris");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "IList<Uri> AddPackageOptions.OptionalPackageUris");
 			}
 		}
 #endif
@@ -156,7 +156,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> AddPackageOptions.RelatedPackageUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CUri%3E%20AddPackageOptions.RelatedPackageUris");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "IList<Uri> AddPackageOptions.RelatedPackageUris");
 			}
 		}
 #endif
@@ -166,7 +166,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.RequiredContentGroupOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.RequiredContentGroupOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.RequiredContentGroupOnly");
 			}
 			set
 			{
@@ -180,7 +180,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.RetainFilesOnFailure is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.RetainFilesOnFailure");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.RetainFilesOnFailure");
 			}
 			set
 			{
@@ -194,7 +194,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AddPackageOptions.StageInPlace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AddPackageOptions.StageInPlace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "bool AddPackageOptions.StageInPlace");
 			}
 			set
 			{
@@ -208,7 +208,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StubPackageOption AddPackageOptions.StubPackageOption is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StubPackageOption%20AddPackageOptions.StubPackageOption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "StubPackageOption AddPackageOptions.StubPackageOption");
 			}
 			set
 			{
@@ -222,7 +222,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PackageVolume AddPackageOptions.TargetVolume is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PackageVolume%20AddPackageOptions.TargetVolume");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "PackageVolume AddPackageOptions.TargetVolume");
 			}
 			set
 			{

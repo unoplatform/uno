@@ -14,7 +14,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRetailInfoProperties.BatteryLifeDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRetailInfoProperties.BatteryLifeDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.BatteryLifeDescription");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRetailInfoProperties.DisplayDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRetailInfoProperties.DisplayDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.DisplayDescription");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRetailInfoProperties.DisplayModelName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRetailInfoProperties.DisplayModelName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.DisplayModelName");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRetailInfoProperties.FormFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRetailInfoProperties.FormFactor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.FormFactor");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRetailInfoProperties.FrontCameraDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRetailInfoProperties.FrontCameraDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.FrontCameraDescription");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRetailInfoProperties.GraphicsDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRetailInfoProperties.GraphicsDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.GraphicsDescription");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRetailInfoProperties.HasNfc is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRetailInfoProperties.HasNfc");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.HasNfc");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRetailInfoProperties.HasOpticalDrive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRetailInfoProperties.HasOpticalDrive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.HasOpticalDrive");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRetailInfoProperties.HasSdSlot is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRetailInfoProperties.HasSdSlot");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.HasSdSlot");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRetailInfoProperties.IsFeatured is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRetailInfoProperties.IsFeatured");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.IsFeatured");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRetailInfoProperties.IsOfficeInstalled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRetailInfoProperties.IsOfficeInstalled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.IsOfficeInstalled");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRetailInfoProperties.ManufacturerName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRetailInfoProperties.ManufacturerName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.ManufacturerName");
 			}
 		}
 #endif
@@ -134,7 +134,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRetailInfoProperties.Memory is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRetailInfoProperties.Memory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.Memory");
 			}
 		}
 #endif
@@ -144,7 +144,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRetailInfoProperties.ModelName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRetailInfoProperties.ModelName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.ModelName");
 			}
 		}
 #endif
@@ -154,7 +154,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRetailInfoProperties.Price is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRetailInfoProperties.Price");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.Price");
 			}
 		}
 #endif
@@ -164,7 +164,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRetailInfoProperties.ProcessorDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRetailInfoProperties.ProcessorDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.ProcessorDescription");
 			}
 		}
 #endif
@@ -174,7 +174,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRetailInfoProperties.RearCameraDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRetailInfoProperties.RearCameraDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.RearCameraDescription");
 			}
 		}
 #endif
@@ -184,7 +184,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRetailInfoProperties.RetailAccessCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRetailInfoProperties.RetailAccessCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.RetailAccessCode");
 			}
 		}
 #endif
@@ -194,7 +194,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRetailInfoProperties.ScreenSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRetailInfoProperties.ScreenSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.ScreenSize");
 			}
 		}
 #endif
@@ -204,7 +204,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRetailInfoProperties.StorageDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRetailInfoProperties.StorageDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.StorageDescription");
 			}
 		}
 #endif
@@ -214,7 +214,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRetailInfoProperties.Weight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRetailInfoProperties.Weight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.Weight");
 			}
 		}
 #endif
@@ -224,7 +224,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRetailInfoProperties.WindowsEdition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRetailInfoProperties.WindowsEdition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.KnownRetailInfoProperties", "string KnownRetailInfoProperties.WindowsEdition");
 			}
 		}
 #endif

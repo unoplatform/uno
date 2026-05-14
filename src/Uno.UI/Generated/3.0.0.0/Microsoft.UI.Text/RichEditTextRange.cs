@@ -19,7 +19,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member char RichEditTextRange.Character is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=char%20RichEditTextRange.Character");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "char RichEditTextRange.Character");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ITextCharacterFormat RichEditTextRange.CharacterFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ITextCharacterFormat%20RichEditTextRange.CharacterFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "ITextCharacterFormat RichEditTextRange.CharacterFormat");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int RichEditTextRange.EndPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20RichEditTextRange.EndPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "int RichEditTextRange.EndPosition");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ITextRange RichEditTextRange.FormattedText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ITextRange%20RichEditTextRange.FormattedText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "ITextRange RichEditTextRange.FormattedText");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RangeGravity RichEditTextRange.Gravity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RangeGravity%20RichEditTextRange.Gravity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "RangeGravity RichEditTextRange.Gravity");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int RichEditTextRange.Length is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20RichEditTextRange.Length");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "int RichEditTextRange.Length");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RichEditTextRange.Link is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RichEditTextRange.Link");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "string RichEditTextRange.Link");
 			}
 			set
 			{
@@ -113,7 +113,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ITextParagraphFormat RichEditTextRange.ParagraphFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ITextParagraphFormat%20RichEditTextRange.ParagraphFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "ITextParagraphFormat RichEditTextRange.ParagraphFormat");
 			}
 			set
 			{
@@ -127,7 +127,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int RichEditTextRange.StartPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20RichEditTextRange.StartPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "int RichEditTextRange.StartPosition");
 			}
 			set
 			{
@@ -141,7 +141,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int RichEditTextRange.StoryLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20RichEditTextRange.StoryLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "int RichEditTextRange.StoryLength");
 			}
 		}
 #endif
@@ -151,7 +151,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RichEditTextRange.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RichEditTextRange.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "string RichEditTextRange.Text");
 			}
 			set
 			{
@@ -163,7 +163,7 @@ namespace Microsoft.UI.Text
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool CanPaste(int format)
 		{
-			throw new global::System.NotImplementedException("The member bool RichEditTextRange.CanPaste(int format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RichEditTextRange.CanPaste%28int%20format%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "bool RichEditTextRange.CanPaste(int format)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -198,70 +198,70 @@ namespace Microsoft.UI.Text
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int Delete(global::Microsoft.UI.Text.TextRangeUnit unit, int count)
 		{
-			throw new global::System.NotImplementedException("The member int RichEditTextRange.Delete(TextRangeUnit unit, int count) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20RichEditTextRange.Delete%28TextRangeUnit%20unit%2C%20int%20count%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "int RichEditTextRange.Delete(TextRangeUnit unit, int count)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int EndOf(global::Microsoft.UI.Text.TextRangeUnit unit, bool extend)
 		{
-			throw new global::System.NotImplementedException("The member int RichEditTextRange.EndOf(TextRangeUnit unit, bool extend) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20RichEditTextRange.EndOf%28TextRangeUnit%20unit%2C%20bool%20extend%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "int RichEditTextRange.EndOf(TextRangeUnit unit, bool extend)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int Expand(global::Microsoft.UI.Text.TextRangeUnit unit)
 		{
-			throw new global::System.NotImplementedException("The member int RichEditTextRange.Expand(TextRangeUnit unit) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20RichEditTextRange.Expand%28TextRangeUnit%20unit%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "int RichEditTextRange.Expand(TextRangeUnit unit)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int FindText(string value, int scanLength, global::Microsoft.UI.Text.FindOptions options)
 		{
-			throw new global::System.NotImplementedException("The member int RichEditTextRange.FindText(string value, int scanLength, FindOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20RichEditTextRange.FindText%28string%20value%2C%20int%20scanLength%2C%20FindOptions%20options%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "int RichEditTextRange.FindText(string value, int scanLength, FindOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void GetCharacterUtf32(out uint value, int offset)
 		{
-			throw new global::System.NotImplementedException("The member void RichEditTextRange.GetCharacterUtf32(out uint value, int offset) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=void%20RichEditTextRange.GetCharacterUtf32%28out%20uint%20value%2C%20int%20offset%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "void RichEditTextRange.GetCharacterUtf32(out uint value, int offset)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Text.ITextRange GetClone()
 		{
-			throw new global::System.NotImplementedException("The member ITextRange RichEditTextRange.GetClone() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ITextRange%20RichEditTextRange.GetClone%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "ITextRange RichEditTextRange.GetClone()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int GetIndex(global::Microsoft.UI.Text.TextRangeUnit unit)
 		{
-			throw new global::System.NotImplementedException("The member int RichEditTextRange.GetIndex(TextRangeUnit unit) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20RichEditTextRange.GetIndex%28TextRangeUnit%20unit%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "int RichEditTextRange.GetIndex(TextRangeUnit unit)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void GetPoint(global::Microsoft.UI.Text.HorizontalCharacterAlignment horizontalAlign, global::Microsoft.UI.Text.VerticalCharacterAlignment verticalAlign, global::Microsoft.UI.Text.PointOptions options, out global::Windows.Foundation.Point point)
 		{
-			throw new global::System.NotImplementedException("The member void RichEditTextRange.GetPoint(HorizontalCharacterAlignment horizontalAlign, VerticalCharacterAlignment verticalAlign, PointOptions options, out Point point) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=void%20RichEditTextRange.GetPoint%28HorizontalCharacterAlignment%20horizontalAlign%2C%20VerticalCharacterAlignment%20verticalAlign%2C%20PointOptions%20options%2C%20out%20Point%20point%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "void RichEditTextRange.GetPoint(HorizontalCharacterAlignment horizontalAlign, VerticalCharacterAlignment verticalAlign, PointOptions options, out Point point)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void GetRect(global::Microsoft.UI.Text.PointOptions options, out global::Windows.Foundation.Rect rect, out int hit)
 		{
-			throw new global::System.NotImplementedException("The member void RichEditTextRange.GetRect(PointOptions options, out Rect rect, out int hit) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=void%20RichEditTextRange.GetRect%28PointOptions%20options%2C%20out%20Rect%20rect%2C%20out%20int%20hit%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "void RichEditTextRange.GetRect(PointOptions options, out Rect rect, out int hit)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void GetText(global::Microsoft.UI.Text.TextGetOptions options, out string value)
 		{
-			throw new global::System.NotImplementedException("The member void RichEditTextRange.GetText(TextGetOptions options, out string value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=void%20RichEditTextRange.GetText%28TextGetOptions%20options%2C%20out%20string%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "void RichEditTextRange.GetText(TextGetOptions options, out string value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -275,7 +275,7 @@ namespace Microsoft.UI.Text
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool InRange(global::Microsoft.UI.Text.ITextRange range)
 		{
-			throw new global::System.NotImplementedException("The member bool RichEditTextRange.InRange(ITextRange range) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RichEditTextRange.InRange%28ITextRange%20range%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "bool RichEditTextRange.InRange(ITextRange range)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -289,35 +289,35 @@ namespace Microsoft.UI.Text
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool InStory(global::Microsoft.UI.Text.ITextRange range)
 		{
-			throw new global::System.NotImplementedException("The member bool RichEditTextRange.InStory(ITextRange range) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RichEditTextRange.InStory%28ITextRange%20range%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "bool RichEditTextRange.InStory(ITextRange range)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsEqual(global::Microsoft.UI.Text.ITextRange range)
 		{
-			throw new global::System.NotImplementedException("The member bool RichEditTextRange.IsEqual(ITextRange range) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RichEditTextRange.IsEqual%28ITextRange%20range%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "bool RichEditTextRange.IsEqual(ITextRange range)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int Move(global::Microsoft.UI.Text.TextRangeUnit unit, int count)
 		{
-			throw new global::System.NotImplementedException("The member int RichEditTextRange.Move(TextRangeUnit unit, int count) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20RichEditTextRange.Move%28TextRangeUnit%20unit%2C%20int%20count%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "int RichEditTextRange.Move(TextRangeUnit unit, int count)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int MoveEnd(global::Microsoft.UI.Text.TextRangeUnit unit, int count)
 		{
-			throw new global::System.NotImplementedException("The member int RichEditTextRange.MoveEnd(TextRangeUnit unit, int count) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20RichEditTextRange.MoveEnd%28TextRangeUnit%20unit%2C%20int%20count%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "int RichEditTextRange.MoveEnd(TextRangeUnit unit, int count)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int MoveStart(global::Microsoft.UI.Text.TextRangeUnit unit, int count)
 		{
-			throw new global::System.NotImplementedException("The member int RichEditTextRange.MoveStart(TextRangeUnit unit, int count) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20RichEditTextRange.MoveStart%28TextRangeUnit%20unit%2C%20int%20count%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "int RichEditTextRange.MoveStart(TextRangeUnit unit, int count)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -380,7 +380,7 @@ namespace Microsoft.UI.Text
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int StartOf(global::Microsoft.UI.Text.TextRangeUnit unit, bool extend)
 		{
-			throw new global::System.NotImplementedException("The member int RichEditTextRange.StartOf(TextRangeUnit unit, bool extend) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20RichEditTextRange.StartOf%28TextRangeUnit%20unit%2C%20bool%20extend%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.RichEditTextRange", "int RichEditTextRange.StartOf(TextRangeUnit unit, bool extend)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Text.RichEditTextRange.Character.get

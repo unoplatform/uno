@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentRecurrence.CalendarIdentifier is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentRecurrence.CalendarIdentifier");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "string AppointmentRecurrence.CalendarIdentifier");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppointmentRecurrence.Day is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppointmentRecurrence.Day");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "uint AppointmentRecurrence.Day");
 			}
 			set
 			{
@@ -38,7 +38,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppointmentDaysOfWeek AppointmentRecurrence.DaysOfWeek is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentDaysOfWeek%20AppointmentRecurrence.DaysOfWeek");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "AppointmentDaysOfWeek AppointmentRecurrence.DaysOfWeek");
 			}
 			set
 			{
@@ -52,7 +52,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppointmentRecurrence.Interval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppointmentRecurrence.Interval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "uint AppointmentRecurrence.Interval");
 			}
 			set
 			{
@@ -66,7 +66,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppointmentRecurrence.Month is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppointmentRecurrence.Month");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "uint AppointmentRecurrence.Month");
 			}
 			set
 			{
@@ -80,7 +80,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? AppointmentRecurrence.Occurrences is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20AppointmentRecurrence.Occurrences");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "uint? AppointmentRecurrence.Occurrences");
 			}
 			set
 			{
@@ -94,7 +94,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RecurrenceType AppointmentRecurrence.RecurrenceType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RecurrenceType%20AppointmentRecurrence.RecurrenceType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "RecurrenceType AppointmentRecurrence.RecurrenceType");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentRecurrence.TimeZone is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentRecurrence.TimeZone");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "string AppointmentRecurrence.TimeZone");
 			}
 			set
 			{
@@ -118,7 +118,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppointmentRecurrenceUnit AppointmentRecurrence.Unit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentRecurrenceUnit%20AppointmentRecurrence.Unit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "AppointmentRecurrenceUnit AppointmentRecurrence.Unit");
 			}
 			set
 			{
@@ -132,7 +132,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? AppointmentRecurrence.Until is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20AppointmentRecurrence.Until");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "DateTimeOffset? AppointmentRecurrence.Until");
 			}
 			set
 			{
@@ -146,7 +146,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppointmentWeekOfMonth AppointmentRecurrence.WeekOfMonth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentWeekOfMonth%20AppointmentRecurrence.WeekOfMonth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentRecurrence", "AppointmentWeekOfMonth AppointmentRecurrence.WeekOfMonth");
 			}
 			set
 			{

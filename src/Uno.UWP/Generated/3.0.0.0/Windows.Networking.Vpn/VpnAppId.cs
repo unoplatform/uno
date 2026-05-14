@@ -14,7 +14,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnAppIdType VpnAppId.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnAppIdType%20VpnAppId.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnAppId", "VpnAppIdType VpnAppId.Type");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnAppId.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnAppId.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnAppId", "string VpnAppId.Value");
 			}
 			set
 			{

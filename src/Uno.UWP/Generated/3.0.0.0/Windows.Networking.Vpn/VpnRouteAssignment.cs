@@ -14,7 +14,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnRouteAssignment.ExcludeLocalSubnets is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnRouteAssignment.ExcludeLocalSubnets");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnRouteAssignment", "bool VpnRouteAssignment.ExcludeLocalSubnets");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<VpnRoute> VpnRouteAssignment.Ipv4ExclusionRoutes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnRoute%3E%20VpnRouteAssignment.Ipv4ExclusionRoutes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnRouteAssignment", "IList<VpnRoute> VpnRouteAssignment.Ipv4ExclusionRoutes");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<VpnRoute> VpnRouteAssignment.Ipv4InclusionRoutes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnRoute%3E%20VpnRouteAssignment.Ipv4InclusionRoutes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnRouteAssignment", "IList<VpnRoute> VpnRouteAssignment.Ipv4InclusionRoutes");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<VpnRoute> VpnRouteAssignment.Ipv6ExclusionRoutes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnRoute%3E%20VpnRouteAssignment.Ipv6ExclusionRoutes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnRouteAssignment", "IList<VpnRoute> VpnRouteAssignment.Ipv6ExclusionRoutes");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<VpnRoute> VpnRouteAssignment.Ipv6InclusionRoutes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnRoute%3E%20VpnRouteAssignment.Ipv6InclusionRoutes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnRouteAssignment", "IList<VpnRoute> VpnRouteAssignment.Ipv6InclusionRoutes");
 			}
 			set
 			{

@@ -19,7 +19,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionColorSpace ColorKeyFrameAnimation.InterpolationColorSpace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionColorSpace%20ColorKeyFrameAnimation.InterpolationColorSpace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.ColorKeyFrameAnimation", "CompositionColorSpace ColorKeyFrameAnimation.InterpolationColorSpace");
 			}
 			set
 			{

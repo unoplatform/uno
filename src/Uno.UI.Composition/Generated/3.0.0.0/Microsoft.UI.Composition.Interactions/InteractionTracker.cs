@@ -15,7 +15,7 @@ namespace Microsoft.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InteractionTracker.IsInertiaFromImpulse is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InteractionTracker.IsInertiaFromImpulse");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTracker", "bool InteractionTracker.IsInertiaFromImpulse");
 			}
 		}
 #endif
@@ -25,7 +25,7 @@ namespace Microsoft.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InteractionTracker.IsPositionRoundingSuggested is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InteractionTracker.IsPositionRoundingSuggested");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTracker", "bool InteractionTracker.IsPositionRoundingSuggested");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 InteractionTracker.NaturalRestingPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20InteractionTracker.NaturalRestingPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTracker", "Vector3 InteractionTracker.NaturalRestingPosition");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Microsoft.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InteractionTracker.NaturalRestingScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InteractionTracker.NaturalRestingScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTracker", "float InteractionTracker.NaturalRestingScale");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Microsoft.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 InteractionTracker.PositionVelocityInPixelsPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20InteractionTracker.PositionVelocityInPixelsPerSecond");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTracker", "Vector3 InteractionTracker.PositionVelocityInPixelsPerSecond");
 			}
 		}
 #endif
@@ -73,7 +73,7 @@ namespace Microsoft.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float? InteractionTracker.ScaleInertiaDecayRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%3F%20InteractionTracker.ScaleInertiaDecayRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTracker", "float? InteractionTracker.ScaleInertiaDecayRate");
 			}
 			set
 			{
@@ -87,7 +87,7 @@ namespace Microsoft.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InteractionTracker.ScaleVelocityInPercentPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InteractionTracker.ScaleVelocityInPercentPerSecond");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTracker", "float InteractionTracker.ScaleVelocityInPercentPerSecond");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Microsoft.UI.Composition.Interactions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Composition.Interactions.InteractionBindingAxisModes GetBindingMode(global::Microsoft.UI.Composition.Interactions.InteractionTracker boundTracker1, global::Microsoft.UI.Composition.Interactions.InteractionTracker boundTracker2)
 		{
-			throw new global::System.NotImplementedException("The member InteractionBindingAxisModes InteractionTracker.GetBindingMode(InteractionTracker boundTracker1, InteractionTracker boundTracker2) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InteractionBindingAxisModes%20InteractionTracker.GetBindingMode%28InteractionTracker%20boundTracker1%2C%20InteractionTracker%20boundTracker2%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTracker", "InteractionBindingAxisModes InteractionTracker.GetBindingMode(InteractionTracker boundTracker1, InteractionTracker boundTracker2)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -148,7 +148,7 @@ namespace Microsoft.UI.Composition.Interactions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int TryUpdatePositionWithAnimation(global::Microsoft.UI.Composition.CompositionAnimation animation)
 		{
-			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdatePositionWithAnimation(CompositionAnimation animation) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdatePositionWithAnimation%28CompositionAnimation%20animation%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTracker", "int InteractionTracker.TryUpdatePositionWithAnimation(CompositionAnimation animation)");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Composition.Interactions.InteractionTracker.TryUpdatePositionWithAdditionalVelocity(System.Numerics.Vector3)
@@ -156,21 +156,21 @@ namespace Microsoft.UI.Composition.Interactions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int TryUpdateScale(float value, global::System.Numerics.Vector3 centerPoint)
 		{
-			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdateScale(float value, Vector3 centerPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdateScale%28float%20value%2C%20Vector3%20centerPoint%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTracker", "int InteractionTracker.TryUpdateScale(float value, Vector3 centerPoint)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int TryUpdateScaleWithAnimation(global::Microsoft.UI.Composition.CompositionAnimation animation, global::System.Numerics.Vector3 centerPoint)
 		{
-			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdateScaleWithAnimation(CompositionAnimation animation, Vector3 centerPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdateScaleWithAnimation%28CompositionAnimation%20animation%2C%20Vector3%20centerPoint%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTracker", "int InteractionTracker.TryUpdateScaleWithAnimation(CompositionAnimation animation, Vector3 centerPoint)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int TryUpdateScaleWithAdditionalVelocity(float velocityInPercentPerSecond, global::System.Numerics.Vector3 centerPoint)
 		{
-			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdateScaleWithAdditionalVelocity(float velocityInPercentPerSecond, Vector3 centerPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdateScaleWithAdditionalVelocity%28float%20velocityInPercentPerSecond%2C%20Vector3%20centerPoint%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTracker", "int InteractionTracker.TryUpdateScaleWithAdditionalVelocity(float velocityInPercentPerSecond, Vector3 centerPoint)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -200,7 +200,7 @@ namespace Microsoft.UI.Composition.Interactions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int TryUpdatePosition(global::System.Numerics.Vector3 value, global::Microsoft.UI.Composition.Interactions.InteractionTrackerClampingOption option, global::Microsoft.UI.Composition.Interactions.InteractionTrackerPositionUpdateOption posUpdateOption)
 		{
-			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option, InteractionTrackerPositionUpdateOption posUpdateOption) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdatePosition%28Vector3%20value%2C%20InteractionTrackerClampingOption%20option%2C%20InteractionTrackerPositionUpdateOption%20posUpdateOption%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.InteractionTracker", "int InteractionTracker.TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option, InteractionTrackerPositionUpdateOption posUpdateOption)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.InteractionSources.get

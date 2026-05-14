@@ -14,7 +14,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HashAlgorithmNames.Md5 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HashAlgorithmNames.Md5");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.HashAlgorithmNames", "string HashAlgorithmNames.Md5");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HashAlgorithmNames.Sha1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HashAlgorithmNames.Sha1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.HashAlgorithmNames", "string HashAlgorithmNames.Sha1");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HashAlgorithmNames.Sha256 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HashAlgorithmNames.Sha256");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.HashAlgorithmNames", "string HashAlgorithmNames.Sha256");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HashAlgorithmNames.Sha384 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HashAlgorithmNames.Sha384");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.HashAlgorithmNames", "string HashAlgorithmNames.Sha384");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HashAlgorithmNames.Sha512 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HashAlgorithmNames.Sha512");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.HashAlgorithmNames", "string HashAlgorithmNames.Sha512");
 			}
 		}
 #endif

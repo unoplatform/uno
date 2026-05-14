@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppCaptureState.IsHistoricalCaptureEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppCaptureState.IsHistoricalCaptureEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureState", "bool AppCaptureState.IsHistoricalCaptureEnabled");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppCaptureState.IsTargetRunning is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppCaptureState.IsTargetRunning");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureState", "bool AppCaptureState.IsTargetRunning");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppCaptureState.MicrophoneCaptureError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppCaptureState.MicrophoneCaptureError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureState", "uint AppCaptureState.MicrophoneCaptureError");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppCaptureMicrophoneCaptureState AppCaptureState.MicrophoneCaptureState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppCaptureMicrophoneCaptureState%20AppCaptureState.MicrophoneCaptureState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureState", "AppCaptureMicrophoneCaptureState AppCaptureState.MicrophoneCaptureState");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppCaptureState.ShouldCaptureMicrophone is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppCaptureState.ShouldCaptureMicrophone");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureState", "bool AppCaptureState.ShouldCaptureMicrophone");
 			}
 			set
 			{

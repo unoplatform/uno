@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception StorePurchaseResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20StorePurchaseResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePurchaseResult", "Exception StorePurchaseResult.ExtendedError");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorePurchaseStatus StorePurchaseResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorePurchaseStatus%20StorePurchaseResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePurchaseResult", "StorePurchaseStatus StorePurchaseResult.Status");
 			}
 		}
 #endif

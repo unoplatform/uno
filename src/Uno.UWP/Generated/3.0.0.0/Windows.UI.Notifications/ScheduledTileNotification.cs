@@ -14,7 +14,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member XmlDocument ScheduledTileNotification.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XmlDocument%20ScheduledTileNotification.Content");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledTileNotification", "XmlDocument ScheduledTileNotification.Content");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset ScheduledTileNotification.DeliveryTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20ScheduledTileNotification.DeliveryTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledTileNotification", "DateTimeOffset ScheduledTileNotification.DeliveryTime");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? ScheduledTileNotification.ExpirationTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20ScheduledTileNotification.ExpirationTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledTileNotification", "DateTimeOffset? ScheduledTileNotification.ExpirationTime");
 			}
 			set
 			{
@@ -48,7 +48,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ScheduledTileNotification.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ScheduledTileNotification.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledTileNotification", "string ScheduledTileNotification.Id");
 			}
 			set
 			{
@@ -62,7 +62,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ScheduledTileNotification.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ScheduledTileNotification.Tag");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledTileNotification", "string ScheduledTileNotification.Tag");
 			}
 			set
 			{

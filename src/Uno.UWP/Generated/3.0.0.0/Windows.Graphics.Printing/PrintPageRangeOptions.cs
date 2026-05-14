@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PrintPageRangeOptions.AllowAllPages is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintPageRangeOptions.AllowAllPages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintPageRangeOptions", "bool PrintPageRangeOptions.AllowAllPages");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PrintPageRangeOptions.AllowCurrentPage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintPageRangeOptions.AllowCurrentPage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintPageRangeOptions", "bool PrintPageRangeOptions.AllowCurrentPage");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PrintPageRangeOptions.AllowCustomSetOfPages is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintPageRangeOptions.AllowCustomSetOfPages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintPageRangeOptions", "bool PrintPageRangeOptions.AllowCustomSetOfPages");
 			}
 			set
 			{

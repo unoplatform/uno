@@ -14,7 +14,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float AnimationController.MaxPlaybackRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20AnimationController.MaxPlaybackRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.AnimationController", "float AnimationController.MaxPlaybackRate");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float AnimationController.MinPlaybackRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20AnimationController.MinPlaybackRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.AnimationController", "float AnimationController.MinPlaybackRate");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float AnimationController.PlaybackRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20AnimationController.PlaybackRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.AnimationController", "float AnimationController.PlaybackRate");
 			}
 			set
 			{
@@ -49,7 +49,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AnimationControllerProgressBehavior AnimationController.ProgressBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AnimationControllerProgressBehavior%20AnimationController.ProgressBehavior");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.AnimationController", "AnimationControllerProgressBehavior AnimationController.ProgressBehavior");
 			}
 			set
 			{

@@ -19,7 +19,7 @@ namespace Windows.Devices.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Battery Battery.AggregateBattery is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Battery%20Battery.AggregateBattery");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.Battery", "Battery Battery.AggregateBattery");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Battery.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Battery.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.Battery", "string Battery.DeviceId");
 			}
 		}
 #endif
@@ -37,14 +37,14 @@ namespace Windows.Devices.Power
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Power.Battery> FromIdAsync(string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Battery> Battery.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBattery%3E%20Battery.FromIdAsync%28string%20deviceId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.Battery", "IAsyncOperation<Battery> Battery.FromIdAsync(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string Battery.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Battery.GetDeviceSelector%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.Battery", "string Battery.GetDeviceSelector()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Power.Battery.AggregateBattery.get
@@ -52,7 +52,7 @@ namespace Windows.Devices.Power
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Power.BatteryReport GetReport()
 		{
-			throw new global::System.NotImplementedException("The member BatteryReport Battery.GetReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BatteryReport%20Battery.GetReport%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.Battery", "BatteryReport Battery.GetReport()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Power.Battery.ReportUpdated.add

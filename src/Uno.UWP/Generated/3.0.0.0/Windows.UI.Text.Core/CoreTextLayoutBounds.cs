@@ -19,7 +19,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect CoreTextLayoutBounds.ControlBounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20CoreTextLayoutBounds.ControlBounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutBounds", "Rect CoreTextLayoutBounds.ControlBounds");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect CoreTextLayoutBounds.TextBounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20CoreTextLayoutBounds.TextBounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutBounds", "Rect CoreTextLayoutBounds.TextBounds");
 			}
 			set
 			{

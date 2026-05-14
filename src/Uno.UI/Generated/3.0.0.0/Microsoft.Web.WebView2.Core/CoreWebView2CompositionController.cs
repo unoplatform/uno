@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreCursor CoreWebView2CompositionController.Cursor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreCursor%20CoreWebView2CompositionController.Cursor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2CompositionController", "CoreCursor CoreWebView2CompositionController.Cursor");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object CoreWebView2CompositionController.RootVisualTarget is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20CoreWebView2CompositionController.RootVisualTarget");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2CompositionController", "object CoreWebView2CompositionController.RootVisualTarget");
 			}
 			set
 			{
@@ -48,14 +48,14 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2NonClientRegionKind GetNonClientRegionAtPoint(global::Windows.Foundation.Point point)
 		{
-			throw new global::System.NotImplementedException("The member CoreWebView2NonClientRegionKind CoreWebView2CompositionController.GetNonClientRegionAtPoint(Point point) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2NonClientRegionKind%20CoreWebView2CompositionController.GetNonClientRegionAtPoint%28Point%20point%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2CompositionController", "CoreWebView2NonClientRegionKind CoreWebView2CompositionController.GetNonClientRegionAtPoint(Point point)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Foundation.Rect> QueryNonClientRegion(global::Microsoft.Web.WebView2.Core.CoreWebView2NonClientRegionKind Kind)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<Rect> CoreWebView2CompositionController.QueryNonClientRegion(CoreWebView2NonClientRegionKind Kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CRect%3E%20CoreWebView2CompositionController.QueryNonClientRegion%28CoreWebView2NonClientRegionKind%20Kind%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2CompositionController", "IReadOnlyList<Rect> CoreWebView2CompositionController.QueryNonClientRegion(CoreWebView2NonClientRegionKind Kind)");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.NonClientRegionChanged.add
@@ -78,21 +78,21 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.DataTransfer.DataPackageOperation DragEnter(global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo dragInfo, global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride dragUIOverride)
 		{
-			throw new global::System.NotImplementedException("The member DataPackageOperation CoreWebView2CompositionController.DragEnter(CoreDragInfo dragInfo, CoreDragUIOverride dragUIOverride) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataPackageOperation%20CoreWebView2CompositionController.DragEnter%28CoreDragInfo%20dragInfo%2C%20CoreDragUIOverride%20dragUIOverride%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2CompositionController", "DataPackageOperation CoreWebView2CompositionController.DragEnter(CoreDragInfo dragInfo, CoreDragUIOverride dragUIOverride)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.DataTransfer.DataPackageOperation DragOver(global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo dragInfo, global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride dragUIOverride)
 		{
-			throw new global::System.NotImplementedException("The member DataPackageOperation CoreWebView2CompositionController.DragOver(CoreDragInfo dragInfo, CoreDragUIOverride dragUIOverride) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataPackageOperation%20CoreWebView2CompositionController.DragOver%28CoreDragInfo%20dragInfo%2C%20CoreDragUIOverride%20dragUIOverride%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2CompositionController", "DataPackageOperation CoreWebView2CompositionController.DragOver(CoreDragInfo dragInfo, CoreDragUIOverride dragUIOverride)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.DataTransfer.DataPackageOperation Drop(global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo dragInfo)
 		{
-			throw new global::System.NotImplementedException("The member DataPackageOperation CoreWebView2CompositionController.Drop(CoreDragInfo dragInfo) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataPackageOperation%20CoreWebView2CompositionController.Drop%28CoreDragInfo%20dragInfo%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2CompositionController", "DataPackageOperation CoreWebView2CompositionController.Drop(CoreDragInfo dragInfo)");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CompositionController.CursorChanged.add

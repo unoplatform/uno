@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<uint, IBuffer> RfcommServiceProvider.SdpRawAttributes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cuint%2C%20IBuffer%3E%20RfcommServiceProvider.SdpRawAttributes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceProvider", "IDictionary<uint, IBuffer> RfcommServiceProvider.SdpRawAttributes");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RfcommServiceId RfcommServiceProvider.ServiceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RfcommServiceId%20RfcommServiceProvider.ServiceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceProvider", "RfcommServiceId RfcommServiceProvider.ServiceId");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceProvider> CreateAsync(global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId serviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<RfcommServiceProvider> RfcommServiceProvider.CreateAsync(RfcommServiceId serviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CRfcommServiceProvider%3E%20RfcommServiceProvider.CreateAsync%28RfcommServiceId%20serviceId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Rfcomm.RfcommServiceProvider", "IAsyncOperation<RfcommServiceProvider> RfcommServiceProvider.CreateAsync(RfcommServiceId serviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RcsServiceKind RcsServiceKindSupportedChangedEventArgs.ServiceKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RcsServiceKind%20RcsServiceKindSupportedChangedEventArgs.ServiceKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RcsServiceKindSupportedChangedEventArgs", "RcsServiceKind RcsServiceKindSupportedChangedEventArgs.ServiceKind");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomPromptText.Compulsory is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomPromptText.Compulsory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptText", "bool VpnCustomPromptText.Compulsory");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnCustomPromptText.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnCustomPromptText.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptText", "string VpnCustomPromptText.DisplayName");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomPromptText.Emphasized is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomPromptText.Emphasized");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptText", "bool VpnCustomPromptText.Emphasized");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnCustomPromptText.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnCustomPromptText.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptText", "string VpnCustomPromptText.Text");
 			}
 			set
 			{

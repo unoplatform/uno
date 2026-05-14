@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaStreamSourceClosedReason MediaStreamSourceClosedRequest.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaStreamSourceClosedReason%20MediaStreamSourceClosedRequest.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSourceClosedRequest", "MediaStreamSourceClosedReason MediaStreamSourceClosedRequest.Reason");
 			}
 		}
 #endif

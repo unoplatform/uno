@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionSurfaceBrush.AnchorPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionSurfaceBrush.AnchorPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSurfaceBrush", "Vector2 CompositionSurfaceBrush.AnchorPoint");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionBitmapInterpolationMode CompositionSurfaceBrush.BitmapInterpolationMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBitmapInterpolationMode%20CompositionSurfaceBrush.BitmapInterpolationMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSurfaceBrush", "CompositionBitmapInterpolationMode CompositionSurfaceBrush.BitmapInterpolationMode");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionSurfaceBrush.CenterPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionSurfaceBrush.CenterPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSurfaceBrush", "Vector2 CompositionSurfaceBrush.CenterPoint");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionSurfaceBrush.HorizontalAlignmentRatio is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionSurfaceBrush.HorizontalAlignmentRatio");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSurfaceBrush", "float CompositionSurfaceBrush.HorizontalAlignmentRatio");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionSurfaceBrush.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionSurfaceBrush.Offset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSurfaceBrush", "Vector2 CompositionSurfaceBrush.Offset");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionSurfaceBrush.RotationAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionSurfaceBrush.RotationAngle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSurfaceBrush", "float CompositionSurfaceBrush.RotationAngle");
 			}
 			set
 			{
@@ -103,7 +103,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionSurfaceBrush.RotationAngleInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionSurfaceBrush.RotationAngleInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSurfaceBrush", "float CompositionSurfaceBrush.RotationAngleInDegrees");
 			}
 			set
 			{
@@ -117,7 +117,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionSurfaceBrush.Scale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionSurfaceBrush.Scale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSurfaceBrush", "Vector2 CompositionSurfaceBrush.Scale");
 			}
 			set
 			{
@@ -131,7 +131,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CompositionSurfaceBrush.SnapToPixels is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionSurfaceBrush.SnapToPixels");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSurfaceBrush", "bool CompositionSurfaceBrush.SnapToPixels");
 			}
 			set
 			{
@@ -145,7 +145,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionStretch CompositionSurfaceBrush.Stretch is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionStretch%20CompositionSurfaceBrush.Stretch");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSurfaceBrush", "CompositionStretch CompositionSurfaceBrush.Stretch");
 			}
 			set
 			{
@@ -159,7 +159,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ICompositionSurface CompositionSurfaceBrush.Surface is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICompositionSurface%20CompositionSurfaceBrush.Surface");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSurfaceBrush", "ICompositionSurface CompositionSurfaceBrush.Surface");
 			}
 			set
 			{
@@ -173,7 +173,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Matrix3x2 CompositionSurfaceBrush.TransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix3x2%20CompositionSurfaceBrush.TransformMatrix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSurfaceBrush", "Matrix3x2 CompositionSurfaceBrush.TransformMatrix");
 			}
 			set
 			{
@@ -187,7 +187,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionSurfaceBrush.VerticalAlignmentRatio is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionSurfaceBrush.VerticalAlignmentRatio");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSurfaceBrush", "float CompositionSurfaceBrush.VerticalAlignmentRatio");
 			}
 			set
 			{

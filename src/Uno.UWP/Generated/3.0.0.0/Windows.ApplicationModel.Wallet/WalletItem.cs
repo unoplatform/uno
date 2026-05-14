@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WalletBarcode WalletItem.Barcode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WalletBarcode%20WalletItem.Barcode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "WalletBarcode WalletItem.Barcode");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference WalletItem.BodyBackgroundImage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20WalletItem.BodyBackgroundImage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "IRandomAccessStreamReference WalletItem.BodyBackgroundImage");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color WalletItem.BodyColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20WalletItem.BodyColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "Color WalletItem.BodyColor");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color WalletItem.BodyFontColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20WalletItem.BodyFontColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "Color WalletItem.BodyFontColor");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WalletItem.DisplayMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItem.DisplayMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "string WalletItem.DisplayMessage");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WalletItem.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItem.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "string WalletItem.DisplayName");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, WalletItemCustomProperty> WalletItem.DisplayProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20WalletItemCustomProperty%3E%20WalletItem.DisplayProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "IDictionary<string, WalletItemCustomProperty> WalletItem.DisplayProperties");
 			}
 		}
 #endif
@@ -108,7 +108,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? WalletItem.ExpirationDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20WalletItem.ExpirationDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "DateTimeOffset? WalletItem.ExpirationDate");
 			}
 			set
 			{
@@ -122,7 +122,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference WalletItem.HeaderBackgroundImage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20WalletItem.HeaderBackgroundImage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "IRandomAccessStreamReference WalletItem.HeaderBackgroundImage");
 			}
 			set
 			{
@@ -136,7 +136,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color WalletItem.HeaderColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20WalletItem.HeaderColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "Color WalletItem.HeaderColor");
 			}
 			set
 			{
@@ -150,7 +150,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color WalletItem.HeaderFontColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20WalletItem.HeaderFontColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "Color WalletItem.HeaderFontColor");
 			}
 			set
 			{
@@ -164,7 +164,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WalletItem.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItem.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "string WalletItem.Id");
 			}
 		}
 #endif
@@ -174,7 +174,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WalletItem.IsAcknowledged is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WalletItem.IsAcknowledged");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "bool WalletItem.IsAcknowledged");
 			}
 			set
 			{
@@ -188,7 +188,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WalletItem.IsDisplayMessageLaunchable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WalletItem.IsDisplayMessageLaunchable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "bool WalletItem.IsDisplayMessageLaunchable");
 			}
 			set
 			{
@@ -202,7 +202,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WalletItem.IsMoreTransactionHistoryLaunchable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WalletItem.IsMoreTransactionHistoryLaunchable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "bool WalletItem.IsMoreTransactionHistoryLaunchable");
 			}
 			set
 			{
@@ -216,7 +216,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WalletItem.IssuerDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItem.IssuerDisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "string WalletItem.IssuerDisplayName");
 			}
 			set
 			{
@@ -230,7 +230,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WalletItemKind WalletItem.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WalletItemKind%20WalletItem.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "WalletItemKind WalletItem.Kind");
 			}
 		}
 #endif
@@ -240,7 +240,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? WalletItem.LastUpdated is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20WalletItem.LastUpdated");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "DateTimeOffset? WalletItem.LastUpdated");
 			}
 			set
 			{
@@ -254,7 +254,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference WalletItem.Logo159x159 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20WalletItem.Logo159x159");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "IRandomAccessStreamReference WalletItem.Logo159x159");
 			}
 			set
 			{
@@ -268,7 +268,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference WalletItem.Logo336x336 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20WalletItem.Logo336x336");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "IRandomAccessStreamReference WalletItem.Logo336x336");
 			}
 			set
 			{
@@ -282,7 +282,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference WalletItem.Logo99x99 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20WalletItem.Logo99x99");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "IRandomAccessStreamReference WalletItem.Logo99x99");
 			}
 			set
 			{
@@ -296,7 +296,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference WalletItem.LogoImage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20WalletItem.LogoImage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "IRandomAccessStreamReference WalletItem.LogoImage");
 			}
 			set
 			{
@@ -310,7 +310,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WalletItem.LogoText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItem.LogoText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "string WalletItem.LogoText");
 			}
 			set
 			{
@@ -324,7 +324,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference WalletItem.PromotionalImage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20WalletItem.PromotionalImage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "IRandomAccessStreamReference WalletItem.PromotionalImage");
 			}
 			set
 			{
@@ -338,7 +338,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? WalletItem.RelevantDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20WalletItem.RelevantDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "DateTimeOffset? WalletItem.RelevantDate");
 			}
 			set
 			{
@@ -352,7 +352,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WalletItem.RelevantDateDisplayMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItem.RelevantDateDisplayMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "string WalletItem.RelevantDateDisplayMessage");
 			}
 			set
 			{
@@ -366,7 +366,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, WalletRelevantLocation> WalletItem.RelevantLocations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20WalletRelevantLocation%3E%20WalletItem.RelevantLocations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "IDictionary<string, WalletRelevantLocation> WalletItem.RelevantLocations");
 			}
 		}
 #endif
@@ -376,7 +376,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, WalletTransaction> WalletItem.TransactionHistory is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20WalletTransaction%3E%20WalletItem.TransactionHistory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "IDictionary<string, WalletTransaction> WalletItem.TransactionHistory");
 			}
 		}
 #endif
@@ -386,7 +386,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, WalletVerb> WalletItem.Verbs is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20WalletVerb%3E%20WalletItem.Verbs");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItem", "IDictionary<string, WalletVerb> WalletItem.Verbs");
 			}
 		}
 #endif

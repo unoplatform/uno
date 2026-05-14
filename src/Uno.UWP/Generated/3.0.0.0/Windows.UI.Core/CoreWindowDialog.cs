@@ -14,7 +14,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UICommandInvokedHandler CoreWindowDialog.BackButtonCommand is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UICommandInvokedHandler%20CoreWindowDialog.BackButtonCommand");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "UICommandInvokedHandler CoreWindowDialog.BackButtonCommand");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWindowDialog.CancelCommandIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWindowDialog.CancelCommandIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "uint CoreWindowDialog.CancelCommandIndex");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<IUICommand> CoreWindowDialog.Commands is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CIUICommand%3E%20CoreWindowDialog.Commands");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "IList<IUICommand> CoreWindowDialog.Commands");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWindowDialog.DefaultCommandIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWindowDialog.DefaultCommandIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "uint CoreWindowDialog.DefaultCommandIndex");
 			}
 			set
 			{
@@ -66,7 +66,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CoreWindowDialog.IsInteractionDelayed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWindowDialog.IsInteractionDelayed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "int CoreWindowDialog.IsInteractionDelayed");
 			}
 			set
 			{
@@ -80,7 +80,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size CoreWindowDialog.MaxSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20CoreWindowDialog.MaxSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "Size CoreWindowDialog.MaxSize");
 			}
 		}
 #endif
@@ -90,7 +90,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size CoreWindowDialog.MinSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20CoreWindowDialog.MinSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "Size CoreWindowDialog.MinSize");
 			}
 		}
 #endif
@@ -100,7 +100,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWindowDialog.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWindowDialog.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "string CoreWindowDialog.Title");
 			}
 			set
 			{
@@ -128,7 +128,7 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Popups.IUICommand> ShowAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IUICommand> CoreWindowDialog.ShowAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIUICommand%3E%20CoreWindowDialog.ShowAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindowDialog", "IAsyncOperation<IUICommand> CoreWindowDialog.ShowAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.CoreWindowDialog.Showing.add

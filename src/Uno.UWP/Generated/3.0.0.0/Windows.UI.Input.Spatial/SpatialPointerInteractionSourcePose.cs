@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SpatialPointerInteractionSourcePose.ForwardDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpatialPointerInteractionSourcePose.ForwardDirection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose", "Vector3 SpatialPointerInteractionSourcePose.ForwardDirection");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Quaternion SpatialPointerInteractionSourcePose.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Quaternion%20SpatialPointerInteractionSourcePose.Orientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose", "Quaternion SpatialPointerInteractionSourcePose.Orientation");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SpatialPointerInteractionSourcePose.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpatialPointerInteractionSourcePose.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose", "Vector3 SpatialPointerInteractionSourcePose.Position");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialInteractionSourcePositionAccuracy SpatialPointerInteractionSourcePose.PositionAccuracy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialInteractionSourcePositionAccuracy%20SpatialPointerInteractionSourcePose.PositionAccuracy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose", "SpatialInteractionSourcePositionAccuracy SpatialPointerInteractionSourcePose.PositionAccuracy");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SpatialPointerInteractionSourcePose.UpDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpatialPointerInteractionSourcePose.UpDirection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose", "Vector3 SpatialPointerInteractionSourcePose.UpDirection");
 			}
 		}
 #endif

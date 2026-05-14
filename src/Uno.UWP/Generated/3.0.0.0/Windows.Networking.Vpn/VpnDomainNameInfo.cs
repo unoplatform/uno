@@ -14,7 +14,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<HostName> VpnDomainNameInfo.DnsServers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CHostName%3E%20VpnDomainNameInfo.DnsServers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameInfo", "IList<HostName> VpnDomainNameInfo.DnsServers");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName VpnDomainNameInfo.DomainName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20VpnDomainNameInfo.DomainName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameInfo", "HostName VpnDomainNameInfo.DomainName");
 			}
 			set
 			{
@@ -38,7 +38,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnDomainNameType VpnDomainNameInfo.DomainNameType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnDomainNameType%20VpnDomainNameInfo.DomainNameType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameInfo", "VpnDomainNameType VpnDomainNameInfo.DomainNameType");
 			}
 			set
 			{
@@ -52,7 +52,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<HostName> VpnDomainNameInfo.WebProxyServers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CHostName%3E%20VpnDomainNameInfo.WebProxyServers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameInfo", "IList<HostName> VpnDomainNameInfo.WebProxyServers");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> VpnDomainNameInfo.WebProxyUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CUri%3E%20VpnDomainNameInfo.WebProxyUris");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameInfo", "IList<Uri> VpnDomainNameInfo.WebProxyUris");
 			}
 		}
 #endif

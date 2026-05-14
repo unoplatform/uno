@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3TransitionComponents Vector3Transition.Components is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3TransitionComponents%20Vector3Transition.Components");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Vector3Transition", "Vector3TransitionComponents Vector3Transition.Components");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan Vector3Transition.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20Vector3Transition.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Vector3Transition", "TimeSpan Vector3Transition.Duration");
 			}
 			set
 			{

@@ -14,7 +14,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateExtension.IsCritical is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CertificateExtension.IsCritical");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateExtension", "bool CertificateExtension.IsCritical");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CertificateExtension.ObjectId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CertificateExtension.ObjectId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateExtension", "string CertificateExtension.ObjectId");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte[] CertificateExtension.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%5B%5D%20CertificateExtension.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateExtension", "byte[] CertificateExtension.Value");
 			}
 			set
 			{

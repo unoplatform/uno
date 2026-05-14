@@ -19,7 +19,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Buffer VpnSystemHealth.StatementOfHealth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Buffer%20VpnSystemHealth.StatementOfHealth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnSystemHealth", "Buffer VpnSystemHealth.StatementOfHealth");
 			}
 		}
 #endif

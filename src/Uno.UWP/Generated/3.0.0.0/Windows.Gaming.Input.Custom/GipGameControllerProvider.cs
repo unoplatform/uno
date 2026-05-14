@@ -19,7 +19,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GameControllerVersionInfo GipGameControllerProvider.FirmwareVersionInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameControllerVersionInfo%20GipGameControllerProvider.FirmwareVersionInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipGameControllerProvider", "GameControllerVersionInfo GipGameControllerProvider.FirmwareVersionInfo");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort GipGameControllerProvider.HardwareProductId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20GipGameControllerProvider.HardwareProductId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipGameControllerProvider", "ushort GipGameControllerProvider.HardwareProductId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort GipGameControllerProvider.HardwareVendorId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20GipGameControllerProvider.HardwareVendorId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipGameControllerProvider", "ushort GipGameControllerProvider.HardwareVendorId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GameControllerVersionInfo GipGameControllerProvider.HardwareVersionInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameControllerVersionInfo%20GipGameControllerProvider.HardwareVersionInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipGameControllerProvider", "GameControllerVersionInfo GipGameControllerProvider.HardwareVersionInfo");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GipGameControllerProvider.IsConnected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GipGameControllerProvider.IsConnected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipGameControllerProvider", "bool GipGameControllerProvider.IsConnected");
 			}
 		}
 #endif
@@ -81,7 +81,7 @@ namespace Windows.Gaming.Input.Custom
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Gaming.Input.Custom.GipFirmwareUpdateResult, global::Windows.Gaming.Input.Custom.GipFirmwareUpdateProgress> UpdateFirmwareAsync(global::Windows.Storage.Streams.IInputStream firmwareImage)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<GipFirmwareUpdateResult, GipFirmwareUpdateProgress> GipGameControllerProvider.UpdateFirmwareAsync(IInputStream firmwareImage) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CGipFirmwareUpdateResult%2C%20GipFirmwareUpdateProgress%3E%20GipGameControllerProvider.UpdateFirmwareAsync%28IInputStream%20firmwareImage%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipGameControllerProvider", "IAsyncOperationWithProgress<GipFirmwareUpdateResult, GipFirmwareUpdateProgress> GipGameControllerProvider.UpdateFirmwareAsync(IInputStream firmwareImage)");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.Custom.GipGameControllerProvider.FirmwareVersionInfo.get

@@ -19,7 +19,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EdgeGestureKind EdgeGestureEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EdgeGestureKind%20EdgeGestureEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.EdgeGestureEventArgs", "EdgeGestureKind EdgeGestureEventArgs.Kind");
 			}
 		}
 #endif

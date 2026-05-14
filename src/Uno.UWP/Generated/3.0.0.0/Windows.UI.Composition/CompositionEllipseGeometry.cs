@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionEllipseGeometry.Center is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionEllipseGeometry.Center");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionEllipseGeometry", "Vector2 CompositionEllipseGeometry.Center");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionEllipseGeometry.Radius is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionEllipseGeometry.Radius");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionEllipseGeometry", "Vector2 CompositionEllipseGeometry.Radius");
 			}
 			set
 			{

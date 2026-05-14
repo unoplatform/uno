@@ -14,7 +14,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppUriHandlerHost.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppUriHandlerHost.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerHost", "string AppUriHandlerHost.Name");
 			}
 			set
 			{

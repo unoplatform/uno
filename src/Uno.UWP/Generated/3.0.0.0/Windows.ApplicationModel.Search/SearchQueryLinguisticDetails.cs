@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> SearchQueryLinguisticDetails.QueryTextAlternatives is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20SearchQueryLinguisticDetails.QueryTextAlternatives");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchQueryLinguisticDetails", "IReadOnlyList<string> SearchQueryLinguisticDetails.QueryTextAlternatives");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SearchQueryLinguisticDetails.QueryTextCompositionLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SearchQueryLinguisticDetails.QueryTextCompositionLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchQueryLinguisticDetails", "uint SearchQueryLinguisticDetails.QueryTextCompositionLength");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SearchQueryLinguisticDetails.QueryTextCompositionStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SearchQueryLinguisticDetails.QueryTextCompositionStart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchQueryLinguisticDetails", "uint SearchQueryLinguisticDetails.QueryTextCompositionStart");
 			}
 		}
 #endif

@@ -20,7 +20,7 @@ namespace Windows.Foundation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IMemoryBufferReference CreateReference()
 		{
-			throw new global::System.NotImplementedException("The member IMemoryBufferReference MemoryBuffer.CreateReference() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IMemoryBufferReference%20MemoryBuffer.CreateReference%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.MemoryBuffer", "IMemoryBufferReference MemoryBuffer.CreateReference()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

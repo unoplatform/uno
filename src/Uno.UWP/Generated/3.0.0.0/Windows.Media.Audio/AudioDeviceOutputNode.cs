@@ -19,7 +19,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AudioDeviceOutputNode.ConsumeInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AudioDeviceOutputNode.ConsumeInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioDeviceOutputNode", "bool AudioDeviceOutputNode.ConsumeInput");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceInformation AudioDeviceOutputNode.Device is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceInformation%20AudioDeviceOutputNode.Device");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioDeviceOutputNode", "DeviceInformation AudioDeviceOutputNode.Device");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<IAudioEffectDefinition> AudioDeviceOutputNode.EffectDefinitions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CIAudioEffectDefinition%3E%20AudioDeviceOutputNode.EffectDefinitions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioDeviceOutputNode", "IList<IAudioEffectDefinition> AudioDeviceOutputNode.EffectDefinitions");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioEncodingProperties AudioDeviceOutputNode.EncodingProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioEncodingProperties%20AudioDeviceOutputNode.EncodingProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioDeviceOutputNode", "AudioEncodingProperties AudioDeviceOutputNode.EncodingProperties");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioNodeListener AudioDeviceOutputNode.Listener is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioNodeListener%20AudioDeviceOutputNode.Listener");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioDeviceOutputNode", "AudioNodeListener AudioDeviceOutputNode.Listener");
 			}
 			set
 			{
@@ -77,7 +77,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AudioDeviceOutputNode.OutgoingGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioDeviceOutputNode.OutgoingGain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioDeviceOutputNode", "double AudioDeviceOutputNode.OutgoingGain");
 			}
 			set
 			{

@@ -14,7 +14,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EasClientSecurityPolicy.DisallowConvenienceLogon is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EasClientSecurityPolicy.DisallowConvenienceLogon");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy", "bool EasClientSecurityPolicy.DisallowConvenienceLogon");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan EasClientSecurityPolicy.MaxInactivityTimeLock is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20EasClientSecurityPolicy.MaxInactivityTimeLock");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy", "TimeSpan EasClientSecurityPolicy.MaxInactivityTimeLock");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte EasClientSecurityPolicy.MaxPasswordFailedAttempts is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20EasClientSecurityPolicy.MaxPasswordFailedAttempts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy", "byte EasClientSecurityPolicy.MaxPasswordFailedAttempts");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte EasClientSecurityPolicy.MinPasswordComplexCharacters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20EasClientSecurityPolicy.MinPasswordComplexCharacters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy", "byte EasClientSecurityPolicy.MinPasswordComplexCharacters");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte EasClientSecurityPolicy.MinPasswordLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20EasClientSecurityPolicy.MinPasswordLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy", "byte EasClientSecurityPolicy.MinPasswordLength");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan EasClientSecurityPolicy.PasswordExpiration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20EasClientSecurityPolicy.PasswordExpiration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy", "TimeSpan EasClientSecurityPolicy.PasswordExpiration");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint EasClientSecurityPolicy.PasswordHistory is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20EasClientSecurityPolicy.PasswordHistory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy", "uint EasClientSecurityPolicy.PasswordHistory");
 			}
 			set
 			{
@@ -112,7 +112,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EasClientSecurityPolicy.RequireEncryption is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EasClientSecurityPolicy.RequireEncryption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy", "bool EasClientSecurityPolicy.RequireEncryption");
 			}
 			set
 			{
@@ -132,14 +132,14 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults CheckCompliance()
 		{
-			throw new global::System.NotImplementedException("The member EasComplianceResults EasClientSecurityPolicy.CheckCompliance() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EasComplianceResults%20EasClientSecurityPolicy.CheckCompliance%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy", "EasComplianceResults EasClientSecurityPolicy.CheckCompliance()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults> ApplyAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<EasComplianceResults> EasClientSecurityPolicy.ApplyAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CEasComplianceResults%3E%20EasClientSecurityPolicy.ApplyAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy", "IAsyncOperation<EasComplianceResults> EasClientSecurityPolicy.ApplyAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientSecurityPolicy.DisallowConvenienceLogon.get

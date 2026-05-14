@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UIElement InlineUIContainer.Child is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UIElement%20InlineUIContainer.Child");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.InlineUIContainer", "UIElement InlineUIContainer.Child");
 			}
 			set
 			{

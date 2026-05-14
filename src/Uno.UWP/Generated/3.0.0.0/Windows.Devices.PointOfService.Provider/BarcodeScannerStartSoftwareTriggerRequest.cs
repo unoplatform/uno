@@ -17,28 +17,28 @@ namespace Windows.Devices.PointOfService.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction BarcodeScannerStartSoftwareTriggerRequest.ReportCompletedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BarcodeScannerStartSoftwareTriggerRequest.ReportCompletedAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerStartSoftwareTriggerRequest", "IAsyncAction BarcodeScannerStartSoftwareTriggerRequest.ReportCompletedAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction BarcodeScannerStartSoftwareTriggerRequest.ReportFailedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BarcodeScannerStartSoftwareTriggerRequest.ReportFailedAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerStartSoftwareTriggerRequest", "IAsyncAction BarcodeScannerStartSoftwareTriggerRequest.ReportFailedAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportFailedAsync(int reason)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction BarcodeScannerStartSoftwareTriggerRequest.ReportFailedAsync(int reason) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BarcodeScannerStartSoftwareTriggerRequest.ReportFailedAsync%28int%20reason%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerStartSoftwareTriggerRequest", "IAsyncAction BarcodeScannerStartSoftwareTriggerRequest.ReportFailedAsync(int reason)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportFailedAsync(int reason, string failedReasonDescription)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction BarcodeScannerStartSoftwareTriggerRequest.ReportFailedAsync(int reason, string failedReasonDescription) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BarcodeScannerStartSoftwareTriggerRequest.ReportFailedAsync%28int%20reason%2C%20string%20failedReasonDescription%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerStartSoftwareTriggerRequest", "IAsyncAction BarcodeScannerStartSoftwareTriggerRequest.ReportFailedAsync(int reason, string failedReasonDescription)");
 		}
 #endif
 	}

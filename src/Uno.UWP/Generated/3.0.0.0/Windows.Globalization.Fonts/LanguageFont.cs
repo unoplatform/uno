@@ -19,7 +19,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LanguageFont.FontFamily is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20LanguageFont.FontFamily");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFont", "string LanguageFont.FontFamily");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FontStretch LanguageFont.FontStretch is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FontStretch%20LanguageFont.FontStretch");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFont", "FontStretch LanguageFont.FontStretch");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FontStyle LanguageFont.FontStyle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FontStyle%20LanguageFont.FontStyle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFont", "FontStyle LanguageFont.FontStyle");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FontWeight LanguageFont.FontWeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FontWeight%20LanguageFont.FontWeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFont", "FontWeight LanguageFont.FontWeight");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Globalization.Fonts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double LanguageFont.ScaleFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20LanguageFont.ScaleFactor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Fonts.LanguageFont", "double LanguageFont.ScaleFactor");
 			}
 		}
 #endif

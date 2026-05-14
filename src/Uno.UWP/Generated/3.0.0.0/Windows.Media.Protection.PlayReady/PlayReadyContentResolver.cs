@@ -12,7 +12,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest ServiceRequest(global::Windows.Media.Protection.PlayReady.PlayReadyContentHeader contentHeader)
 		{
-			throw new global::System.NotImplementedException("The member IPlayReadyServiceRequest PlayReadyContentResolver.ServiceRequest(PlayReadyContentHeader contentHeader) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPlayReadyServiceRequest%20PlayReadyContentResolver.ServiceRequest%28PlayReadyContentHeader%20contentHeader%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyContentResolver", "IPlayReadyServiceRequest PlayReadyContentResolver.ServiceRequest(PlayReadyContentHeader contentHeader)");
 		}
 #endif
 	}

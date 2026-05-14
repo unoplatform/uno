@@ -12,7 +12,7 @@ namespace Windows.UI.Shell
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Shell.IAdaptiveCard CreateAdaptiveCardFromJson(string value)
 		{
-			throw new global::System.NotImplementedException("The member IAdaptiveCard AdaptiveCardBuilder.CreateAdaptiveCardFromJson(string value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAdaptiveCard%20AdaptiveCardBuilder.CreateAdaptiveCardFromJson%28string%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Shell.AdaptiveCardBuilder", "IAdaptiveCard AdaptiveCardBuilder.CreateAdaptiveCardFromJson(string value)");
 		}
 #endif
 	}

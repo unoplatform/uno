@@ -19,7 +19,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialEntity SpatialEntityAddedEventArgs.Entity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialEntity%20SpatialEntityAddedEventArgs.Entity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialEntityAddedEventArgs", "SpatialEntity SpatialEntityAddedEventArgs.Entity");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Devices.Radios
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RadioKind Radio.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RadioKind%20Radio.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Radios.Radio", "RadioKind Radio.Kind");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Radios
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Radio.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Radio.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Radios.Radio", "string Radio.Name");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Radios
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RadioState Radio.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RadioState%20Radio.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Radios.Radio", "RadioState Radio.State");
 			}
 		}
 #endif
@@ -47,35 +47,35 @@ namespace Windows.Devices.Radios
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Radios.Radio>> GetRadiosAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Radio>> Radio.GetRadiosAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CRadio%3E%3E%20Radio.GetRadiosAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Radios.Radio", "IAsyncOperation<IReadOnlyList<Radio>> Radio.GetRadiosAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string Radio.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Radio.GetDeviceSelector%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Radios.Radio", "string Radio.GetDeviceSelector()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Radios.Radio> FromIdAsync(string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Radio> Radio.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CRadio%3E%20Radio.FromIdAsync%28string%20deviceId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Radios.Radio", "IAsyncOperation<Radio> Radio.FromIdAsync(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Radios.RadioAccessStatus> RequestAccessAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<RadioAccessStatus> Radio.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CRadioAccessStatus%3E%20Radio.RequestAccessAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Radios.Radio", "IAsyncOperation<RadioAccessStatus> Radio.RequestAccessAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Radios.RadioAccessStatus> SetStateAsync(global::Windows.Devices.Radios.RadioState value)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<RadioAccessStatus> Radio.SetStateAsync(RadioState value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CRadioAccessStatus%3E%20Radio.SetStateAsync%28RadioState%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Radios.Radio", "IAsyncOperation<RadioAccessStatus> Radio.SetStateAsync(RadioState value)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Radios.Radio.StateChanged.add

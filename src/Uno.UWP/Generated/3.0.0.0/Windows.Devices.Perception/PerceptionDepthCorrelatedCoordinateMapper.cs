@@ -17,7 +17,7 @@ namespace Windows.Devices.Perception
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Point MapPixelToTarget(global::Windows.Foundation.Point sourcePixelCoordinate, global::Windows.Devices.Perception.PerceptionDepthFrame depthFrame)
 		{
-			throw new global::System.NotImplementedException("The member Point PerceptionDepthCorrelatedCoordinateMapper.MapPixelToTarget(Point sourcePixelCoordinate, PerceptionDepthFrame depthFrame) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20PerceptionDepthCorrelatedCoordinateMapper.MapPixelToTarget%28Point%20sourcePixelCoordinate%2C%20PerceptionDepthFrame%20depthFrame%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper", "Point PerceptionDepthCorrelatedCoordinateMapper.MapPixelToTarget(Point sourcePixelCoordinate, PerceptionDepthFrame depthFrame)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -31,14 +31,14 @@ namespace Windows.Devices.Perception
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction MapRegionOfPixelsToTargetAsync(global::Windows.Foundation.Rect region, global::Windows.Devices.Perception.PerceptionDepthFrame depthFrame, global::Windows.Foundation.Point[] targetCoordinates)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction PerceptionDepthCorrelatedCoordinateMapper.MapRegionOfPixelsToTargetAsync(Rect region, PerceptionDepthFrame depthFrame, Point[] targetCoordinates) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20PerceptionDepthCorrelatedCoordinateMapper.MapRegionOfPixelsToTargetAsync%28Rect%20region%2C%20PerceptionDepthFrame%20depthFrame%2C%20Point%5B%5D%20targetCoordinates%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper", "IAsyncAction PerceptionDepthCorrelatedCoordinateMapper.MapRegionOfPixelsToTargetAsync(Rect region, PerceptionDepthFrame depthFrame, Point[] targetCoordinates)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction MapAllPixelsToTargetAsync(global::Windows.Devices.Perception.PerceptionDepthFrame depthFrame, global::Windows.Foundation.Point[] targetCoordinates)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction PerceptionDepthCorrelatedCoordinateMapper.MapAllPixelsToTargetAsync(PerceptionDepthFrame depthFrame, Point[] targetCoordinates) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20PerceptionDepthCorrelatedCoordinateMapper.MapAllPixelsToTargetAsync%28PerceptionDepthFrame%20depthFrame%2C%20Point%5B%5D%20targetCoordinates%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper", "IAsyncAction PerceptionDepthCorrelatedCoordinateMapper.MapAllPixelsToTargetAsync(PerceptionDepthFrame depthFrame, Point[] targetCoordinates)");
 		}
 #endif
 	}

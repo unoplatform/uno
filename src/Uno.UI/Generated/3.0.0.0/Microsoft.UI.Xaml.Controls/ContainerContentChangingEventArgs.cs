@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ContainerContentChangingEventArgs.Phase is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ContainerContentChangingEventArgs.Phase");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs", "uint ContainerContentChangingEventArgs.Phase");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechAppendedSilence SpeechSynthesizerOptions.AppendedSilence is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechAppendedSilence%20SpeechSynthesizerOptions.AppendedSilence");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "SpeechAppendedSilence SpeechSynthesizerOptions.AppendedSilence");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double SpeechSynthesizerOptions.AudioPitch is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SpeechSynthesizerOptions.AudioPitch");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "double SpeechSynthesizerOptions.AudioPitch");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double SpeechSynthesizerOptions.AudioVolume is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SpeechSynthesizerOptions.AudioVolume");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "double SpeechSynthesizerOptions.AudioVolume");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpeechSynthesizerOptions.IncludeSentenceBoundaryMetadata is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpeechSynthesizerOptions.IncludeSentenceBoundaryMetadata");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "bool SpeechSynthesizerOptions.IncludeSentenceBoundaryMetadata");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpeechSynthesizerOptions.IncludeWordBoundaryMetadata is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpeechSynthesizerOptions.IncludeWordBoundaryMetadata");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "bool SpeechSynthesizerOptions.IncludeWordBoundaryMetadata");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechPunctuationSilence SpeechSynthesizerOptions.PunctuationSilence is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechPunctuationSilence%20SpeechSynthesizerOptions.PunctuationSilence");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "SpeechPunctuationSilence SpeechSynthesizerOptions.PunctuationSilence");
 			}
 			set
 			{
@@ -103,7 +103,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double SpeechSynthesizerOptions.SpeakingRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SpeechSynthesizerOptions.SpeakingRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "double SpeechSynthesizerOptions.SpeakingRate");
 			}
 			set
 			{

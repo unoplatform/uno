@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SearchPane.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SearchPane.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPane", "string SearchPane.Language");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SearchPane.PlaceholderText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SearchPane.PlaceholderText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPane", "string SearchPane.PlaceholderText");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SearchPane.QueryText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SearchPane.QueryText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPane", "string SearchPane.QueryText");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SearchPane.SearchHistoryContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SearchPane.SearchHistoryContext");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPane", "string SearchPane.SearchHistoryContext");
 			}
 			set
 			{
@@ -67,7 +67,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SearchPane.SearchHistoryEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SearchPane.SearchHistoryEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPane", "bool SearchPane.SearchHistoryEnabled");
 			}
 			set
 			{
@@ -81,7 +81,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SearchPane.ShowOnKeyboardInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SearchPane.ShowOnKeyboardInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPane", "bool SearchPane.ShowOnKeyboardInput");
 			}
 			set
 			{
@@ -95,7 +95,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SearchPane.Visible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SearchPane.Visible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPane", "bool SearchPane.Visible");
 			}
 		}
 #endif
@@ -103,7 +103,7 @@ namespace Windows.ApplicationModel.Search
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Search.SearchPane GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member SearchPane SearchPane.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SearchPane%20SearchPane.GetForCurrentView%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPane", "SearchPane SearchPane.GetForCurrentView()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -138,7 +138,7 @@ namespace Windows.ApplicationModel.Search
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetQueryText(string query)
 		{
-			throw new global::System.NotImplementedException("The member bool SearchPane.TrySetQueryText(string query) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SearchPane.TrySetQueryText%28string%20query%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPane", "bool SearchPane.TrySetQueryText(string query)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchPane.QueryChanged.add

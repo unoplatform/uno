@@ -19,7 +19,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Language CoreTextServicesManager.InputLanguage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Language%20CoreTextServicesManager.InputLanguage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextServicesManager", "Language CoreTextServicesManager.InputLanguage");
 			}
 		}
 #endif
@@ -27,14 +27,14 @@ namespace Windows.UI.Text.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Text.Core.CoreTextServicesManager GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member CoreTextServicesManager CoreTextServicesManager.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreTextServicesManager%20CoreTextServicesManager.GetForCurrentView%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextServicesManager", "CoreTextServicesManager CoreTextServicesManager.GetForCurrentView()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Text.Core.CoreTextEditContext CreateEditContext()
 		{
-			throw new global::System.NotImplementedException("The member CoreTextEditContext CoreTextServicesManager.CreateEditContext() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreTextEditContext%20CoreTextServicesManager.CreateEditContext%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextServicesManager", "CoreTextEditContext CoreTextServicesManager.CreateEditContext()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextServicesManager.InputLanguageChanged.add

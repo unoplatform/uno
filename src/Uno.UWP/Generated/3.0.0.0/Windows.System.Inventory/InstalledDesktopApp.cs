@@ -19,7 +19,7 @@ namespace Windows.System.Inventory
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string InstalledDesktopApp.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20InstalledDesktopApp.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Inventory.InstalledDesktopApp", "string InstalledDesktopApp.DisplayName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Inventory
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string InstalledDesktopApp.DisplayVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20InstalledDesktopApp.DisplayVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Inventory.InstalledDesktopApp", "string InstalledDesktopApp.DisplayVersion");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.Inventory
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string InstalledDesktopApp.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20InstalledDesktopApp.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Inventory.InstalledDesktopApp", "string InstalledDesktopApp.Id");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.System.Inventory
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string InstalledDesktopApp.Publisher is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20InstalledDesktopApp.Publisher");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Inventory.InstalledDesktopApp", "string InstalledDesktopApp.Publisher");
 			}
 		}
 #endif
@@ -57,14 +57,14 @@ namespace Windows.System.Inventory
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.System.Inventory.InstalledDesktopApp>> GetInventoryAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<InstalledDesktopApp>> InstalledDesktopApp.GetInventoryAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CInstalledDesktopApp%3E%3E%20InstalledDesktopApp.GetInventoryAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Inventory.InstalledDesktopApp", "IAsyncOperation<IReadOnlyList<InstalledDesktopApp>> InstalledDesktopApp.GetInventoryAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string InstalledDesktopApp.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20InstalledDesktopApp.ToString%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Inventory.InstalledDesktopApp", "string InstalledDesktopApp.ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.System.Inventory.InstalledDesktopApp.DisplayName.get

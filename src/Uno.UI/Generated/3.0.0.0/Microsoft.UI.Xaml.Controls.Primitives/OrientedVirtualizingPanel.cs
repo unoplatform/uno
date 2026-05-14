@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool OrientedVirtualizingPanel.AreHorizontalSnapPointsRegular is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20OrientedVirtualizingPanel.AreHorizontalSnapPointsRegular");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel", "bool OrientedVirtualizingPanel.AreHorizontalSnapPointsRegular");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool OrientedVirtualizingPanel.AreVerticalSnapPointsRegular is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20OrientedVirtualizingPanel.AreVerticalSnapPointsRegular");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel", "bool OrientedVirtualizingPanel.AreVerticalSnapPointsRegular");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool OrientedVirtualizingPanel.CanHorizontallyScroll is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20OrientedVirtualizingPanel.CanHorizontallyScroll");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel", "bool OrientedVirtualizingPanel.CanHorizontallyScroll");
 			}
 			set
 			{
@@ -48,7 +48,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool OrientedVirtualizingPanel.CanVerticallyScroll is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20OrientedVirtualizingPanel.CanVerticallyScroll");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel", "bool OrientedVirtualizingPanel.CanVerticallyScroll");
 			}
 			set
 			{
@@ -62,7 +62,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double OrientedVirtualizingPanel.ExtentHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20OrientedVirtualizingPanel.ExtentHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel", "double OrientedVirtualizingPanel.ExtentHeight");
 			}
 		}
 #endif
@@ -72,7 +72,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double OrientedVirtualizingPanel.ExtentWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20OrientedVirtualizingPanel.ExtentWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel", "double OrientedVirtualizingPanel.ExtentWidth");
 			}
 		}
 #endif
@@ -82,7 +82,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double OrientedVirtualizingPanel.HorizontalOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20OrientedVirtualizingPanel.HorizontalOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel", "double OrientedVirtualizingPanel.HorizontalOffset");
 			}
 		}
 #endif
@@ -92,7 +92,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object OrientedVirtualizingPanel.ScrollOwner is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20OrientedVirtualizingPanel.ScrollOwner");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel", "object OrientedVirtualizingPanel.ScrollOwner");
 			}
 			set
 			{
@@ -106,7 +106,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double OrientedVirtualizingPanel.VerticalOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20OrientedVirtualizingPanel.VerticalOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel", "double OrientedVirtualizingPanel.VerticalOffset");
 			}
 		}
 #endif
@@ -116,7 +116,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double OrientedVirtualizingPanel.ViewportHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20OrientedVirtualizingPanel.ViewportHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel", "double OrientedVirtualizingPanel.ViewportHeight");
 			}
 		}
 #endif
@@ -126,7 +126,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double OrientedVirtualizingPanel.ViewportWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20OrientedVirtualizingPanel.ViewportWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel", "double OrientedVirtualizingPanel.ViewportWidth");
 			}
 		}
 #endif
@@ -232,21 +232,21 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Rect MakeVisible(global::Microsoft.UI.Xaml.UIElement visual, global::Windows.Foundation.Rect rectangle)
 		{
-			throw new global::System.NotImplementedException("The member Rect OrientedVirtualizingPanel.MakeVisible(UIElement visual, Rect rectangle) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20OrientedVirtualizingPanel.MakeVisible%28UIElement%20visual%2C%20Rect%20rectangle%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel", "Rect OrientedVirtualizingPanel.MakeVisible(UIElement visual, Rect rectangle)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<float> GetIrregularSnapPoints(global::Microsoft.UI.Xaml.Controls.Orientation orientation, global::Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<float> OrientedVirtualizingPanel.GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cfloat%3E%20OrientedVirtualizingPanel.GetIrregularSnapPoints%28Orientation%20orientation%2C%20SnapPointsAlignment%20alignment%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel", "IReadOnlyList<float> OrientedVirtualizingPanel.GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public float GetRegularSnapPoints(global::Microsoft.UI.Xaml.Controls.Orientation orientation, global::Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment, out float offset)
 		{
-			throw new global::System.NotImplementedException("The member float OrientedVirtualizingPanel.GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20OrientedVirtualizingPanel.GetRegularSnapPoints%28Orientation%20orientation%2C%20SnapPointsAlignment%20alignment%2C%20out%20float%20offset%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel", "float OrientedVirtualizingPanel.GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.HorizontalSnapPointsChanged.add
@@ -257,7 +257,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void GetInsertionIndexes(global::Windows.Foundation.Point position, out int first, out int second)
 		{
-			throw new global::System.NotImplementedException("The member void OrientedVirtualizingPanel.GetInsertionIndexes(Point position, out int first, out int second) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=void%20OrientedVirtualizingPanel.GetInsertionIndexes%28Point%20position%2C%20out%20int%20first%2C%20out%20int%20second%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel", "void OrientedVirtualizingPanel.GetInsertionIndexes(Point position, out int first, out int second)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.AreHorizontalSnapPointsRegular.get

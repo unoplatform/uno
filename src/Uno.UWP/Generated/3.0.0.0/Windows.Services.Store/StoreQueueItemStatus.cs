@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception StoreQueueItemStatus.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20StoreQueueItemStatus.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreQueueItemStatus", "Exception StoreQueueItemStatus.ExtendedError");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StoreQueueItemExtendedState StoreQueueItemStatus.PackageInstallExtendedState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StoreQueueItemExtendedState%20StoreQueueItemStatus.PackageInstallExtendedState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreQueueItemStatus", "StoreQueueItemExtendedState StoreQueueItemStatus.PackageInstallExtendedState");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StoreQueueItemState StoreQueueItemStatus.PackageInstallState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StoreQueueItemState%20StoreQueueItemStatus.PackageInstallState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreQueueItemStatus", "StoreQueueItemState StoreQueueItemStatus.PackageInstallState");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorePackageUpdateStatus StoreQueueItemStatus.UpdateStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorePackageUpdateStatus%20StoreQueueItemStatus.UpdateStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreQueueItemStatus", "StorePackageUpdateStatus StoreQueueItemStatus.UpdateStatus");
 			}
 		}
 #endif

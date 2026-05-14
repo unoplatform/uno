@@ -14,7 +14,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.ExcessiveUsageLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BackgroundEnergyManager.ExcessiveUsageLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.BackgroundEnergyManager", "uint BackgroundEnergyManager.ExcessiveUsageLevel");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.LowUsageLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BackgroundEnergyManager.LowUsageLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.BackgroundEnergyManager", "uint BackgroundEnergyManager.LowUsageLevel");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.MaxAcceptableUsageLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BackgroundEnergyManager.MaxAcceptableUsageLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.BackgroundEnergyManager", "uint BackgroundEnergyManager.MaxAcceptableUsageLevel");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.NearMaxAcceptableUsageLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BackgroundEnergyManager.NearMaxAcceptableUsageLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.BackgroundEnergyManager", "uint BackgroundEnergyManager.NearMaxAcceptableUsageLevel");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.NearTerminationUsageLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BackgroundEnergyManager.NearTerminationUsageLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.BackgroundEnergyManager", "uint BackgroundEnergyManager.NearTerminationUsageLevel");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.RecentEnergyUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BackgroundEnergyManager.RecentEnergyUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.BackgroundEnergyManager", "uint BackgroundEnergyManager.RecentEnergyUsage");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.RecentEnergyUsageLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BackgroundEnergyManager.RecentEnergyUsageLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.BackgroundEnergyManager", "uint BackgroundEnergyManager.RecentEnergyUsageLevel");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BackgroundEnergyManager.TerminationUsageLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BackgroundEnergyManager.TerminationUsageLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.BackgroundEnergyManager", "uint BackgroundEnergyManager.TerminationUsageLevel");
 			}
 		}
 #endif

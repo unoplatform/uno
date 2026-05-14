@@ -14,7 +14,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFile SpeechRecognitionGrammarFileConstraint.GrammarFile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFile%20SpeechRecognitionGrammarFileConstraint.GrammarFile");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint", "StorageFile SpeechRecognitionGrammarFileConstraint.GrammarFile");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpeechRecognitionGrammarFileConstraint.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpeechRecognitionGrammarFileConstraint.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint", "bool SpeechRecognitionGrammarFileConstraint.IsEnabled");
 			}
 			set
 			{
@@ -38,7 +38,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintProbability SpeechRecognitionGrammarFileConstraint.Probability is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognitionConstraintProbability%20SpeechRecognitionGrammarFileConstraint.Probability");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint", "SpeechRecognitionConstraintProbability SpeechRecognitionGrammarFileConstraint.Probability");
 			}
 			set
 			{
@@ -52,7 +52,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpeechRecognitionGrammarFileConstraint.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SpeechRecognitionGrammarFileConstraint.Tag");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint", "string SpeechRecognitionGrammarFileConstraint.Tag");
 			}
 			set
 			{
@@ -66,7 +66,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintType SpeechRecognitionGrammarFileConstraint.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognitionConstraintType%20SpeechRecognitionGrammarFileConstraint.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint", "SpeechRecognitionConstraintType SpeechRecognitionGrammarFileConstraint.Type");
 			}
 		}
 #endif

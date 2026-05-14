@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MaintenanceTrigger.FreshnessTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MaintenanceTrigger.FreshnessTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.MaintenanceTrigger", "uint MaintenanceTrigger.FreshnessTime");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MaintenanceTrigger.OneShot is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MaintenanceTrigger.OneShot");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.MaintenanceTrigger", "bool MaintenanceTrigger.OneShot");
 			}
 		}
 #endif

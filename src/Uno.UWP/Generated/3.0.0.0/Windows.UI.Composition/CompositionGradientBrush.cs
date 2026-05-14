@@ -14,7 +14,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionGradientBrush.AnchorPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionGradientBrush.AnchorPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionGradientBrush", "Vector2 CompositionGradientBrush.AnchorPoint");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionGradientBrush.CenterPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionGradientBrush.CenterPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionGradientBrush", "Vector2 CompositionGradientBrush.CenterPoint");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionColorGradientStopCollection CompositionGradientBrush.ColorStops is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionColorGradientStopCollection%20CompositionGradientBrush.ColorStops");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionGradientBrush", "CompositionColorGradientStopCollection CompositionGradientBrush.ColorStops");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionGradientExtendMode CompositionGradientBrush.ExtendMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionGradientExtendMode%20CompositionGradientBrush.ExtendMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionGradientBrush", "CompositionGradientExtendMode CompositionGradientBrush.ExtendMode");
 			}
 			set
 			{
@@ -66,7 +66,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionColorSpace CompositionGradientBrush.InterpolationSpace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionColorSpace%20CompositionGradientBrush.InterpolationSpace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionGradientBrush", "CompositionColorSpace CompositionGradientBrush.InterpolationSpace");
 			}
 			set
 			{
@@ -80,7 +80,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionMappingMode CompositionGradientBrush.MappingMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionMappingMode%20CompositionGradientBrush.MappingMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionGradientBrush", "CompositionMappingMode CompositionGradientBrush.MappingMode");
 			}
 			set
 			{
@@ -94,7 +94,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionGradientBrush.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionGradientBrush.Offset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionGradientBrush", "Vector2 CompositionGradientBrush.Offset");
 			}
 			set
 			{
@@ -108,7 +108,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionGradientBrush.RotationAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionGradientBrush.RotationAngle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionGradientBrush", "float CompositionGradientBrush.RotationAngle");
 			}
 			set
 			{
@@ -122,7 +122,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionGradientBrush.RotationAngleInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionGradientBrush.RotationAngleInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionGradientBrush", "float CompositionGradientBrush.RotationAngleInDegrees");
 			}
 			set
 			{
@@ -136,7 +136,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionGradientBrush.Scale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionGradientBrush.Scale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionGradientBrush", "Vector2 CompositionGradientBrush.Scale");
 			}
 			set
 			{
@@ -150,7 +150,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Matrix3x2 CompositionGradientBrush.TransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix3x2%20CompositionGradientBrush.TransformMatrix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionGradientBrush", "Matrix3x2 CompositionGradientBrush.TransformMatrix");
 			}
 			set
 			{

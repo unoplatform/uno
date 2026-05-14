@@ -33,7 +33,7 @@ namespace Windows.Gaming.Input.Custom
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Gaming.Input.IGameController TryGetFactoryControllerFromGameController(global::Windows.Gaming.Input.Custom.ICustomGameControllerFactory factory, global::Windows.Gaming.Input.IGameController gameController)
 		{
-			throw new global::System.NotImplementedException("The member IGameController GameControllerFactoryManager.TryGetFactoryControllerFromGameController(ICustomGameControllerFactory factory, IGameController gameController) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IGameController%20GameControllerFactoryManager.TryGetFactoryControllerFromGameController%28ICustomGameControllerFactory%20factory%2C%20IGameController%20gameController%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GameControllerFactoryManager", "IGameController GameControllerFactoryManager.TryGetFactoryControllerFromGameController(ICustomGameControllerFactory factory, IGameController gameController)");
 		}
 #endif
 	}

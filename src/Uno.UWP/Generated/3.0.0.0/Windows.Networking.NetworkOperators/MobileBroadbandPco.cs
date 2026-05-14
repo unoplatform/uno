@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer MobileBroadbandPco.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20MobileBroadbandPco.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandPco", "IBuffer MobileBroadbandPco.Data");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MobileBroadbandPco.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MobileBroadbandPco.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandPco", "string MobileBroadbandPco.DeviceId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MobileBroadbandPco.IsComplete is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MobileBroadbandPco.IsComplete");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandPco", "bool MobileBroadbandPco.IsComplete");
 			}
 		}
 #endif

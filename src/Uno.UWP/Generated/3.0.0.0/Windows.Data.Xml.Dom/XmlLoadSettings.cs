@@ -14,7 +14,7 @@ namespace Windows.Data.Xml.Dom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool XmlLoadSettings.ElementContentWhiteSpace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20XmlLoadSettings.ElementContentWhiteSpace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlLoadSettings", "bool XmlLoadSettings.ElementContentWhiteSpace");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Data.Xml.Dom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint XmlLoadSettings.MaxElementDepth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20XmlLoadSettings.MaxElementDepth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlLoadSettings", "uint XmlLoadSettings.MaxElementDepth");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Data.Xml.Dom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool XmlLoadSettings.ProhibitDtd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20XmlLoadSettings.ProhibitDtd");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlLoadSettings", "bool XmlLoadSettings.ProhibitDtd");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Data.Xml.Dom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool XmlLoadSettings.ResolveExternals is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20XmlLoadSettings.ResolveExternals");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlLoadSettings", "bool XmlLoadSettings.ResolveExternals");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Data.Xml.Dom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool XmlLoadSettings.ValidateOnParse is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20XmlLoadSettings.ValidateOnParse");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlLoadSettings", "bool XmlLoadSettings.ValidateOnParse");
 			}
 			set
 			{

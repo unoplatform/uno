@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlayer MediaPlayerSurface.MediaPlayer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlayer%20MediaPlayerSurface.MediaPlayer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayerSurface", "MediaPlayer MediaPlayerSurface.MediaPlayer");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManager MediaPlaybackCommandManagerCommandBehavior.CommandManager is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackCommandManager%20MediaPlaybackCommandManagerCommandBehavior.CommandManager");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior", "MediaPlaybackCommandManager MediaPlaybackCommandManagerCommandBehavior.CommandManager");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCommandEnablingRule MediaPlaybackCommandManagerCommandBehavior.EnablingRule is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaCommandEnablingRule%20MediaPlaybackCommandManagerCommandBehavior.EnablingRule");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior", "MediaCommandEnablingRule MediaPlaybackCommandManagerCommandBehavior.EnablingRule");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaPlaybackCommandManagerCommandBehavior.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlaybackCommandManagerCommandBehavior.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior", "bool MediaPlaybackCommandManagerCommandBehavior.IsEnabled");
 			}
 		}
 #endif

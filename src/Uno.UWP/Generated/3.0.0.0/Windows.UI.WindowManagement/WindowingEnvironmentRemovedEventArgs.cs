@@ -19,7 +19,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WindowingEnvironment WindowingEnvironmentRemovedEventArgs.WindowingEnvironment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WindowingEnvironment%20WindowingEnvironmentRemovedEventArgs.WindowingEnvironment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.WindowingEnvironmentRemovedEventArgs", "WindowingEnvironment WindowingEnvironmentRemovedEventArgs.WindowingEnvironment");
 			}
 		}
 #endif

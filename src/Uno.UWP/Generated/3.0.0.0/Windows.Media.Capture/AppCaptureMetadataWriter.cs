@@ -14,7 +14,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AppCaptureMetadataWriter.RemainingStorageBytesAvailable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20AppCaptureMetadataWriter.RemainingStorageBytesAvailable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureMetadataWriter", "ulong AppCaptureMetadataWriter.RemainingStorageBytesAvailable");
 			}
 		}
 #endif

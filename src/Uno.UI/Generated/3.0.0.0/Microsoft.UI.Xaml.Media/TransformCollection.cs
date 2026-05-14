@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TransformCollection.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20TransformCollection.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.TransformCollection", "bool TransformCollection.IsReadOnly");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomTextBox.Bordered is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomTextBox.Bordered");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomTextBox", "bool VpnCustomTextBox.Bordered");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomTextBox.Compulsory is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomTextBox.Compulsory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomTextBox", "bool VpnCustomTextBox.Compulsory");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnCustomTextBox.DisplayText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnCustomTextBox.DisplayText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomTextBox", "string VpnCustomTextBox.DisplayText");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnCustomTextBox.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnCustomTextBox.Label");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomTextBox", "string VpnCustomTextBox.Label");
 			}
 			set
 			{

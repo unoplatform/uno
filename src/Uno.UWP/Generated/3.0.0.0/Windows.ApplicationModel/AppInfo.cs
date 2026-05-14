@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppInfo AppInfo.Current is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppInfo%20AppInfo.Current");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppInfo", "AppInfo AppInfo.Current");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppInfo.AppUserModelId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppInfo.AppUserModelId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppInfo", "string AppInfo.AppUserModelId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppDisplayInfo AppInfo.DisplayInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppDisplayInfo%20AppInfo.DisplayInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppInfo", "AppDisplayInfo AppInfo.DisplayInfo");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppInfo.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppInfo.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppInfo", "string AppInfo.Id");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Package AppInfo.Package is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Package%20AppInfo.Package");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppInfo", "Package AppInfo.Package");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppInfo.PackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppInfo.PackageFamilyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppInfo", "string AppInfo.PackageFamilyName");
 			}
 		}
 #endif
@@ -77,14 +77,14 @@ namespace Windows.ApplicationModel
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.AppInfo GetFromAppUserModelId(string appUserModelId)
 		{
-			throw new global::System.NotImplementedException("The member AppInfo AppInfo.GetFromAppUserModelId(string appUserModelId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppInfo%20AppInfo.GetFromAppUserModelId%28string%20appUserModelId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppInfo", "AppInfo AppInfo.GetFromAppUserModelId(string appUserModelId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.AppInfo GetFromAppUserModelIdForUser(global::Windows.System.User user, string appUserModelId)
 		{
-			throw new global::System.NotImplementedException("The member AppInfo AppInfo.GetFromAppUserModelIdForUser(User user, string appUserModelId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppInfo%20AppInfo.GetFromAppUserModelIdForUser%28User%20user%2C%20string%20appUserModelId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppInfo", "AppInfo AppInfo.GetFromAppUserModelIdForUser(User user, string appUserModelId)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.AppInfo.Current.get

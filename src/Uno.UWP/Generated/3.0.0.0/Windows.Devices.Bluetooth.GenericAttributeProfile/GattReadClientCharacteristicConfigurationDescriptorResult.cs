@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattClientCharacteristicConfigurationDescriptorValue GattReadClientCharacteristicConfigurationDescriptorResult.ClientCharacteristicConfigurationDescriptor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattClientCharacteristicConfigurationDescriptorValue%20GattReadClientCharacteristicConfigurationDescriptorResult.ClientCharacteristicConfigurationDescriptor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadClientCharacteristicConfigurationDescriptorResult", "GattClientCharacteristicConfigurationDescriptorValue GattReadClientCharacteristicConfigurationDescriptorResult.ClientCharacteristicConfigurationDescriptor");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte? GattReadClientCharacteristicConfigurationDescriptorResult.ProtocolError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%3F%20GattReadClientCharacteristicConfigurationDescriptorResult.ProtocolError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadClientCharacteristicConfigurationDescriptorResult", "byte? GattReadClientCharacteristicConfigurationDescriptorResult.ProtocolError");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattCommunicationStatus GattReadClientCharacteristicConfigurationDescriptorResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattCommunicationStatus%20GattReadClientCharacteristicConfigurationDescriptorResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadClientCharacteristicConfigurationDescriptorResult", "GattCommunicationStatus GattReadClientCharacteristicConfigurationDescriptorResult.Status");
 			}
 		}
 #endif

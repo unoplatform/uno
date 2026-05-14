@@ -19,7 +19,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int HttpLanguageHeaderValueCollection.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20HttpLanguageHeaderValueCollection.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection", "int HttpLanguageHeaderValueCollection.Count");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HttpLanguageHeaderValueCollection.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpLanguageHeaderValueCollection.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection", "bool HttpLanguageHeaderValueCollection.IsReadOnly");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Language HttpLanguageHeaderValueCollection.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Language%20HttpLanguageHeaderValueCollection.this%5Bint%20index%5D");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection", "Language HttpLanguageHeaderValueCollection.this[int index]");
 			}
 			set
 			{
@@ -58,7 +58,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryParseAdd(string input)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpLanguageHeaderValueCollection.TryParseAdd(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpLanguageHeaderValueCollection.TryParseAdd%28string%20input%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection", "bool HttpLanguageHeaderValueCollection.TryParseAdd(string input)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection.Count.get
@@ -69,7 +69,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int IndexOf(global::Windows.Globalization.Language item)
 		{
-			throw new global::System.NotImplementedException("The member int HttpLanguageHeaderValueCollection.IndexOf(Language item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20HttpLanguageHeaderValueCollection.IndexOf%28Language%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection", "int HttpLanguageHeaderValueCollection.IndexOf(Language item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -104,7 +104,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Contains(global::Windows.Globalization.Language item)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpLanguageHeaderValueCollection.Contains(Language item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpLanguageHeaderValueCollection.Contains%28Language%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection", "bool HttpLanguageHeaderValueCollection.Contains(Language item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -118,14 +118,14 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Remove(global::Windows.Globalization.Language item)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpLanguageHeaderValueCollection.Remove(Language item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpLanguageHeaderValueCollection.Remove%28Language%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection", "bool HttpLanguageHeaderValueCollection.Remove(Language item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Globalization.Language> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<Language> HttpLanguageHeaderValueCollection.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CLanguage%3E%20HttpLanguageHeaderValueCollection.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection", "IEnumerator<Language> HttpLanguageHeaderValueCollection.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection.System.Collections.IEnumerable.GetEnumerator()
@@ -133,7 +133,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpLanguageHeaderValueCollection.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpLanguageHeaderValueCollection.ToString%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection", "string HttpLanguageHeaderValueCollection.ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection.System.Collections.Generic.IList<Windows.Globalization.Language>.get_Item(int)

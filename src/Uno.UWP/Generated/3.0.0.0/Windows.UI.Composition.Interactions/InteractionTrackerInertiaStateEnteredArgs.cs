@@ -19,7 +19,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InteractionTrackerInertiaStateEnteredArgs.IsFromBinding is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InteractionTrackerInertiaStateEnteredArgs.IsFromBinding");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "bool InteractionTrackerInertiaStateEnteredArgs.IsFromBinding");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InteractionTrackerInertiaStateEnteredArgs.IsInertiaFromImpulse is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InteractionTrackerInertiaStateEnteredArgs.IsInertiaFromImpulse");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "bool InteractionTrackerInertiaStateEnteredArgs.IsInertiaFromImpulse");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3? InteractionTrackerInertiaStateEnteredArgs.ModifiedRestingPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%3F%20InteractionTrackerInertiaStateEnteredArgs.ModifiedRestingPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "Vector3? InteractionTrackerInertiaStateEnteredArgs.ModifiedRestingPosition");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float? InteractionTrackerInertiaStateEnteredArgs.ModifiedRestingScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%3F%20InteractionTrackerInertiaStateEnteredArgs.ModifiedRestingScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "float? InteractionTrackerInertiaStateEnteredArgs.ModifiedRestingScale");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 InteractionTrackerInertiaStateEnteredArgs.NaturalRestingPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20InteractionTrackerInertiaStateEnteredArgs.NaturalRestingPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "Vector3 InteractionTrackerInertiaStateEnteredArgs.NaturalRestingPosition");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InteractionTrackerInertiaStateEnteredArgs.NaturalRestingScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InteractionTrackerInertiaStateEnteredArgs.NaturalRestingScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "float InteractionTrackerInertiaStateEnteredArgs.NaturalRestingScale");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 InteractionTrackerInertiaStateEnteredArgs.PositionVelocityInPixelsPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20InteractionTrackerInertiaStateEnteredArgs.PositionVelocityInPixelsPerSecond");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "Vector3 InteractionTrackerInertiaStateEnteredArgs.PositionVelocityInPixelsPerSecond");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int InteractionTrackerInertiaStateEnteredArgs.RequestId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTrackerInertiaStateEnteredArgs.RequestId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "int InteractionTrackerInertiaStateEnteredArgs.RequestId");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InteractionTrackerInertiaStateEnteredArgs.ScaleVelocityInPercentPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InteractionTrackerInertiaStateEnteredArgs.ScaleVelocityInPercentPerSecond");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs", "float InteractionTrackerInertiaStateEnteredArgs.ScaleVelocityInPercentPerSecond");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SocketActivityTrigger.IsWakeFromLowPowerSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SocketActivityTrigger.IsWakeFromLowPowerSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.SocketActivityTrigger", "bool SocketActivityTrigger.IsWakeFromLowPowerSupported");
 			}
 		}
 #endif

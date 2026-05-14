@@ -19,7 +19,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GameControllerVersionInfo XusbGameControllerProvider.FirmwareVersionInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameControllerVersionInfo%20XusbGameControllerProvider.FirmwareVersionInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.XusbGameControllerProvider", "GameControllerVersionInfo XusbGameControllerProvider.FirmwareVersionInfo");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort XusbGameControllerProvider.HardwareProductId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20XusbGameControllerProvider.HardwareProductId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.XusbGameControllerProvider", "ushort XusbGameControllerProvider.HardwareProductId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort XusbGameControllerProvider.HardwareVendorId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20XusbGameControllerProvider.HardwareVendorId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.XusbGameControllerProvider", "ushort XusbGameControllerProvider.HardwareVendorId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GameControllerVersionInfo XusbGameControllerProvider.HardwareVersionInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameControllerVersionInfo%20XusbGameControllerProvider.HardwareVersionInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.XusbGameControllerProvider", "GameControllerVersionInfo XusbGameControllerProvider.HardwareVersionInfo");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool XusbGameControllerProvider.IsConnected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20XusbGameControllerProvider.IsConnected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.XusbGameControllerProvider", "bool XusbGameControllerProvider.IsConnected");
 			}
 		}
 #endif

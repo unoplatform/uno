@@ -14,7 +14,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyAmount.Amount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CurrencyAmount.Amount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.CurrencyAmount", "string CurrencyAmount.Amount");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyAmount.Currency is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CurrencyAmount.Currency");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.CurrencyAmount", "string CurrencyAmount.Currency");
 			}
 		}
 #endif

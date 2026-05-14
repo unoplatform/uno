@@ -14,7 +14,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color TextConstants.AutoColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20TextConstants.AutoColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "Color TextConstants.AutoColor");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int TextConstants.MaxUnitCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20TextConstants.MaxUnitCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "int TextConstants.MaxUnitCount");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int TextConstants.MinUnitCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20TextConstants.MinUnitCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "int TextConstants.MinUnitCount");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color TextConstants.UndefinedColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20TextConstants.UndefinedColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "Color TextConstants.UndefinedColor");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float TextConstants.UndefinedFloatValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20TextConstants.UndefinedFloatValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "float TextConstants.UndefinedFloatValue");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FontStretch TextConstants.UndefinedFontStretch is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FontStretch%20TextConstants.UndefinedFontStretch");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "FontStretch TextConstants.UndefinedFontStretch");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FontStyle TextConstants.UndefinedFontStyle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FontStyle%20TextConstants.UndefinedFontStyle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "FontStyle TextConstants.UndefinedFontStyle");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Microsoft.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int TextConstants.UndefinedInt32Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20TextConstants.UndefinedInt32Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Text.TextConstants", "int TextConstants.UndefinedInt32Value");
 			}
 		}
 #endif

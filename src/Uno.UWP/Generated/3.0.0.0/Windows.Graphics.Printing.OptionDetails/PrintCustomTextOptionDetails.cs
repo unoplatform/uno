@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintCustomTextOptionDetails.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintCustomTextOptionDetails.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails", "string PrintCustomTextOptionDetails.Description");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintCustomTextOptionDetails.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintCustomTextOptionDetails.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails", "string PrintCustomTextOptionDetails.DisplayName");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintCustomTextOptionDetails.ErrorText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintCustomTextOptionDetails.ErrorText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails", "string PrintCustomTextOptionDetails.ErrorText");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PrintCustomTextOptionDetails.MaxCharacters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PrintCustomTextOptionDetails.MaxCharacters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails", "uint PrintCustomTextOptionDetails.MaxCharacters");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintCustomTextOptionDetails.OptionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintCustomTextOptionDetails.OptionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails", "string PrintCustomTextOptionDetails.OptionId");
 			}
 		}
 #endif
@@ -85,7 +85,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintOptionType PrintCustomTextOptionDetails.OptionType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOptionType%20PrintCustomTextOptionDetails.OptionType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails", "PrintOptionType PrintCustomTextOptionDetails.OptionType");
 			}
 		}
 #endif
@@ -95,7 +95,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintOptionStates PrintCustomTextOptionDetails.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOptionStates%20PrintCustomTextOptionDetails.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails", "PrintOptionStates PrintCustomTextOptionDetails.State");
 			}
 			set
 			{
@@ -109,7 +109,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object PrintCustomTextOptionDetails.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20PrintCustomTextOptionDetails.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails", "object PrintCustomTextOptionDetails.Value");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintCustomTextOptionDetails.WarningText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintCustomTextOptionDetails.WarningText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails", "string PrintCustomTextOptionDetails.WarningText");
 			}
 			set
 			{
@@ -131,7 +131,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetValue(object value)
 		{
-			throw new global::System.NotImplementedException("The member bool PrintCustomTextOptionDetails.TrySetValue(object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintCustomTextOptionDetails.TrySetValue%28object%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails", "bool PrintCustomTextOptionDetails.TrySetValue(object value)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails.Description.get

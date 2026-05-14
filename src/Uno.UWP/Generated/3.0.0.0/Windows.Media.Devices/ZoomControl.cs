@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float ZoomControl.Max is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ZoomControl.Max");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomControl", "float ZoomControl.Max");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float ZoomControl.Min is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ZoomControl.Min");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomControl", "float ZoomControl.Min");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ZoomTransitionMode ZoomControl.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ZoomTransitionMode%20ZoomControl.Mode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomControl", "ZoomTransitionMode ZoomControl.Mode");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float ZoomControl.Step is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ZoomControl.Step");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomControl", "float ZoomControl.Step");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ZoomControl.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ZoomControl.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomControl", "bool ZoomControl.Supported");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ZoomTransitionMode> ZoomControl.SupportedModes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CZoomTransitionMode%3E%20ZoomControl.SupportedModes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomControl", "IReadOnlyList<ZoomTransitionMode> ZoomControl.SupportedModes");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float ZoomControl.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ZoomControl.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ZoomControl", "float ZoomControl.Value");
 			}
 			set
 			{

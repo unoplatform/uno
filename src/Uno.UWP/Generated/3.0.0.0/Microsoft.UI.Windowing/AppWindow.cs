@@ -17,7 +17,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppWindow.IsShownInSwitchers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppWindow.IsShownInSwitchers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindow", "bool AppWindow.IsShownInSwitchers");
 			}
 			set
 			{
@@ -32,7 +32,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WindowId AppWindow.OwnerWindowId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WindowId%20AppWindow.OwnerWindowId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindow", "WindowId AppWindow.OwnerWindowId");
 			}
 		}
 #endif
@@ -45,21 +45,21 @@ namespace Microsoft.UI.Windowing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Windowing.AppWindow Create()
 		{
-			throw new global::System.NotImplementedException("The member AppWindow AppWindow.Create() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppWindow%20AppWindow.Create%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindow", "AppWindow AppWindow.Create()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Windowing.AppWindow Create(global::Microsoft.UI.Windowing.AppWindowPresenter appWindowPresenter)
 		{
-			throw new global::System.NotImplementedException("The member AppWindow AppWindow.Create(AppWindowPresenter appWindowPresenter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppWindow%20AppWindow.Create%28AppWindowPresenter%20appWindowPresenter%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindow", "AppWindow AppWindow.Create(AppWindowPresenter appWindowPresenter)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Windowing.AppWindow Create(global::Microsoft.UI.Windowing.AppWindowPresenter appWindowPresenter, global::Microsoft.UI.WindowId ownerWindowId)
 		{
-			throw new global::System.NotImplementedException("The member AppWindow AppWindow.Create(AppWindowPresenter appWindowPresenter, WindowId ownerWindowId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppWindow%20AppWindow.Create%28AppWindowPresenter%20appWindowPresenter%2C%20WindowId%20ownerWindowId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindow", "AppWindow AppWindow.Create(AppWindowPresenter appWindowPresenter, WindowId ownerWindowId)");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Windowing.AppWindow.GetFromWindowId(Microsoft.UI.WindowId)
@@ -67,7 +67,7 @@ namespace Microsoft.UI.Windowing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Windowing.AppWindow Create(global::Microsoft.UI.Windowing.AppWindowPresenter appWindowPresenter, global::Microsoft.UI.WindowId ownerWindowId, global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue)
 		{
-			throw new global::System.NotImplementedException("The member AppWindow AppWindow.Create(AppWindowPresenter appWindowPresenter, WindowId ownerWindowId, DispatcherQueue DispatcherQueue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppWindow%20AppWindow.Create%28AppWindowPresenter%20appWindowPresenter%2C%20WindowId%20ownerWindowId%2C%20DispatcherQueue%20DispatcherQueue%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindow", "AppWindow AppWindow.Create(AppWindowPresenter appWindowPresenter, WindowId ownerWindowId, DispatcherQueue DispatcherQueue)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

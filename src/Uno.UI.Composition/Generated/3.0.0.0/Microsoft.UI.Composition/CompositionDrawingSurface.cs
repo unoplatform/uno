@@ -14,7 +14,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DirectXAlphaMode CompositionDrawingSurface.AlphaMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DirectXAlphaMode%20CompositionDrawingSurface.AlphaMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionDrawingSurface", "DirectXAlphaMode CompositionDrawingSurface.AlphaMode");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DirectXPixelFormat CompositionDrawingSurface.PixelFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DirectXPixelFormat%20CompositionDrawingSurface.PixelFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionDrawingSurface", "DirectXPixelFormat CompositionDrawingSurface.PixelFormat");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size CompositionDrawingSurface.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20CompositionDrawingSurface.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionDrawingSurface", "Size CompositionDrawingSurface.Size");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SizeInt32 CompositionDrawingSurface.SizeInt32 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SizeInt32%20CompositionDrawingSurface.SizeInt32");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionDrawingSurface", "SizeInt32 CompositionDrawingSurface.SizeInt32");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SemanticZoomLocation SemanticZoomViewChangedEventArgs.DestinationItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SemanticZoomLocation%20SemanticZoomViewChangedEventArgs.DestinationItem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.SemanticZoomViewChangedEventArgs", "SemanticZoomLocation SemanticZoomViewChangedEventArgs.DestinationItem");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SemanticZoomViewChangedEventArgs.IsSourceZoomedInView is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SemanticZoomViewChangedEventArgs.IsSourceZoomedInView");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.SemanticZoomViewChangedEventArgs", "bool SemanticZoomViewChangedEventArgs.IsSourceZoomedInView");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SemanticZoomLocation SemanticZoomViewChangedEventArgs.SourceItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SemanticZoomLocation%20SemanticZoomViewChangedEventArgs.SourceItem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.SemanticZoomViewChangedEventArgs", "SemanticZoomLocation SemanticZoomViewChangedEventArgs.SourceItem");
 			}
 			set
 			{

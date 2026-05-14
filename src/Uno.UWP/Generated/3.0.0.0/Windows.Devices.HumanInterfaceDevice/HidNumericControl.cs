@@ -19,7 +19,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HidNumericControlDescription HidNumericControl.ControlDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HidNumericControlDescription%20HidNumericControl.ControlDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControl", "HidNumericControlDescription HidNumericControl.ControlDescription");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HidNumericControl.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20HidNumericControl.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControl", "uint HidNumericControl.Id");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HidNumericControl.IsGrouped is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HidNumericControl.IsGrouped");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControl", "bool HidNumericControl.IsGrouped");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long HidNumericControl.ScaledValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=long%20HidNumericControl.ScaledValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControl", "long HidNumericControl.ScaledValue");
 			}
 			set
 			{
@@ -63,7 +63,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort HidNumericControl.UsageId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20HidNumericControl.UsageId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControl", "ushort HidNumericControl.UsageId");
 			}
 		}
 #endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort HidNumericControl.UsagePage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20HidNumericControl.UsagePage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControl", "ushort HidNumericControl.UsagePage");
 			}
 		}
 #endif
@@ -83,7 +83,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long HidNumericControl.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=long%20HidNumericControl.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControl", "long HidNumericControl.Value");
 			}
 			set
 			{

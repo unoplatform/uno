@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int UserDataTaskRegenerationProperties.Interval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20UserDataTaskRegenerationProperties.Interval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "int UserDataTaskRegenerationProperties.Interval");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? UserDataTaskRegenerationProperties.Occurrences is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20UserDataTaskRegenerationProperties.Occurrences");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "int? UserDataTaskRegenerationProperties.Occurrences");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskRegenerationUnit UserDataTaskRegenerationProperties.Unit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskRegenerationUnit%20UserDataTaskRegenerationProperties.Unit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "UserDataTaskRegenerationUnit UserDataTaskRegenerationProperties.Unit");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? UserDataTaskRegenerationProperties.Until is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20UserDataTaskRegenerationProperties.Until");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskRegenerationProperties", "DateTimeOffset? UserDataTaskRegenerationProperties.Until");
 			}
 			set
 			{

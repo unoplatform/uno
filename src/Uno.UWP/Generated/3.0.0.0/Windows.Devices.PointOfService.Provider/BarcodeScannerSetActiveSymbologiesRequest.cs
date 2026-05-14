@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> BarcodeScannerSetActiveSymbologiesRequest.Symbologies is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cuint%3E%20BarcodeScannerSetActiveSymbologiesRequest.Symbologies");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerSetActiveSymbologiesRequest", "IReadOnlyList<uint> BarcodeScannerSetActiveSymbologiesRequest.Symbologies");
 			}
 		}
 #endif
@@ -27,28 +27,28 @@ namespace Windows.Devices.PointOfService.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction BarcodeScannerSetActiveSymbologiesRequest.ReportCompletedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BarcodeScannerSetActiveSymbologiesRequest.ReportCompletedAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerSetActiveSymbologiesRequest", "IAsyncAction BarcodeScannerSetActiveSymbologiesRequest.ReportCompletedAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction BarcodeScannerSetActiveSymbologiesRequest.ReportFailedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BarcodeScannerSetActiveSymbologiesRequest.ReportFailedAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerSetActiveSymbologiesRequest", "IAsyncAction BarcodeScannerSetActiveSymbologiesRequest.ReportFailedAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportFailedAsync(int reason)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction BarcodeScannerSetActiveSymbologiesRequest.ReportFailedAsync(int reason) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BarcodeScannerSetActiveSymbologiesRequest.ReportFailedAsync%28int%20reason%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerSetActiveSymbologiesRequest", "IAsyncAction BarcodeScannerSetActiveSymbologiesRequest.ReportFailedAsync(int reason)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportFailedAsync(int reason, string failedReasonDescription)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction BarcodeScannerSetActiveSymbologiesRequest.ReportFailedAsync(int reason, string failedReasonDescription) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BarcodeScannerSetActiveSymbologiesRequest.ReportFailedAsync%28int%20reason%2C%20string%20failedReasonDescription%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerSetActiveSymbologiesRequest", "IAsyncAction BarcodeScannerSetActiveSymbologiesRequest.ReportFailedAsync(int reason, string failedReasonDescription)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerSetActiveSymbologiesRequest.Symbologies.get

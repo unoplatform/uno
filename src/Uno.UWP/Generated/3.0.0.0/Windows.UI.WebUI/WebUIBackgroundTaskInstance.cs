@@ -14,7 +14,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IWebUIBackgroundTaskInstance WebUIBackgroundTaskInstance.Current is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IWebUIBackgroundTaskInstance%20WebUIBackgroundTaskInstance.Current");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIBackgroundTaskInstance", "IWebUIBackgroundTaskInstance WebUIBackgroundTaskInstance.Current");
 			}
 		}
 #endif

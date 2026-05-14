@@ -19,7 +19,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContentEnvironmentSettingChangedEventArgs.SettingName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContentEnvironmentSettingChangedEventArgs.SettingName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentEnvironmentSettingChangedEventArgs", "string ContentEnvironmentSettingChangedEventArgs.SettingName");
 			}
 		}
 #endif

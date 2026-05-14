@@ -19,7 +19,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri OemSupportInfo.SupportAppLink is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20OemSupportInfo.SupportAppLink");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.OemSupportInfo", "Uri OemSupportInfo.SupportAppLink");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri OemSupportInfo.SupportLink is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20OemSupportInfo.SupportLink");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.OemSupportInfo", "Uri OemSupportInfo.SupportLink");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string OemSupportInfo.SupportProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20OemSupportInfo.SupportProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.OemSupportInfo", "string OemSupportInfo.SupportProvider");
 			}
 		}
 #endif

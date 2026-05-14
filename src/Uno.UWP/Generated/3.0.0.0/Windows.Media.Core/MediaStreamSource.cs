@@ -14,7 +14,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaStreamSource.BufferTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaStreamSource.BufferTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSource", "TimeSpan MediaStreamSource.BufferTime");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaStreamSource.CanSeek is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaStreamSource.CanSeek");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSource", "bool MediaStreamSource.CanSeek");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaStreamSource.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaStreamSource.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSource", "TimeSpan MediaStreamSource.Duration");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaStreamSource.IsLive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaStreamSource.IsLive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSource", "bool MediaStreamSource.IsLive");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? MediaStreamSource.MaxSupportedPlaybackRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%3F%20MediaStreamSource.MaxSupportedPlaybackRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSource", "double? MediaStreamSource.MaxSupportedPlaybackRate");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaProtectionManager MediaStreamSource.MediaProtectionManager is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaProtectionManager%20MediaStreamSource.MediaProtectionManager");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSource", "MediaProtectionManager MediaStreamSource.MediaProtectionManager");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MusicProperties MediaStreamSource.MusicProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MusicProperties%20MediaStreamSource.MusicProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSource", "MusicProperties MediaStreamSource.MusicProperties");
 			}
 		}
 #endif
@@ -108,7 +108,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference MediaStreamSource.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20MediaStreamSource.Thumbnail");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSource", "IRandomAccessStreamReference MediaStreamSource.Thumbnail");
 			}
 			set
 			{
@@ -122,7 +122,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoProperties MediaStreamSource.VideoProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoProperties%20MediaStreamSource.VideoProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSource", "VideoProperties MediaStreamSource.VideoProperties");
 			}
 		}
 #endif

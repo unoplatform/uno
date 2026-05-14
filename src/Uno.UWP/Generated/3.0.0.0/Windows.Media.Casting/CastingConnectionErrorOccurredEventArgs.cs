@@ -19,7 +19,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CastingConnectionErrorStatus CastingConnectionErrorOccurredEventArgs.ErrorStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CastingConnectionErrorStatus%20CastingConnectionErrorOccurredEventArgs.ErrorStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs", "CastingConnectionErrorStatus CastingConnectionErrorOccurredEventArgs.ErrorStatus");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CastingConnectionErrorOccurredEventArgs.Message is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CastingConnectionErrorOccurredEventArgs.Message");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingConnectionErrorOccurredEventArgs", "string CastingConnectionErrorOccurredEventArgs.Message");
 			}
 		}
 #endif

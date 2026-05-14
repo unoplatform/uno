@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer ModuleCommandResult.Result is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20ModuleCommandResult.Result");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ModuleCommandResult", "IBuffer ModuleCommandResult.Result");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SendCommandStatus ModuleCommandResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SendCommandStatus%20ModuleCommandResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.ModuleCommandResult", "SendCommandStatus ModuleCommandResult.Status");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionShapeCollection CompositionContainerShape.Shapes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionShapeCollection%20CompositionContainerShape.Shapes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionContainerShape", "CompositionShapeCollection CompositionContainerShape.Shapes");
 			}
 		}
 #endif

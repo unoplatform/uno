@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorePrice.CurrencyCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorePrice.CurrencyCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePrice", "string StorePrice.CurrencyCode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorePrice.FormattedBasePrice is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorePrice.FormattedBasePrice");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePrice", "string StorePrice.FormattedBasePrice");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorePrice.FormattedPrice is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorePrice.FormattedPrice");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePrice", "string StorePrice.FormattedPrice");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorePrice.FormattedRecurrencePrice is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorePrice.FormattedRecurrencePrice");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePrice", "string StorePrice.FormattedRecurrencePrice");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StorePrice.IsOnSale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StorePrice.IsOnSale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePrice", "bool StorePrice.IsOnSale");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset StorePrice.SaleEndDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20StorePrice.SaleEndDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePrice", "DateTimeOffset StorePrice.SaleEndDate");
 			}
 		}
 #endif

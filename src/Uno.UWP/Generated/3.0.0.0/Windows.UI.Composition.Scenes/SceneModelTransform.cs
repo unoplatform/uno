@@ -19,7 +19,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Quaternion SceneModelTransform.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Quaternion%20SceneModelTransform.Orientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneModelTransform", "Quaternion SceneModelTransform.Orientation");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SceneModelTransform.RotationAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SceneModelTransform.RotationAngle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneModelTransform", "float SceneModelTransform.RotationAngle");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SceneModelTransform.RotationAngleInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SceneModelTransform.RotationAngleInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneModelTransform", "float SceneModelTransform.RotationAngleInDegrees");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SceneModelTransform.RotationAxis is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SceneModelTransform.RotationAxis");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneModelTransform", "Vector3 SceneModelTransform.RotationAxis");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SceneModelTransform.Scale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SceneModelTransform.Scale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneModelTransform", "Vector3 SceneModelTransform.Scale");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SceneModelTransform.Translation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SceneModelTransform.Translation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneModelTransform", "Vector3 SceneModelTransform.Translation");
 			}
 			set
 			{

@@ -37,7 +37,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PointKeyFrameCollection PointAnimationUsingKeyFrames.KeyFrames is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointKeyFrameCollection%20PointAnimationUsingKeyFrames.KeyFrames");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.PointAnimationUsingKeyFrames", "PointKeyFrameCollection PointAnimationUsingKeyFrames.KeyFrames");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int HttpProductInfoHeaderValueCollection.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20HttpProductInfoHeaderValueCollection.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection", "int HttpProductInfoHeaderValueCollection.Count");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HttpProductInfoHeaderValueCollection.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpProductInfoHeaderValueCollection.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection", "bool HttpProductInfoHeaderValueCollection.IsReadOnly");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpProductInfoHeaderValue HttpProductInfoHeaderValueCollection.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpProductInfoHeaderValue%20HttpProductInfoHeaderValueCollection.this%5Bint%20index%5D");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection", "HttpProductInfoHeaderValue HttpProductInfoHeaderValueCollection.this[int index]");
 			}
 			set
 			{
@@ -58,7 +58,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryParseAdd(string input)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpProductInfoHeaderValueCollection.TryParseAdd(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpProductInfoHeaderValueCollection.TryParseAdd%28string%20input%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection", "bool HttpProductInfoHeaderValueCollection.TryParseAdd(string input)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection.Count.get
@@ -69,7 +69,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int IndexOf(global::Windows.Web.Http.Headers.HttpProductInfoHeaderValue item)
 		{
-			throw new global::System.NotImplementedException("The member int HttpProductInfoHeaderValueCollection.IndexOf(HttpProductInfoHeaderValue item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20HttpProductInfoHeaderValueCollection.IndexOf%28HttpProductInfoHeaderValue%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection", "int HttpProductInfoHeaderValueCollection.IndexOf(HttpProductInfoHeaderValue item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -104,7 +104,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Contains(global::Windows.Web.Http.Headers.HttpProductInfoHeaderValue item)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpProductInfoHeaderValueCollection.Contains(HttpProductInfoHeaderValue item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpProductInfoHeaderValueCollection.Contains%28HttpProductInfoHeaderValue%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection", "bool HttpProductInfoHeaderValueCollection.Contains(HttpProductInfoHeaderValue item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -118,14 +118,14 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Remove(global::Windows.Web.Http.Headers.HttpProductInfoHeaderValue item)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpProductInfoHeaderValueCollection.Remove(HttpProductInfoHeaderValue item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpProductInfoHeaderValueCollection.Remove%28HttpProductInfoHeaderValue%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection", "bool HttpProductInfoHeaderValueCollection.Remove(HttpProductInfoHeaderValue item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Web.Http.Headers.HttpProductInfoHeaderValue> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<HttpProductInfoHeaderValue> HttpProductInfoHeaderValueCollection.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CHttpProductInfoHeaderValue%3E%20HttpProductInfoHeaderValueCollection.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection", "IEnumerator<HttpProductInfoHeaderValue> HttpProductInfoHeaderValueCollection.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection.System.Collections.IEnumerable.GetEnumerator()
@@ -133,7 +133,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpProductInfoHeaderValueCollection.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpProductInfoHeaderValueCollection.ToString%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection", "string HttpProductInfoHeaderValueCollection.ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection.System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpProductInfoHeaderValue>.get_Item(int)

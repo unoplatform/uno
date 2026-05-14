@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PlaybackMediaMarkerSequence.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PlaybackMediaMarkerSequence.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.PlaybackMediaMarkerSequence", "uint PlaybackMediaMarkerSequence.Size");
 			}
 		}
 #endif
@@ -41,7 +41,7 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Media.Playback.PlaybackMediaMarker> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<PlaybackMediaMarker> PlaybackMediaMarkerSequence.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CPlaybackMediaMarker%3E%20PlaybackMediaMarkerSequence.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.PlaybackMediaMarkerSequence", "IEnumerator<PlaybackMediaMarker> PlaybackMediaMarkerSequence.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.System.Collections.IEnumerable.GetEnumerator()

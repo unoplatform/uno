@@ -14,7 +14,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color InkPresenterProtractor.AccentColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20InkPresenterProtractor.AccentColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "Color InkPresenterProtractor.AccentColor");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.AreRaysVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkPresenterProtractor.AreRaysVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.AreRaysVisible");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.AreTickMarksVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkPresenterProtractor.AreTickMarksVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.AreTickMarksVisible");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color InkPresenterProtractor.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20InkPresenterProtractor.BackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "Color InkPresenterProtractor.BackgroundColor");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color InkPresenterProtractor.ForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20InkPresenterProtractor.ForegroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "Color InkPresenterProtractor.ForegroundColor");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.IsAngleReadoutVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkPresenterProtractor.IsAngleReadoutVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.IsAngleReadoutVisible");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.IsCenterMarkerVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkPresenterProtractor.IsCenterMarkerVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.IsCenterMarkerVisible");
 			}
 			set
 			{
@@ -112,7 +112,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.IsResizable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkPresenterProtractor.IsResizable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.IsResizable");
 			}
 			set
 			{
@@ -126,7 +126,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.IsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkPresenterProtractor.IsVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.IsVisible");
 			}
 			set
 			{
@@ -140,7 +140,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkPresenterStencilKind InkPresenterProtractor.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkPresenterStencilKind%20InkPresenterProtractor.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "InkPresenterStencilKind InkPresenterProtractor.Kind");
 			}
 		}
 #endif
@@ -150,7 +150,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double InkPresenterProtractor.Radius is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InkPresenterProtractor.Radius");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "double InkPresenterProtractor.Radius");
 			}
 			set
 			{
@@ -164,7 +164,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Matrix3x2 InkPresenterProtractor.Transform is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix3x2%20InkPresenterProtractor.Transform");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "Matrix3x2 InkPresenterProtractor.Transform");
 			}
 			set
 			{

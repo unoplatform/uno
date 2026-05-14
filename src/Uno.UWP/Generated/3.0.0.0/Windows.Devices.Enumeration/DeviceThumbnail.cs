@@ -19,7 +19,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceThumbnail.CanRead is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceThumbnail.CanRead");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceThumbnail", "bool DeviceThumbnail.CanRead");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceThumbnail.CanWrite is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceThumbnail.CanWrite");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceThumbnail", "bool DeviceThumbnail.CanWrite");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceThumbnail.ContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceThumbnail.ContentType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceThumbnail", "string DeviceThumbnail.ContentType");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong DeviceThumbnail.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20DeviceThumbnail.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceThumbnail", "ulong DeviceThumbnail.Position");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong DeviceThumbnail.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20DeviceThumbnail.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceThumbnail", "ulong DeviceThumbnail.Size");
 			}
 			set
 			{
@@ -71,14 +71,14 @@ namespace Windows.Devices.Enumeration
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IInputStream GetInputStreamAt(ulong position)
 		{
-			throw new global::System.NotImplementedException("The member IInputStream DeviceThumbnail.GetInputStreamAt(ulong position) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IInputStream%20DeviceThumbnail.GetInputStreamAt%28ulong%20position%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceThumbnail", "IInputStream DeviceThumbnail.GetInputStreamAt(ulong position)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IOutputStream GetOutputStreamAt(ulong position)
 		{
-			throw new global::System.NotImplementedException("The member IOutputStream DeviceThumbnail.GetOutputStreamAt(ulong position) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IOutputStream%20DeviceThumbnail.GetOutputStreamAt%28ulong%20position%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceThumbnail", "IOutputStream DeviceThumbnail.GetOutputStreamAt(ulong position)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -92,21 +92,21 @@ namespace Windows.Devices.Enumeration
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IRandomAccessStream CloneStream()
 		{
-			throw new global::System.NotImplementedException("The member IRandomAccessStream DeviceThumbnail.CloneStream() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStream%20DeviceThumbnail.CloneStream%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceThumbnail", "IRandomAccessStream DeviceThumbnail.CloneStream()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<uint, uint> WriteAsync(global::Windows.Storage.Streams.IBuffer buffer)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<uint, uint> DeviceThumbnail.WriteAsync(IBuffer buffer) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3Cuint%2C%20uint%3E%20DeviceThumbnail.WriteAsync%28IBuffer%20buffer%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceThumbnail", "IAsyncOperationWithProgress<uint, uint> DeviceThumbnail.WriteAsync(IBuffer buffer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> FlushAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> DeviceThumbnail.FlushAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20DeviceThumbnail.FlushAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceThumbnail", "IAsyncOperation<bool> DeviceThumbnail.FlushAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -120,7 +120,7 @@ namespace Windows.Devices.Enumeration
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Storage.Streams.IBuffer, uint> ReadAsync(global::Windows.Storage.Streams.IBuffer buffer, uint count, global::Windows.Storage.Streams.InputStreamOptions options)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<IBuffer, uint> DeviceThumbnail.ReadAsync(IBuffer buffer, uint count, InputStreamOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CIBuffer%2C%20uint%3E%20DeviceThumbnail.ReadAsync%28IBuffer%20buffer%2C%20uint%20count%2C%20InputStreamOptions%20options%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceThumbnail", "IAsyncOperationWithProgress<IBuffer, uint> DeviceThumbnail.ReadAsync(IBuffer buffer, uint count, InputStreamOptions options)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceThumbnail.CanRead.get

@@ -19,7 +19,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid BitmapCodecInformation.CodecId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20BitmapCodecInformation.CodecId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapCodecInformation", "Guid BitmapCodecInformation.CodecId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> BitmapCodecInformation.FileExtensions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20BitmapCodecInformation.FileExtensions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapCodecInformation", "IReadOnlyList<string> BitmapCodecInformation.FileExtensions");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string BitmapCodecInformation.FriendlyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20BitmapCodecInformation.FriendlyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapCodecInformation", "string BitmapCodecInformation.FriendlyName");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> BitmapCodecInformation.MimeTypes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20BitmapCodecInformation.MimeTypes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapCodecInformation", "IReadOnlyList<string> BitmapCodecInformation.MimeTypes");
 			}
 		}
 #endif

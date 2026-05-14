@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan ScalarTransition.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20ScalarTransition.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ScalarTransition", "TimeSpan ScalarTransition.Duration");
 			}
 			set
 			{

@@ -19,7 +19,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int HttpCacheDirectiveHeaderValueCollection.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20HttpCacheDirectiveHeaderValueCollection.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection", "int HttpCacheDirectiveHeaderValueCollection.Count");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HttpCacheDirectiveHeaderValueCollection.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpCacheDirectiveHeaderValueCollection.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection", "bool HttpCacheDirectiveHeaderValueCollection.IsReadOnly");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpNameValueHeaderValue HttpCacheDirectiveHeaderValueCollection.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpNameValueHeaderValue%20HttpCacheDirectiveHeaderValueCollection.this%5Bint%20index%5D");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection", "HttpNameValueHeaderValue HttpCacheDirectiveHeaderValueCollection.this[int index]");
 			}
 			set
 			{
@@ -53,7 +53,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? HttpCacheDirectiveHeaderValueCollection.MaxAge is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20HttpCacheDirectiveHeaderValueCollection.MaxAge");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection", "TimeSpan? HttpCacheDirectiveHeaderValueCollection.MaxAge");
 			}
 			set
 			{
@@ -67,7 +67,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? HttpCacheDirectiveHeaderValueCollection.MaxStale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20HttpCacheDirectiveHeaderValueCollection.MaxStale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection", "TimeSpan? HttpCacheDirectiveHeaderValueCollection.MaxStale");
 			}
 			set
 			{
@@ -81,7 +81,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? HttpCacheDirectiveHeaderValueCollection.MinFresh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20HttpCacheDirectiveHeaderValueCollection.MinFresh");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection", "TimeSpan? HttpCacheDirectiveHeaderValueCollection.MinFresh");
 			}
 			set
 			{
@@ -95,7 +95,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? HttpCacheDirectiveHeaderValueCollection.SharedMaxAge is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20HttpCacheDirectiveHeaderValueCollection.SharedMaxAge");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection", "TimeSpan? HttpCacheDirectiveHeaderValueCollection.SharedMaxAge");
 			}
 			set
 			{
@@ -114,7 +114,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryParseAdd(string input)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpCacheDirectiveHeaderValueCollection.TryParseAdd(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpCacheDirectiveHeaderValueCollection.TryParseAdd%28string%20input%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection", "bool HttpCacheDirectiveHeaderValueCollection.TryParseAdd(string input)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection.Count.get
@@ -125,7 +125,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int IndexOf(global::Windows.Web.Http.Headers.HttpNameValueHeaderValue item)
 		{
-			throw new global::System.NotImplementedException("The member int HttpCacheDirectiveHeaderValueCollection.IndexOf(HttpNameValueHeaderValue item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20HttpCacheDirectiveHeaderValueCollection.IndexOf%28HttpNameValueHeaderValue%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection", "int HttpCacheDirectiveHeaderValueCollection.IndexOf(HttpNameValueHeaderValue item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -160,7 +160,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Contains(global::Windows.Web.Http.Headers.HttpNameValueHeaderValue item)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpCacheDirectiveHeaderValueCollection.Contains(HttpNameValueHeaderValue item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpCacheDirectiveHeaderValueCollection.Contains%28HttpNameValueHeaderValue%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection", "bool HttpCacheDirectiveHeaderValueCollection.Contains(HttpNameValueHeaderValue item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -174,14 +174,14 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Remove(global::Windows.Web.Http.Headers.HttpNameValueHeaderValue item)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpCacheDirectiveHeaderValueCollection.Remove(HttpNameValueHeaderValue item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpCacheDirectiveHeaderValueCollection.Remove%28HttpNameValueHeaderValue%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection", "bool HttpCacheDirectiveHeaderValueCollection.Remove(HttpNameValueHeaderValue item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Web.Http.Headers.HttpNameValueHeaderValue> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<HttpNameValueHeaderValue> HttpCacheDirectiveHeaderValueCollection.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CHttpNameValueHeaderValue%3E%20HttpCacheDirectiveHeaderValueCollection.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection", "IEnumerator<HttpNameValueHeaderValue> HttpCacheDirectiveHeaderValueCollection.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection.System.Collections.IEnumerable.GetEnumerator()
@@ -189,7 +189,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpCacheDirectiveHeaderValueCollection.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpCacheDirectiveHeaderValueCollection.ToString%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection", "string HttpCacheDirectiveHeaderValueCollection.ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection.MaxAge.get

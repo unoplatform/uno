@@ -14,7 +14,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> RemoteSystemKindFilter.RemoteSystemKinds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20RemoteSystemKindFilter.RemoteSystemKinds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemKindFilter", "IReadOnlyList<string> RemoteSystemKindFilter.RemoteSystemKinds");
 			}
 		}
 #endif

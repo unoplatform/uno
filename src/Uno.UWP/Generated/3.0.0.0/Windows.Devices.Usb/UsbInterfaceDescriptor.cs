@@ -19,7 +19,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbInterfaceDescriptor.AlternateSettingNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20UsbInterfaceDescriptor.AlternateSettingNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceDescriptor", "byte UsbInterfaceDescriptor.AlternateSettingNumber");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbInterfaceDescriptor.ClassCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20UsbInterfaceDescriptor.ClassCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceDescriptor", "byte UsbInterfaceDescriptor.ClassCode");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbInterfaceDescriptor.InterfaceNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20UsbInterfaceDescriptor.InterfaceNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceDescriptor", "byte UsbInterfaceDescriptor.InterfaceNumber");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbInterfaceDescriptor.ProtocolCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20UsbInterfaceDescriptor.ProtocolCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceDescriptor", "byte UsbInterfaceDescriptor.ProtocolCode");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbInterfaceDescriptor.SubclassCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20UsbInterfaceDescriptor.SubclassCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceDescriptor", "byte UsbInterfaceDescriptor.SubclassCode");
 			}
 		}
 #endif
@@ -67,14 +67,14 @@ namespace Windows.Devices.Usb
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryParse(global::Windows.Devices.Usb.UsbDescriptor descriptor, out global::Windows.Devices.Usb.UsbInterfaceDescriptor parsed)
 		{
-			throw new global::System.NotImplementedException("The member bool UsbInterfaceDescriptor.TryParse(UsbDescriptor descriptor, out UsbInterfaceDescriptor parsed) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20UsbInterfaceDescriptor.TryParse%28UsbDescriptor%20descriptor%2C%20out%20UsbInterfaceDescriptor%20parsed%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceDescriptor", "bool UsbInterfaceDescriptor.TryParse(UsbDescriptor descriptor, out UsbInterfaceDescriptor parsed)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Usb.UsbInterfaceDescriptor Parse(global::Windows.Devices.Usb.UsbDescriptor descriptor)
 		{
-			throw new global::System.NotImplementedException("The member UsbInterfaceDescriptor UsbInterfaceDescriptor.Parse(UsbDescriptor descriptor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbInterfaceDescriptor%20UsbInterfaceDescriptor.Parse%28UsbDescriptor%20descriptor%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceDescriptor", "UsbInterfaceDescriptor UsbInterfaceDescriptor.Parse(UsbDescriptor descriptor)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.AlternateSettingNumber.get

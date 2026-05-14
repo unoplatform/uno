@@ -32,7 +32,7 @@ namespace System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static TResult Get<TResult>(global::Windows.Foundation.IAsyncOperation<TResult> source)
 		{
-			throw new global::System.NotImplementedException("The member TResult WindowsRuntimeSystemExtensions.Get<TResult>(IAsyncOperation<TResult> source) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TResult%20WindowsRuntimeSystemExtensions.Get%3CTResult%3E%28IAsyncOperation%3CTResult%3E%20source%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.WindowsRuntimeSystemExtensions", "TResult WindowsRuntimeSystemExtensions.Get<TResult>(IAsyncOperation<TResult> source)");
 		}
 #endif
 		// Skipping already declared method System.WindowsRuntimeSystemExtensions.AsTask<TProgress>(Windows.Foundation.IAsyncActionWithProgress<TProgress>, System.Threading.CancellationToken, System.IProgress<TProgress>)
@@ -63,7 +63,7 @@ namespace System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static TResult Get<TResult, TProgress>(global::Windows.Foundation.IAsyncOperationWithProgress<TResult, TProgress> source)
 		{
-			throw new global::System.NotImplementedException("The member TResult WindowsRuntimeSystemExtensions.Get<TResult, TProgress>(IAsyncOperationWithProgress<TResult, TProgress> source) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TResult%20WindowsRuntimeSystemExtensions.Get%3CTResult%2C%20TProgress%3E%28IAsyncOperationWithProgress%3CTResult%2C%20TProgress%3E%20source%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.WindowsRuntimeSystemExtensions", "TResult WindowsRuntimeSystemExtensions.Get<TResult, TProgress>(IAsyncOperationWithProgress<TResult, TProgress> source)");
 		}
 #endif
 		// Skipping already declared method System.WindowsRuntimeSystemExtensions.AsAsyncAction(System.Threading.Tasks.Task)

@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailAttachment.ContentId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailAttachment.ContentId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailAttachment", "string EmailAttachment.ContentId");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailAttachment.ContentLocation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailAttachment.ContentLocation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailAttachment", "string EmailAttachment.ContentLocation");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference EmailAttachment.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20EmailAttachment.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailAttachment", "IRandomAccessStreamReference EmailAttachment.Data");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailAttachmentDownloadState EmailAttachment.DownloadState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailAttachmentDownloadState%20EmailAttachment.DownloadState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailAttachment", "EmailAttachmentDownloadState EmailAttachment.DownloadState");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong EmailAttachment.EstimatedDownloadSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20EmailAttachment.EstimatedDownloadSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailAttachment", "ulong EmailAttachment.EstimatedDownloadSizeInBytes");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailAttachment.FileName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailAttachment.FileName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailAttachment", "string EmailAttachment.FileName");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailAttachment.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailAttachment.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailAttachment", "string EmailAttachment.Id");
 			}
 		}
 #endif
@@ -108,7 +108,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailAttachment.IsFromBaseMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailAttachment.IsFromBaseMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailAttachment", "bool EmailAttachment.IsFromBaseMessage");
 			}
 		}
 #endif
@@ -118,7 +118,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailAttachment.IsInline is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailAttachment.IsInline");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailAttachment", "bool EmailAttachment.IsInline");
 			}
 			set
 			{
@@ -132,7 +132,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailAttachment.MimeType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailAttachment.MimeType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailAttachment", "string EmailAttachment.MimeType");
 			}
 			set
 			{

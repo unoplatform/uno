@@ -14,7 +14,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ResourceMap ResourceManager.MainResourceMap is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceMap%20ResourceManager.MainResourceMap");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceManager", "ResourceMap ResourceManager.MainResourceMap");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Windows.ApplicationModel.Resources.ResourceContext CreateResourceContext()
 		{
-			throw new global::System.NotImplementedException("The member ResourceContext ResourceManager.CreateResourceContext() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceContext%20ResourceManager.CreateResourceContext%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceManager", "ResourceContext ResourceManager.CreateResourceContext()");
 		}
 #endif
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceManager.ResourceNotFound.add

@@ -19,7 +19,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceInformation DevicePairingRequestedEventArgs.DeviceInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceInformation%20DevicePairingRequestedEventArgs.DeviceInformation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePairingRequestedEventArgs", "DeviceInformation DevicePairingRequestedEventArgs.DeviceInformation");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DevicePairingKinds DevicePairingRequestedEventArgs.PairingKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DevicePairingKinds%20DevicePairingRequestedEventArgs.PairingKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePairingRequestedEventArgs", "DevicePairingKinds DevicePairingRequestedEventArgs.PairingKind");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DevicePairingRequestedEventArgs.Pin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DevicePairingRequestedEventArgs.Pin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePairingRequestedEventArgs", "string DevicePairingRequestedEventArgs.Pin");
 			}
 		}
 #endif
@@ -61,7 +61,7 @@ namespace Windows.Devices.Enumeration
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral DevicePairingRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20DevicePairingRequestedEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePairingRequestedEventArgs", "Deferral DevicePairingRequestedEventArgs.GetDeferral()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

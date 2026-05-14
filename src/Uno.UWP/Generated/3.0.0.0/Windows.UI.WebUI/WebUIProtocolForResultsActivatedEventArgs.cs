@@ -19,7 +19,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIProtocolForResultsActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIProtocolForResultsActivatedEventArgs.ActivatedOperation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolForResultsActivatedEventArgs", "ActivatedOperation WebUIProtocolForResultsActivatedEventArgs.ActivatedOperation");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebUIProtocolForResultsActivatedEventArgs.CallerPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebUIProtocolForResultsActivatedEventArgs.CallerPackageFamilyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolForResultsActivatedEventArgs", "string WebUIProtocolForResultsActivatedEventArgs.CallerPackageFamilyName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int WebUIProtocolForResultsActivatedEventArgs.CurrentlyShownApplicationViewId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20WebUIProtocolForResultsActivatedEventArgs.CurrentlyShownApplicationViewId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolForResultsActivatedEventArgs", "int WebUIProtocolForResultsActivatedEventArgs.CurrentlyShownApplicationViewId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet WebUIProtocolForResultsActivatedEventArgs.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20WebUIProtocolForResultsActivatedEventArgs.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolForResultsActivatedEventArgs", "ValueSet WebUIProtocolForResultsActivatedEventArgs.Data");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationKind WebUIProtocolForResultsActivatedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivationKind%20WebUIProtocolForResultsActivatedEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolForResultsActivatedEventArgs", "ActivationKind WebUIProtocolForResultsActivatedEventArgs.Kind");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState WebUIProtocolForResultsActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ApplicationExecutionState%20WebUIProtocolForResultsActivatedEventArgs.PreviousExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolForResultsActivatedEventArgs", "ApplicationExecutionState WebUIProtocolForResultsActivatedEventArgs.PreviousExecutionState");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ProtocolForResultsOperation WebUIProtocolForResultsActivatedEventArgs.ProtocolForResultsOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProtocolForResultsOperation%20WebUIProtocolForResultsActivatedEventArgs.ProtocolForResultsOperation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolForResultsActivatedEventArgs", "ProtocolForResultsOperation WebUIProtocolForResultsActivatedEventArgs.ProtocolForResultsOperation");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen WebUIProtocolForResultsActivatedEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SplashScreen%20WebUIProtocolForResultsActivatedEventArgs.SplashScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolForResultsActivatedEventArgs", "SplashScreen WebUIProtocolForResultsActivatedEventArgs.SplashScreen");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri WebUIProtocolForResultsActivatedEventArgs.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20WebUIProtocolForResultsActivatedEventArgs.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolForResultsActivatedEventArgs", "Uri WebUIProtocolForResultsActivatedEventArgs.Uri");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User WebUIProtocolForResultsActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20WebUIProtocolForResultsActivatedEventArgs.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIProtocolForResultsActivatedEventArgs", "User WebUIProtocolForResultsActivatedEventArgs.User");
 			}
 		}
 #endif

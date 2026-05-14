@@ -14,7 +14,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SceneAnalysisEffectDefinition.ActivatableClassId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SceneAnalysisEffectDefinition.ActivatableClassId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectDefinition", "string SceneAnalysisEffectDefinition.ActivatableClassId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet SceneAnalysisEffectDefinition.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPropertySet%20SceneAnalysisEffectDefinition.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectDefinition", "IPropertySet SceneAnalysisEffectDefinition.Properties");
 			}
 		}
 #endif

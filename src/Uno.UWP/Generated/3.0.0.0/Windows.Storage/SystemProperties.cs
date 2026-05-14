@@ -14,7 +14,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemAudioProperties SystemProperties.Audio is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemAudioProperties%20SystemProperties.Audio");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemProperties", "SystemAudioProperties SystemProperties.Audio");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemProperties.Author is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemProperties.Author");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemProperties", "string SystemProperties.Author");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemProperties.Comment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemProperties.Comment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemProperties", "string SystemProperties.Comment");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemGPSProperties SystemProperties.GPS is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemGPSProperties%20SystemProperties.GPS");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemProperties", "SystemGPSProperties SystemProperties.GPS");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemImageProperties SystemProperties.Image is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemImageProperties%20SystemProperties.Image");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemProperties", "SystemImageProperties SystemProperties.Image");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemProperties.ItemNameDisplay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemProperties.ItemNameDisplay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemProperties", "string SystemProperties.ItemNameDisplay");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemProperties.Keywords is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemProperties.Keywords");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemProperties", "string SystemProperties.Keywords");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemMediaProperties SystemProperties.Media is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemMediaProperties%20SystemProperties.Media");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemProperties", "SystemMediaProperties SystemProperties.Media");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemMusicProperties SystemProperties.Music is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemMusicProperties%20SystemProperties.Music");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemProperties", "SystemMusicProperties SystemProperties.Music");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemPhotoProperties SystemProperties.Photo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemPhotoProperties%20SystemProperties.Photo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemProperties", "SystemPhotoProperties SystemProperties.Photo");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemProperties.Rating is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemProperties.Rating");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemProperties", "string SystemProperties.Rating");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemProperties.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemProperties.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemProperties", "string SystemProperties.Title");
 			}
 		}
 #endif
@@ -134,7 +134,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemVideoProperties SystemProperties.Video is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemVideoProperties%20SystemProperties.Video");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemProperties", "SystemVideoProperties SystemProperties.Video");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> VpnTrafficFilter.AppClaims is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20VpnTrafficFilter.AppClaims");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnTrafficFilter", "IList<string> VpnTrafficFilter.AppClaims");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnAppId VpnTrafficFilter.AppId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnAppId%20VpnTrafficFilter.AppId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnTrafficFilter", "VpnAppId VpnTrafficFilter.AppId");
 			}
 			set
 			{
@@ -38,7 +38,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> VpnTrafficFilter.LocalAddressRanges is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20VpnTrafficFilter.LocalAddressRanges");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnTrafficFilter", "IList<string> VpnTrafficFilter.LocalAddressRanges");
 			}
 		}
 #endif
@@ -48,7 +48,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> VpnTrafficFilter.LocalPortRanges is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20VpnTrafficFilter.LocalPortRanges");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnTrafficFilter", "IList<string> VpnTrafficFilter.LocalPortRanges");
 			}
 		}
 #endif
@@ -58,7 +58,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnIPProtocol VpnTrafficFilter.Protocol is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnIPProtocol%20VpnTrafficFilter.Protocol");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnTrafficFilter", "VpnIPProtocol VpnTrafficFilter.Protocol");
 			}
 			set
 			{
@@ -72,7 +72,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> VpnTrafficFilter.RemoteAddressRanges is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20VpnTrafficFilter.RemoteAddressRanges");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnTrafficFilter", "IList<string> VpnTrafficFilter.RemoteAddressRanges");
 			}
 		}
 #endif
@@ -82,7 +82,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> VpnTrafficFilter.RemotePortRanges is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20VpnTrafficFilter.RemotePortRanges");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnTrafficFilter", "IList<string> VpnTrafficFilter.RemotePortRanges");
 			}
 		}
 #endif
@@ -92,7 +92,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnRoutingPolicyType VpnTrafficFilter.RoutingPolicyType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnRoutingPolicyType%20VpnTrafficFilter.RoutingPolicyType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnTrafficFilter", "VpnRoutingPolicyType VpnTrafficFilter.RoutingPolicyType");
 			}
 			set
 			{

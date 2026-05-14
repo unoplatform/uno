@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CachedFileUpdaterUI CachedFileUpdaterActivatedEventArgs.CachedFileUpdaterUI is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CachedFileUpdaterUI%20CachedFileUpdaterActivatedEventArgs.CachedFileUpdaterUI");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs", "CachedFileUpdaterUI CachedFileUpdaterActivatedEventArgs.CachedFileUpdaterUI");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationKind CachedFileUpdaterActivatedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivationKind%20CachedFileUpdaterActivatedEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs", "ActivationKind CachedFileUpdaterActivatedEventArgs.Kind");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState CachedFileUpdaterActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ApplicationExecutionState%20CachedFileUpdaterActivatedEventArgs.PreviousExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs", "ApplicationExecutionState CachedFileUpdaterActivatedEventArgs.PreviousExecutionState");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen CachedFileUpdaterActivatedEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SplashScreen%20CachedFileUpdaterActivatedEventArgs.SplashScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs", "SplashScreen CachedFileUpdaterActivatedEventArgs.SplashScreen");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User CachedFileUpdaterActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20CachedFileUpdaterActivatedEventArgs.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.CachedFileUpdaterActivatedEventArgs", "User CachedFileUpdaterActivatedEventArgs.User");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double InkDrawingAttributesPencilProperties.Opacity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InkDrawingAttributesPencilProperties.Opacity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkDrawingAttributesPencilProperties", "double InkDrawingAttributesPencilProperties.Opacity");
 			}
 			set
 			{

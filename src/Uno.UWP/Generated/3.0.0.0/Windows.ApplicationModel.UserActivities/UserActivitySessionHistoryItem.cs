@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? UserActivitySessionHistoryItem.EndTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20UserActivitySessionHistoryItem.EndTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem", "DateTimeOffset? UserActivitySessionHistoryItem.EndTime");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset UserActivitySessionHistoryItem.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20UserActivitySessionHistoryItem.StartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem", "DateTimeOffset UserActivitySessionHistoryItem.StartTime");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserActivity UserActivitySessionHistoryItem.UserActivity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserActivity%20UserActivitySessionHistoryItem.UserActivity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem", "UserActivity UserActivitySessionHistoryItem.UserActivity");
 			}
 		}
 #endif

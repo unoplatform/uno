@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapAlphaMode AppBroadcastPreviewStreamReader.VideoBitmapAlphaMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapAlphaMode%20AppBroadcastPreviewStreamReader.VideoBitmapAlphaMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreviewStreamReader", "BitmapAlphaMode AppBroadcastPreviewStreamReader.VideoBitmapAlphaMode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapPixelFormat AppBroadcastPreviewStreamReader.VideoBitmapPixelFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapPixelFormat%20AppBroadcastPreviewStreamReader.VideoBitmapPixelFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreviewStreamReader", "BitmapPixelFormat AppBroadcastPreviewStreamReader.VideoBitmapPixelFormat");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppBroadcastPreviewStreamReader.VideoHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppBroadcastPreviewStreamReader.VideoHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreviewStreamReader", "uint AppBroadcastPreviewStreamReader.VideoHeight");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppBroadcastPreviewStreamReader.VideoStride is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppBroadcastPreviewStreamReader.VideoStride");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreviewStreamReader", "uint AppBroadcastPreviewStreamReader.VideoStride");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppBroadcastPreviewStreamReader.VideoWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppBroadcastPreviewStreamReader.VideoWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreviewStreamReader", "uint AppBroadcastPreviewStreamReader.VideoWidth");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Capture.AppBroadcastPreviewStreamVideoFrame TryGetNextVideoFrame()
 		{
-			throw new global::System.NotImplementedException("The member AppBroadcastPreviewStreamVideoFrame AppBroadcastPreviewStreamReader.TryGetNextVideoFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastPreviewStreamVideoFrame%20AppBroadcastPreviewStreamReader.TryGetNextVideoFrame%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreviewStreamReader", "AppBroadcastPreviewStreamVideoFrame AppBroadcastPreviewStreamReader.TryGetNextVideoFrame()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastPreviewStreamReader.VideoFrameArrived.add

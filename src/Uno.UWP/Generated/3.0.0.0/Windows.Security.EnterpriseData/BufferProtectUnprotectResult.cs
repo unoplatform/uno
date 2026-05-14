@@ -19,7 +19,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer BufferProtectUnprotectResult.Buffer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20BufferProtectUnprotectResult.Buffer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.BufferProtectUnprotectResult", "IBuffer BufferProtectUnprotectResult.Buffer");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DataProtectionInfo BufferProtectUnprotectResult.ProtectionInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataProtectionInfo%20BufferProtectUnprotectResult.ProtectionInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.BufferProtectUnprotectResult", "DataProtectionInfo BufferProtectUnprotectResult.ProtectionInfo");
 			}
 		}
 #endif

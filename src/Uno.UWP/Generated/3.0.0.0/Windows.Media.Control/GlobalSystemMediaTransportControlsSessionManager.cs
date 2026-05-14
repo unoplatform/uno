@@ -17,21 +17,21 @@ namespace Windows.Media.Control
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager> RequestAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GlobalSystemMediaTransportControlsSessionManager> GlobalSystemMediaTransportControlsSessionManager.RequestAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGlobalSystemMediaTransportControlsSessionManager%3E%20GlobalSystemMediaTransportControlsSessionManager.RequestAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager", "IAsyncOperation<GlobalSystemMediaTransportControlsSessionManager> GlobalSystemMediaTransportControlsSessionManager.RequestAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Control.GlobalSystemMediaTransportControlsSession GetCurrentSession()
 		{
-			throw new global::System.NotImplementedException("The member GlobalSystemMediaTransportControlsSession GlobalSystemMediaTransportControlsSessionManager.GetCurrentSession() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GlobalSystemMediaTransportControlsSession%20GlobalSystemMediaTransportControlsSessionManager.GetCurrentSession%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager", "GlobalSystemMediaTransportControlsSession GlobalSystemMediaTransportControlsSessionManager.GetCurrentSession()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Control.GlobalSystemMediaTransportControlsSession> GetSessions()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<GlobalSystemMediaTransportControlsSession> GlobalSystemMediaTransportControlsSessionManager.GetSessions() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CGlobalSystemMediaTransportControlsSession%3E%20GlobalSystemMediaTransportControlsSessionManager.GetSessions%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager", "IReadOnlyList<GlobalSystemMediaTransportControlsSession> GlobalSystemMediaTransportControlsSessionManager.GetSessions()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager.CurrentSessionChanged.add

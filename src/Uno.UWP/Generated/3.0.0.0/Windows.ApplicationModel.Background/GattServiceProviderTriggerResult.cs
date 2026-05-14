@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothError GattServiceProviderTriggerResult.Error is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothError%20GattServiceProviderTriggerResult.Error");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.GattServiceProviderTriggerResult", "BluetoothError GattServiceProviderTriggerResult.Error");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattServiceProviderTrigger GattServiceProviderTriggerResult.Trigger is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattServiceProviderTrigger%20GattServiceProviderTriggerResult.Trigger");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.GattServiceProviderTriggerResult", "GattServiceProviderTrigger GattServiceProviderTriggerResult.Trigger");
 			}
 		}
 #endif

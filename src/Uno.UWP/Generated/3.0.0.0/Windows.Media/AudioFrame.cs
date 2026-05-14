@@ -14,7 +14,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? AudioFrame.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20AudioFrame.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "TimeSpan? AudioFrame.Duration");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet AudioFrame.ExtendedProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPropertySet%20AudioFrame.ExtendedProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "IPropertySet AudioFrame.ExtendedProperties");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AudioFrame.IsDiscontinuous is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AudioFrame.IsDiscontinuous");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "bool AudioFrame.IsDiscontinuous");
 			}
 			set
 			{
@@ -52,7 +52,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AudioFrame.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AudioFrame.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "bool AudioFrame.IsReadOnly");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? AudioFrame.RelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20AudioFrame.RelativeTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "TimeSpan? AudioFrame.RelativeTime");
 			}
 			set
 			{
@@ -76,7 +76,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? AudioFrame.SystemRelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20AudioFrame.SystemRelativeTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "TimeSpan? AudioFrame.SystemRelativeTime");
 			}
 			set
 			{
@@ -90,7 +90,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AudioFrame.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AudioFrame.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "string AudioFrame.Type");
 			}
 		}
 #endif
@@ -106,7 +106,7 @@ namespace Windows.Media
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.AudioBuffer LockBuffer(global::Windows.Media.AudioBufferAccessMode mode)
 		{
-			throw new global::System.NotImplementedException("The member AudioBuffer AudioFrame.LockBuffer(AudioBufferAccessMode mode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioBuffer%20AudioFrame.LockBuffer%28AudioBufferAccessMode%20mode%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioFrame", "AudioBuffer AudioFrame.LockBuffer(AudioBufferAccessMode mode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

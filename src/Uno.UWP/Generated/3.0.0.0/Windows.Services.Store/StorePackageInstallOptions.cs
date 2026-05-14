@@ -14,7 +14,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StorePackageInstallOptions.AllowForcedAppRestart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StorePackageInstallOptions.AllowForcedAppRestart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePackageInstallOptions", "bool StorePackageInstallOptions.AllowForcedAppRestart");
 			}
 			set
 			{

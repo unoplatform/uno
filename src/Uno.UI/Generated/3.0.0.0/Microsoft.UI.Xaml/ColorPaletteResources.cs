@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.Accent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.Accent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.Accent");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.AltHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.AltHigh");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.AltHigh");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.AltLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.AltLow");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.AltLow");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.AltMedium is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.AltMedium");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.AltMedium");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.AltMediumHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.AltMediumHigh");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.AltMediumHigh");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.AltMediumLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.AltMediumLow");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.AltMediumLow");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.BaseHigh");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.BaseHigh");
 			}
 			set
 			{
@@ -112,7 +112,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.BaseLow");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.BaseLow");
 			}
 			set
 			{
@@ -126,7 +126,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseMedium is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.BaseMedium");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.BaseMedium");
 			}
 			set
 			{
@@ -140,7 +140,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseMediumHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.BaseMediumHigh");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.BaseMediumHigh");
 			}
 			set
 			{
@@ -154,7 +154,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.BaseMediumLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.BaseMediumLow");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.BaseMediumLow");
 			}
 			set
 			{
@@ -168,7 +168,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeAltLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeAltLow");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeAltLow");
 			}
 			set
 			{
@@ -182,7 +182,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeBlackHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeBlackHigh");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeBlackHigh");
 			}
 			set
 			{
@@ -196,7 +196,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeBlackLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeBlackLow");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeBlackLow");
 			}
 			set
 			{
@@ -210,7 +210,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeBlackMedium is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeBlackMedium");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeBlackMedium");
 			}
 			set
 			{
@@ -224,7 +224,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeBlackMediumLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeBlackMediumLow");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeBlackMediumLow");
 			}
 			set
 			{
@@ -238,7 +238,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeDisabledHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeDisabledHigh");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeDisabledHigh");
 			}
 			set
 			{
@@ -252,7 +252,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeDisabledLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeDisabledLow");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeDisabledLow");
 			}
 			set
 			{
@@ -266,7 +266,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeGray is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeGray");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeGray");
 			}
 			set
 			{
@@ -280,7 +280,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeHigh");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeHigh");
 			}
 			set
 			{
@@ -294,7 +294,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeLow");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeLow");
 			}
 			set
 			{
@@ -308,7 +308,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeMedium is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeMedium");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeMedium");
 			}
 			set
 			{
@@ -322,7 +322,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeMediumLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeMediumLow");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeMediumLow");
 			}
 			set
 			{
@@ -336,7 +336,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ChromeWhite is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ChromeWhite");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ChromeWhite");
 			}
 			set
 			{
@@ -350,7 +350,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ErrorText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ErrorText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ErrorText");
 			}
 			set
 			{
@@ -364,7 +364,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ListLow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ListLow");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ListLow");
 			}
 			set
 			{
@@ -378,7 +378,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ColorPaletteResources.ListMedium is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ColorPaletteResources.ListMedium");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ColorPaletteResources", "Color? ColorPaletteResources.ListMedium");
 			}
 			set
 			{

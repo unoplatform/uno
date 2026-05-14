@@ -19,7 +19,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string BackgroundTransferGroup.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20BackgroundTransferGroup.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferGroup", "string BackgroundTransferGroup.Name");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BackgroundTransferBehavior BackgroundTransferGroup.TransferBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BackgroundTransferBehavior%20BackgroundTransferGroup.TransferBehavior");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferGroup", "BackgroundTransferBehavior BackgroundTransferGroup.TransferBehavior");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Networking.BackgroundTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Networking.BackgroundTransfer.BackgroundTransferGroup CreateGroup(string name)
 		{
-			throw new global::System.NotImplementedException("The member BackgroundTransferGroup BackgroundTransferGroup.CreateGroup(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BackgroundTransferGroup%20BackgroundTransferGroup.CreateGroup%28string%20name%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferGroup", "BackgroundTransferGroup BackgroundTransferGroup.CreateGroup(string name)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferGroup.Name.get

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PhoneLineWatcherEventArgs.LineId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PhoneLineWatcherEventArgs.LineId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLineWatcherEventArgs", "Guid PhoneLineWatcherEventArgs.LineId");
 			}
 		}
 #endif

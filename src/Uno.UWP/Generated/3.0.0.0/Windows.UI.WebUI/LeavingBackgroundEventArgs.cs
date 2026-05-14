@@ -17,7 +17,7 @@ namespace Windows.UI.WebUI
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral LeavingBackgroundEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20LeavingBackgroundEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.LeavingBackgroundEventArgs", "Deferral LeavingBackgroundEventArgs.GetDeferral()");
 		}
 #endif
 		// Processing: Windows.ApplicationModel.ILeavingBackgroundEventArgs

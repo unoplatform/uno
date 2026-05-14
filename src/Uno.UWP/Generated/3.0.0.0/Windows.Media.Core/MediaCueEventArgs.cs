@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IMediaCue MediaCueEventArgs.Cue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IMediaCue%20MediaCueEventArgs.Cue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaCueEventArgs", "IMediaCue MediaCueEventArgs.Cue");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WalletRelevantLocation.DisplayMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletRelevantLocation.DisplayMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletRelevantLocation", "string WalletRelevantLocation.DisplayMessage");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BasicGeoposition WalletRelevantLocation.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BasicGeoposition%20WalletRelevantLocation.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletRelevantLocation", "BasicGeoposition WalletRelevantLocation.Position");
 			}
 			set
 			{

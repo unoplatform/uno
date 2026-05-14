@@ -14,7 +14,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color TimedTextStyle.Background is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20TimedTextStyle.Background");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextStyle", "Color TimedTextStyle.Background");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextFlowDirection TimedTextStyle.FlowDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextFlowDirection%20TimedTextStyle.FlowDirection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextStyle", "TimedTextFlowDirection TimedTextStyle.FlowDirection");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TimedTextStyle.FontFamily is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20TimedTextStyle.FontFamily");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextStyle", "string TimedTextStyle.FontFamily");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextDouble TimedTextStyle.FontSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextDouble%20TimedTextStyle.FontSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextStyle", "TimedTextDouble TimedTextStyle.FontSize");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextFontStyle TimedTextStyle.FontStyle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextFontStyle%20TimedTextStyle.FontStyle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextStyle", "TimedTextFontStyle TimedTextStyle.FontStyle");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextWeight TimedTextStyle.FontWeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextWeight%20TimedTextStyle.FontWeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextStyle", "TimedTextWeight TimedTextStyle.FontWeight");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color TimedTextStyle.Foreground is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20TimedTextStyle.Foreground");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextStyle", "Color TimedTextStyle.Foreground");
 			}
 			set
 			{
@@ -112,7 +112,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TimedTextStyle.IsBackgroundAlwaysShown is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20TimedTextStyle.IsBackgroundAlwaysShown");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextStyle", "bool TimedTextStyle.IsBackgroundAlwaysShown");
 			}
 			set
 			{
@@ -126,7 +126,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TimedTextStyle.IsLineThroughEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20TimedTextStyle.IsLineThroughEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextStyle", "bool TimedTextStyle.IsLineThroughEnabled");
 			}
 			set
 			{
@@ -140,7 +140,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TimedTextStyle.IsOverlineEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20TimedTextStyle.IsOverlineEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextStyle", "bool TimedTextStyle.IsOverlineEnabled");
 			}
 			set
 			{
@@ -154,7 +154,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TimedTextStyle.IsUnderlineEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20TimedTextStyle.IsUnderlineEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextStyle", "bool TimedTextStyle.IsUnderlineEnabled");
 			}
 			set
 			{
@@ -168,7 +168,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextLineAlignment TimedTextStyle.LineAlignment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextLineAlignment%20TimedTextStyle.LineAlignment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextStyle", "TimedTextLineAlignment TimedTextStyle.LineAlignment");
 			}
 			set
 			{
@@ -182,7 +182,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TimedTextStyle.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20TimedTextStyle.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextStyle", "string TimedTextStyle.Name");
 			}
 			set
 			{
@@ -196,7 +196,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color TimedTextStyle.OutlineColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20TimedTextStyle.OutlineColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextStyle", "Color TimedTextStyle.OutlineColor");
 			}
 			set
 			{
@@ -210,7 +210,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextDouble TimedTextStyle.OutlineRadius is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextDouble%20TimedTextStyle.OutlineRadius");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextStyle", "TimedTextDouble TimedTextStyle.OutlineRadius");
 			}
 			set
 			{
@@ -224,7 +224,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextDouble TimedTextStyle.OutlineThickness is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextDouble%20TimedTextStyle.OutlineThickness");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextStyle", "TimedTextDouble TimedTextStyle.OutlineThickness");
 			}
 			set
 			{

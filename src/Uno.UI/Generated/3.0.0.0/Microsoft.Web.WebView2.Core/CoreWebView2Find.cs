@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CoreWebView2Find.ActiveMatchIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2Find.ActiveMatchIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Find", "int CoreWebView2Find.ActiveMatchIndex");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CoreWebView2Find.MatchCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2Find.MatchCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Find", "int CoreWebView2Find.MatchCount");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction StartAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2FindOptions options)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction CoreWebView2Find.StartAsync(CoreWebView2FindOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20CoreWebView2Find.StartAsync%28CoreWebView2FindOptions%20options%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Find", "IAsyncAction CoreWebView2Find.StartAsync(CoreWebView2FindOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

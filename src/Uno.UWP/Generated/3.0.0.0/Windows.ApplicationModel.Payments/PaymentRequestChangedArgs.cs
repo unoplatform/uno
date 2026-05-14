@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentRequestChangeKind PaymentRequestChangedArgs.ChangeKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentRequestChangeKind%20PaymentRequestChangedArgs.ChangeKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentRequestChangedArgs", "PaymentRequestChangeKind PaymentRequestChangedArgs.ChangeKind");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentShippingOption PaymentRequestChangedArgs.SelectedShippingOption is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentShippingOption%20PaymentRequestChangedArgs.SelectedShippingOption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentRequestChangedArgs", "PaymentShippingOption PaymentRequestChangedArgs.SelectedShippingOption");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentAddress PaymentRequestChangedArgs.ShippingAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentAddress%20PaymentRequestChangedArgs.ShippingAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentRequestChangedArgs", "PaymentAddress PaymentRequestChangedArgs.ShippingAddress");
 			}
 		}
 #endif

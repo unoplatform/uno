@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionProjectedShadow.BlurRadiusMultiplier is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionProjectedShadow.BlurRadiusMultiplier");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionProjectedShadow", "float CompositionProjectedShadow.BlurRadiusMultiplier");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionProjectedShadowCasterCollection CompositionProjectedShadow.Casters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionProjectedShadowCasterCollection%20CompositionProjectedShadow.Casters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionProjectedShadow", "CompositionProjectedShadowCasterCollection CompositionProjectedShadow.Casters");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionLight CompositionProjectedShadow.LightSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionLight%20CompositionProjectedShadow.LightSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionProjectedShadow", "CompositionLight CompositionProjectedShadow.LightSource");
 			}
 			set
 			{
@@ -57,7 +57,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionProjectedShadow.MaxBlurRadius is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionProjectedShadow.MaxBlurRadius");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionProjectedShadow", "float CompositionProjectedShadow.MaxBlurRadius");
 			}
 			set
 			{
@@ -71,7 +71,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionProjectedShadow.MinBlurRadius is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionProjectedShadow.MinBlurRadius");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionProjectedShadow", "float CompositionProjectedShadow.MinBlurRadius");
 			}
 			set
 			{
@@ -85,7 +85,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionProjectedShadowReceiverUnorderedCollection CompositionProjectedShadow.Receivers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionProjectedShadowReceiverUnorderedCollection%20CompositionProjectedShadow.Receivers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionProjectedShadow", "CompositionProjectedShadowReceiverUnorderedCollection CompositionProjectedShadow.Receivers");
 			}
 		}
 #endif

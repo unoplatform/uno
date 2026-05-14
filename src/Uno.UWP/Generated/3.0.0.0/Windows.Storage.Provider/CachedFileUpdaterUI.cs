@@ -19,7 +19,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CachedFileUpdaterUI.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CachedFileUpdaterUI.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.CachedFileUpdaterUI", "string CachedFileUpdaterUI.Title");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UIStatus CachedFileUpdaterUI.UIStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UIStatus%20CachedFileUpdaterUI.UIStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.CachedFileUpdaterUI", "UIStatus CachedFileUpdaterUI.UIStatus");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FileUpdateRequest CachedFileUpdaterUI.UpdateRequest is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileUpdateRequest%20CachedFileUpdaterUI.UpdateRequest");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.CachedFileUpdaterUI", "FileUpdateRequest CachedFileUpdaterUI.UpdateRequest");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CachedFileTarget CachedFileUpdaterUI.UpdateTarget is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CachedFileTarget%20CachedFileUpdaterUI.UpdateTarget");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.CachedFileUpdaterUI", "CachedFileTarget CachedFileUpdaterUI.UpdateTarget");
 			}
 		}
 #endif
@@ -65,7 +65,7 @@ namespace Windows.Storage.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Provider.FileUpdateRequestDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member FileUpdateRequestDeferral CachedFileUpdaterUI.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileUpdateRequestDeferral%20CachedFileUpdaterUI.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.CachedFileUpdaterUI", "FileUpdateRequestDeferral CachedFileUpdaterUI.GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.Title.get

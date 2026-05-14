@@ -15,7 +15,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationViewWindowingMode ApplicationView.PreferredLaunchWindowingMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ApplicationViewWindowingMode%20ApplicationView.PreferredLaunchWindowingMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "ApplicationViewWindowingMode ApplicationView.PreferredLaunchWindowingMode");
 			}
 			set
 			{
@@ -29,7 +29,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ApplicationView.TerminateAppOnFinalViewClose is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationView.TerminateAppOnFinalViewClose");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.TerminateAppOnFinalViewClose");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationViewState ApplicationView.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ApplicationViewState%20ApplicationView.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "ApplicationViewState ApplicationView.Value");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ApplicationView.AdjacentToLeftDisplayEdge is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationView.AdjacentToLeftDisplayEdge");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.AdjacentToLeftDisplayEdge");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ApplicationView.AdjacentToRightDisplayEdge is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationView.AdjacentToRightDisplayEdge");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.AdjacentToRightDisplayEdge");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FullScreenSystemOverlayMode ApplicationView.FullScreenSystemOverlayMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FullScreenSystemOverlayMode%20ApplicationView.FullScreenSystemOverlayMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "FullScreenSystemOverlayMode ApplicationView.FullScreenSystemOverlayMode");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ApplicationView.IsFullScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationView.IsFullScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.IsFullScreen");
 			}
 		}
 #endif
@@ -100,7 +100,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ApplicationView.IsOnLockScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationView.IsOnLockScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.IsOnLockScreen");
 			}
 		}
 #endif
@@ -110,7 +110,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ApplicationView.IsScreenCaptureEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationView.IsScreenCaptureEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.IsScreenCaptureEnabled");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ApplicationView.PersistedStateId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ApplicationView.PersistedStateId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "string ApplicationView.PersistedStateId");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ApplicationView.SuppressSystemOverlays is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationView.SuppressSystemOverlays");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.SuppressSystemOverlays");
 			}
 			set
 			{
@@ -155,7 +155,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UIContext ApplicationView.UIContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UIContext%20ApplicationView.UIContext");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "UIContext ApplicationView.UIContext");
 			}
 		}
 #endif
@@ -167,7 +167,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WindowingEnvironment ApplicationView.WindowingEnvironment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WindowingEnvironment%20ApplicationView.WindowingEnvironment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "WindowingEnvironment ApplicationView.WindowingEnvironment");
 			}
 		}
 #endif
@@ -175,21 +175,21 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryUnsnapToFullscreen()
 		{
-			throw new global::System.NotImplementedException("The member bool ApplicationView.TryUnsnapToFullscreen() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationView.TryUnsnapToFullscreen%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.TryUnsnapToFullscreen()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static int GetApplicationViewIdForWindow(global::Windows.UI.Core.ICoreWindow window)
 		{
-			throw new global::System.NotImplementedException("The member int ApplicationView.GetApplicationViewIdForWindow(ICoreWindow window) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ApplicationView.GetApplicationViewIdForWindow%28ICoreWindow%20window%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "int ApplicationView.GetApplicationViewIdForWindow(ICoreWindow window)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryUnsnap()
 		{
-			throw new global::System.NotImplementedException("The member bool ApplicationView.TryUnsnap() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationView.TryUnsnap%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.TryUnsnap()");
 		}
 #endif
 		// Skipping already declared method Windows.UI.ViewManagement.ApplicationView.GetForCurrentView()
@@ -232,7 +232,7 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public bool TryResizeView(global::Windows.Foundation.Size value)
 		{
-			throw new global::System.NotImplementedException("The member bool ApplicationView.TryResizeView(Size value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationView.TryResizeView%28Size%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "bool ApplicationView.TryResizeView(Size value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
@@ -249,14 +249,14 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryConsolidateAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ApplicationView.TryConsolidateAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20ApplicationView.TryConsolidateAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "IAsyncOperation<bool> ApplicationView.TryConsolidateAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.WindowManagement.DisplayRegion> GetDisplayRegions()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<DisplayRegion> ApplicationView.GetDisplayRegions() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CDisplayRegion%3E%20ApplicationView.GetDisplayRegions%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationView", "IReadOnlyList<DisplayRegion> ApplicationView.GetDisplayRegions()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.AdjacentToLeftDisplayEdge.get

@@ -19,7 +19,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<FlightStick> FlightStick.FlightSticks is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CFlightStick%3E%20FlightStick.FlightSticks");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.FlightStick", "IReadOnlyList<FlightStick> FlightStick.FlightSticks");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GameControllerSwitchKind FlightStick.HatSwitchKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameControllerSwitchKind%20FlightStick.HatSwitchKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.FlightStick", "GameControllerSwitchKind FlightStick.HatSwitchKind");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Headset FlightStick.Headset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Headset%20FlightStick.Headset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.FlightStick", "Headset FlightStick.Headset");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FlightStick.IsWireless is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FlightStick.IsWireless");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.FlightStick", "bool FlightStick.IsWireless");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User FlightStick.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20FlightStick.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.FlightStick", "User FlightStick.User");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Gaming.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Gaming.Input.FlightStick FromGameController(global::Windows.Gaming.Input.IGameController gameController)
 		{
-			throw new global::System.NotImplementedException("The member FlightStick FlightStick.FromGameController(IGameController gameController) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FlightStick%20FlightStick.FromGameController%28IGameController%20gameController%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.FlightStick", "FlightStick FlightStick.FromGameController(IGameController gameController)");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.FlightStick.FlightStickAdded.add
@@ -79,14 +79,14 @@ namespace Windows.Gaming.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Gaming.Input.GameControllerButtonLabel GetButtonLabel(global::Windows.Gaming.Input.FlightStickButtons button)
 		{
-			throw new global::System.NotImplementedException("The member GameControllerButtonLabel FlightStick.GetButtonLabel(FlightStickButtons button) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameControllerButtonLabel%20FlightStick.GetButtonLabel%28FlightStickButtons%20button%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.FlightStick", "GameControllerButtonLabel FlightStick.GetButtonLabel(FlightStickButtons button)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Gaming.Input.FlightStickReading GetCurrentReading()
 		{
-			throw new global::System.NotImplementedException("The member FlightStickReading FlightStick.GetCurrentReading() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FlightStickReading%20FlightStick.GetCurrentReading%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.FlightStick", "FlightStickReading FlightStick.GetCurrentReading()");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.FlightStick.HeadsetConnected.add
@@ -99,7 +99,7 @@ namespace Windows.Gaming.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Power.BatteryReport TryGetBatteryReport()
 		{
-			throw new global::System.NotImplementedException("The member BatteryReport FlightStick.TryGetBatteryReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BatteryReport%20FlightStick.TryGetBatteryReport%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.FlightStick", "BatteryReport FlightStick.TryGetBatteryReport()");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.FlightStick.HatSwitchKind.get

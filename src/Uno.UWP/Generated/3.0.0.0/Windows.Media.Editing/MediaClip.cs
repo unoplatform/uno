@@ -19,7 +19,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<IAudioEffectDefinition> MediaClip.AudioEffectDefinitions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CIAudioEffectDefinition%3E%20MediaClip.AudioEffectDefinitions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaClip", "IList<IAudioEffectDefinition> MediaClip.AudioEffectDefinitions");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<EmbeddedAudioTrack> MediaClip.EmbeddedAudioTracks is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CEmbeddedAudioTrack%3E%20MediaClip.EmbeddedAudioTracks");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaClip", "IReadOnlyList<EmbeddedAudioTrack> MediaClip.EmbeddedAudioTracks");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaClip.EndTimeInComposition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaClip.EndTimeInComposition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaClip", "TimeSpan MediaClip.EndTimeInComposition");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaClip.OriginalDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaClip.OriginalDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaClip", "TimeSpan MediaClip.OriginalDuration");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MediaClip.SelectedEmbeddedAudioTrackIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MediaClip.SelectedEmbeddedAudioTrackIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaClip", "uint MediaClip.SelectedEmbeddedAudioTrackIndex");
 			}
 			set
 			{
@@ -73,7 +73,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaClip.StartTimeInComposition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaClip.StartTimeInComposition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaClip", "TimeSpan MediaClip.StartTimeInComposition");
 			}
 		}
 #endif
@@ -83,7 +83,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaClip.TrimTimeFromEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaClip.TrimTimeFromEnd");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaClip", "TimeSpan MediaClip.TrimTimeFromEnd");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaClip.TrimTimeFromStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaClip.TrimTimeFromStart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaClip", "TimeSpan MediaClip.TrimTimeFromStart");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaClip.TrimmedDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaClip.TrimmedDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaClip", "TimeSpan MediaClip.TrimmedDuration");
 			}
 		}
 #endif
@@ -121,7 +121,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, string> MediaClip.UserData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20string%3E%20MediaClip.UserData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaClip", "IDictionary<string, string> MediaClip.UserData");
 			}
 		}
 #endif
@@ -131,7 +131,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<IVideoEffectDefinition> MediaClip.VideoEffectDefinitions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CIVideoEffectDefinition%3E%20MediaClip.VideoEffectDefinitions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaClip", "IList<IVideoEffectDefinition> MediaClip.VideoEffectDefinitions");
 			}
 		}
 #endif
@@ -141,7 +141,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MediaClip.Volume is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20MediaClip.Volume");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaClip", "double MediaClip.Volume");
 			}
 			set
 			{
@@ -153,28 +153,28 @@ namespace Windows.Media.Editing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Editing.MediaClip CreateFromColor(global::Windows.UI.Color color, global::System.TimeSpan originalDuration)
 		{
-			throw new global::System.NotImplementedException("The member MediaClip MediaClip.CreateFromColor(Color color, TimeSpan originalDuration) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaClip%20MediaClip.CreateFromColor%28Color%20color%2C%20TimeSpan%20originalDuration%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaClip", "MediaClip MediaClip.CreateFromColor(Color color, TimeSpan originalDuration)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Editing.MediaClip> CreateFromFileAsync(global::Windows.Storage.IStorageFile file)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<MediaClip> MediaClip.CreateFromFileAsync(IStorageFile file) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMediaClip%3E%20MediaClip.CreateFromFileAsync%28IStorageFile%20file%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaClip", "IAsyncOperation<MediaClip> MediaClip.CreateFromFileAsync(IStorageFile file)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Editing.MediaClip> CreateFromImageFileAsync(global::Windows.Storage.IStorageFile file, global::System.TimeSpan originalDuration)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<MediaClip> MediaClip.CreateFromImageFileAsync(IStorageFile file, TimeSpan originalDuration) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMediaClip%3E%20MediaClip.CreateFromImageFileAsync%28IStorageFile%20file%2C%20TimeSpan%20originalDuration%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaClip", "IAsyncOperation<MediaClip> MediaClip.CreateFromImageFileAsync(IStorageFile file, TimeSpan originalDuration)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Editing.MediaClip CreateFromSurface(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface surface, global::System.TimeSpan originalDuration)
 		{
-			throw new global::System.NotImplementedException("The member MediaClip MediaClip.CreateFromSurface(IDirect3DSurface surface, TimeSpan originalDuration) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaClip%20MediaClip.CreateFromSurface%28IDirect3DSurface%20surface%2C%20TimeSpan%20originalDuration%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaClip", "MediaClip MediaClip.CreateFromSurface(IDirect3DSurface surface, TimeSpan originalDuration)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Editing.MediaClip.~MediaClip()
@@ -182,14 +182,14 @@ namespace Windows.Media.Editing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Editing.MediaClip Clone()
 		{
-			throw new global::System.NotImplementedException("The member MediaClip MediaClip.Clone() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaClip%20MediaClip.Clone%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaClip", "MediaClip MediaClip.Clone()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.VideoEncodingProperties GetVideoEncodingProperties()
 		{
-			throw new global::System.NotImplementedException("The member VideoEncodingProperties MediaClip.GetVideoEncodingProperties() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoEncodingProperties%20MediaClip.GetVideoEncodingProperties%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaClip", "VideoEncodingProperties MediaClip.GetVideoEncodingProperties()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Editing.MediaClip.AudioEffectDefinitions.get

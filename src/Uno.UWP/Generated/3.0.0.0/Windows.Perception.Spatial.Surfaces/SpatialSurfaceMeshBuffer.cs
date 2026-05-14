@@ -19,7 +19,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer SpatialSurfaceMeshBuffer.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20SpatialSurfaceMeshBuffer.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer", "IBuffer SpatialSurfaceMeshBuffer.Data");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SpatialSurfaceMeshBuffer.ElementCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SpatialSurfaceMeshBuffer.ElementCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer", "uint SpatialSurfaceMeshBuffer.ElementCount");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DirectXPixelFormat SpatialSurfaceMeshBuffer.Format is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DirectXPixelFormat%20SpatialSurfaceMeshBuffer.Format");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer", "DirectXPixelFormat SpatialSurfaceMeshBuffer.Format");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SpatialSurfaceMeshBuffer.Stride is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SpatialSurfaceMeshBuffer.Stride");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceMeshBuffer", "uint SpatialSurfaceMeshBuffer.Stride");
 			}
 		}
 #endif

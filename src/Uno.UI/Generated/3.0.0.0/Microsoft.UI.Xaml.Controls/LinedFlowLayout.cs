@@ -142,7 +142,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LinedFlowLayout.RequestedRangeLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LinedFlowLayout.RequestedRangeLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "int LinedFlowLayout.RequestedRangeLength");
 			}
 		}
 #endif
@@ -152,7 +152,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LinedFlowLayout.RequestedRangeStartIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LinedFlowLayout.RequestedRangeStartIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "int LinedFlowLayout.RequestedRangeStartIndex");
 			}
 		}
 #endif
@@ -181,7 +181,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int LockItemToLine(int itemIndex)
 		{
-			throw new global::System.NotImplementedException("The member int LinedFlowLayout.LockItemToLine(int itemIndex) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LinedFlowLayout.LockItemToLine%28int%20itemIndex%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "int LinedFlowLayout.LockItemToLine(int itemIndex)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsInfoRequested.add

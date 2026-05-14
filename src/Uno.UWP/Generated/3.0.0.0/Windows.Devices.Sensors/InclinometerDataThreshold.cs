@@ -19,7 +19,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InclinometerDataThreshold.PitchInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InclinometerDataThreshold.PitchInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.InclinometerDataThreshold", "float InclinometerDataThreshold.PitchInDegrees");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InclinometerDataThreshold.RollInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InclinometerDataThreshold.RollInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.InclinometerDataThreshold", "float InclinometerDataThreshold.RollInDegrees");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InclinometerDataThreshold.YawInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InclinometerDataThreshold.YawInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.InclinometerDataThreshold", "float InclinometerDataThreshold.YawInDegrees");
 			}
 			set
 			{

@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DispatcherShutdownMode Application.DispatcherShutdownMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherShutdownMode%20Application.DispatcherShutdownMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Application", "DispatcherShutdownMode Application.DispatcherShutdownMode");
 			}
 			set
 			{
@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationHighContrastAdjustment Application.HighContrastAdjustment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ApplicationHighContrastAdjustment%20Application.HighContrastAdjustment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Application", "ApplicationHighContrastAdjustment Application.HighContrastAdjustment");
 			}
 			set
 			{

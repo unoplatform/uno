@@ -19,7 +19,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color DevicePickerAppearance.AccentColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20DevicePickerAppearance.AccentColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.AccentColor");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color DevicePickerAppearance.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20DevicePickerAppearance.BackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.BackgroundColor");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color DevicePickerAppearance.ForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20DevicePickerAppearance.ForegroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.ForegroundColor");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color DevicePickerAppearance.SelectedAccentColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20DevicePickerAppearance.SelectedAccentColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.SelectedAccentColor");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color DevicePickerAppearance.SelectedBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20DevicePickerAppearance.SelectedBackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.SelectedBackgroundColor");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color DevicePickerAppearance.SelectedForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20DevicePickerAppearance.SelectedForegroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.SelectedForegroundColor");
 			}
 			set
 			{
@@ -103,7 +103,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DevicePickerAppearance.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DevicePickerAppearance.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "string DevicePickerAppearance.Title");
 			}
 			set
 			{

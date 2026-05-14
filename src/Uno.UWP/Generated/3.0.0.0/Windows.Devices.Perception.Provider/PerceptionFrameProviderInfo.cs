@@ -14,7 +14,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PerceptionFrameProviderInfo.DeviceKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PerceptionFrameProviderInfo.DeviceKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "string PerceptionFrameProviderInfo.DeviceKind");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PerceptionFrameProviderInfo.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PerceptionFrameProviderInfo.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "string PerceptionFrameProviderInfo.DisplayName");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PerceptionFrameProviderInfo.FrameKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PerceptionFrameProviderInfo.FrameKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "string PerceptionFrameProviderInfo.FrameKind");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PerceptionFrameProviderInfo.Hidden is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PerceptionFrameProviderInfo.Hidden");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "bool PerceptionFrameProviderInfo.Hidden");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PerceptionFrameProviderInfo.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PerceptionFrameProviderInfo.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "string PerceptionFrameProviderInfo.Id");
 			}
 			set
 			{

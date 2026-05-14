@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object VoiceCommandContentTile.AppContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20VoiceCommandContentTile.AppContext");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile", "object VoiceCommandContentTile.AppContext");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceCommandContentTile.AppLaunchArgument is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceCommandContentTile.AppLaunchArgument");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile", "string VoiceCommandContentTile.AppLaunchArgument");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VoiceCommandContentTileType VoiceCommandContentTile.ContentTileType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoiceCommandContentTileType%20VoiceCommandContentTile.ContentTileType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile", "VoiceCommandContentTileType VoiceCommandContentTile.ContentTileType");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IStorageFile VoiceCommandContentTile.Image is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IStorageFile%20VoiceCommandContentTile.Image");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile", "IStorageFile VoiceCommandContentTile.Image");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceCommandContentTile.TextLine1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceCommandContentTile.TextLine1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile", "string VoiceCommandContentTile.TextLine1");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceCommandContentTile.TextLine2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceCommandContentTile.TextLine2");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile", "string VoiceCommandContentTile.TextLine2");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceCommandContentTile.TextLine3 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceCommandContentTile.TextLine3");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile", "string VoiceCommandContentTile.TextLine3");
 			}
 			set
 			{
@@ -112,7 +112,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceCommandContentTile.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceCommandContentTile.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile", "string VoiceCommandContentTile.Title");
 			}
 			set
 			{

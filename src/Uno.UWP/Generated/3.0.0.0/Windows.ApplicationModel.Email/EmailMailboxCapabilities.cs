@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanCreateFolder is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMailboxCapabilities.CanCreateFolder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxCapabilities", "bool EmailMailboxCapabilities.CanCreateFolder");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanDeleteFolder is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMailboxCapabilities.CanDeleteFolder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxCapabilities", "bool EmailMailboxCapabilities.CanDeleteFolder");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanEmptyFolder is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMailboxCapabilities.CanEmptyFolder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxCapabilities", "bool EmailMailboxCapabilities.CanEmptyFolder");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanForwardMeetings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMailboxCapabilities.CanForwardMeetings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxCapabilities", "bool EmailMailboxCapabilities.CanForwardMeetings");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanGetAndSetExternalAutoReplies is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMailboxCapabilities.CanGetAndSetExternalAutoReplies");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxCapabilities", "bool EmailMailboxCapabilities.CanGetAndSetExternalAutoReplies");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanGetAndSetInternalAutoReplies is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMailboxCapabilities.CanGetAndSetInternalAutoReplies");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxCapabilities", "bool EmailMailboxCapabilities.CanGetAndSetInternalAutoReplies");
 			}
 			set
 			{
@@ -103,7 +103,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanMoveFolder is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMailboxCapabilities.CanMoveFolder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxCapabilities", "bool EmailMailboxCapabilities.CanMoveFolder");
 			}
 			set
 			{
@@ -117,7 +117,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanProposeNewTimeForMeetings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMailboxCapabilities.CanProposeNewTimeForMeetings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxCapabilities", "bool EmailMailboxCapabilities.CanProposeNewTimeForMeetings");
 			}
 			set
 			{
@@ -131,7 +131,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanResolveRecipients is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMailboxCapabilities.CanResolveRecipients");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxCapabilities", "bool EmailMailboxCapabilities.CanResolveRecipients");
 			}
 			set
 			{
@@ -145,7 +145,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanServerSearchFolders is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMailboxCapabilities.CanServerSearchFolders");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxCapabilities", "bool EmailMailboxCapabilities.CanServerSearchFolders");
 			}
 			set
 			{
@@ -159,7 +159,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanServerSearchMailbox is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMailboxCapabilities.CanServerSearchMailbox");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxCapabilities", "bool EmailMailboxCapabilities.CanServerSearchMailbox");
 			}
 			set
 			{
@@ -173,7 +173,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanSmartSend is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMailboxCapabilities.CanSmartSend");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxCapabilities", "bool EmailMailboxCapabilities.CanSmartSend");
 			}
 			set
 			{
@@ -187,7 +187,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanUpdateMeetingResponses is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMailboxCapabilities.CanUpdateMeetingResponses");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxCapabilities", "bool EmailMailboxCapabilities.CanUpdateMeetingResponses");
 			}
 			set
 			{
@@ -201,7 +201,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxCapabilities.CanValidateCertificates is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMailboxCapabilities.CanValidateCertificates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxCapabilities", "bool EmailMailboxCapabilities.CanValidateCertificates");
 			}
 			set
 			{

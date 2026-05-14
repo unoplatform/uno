@@ -19,7 +19,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DepthMediaFrameFormat DepthMediaFrame.DepthFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DepthMediaFrameFormat%20DepthMediaFrame.DepthFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.DepthMediaFrame", "DepthMediaFrameFormat DepthMediaFrame.DepthFormat");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaFrameReference DepthMediaFrame.FrameReference is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaFrameReference%20DepthMediaFrame.FrameReference");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.DepthMediaFrame", "MediaFrameReference DepthMediaFrame.FrameReference");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint DepthMediaFrame.MaxReliableDepth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20DepthMediaFrame.MaxReliableDepth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.DepthMediaFrame", "uint DepthMediaFrame.MaxReliableDepth");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint DepthMediaFrame.MinReliableDepth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20DepthMediaFrame.MinReliableDepth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.DepthMediaFrame", "uint DepthMediaFrame.MinReliableDepth");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoMediaFrame DepthMediaFrame.VideoMediaFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoMediaFrame%20DepthMediaFrame.VideoMediaFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.DepthMediaFrame", "VideoMediaFrame DepthMediaFrame.VideoMediaFrame");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Media.Capture.Frames
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper TryCreateCoordinateMapper(global::Windows.Media.Devices.Core.CameraIntrinsics cameraIntrinsics, global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
 		{
-			throw new global::System.NotImplementedException("The member DepthCorrelatedCoordinateMapper DepthMediaFrame.TryCreateCoordinateMapper(CameraIntrinsics cameraIntrinsics, SpatialCoordinateSystem coordinateSystem) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DepthCorrelatedCoordinateMapper%20DepthMediaFrame.TryCreateCoordinateMapper%28CameraIntrinsics%20cameraIntrinsics%2C%20SpatialCoordinateSystem%20coordinateSystem%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.DepthMediaFrame", "DepthCorrelatedCoordinateMapper DepthMediaFrame.TryCreateCoordinateMapper(CameraIntrinsics cameraIntrinsics, SpatialCoordinateSystem coordinateSystem)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrame.DepthFormat.get

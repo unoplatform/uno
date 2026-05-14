@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BarcodeScannerProviderConnection BarcodeScannerProviderTriggerDetails.Connection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BarcodeScannerProviderConnection%20BarcodeScannerProviderTriggerDetails.Connection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerProviderTriggerDetails", "BarcodeScannerProviderConnection BarcodeScannerProviderTriggerDetails.Connection");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ProcessMemoryReport.PrivateWorkingSetUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20ProcessMemoryReport.PrivateWorkingSetUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessMemoryReport", "ulong ProcessMemoryReport.PrivateWorkingSetUsage");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ProcessMemoryReport.TotalWorkingSetUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20ProcessMemoryReport.TotalWorkingSetUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessMemoryReport", "ulong ProcessMemoryReport.TotalWorkingSetUsage");
 			}
 		}
 #endif

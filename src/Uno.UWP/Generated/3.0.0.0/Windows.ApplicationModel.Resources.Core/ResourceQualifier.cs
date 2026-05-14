@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ResourceQualifier.IsDefault is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ResourceQualifier.IsDefault");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceQualifier", "bool ResourceQualifier.IsDefault");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ResourceQualifier.IsMatch is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ResourceQualifier.IsMatch");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceQualifier", "bool ResourceQualifier.IsMatch");
 			}
 		}
 #endif
@@ -36,7 +36,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ResourceQualifier.Score is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ResourceQualifier.Score");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceQualifier", "double ResourceQualifier.Score");
 			}
 		}
 #endif

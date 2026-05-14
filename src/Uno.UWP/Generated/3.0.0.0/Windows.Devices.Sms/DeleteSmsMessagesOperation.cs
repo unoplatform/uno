@@ -19,7 +19,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AsyncActionCompletedHandler DeleteSmsMessagesOperation.Completed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AsyncActionCompletedHandler%20DeleteSmsMessagesOperation.Completed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.DeleteSmsMessagesOperation", "AsyncActionCompletedHandler DeleteSmsMessagesOperation.Completed");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception DeleteSmsMessagesOperation.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20DeleteSmsMessagesOperation.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.DeleteSmsMessagesOperation", "Exception DeleteSmsMessagesOperation.ErrorCode");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint DeleteSmsMessagesOperation.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20DeleteSmsMessagesOperation.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.DeleteSmsMessagesOperation", "uint DeleteSmsMessagesOperation.Id");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AsyncStatus DeleteSmsMessagesOperation.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AsyncStatus%20DeleteSmsMessagesOperation.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.DeleteSmsMessagesOperation", "AsyncStatus DeleteSmsMessagesOperation.Status");
 			}
 		}
 #endif

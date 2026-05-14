@@ -14,7 +14,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IOutputStream ProcessLauncherOptions.StandardError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IOutputStream%20ProcessLauncherOptions.StandardError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessLauncherOptions", "IOutputStream ProcessLauncherOptions.StandardError");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IInputStream ProcessLauncherOptions.StandardInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IInputStream%20ProcessLauncherOptions.StandardInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessLauncherOptions", "IInputStream ProcessLauncherOptions.StandardInput");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IOutputStream ProcessLauncherOptions.StandardOutput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IOutputStream%20ProcessLauncherOptions.StandardOutput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessLauncherOptions", "IOutputStream ProcessLauncherOptions.StandardOutput");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProcessLauncherOptions.WorkingDirectory is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProcessLauncherOptions.WorkingDirectory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessLauncherOptions", "string ProcessLauncherOptions.WorkingDirectory");
 			}
 			set
 			{

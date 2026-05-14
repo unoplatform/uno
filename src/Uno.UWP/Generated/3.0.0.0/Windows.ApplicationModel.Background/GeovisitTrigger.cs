@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VisitMonitoringScope GeovisitTrigger.MonitoringScope is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VisitMonitoringScope%20GeovisitTrigger.MonitoringScope");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.GeovisitTrigger", "VisitMonitoringScope GeovisitTrigger.MonitoringScope");
 			}
 			set
 			{

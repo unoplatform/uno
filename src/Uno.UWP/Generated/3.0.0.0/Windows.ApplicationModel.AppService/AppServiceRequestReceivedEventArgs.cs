@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppServiceRequest AppServiceRequestReceivedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppServiceRequest%20AppServiceRequestReceivedEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceRequestReceivedEventArgs", "AppServiceRequest AppServiceRequestReceivedEventArgs.Request");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.AppService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.AppService.AppServiceDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member AppServiceDeferral AppServiceRequestReceivedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppServiceDeferral%20AppServiceRequestReceivedEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceRequestReceivedEventArgs", "AppServiceDeferral AppServiceRequestReceivedEventArgs.GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequestReceivedEventArgs.Request.get

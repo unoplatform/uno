@@ -19,7 +19,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUILockScreenCallActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUILockScreenCallActivatedEventArgs.ActivatedOperation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUILockScreenCallActivatedEventArgs", "ActivatedOperation WebUILockScreenCallActivatedEventArgs.ActivatedOperation");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebUILockScreenCallActivatedEventArgs.Arguments is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebUILockScreenCallActivatedEventArgs.Arguments");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUILockScreenCallActivatedEventArgs", "string WebUILockScreenCallActivatedEventArgs.Arguments");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LockScreenCallUI WebUILockScreenCallActivatedEventArgs.CallUI is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LockScreenCallUI%20WebUILockScreenCallActivatedEventArgs.CallUI");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUILockScreenCallActivatedEventArgs", "LockScreenCallUI WebUILockScreenCallActivatedEventArgs.CallUI");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int WebUILockScreenCallActivatedEventArgs.CurrentlyShownApplicationViewId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20WebUILockScreenCallActivatedEventArgs.CurrentlyShownApplicationViewId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUILockScreenCallActivatedEventArgs", "int WebUILockScreenCallActivatedEventArgs.CurrentlyShownApplicationViewId");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationKind WebUILockScreenCallActivatedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivationKind%20WebUILockScreenCallActivatedEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUILockScreenCallActivatedEventArgs", "ActivationKind WebUILockScreenCallActivatedEventArgs.Kind");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState WebUILockScreenCallActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ApplicationExecutionState%20WebUILockScreenCallActivatedEventArgs.PreviousExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUILockScreenCallActivatedEventArgs", "ApplicationExecutionState WebUILockScreenCallActivatedEventArgs.PreviousExecutionState");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen WebUILockScreenCallActivatedEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SplashScreen%20WebUILockScreenCallActivatedEventArgs.SplashScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUILockScreenCallActivatedEventArgs", "SplashScreen WebUILockScreenCallActivatedEventArgs.SplashScreen");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebUILockScreenCallActivatedEventArgs.TileId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebUILockScreenCallActivatedEventArgs.TileId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUILockScreenCallActivatedEventArgs", "string WebUILockScreenCallActivatedEventArgs.TileId");
 			}
 		}
 #endif

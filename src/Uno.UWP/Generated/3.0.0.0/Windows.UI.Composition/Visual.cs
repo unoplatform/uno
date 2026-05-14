@@ -14,7 +14,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 Visual.AnchorPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20Visual.AnchorPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Visual", "Vector2 Visual.AnchorPoint");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionBackfaceVisibility Visual.BackfaceVisibility is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBackfaceVisibility%20Visual.BackfaceVisibility");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Visual", "CompositionBackfaceVisibility Visual.BackfaceVisibility");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionBorderMode Visual.BorderMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBorderMode%20Visual.BorderMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Visual", "CompositionBorderMode Visual.BorderMode");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 Visual.CenterPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20Visual.CenterPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Visual", "Vector3 Visual.CenterPoint");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionClip Visual.Clip is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionClip%20Visual.Clip");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Visual", "CompositionClip Visual.Clip");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionCompositeMode Visual.CompositeMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionCompositeMode%20Visual.CompositeMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Visual", "CompositionCompositeMode Visual.CompositeMode");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Visual.IsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Visual.IsVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Visual", "bool Visual.IsVisible");
 			}
 			set
 			{
@@ -112,7 +112,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 Visual.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20Visual.Offset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Visual", "Vector3 Visual.Offset");
 			}
 			set
 			{
@@ -126,7 +126,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float Visual.Opacity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20Visual.Opacity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Visual", "float Visual.Opacity");
 			}
 			set
 			{
@@ -140,7 +140,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Quaternion Visual.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Quaternion%20Visual.Orientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Visual", "Quaternion Visual.Orientation");
 			}
 			set
 			{
@@ -154,7 +154,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContainerVisual Visual.Parent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContainerVisual%20Visual.Parent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Visual", "ContainerVisual Visual.Parent");
 			}
 		}
 #endif
@@ -164,7 +164,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Visual Visual.ParentForTransform is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Visual%20Visual.ParentForTransform");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Visual", "Visual Visual.ParentForTransform");
 			}
 			set
 			{
@@ -178,7 +178,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 Visual.RelativeOffsetAdjustment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20Visual.RelativeOffsetAdjustment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Visual", "Vector3 Visual.RelativeOffsetAdjustment");
 			}
 			set
 			{
@@ -192,7 +192,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 Visual.RelativeSizeAdjustment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20Visual.RelativeSizeAdjustment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Visual", "Vector2 Visual.RelativeSizeAdjustment");
 			}
 			set
 			{
@@ -206,7 +206,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float Visual.RotationAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20Visual.RotationAngle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Visual", "float Visual.RotationAngle");
 			}
 			set
 			{
@@ -220,7 +220,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float Visual.RotationAngleInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20Visual.RotationAngleInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Visual", "float Visual.RotationAngleInDegrees");
 			}
 			set
 			{
@@ -234,7 +234,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 Visual.RotationAxis is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20Visual.RotationAxis");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Visual", "Vector3 Visual.RotationAxis");
 			}
 			set
 			{
@@ -248,7 +248,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 Visual.Scale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20Visual.Scale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Visual", "Vector3 Visual.Scale");
 			}
 			set
 			{
@@ -262,7 +262,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 Visual.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20Visual.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Visual", "Vector2 Visual.Size");
 			}
 			set
 			{
@@ -276,7 +276,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Matrix4x4 Visual.TransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix4x4%20Visual.TransformMatrix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Visual", "Matrix4x4 Visual.TransformMatrix");
 			}
 			set
 			{

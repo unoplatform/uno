@@ -14,7 +14,7 @@ namespace Windows.Media.ContentRestrictions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RatedContentCategory RatedContentDescription.Category is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RatedContentCategory%20RatedContentDescription.Category");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentDescription", "RatedContentCategory RatedContentDescription.Category");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Media.ContentRestrictions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RatedContentDescription.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RatedContentDescription.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentDescription", "string RatedContentDescription.Id");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Media.ContentRestrictions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference RatedContentDescription.Image is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20RatedContentDescription.Image");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentDescription", "IRandomAccessStreamReference RatedContentDescription.Image");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Media.ContentRestrictions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> RatedContentDescription.Ratings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20RatedContentDescription.Ratings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentDescription", "IList<string> RatedContentDescription.Ratings");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Media.ContentRestrictions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RatedContentDescription.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RatedContentDescription.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentDescription", "string RatedContentDescription.Title");
 			}
 			set
 			{

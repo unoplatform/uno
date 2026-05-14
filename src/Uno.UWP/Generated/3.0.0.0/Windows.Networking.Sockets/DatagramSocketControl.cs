@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DatagramSocketControl.DontFragment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DatagramSocketControl.DontFragment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketControl", "bool DatagramSocketControl.DontFragment");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint DatagramSocketControl.InboundBufferSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20DatagramSocketControl.InboundBufferSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketControl", "uint DatagramSocketControl.InboundBufferSizeInBytes");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DatagramSocketControl.MulticastOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DatagramSocketControl.MulticastOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketControl", "bool DatagramSocketControl.MulticastOnly");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte DatagramSocketControl.OutboundUnicastHopLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20DatagramSocketControl.OutboundUnicastHopLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketControl", "byte DatagramSocketControl.OutboundUnicastHopLimit");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketQualityOfService DatagramSocketControl.QualityOfService is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SocketQualityOfService%20DatagramSocketControl.QualityOfService");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketControl", "SocketQualityOfService DatagramSocketControl.QualityOfService");
 			}
 			set
 			{

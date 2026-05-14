@@ -15,7 +15,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ToastNotificationActivatedEventArgs.CurrentlyShownApplicationViewId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ToastNotificationActivatedEventArgs.CurrentlyShownApplicationViewId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ToastNotificationActivatedEventArgs", "int ToastNotificationActivatedEventArgs.CurrentlyShownApplicationViewId");
 			}
 		}
 #endif
@@ -26,7 +26,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState ToastNotificationActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ApplicationExecutionState%20ToastNotificationActivatedEventArgs.PreviousExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ToastNotificationActivatedEventArgs", "ApplicationExecutionState ToastNotificationActivatedEventArgs.PreviousExecutionState");
 			}
 		}
 #endif
@@ -36,7 +36,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen ToastNotificationActivatedEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SplashScreen%20ToastNotificationActivatedEventArgs.SplashScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ToastNotificationActivatedEventArgs", "SplashScreen ToastNotificationActivatedEventArgs.SplashScreen");
 			}
 		}
 #endif
@@ -46,7 +46,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User ToastNotificationActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20ToastNotificationActivatedEventArgs.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ToastNotificationActivatedEventArgs", "User ToastNotificationActivatedEventArgs.User");
 			}
 		}
 #endif
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet ToastNotificationActivatedEventArgs.UserInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20ToastNotificationActivatedEventArgs.UserInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.ToastNotificationActivatedEventArgs", "ValueSet ToastNotificationActivatedEventArgs.UserInput");
 			}
 		}
 #endif

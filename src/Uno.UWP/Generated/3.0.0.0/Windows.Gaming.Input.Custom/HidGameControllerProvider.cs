@@ -19,7 +19,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GameControllerVersionInfo HidGameControllerProvider.FirmwareVersionInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameControllerVersionInfo%20HidGameControllerProvider.FirmwareVersionInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.HidGameControllerProvider", "GameControllerVersionInfo HidGameControllerProvider.FirmwareVersionInfo");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort HidGameControllerProvider.HardwareProductId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20HidGameControllerProvider.HardwareProductId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.HidGameControllerProvider", "ushort HidGameControllerProvider.HardwareProductId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort HidGameControllerProvider.HardwareVendorId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20HidGameControllerProvider.HardwareVendorId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.HidGameControllerProvider", "ushort HidGameControllerProvider.HardwareVendorId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GameControllerVersionInfo HidGameControllerProvider.HardwareVersionInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameControllerVersionInfo%20HidGameControllerProvider.HardwareVersionInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.HidGameControllerProvider", "GameControllerVersionInfo HidGameControllerProvider.HardwareVersionInfo");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HidGameControllerProvider.IsConnected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HidGameControllerProvider.IsConnected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.HidGameControllerProvider", "bool HidGameControllerProvider.IsConnected");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort HidGameControllerProvider.UsageId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20HidGameControllerProvider.UsageId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.HidGameControllerProvider", "ushort HidGameControllerProvider.UsageId");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort HidGameControllerProvider.UsagePage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20HidGameControllerProvider.UsagePage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.HidGameControllerProvider", "ushort HidGameControllerProvider.UsagePage");
 			}
 		}
 #endif

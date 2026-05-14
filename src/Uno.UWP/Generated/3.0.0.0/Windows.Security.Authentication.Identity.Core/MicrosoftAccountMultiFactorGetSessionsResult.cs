@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MicrosoftAccountMultiFactorServiceResponse MicrosoftAccountMultiFactorGetSessionsResult.ServiceResponse is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MicrosoftAccountMultiFactorServiceResponse%20MicrosoftAccountMultiFactorGetSessionsResult.ServiceResponse");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorGetSessionsResult", "MicrosoftAccountMultiFactorServiceResponse MicrosoftAccountMultiFactorGetSessionsResult.ServiceResponse");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MicrosoftAccountMultiFactorSessionInfo> MicrosoftAccountMultiFactorGetSessionsResult.Sessions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMicrosoftAccountMultiFactorSessionInfo%3E%20MicrosoftAccountMultiFactorGetSessionsResult.Sessions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorGetSessionsResult", "IReadOnlyList<MicrosoftAccountMultiFactorSessionInfo> MicrosoftAccountMultiFactorGetSessionsResult.Sessions");
 			}
 		}
 #endif

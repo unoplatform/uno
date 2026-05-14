@@ -19,7 +19,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception AdaptiveMediaSourceCreationResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20AdaptiveMediaSourceCreationResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult", "Exception AdaptiveMediaSourceCreationResult.ExtendedError");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpResponseMessage AdaptiveMediaSourceCreationResult.HttpResponseMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpResponseMessage%20AdaptiveMediaSourceCreationResult.HttpResponseMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult", "HttpResponseMessage AdaptiveMediaSourceCreationResult.HttpResponseMessage");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AdaptiveMediaSource AdaptiveMediaSourceCreationResult.MediaSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AdaptiveMediaSource%20AdaptiveMediaSourceCreationResult.MediaSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult", "AdaptiveMediaSource AdaptiveMediaSourceCreationResult.MediaSource");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AdaptiveMediaSourceCreationStatus AdaptiveMediaSourceCreationResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AdaptiveMediaSourceCreationStatus%20AdaptiveMediaSourceCreationResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult", "AdaptiveMediaSourceCreationStatus AdaptiveMediaSourceCreationResult.Status");
 			}
 		}
 #endif

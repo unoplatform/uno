@@ -19,7 +19,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemMediaTransportControlsButton SystemMediaTransportControlsButtonPressedEventArgs.Button is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemMediaTransportControlsButton%20SystemMediaTransportControlsButtonPressedEventArgs.Button");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs", "SystemMediaTransportControlsButton SystemMediaTransportControlsButtonPressedEventArgs.Button");
 			}
 		}
 #endif

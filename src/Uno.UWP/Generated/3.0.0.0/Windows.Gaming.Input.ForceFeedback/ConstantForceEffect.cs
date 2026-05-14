@@ -14,7 +14,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ConstantForceEffect.Gain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ConstantForceEffect.Gain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.ForceFeedback.ConstantForceEffect", "double ConstantForceEffect.Gain");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ForceFeedbackEffectState ConstantForceEffect.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ForceFeedbackEffectState%20ConstantForceEffect.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.ForceFeedback.ConstantForceEffect", "ForceFeedbackEffectState ConstantForceEffect.State");
 			}
 		}
 #endif

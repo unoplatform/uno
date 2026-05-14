@@ -14,7 +14,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WindowId ContentSiteEnvironment.AppWindowId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WindowId%20ContentSiteEnvironment.AppWindowId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteEnvironment", "WindowId ContentSiteEnvironment.AppWindowId");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayId ContentSiteEnvironment.DisplayId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayId%20ContentSiteEnvironment.DisplayId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteEnvironment", "DisplayId ContentSiteEnvironment.DisplayId");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float ContentSiteEnvironment.DisplayScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ContentSiteEnvironment.DisplayScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteEnvironment", "float ContentSiteEnvironment.DisplayScale");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentSiteEnvironmentView ContentSiteEnvironment.View is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentSiteEnvironmentView%20ContentSiteEnvironment.View");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteEnvironment", "ContentSiteEnvironmentView ContentSiteEnvironment.View");
 			}
 		}
 #endif

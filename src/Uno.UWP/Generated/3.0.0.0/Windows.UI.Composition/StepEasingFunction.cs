@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int StepEasingFunction.FinalStep is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20StepEasingFunction.FinalStep");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.StepEasingFunction", "int StepEasingFunction.FinalStep");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int StepEasingFunction.InitialStep is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20StepEasingFunction.InitialStep");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.StepEasingFunction", "int StepEasingFunction.InitialStep");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StepEasingFunction.IsFinalStepSingleFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StepEasingFunction.IsFinalStepSingleFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.StepEasingFunction", "bool StepEasingFunction.IsFinalStepSingleFrame");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StepEasingFunction.IsInitialStepSingleFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StepEasingFunction.IsInitialStepSingleFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.StepEasingFunction", "bool StepEasingFunction.IsInitialStepSingleFrame");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int StepEasingFunction.StepCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20StepEasingFunction.StepCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.StepEasingFunction", "int StepEasingFunction.StepCount");
 			}
 			set
 			{

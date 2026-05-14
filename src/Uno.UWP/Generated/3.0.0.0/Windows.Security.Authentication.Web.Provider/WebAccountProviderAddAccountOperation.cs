@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccountProviderOperationKind WebAccountProviderAddAccountOperation.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccountProviderOperationKind%20WebAccountProviderAddAccountOperation.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderAddAccountOperation", "WebAccountProviderOperationKind WebAccountProviderAddAccountOperation.Kind");
 			}
 		}
 #endif

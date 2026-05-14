@@ -15,7 +15,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2NewWindowRequestedEventArgs.IsUserInitiated is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2NewWindowRequestedEventArgs.IsUserInitiated");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs", "bool CoreWebView2NewWindowRequestedEventArgs.IsUserInitiated");
 			}
 		}
 #endif
@@ -25,7 +25,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2NewWindowRequestedEventArgs.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2NewWindowRequestedEventArgs.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs", "string CoreWebView2NewWindowRequestedEventArgs.Name");
 			}
 		}
 #endif
@@ -35,7 +35,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2 CoreWebView2NewWindowRequestedEventArgs.NewWindow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2%20CoreWebView2NewWindowRequestedEventArgs.NewWindow");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs", "CoreWebView2 CoreWebView2NewWindowRequestedEventArgs.NewWindow");
 			}
 			set
 			{
@@ -49,7 +49,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2FrameInfo CoreWebView2NewWindowRequestedEventArgs.OriginalSourceFrameInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2FrameInfo%20CoreWebView2NewWindowRequestedEventArgs.OriginalSourceFrameInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs", "CoreWebView2FrameInfo CoreWebView2NewWindowRequestedEventArgs.OriginalSourceFrameInfo");
 			}
 		}
 #endif
@@ -60,7 +60,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2WindowFeatures CoreWebView2NewWindowRequestedEventArgs.WindowFeatures is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2WindowFeatures%20CoreWebView2NewWindowRequestedEventArgs.WindowFeatures");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs", "CoreWebView2WindowFeatures CoreWebView2NewWindowRequestedEventArgs.WindowFeatures");
 			}
 		}
 #endif
@@ -68,7 +68,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral CoreWebView2NewWindowRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreWebView2NewWindowRequestedEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs", "Deferral CoreWebView2NewWindowRequestedEventArgs.GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs.Handled.get

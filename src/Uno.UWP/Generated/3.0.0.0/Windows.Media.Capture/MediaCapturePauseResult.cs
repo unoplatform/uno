@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoFrame MediaCapturePauseResult.LastFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoFrame%20MediaCapturePauseResult.LastFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCapturePauseResult", "VideoFrame MediaCapturePauseResult.LastFrame");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaCapturePauseResult.RecordDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaCapturePauseResult.RecordDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCapturePauseResult", "TimeSpan MediaCapturePauseResult.RecordDuration");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorageProviderItemProperty.IconResource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorageProviderItemProperty.IconResource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderItemProperty", "string StorageProviderItemProperty.IconResource");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int StorageProviderItemProperty.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20StorageProviderItemProperty.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderItemProperty", "int StorageProviderItemProperty.Id");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorageProviderItemProperty.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorageProviderItemProperty.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderItemProperty", "string StorageProviderItemProperty.Value");
 			}
 			set
 			{

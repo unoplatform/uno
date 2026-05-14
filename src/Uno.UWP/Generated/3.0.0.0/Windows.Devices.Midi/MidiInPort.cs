@@ -14,7 +14,7 @@ namespace Windows.Devices.Midi
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MidiInPort.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MidiInPort.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Midi.MidiInPort", "string MidiInPort.DeviceId");
 			}
 		}
 #endif
@@ -22,14 +22,14 @@ namespace Windows.Devices.Midi
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Midi.MidiInPort> FromIdAsync(string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<MidiInPort> MidiInPort.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMidiInPort%3E%20MidiInPort.FromIdAsync%28string%20deviceId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Midi.MidiInPort", "IAsyncOperation<MidiInPort> MidiInPort.FromIdAsync(string deviceId)");
 		}
 #endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string MidiInPort.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MidiInPort.GetDeviceSelector%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Midi.MidiInPort", "string MidiInPort.GetDeviceSelector()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Midi.MidiInPort.MessageReceived.add

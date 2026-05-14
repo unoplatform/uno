@@ -19,7 +19,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialEntityWatcherStatus SpatialEntityWatcher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialEntityWatcherStatus%20SpatialEntityWatcher.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialEntityWatcher", "SpatialEntityWatcherStatus SpatialEntityWatcher.Status");
 			}
 		}
 #endif

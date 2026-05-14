@@ -14,7 +14,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2Controller.AllowExternalDrop is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2Controller.AllowExternalDrop");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "bool CoreWebView2Controller.AllowExternalDrop");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect CoreWebView2Controller.Bounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20CoreWebView2Controller.Bounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "Rect CoreWebView2Controller.Bounds");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2BoundsMode CoreWebView2Controller.BoundsMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2BoundsMode%20CoreWebView2Controller.BoundsMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "CoreWebView2BoundsMode CoreWebView2Controller.BoundsMode");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2 CoreWebView2Controller.CoreWebView2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2%20CoreWebView2Controller.CoreWebView2");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "CoreWebView2 CoreWebView2Controller.CoreWebView2");
 			}
 		}
 #endif
@@ -66,7 +66,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color CoreWebView2Controller.DefaultBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20CoreWebView2Controller.DefaultBackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "Color CoreWebView2Controller.DefaultBackgroundColor");
 			}
 			set
 			{
@@ -80,7 +80,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2Controller.IsBrowserHitTransparent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2Controller.IsBrowserHitTransparent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "bool CoreWebView2Controller.IsBrowserHitTransparent");
 			}
 		}
 #endif
@@ -90,7 +90,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2Controller.IsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2Controller.IsVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "bool CoreWebView2Controller.IsVisible");
 			}
 			set
 			{
@@ -104,7 +104,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2ControllerWindowReference CoreWebView2Controller.ParentWindow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ControllerWindowReference%20CoreWebView2Controller.ParentWindow");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "CoreWebView2ControllerWindowReference CoreWebView2Controller.ParentWindow");
 			}
 			set
 			{
@@ -118,7 +118,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CoreWebView2Controller.RasterizationScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CoreWebView2Controller.RasterizationScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "double CoreWebView2Controller.RasterizationScale");
 			}
 			set
 			{
@@ -132,7 +132,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2Controller.ShouldDetectMonitorScaleChanges is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2Controller.ShouldDetectMonitorScaleChanges");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "bool CoreWebView2Controller.ShouldDetectMonitorScaleChanges");
 			}
 			set
 			{
@@ -146,7 +146,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CoreWebView2Controller.ZoomFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CoreWebView2Controller.ZoomFactor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "double CoreWebView2Controller.ZoomFactor");
 			}
 			set
 			{

@@ -12,28 +12,28 @@ namespace Windows.ApplicationModel
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction LaunchFullTrustProcessForCurrentAppAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.FullTrustProcessLauncher", "IAsyncAction FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction LaunchFullTrustProcessForCurrentAppAsync(string parameterGroupId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync(string parameterGroupId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync%28string%20parameterGroupId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.FullTrustProcessLauncher", "IAsyncAction FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync(string parameterGroupId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction LaunchFullTrustProcessForAppAsync(string fullTrustPackageRelativeAppId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction FullTrustProcessLauncher.LaunchFullTrustProcessForAppAsync(string fullTrustPackageRelativeAppId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20FullTrustProcessLauncher.LaunchFullTrustProcessForAppAsync%28string%20fullTrustPackageRelativeAppId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.FullTrustProcessLauncher", "IAsyncAction FullTrustProcessLauncher.LaunchFullTrustProcessForAppAsync(string fullTrustPackageRelativeAppId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction LaunchFullTrustProcessForAppAsync(string fullTrustPackageRelativeAppId, string parameterGroupId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction FullTrustProcessLauncher.LaunchFullTrustProcessForAppAsync(string fullTrustPackageRelativeAppId, string parameterGroupId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20FullTrustProcessLauncher.LaunchFullTrustProcessForAppAsync%28string%20fullTrustPackageRelativeAppId%2C%20string%20parameterGroupId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.FullTrustProcessLauncher", "IAsyncAction FullTrustProcessLauncher.LaunchFullTrustProcessForAppAsync(string fullTrustPackageRelativeAppId, string parameterGroupId)");
 		}
 #endif
 	}

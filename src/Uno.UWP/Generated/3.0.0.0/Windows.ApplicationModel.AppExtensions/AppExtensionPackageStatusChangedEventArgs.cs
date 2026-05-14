@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.AppExtensions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppExtensionPackageStatusChangedEventArgs.AppExtensionName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppExtensionPackageStatusChangedEventArgs.AppExtensionName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppExtensions.AppExtensionPackageStatusChangedEventArgs", "string AppExtensionPackageStatusChangedEventArgs.AppExtensionName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.AppExtensions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Package AppExtensionPackageStatusChangedEventArgs.Package is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Package%20AppExtensionPackageStatusChangedEventArgs.Package");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppExtensions.AppExtensionPackageStatusChangedEventArgs", "Package AppExtensionPackageStatusChangedEventArgs.Package");
 			}
 		}
 #endif

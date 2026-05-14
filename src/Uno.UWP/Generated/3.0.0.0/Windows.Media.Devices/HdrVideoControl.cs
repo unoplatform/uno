@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HdrVideoMode HdrVideoControl.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HdrVideoMode%20HdrVideoControl.Mode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.HdrVideoControl", "HdrVideoMode HdrVideoControl.Mode");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HdrVideoControl.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HdrVideoControl.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.HdrVideoControl", "bool HdrVideoControl.Supported");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<HdrVideoMode> HdrVideoControl.SupportedModes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CHdrVideoMode%3E%20HdrVideoControl.SupportedModes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.HdrVideoControl", "IReadOnlyList<HdrVideoMode> HdrVideoControl.SupportedModes");
 			}
 		}
 #endif

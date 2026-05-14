@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BarcodeScannerStopSoftwareTriggerRequest BarcodeScannerStopSoftwareTriggerRequestEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BarcodeScannerStopSoftwareTriggerRequest%20BarcodeScannerStopSoftwareTriggerRequestEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerStopSoftwareTriggerRequestEventArgs", "BarcodeScannerStopSoftwareTriggerRequest BarcodeScannerStopSoftwareTriggerRequestEventArgs.Request");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.Devices.PointOfService.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral BarcodeScannerStopSoftwareTriggerRequestEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20BarcodeScannerStopSoftwareTriggerRequestEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerStopSoftwareTriggerRequestEventArgs", "Deferral BarcodeScannerStopSoftwareTriggerRequestEventArgs.GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerStopSoftwareTriggerRequestEventArgs.Request.get

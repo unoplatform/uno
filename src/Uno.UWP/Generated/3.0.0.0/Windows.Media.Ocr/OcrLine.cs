@@ -19,7 +19,7 @@ namespace Windows.Media.Ocr
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string OcrLine.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20OcrLine.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrLine", "string OcrLine.Text");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Ocr
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<OcrWord> OcrLine.Words is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3COcrWord%3E%20OcrLine.Words");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrLine", "IReadOnlyList<OcrWord> OcrLine.Words");
 			}
 		}
 #endif

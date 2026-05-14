@@ -19,7 +19,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CrossSlidingEventArgs.ContactCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CrossSlidingEventArgs.ContactCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.CrossSlidingEventArgs", "uint CrossSlidingEventArgs.ContactCount");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CrossSlidingState CrossSlidingEventArgs.CrossSlidingState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CrossSlidingState%20CrossSlidingEventArgs.CrossSlidingState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.CrossSlidingEventArgs", "CrossSlidingState CrossSlidingEventArgs.CrossSlidingState");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PointerDeviceType CrossSlidingEventArgs.PointerDeviceType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointerDeviceType%20CrossSlidingEventArgs.PointerDeviceType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.CrossSlidingEventArgs", "PointerDeviceType CrossSlidingEventArgs.PointerDeviceType");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point CrossSlidingEventArgs.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20CrossSlidingEventArgs.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.CrossSlidingEventArgs", "Point CrossSlidingEventArgs.Position");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskQueryKind UserDataTaskQueryOptions.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskQueryKind%20UserDataTaskQueryOptions.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions", "UserDataTaskQueryKind UserDataTaskQueryOptions.Kind");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskQuerySortProperty UserDataTaskQueryOptions.SortProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskQuerySortProperty%20UserDataTaskQueryOptions.SortProperty");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions", "UserDataTaskQuerySortProperty UserDataTaskQueryOptions.SortProperty");
 			}
 			set
 			{

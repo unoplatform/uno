@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ConversationalAgentSystemStateChangeType ConversationalAgentSystemStateChangedEventArgs.SystemStateChangeType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ConversationalAgentSystemStateChangeType%20ConversationalAgentSystemStateChangedEventArgs.SystemStateChangeType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSystemStateChangedEventArgs", "ConversationalAgentSystemStateChangeType ConversationalAgentSystemStateChangedEventArgs.SystemStateChangeType");
 			}
 		}
 #endif

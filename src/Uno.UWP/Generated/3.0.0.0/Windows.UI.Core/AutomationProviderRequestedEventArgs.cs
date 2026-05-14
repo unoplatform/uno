@@ -19,7 +19,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object AutomationProviderRequestedEventArgs.AutomationProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20AutomationProviderRequestedEventArgs.AutomationProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.AutomationProviderRequestedEventArgs", "object AutomationProviderRequestedEventArgs.AutomationProvider");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AutomationProviderRequestedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AutomationProviderRequestedEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.AutomationProviderRequestedEventArgs", "bool AutomationProviderRequestedEventArgs.Handled");
 			}
 			set
 			{

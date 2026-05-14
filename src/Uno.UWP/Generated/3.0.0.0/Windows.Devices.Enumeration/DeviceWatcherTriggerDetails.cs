@@ -19,7 +19,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<DeviceWatcherEvent> DeviceWatcherTriggerDetails.DeviceWatcherEvents is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CDeviceWatcherEvent%3E%20DeviceWatcherTriggerDetails.DeviceWatcherEvents");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceWatcherTriggerDetails", "IReadOnlyList<DeviceWatcherEvent> DeviceWatcherTriggerDetails.DeviceWatcherEvents");
 			}
 		}
 #endif

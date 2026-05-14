@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2Frame.FrameId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2Frame.FrameId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Frame", "uint CoreWebView2Frame.FrameId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2Frame.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2Frame.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Frame", "string CoreWebView2Frame.Name");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<string> ExecuteScriptAsync(string javaScript)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> CoreWebView2Frame.ExecuteScriptAsync(string javaScript) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20CoreWebView2Frame.ExecuteScriptAsync%28string%20javaScript%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Frame", "IAsyncOperation<string> CoreWebView2Frame.ExecuteScriptAsync(string javaScript)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -88,7 +88,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int IsDestroyed()
 		{
-			throw new global::System.NotImplementedException("The member int CoreWebView2Frame.IsDestroyed() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2Frame.IsDestroyed%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Frame", "int CoreWebView2Frame.IsDestroyed()");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.Destroyed.add

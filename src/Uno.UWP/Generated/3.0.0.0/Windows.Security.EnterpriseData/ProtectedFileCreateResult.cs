@@ -19,7 +19,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFile ProtectedFileCreateResult.File is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFile%20ProtectedFileCreateResult.File");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectedFileCreateResult", "StorageFile ProtectedFileCreateResult.File");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FileProtectionInfo ProtectedFileCreateResult.ProtectionInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileProtectionInfo%20ProtectedFileCreateResult.ProtectionInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectedFileCreateResult", "FileProtectionInfo ProtectedFileCreateResult.ProtectionInfo");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStream ProtectedFileCreateResult.Stream is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStream%20ProtectedFileCreateResult.Stream");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectedFileCreateResult", "IRandomAccessStream ProtectedFileCreateResult.Stream");
 			}
 		}
 #endif

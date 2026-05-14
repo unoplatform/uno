@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorePreviewProductInfo.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorePreviewProductInfo.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewProductInfo", "string StorePreviewProductInfo.Description");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorePreviewProductInfo.ProductId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorePreviewProductInfo.ProductId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewProductInfo", "string StorePreviewProductInfo.ProductId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorePreviewProductInfo.ProductType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorePreviewProductInfo.ProductType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewProductInfo", "string StorePreviewProductInfo.ProductType");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<StorePreviewSkuInfo> StorePreviewProductInfo.SkuInfoList is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CStorePreviewSkuInfo%3E%20StorePreviewProductInfo.SkuInfoList");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewProductInfo", "IReadOnlyList<StorePreviewSkuInfo> StorePreviewProductInfo.SkuInfoList");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorePreviewProductInfo.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorePreviewProductInfo.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.StorePreviewProductInfo", "string StorePreviewProductInfo.Title");
 			}
 		}
 #endif

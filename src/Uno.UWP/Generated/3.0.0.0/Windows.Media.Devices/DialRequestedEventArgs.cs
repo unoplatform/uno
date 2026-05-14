@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object DialRequestedEventArgs.Contact is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20DialRequestedEventArgs.Contact");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.DialRequestedEventArgs", "object DialRequestedEventArgs.Contact");
 			}
 		}
 #endif

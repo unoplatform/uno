@@ -14,7 +14,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double PeriodicForceEffect.Gain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20PeriodicForceEffect.Gain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "double PeriodicForceEffect.Gain");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PeriodicForceEffectKind PeriodicForceEffect.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PeriodicForceEffectKind%20PeriodicForceEffect.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "PeriodicForceEffectKind PeriodicForceEffect.Kind");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ForceFeedbackEffectState PeriodicForceEffect.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ForceFeedbackEffectState%20PeriodicForceEffect.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "ForceFeedbackEffectState PeriodicForceEffect.State");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2NonClientRegionKind CoreWebView2NonClientRegionChangedEventArgs.RegionKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2NonClientRegionKind%20CoreWebView2NonClientRegionChangedEventArgs.RegionKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2NonClientRegionChangedEventArgs", "CoreWebView2NonClientRegionKind CoreWebView2NonClientRegionChangedEventArgs.RegionKind");
 			}
 		}
 #endif

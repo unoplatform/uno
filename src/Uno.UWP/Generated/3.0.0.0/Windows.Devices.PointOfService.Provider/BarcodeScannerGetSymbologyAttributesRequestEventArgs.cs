@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BarcodeScannerGetSymbologyAttributesRequest BarcodeScannerGetSymbologyAttributesRequestEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BarcodeScannerGetSymbologyAttributesRequest%20BarcodeScannerGetSymbologyAttributesRequestEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerGetSymbologyAttributesRequestEventArgs", "BarcodeScannerGetSymbologyAttributesRequest BarcodeScannerGetSymbologyAttributesRequestEventArgs.Request");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.Devices.PointOfService.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral BarcodeScannerGetSymbologyAttributesRequestEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20BarcodeScannerGetSymbologyAttributesRequestEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerGetSymbologyAttributesRequestEventArgs", "Deferral BarcodeScannerGetSymbologyAttributesRequestEventArgs.GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerGetSymbologyAttributesRequestEventArgs.Request.get

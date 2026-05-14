@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float BounceScalarNaturalMotionAnimation.Acceleration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20BounceScalarNaturalMotionAnimation.Acceleration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.BounceScalarNaturalMotionAnimation", "float BounceScalarNaturalMotionAnimation.Acceleration");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float BounceScalarNaturalMotionAnimation.Restitution is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20BounceScalarNaturalMotionAnimation.Restitution");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.BounceScalarNaturalMotionAnimation", "float BounceScalarNaturalMotionAnimation.Restitution");
 			}
 			set
 			{

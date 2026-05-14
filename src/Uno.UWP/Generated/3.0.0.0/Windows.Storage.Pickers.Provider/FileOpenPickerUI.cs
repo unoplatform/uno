@@ -19,7 +19,7 @@ namespace Windows.Storage.Pickers.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> FileOpenPickerUI.AllowedFileTypes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20FileOpenPickerUI.AllowedFileTypes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.FileOpenPickerUI", "IReadOnlyList<string> FileOpenPickerUI.AllowedFileTypes");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage.Pickers.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FileSelectionMode FileOpenPickerUI.SelectionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileSelectionMode%20FileOpenPickerUI.SelectionMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.FileOpenPickerUI", "FileSelectionMode FileOpenPickerUI.SelectionMode");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Storage.Pickers.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string FileOpenPickerUI.SettingsIdentifier is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FileOpenPickerUI.SettingsIdentifier");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.FileOpenPickerUI", "string FileOpenPickerUI.SettingsIdentifier");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Storage.Pickers.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string FileOpenPickerUI.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FileOpenPickerUI.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.FileOpenPickerUI", "string FileOpenPickerUI.Title");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Storage.Pickers.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Pickers.Provider.AddFileResult AddFile(string id, global::Windows.Storage.IStorageFile file)
 		{
-			throw new global::System.NotImplementedException("The member AddFileResult FileOpenPickerUI.AddFile(string id, IStorageFile file) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AddFileResult%20FileOpenPickerUI.AddFile%28string%20id%2C%20IStorageFile%20file%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.FileOpenPickerUI", "AddFileResult FileOpenPickerUI.AddFile(string id, IStorageFile file)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -75,14 +75,14 @@ namespace Windows.Storage.Pickers.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ContainsFile(string id)
 		{
-			throw new global::System.NotImplementedException("The member bool FileOpenPickerUI.ContainsFile(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FileOpenPickerUI.ContainsFile%28string%20id%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.FileOpenPickerUI", "bool FileOpenPickerUI.ContainsFile(string id)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool CanAddFile(global::Windows.Storage.IStorageFile file)
 		{
-			throw new global::System.NotImplementedException("The member bool FileOpenPickerUI.CanAddFile(IStorageFile file) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FileOpenPickerUI.CanAddFile%28IStorageFile%20file%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.FileOpenPickerUI", "bool FileOpenPickerUI.CanAddFile(IStorageFile file)");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Pickers.Provider.FileOpenPickerUI.Closing.add

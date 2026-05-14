@@ -19,7 +19,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint LanIdentifierData.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20LanIdentifierData.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.LanIdentifierData", "uint LanIdentifierData.Type");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<byte> LanIdentifierData.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cbyte%3E%20LanIdentifierData.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.LanIdentifierData", "IReadOnlyList<byte> LanIdentifierData.Value");
 			}
 		}
 #endif

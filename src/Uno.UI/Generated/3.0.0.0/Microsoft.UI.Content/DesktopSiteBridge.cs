@@ -14,7 +14,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DispatcherQueue DesktopSiteBridge.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherQueue%20DesktopSiteBridge.DispatcherQueue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopSiteBridge", "DispatcherQueue DesktopSiteBridge.DispatcherQueue");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DesktopSiteBridge.IsClosed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DesktopSiteBridge.IsClosed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopSiteBridge", "bool DesktopSiteBridge.IsClosed");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DesktopSiteBridge.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DesktopSiteBridge.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopSiteBridge", "bool DesktopSiteBridge.IsEnabled");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DesktopSiteBridge.IsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DesktopSiteBridge.IsVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopSiteBridge", "bool DesktopSiteBridge.IsVisible");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentLayoutDirection? DesktopSiteBridge.LayoutDirectionOverride is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentLayoutDirection%3F%20DesktopSiteBridge.LayoutDirectionOverride");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopSiteBridge", "ContentLayoutDirection? DesktopSiteBridge.LayoutDirectionOverride");
 			}
 			set
 			{
@@ -68,7 +68,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float DesktopSiteBridge.OverrideScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20DesktopSiteBridge.OverrideScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopSiteBridge", "float DesktopSiteBridge.OverrideScale");
 			}
 			set
 			{
@@ -82,7 +82,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WindowId DesktopSiteBridge.WindowId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WindowId%20DesktopSiteBridge.WindowId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopSiteBridge", "WindowId DesktopSiteBridge.WindowId");
 			}
 		}
 #endif
@@ -90,7 +90,7 @@ namespace Microsoft.UI.Content
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSupported()
 		{
-			throw new global::System.NotImplementedException("The member bool DesktopSiteBridge.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DesktopSiteBridge.IsSupported%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopSiteBridge", "bool DesktopSiteBridge.IsSupported()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

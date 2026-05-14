@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? EmailMailboxAutoReplySettings.EndTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20EmailMailboxAutoReplySettings.EndTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "DateTimeOffset? EmailMailboxAutoReplySettings.EndTime");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxAutoReply EmailMailboxAutoReplySettings.InternalReply is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxAutoReply%20EmailMailboxAutoReplySettings.InternalReply");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "EmailMailboxAutoReply EmailMailboxAutoReplySettings.InternalReply");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxAutoReplySettings.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMailboxAutoReplySettings.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "bool EmailMailboxAutoReplySettings.IsEnabled");
 			}
 			set
 			{
@@ -52,7 +52,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxAutoReply EmailMailboxAutoReplySettings.KnownExternalReply is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxAutoReply%20EmailMailboxAutoReplySettings.KnownExternalReply");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "EmailMailboxAutoReply EmailMailboxAutoReplySettings.KnownExternalReply");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxAutoReplyMessageResponseKind EmailMailboxAutoReplySettings.ResponseKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxAutoReplyMessageResponseKind%20EmailMailboxAutoReplySettings.ResponseKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "EmailMailboxAutoReplyMessageResponseKind EmailMailboxAutoReplySettings.ResponseKind");
 			}
 			set
 			{
@@ -76,7 +76,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? EmailMailboxAutoReplySettings.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20EmailMailboxAutoReplySettings.StartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "DateTimeOffset? EmailMailboxAutoReplySettings.StartTime");
 			}
 			set
 			{
@@ -90,7 +90,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxAutoReply EmailMailboxAutoReplySettings.UnknownExternalReply is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxAutoReply%20EmailMailboxAutoReplySettings.UnknownExternalReply");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAutoReplySettings", "EmailMailboxAutoReply EmailMailboxAutoReplySettings.UnknownExternalReply");
 			}
 		}
 #endif

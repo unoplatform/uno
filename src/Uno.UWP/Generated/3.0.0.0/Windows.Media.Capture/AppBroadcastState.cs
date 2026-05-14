@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAuthenticationResult AppBroadcastState.AuthenticationResult is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAuthenticationResult%20AppBroadcastState.AuthenticationResult");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "WebAuthenticationResult AppBroadcastState.AuthenticationResult");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppBroadcastState.CameraCaptureError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppBroadcastState.CameraCaptureError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "uint AppBroadcastState.CameraCaptureError");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastCameraCaptureState AppBroadcastState.CameraCaptureState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastCameraCaptureState%20AppBroadcastState.CameraCaptureState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "AppBroadcastCameraCaptureState AppBroadcastState.CameraCaptureState");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size AppBroadcastState.EncodedVideoSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20AppBroadcastState.EncodedVideoSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "Size AppBroadcastState.EncodedVideoSize");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppBroadcastState.IsCaptureTargetRunning is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppBroadcastState.IsCaptureTargetRunning");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "bool AppBroadcastState.IsCaptureTargetRunning");
 			}
 		}
 #endif
@@ -73,7 +73,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppBroadcastState.MicrophoneCaptureError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppBroadcastState.MicrophoneCaptureError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "uint AppBroadcastState.MicrophoneCaptureError");
 			}
 		}
 #endif
@@ -83,7 +83,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastMicrophoneCaptureState AppBroadcastState.MicrophoneCaptureState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastMicrophoneCaptureState%20AppBroadcastState.MicrophoneCaptureState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "AppBroadcastMicrophoneCaptureState AppBroadcastState.MicrophoneCaptureState");
 			}
 		}
 #endif
@@ -93,7 +93,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri AppBroadcastState.OAuthCallbackUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20AppBroadcastState.OAuthCallbackUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "Uri AppBroadcastState.OAuthCallbackUri");
 			}
 		}
 #endif
@@ -103,7 +103,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri AppBroadcastState.OAuthRequestUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20AppBroadcastState.OAuthRequestUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "Uri AppBroadcastState.OAuthRequestUri");
 			}
 		}
 #endif
@@ -113,7 +113,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastPlugInState AppBroadcastState.PlugInState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastPlugInState%20AppBroadcastState.PlugInState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "AppBroadcastPlugInState AppBroadcastState.PlugInState");
 			}
 		}
 #endif
@@ -123,7 +123,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppBroadcastState.ShouldCaptureCamera is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppBroadcastState.ShouldCaptureCamera");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "bool AppBroadcastState.ShouldCaptureCamera");
 			}
 			set
 			{
@@ -137,7 +137,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppBroadcastState.ShouldCaptureMicrophone is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppBroadcastState.ShouldCaptureMicrophone");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "bool AppBroadcastState.ShouldCaptureMicrophone");
 			}
 			set
 			{
@@ -151,7 +151,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastSignInState AppBroadcastState.SignInState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastSignInState%20AppBroadcastState.SignInState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "AppBroadcastSignInState AppBroadcastState.SignInState");
 			}
 			set
 			{
@@ -165,7 +165,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastStreamState AppBroadcastState.StreamState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastStreamState%20AppBroadcastState.StreamState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "AppBroadcastStreamState AppBroadcastState.StreamState");
 			}
 		}
 #endif
@@ -175,7 +175,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastTerminationReason AppBroadcastState.TerminationReason is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastTerminationReason%20AppBroadcastState.TerminationReason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "AppBroadcastTerminationReason AppBroadcastState.TerminationReason");
 			}
 		}
 #endif
@@ -185,7 +185,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppBroadcastState.TerminationReasonPlugInSpecific is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppBroadcastState.TerminationReasonPlugInSpecific");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "uint AppBroadcastState.TerminationReasonPlugInSpecific");
 			}
 		}
 #endif
@@ -195,7 +195,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppBroadcastState.ViewerCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppBroadcastState.ViewerCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastState", "uint AppBroadcastState.ViewerCount");
 			}
 		}
 #endif

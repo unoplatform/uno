@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastTriggerProviderInfo AppBroadcastTrigger.ProviderInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastTriggerProviderInfo%20AppBroadcastTrigger.ProviderInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.AppBroadcastTrigger", "AppBroadcastTriggerProviderInfo AppBroadcastTrigger.ProviderInfo");
 			}
 			set
 			{

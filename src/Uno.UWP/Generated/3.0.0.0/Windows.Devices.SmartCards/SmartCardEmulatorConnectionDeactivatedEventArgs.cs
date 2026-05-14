@@ -19,7 +19,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardEmulatorConnectionProperties SmartCardEmulatorConnectionDeactivatedEventArgs.ConnectionProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardEmulatorConnectionProperties%20SmartCardEmulatorConnectionDeactivatedEventArgs.ConnectionProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulatorConnectionDeactivatedEventArgs", "SmartCardEmulatorConnectionProperties SmartCardEmulatorConnectionDeactivatedEventArgs.ConnectionProperties");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardEmulatorConnectionDeactivatedReason SmartCardEmulatorConnectionDeactivatedEventArgs.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardEmulatorConnectionDeactivatedReason%20SmartCardEmulatorConnectionDeactivatedEventArgs.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulatorConnectionDeactivatedEventArgs", "SmartCardEmulatorConnectionDeactivatedReason SmartCardEmulatorConnectionDeactivatedEventArgs.Reason");
 			}
 		}
 #endif

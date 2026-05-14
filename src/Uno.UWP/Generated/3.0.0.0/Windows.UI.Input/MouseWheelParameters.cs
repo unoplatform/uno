@@ -19,7 +19,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point MouseWheelParameters.CharTranslation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20MouseWheelParameters.CharTranslation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.MouseWheelParameters", "Point MouseWheelParameters.CharTranslation");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float MouseWheelParameters.DeltaRotationAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20MouseWheelParameters.DeltaRotationAngle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.MouseWheelParameters", "float MouseWheelParameters.DeltaRotationAngle");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float MouseWheelParameters.DeltaScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20MouseWheelParameters.DeltaScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.MouseWheelParameters", "float MouseWheelParameters.DeltaScale");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point MouseWheelParameters.PageTranslation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20MouseWheelParameters.PageTranslation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.MouseWheelParameters", "Point MouseWheelParameters.PageTranslation");
 			}
 			set
 			{

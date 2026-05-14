@@ -14,7 +14,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BackgroundTransferCompletionGroup.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BackgroundTransferCompletionGroup.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroup", "bool BackgroundTransferCompletionGroup.IsEnabled");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBackgroundTrigger BackgroundTransferCompletionGroup.Trigger is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBackgroundTrigger%20BackgroundTransferCompletionGroup.Trigger");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroup", "IBackgroundTrigger BackgroundTransferCompletionGroup.Trigger");
 			}
 		}
 #endif

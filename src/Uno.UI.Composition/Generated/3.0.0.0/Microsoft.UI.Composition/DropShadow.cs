@@ -19,7 +19,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float DropShadow.BlurRadius is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20DropShadow.BlurRadius");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.DropShadow", "float DropShadow.BlurRadius");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color DropShadow.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20DropShadow.Color");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.DropShadow", "Color DropShadow.Color");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionBrush DropShadow.Mask is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBrush%20DropShadow.Mask");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.DropShadow", "CompositionBrush DropShadow.Mask");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 DropShadow.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20DropShadow.Offset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.DropShadow", "Vector3 DropShadow.Offset");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float DropShadow.Opacity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20DropShadow.Opacity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.DropShadow", "float DropShadow.Opacity");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionDropShadowSourcePolicy DropShadow.SourcePolicy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionDropShadowSourcePolicy%20DropShadow.SourcePolicy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.DropShadow", "CompositionDropShadowSourcePolicy DropShadow.SourcePolicy");
 			}
 			set
 			{

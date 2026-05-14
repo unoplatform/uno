@@ -19,7 +19,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbInterruptInEndpointDescriptor.EndpointNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20UsbInterruptInEndpointDescriptor.EndpointNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterruptInEndpointDescriptor", "byte UsbInterruptInEndpointDescriptor.EndpointNumber");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan UsbInterruptInEndpointDescriptor.Interval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20UsbInterruptInEndpointDescriptor.Interval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterruptInEndpointDescriptor", "TimeSpan UsbInterruptInEndpointDescriptor.Interval");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint UsbInterruptInEndpointDescriptor.MaxPacketSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20UsbInterruptInEndpointDescriptor.MaxPacketSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterruptInEndpointDescriptor", "uint UsbInterruptInEndpointDescriptor.MaxPacketSize");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbInterruptInPipe UsbInterruptInEndpointDescriptor.Pipe is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbInterruptInPipe%20UsbInterruptInEndpointDescriptor.Pipe");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterruptInEndpointDescriptor", "UsbInterruptInPipe UsbInterruptInEndpointDescriptor.Pipe");
 			}
 		}
 #endif

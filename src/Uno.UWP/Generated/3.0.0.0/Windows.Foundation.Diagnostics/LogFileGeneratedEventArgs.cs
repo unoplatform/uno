@@ -19,7 +19,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFile LogFileGeneratedEventArgs.File is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFile%20LogFileGeneratedEventArgs.File");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs", "StorageFile LogFileGeneratedEventArgs.File");
 			}
 		}
 #endif

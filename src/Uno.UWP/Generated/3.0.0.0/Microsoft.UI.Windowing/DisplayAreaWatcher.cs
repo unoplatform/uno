@@ -19,7 +19,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayAreaWatcherStatus DisplayAreaWatcher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayAreaWatcherStatus%20DisplayAreaWatcher.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.DisplayAreaWatcher", "DisplayAreaWatcherStatus DisplayAreaWatcher.Status");
 			}
 		}
 #endif

@@ -304,14 +304,14 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Rect GetRectFromCharacterIndex(int charIndex, bool trailingEdge)
 		{
-			throw new global::System.NotImplementedException("The member Rect TextBox.GetRectFromCharacterIndex(int charIndex, bool trailingEdge) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20TextBox.GetRectFromCharacterIndex%28int%20charIndex%2C%20bool%20trailingEdge%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.TextBox", "Rect TextBox.GetRectFromCharacterIndex(int charIndex, bool trailingEdge)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<string>> GetLinguisticAlternativesAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<string>> TextBox.GetLinguisticAlternativesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3Cstring%3E%3E%20TextBox.GetLinguisticAlternativesAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.TextBox", "IAsyncOperation<IReadOnlyList<string>> TextBox.GetLinguisticAlternativesAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__

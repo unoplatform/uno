@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkPresenter InkUnprocessedInput.InkPresenter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkPresenter%20InkUnprocessedInput.InkPresenter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkUnprocessedInput", "InkPresenter InkUnprocessedInput.InkPresenter");
 			}
 		}
 #endif

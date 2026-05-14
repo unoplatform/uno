@@ -14,7 +14,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PropertyType BitmapTypedValue.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PropertyType%20BitmapTypedValue.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTypedValue", "PropertyType BitmapTypedValue.Type");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object BitmapTypedValue.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20BitmapTypedValue.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTypedValue", "object BitmapTypedValue.Value");
 			}
 		}
 #endif

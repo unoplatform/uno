@@ -16,7 +16,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BrightnessOverride.IsSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BrightnessOverride.IsSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.BrightnessOverride", "bool BrightnessOverride.IsSupported");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Graphics.Display
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Display.BrightnessOverride GetDefaultForSystem()
 		{
-			throw new global::System.NotImplementedException("The member BrightnessOverride BrightnessOverride.GetDefaultForSystem() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BrightnessOverride%20BrightnessOverride.GetDefaultForSystem%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.BrightnessOverride", "BrightnessOverride BrightnessOverride.GetDefaultForSystem()");
 		}
 #endif
 		// Skipping already declared method Windows.Graphics.Display.BrightnessOverride.GetForCurrentView()
@@ -32,7 +32,7 @@ namespace Windows.Graphics.Display
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> SaveForSystemAsync(global::Windows.Graphics.Display.BrightnessOverride value)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> BrightnessOverride.SaveForSystemAsync(BrightnessOverride value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20BrightnessOverride.SaveForSystemAsync%28BrightnessOverride%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.BrightnessOverride", "IAsyncOperation<bool> BrightnessOverride.SaveForSystemAsync(BrightnessOverride value)");
 		}
 #endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
@@ -53,7 +53,7 @@ namespace Windows.Graphics.Display
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public double GetLevelForScenario(global::Windows.Graphics.Display.DisplayBrightnessScenario scenario)
 		{
-			throw new global::System.NotImplementedException("The member double BrightnessOverride.GetLevelForScenario(DisplayBrightnessScenario scenario) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20BrightnessOverride.GetLevelForScenario%28DisplayBrightnessScenario%20scenario%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.BrightnessOverride", "double BrightnessOverride.GetLevelForScenario(DisplayBrightnessScenario scenario)");
 		}
 #endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__

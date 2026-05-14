@@ -19,7 +19,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float LightSensorDataThreshold.AbsoluteLux is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20LightSensorDataThreshold.AbsoluteLux");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.LightSensorDataThreshold", "float LightSensorDataThreshold.AbsoluteLux");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float LightSensorDataThreshold.LuxPercentage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20LightSensorDataThreshold.LuxPercentage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.LightSensorDataThreshold", "float LightSensorDataThreshold.LuxPercentage");
 			}
 			set
 			{

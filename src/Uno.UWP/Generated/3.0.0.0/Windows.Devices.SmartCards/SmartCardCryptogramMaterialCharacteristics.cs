@@ -14,7 +14,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<SmartCardCryptogramAlgorithm> SmartCardCryptogramMaterialCharacteristics.AllowedAlgorithms is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CSmartCardCryptogramAlgorithm%3E%20SmartCardCryptogramMaterialCharacteristics.AllowedAlgorithms");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics", "IReadOnlyList<SmartCardCryptogramAlgorithm> SmartCardCryptogramMaterialCharacteristics.AllowedAlgorithms");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<SmartCardCryptogramMaterialPackageConfirmationResponseFormat> SmartCardCryptogramMaterialCharacteristics.AllowedProofOfPossessionAlgorithms is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CSmartCardCryptogramMaterialPackageConfirmationResponseFormat%3E%20SmartCardCryptogramMaterialCharacteristics.AllowedProofOfPossessionAlgorithms");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics", "IReadOnlyList<SmartCardCryptogramMaterialPackageConfirmationResponseFormat> SmartCardCryptogramMaterialCharacteristics.AllowedProofOfPossessionAlgorithms");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<SmartCardCryptogramAlgorithm> SmartCardCryptogramMaterialCharacteristics.AllowedValidations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CSmartCardCryptogramAlgorithm%3E%20SmartCardCryptogramMaterialCharacteristics.AllowedValidations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics", "IReadOnlyList<SmartCardCryptogramAlgorithm> SmartCardCryptogramMaterialCharacteristics.AllowedValidations");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int SmartCardCryptogramMaterialCharacteristics.MaterialLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmartCardCryptogramMaterialCharacteristics.MaterialLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics", "int SmartCardCryptogramMaterialCharacteristics.MaterialLength");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmartCardCryptogramMaterialCharacteristics.MaterialName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmartCardCryptogramMaterialCharacteristics.MaterialName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics", "string SmartCardCryptogramMaterialCharacteristics.MaterialName");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardCryptogramMaterialType SmartCardCryptogramMaterialCharacteristics.MaterialType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardCryptogramMaterialType%20SmartCardCryptogramMaterialCharacteristics.MaterialType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics", "SmartCardCryptogramMaterialType SmartCardCryptogramMaterialCharacteristics.MaterialType");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardCryptogramMaterialProtectionMethod SmartCardCryptogramMaterialCharacteristics.ProtectionMethod is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardCryptogramMaterialProtectionMethod%20SmartCardCryptogramMaterialCharacteristics.ProtectionMethod");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics", "SmartCardCryptogramMaterialProtectionMethod SmartCardCryptogramMaterialCharacteristics.ProtectionMethod");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int SmartCardCryptogramMaterialCharacteristics.ProtectionVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmartCardCryptogramMaterialCharacteristics.ProtectionVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics", "int SmartCardCryptogramMaterialCharacteristics.ProtectionVersion");
 			}
 		}
 #endif

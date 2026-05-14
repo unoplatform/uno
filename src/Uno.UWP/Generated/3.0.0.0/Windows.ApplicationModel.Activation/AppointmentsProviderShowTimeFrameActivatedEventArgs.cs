@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan AppointmentsProviderShowTimeFrameActivatedEventArgs.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20AppointmentsProviderShowTimeFrameActivatedEventArgs.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs", "TimeSpan AppointmentsProviderShowTimeFrameActivatedEventArgs.Duration");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationKind AppointmentsProviderShowTimeFrameActivatedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivationKind%20AppointmentsProviderShowTimeFrameActivatedEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs", "ActivationKind AppointmentsProviderShowTimeFrameActivatedEventArgs.Kind");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState AppointmentsProviderShowTimeFrameActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ApplicationExecutionState%20AppointmentsProviderShowTimeFrameActivatedEventArgs.PreviousExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs", "ApplicationExecutionState AppointmentsProviderShowTimeFrameActivatedEventArgs.PreviousExecutionState");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen AppointmentsProviderShowTimeFrameActivatedEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SplashScreen%20AppointmentsProviderShowTimeFrameActivatedEventArgs.SplashScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs", "SplashScreen AppointmentsProviderShowTimeFrameActivatedEventArgs.SplashScreen");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset AppointmentsProviderShowTimeFrameActivatedEventArgs.TimeToShow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20AppointmentsProviderShowTimeFrameActivatedEventArgs.TimeToShow");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs", "DateTimeOffset AppointmentsProviderShowTimeFrameActivatedEventArgs.TimeToShow");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User AppointmentsProviderShowTimeFrameActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20AppointmentsProviderShowTimeFrameActivatedEventArgs.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs", "User AppointmentsProviderShowTimeFrameActivatedEventArgs.User");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentsProviderShowTimeFrameActivatedEventArgs.Verb is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentsProviderShowTimeFrameActivatedEventArgs.Verb");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.AppointmentsProviderShowTimeFrameActivatedEventArgs", "string AppointmentsProviderShowTimeFrameActivatedEventArgs.Verb");
 			}
 		}
 #endif

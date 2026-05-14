@@ -14,7 +14,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InitialValueExpressionCollection CompositionAnimation.InitialValueExpressions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InitialValueExpressionCollection%20CompositionAnimation.InitialValueExpressions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionAnimation", "InitialValueExpressionCollection CompositionAnimation.InitialValueExpressions");
 			}
 		}
 #endif

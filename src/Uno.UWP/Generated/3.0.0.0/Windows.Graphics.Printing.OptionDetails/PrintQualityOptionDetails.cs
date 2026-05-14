@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintQualityOptionDetails.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintQualityOptionDetails.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintQualityOptionDetails", "string PrintQualityOptionDetails.Description");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintQualityOptionDetails.ErrorText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintQualityOptionDetails.ErrorText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintQualityOptionDetails", "string PrintQualityOptionDetails.ErrorText");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<object> PrintQualityOptionDetails.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cobject%3E%20PrintQualityOptionDetails.Items");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintQualityOptionDetails", "IReadOnlyList<object> PrintQualityOptionDetails.Items");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintQualityOptionDetails.OptionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintQualityOptionDetails.OptionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintQualityOptionDetails", "string PrintQualityOptionDetails.OptionId");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintOptionType PrintQualityOptionDetails.OptionType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOptionType%20PrintQualityOptionDetails.OptionType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintQualityOptionDetails", "PrintOptionType PrintQualityOptionDetails.OptionType");
 			}
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintOptionStates PrintQualityOptionDetails.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOptionStates%20PrintQualityOptionDetails.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintQualityOptionDetails", "PrintOptionStates PrintQualityOptionDetails.State");
 			}
 			set
 			{
@@ -91,7 +91,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object PrintQualityOptionDetails.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20PrintQualityOptionDetails.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintQualityOptionDetails", "object PrintQualityOptionDetails.Value");
 			}
 		}
 #endif
@@ -101,7 +101,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintQualityOptionDetails.WarningText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintQualityOptionDetails.WarningText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintQualityOptionDetails", "string PrintQualityOptionDetails.WarningText");
 			}
 			set
 			{
@@ -113,7 +113,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetValue(object value)
 		{
-			throw new global::System.NotImplementedException("The member bool PrintQualityOptionDetails.TrySetValue(object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintQualityOptionDetails.TrySetValue%28object%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintQualityOptionDetails", "bool PrintQualityOptionDetails.TrySetValue(object value)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintQualityOptionDetails.Description.get

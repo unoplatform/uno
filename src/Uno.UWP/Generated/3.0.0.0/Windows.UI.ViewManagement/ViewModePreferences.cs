@@ -14,7 +14,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size ViewModePreferences.CustomSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20ViewModePreferences.CustomSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ViewModePreferences", "Size ViewModePreferences.CustomSize");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ViewSizePreference ViewModePreferences.ViewSizePreference is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ViewSizePreference%20ViewModePreferences.ViewSizePreference");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ViewModePreferences", "ViewSizePreference ViewModePreferences.ViewSizePreference");
 			}
 			set
 			{
@@ -40,7 +40,7 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.ViewManagement.ViewModePreferences CreateDefault(global::Windows.UI.ViewManagement.ApplicationViewMode mode)
 		{
-			throw new global::System.NotImplementedException("The member ViewModePreferences ViewModePreferences.CreateDefault(ApplicationViewMode mode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ViewModePreferences%20ViewModePreferences.CreateDefault%28ApplicationViewMode%20mode%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ViewModePreferences", "ViewModePreferences ViewModePreferences.CreateDefault(ApplicationViewMode mode)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.ViewManagement.ViewModePreferences.CustomSize.get

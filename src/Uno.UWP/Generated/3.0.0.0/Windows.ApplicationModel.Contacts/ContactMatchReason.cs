@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactMatchReasonKind ContactMatchReason.Field is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactMatchReasonKind%20ContactMatchReason.Field");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactMatchReason", "ContactMatchReasonKind ContactMatchReason.Field");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<TextSegment> ContactMatchReason.Segments is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CTextSegment%3E%20ContactMatchReason.Segments");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactMatchReason", "IReadOnlyList<TextSegment> ContactMatchReason.Segments");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactMatchReason.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactMatchReason.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactMatchReason", "string ContactMatchReason.Text");
 			}
 		}
 #endif

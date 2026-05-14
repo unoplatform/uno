@@ -19,7 +19,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.ActivatedOperation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs", "ActivatedOperation WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.ActivatedOperation");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.InstanceStartDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.InstanceStartDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs", "DateTimeOffset? WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.InstanceStartDate");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationKind WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivationKind%20WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs", "ActivationKind WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.Kind");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.LocalId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.LocalId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs", "string WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.LocalId");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ApplicationExecutionState%20WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.PreviousExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs", "ApplicationExecutionState WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.PreviousExecutionState");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.RoamingId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.RoamingId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs", "string WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.RoamingId");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SplashScreen%20WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.SplashScreen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs", "SplashScreen WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.SplashScreen");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs", "User WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.User");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.Verb is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.Verb");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs", "string WebUIAppointmentsProviderShowAppointmentDetailsActivatedEventArgs.Verb");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RadialControllerScreenContact RadialControllerButtonPressedEventArgs.Contact is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RadialControllerScreenContact%20RadialControllerButtonPressedEventArgs.Contact");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerButtonPressedEventArgs", "RadialControllerScreenContact RadialControllerButtonPressedEventArgs.Contact");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SimpleHapticsController RadialControllerButtonPressedEventArgs.SimpleHapticsController is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SimpleHapticsController%20RadialControllerButtonPressedEventArgs.SimpleHapticsController");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerButtonPressedEventArgs", "SimpleHapticsController RadialControllerButtonPressedEventArgs.SimpleHapticsController");
 			}
 		}
 #endif

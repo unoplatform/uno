@@ -14,7 +14,7 @@ namespace Windows.UI.Input.Preview.Injection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GamepadButtons InjectedInputGamepadInfo.Buttons is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GamepadButtons%20InjectedInputGamepadInfo.Buttons");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo", "GamepadButtons InjectedInputGamepadInfo.Buttons");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.UI.Input.Preview.Injection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double InjectedInputGamepadInfo.LeftThumbstickX is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InjectedInputGamepadInfo.LeftThumbstickX");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo", "double InjectedInputGamepadInfo.LeftThumbstickX");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.UI.Input.Preview.Injection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double InjectedInputGamepadInfo.LeftThumbstickY is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InjectedInputGamepadInfo.LeftThumbstickY");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo", "double InjectedInputGamepadInfo.LeftThumbstickY");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.UI.Input.Preview.Injection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double InjectedInputGamepadInfo.LeftTrigger is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InjectedInputGamepadInfo.LeftTrigger");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo", "double InjectedInputGamepadInfo.LeftTrigger");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.UI.Input.Preview.Injection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double InjectedInputGamepadInfo.RightThumbstickX is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InjectedInputGamepadInfo.RightThumbstickX");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo", "double InjectedInputGamepadInfo.RightThumbstickX");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.UI.Input.Preview.Injection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double InjectedInputGamepadInfo.RightThumbstickY is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InjectedInputGamepadInfo.RightThumbstickY");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo", "double InjectedInputGamepadInfo.RightThumbstickY");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.UI.Input.Preview.Injection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double InjectedInputGamepadInfo.RightTrigger is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InjectedInputGamepadInfo.RightTrigger");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Preview.Injection.InjectedInputGamepadInfo", "double InjectedInputGamepadInfo.RightTrigger");
 			}
 			set
 			{

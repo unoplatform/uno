@@ -19,7 +19,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int HttpContentCodingWithQualityHeaderValueCollection.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20HttpContentCodingWithQualityHeaderValueCollection.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValueCollection", "int HttpContentCodingWithQualityHeaderValueCollection.Count");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HttpContentCodingWithQualityHeaderValueCollection.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpContentCodingWithQualityHeaderValueCollection.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValueCollection", "bool HttpContentCodingWithQualityHeaderValueCollection.IsReadOnly");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpContentCodingWithQualityHeaderValue HttpContentCodingWithQualityHeaderValueCollection.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpContentCodingWithQualityHeaderValue%20HttpContentCodingWithQualityHeaderValueCollection.this%5Bint%20index%5D");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValueCollection", "HttpContentCodingWithQualityHeaderValue HttpContentCodingWithQualityHeaderValueCollection.this[int index]");
 			}
 			set
 			{
@@ -58,7 +58,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryParseAdd(string input)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpContentCodingWithQualityHeaderValueCollection.TryParseAdd(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpContentCodingWithQualityHeaderValueCollection.TryParseAdd%28string%20input%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValueCollection", "bool HttpContentCodingWithQualityHeaderValueCollection.TryParseAdd(string input)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValueCollection.Count.get
@@ -69,7 +69,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int IndexOf(global::Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue item)
 		{
-			throw new global::System.NotImplementedException("The member int HttpContentCodingWithQualityHeaderValueCollection.IndexOf(HttpContentCodingWithQualityHeaderValue item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20HttpContentCodingWithQualityHeaderValueCollection.IndexOf%28HttpContentCodingWithQualityHeaderValue%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValueCollection", "int HttpContentCodingWithQualityHeaderValueCollection.IndexOf(HttpContentCodingWithQualityHeaderValue item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -104,7 +104,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Contains(global::Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue item)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpContentCodingWithQualityHeaderValueCollection.Contains(HttpContentCodingWithQualityHeaderValue item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpContentCodingWithQualityHeaderValueCollection.Contains%28HttpContentCodingWithQualityHeaderValue%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValueCollection", "bool HttpContentCodingWithQualityHeaderValueCollection.Contains(HttpContentCodingWithQualityHeaderValue item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -118,14 +118,14 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Remove(global::Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue item)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpContentCodingWithQualityHeaderValueCollection.Remove(HttpContentCodingWithQualityHeaderValue item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpContentCodingWithQualityHeaderValueCollection.Remove%28HttpContentCodingWithQualityHeaderValue%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValueCollection", "bool HttpContentCodingWithQualityHeaderValueCollection.Remove(HttpContentCodingWithQualityHeaderValue item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<HttpContentCodingWithQualityHeaderValue> HttpContentCodingWithQualityHeaderValueCollection.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CHttpContentCodingWithQualityHeaderValue%3E%20HttpContentCodingWithQualityHeaderValueCollection.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValueCollection", "IEnumerator<HttpContentCodingWithQualityHeaderValue> HttpContentCodingWithQualityHeaderValueCollection.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValueCollection.System.Collections.IEnumerable.GetEnumerator()
@@ -133,7 +133,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpContentCodingWithQualityHeaderValueCollection.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpContentCodingWithQualityHeaderValueCollection.ToString%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValueCollection", "string HttpContentCodingWithQualityHeaderValueCollection.ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValueCollection.System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue>.get_Item(int)

@@ -14,7 +14,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName VpnRoute.Address is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20VpnRoute.Address");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnRoute", "HostName VpnRoute.Address");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte VpnRoute.PrefixSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20VpnRoute.PrefixSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnRoute", "byte VpnRoute.PrefixSize");
 			}
 			set
 			{

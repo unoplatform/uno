@@ -19,7 +19,7 @@ namespace Windows.Devices.Printers.Extensions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Print3DWorkflow.DeviceID is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Print3DWorkflow.DeviceID");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Extensions.Print3DWorkflow", "string Print3DWorkflow.DeviceID");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Printers.Extensions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Print3DWorkflow.IsPrintReady is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Print3DWorkflow.IsPrintReady");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Extensions.Print3DWorkflow", "bool Print3DWorkflow.IsPrintReady");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Printers.Extensions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public object GetPrintModelPackage()
 		{
-			throw new global::System.NotImplementedException("The member object Print3DWorkflow.GetPrintModelPackage() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20Print3DWorkflow.GetPrintModelPackage%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Extensions.Print3DWorkflow", "object Print3DWorkflow.GetPrintModelPackage()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflow.PrintRequested.add

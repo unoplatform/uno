@@ -118,7 +118,7 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer TextElement.ContentEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20TextElement.ContentEnd");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextElement", "TextPointer TextElement.ContentEnd");
 			}
 		}
 #endif
@@ -128,7 +128,7 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer TextElement.ContentStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20TextElement.ContentStart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextElement", "TextPointer TextElement.ContentStart");
 			}
 		}
 #endif
@@ -138,7 +138,7 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer TextElement.ElementEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20TextElement.ElementEnd");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextElement", "TextPointer TextElement.ElementEnd");
 			}
 		}
 #endif
@@ -148,7 +148,7 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer TextElement.ElementStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20TextElement.ElementStart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextElement", "TextPointer TextElement.ElementStart");
 			}
 		}
 #endif
@@ -268,7 +268,7 @@ namespace Microsoft.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public object FindName(string name)
 		{
-			throw new global::System.NotImplementedException("The member object TextElement.FindName(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20TextElement.FindName%28string%20name%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Documents.TextElement", "object TextElement.FindName(string name)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextElement.AccessKeyDisplayDismissed.add

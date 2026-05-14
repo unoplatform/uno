@@ -14,7 +14,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FileUnprotectOptions.Audit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FileUnprotectOptions.Audit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.FileUnprotectOptions", "bool FileUnprotectOptions.Audit");
 			}
 			set
 			{

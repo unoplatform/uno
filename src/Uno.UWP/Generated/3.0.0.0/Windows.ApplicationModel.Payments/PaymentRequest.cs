@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentDetails PaymentRequest.Details is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentDetails%20PaymentRequest.Details");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentRequest", "PaymentDetails PaymentRequest.Details");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentRequest.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentRequest.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentRequest", "string PaymentRequest.Id");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentMerchantInfo PaymentRequest.MerchantInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentMerchantInfo%20PaymentRequest.MerchantInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentRequest", "PaymentMerchantInfo PaymentRequest.MerchantInfo");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PaymentMethodData> PaymentRequest.MethodData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPaymentMethodData%3E%20PaymentRequest.MethodData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentRequest", "IReadOnlyList<PaymentMethodData> PaymentRequest.MethodData");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentOptions PaymentRequest.Options is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentOptions%20PaymentRequest.Options");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentRequest", "PaymentOptions PaymentRequest.Options");
 			}
 		}
 #endif

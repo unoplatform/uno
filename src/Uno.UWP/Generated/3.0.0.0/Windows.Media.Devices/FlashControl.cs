@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FlashControl.AssistantLightEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FlashControl.AssistantLightEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.FlashControl", "bool FlashControl.AssistantLightEnabled");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FlashControl.AssistantLightSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FlashControl.AssistantLightSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.FlashControl", "bool FlashControl.AssistantLightSupported");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FlashControl.Auto is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FlashControl.Auto");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.FlashControl", "bool FlashControl.Auto");
 			}
 			set
 			{
@@ -57,7 +57,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FlashControl.Enabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FlashControl.Enabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.FlashControl", "bool FlashControl.Enabled");
 			}
 			set
 			{
@@ -71,7 +71,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float FlashControl.PowerPercent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20FlashControl.PowerPercent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.FlashControl", "float FlashControl.PowerPercent");
 			}
 			set
 			{
@@ -85,7 +85,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FlashControl.PowerSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FlashControl.PowerSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.FlashControl", "bool FlashControl.PowerSupported");
 			}
 		}
 #endif
@@ -95,7 +95,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FlashControl.RedEyeReduction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FlashControl.RedEyeReduction");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.FlashControl", "bool FlashControl.RedEyeReduction");
 			}
 			set
 			{
@@ -109,7 +109,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FlashControl.RedEyeReductionSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FlashControl.RedEyeReductionSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.FlashControl", "bool FlashControl.RedEyeReductionSupported");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FlashControl.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FlashControl.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.FlashControl", "bool FlashControl.Supported");
 			}
 		}
 #endif

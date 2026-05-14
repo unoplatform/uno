@@ -14,7 +14,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color LampArrayColorRampEffect.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20LampArrayColorRampEffect.Color");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "Color LampArrayColorRampEffect.Color");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LampArrayEffectCompletionBehavior LampArrayColorRampEffect.CompletionBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LampArrayEffectCompletionBehavior%20LampArrayColorRampEffect.CompletionBehavior");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "LampArrayEffectCompletionBehavior LampArrayColorRampEffect.CompletionBehavior");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayColorRampEffect.RampDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayColorRampEffect.RampDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "TimeSpan LampArrayColorRampEffect.RampDuration");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayColorRampEffect.StartDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayColorRampEffect.StartDelay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "TimeSpan LampArrayColorRampEffect.StartDelay");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LampArrayColorRampEffect.ZIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LampArrayColorRampEffect.ZIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayColorRampEffect", "int LampArrayColorRampEffect.ZIndex");
 			}
 			set
 			{

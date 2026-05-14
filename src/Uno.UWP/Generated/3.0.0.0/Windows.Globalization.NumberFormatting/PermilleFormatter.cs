@@ -15,7 +15,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PermilleFormatter.GeographicRegion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PermilleFormatter.GeographicRegion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "string PermilleFormatter.GeographicRegion");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PermilleFormatter.ResolvedGeographicRegion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PermilleFormatter.ResolvedGeographicRegion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "string PermilleFormatter.ResolvedGeographicRegion");
 			}
 		}
 #endif
@@ -52,14 +52,14 @@ namespace Windows.Globalization.NumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Format(long value)
 		{
-			throw new global::System.NotImplementedException("The member string PermilleFormatter.Format(long value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PermilleFormatter.Format%28long%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "string PermilleFormatter.Format(long value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Format(ulong value)
 		{
-			throw new global::System.NotImplementedException("The member string PermilleFormatter.Format(ulong value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PermilleFormatter.Format%28ulong%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "string PermilleFormatter.Format(ulong value)");
 		}
 #endif
 		// Skipping already declared method Windows.Globalization.NumberFormatting.PermilleFormatter.Format(double)
@@ -67,14 +67,14 @@ namespace Windows.Globalization.NumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string FormatInt(long value)
 		{
-			throw new global::System.NotImplementedException("The member string PermilleFormatter.FormatInt(long value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PermilleFormatter.FormatInt%28long%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "string PermilleFormatter.FormatInt(long value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string FormatUInt(ulong value)
 		{
-			throw new global::System.NotImplementedException("The member string PermilleFormatter.FormatUInt(ulong value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PermilleFormatter.FormatUInt%28ulong%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "string PermilleFormatter.FormatUInt(ulong value)");
 		}
 #endif
 		// Skipping already declared method Windows.Globalization.NumberFormatting.PermilleFormatter.FormatDouble(double)
@@ -82,14 +82,14 @@ namespace Windows.Globalization.NumberFormatting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public long? ParseInt(string text)
 		{
-			throw new global::System.NotImplementedException("The member long? PermilleFormatter.ParseInt(string text) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=long%3F%20PermilleFormatter.ParseInt%28string%20text%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "long? PermilleFormatter.ParseInt(string text)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ulong? ParseUInt(string text)
 		{
-			throw new global::System.NotImplementedException("The member ulong? PermilleFormatter.ParseUInt(string text) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%3F%20PermilleFormatter.ParseUInt%28string%20text%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.PermilleFormatter", "ulong? PermilleFormatter.ParseUInt(string text)");
 		}
 #endif
 		// Skipping already declared method Windows.Globalization.NumberFormatting.PermilleFormatter.ParseDouble(string)

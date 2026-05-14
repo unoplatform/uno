@@ -19,7 +19,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RemoteSystemSessionParticipant RemoteSystemSessionParticipantAddedEventArgs.Participant is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemSessionParticipant%20RemoteSystemSessionParticipantAddedEventArgs.Participant");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSessionParticipantAddedEventArgs", "RemoteSystemSessionParticipant RemoteSystemSessionParticipantAddedEventArgs.Participant");
 			}
 		}
 #endif

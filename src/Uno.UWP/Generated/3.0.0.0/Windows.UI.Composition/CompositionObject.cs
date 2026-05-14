@@ -14,7 +14,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CompositionObject.Comment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CompositionObject.Comment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionObject", "string CompositionObject.Comment");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Compositor CompositionObject.Compositor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Compositor%20CompositionObject.Compositor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionObject", "Compositor CompositionObject.Compositor");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreDispatcher CompositionObject.Dispatcher is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreDispatcher%20CompositionObject.Dispatcher");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionObject", "CoreDispatcher CompositionObject.Dispatcher");
 			}
 		}
 #endif
@@ -48,7 +48,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DispatcherQueue CompositionObject.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherQueue%20CompositionObject.DispatcherQueue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionObject", "DispatcherQueue CompositionObject.DispatcherQueue");
 			}
 		}
 #endif
@@ -58,7 +58,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ImplicitAnimationCollection CompositionObject.ImplicitAnimations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ImplicitAnimationCollection%20CompositionObject.ImplicitAnimations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionObject", "ImplicitAnimationCollection CompositionObject.ImplicitAnimations");
 			}
 			set
 			{
@@ -72,7 +72,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionPropertySet CompositionObject.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionPropertySet%20CompositionObject.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionObject", "CompositionPropertySet CompositionObject.Properties");
 			}
 		}
 #endif
@@ -122,7 +122,7 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.AnimationController TryGetAnimationController(string propertyName)
 		{
-			throw new global::System.NotImplementedException("The member AnimationController CompositionObject.TryGetAnimationController(string propertyName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AnimationController%20CompositionObject.TryGetAnimationController%28string%20propertyName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionObject", "AnimationController CompositionObject.TryGetAnimationController(string propertyName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

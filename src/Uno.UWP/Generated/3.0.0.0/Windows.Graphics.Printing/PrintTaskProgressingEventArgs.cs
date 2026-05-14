@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PrintTaskProgressingEventArgs.DocumentPageCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PrintTaskProgressingEventArgs.DocumentPageCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTaskProgressingEventArgs", "uint PrintTaskProgressingEventArgs.DocumentPageCount");
 			}
 		}
 #endif

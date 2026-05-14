@@ -14,7 +14,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ValueAndLanguage.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ValueAndLanguage.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ValueAndLanguage", "string ValueAndLanguage.Language");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object ValueAndLanguage.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ValueAndLanguage.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ValueAndLanguage", "object ValueAndLanguage.Value");
 			}
 			set
 			{

@@ -19,7 +19,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool NetworkStateChangeEventDetails.HasNewConnectionCost is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20NetworkStateChangeEventDetails.HasNewConnectionCost");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "bool NetworkStateChangeEventDetails.HasNewConnectionCost");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool NetworkStateChangeEventDetails.HasNewDomainConnectivityLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20NetworkStateChangeEventDetails.HasNewDomainConnectivityLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "bool NetworkStateChangeEventDetails.HasNewDomainConnectivityLevel");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool NetworkStateChangeEventDetails.HasNewHostNameList is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20NetworkStateChangeEventDetails.HasNewHostNameList");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "bool NetworkStateChangeEventDetails.HasNewHostNameList");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool NetworkStateChangeEventDetails.HasNewInternetConnectionProfile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20NetworkStateChangeEventDetails.HasNewInternetConnectionProfile");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "bool NetworkStateChangeEventDetails.HasNewInternetConnectionProfile");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool NetworkStateChangeEventDetails.HasNewNetworkConnectivityLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20NetworkStateChangeEventDetails.HasNewNetworkConnectivityLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "bool NetworkStateChangeEventDetails.HasNewNetworkConnectivityLevel");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool NetworkStateChangeEventDetails.HasNewTetheringClientCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20NetworkStateChangeEventDetails.HasNewTetheringClientCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "bool NetworkStateChangeEventDetails.HasNewTetheringClientCount");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool NetworkStateChangeEventDetails.HasNewTetheringOperationalState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20NetworkStateChangeEventDetails.HasNewTetheringOperationalState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "bool NetworkStateChangeEventDetails.HasNewTetheringOperationalState");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool NetworkStateChangeEventDetails.HasNewWwanRegistrationState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20NetworkStateChangeEventDetails.HasNewWwanRegistrationState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkStateChangeEventDetails", "bool NetworkStateChangeEventDetails.HasNewWwanRegistrationState");
 			}
 		}
 #endif

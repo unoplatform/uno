@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? ContactPanel.HeaderColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20ContactPanel.HeaderColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactPanel", "Color? ContactPanel.HeaderColor");
 			}
 			set
 			{

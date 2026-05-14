@@ -14,7 +14,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AudioEffectDefinition.ActivatableClassId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AudioEffectDefinition.ActivatableClassId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.AudioEffectDefinition", "string AudioEffectDefinition.ActivatableClassId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet AudioEffectDefinition.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPropertySet%20AudioEffectDefinition.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.AudioEffectDefinition", "IPropertySet AudioEffectDefinition.Properties");
 			}
 		}
 #endif

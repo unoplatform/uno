@@ -14,7 +14,7 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float ScenePbrMaterial.AlphaCutoff is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ScenePbrMaterial.AlphaCutoff");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "float ScenePbrMaterial.AlphaCutoff");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneAlphaMode ScenePbrMaterial.AlphaMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneAlphaMode%20ScenePbrMaterial.AlphaMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "SceneAlphaMode ScenePbrMaterial.AlphaMode");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 ScenePbrMaterial.EmissiveFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20ScenePbrMaterial.EmissiveFactor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "Vector3 ScenePbrMaterial.EmissiveFactor");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneMaterialInput ScenePbrMaterial.EmissiveInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneMaterialInput%20ScenePbrMaterial.EmissiveInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "SceneMaterialInput ScenePbrMaterial.EmissiveInput");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ScenePbrMaterial.IsDoubleSided is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ScenePbrMaterial.IsDoubleSided");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "bool ScenePbrMaterial.IsDoubleSided");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneMaterialInput ScenePbrMaterial.NormalInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneMaterialInput%20ScenePbrMaterial.NormalInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "SceneMaterialInput ScenePbrMaterial.NormalInput");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float ScenePbrMaterial.NormalScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ScenePbrMaterial.NormalScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "float ScenePbrMaterial.NormalScale");
 			}
 			set
 			{
@@ -112,7 +112,7 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneMaterialInput ScenePbrMaterial.OcclusionInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneMaterialInput%20ScenePbrMaterial.OcclusionInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "SceneMaterialInput ScenePbrMaterial.OcclusionInput");
 			}
 			set
 			{
@@ -126,7 +126,7 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float ScenePbrMaterial.OcclusionStrength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ScenePbrMaterial.OcclusionStrength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.ScenePbrMaterial", "float ScenePbrMaterial.OcclusionStrength");
 			}
 			set
 			{

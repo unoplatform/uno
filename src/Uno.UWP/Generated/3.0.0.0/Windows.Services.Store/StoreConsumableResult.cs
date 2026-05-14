@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint StoreConsumableResult.BalanceRemaining is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20StoreConsumableResult.BalanceRemaining");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreConsumableResult", "uint StoreConsumableResult.BalanceRemaining");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception StoreConsumableResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20StoreConsumableResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreConsumableResult", "Exception StoreConsumableResult.ExtendedError");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StoreConsumableStatus StoreConsumableResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StoreConsumableStatus%20StoreConsumableResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreConsumableResult", "StoreConsumableStatus StoreConsumableResult.Status");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid StoreConsumableResult.TrackingId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20StoreConsumableResult.TrackingId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreConsumableResult", "Guid StoreConsumableResult.TrackingId");
 			}
 		}
 #endif

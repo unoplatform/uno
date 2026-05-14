@@ -19,7 +19,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<CastingSource> CastingDevicePickerFilter.SupportedCastingSources is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CCastingSource%3E%20CastingDevicePickerFilter.SupportedCastingSources");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevicePickerFilter", "IList<CastingSource> CastingDevicePickerFilter.SupportedCastingSources");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CastingDevicePickerFilter.SupportsAudio is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CastingDevicePickerFilter.SupportsAudio");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevicePickerFilter", "bool CastingDevicePickerFilter.SupportsAudio");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CastingDevicePickerFilter.SupportsPictures is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CastingDevicePickerFilter.SupportsPictures");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevicePickerFilter", "bool CastingDevicePickerFilter.SupportsPictures");
 			}
 			set
 			{
@@ -57,7 +57,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CastingDevicePickerFilter.SupportsVideo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CastingDevicePickerFilter.SupportsVideo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevicePickerFilter", "bool CastingDevicePickerFilter.SupportsVideo");
 			}
 			set
 			{

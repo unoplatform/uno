@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ESimPolicy.ShouldEnableManagingUi is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ESimPolicy.ShouldEnableManagingUi");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimPolicy", "bool ESimPolicy.ShouldEnableManagingUi");
 			}
 		}
 #endif

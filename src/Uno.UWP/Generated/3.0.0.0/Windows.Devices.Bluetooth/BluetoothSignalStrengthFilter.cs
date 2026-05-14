@@ -14,7 +14,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member short? BluetoothSignalStrengthFilter.InRangeThresholdInDBm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=short%3F%20BluetoothSignalStrengthFilter.InRangeThresholdInDBm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter", "short? BluetoothSignalStrengthFilter.InRangeThresholdInDBm");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member short? BluetoothSignalStrengthFilter.OutOfRangeThresholdInDBm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=short%3F%20BluetoothSignalStrengthFilter.OutOfRangeThresholdInDBm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter", "short? BluetoothSignalStrengthFilter.OutOfRangeThresholdInDBm");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? BluetoothSignalStrengthFilter.OutOfRangeTimeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20BluetoothSignalStrengthFilter.OutOfRangeTimeout");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter", "TimeSpan? BluetoothSignalStrengthFilter.OutOfRangeTimeout");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? BluetoothSignalStrengthFilter.SamplingInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20BluetoothSignalStrengthFilter.SamplingInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter", "TimeSpan? BluetoothSignalStrengthFilter.SamplingInterval");
 			}
 			set
 			{

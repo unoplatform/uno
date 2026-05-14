@@ -19,7 +19,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AsyncOperationWithProgressCompletedHandler<IReadOnlyList<ISmsMessage>, int> GetSmsMessagesOperation.Completed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AsyncOperationWithProgressCompletedHandler%3CIReadOnlyList%3CISmsMessage%3E%2C%20int%3E%20GetSmsMessagesOperation.Completed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.GetSmsMessagesOperation", "AsyncOperationWithProgressCompletedHandler<IReadOnlyList<ISmsMessage>, int> GetSmsMessagesOperation.Completed");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception GetSmsMessagesOperation.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20GetSmsMessagesOperation.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.GetSmsMessagesOperation", "Exception GetSmsMessagesOperation.ErrorCode");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint GetSmsMessagesOperation.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20GetSmsMessagesOperation.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.GetSmsMessagesOperation", "uint GetSmsMessagesOperation.Id");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AsyncOperationProgressHandler<IReadOnlyList<ISmsMessage>, int> GetSmsMessagesOperation.Progress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AsyncOperationProgressHandler%3CIReadOnlyList%3CISmsMessage%3E%2C%20int%3E%20GetSmsMessagesOperation.Progress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.GetSmsMessagesOperation", "AsyncOperationProgressHandler<IReadOnlyList<ISmsMessage>, int> GetSmsMessagesOperation.Progress");
 			}
 			set
 			{
@@ -67,7 +67,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AsyncStatus GetSmsMessagesOperation.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AsyncStatus%20GetSmsMessagesOperation.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.GetSmsMessagesOperation", "AsyncStatus GetSmsMessagesOperation.Status");
 			}
 		}
 #endif
@@ -75,7 +75,7 @@ namespace Windows.Devices.Sms
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sms.ISmsMessage> GetResults()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<ISmsMessage> GetSmsMessagesOperation.GetResults() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CISmsMessage%3E%20GetSmsMessagesOperation.GetResults%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.GetSmsMessagesOperation", "IReadOnlyList<ISmsMessage> GetSmsMessagesOperation.GetResults()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

@@ -19,7 +19,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate HttpTransportInformation.ServerCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Certificate%20HttpTransportInformation.ServerCertificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpTransportInformation", "Certificate HttpTransportInformation.ServerCertificate");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketSslErrorSeverity HttpTransportInformation.ServerCertificateErrorSeverity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SocketSslErrorSeverity%20HttpTransportInformation.ServerCertificateErrorSeverity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpTransportInformation", "SocketSslErrorSeverity HttpTransportInformation.ServerCertificateErrorSeverity");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ChainValidationResult> HttpTransportInformation.ServerCertificateErrors is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CChainValidationResult%3E%20HttpTransportInformation.ServerCertificateErrors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpTransportInformation", "IReadOnlyList<ChainValidationResult> HttpTransportInformation.ServerCertificateErrors");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Certificate> HttpTransportInformation.ServerIntermediateCertificates is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CCertificate%3E%20HttpTransportInformation.ServerIntermediateCertificates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpTransportInformation", "IReadOnlyList<Certificate> HttpTransportInformation.ServerIntermediateCertificates");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Web.Http
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpTransportInformation.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpTransportInformation.ToString%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpTransportInformation", "string HttpTransportInformation.ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.HttpTransportInformation.ServerCertificate.get

@@ -19,7 +19,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbBulkInEndpointDescriptor> UsbInterfaceSetting.BulkInEndpoints is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CUsbBulkInEndpointDescriptor%3E%20UsbInterfaceSetting.BulkInEndpoints");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "IReadOnlyList<UsbBulkInEndpointDescriptor> UsbInterfaceSetting.BulkInEndpoints");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbBulkOutEndpointDescriptor> UsbInterfaceSetting.BulkOutEndpoints is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CUsbBulkOutEndpointDescriptor%3E%20UsbInterfaceSetting.BulkOutEndpoints");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "IReadOnlyList<UsbBulkOutEndpointDescriptor> UsbInterfaceSetting.BulkOutEndpoints");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbDescriptor> UsbInterfaceSetting.Descriptors is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CUsbDescriptor%3E%20UsbInterfaceSetting.Descriptors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "IReadOnlyList<UsbDescriptor> UsbInterfaceSetting.Descriptors");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbInterfaceDescriptor UsbInterfaceSetting.InterfaceDescriptor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbInterfaceDescriptor%20UsbInterfaceSetting.InterfaceDescriptor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "UsbInterfaceDescriptor UsbInterfaceSetting.InterfaceDescriptor");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbInterruptInEndpointDescriptor> UsbInterfaceSetting.InterruptInEndpoints is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CUsbInterruptInEndpointDescriptor%3E%20UsbInterfaceSetting.InterruptInEndpoints");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "IReadOnlyList<UsbInterruptInEndpointDescriptor> UsbInterfaceSetting.InterruptInEndpoints");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbInterruptOutEndpointDescriptor> UsbInterfaceSetting.InterruptOutEndpoints is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CUsbInterruptOutEndpointDescriptor%3E%20UsbInterfaceSetting.InterruptOutEndpoints");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "IReadOnlyList<UsbInterruptOutEndpointDescriptor> UsbInterfaceSetting.InterruptOutEndpoints");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool UsbInterfaceSetting.Selected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20UsbInterfaceSetting.Selected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "bool UsbInterfaceSetting.Selected");
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Windows.Devices.Usb
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SelectSettingAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction UsbInterfaceSetting.SelectSettingAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20UsbInterfaceSetting.SelectSettingAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterfaceSetting", "IAsyncAction UsbInterfaceSetting.SelectSettingAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceSetting.BulkInEndpoints.get

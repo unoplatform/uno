@@ -19,7 +19,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception DisplayStateOperationResult.ExtendedErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20DisplayStateOperationResult.ExtendedErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayStateOperationResult", "Exception DisplayStateOperationResult.ExtendedErrorCode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayStateOperationStatus DisplayStateOperationResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayStateOperationStatus%20DisplayStateOperationResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayStateOperationResult", "DisplayStateOperationStatus DisplayStateOperationResult.Status");
 			}
 		}
 #endif

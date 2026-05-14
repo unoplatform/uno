@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2FileSystemHandleKind CoreWebView2FileSystemHandle.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2FileSystemHandleKind%20CoreWebView2FileSystemHandle.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandle", "CoreWebView2FileSystemHandleKind CoreWebView2FileSystemHandle.Kind");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2FileSystemHandle.Path is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2FileSystemHandle.Path");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandle", "string CoreWebView2FileSystemHandle.Path");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2FileSystemHandlePermission CoreWebView2FileSystemHandle.Permission is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2FileSystemHandlePermission%20CoreWebView2FileSystemHandle.Permission");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2FileSystemHandle", "CoreWebView2FileSystemHandlePermission CoreWebView2FileSystemHandle.Permission");
 			}
 		}
 #endif

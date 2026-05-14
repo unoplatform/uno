@@ -19,7 +19,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<SmsMessageRegistration> SmsMessageRegistration.AllRegistrations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CSmsMessageRegistration%3E%20SmsMessageRegistration.AllRegistrations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageRegistration", "IReadOnlyList<SmsMessageRegistration> SmsMessageRegistration.AllRegistrations");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsMessageRegistration.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsMessageRegistration.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageRegistration", "string SmsMessageRegistration.Id");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Devices.Sms
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Sms.SmsMessageRegistration Register(string id, global::Windows.Devices.Sms.SmsFilterRules filterRules)
 		{
-			throw new global::System.NotImplementedException("The member SmsMessageRegistration SmsMessageRegistration.Register(string id, SmsFilterRules filterRules) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageRegistration%20SmsMessageRegistration.Register%28string%20id%2C%20SmsFilterRules%20filterRules%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageRegistration", "SmsMessageRegistration SmsMessageRegistration.Register(string id, SmsFilterRules filterRules)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.AllRegistrations.get

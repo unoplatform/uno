@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member KeyValuePair<string, ResourceMap> ResourceMapMapViewIterator.Current is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=KeyValuePair%3Cstring%2C%20ResourceMap%3E%20ResourceMapMapViewIterator.Current");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator", "KeyValuePair<string, ResourceMap> ResourceMapMapViewIterator.Current");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object ResourceMapMapViewIterator.Current is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ResourceMapMapViewIterator.Current");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator", "object ResourceMapMapViewIterator.Current");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool MoveNext()
 		{
-			throw new global::System.NotImplementedException("The member bool ResourceMapMapViewIterator.MoveNext() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ResourceMapMapViewIterator.MoveNext%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceMapMapViewIterator", "bool ResourceMapMapViewIterator.MoveNext()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

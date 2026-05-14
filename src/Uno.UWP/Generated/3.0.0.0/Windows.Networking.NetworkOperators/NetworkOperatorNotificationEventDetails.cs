@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte NetworkOperatorNotificationEventDetails.EncodingType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20NetworkOperatorNotificationEventDetails.EncodingType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails", "byte NetworkOperatorNotificationEventDetails.EncodingType");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NetworkOperatorNotificationEventDetails.Message is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NetworkOperatorNotificationEventDetails.Message");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails", "string NetworkOperatorNotificationEventDetails.Message");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NetworkOperatorNotificationEventDetails.NetworkAccountId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NetworkOperatorNotificationEventDetails.NetworkAccountId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails", "string NetworkOperatorNotificationEventDetails.NetworkAccountId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NetworkOperatorEventMessageType NetworkOperatorNotificationEventDetails.NotificationType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NetworkOperatorEventMessageType%20NetworkOperatorNotificationEventDetails.NotificationType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails", "NetworkOperatorEventMessageType NetworkOperatorNotificationEventDetails.NotificationType");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NetworkOperatorNotificationEventDetails.RuleId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NetworkOperatorNotificationEventDetails.RuleId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails", "string NetworkOperatorNotificationEventDetails.RuleId");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ISmsMessage NetworkOperatorNotificationEventDetails.SmsMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ISmsMessage%20NetworkOperatorNotificationEventDetails.SmsMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorNotificationEventDetails", "ISmsMessage NetworkOperatorNotificationEventDetails.SmsMessage");
 			}
 		}
 #endif

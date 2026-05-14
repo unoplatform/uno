@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxChangeTracker.IsTracking is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMailboxChangeTracker.IsTracking");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxChangeTracker", "bool EmailMailboxChangeTracker.IsTracking");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.ApplicationModel.Email
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Email.EmailMailboxChangeReader GetChangeReader()
 		{
-			throw new global::System.NotImplementedException("The member EmailMailboxChangeReader EmailMailboxChangeTracker.GetChangeReader() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxChangeReader%20EmailMailboxChangeTracker.GetChangeReader%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxChangeTracker", "EmailMailboxChangeReader EmailMailboxChangeTracker.GetChangeReader()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

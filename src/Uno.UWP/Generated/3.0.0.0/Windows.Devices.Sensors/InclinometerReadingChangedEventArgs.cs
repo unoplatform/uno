@@ -19,7 +19,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InclinometerReading InclinometerReadingChangedEventArgs.Reading is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InclinometerReading%20InclinometerReadingChangedEventArgs.Reading");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.InclinometerReadingChangedEventArgs", "InclinometerReading InclinometerReadingChangedEventArgs.Reading");
 			}
 		}
 #endif

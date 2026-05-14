@@ -14,7 +14,7 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName EndpointPair.LocalHostName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20EndpointPair.LocalHostName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.EndpointPair", "HostName EndpointPair.LocalHostName");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EndpointPair.LocalServiceName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EndpointPair.LocalServiceName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.EndpointPair", "string EndpointPair.LocalServiceName");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName EndpointPair.RemoteHostName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20EndpointPair.RemoteHostName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.EndpointPair", "HostName EndpointPair.RemoteHostName");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EndpointPair.RemoteServiceName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EndpointPair.RemoteServiceName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.EndpointPair", "string EndpointPair.RemoteServiceName");
 			}
 			set
 			{

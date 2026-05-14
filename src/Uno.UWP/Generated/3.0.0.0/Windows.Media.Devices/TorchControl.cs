@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TorchControl.Enabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20TorchControl.Enabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.TorchControl", "bool TorchControl.Enabled");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float TorchControl.PowerPercent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20TorchControl.PowerPercent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.TorchControl", "float TorchControl.PowerPercent");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TorchControl.PowerSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20TorchControl.PowerSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.TorchControl", "bool TorchControl.PowerSupported");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TorchControl.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20TorchControl.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.TorchControl", "bool TorchControl.Supported");
 			}
 		}
 #endif

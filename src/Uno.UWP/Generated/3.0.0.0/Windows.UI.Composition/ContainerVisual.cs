@@ -14,7 +14,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VisualCollection ContainerVisual.Children is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VisualCollection%20ContainerVisual.Children");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ContainerVisual", "VisualCollection ContainerVisual.Children");
 			}
 		}
 #endif

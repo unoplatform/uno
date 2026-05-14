@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ItemContainerGenerator ItemsControl.ItemContainerGenerator is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ItemContainerGenerator%20ItemsControl.ItemContainerGenerator");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsControl", "ItemContainerGenerator ItemsControl.ItemContainerGenerator");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.DependencyObject GroupHeaderContainerFromItemContainer(global::Microsoft.UI.Xaml.DependencyObject itemContainer)
 		{
-			throw new global::System.NotImplementedException("The member DependencyObject ItemsControl.GroupHeaderContainerFromItemContainer(DependencyObject itemContainer) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DependencyObject%20ItemsControl.GroupHeaderContainerFromItemContainer%28DependencyObject%20itemContainer%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsControl", "DependencyObject ItemsControl.GroupHeaderContainerFromItemContainer(DependencyObject itemContainer)");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.IsItemItsOwnContainerOverride(object)

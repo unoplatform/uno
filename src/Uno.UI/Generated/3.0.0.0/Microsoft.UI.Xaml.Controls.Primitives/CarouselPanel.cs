@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CarouselPanel.AreHorizontalSnapPointsRegular is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CarouselPanel.AreHorizontalSnapPointsRegular");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "bool CarouselPanel.AreHorizontalSnapPointsRegular");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CarouselPanel.AreVerticalSnapPointsRegular is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CarouselPanel.AreVerticalSnapPointsRegular");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "bool CarouselPanel.AreVerticalSnapPointsRegular");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CarouselPanel.CanHorizontallyScroll is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CarouselPanel.CanHorizontallyScroll");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "bool CarouselPanel.CanHorizontallyScroll");
 			}
 			set
 			{
@@ -48,7 +48,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CarouselPanel.CanVerticallyScroll is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CarouselPanel.CanVerticallyScroll");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "bool CarouselPanel.CanVerticallyScroll");
 			}
 			set
 			{
@@ -62,7 +62,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CarouselPanel.ExtentHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CarouselPanel.ExtentHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "double CarouselPanel.ExtentHeight");
 			}
 		}
 #endif
@@ -72,7 +72,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CarouselPanel.ExtentWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CarouselPanel.ExtentWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "double CarouselPanel.ExtentWidth");
 			}
 		}
 #endif
@@ -82,7 +82,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CarouselPanel.HorizontalOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CarouselPanel.HorizontalOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "double CarouselPanel.HorizontalOffset");
 			}
 		}
 #endif
@@ -92,7 +92,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object CarouselPanel.ScrollOwner is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20CarouselPanel.ScrollOwner");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "object CarouselPanel.ScrollOwner");
 			}
 			set
 			{
@@ -106,7 +106,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CarouselPanel.VerticalOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CarouselPanel.VerticalOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "double CarouselPanel.VerticalOffset");
 			}
 		}
 #endif
@@ -116,7 +116,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CarouselPanel.ViewportHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CarouselPanel.ViewportHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "double CarouselPanel.ViewportHeight");
 			}
 		}
 #endif
@@ -126,7 +126,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CarouselPanel.ViewportWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CarouselPanel.ViewportWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "double CarouselPanel.ViewportWidth");
 			}
 		}
 #endif
@@ -234,21 +234,21 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Rect MakeVisible(global::Microsoft.UI.Xaml.UIElement visual, global::Windows.Foundation.Rect rectangle)
 		{
-			throw new global::System.NotImplementedException("The member Rect CarouselPanel.MakeVisible(UIElement visual, Rect rectangle) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20CarouselPanel.MakeVisible%28UIElement%20visual%2C%20Rect%20rectangle%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "Rect CarouselPanel.MakeVisible(UIElement visual, Rect rectangle)");
 		}
 #endif
 #if false || false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<float> GetIrregularSnapPoints(global::Microsoft.UI.Xaml.Controls.Orientation orientation, global::Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<float> CarouselPanel.GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cfloat%3E%20CarouselPanel.GetIrregularSnapPoints%28Orientation%20orientation%2C%20SnapPointsAlignment%20alignment%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "IReadOnlyList<float> CarouselPanel.GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment)");
 		}
 #endif
 #if false || false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public float GetRegularSnapPoints(global::Microsoft.UI.Xaml.Controls.Orientation orientation, global::Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment, out float offset)
 		{
-			throw new global::System.NotImplementedException("The member float CarouselPanel.GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CarouselPanel.GetRegularSnapPoints%28Orientation%20orientation%2C%20SnapPointsAlignment%20alignment%2C%20out%20float%20offset%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "float CarouselPanel.GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.HorizontalSnapPointsChanged.add

@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object DataTemplateKey.DataType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20DataTemplateKey.DataType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.DataTemplateKey", "object DataTemplateKey.DataType");
 			}
 			set
 			{

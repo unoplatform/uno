@@ -14,7 +14,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AnimationDelayBehavior KeyFrameAnimation.DelayBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AnimationDelayBehavior%20KeyFrameAnimation.DelayBehavior");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "AnimationDelayBehavior KeyFrameAnimation.DelayBehavior");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan KeyFrameAnimation.DelayTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20KeyFrameAnimation.DelayTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "TimeSpan KeyFrameAnimation.DelayTime");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AnimationDirection KeyFrameAnimation.Direction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AnimationDirection%20KeyFrameAnimation.Direction");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "AnimationDirection KeyFrameAnimation.Direction");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan KeyFrameAnimation.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20KeyFrameAnimation.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "TimeSpan KeyFrameAnimation.Duration");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AnimationIterationBehavior KeyFrameAnimation.IterationBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AnimationIterationBehavior%20KeyFrameAnimation.IterationBehavior");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "AnimationIterationBehavior KeyFrameAnimation.IterationBehavior");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int KeyFrameAnimation.IterationCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20KeyFrameAnimation.IterationCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "int KeyFrameAnimation.IterationCount");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int KeyFrameAnimation.KeyFrameCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20KeyFrameAnimation.KeyFrameCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "int KeyFrameAnimation.KeyFrameCount");
 			}
 		}
 #endif
@@ -108,7 +108,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AnimationStopBehavior KeyFrameAnimation.StopBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AnimationStopBehavior%20KeyFrameAnimation.StopBehavior");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.KeyFrameAnimation", "AnimationStopBehavior KeyFrameAnimation.StopBehavior");
 			}
 			set
 			{

@@ -19,7 +19,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SystemFunctionLockChangedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemFunctionLockChangedEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.SystemFunctionLockChangedEventArgs", "bool SystemFunctionLockChangedEventArgs.Handled");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SystemFunctionLockChangedEventArgs.IsLocked is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemFunctionLockChangedEventArgs.IsLocked");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.SystemFunctionLockChangedEventArgs", "bool SystemFunctionLockChangedEventArgs.IsLocked");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong SystemFunctionLockChangedEventArgs.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20SystemFunctionLockChangedEventArgs.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.SystemFunctionLockChangedEventArgs", "ulong SystemFunctionLockChangedEventArgs.Timestamp");
 			}
 		}
 #endif

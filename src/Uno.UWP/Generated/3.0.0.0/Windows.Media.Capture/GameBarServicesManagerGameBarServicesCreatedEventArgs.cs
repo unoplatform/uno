@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GameBarServices GameBarServicesManagerGameBarServicesCreatedEventArgs.GameBarServices is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameBarServices%20GameBarServicesManagerGameBarServicesCreatedEventArgs.GameBarServices");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.GameBarServicesManagerGameBarServicesCreatedEventArgs", "GameBarServices GameBarServicesManagerGameBarServicesCreatedEventArgs.GameBarServices");
 			}
 		}
 #endif

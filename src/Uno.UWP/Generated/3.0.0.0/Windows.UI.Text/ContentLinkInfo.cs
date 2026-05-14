@@ -14,7 +14,7 @@ namespace Windows.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContentLinkInfo.DisplayText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContentLinkInfo.DisplayText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.ContentLinkInfo", "string ContentLinkInfo.DisplayText");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ContentLinkInfo.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ContentLinkInfo.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.ContentLinkInfo", "uint ContentLinkInfo.Id");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContentLinkInfo.LinkContentKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContentLinkInfo.LinkContentKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.ContentLinkInfo", "string ContentLinkInfo.LinkContentKind");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContentLinkInfo.SecondaryText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContentLinkInfo.SecondaryText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.ContentLinkInfo", "string ContentLinkInfo.SecondaryText");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri ContentLinkInfo.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20ContentLinkInfo.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.ContentLinkInfo", "Uri ContentLinkInfo.Uri");
 			}
 			set
 			{

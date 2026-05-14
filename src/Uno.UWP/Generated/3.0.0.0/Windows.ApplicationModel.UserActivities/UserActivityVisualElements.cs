@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserActivityAttribution UserActivityVisualElements.Attribution is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserActivityAttribution%20UserActivityVisualElements.Attribution");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "UserActivityAttribution UserActivityVisualElements.Attribution");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserActivityVisualElements.AttributionDisplayText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserActivityVisualElements.AttributionDisplayText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "string UserActivityVisualElements.AttributionDisplayText");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color UserActivityVisualElements.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20UserActivityVisualElements.BackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "Color UserActivityVisualElements.BackgroundColor");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IAdaptiveCard UserActivityVisualElements.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAdaptiveCard%20UserActivityVisualElements.Content");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "IAdaptiveCard UserActivityVisualElements.Content");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserActivityVisualElements.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserActivityVisualElements.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "string UserActivityVisualElements.Description");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserActivityVisualElements.DisplayText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserActivityVisualElements.DisplayText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityVisualElements", "string UserActivityVisualElements.DisplayText");
 			}
 			set
 			{

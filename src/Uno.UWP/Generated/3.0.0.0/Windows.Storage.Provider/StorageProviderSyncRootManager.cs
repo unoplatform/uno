@@ -26,28 +26,28 @@ namespace Windows.Storage.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.Provider.StorageProviderSyncRootInfo GetSyncRootInformationForFolder(global::Windows.Storage.IStorageFolder folder)
 		{
-			throw new global::System.NotImplementedException("The member StorageProviderSyncRootInfo StorageProviderSyncRootManager.GetSyncRootInformationForFolder(IStorageFolder folder) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageProviderSyncRootInfo%20StorageProviderSyncRootManager.GetSyncRootInformationForFolder%28IStorageFolder%20folder%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootManager", "StorageProviderSyncRootInfo StorageProviderSyncRootManager.GetSyncRootInformationForFolder(IStorageFolder folder)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.Provider.StorageProviderSyncRootInfo GetSyncRootInformationForId(string id)
 		{
-			throw new global::System.NotImplementedException("The member StorageProviderSyncRootInfo StorageProviderSyncRootManager.GetSyncRootInformationForId(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageProviderSyncRootInfo%20StorageProviderSyncRootManager.GetSyncRootInformationForId%28string%20id%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootManager", "StorageProviderSyncRootInfo StorageProviderSyncRootManager.GetSyncRootInformationForId(string id)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.Provider.StorageProviderSyncRootInfo> GetCurrentSyncRoots()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<StorageProviderSyncRootInfo> StorageProviderSyncRootManager.GetCurrentSyncRoots() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CStorageProviderSyncRootInfo%3E%20StorageProviderSyncRootManager.GetCurrentSyncRoots%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootManager", "IReadOnlyList<StorageProviderSyncRootInfo> StorageProviderSyncRootManager.GetCurrentSyncRoots()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSupported()
 		{
-			throw new global::System.NotImplementedException("The member bool StorageProviderSyncRootManager.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StorageProviderSyncRootManager.IsSupported%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootManager", "bool StorageProviderSyncRootManager.IsSupported()");
 		}
 #endif
 	}

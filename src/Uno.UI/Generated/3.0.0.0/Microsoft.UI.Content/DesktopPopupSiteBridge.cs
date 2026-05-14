@@ -19,7 +19,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentAutomationOptions DesktopPopupSiteBridge.AutomationOption is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentAutomationOptions%20DesktopPopupSiteBridge.AutomationOption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopPopupSiteBridge", "ContentAutomationOptions DesktopPopupSiteBridge.AutomationOption");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object DesktopPopupSiteBridge.AutomationProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20DesktopPopupSiteBridge.AutomationProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopPopupSiteBridge", "object DesktopPopupSiteBridge.AutomationProvider");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DispatcherQueue DesktopPopupSiteBridge.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherQueue%20DesktopPopupSiteBridge.DispatcherQueue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopPopupSiteBridge", "DispatcherQueue DesktopPopupSiteBridge.DispatcherQueue");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DesktopPopupSiteBridge.IsClosed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DesktopPopupSiteBridge.IsClosed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopPopupSiteBridge", "bool DesktopPopupSiteBridge.IsClosed");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DesktopPopupSiteBridge.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DesktopPopupSiteBridge.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopPopupSiteBridge", "bool DesktopPopupSiteBridge.IsEnabled");
 			}
 		}
 #endif
@@ -73,7 +73,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DesktopPopupSiteBridge.IsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DesktopPopupSiteBridge.IsVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopPopupSiteBridge", "bool DesktopPopupSiteBridge.IsVisible");
 			}
 		}
 #endif
@@ -83,7 +83,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentLayoutDirection? DesktopPopupSiteBridge.LayoutDirectionOverride is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentLayoutDirection%3F%20DesktopPopupSiteBridge.LayoutDirectionOverride");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopPopupSiteBridge", "ContentLayoutDirection? DesktopPopupSiteBridge.LayoutDirectionOverride");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float DesktopPopupSiteBridge.OverrideScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20DesktopPopupSiteBridge.OverrideScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopPopupSiteBridge", "float DesktopPopupSiteBridge.OverrideScale");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentIsland DesktopPopupSiteBridge.Parent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIsland%20DesktopPopupSiteBridge.Parent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopPopupSiteBridge", "ContentIsland DesktopPopupSiteBridge.Parent");
 			}
 		}
 #endif
@@ -121,7 +121,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentSiteView DesktopPopupSiteBridge.SiteView is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentSiteView%20DesktopPopupSiteBridge.SiteView");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopPopupSiteBridge", "ContentSiteView DesktopPopupSiteBridge.SiteView");
 			}
 		}
 #endif
@@ -131,7 +131,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WindowId DesktopPopupSiteBridge.WindowId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WindowId%20DesktopPopupSiteBridge.WindowId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopPopupSiteBridge", "WindowId DesktopPopupSiteBridge.WindowId");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Microsoft.UI.Content
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Content.DesktopPopupSiteBridge Create(global::Microsoft.UI.Content.ContentIsland parent)
 		{
-			throw new global::System.NotImplementedException("The member DesktopPopupSiteBridge DesktopPopupSiteBridge.Create(ContentIsland parent) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DesktopPopupSiteBridge%20DesktopPopupSiteBridge.Create%28ContentIsland%20parent%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopPopupSiteBridge", "DesktopPopupSiteBridge DesktopPopupSiteBridge.Create(ContentIsland parent)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

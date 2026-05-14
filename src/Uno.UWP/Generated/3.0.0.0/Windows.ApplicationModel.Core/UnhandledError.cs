@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool UnhandledError.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20UnhandledError.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Core.UnhandledError", "bool UnhandledError.Handled");
 			}
 		}
 #endif

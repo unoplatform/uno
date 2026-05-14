@@ -14,7 +14,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2.BrowserProcessId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2.BrowserProcessId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "uint CoreWebView2.BrowserProcessId");
 			}
 		}
 #endif
@@ -26,7 +26,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2.ContainsFullScreenElement is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2.ContainsFullScreenElement");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "bool CoreWebView2.ContainsFullScreenElement");
 			}
 		}
 #endif
@@ -36,7 +36,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2CookieManager CoreWebView2.CookieManager is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2CookieManager%20CoreWebView2.CookieManager");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "CoreWebView2CookieManager CoreWebView2.CookieManager");
 			}
 		}
 #endif
@@ -46,7 +46,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2DefaultDownloadDialogCornerAlignment CoreWebView2.DefaultDownloadDialogCornerAlignment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2DefaultDownloadDialogCornerAlignment%20CoreWebView2.DefaultDownloadDialogCornerAlignment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "CoreWebView2DefaultDownloadDialogCornerAlignment CoreWebView2.DefaultDownloadDialogCornerAlignment");
 			}
 			set
 			{
@@ -60,7 +60,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point CoreWebView2.DefaultDownloadDialogMargin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20CoreWebView2.DefaultDownloadDialogMargin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "Point CoreWebView2.DefaultDownloadDialogMargin");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2Environment CoreWebView2.Environment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2Environment%20CoreWebView2.Environment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "CoreWebView2Environment CoreWebView2.Environment");
 			}
 		}
 #endif
@@ -85,7 +85,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2.FaviconUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2.FaviconUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "string CoreWebView2.FaviconUri");
 			}
 		}
 #endif
@@ -95,7 +95,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2Find CoreWebView2.Find is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2Find%20CoreWebView2.Find");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "CoreWebView2Find CoreWebView2.Find");
 			}
 		}
 #endif
@@ -105,7 +105,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2.FrameId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2.FrameId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "uint CoreWebView2.FrameId");
 			}
 		}
 #endif
@@ -115,7 +115,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2.IsDefaultDownloadDialogOpen is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2.IsDefaultDownloadDialogOpen");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "bool CoreWebView2.IsDefaultDownloadDialogOpen");
 			}
 		}
 #endif
@@ -125,7 +125,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2.IsDocumentPlayingAudio is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2.IsDocumentPlayingAudio");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "bool CoreWebView2.IsDocumentPlayingAudio");
 			}
 		}
 #endif
@@ -135,7 +135,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2.IsMuted is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2.IsMuted");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "bool CoreWebView2.IsMuted");
 			}
 			set
 			{
@@ -149,7 +149,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2.IsSuspended is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2.IsSuspended");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "bool CoreWebView2.IsSuspended");
 			}
 		}
 #endif
@@ -159,7 +159,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2MemoryUsageTargetLevel CoreWebView2.MemoryUsageTargetLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2MemoryUsageTargetLevel%20CoreWebView2.MemoryUsageTargetLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "CoreWebView2MemoryUsageTargetLevel CoreWebView2.MemoryUsageTargetLevel");
 			}
 			set
 			{
@@ -173,7 +173,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2Profile CoreWebView2.Profile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2Profile%20CoreWebView2.Profile");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "CoreWebView2Profile CoreWebView2.Profile");
 			}
 		}
 #endif
@@ -185,7 +185,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2.StatusBarText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2.StatusBarText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "string CoreWebView2.StatusBarText");
 			}
 		}
 #endif
@@ -195,7 +195,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<string> CallDevToolsProtocolMethodForSessionAsync(string sessionId, string methodName, string parametersAsJson)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> CoreWebView2.CallDevToolsProtocolMethodForSessionAsync(string sessionId, string methodName, string parametersAsJson) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20CoreWebView2.CallDevToolsProtocolMethodForSessionAsync%28string%20sessionId%2C%20string%20methodName%2C%20string%20parametersAsJson%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "IAsyncOperation<string> CoreWebView2.CallDevToolsProtocolMethodForSessionAsync(string sessionId, string methodName, string parametersAsJson)");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.ContextMenuRequested.add
@@ -206,7 +206,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ClearServerCertificateErrorActionsAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction CoreWebView2.ClearServerCertificateErrorActionsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20CoreWebView2.ClearServerCertificateErrorActionsAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "IAsyncAction CoreWebView2.ClearServerCertificateErrorActionsAsync()");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.ServerCertificateErrorDetected.add
@@ -215,7 +215,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetFaviconAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2FaviconImageFormat format)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> CoreWebView2.GetFaviconAsync(CoreWebView2FaviconImageFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStream%3E%20CoreWebView2.GetFaviconAsync%28CoreWebView2FaviconImageFormat%20format%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "IAsyncOperation<IRandomAccessStream> CoreWebView2.GetFaviconAsync(CoreWebView2FaviconImageFormat format)");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.FaviconChanged.add
@@ -224,7 +224,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2PrintStatus> PrintAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings printSettings)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CoreWebView2PrintStatus> CoreWebView2.PrintAsync(CoreWebView2PrintSettings printSettings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCoreWebView2PrintStatus%3E%20CoreWebView2.PrintAsync%28CoreWebView2PrintSettings%20printSettings%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "IAsyncOperation<CoreWebView2PrintStatus> CoreWebView2.PrintAsync(CoreWebView2PrintSettings printSettings)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -238,7 +238,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> PrintToPdfStreamAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings printSettings)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> CoreWebView2.PrintToPdfStreamAsync(CoreWebView2PrintSettings printSettings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStream%3E%20CoreWebView2.PrintToPdfStreamAsync%28CoreWebView2PrintSettings%20printSettings%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "IAsyncOperation<IRandomAccessStream> CoreWebView2.PrintToPdfStreamAsync(CoreWebView2PrintSettings printSettings)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -265,7 +265,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2ExecuteScriptResult> ExecuteScriptWithResultAsync(string javaScript)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CoreWebView2ExecuteScriptResult> CoreWebView2.ExecuteScriptWithResultAsync(string javaScript) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCoreWebView2ExecuteScriptResult%3E%20CoreWebView2.ExecuteScriptWithResultAsync%28string%20javaScript%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "IAsyncOperation<CoreWebView2ExecuteScriptResult> CoreWebView2.ExecuteScriptWithResultAsync(string javaScript)");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.NotificationReceived.add
@@ -274,7 +274,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIResult> ShowSaveAsUIAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<CoreWebView2SaveAsUIResult> CoreWebView2.ShowSaveAsUIAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCoreWebView2SaveAsUIResult%3E%20CoreWebView2.ShowSaveAsUIAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "IAsyncOperation<CoreWebView2SaveAsUIResult> CoreWebView2.ShowSaveAsUIAsync()");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.SaveAsUIShowing.add
@@ -287,7 +287,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TrySuspendAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> CoreWebView2.TrySuspendAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20CoreWebView2.TrySuspendAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "IAsyncOperation<bool> CoreWebView2.TrySuspendAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -316,7 +316,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> PrintToPdfAsync(string ResultFilePath, global::Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings printSettings)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> CoreWebView2.PrintToPdfAsync(string ResultFilePath, CoreWebView2PrintSettings printSettings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20CoreWebView2.PrintToPdfAsync%28string%20ResultFilePath%2C%20CoreWebView2PrintSettings%20printSettings%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "IAsyncOperation<bool> CoreWebView2.PrintToPdfAsync(string ResultFilePath, CoreWebView2PrintSettings printSettings)");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.IsDocumentPlayingAudioChanged.add
@@ -354,7 +354,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<string> AddScriptToExecuteOnDocumentCreatedAsync(string javaScript)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(string javaScript) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync%28string%20javaScript%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "IAsyncOperation<string> CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(string javaScript)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -369,7 +369,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction CapturePreviewAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2CapturePreviewImageFormat imageFormat, global::Windows.Storage.Streams.IRandomAccessStream imageStream)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction CoreWebView2.CapturePreviewAsync(CoreWebView2CapturePreviewImageFormat imageFormat, IRandomAccessStream imageStream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20CoreWebView2.CapturePreviewAsync%28CoreWebView2CapturePreviewImageFormat%20imageFormat%2C%20IRandomAccessStream%20imageStream%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "IAsyncAction CoreWebView2.CapturePreviewAsync(CoreWebView2CapturePreviewImageFormat imageFormat, IRandomAccessStream imageStream)");
 		}
 #endif
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.Reload()
@@ -391,7 +391,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<string> CallDevToolsProtocolMethodAsync(string methodName, string parametersAsJson)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> CoreWebView2.CallDevToolsProtocolMethodAsync(string methodName, string parametersAsJson) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20CoreWebView2.CallDevToolsProtocolMethodAsync%28string%20methodName%2C%20string%20parametersAsJson%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "IAsyncOperation<string> CoreWebView2.CallDevToolsProtocolMethodAsync(string methodName, string parametersAsJson)");
 		}
 #endif
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.GoBack()
@@ -400,7 +400,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceiver GetDevToolsProtocolEventReceiver(string eventName)
 		{
-			throw new global::System.NotImplementedException("The member CoreWebView2DevToolsProtocolEventReceiver CoreWebView2.GetDevToolsProtocolEventReceiver(string eventName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2DevToolsProtocolEventReceiver%20CoreWebView2.GetDevToolsProtocolEventReceiver%28string%20eventName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "CoreWebView2DevToolsProtocolEventReceiver CoreWebView2.GetDevToolsProtocolEventReceiver(string eventName)");
 		}
 #endif
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.Stop()

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactQuerySearchFields ContactQueryTextSearch.Fields is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactQuerySearchFields%20ContactQueryTextSearch.Fields");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactQueryTextSearch", "ContactQuerySearchFields ContactQueryTextSearch.Fields");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactQuerySearchScope ContactQueryTextSearch.SearchScope is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactQuerySearchScope%20ContactQueryTextSearch.SearchScope");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactQueryTextSearch", "ContactQuerySearchScope ContactQueryTextSearch.SearchScope");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactQueryTextSearch.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactQueryTextSearch.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactQueryTextSearch", "string ContactQueryTextSearch.Text");
 			}
 			set
 			{

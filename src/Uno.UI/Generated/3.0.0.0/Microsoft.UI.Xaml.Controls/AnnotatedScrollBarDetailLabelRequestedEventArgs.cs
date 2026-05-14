@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object AnnotatedScrollBarDetailLabelRequestedEventArgs.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20AnnotatedScrollBarDetailLabelRequestedEventArgs.Content");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs", "object AnnotatedScrollBarDetailLabelRequestedEventArgs.Content");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AnnotatedScrollBarDetailLabelRequestedEventArgs.ScrollOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AnnotatedScrollBarDetailLabelRequestedEventArgs.ScrollOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.AnnotatedScrollBarDetailLabelRequestedEventArgs", "double AnnotatedScrollBarDetailLabelRequestedEventArgs.ScrollOffset");
 			}
 		}
 #endif

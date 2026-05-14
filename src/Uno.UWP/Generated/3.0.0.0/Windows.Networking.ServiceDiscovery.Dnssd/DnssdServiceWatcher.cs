@@ -19,7 +19,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DnssdServiceWatcherStatus DnssdServiceWatcher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DnssdServiceWatcherStatus%20DnssdServiceWatcher.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher", "DnssdServiceWatcherStatus DnssdServiceWatcher.Status");
 			}
 		}
 #endif

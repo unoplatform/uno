@@ -14,7 +14,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<SyndicationAttribute> SyndicationGenerator.AttributeExtensions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CSyndicationAttribute%3E%20SyndicationGenerator.AttributeExtensions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "IList<SyndicationAttribute> SyndicationGenerator.AttributeExtensions");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SyndicationGenerator.BaseUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20SyndicationGenerator.BaseUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "Uri SyndicationGenerator.BaseUri");
 			}
 			set
 			{
@@ -38,7 +38,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ISyndicationNode> SyndicationGenerator.ElementExtensions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CISyndicationNode%3E%20SyndicationGenerator.ElementExtensions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "IList<ISyndicationNode> SyndicationGenerator.ElementExtensions");
 			}
 		}
 #endif
@@ -48,7 +48,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationGenerator.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationGenerator.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "string SyndicationGenerator.Language");
 			}
 			set
 			{
@@ -62,7 +62,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationGenerator.NodeName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationGenerator.NodeName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "string SyndicationGenerator.NodeName");
 			}
 			set
 			{
@@ -76,7 +76,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationGenerator.NodeNamespace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationGenerator.NodeNamespace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "string SyndicationGenerator.NodeNamespace");
 			}
 			set
 			{
@@ -90,7 +90,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationGenerator.NodeValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationGenerator.NodeValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "string SyndicationGenerator.NodeValue");
 			}
 			set
 			{
@@ -104,7 +104,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationGenerator.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationGenerator.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "string SyndicationGenerator.Text");
 			}
 			set
 			{
@@ -118,7 +118,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri SyndicationGenerator.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20SyndicationGenerator.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "Uri SyndicationGenerator.Uri");
 			}
 			set
 			{
@@ -132,7 +132,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationGenerator.Version is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationGenerator.Version");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "string SyndicationGenerator.Version");
 			}
 			set
 			{
@@ -160,7 +160,7 @@ namespace Windows.Web.Syndication
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.XmlDocument GetXmlDocument(global::Windows.Web.Syndication.SyndicationFormat format)
 		{
-			throw new global::System.NotImplementedException("The member XmlDocument SyndicationGenerator.GetXmlDocument(SyndicationFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XmlDocument%20SyndicationGenerator.GetXmlDocument%28SyndicationFormat%20format%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationGenerator", "XmlDocument SyndicationGenerator.GetXmlDocument(SyndicationFormat format)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Syndication.SyndicationGenerator.AttributeExtensions.get

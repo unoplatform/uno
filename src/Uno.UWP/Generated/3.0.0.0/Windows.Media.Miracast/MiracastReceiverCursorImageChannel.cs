@@ -19,7 +19,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamWithContentType MiracastReceiverCursorImageChannel.ImageStream is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamWithContentType%20MiracastReceiverCursorImageChannel.ImageStream");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverCursorImageChannel", "IRandomAccessStreamWithContentType MiracastReceiverCursorImageChannel.ImageStream");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MiracastReceiverCursorImageChannel.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MiracastReceiverCursorImageChannel.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverCursorImageChannel", "bool MiracastReceiverCursorImageChannel.IsEnabled");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SizeInt32 MiracastReceiverCursorImageChannel.MaxImageSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SizeInt32%20MiracastReceiverCursorImageChannel.MaxImageSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverCursorImageChannel", "SizeInt32 MiracastReceiverCursorImageChannel.MaxImageSize");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PointInt32 MiracastReceiverCursorImageChannel.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointInt32%20MiracastReceiverCursorImageChannel.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverCursorImageChannel", "PointInt32 MiracastReceiverCursorImageChannel.Position");
 			}
 		}
 #endif

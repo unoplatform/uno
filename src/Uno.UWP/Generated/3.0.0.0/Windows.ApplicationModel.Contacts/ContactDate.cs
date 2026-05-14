@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? ContactDate.Day is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20ContactDate.Day");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactDate", "uint? ContactDate.Day");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactDate.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactDate.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactDate", "string ContactDate.Description");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactDateKind ContactDate.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactDateKind%20ContactDate.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactDate", "ContactDateKind ContactDate.Kind");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? ContactDate.Month is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20ContactDate.Month");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactDate", "uint? ContactDate.Month");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactDate.Year is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactDate.Year");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactDate", "int? ContactDate.Year");
 			}
 			set
 			{

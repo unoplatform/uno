@@ -19,7 +19,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet PlayReadySoapMessage.MessageHeaders is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPropertySet%20PlayReadySoapMessage.MessageHeaders");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadySoapMessage", "IPropertySet PlayReadySoapMessage.MessageHeaders");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri PlayReadySoapMessage.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20PlayReadySoapMessage.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadySoapMessage", "Uri PlayReadySoapMessage.Uri");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public byte[] GetMessageBody()
 		{
-			throw new global::System.NotImplementedException("The member byte[] PlayReadySoapMessage.GetMessageBody() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%5B%5D%20PlayReadySoapMessage.GetMessageBody%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadySoapMessage", "byte[] PlayReadySoapMessage.GetMessageBody()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySoapMessage.MessageHeaders.get

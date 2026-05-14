@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESimWatcherStatus ESimWatcher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ESimWatcherStatus%20ESimWatcher.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimWatcher", "ESimWatcherStatus ESimWatcher.Status");
 			}
 		}
 #endif

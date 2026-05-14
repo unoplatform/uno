@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PivotItemDataAutomationPeer.IsSelected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PivotItemDataAutomationPeer.IsSelected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer", "bool PivotItemDataAutomationPeer.IsSelected");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRawElementProviderSimple PivotItemDataAutomationPeer.SelectionContainer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRawElementProviderSimple%20PivotItemDataAutomationPeer.SelectionContainer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer", "IRawElementProviderSimple PivotItemDataAutomationPeer.SelectionContainer");
 			}
 		}
 #endif

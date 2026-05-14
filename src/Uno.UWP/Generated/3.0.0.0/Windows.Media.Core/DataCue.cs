@@ -14,7 +14,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer DataCue.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20DataCue.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.DataCue", "IBuffer DataCue.Data");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan DataCue.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20DataCue.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.DataCue", "TimeSpan DataCue.Duration");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DataCue.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DataCue.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.DataCue", "string DataCue.Id");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PropertySet DataCue.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PropertySet%20DataCue.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.DataCue", "PropertySet DataCue.Properties");
 			}
 		}
 #endif
@@ -66,7 +66,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan DataCue.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20DataCue.StartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.DataCue", "TimeSpan DataCue.StartTime");
 			}
 			set
 			{

@@ -19,7 +19,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialCoordinateSystem SpatialStationaryFrameOfReference.CoordinateSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialCoordinateSystem%20SpatialStationaryFrameOfReference.CoordinateSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialStationaryFrameOfReference", "SpatialCoordinateSystem SpatialStationaryFrameOfReference.CoordinateSystem");
 			}
 		}
 #endif

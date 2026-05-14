@@ -14,7 +14,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CameraCaptureUIVideoCaptureSettings.AllowTrimming is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CameraCaptureUIVideoCaptureSettings.AllowTrimming");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings", "bool CameraCaptureUIVideoCaptureSettings.AllowTrimming");
 			}
 			set
 			{
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CameraCaptureUIVideoCaptureSettings.MaxDurationInSeconds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CameraCaptureUIVideoCaptureSettings.MaxDurationInSeconds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings", "float CameraCaptureUIVideoCaptureSettings.MaxDurationInSeconds");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CameraCaptureUIMaxVideoResolution CameraCaptureUIVideoCaptureSettings.MaxResolution is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CameraCaptureUIMaxVideoResolution%20CameraCaptureUIVideoCaptureSettings.MaxResolution");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings", "CameraCaptureUIMaxVideoResolution CameraCaptureUIVideoCaptureSettings.MaxResolution");
 			}
 			set
 			{

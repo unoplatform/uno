@@ -14,7 +14,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color LampArraySolidEffect.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20LampArraySolidEffect.Color");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArraySolidEffect", "Color LampArraySolidEffect.Color");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LampArrayEffectCompletionBehavior LampArraySolidEffect.CompletionBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LampArrayEffectCompletionBehavior%20LampArraySolidEffect.CompletionBehavior");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArraySolidEffect", "LampArrayEffectCompletionBehavior LampArraySolidEffect.CompletionBehavior");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArraySolidEffect.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArraySolidEffect.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArraySolidEffect", "TimeSpan LampArraySolidEffect.Duration");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArraySolidEffect.StartDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArraySolidEffect.StartDelay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArraySolidEffect", "TimeSpan LampArraySolidEffect.StartDelay");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LampArraySolidEffect.ZIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LampArraySolidEffect.ZIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArraySolidEffect", "int LampArraySolidEffect.ZIndex");
 			}
 			set
 			{

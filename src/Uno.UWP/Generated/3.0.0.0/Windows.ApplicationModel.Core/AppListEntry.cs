@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppListEntry.AppUserModelId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppListEntry.AppUserModelId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Core.AppListEntry", "string AppListEntry.AppUserModelId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppDisplayInfo AppListEntry.DisplayInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppDisplayInfo%20AppListEntry.DisplayInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Core.AppListEntry", "AppDisplayInfo AppListEntry.DisplayInfo");
 			}
 		}
 #endif
@@ -37,14 +37,14 @@ namespace Windows.ApplicationModel.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> LaunchAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppListEntry.LaunchAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20AppListEntry.LaunchAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Core.AppListEntry", "IAsyncOperation<bool> AppListEntry.LaunchAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> LaunchForUserAsync(global::Windows.System.User user)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppListEntry.LaunchForUserAsync(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20AppListEntry.LaunchForUserAsync%28User%20user%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Core.AppListEntry", "IAsyncOperation<bool> AppListEntry.LaunchForUserAsync(User user)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.AppUserModelId.get

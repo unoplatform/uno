@@ -19,7 +19,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayRegion AppWindowPlacement.DisplayRegion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayRegion%20AppWindowPlacement.DisplayRegion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowPlacement", "DisplayRegion AppWindowPlacement.DisplayRegion");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point AppWindowPlacement.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20AppWindowPlacement.Offset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowPlacement", "Point AppWindowPlacement.Offset");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size AppWindowPlacement.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20AppWindowPlacement.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowPlacement", "Size AppWindowPlacement.Size");
 			}
 		}
 #endif

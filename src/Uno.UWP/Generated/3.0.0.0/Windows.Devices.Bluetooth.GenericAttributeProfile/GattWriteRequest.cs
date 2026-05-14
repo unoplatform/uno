@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint GattWriteRequest.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20GattWriteRequest.Offset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteRequest", "uint GattWriteRequest.Offset");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattWriteOption GattWriteRequest.Option is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattWriteOption%20GattWriteRequest.Option");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteRequest", "GattWriteOption GattWriteRequest.Option");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattRequestState GattWriteRequest.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattRequestState%20GattWriteRequest.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteRequest", "GattRequestState GattWriteRequest.State");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer GattWriteRequest.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20GattWriteRequest.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteRequest", "IBuffer GattWriteRequest.Value");
 			}
 		}
 #endif

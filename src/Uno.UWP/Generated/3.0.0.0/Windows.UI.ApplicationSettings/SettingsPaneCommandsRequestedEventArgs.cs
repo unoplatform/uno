@@ -19,7 +19,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SettingsPaneCommandsRequest SettingsPaneCommandsRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SettingsPaneCommandsRequest%20SettingsPaneCommandsRequestedEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.SettingsPaneCommandsRequestedEventArgs", "SettingsPaneCommandsRequest SettingsPaneCommandsRequestedEventArgs.Request");
 			}
 		}
 #endif

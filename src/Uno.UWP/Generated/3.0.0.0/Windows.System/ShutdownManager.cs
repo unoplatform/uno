@@ -26,7 +26,7 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsPowerStateSupported(global::Windows.System.PowerState powerState)
 		{
-			throw new global::System.NotImplementedException("The member bool ShutdownManager.IsPowerStateSupported(PowerState powerState) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ShutdownManager.IsPowerStateSupported%28PowerState%20powerState%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ShutdownManager", "bool ShutdownManager.IsPowerStateSupported(PowerState powerState)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

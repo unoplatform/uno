@@ -19,7 +19,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InteractionTrackerIdleStateEnteredArgs.IsFromBinding is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InteractionTrackerIdleStateEnteredArgs.IsFromBinding");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs", "bool InteractionTrackerIdleStateEnteredArgs.IsFromBinding");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int InteractionTrackerIdleStateEnteredArgs.RequestId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTrackerIdleStateEnteredArgs.RequestId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs", "int InteractionTrackerIdleStateEnteredArgs.RequestId");
 			}
 		}
 #endif

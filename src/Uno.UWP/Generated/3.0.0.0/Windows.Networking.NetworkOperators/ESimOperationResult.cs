@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESimOperationStatus ESimOperationResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ESimOperationStatus%20ESimOperationResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimOperationResult", "ESimOperationStatus ESimOperationResult.Status");
 			}
 		}
 #endif

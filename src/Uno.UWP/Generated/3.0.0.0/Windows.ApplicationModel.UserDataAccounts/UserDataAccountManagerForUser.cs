@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User UserDataAccountManagerForUser.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20UserDataAccountManagerForUser.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser", "User UserDataAccountManagerForUser.User");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore> RequestStoreAsync(global::Windows.ApplicationModel.UserDataAccounts.UserDataAccountStoreAccessType storeAccessType)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<UserDataAccountStore> UserDataAccountManagerForUser.RequestStoreAsync(UserDataAccountStoreAccessType storeAccessType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUserDataAccountStore%3E%20UserDataAccountManagerForUser.RequestStoreAsync%28UserDataAccountStoreAccessType%20storeAccessType%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser", "IAsyncOperation<UserDataAccountStore> UserDataAccountManagerForUser.RequestStoreAsync(UserDataAccountStoreAccessType storeAccessType)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountManagerForUser.User.get

@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppCaptureServices.CanCapture is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppCaptureServices.CanCapture");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureServices", "bool AppCaptureServices.CanCapture");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppCaptureState AppCaptureServices.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppCaptureState%20AppCaptureServices.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureServices", "AppCaptureState AppCaptureServices.State");
 			}
 		}
 #endif
@@ -37,14 +37,14 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Capture.AppCaptureRecordOperation Record()
 		{
-			throw new global::System.NotImplementedException("The member AppCaptureRecordOperation AppCaptureServices.Record() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppCaptureRecordOperation%20AppCaptureServices.Record%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureServices", "AppCaptureRecordOperation AppCaptureServices.Record()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Capture.AppCaptureRecordOperation RecordTimeSpan(global::System.DateTimeOffset startTime, global::System.TimeSpan duration)
 		{
-			throw new global::System.NotImplementedException("The member AppCaptureRecordOperation AppCaptureServices.RecordTimeSpan(DateTimeOffset startTime, TimeSpan duration) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppCaptureRecordOperation%20AppCaptureServices.RecordTimeSpan%28DateTimeOffset%20startTime%2C%20TimeSpan%20duration%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureServices", "AppCaptureRecordOperation AppCaptureServices.RecordTimeSpan(DateTimeOffset startTime, TimeSpan duration)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.AppCaptureServices.CanCapture.get

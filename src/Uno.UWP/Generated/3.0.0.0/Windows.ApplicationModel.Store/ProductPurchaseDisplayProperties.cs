@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProductPurchaseDisplayProperties.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProductPurchaseDisplayProperties.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties", "string ProductPurchaseDisplayProperties.Description");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri ProductPurchaseDisplayProperties.Image is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20ProductPurchaseDisplayProperties.Image");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties", "Uri ProductPurchaseDisplayProperties.Image");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProductPurchaseDisplayProperties.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProductPurchaseDisplayProperties.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties", "string ProductPurchaseDisplayProperties.Name");
 			}
 			set
 			{

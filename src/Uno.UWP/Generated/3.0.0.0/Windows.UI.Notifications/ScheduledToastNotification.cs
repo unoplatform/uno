@@ -16,7 +16,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? ScheduledToastNotification.ExpirationTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20ScheduledToastNotification.ExpirationTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "DateTimeOffset? ScheduledToastNotification.ExpirationTime");
 			}
 			set
 			{
@@ -30,7 +30,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ScheduledToastNotification.Group is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ScheduledToastNotification.Group");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "string ScheduledToastNotification.Group");
 			}
 			set
 			{
@@ -44,7 +44,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ScheduledToastNotification.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ScheduledToastNotification.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "string ScheduledToastNotification.Id");
 			}
 			set
 			{
@@ -58,7 +58,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ScheduledToastNotification.MaximumSnoozeCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ScheduledToastNotification.MaximumSnoozeCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "uint ScheduledToastNotification.MaximumSnoozeCount");
 			}
 		}
 #endif
@@ -68,7 +68,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NotificationMirroring ScheduledToastNotification.NotificationMirroring is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NotificationMirroring%20ScheduledToastNotification.NotificationMirroring");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "NotificationMirroring ScheduledToastNotification.NotificationMirroring");
 			}
 			set
 			{
@@ -82,7 +82,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ScheduledToastNotification.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ScheduledToastNotification.RemoteId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "string ScheduledToastNotification.RemoteId");
 			}
 			set
 			{
@@ -96,7 +96,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? ScheduledToastNotification.SnoozeInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20ScheduledToastNotification.SnoozeInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "TimeSpan? ScheduledToastNotification.SnoozeInterval");
 			}
 		}
 #endif
@@ -106,7 +106,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ScheduledToastNotification.SuppressPopup is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ScheduledToastNotification.SuppressPopup");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotification", "bool ScheduledToastNotification.SuppressPopup");
 			}
 			set
 			{

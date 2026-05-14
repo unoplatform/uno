@@ -19,7 +19,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemVideoProperties.Director is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemVideoProperties.Director");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemVideoProperties", "string SystemVideoProperties.Director");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemVideoProperties.FrameHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemVideoProperties.FrameHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemVideoProperties", "string SystemVideoProperties.FrameHeight");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemVideoProperties.FrameWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemVideoProperties.FrameWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemVideoProperties", "string SystemVideoProperties.FrameWidth");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemVideoProperties.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemVideoProperties.Orientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemVideoProperties", "string SystemVideoProperties.Orientation");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemVideoProperties.TotalBitrate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemVideoProperties.TotalBitrate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemVideoProperties", "string SystemVideoProperties.TotalBitrate");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? AppCaptureRecordOperation.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20AppCaptureRecordOperation.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureRecordOperation", "TimeSpan? AppCaptureRecordOperation.Duration");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? AppCaptureRecordOperation.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20AppCaptureRecordOperation.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureRecordOperation", "uint? AppCaptureRecordOperation.ErrorCode");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFile AppCaptureRecordOperation.File is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFile%20AppCaptureRecordOperation.File");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureRecordOperation", "StorageFile AppCaptureRecordOperation.File");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool? AppCaptureRecordOperation.IsFileTruncated is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%3F%20AppCaptureRecordOperation.IsFileTruncated");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureRecordOperation", "bool? AppCaptureRecordOperation.IsFileTruncated");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppCaptureRecordingState AppCaptureRecordOperation.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppCaptureRecordingState%20AppCaptureRecordOperation.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureRecordOperation", "AppCaptureRecordingState AppCaptureRecordOperation.State");
 			}
 		}
 #endif

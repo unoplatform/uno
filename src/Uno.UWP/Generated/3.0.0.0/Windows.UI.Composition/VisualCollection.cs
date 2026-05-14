@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int VisualCollection.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20VisualCollection.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.VisualCollection", "int VisualCollection.Count");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.UI.Composition.Visual> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<Visual> VisualCollection.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CVisual%3E%20VisualCollection.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.VisualCollection", "IEnumerator<Visual> VisualCollection.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.VisualCollection.System.Collections.IEnumerable.GetEnumerator()

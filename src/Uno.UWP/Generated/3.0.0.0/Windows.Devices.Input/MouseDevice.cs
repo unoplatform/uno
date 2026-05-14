@@ -17,7 +17,7 @@ namespace Windows.Devices.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Input.MouseDevice GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member MouseDevice MouseDevice.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MouseDevice%20MouseDevice.GetForCurrentView%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.MouseDevice", "MouseDevice MouseDevice.GetForCurrentView()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Input.MouseDevice.MouseMoved.add

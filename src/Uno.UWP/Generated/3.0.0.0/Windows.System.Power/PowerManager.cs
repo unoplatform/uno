@@ -14,7 +14,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BatteryStatus PowerManager.BatteryStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BatteryStatus%20PowerManager.BatteryStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.PowerManager", "BatteryStatus PowerManager.BatteryStatus");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EnergySaverStatus PowerManager.EnergySaverStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EnergySaverStatus%20PowerManager.EnergySaverStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.PowerManager", "EnergySaverStatus PowerManager.EnergySaverStatus");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PowerSupplyStatus PowerManager.PowerSupplyStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PowerSupplyStatus%20PowerManager.PowerSupplyStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.PowerManager", "PowerSupplyStatus PowerManager.PowerSupplyStatus");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int PowerManager.RemainingChargePercent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20PowerManager.RemainingChargePercent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.PowerManager", "int PowerManager.RemainingChargePercent");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan PowerManager.RemainingDischargeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20PowerManager.RemainingDischargeTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.PowerManager", "TimeSpan PowerManager.RemainingDischargeTime");
 			}
 		}
 #endif

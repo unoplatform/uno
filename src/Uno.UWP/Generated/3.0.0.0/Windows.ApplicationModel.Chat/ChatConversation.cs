@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChatConversation.CanModifyParticipants is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChatConversation.CanModifyParticipants");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "bool ChatConversation.CanModifyParticipants");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChatConversation.HasUnreadMessages is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChatConversation.HasUnreadMessages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "bool ChatConversation.HasUnreadMessages");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChatConversation.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatConversation.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "string ChatConversation.Id");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChatConversation.IsConversationMuted is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChatConversation.IsConversationMuted");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "bool ChatConversation.IsConversationMuted");
 			}
 			set
 			{
@@ -67,7 +67,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ChatItemKind ChatConversation.ItemKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChatItemKind%20ChatConversation.ItemKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "ChatItemKind ChatConversation.ItemKind");
 			}
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChatConversation.MostRecentMessageId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatConversation.MostRecentMessageId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "string ChatConversation.MostRecentMessageId");
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> ChatConversation.Participants is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20ChatConversation.Participants");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "IList<string> ChatConversation.Participants");
 			}
 		}
 #endif
@@ -97,7 +97,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChatConversation.Subject is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatConversation.Subject");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "string ChatConversation.Subject");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ChatConversationThreadingInfo ChatConversation.ThreadingInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChatConversationThreadingInfo%20ChatConversation.ThreadingInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "ChatConversationThreadingInfo ChatConversation.ThreadingInfo");
 			}
 		}
 #endif
@@ -119,35 +119,35 @@ namespace Windows.ApplicationModel.Chat
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DeleteAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ChatConversation.DeleteAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ChatConversation.DeleteAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "IAsyncAction ChatConversation.DeleteAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Chat.ChatMessageReader GetMessageReader()
 		{
-			throw new global::System.NotImplementedException("The member ChatMessageReader ChatConversation.GetMessageReader() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChatMessageReader%20ChatConversation.GetMessageReader%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "ChatMessageReader ChatConversation.GetMessageReader()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction MarkMessagesAsReadAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ChatConversation.MarkMessagesAsReadAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ChatConversation.MarkMessagesAsReadAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "IAsyncAction ChatConversation.MarkMessagesAsReadAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction MarkMessagesAsReadAsync(global::System.DateTimeOffset value)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ChatConversation.MarkMessagesAsReadAsync(DateTimeOffset value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ChatConversation.MarkMessagesAsReadAsync%28DateTimeOffset%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "IAsyncAction ChatConversation.MarkMessagesAsReadAsync(DateTimeOffset value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SaveAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ChatConversation.SaveAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ChatConversation.SaveAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatConversation", "IAsyncAction ChatConversation.SaveAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

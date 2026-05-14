@@ -19,7 +19,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ProcessMemoryUsageReport.NonPagedPoolSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20ProcessMemoryUsageReport.NonPagedPoolSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "ulong ProcessMemoryUsageReport.NonPagedPoolSizeInBytes");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ProcessMemoryUsageReport.PageFaultCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ProcessMemoryUsageReport.PageFaultCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "uint ProcessMemoryUsageReport.PageFaultCount");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ProcessMemoryUsageReport.PageFileSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20ProcessMemoryUsageReport.PageFileSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "ulong ProcessMemoryUsageReport.PageFileSizeInBytes");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ProcessMemoryUsageReport.PagedPoolSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20ProcessMemoryUsageReport.PagedPoolSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "ulong ProcessMemoryUsageReport.PagedPoolSizeInBytes");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ProcessMemoryUsageReport.PeakNonPagedPoolSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20ProcessMemoryUsageReport.PeakNonPagedPoolSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "ulong ProcessMemoryUsageReport.PeakNonPagedPoolSizeInBytes");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ProcessMemoryUsageReport.PeakPageFileSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20ProcessMemoryUsageReport.PeakPageFileSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "ulong ProcessMemoryUsageReport.PeakPageFileSizeInBytes");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ProcessMemoryUsageReport.PeakPagedPoolSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20ProcessMemoryUsageReport.PeakPagedPoolSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "ulong ProcessMemoryUsageReport.PeakPagedPoolSizeInBytes");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ProcessMemoryUsageReport.PeakVirtualMemorySizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20ProcessMemoryUsageReport.PeakVirtualMemorySizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "ulong ProcessMemoryUsageReport.PeakVirtualMemorySizeInBytes");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ProcessMemoryUsageReport.PeakWorkingSetSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20ProcessMemoryUsageReport.PeakWorkingSetSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "ulong ProcessMemoryUsageReport.PeakWorkingSetSizeInBytes");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ProcessMemoryUsageReport.PrivatePageCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20ProcessMemoryUsageReport.PrivatePageCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "ulong ProcessMemoryUsageReport.PrivatePageCount");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ProcessMemoryUsageReport.VirtualMemorySizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20ProcessMemoryUsageReport.VirtualMemorySizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "ulong ProcessMemoryUsageReport.VirtualMemorySizeInBytes");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ProcessMemoryUsageReport.WorkingSetSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20ProcessMemoryUsageReport.WorkingSetSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessMemoryUsageReport", "ulong ProcessMemoryUsageReport.WorkingSetSizeInBytes");
 			}
 		}
 #endif

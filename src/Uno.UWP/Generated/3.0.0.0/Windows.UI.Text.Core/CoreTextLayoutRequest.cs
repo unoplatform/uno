@@ -19,7 +19,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreTextLayoutRequest.IsCanceled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreTextLayoutRequest.IsCanceled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutRequest", "bool CoreTextLayoutRequest.IsCanceled");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreTextLayoutBounds CoreTextLayoutRequest.LayoutBounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreTextLayoutBounds%20CoreTextLayoutRequest.LayoutBounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutRequest", "CoreTextLayoutBounds CoreTextLayoutRequest.LayoutBounds");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreTextLayoutBounds CoreTextLayoutRequest.LayoutBoundsVisualPixels is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreTextLayoutBounds%20CoreTextLayoutRequest.LayoutBoundsVisualPixels");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutRequest", "CoreTextLayoutBounds CoreTextLayoutRequest.LayoutBoundsVisualPixels");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreTextRange CoreTextLayoutRequest.Range is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreTextRange%20CoreTextLayoutRequest.Range");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutRequest", "CoreTextRange CoreTextLayoutRequest.Range");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.UI.Text.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral CoreTextLayoutRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreTextLayoutRequest.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutRequest", "Deferral CoreTextLayoutRequest.GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutRequest.IsCanceled.get

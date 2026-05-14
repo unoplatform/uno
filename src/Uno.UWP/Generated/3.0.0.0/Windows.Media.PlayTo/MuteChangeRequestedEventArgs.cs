@@ -19,7 +19,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MuteChangeRequestedEventArgs.Mute is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MuteChangeRequestedEventArgs.Mute");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.MuteChangeRequestedEventArgs", "bool MuteChangeRequestedEventArgs.Mute");
 			}
 		}
 #endif

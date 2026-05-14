@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<AppDiagnosticInfo> AppResourceGroupInfoWatcherExecutionStateChangedEventArgs.AppDiagnosticInfos is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CAppDiagnosticInfo%3E%20AppResourceGroupInfoWatcherExecutionStateChangedEventArgs.AppDiagnosticInfos");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupInfoWatcherExecutionStateChangedEventArgs", "IReadOnlyList<AppDiagnosticInfo> AppResourceGroupInfoWatcherExecutionStateChangedEventArgs.AppDiagnosticInfos");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppResourceGroupInfo AppResourceGroupInfoWatcherExecutionStateChangedEventArgs.AppResourceGroupInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppResourceGroupInfo%20AppResourceGroupInfoWatcherExecutionStateChangedEventArgs.AppResourceGroupInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupInfoWatcherExecutionStateChangedEventArgs", "AppResourceGroupInfo AppResourceGroupInfoWatcherExecutionStateChangedEventArgs.AppResourceGroupInfo");
 			}
 		}
 #endif

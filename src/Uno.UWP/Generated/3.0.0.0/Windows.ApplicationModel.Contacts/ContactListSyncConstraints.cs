@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContactListSyncConstraints.CanSyncDescriptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContactListSyncConstraints.CanSyncDescriptions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "bool ContactListSyncConstraints.CanSyncDescriptions");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxAnniversaryDates is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxAnniversaryDates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxAnniversaryDates");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxAssistantPhoneNumbers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxAssistantPhoneNumbers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxAssistantPhoneNumbers");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxBirthdayDates is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxBirthdayDates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxBirthdayDates");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxBusinessFaxPhoneNumbers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxBusinessFaxPhoneNumbers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxBusinessFaxPhoneNumbers");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxChildRelationships is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxChildRelationships");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxChildRelationships");
 			}
 			set
 			{
@@ -103,7 +103,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxCompanyPhoneNumbers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxCompanyPhoneNumbers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxCompanyPhoneNumbers");
 			}
 			set
 			{
@@ -117,7 +117,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxHomeAddresses is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxHomeAddresses");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxHomeAddresses");
 			}
 			set
 			{
@@ -131,7 +131,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxHomeFaxPhoneNumbers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxHomeFaxPhoneNumbers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxHomeFaxPhoneNumbers");
 			}
 			set
 			{
@@ -145,7 +145,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxHomePhoneNumbers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxHomePhoneNumbers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxHomePhoneNumbers");
 			}
 			set
 			{
@@ -159,7 +159,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxJobInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxJobInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxJobInfo");
 			}
 			set
 			{
@@ -173,7 +173,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxMobilePhoneNumbers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxMobilePhoneNumbers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxMobilePhoneNumbers");
 			}
 			set
 			{
@@ -187,7 +187,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxOtherAddresses is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxOtherAddresses");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxOtherAddresses");
 			}
 			set
 			{
@@ -201,7 +201,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxOtherDates is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxOtherDates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxOtherDates");
 			}
 			set
 			{
@@ -215,7 +215,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxOtherEmailAddresses is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxOtherEmailAddresses");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxOtherEmailAddresses");
 			}
 			set
 			{
@@ -229,7 +229,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxOtherPhoneNumbers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxOtherPhoneNumbers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxOtherPhoneNumbers");
 			}
 			set
 			{
@@ -243,7 +243,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxOtherRelationships is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxOtherRelationships");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxOtherRelationships");
 			}
 			set
 			{
@@ -257,7 +257,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxPagerPhoneNumbers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxPagerPhoneNumbers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxPagerPhoneNumbers");
 			}
 			set
 			{
@@ -271,7 +271,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxParentRelationships is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxParentRelationships");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxParentRelationships");
 			}
 			set
 			{
@@ -285,7 +285,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxPartnerRelationships is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxPartnerRelationships");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxPartnerRelationships");
 			}
 			set
 			{
@@ -299,7 +299,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxPersonalEmailAddresses is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxPersonalEmailAddresses");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxPersonalEmailAddresses");
 			}
 			set
 			{
@@ -313,7 +313,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxRadioPhoneNumbers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxRadioPhoneNumbers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxRadioPhoneNumbers");
 			}
 			set
 			{
@@ -327,7 +327,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxSiblingRelationships is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxSiblingRelationships");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxSiblingRelationships");
 			}
 			set
 			{
@@ -341,7 +341,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxSpouseRelationships is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxSpouseRelationships");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxSpouseRelationships");
 			}
 			set
 			{
@@ -355,7 +355,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxWebsites is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxWebsites");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxWebsites");
 			}
 			set
 			{
@@ -369,7 +369,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxWorkAddresses is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxWorkAddresses");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxWorkAddresses");
 			}
 			set
 			{
@@ -383,7 +383,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxWorkEmailAddresses is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxWorkEmailAddresses");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxWorkEmailAddresses");
 			}
 			set
 			{
@@ -397,7 +397,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactListSyncConstraints.MaxWorkPhoneNumbers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactListSyncConstraints.MaxWorkPhoneNumbers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactListSyncConstraints", "int? ContactListSyncConstraints.MaxWorkPhoneNumbers");
 			}
 			set
 			{

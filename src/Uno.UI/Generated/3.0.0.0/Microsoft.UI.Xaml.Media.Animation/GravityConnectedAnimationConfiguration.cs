@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GravityConnectedAnimationConfiguration.IsShadowEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GravityConnectedAnimationConfiguration.IsShadowEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration", "bool GravityConnectedAnimationConfiguration.IsShadowEnabled");
 			}
 			set
 			{

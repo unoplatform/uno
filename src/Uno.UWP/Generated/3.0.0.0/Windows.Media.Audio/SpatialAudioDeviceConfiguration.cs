@@ -19,7 +19,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpatialAudioDeviceConfiguration.ActiveSpatialAudioFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SpatialAudioDeviceConfiguration.ActiveSpatialAudioFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "string SpatialAudioDeviceConfiguration.ActiveSpatialAudioFormat");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpatialAudioDeviceConfiguration.DefaultSpatialAudioFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SpatialAudioDeviceConfiguration.DefaultSpatialAudioFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "string SpatialAudioDeviceConfiguration.DefaultSpatialAudioFormat");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpatialAudioDeviceConfiguration.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SpatialAudioDeviceConfiguration.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "string SpatialAudioDeviceConfiguration.DeviceId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpatialAudioDeviceConfiguration.IsSpatialAudioSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialAudioDeviceConfiguration.IsSpatialAudioSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "bool SpatialAudioDeviceConfiguration.IsSpatialAudioSupported");
 			}
 		}
 #endif
@@ -57,21 +57,21 @@ namespace Windows.Media.Audio
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Audio.SpatialAudioDeviceConfiguration GetForDeviceId(string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member SpatialAudioDeviceConfiguration SpatialAudioDeviceConfiguration.GetForDeviceId(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialAudioDeviceConfiguration%20SpatialAudioDeviceConfiguration.GetForDeviceId%28string%20deviceId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "SpatialAudioDeviceConfiguration SpatialAudioDeviceConfiguration.GetForDeviceId(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsSpatialAudioFormatSupported(string subtype)
 		{
-			throw new global::System.NotImplementedException("The member bool SpatialAudioDeviceConfiguration.IsSpatialAudioFormatSupported(string subtype) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialAudioDeviceConfiguration.IsSpatialAudioFormatSupported%28string%20subtype%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "bool SpatialAudioDeviceConfiguration.IsSpatialAudioFormatSupported(string subtype)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.SetDefaultSpatialAudioFormatResult> SetDefaultSpatialAudioFormatAsync(string subtype)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SetDefaultSpatialAudioFormatResult> SpatialAudioDeviceConfiguration.SetDefaultSpatialAudioFormatAsync(string subtype) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSetDefaultSpatialAudioFormatResult%3E%20SpatialAudioDeviceConfiguration.SetDefaultSpatialAudioFormatAsync%28string%20subtype%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioDeviceConfiguration", "IAsyncOperation<SetDefaultSpatialAudioFormatResult> SpatialAudioDeviceConfiguration.SetDefaultSpatialAudioFormatAsync(string subtype)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.SpatialAudioDeviceConfiguration.ConfigurationChanged.add

@@ -14,7 +14,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LauncherOptions.ContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20LauncherOptions.ContentType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "string LauncherOptions.ContentType");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ViewSizePreference LauncherOptions.DesiredRemainingView is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ViewSizePreference%20LauncherOptions.DesiredRemainingView");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "ViewSizePreference LauncherOptions.DesiredRemainingView");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LauncherOptions.DisplayApplicationPicker is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LauncherOptions.DisplayApplicationPicker");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "bool LauncherOptions.DisplayApplicationPicker");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri LauncherOptions.FallbackUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20LauncherOptions.FallbackUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "Uri LauncherOptions.FallbackUri");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LauncherOptions.IgnoreAppUriHandlers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LauncherOptions.IgnoreAppUriHandlers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "bool LauncherOptions.IgnoreAppUriHandlers");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LauncherOptions.LimitPickerToCurrentAppAndAppUriHandlers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LauncherOptions.LimitPickerToCurrentAppAndAppUriHandlers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "bool LauncherOptions.LimitPickerToCurrentAppAndAppUriHandlers");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFileQueryResult LauncherOptions.NeighboringFilesQuery is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFileQueryResult%20LauncherOptions.NeighboringFilesQuery");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "StorageFileQueryResult LauncherOptions.NeighboringFilesQuery");
 			}
 			set
 			{
@@ -112,7 +112,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LauncherOptions.PreferredApplicationDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20LauncherOptions.PreferredApplicationDisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "string LauncherOptions.PreferredApplicationDisplayName");
 			}
 			set
 			{
@@ -126,7 +126,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LauncherOptions.PreferredApplicationPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20LauncherOptions.PreferredApplicationPackageFamilyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "string LauncherOptions.PreferredApplicationPackageFamilyName");
 			}
 			set
 			{
@@ -140,7 +140,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LauncherOptions.TargetApplicationPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20LauncherOptions.TargetApplicationPackageFamilyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "string LauncherOptions.TargetApplicationPackageFamilyName");
 			}
 			set
 			{
@@ -154,7 +154,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LauncherOptions.TreatAsUntrusted is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LauncherOptions.TreatAsUntrusted");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "bool LauncherOptions.TreatAsUntrusted");
 			}
 			set
 			{
@@ -168,7 +168,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LauncherUIOptions LauncherOptions.UI is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LauncherUIOptions%20LauncherOptions.UI");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LauncherOptions", "LauncherUIOptions LauncherOptions.UI");
 			}
 		}
 #endif

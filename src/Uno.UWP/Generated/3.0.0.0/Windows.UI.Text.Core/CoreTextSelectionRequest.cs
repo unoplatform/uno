@@ -19,7 +19,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreTextSelectionRequest.IsCanceled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreTextSelectionRequest.IsCanceled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextSelectionRequest", "bool CoreTextSelectionRequest.IsCanceled");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreTextRange CoreTextSelectionRequest.Selection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreTextRange%20CoreTextSelectionRequest.Selection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextSelectionRequest", "CoreTextRange CoreTextSelectionRequest.Selection");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Text.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral CoreTextSelectionRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreTextSelectionRequest.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextSelectionRequest", "Deferral CoreTextSelectionRequest.GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionRequest.IsCanceled.get

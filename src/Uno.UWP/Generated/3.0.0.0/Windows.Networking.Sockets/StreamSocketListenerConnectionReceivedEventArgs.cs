@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StreamSocket StreamSocketListenerConnectionReceivedEventArgs.Socket is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StreamSocket%20StreamSocketListenerConnectionReceivedEventArgs.Socket");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketListenerConnectionReceivedEventArgs", "StreamSocket StreamSocketListenerConnectionReceivedEventArgs.Socket");
 			}
 		}
 #endif

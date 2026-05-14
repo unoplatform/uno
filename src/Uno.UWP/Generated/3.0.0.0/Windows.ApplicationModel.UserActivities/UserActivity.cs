@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri UserActivity.ActivationUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20UserActivity.ActivationUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivity", "Uri UserActivity.ActivationUri");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserActivity.ActivityId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserActivity.ActivityId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivity", "string UserActivity.ActivityId");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IUserActivityContentInfo UserActivity.ContentInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IUserActivityContentInfo%20UserActivity.ContentInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivity", "IUserActivityContentInfo UserActivity.ContentInfo");
 			}
 			set
 			{
@@ -52,7 +52,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserActivity.ContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserActivity.ContentType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivity", "string UserActivity.ContentType");
 			}
 			set
 			{
@@ -66,7 +66,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri UserActivity.ContentUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20UserActivity.ContentUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivity", "Uri UserActivity.ContentUri");
 			}
 			set
 			{
@@ -80,7 +80,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri UserActivity.FallbackUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20UserActivity.FallbackUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivity", "Uri UserActivity.FallbackUri");
 			}
 			set
 			{
@@ -94,7 +94,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool UserActivity.IsRoamable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20UserActivity.IsRoamable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivity", "bool UserActivity.IsRoamable");
 			}
 			set
 			{
@@ -108,7 +108,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserActivityState UserActivity.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserActivityState%20UserActivity.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivity", "UserActivityState UserActivity.State");
 			}
 		}
 #endif
@@ -118,7 +118,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserActivityVisualElements UserActivity.VisualElements is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserActivityVisualElements%20UserActivity.VisualElements");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivity", "UserActivityVisualElements UserActivity.VisualElements");
 			}
 		}
 #endif
@@ -134,42 +134,42 @@ namespace Windows.ApplicationModel.UserActivities
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.UserActivities.UserActivity TryParseFromJson(string json)
 		{
-			throw new global::System.NotImplementedException("The member UserActivity UserActivity.TryParseFromJson(string json) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserActivity%20UserActivity.TryParseFromJson%28string%20json%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivity", "UserActivity UserActivity.TryParseFromJson(string json)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IList<global::Windows.ApplicationModel.UserActivities.UserActivity> TryParseFromJsonArray(string json)
 		{
-			throw new global::System.NotImplementedException("The member IList<UserActivity> UserActivity.TryParseFromJsonArray(string json) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CUserActivity%3E%20UserActivity.TryParseFromJsonArray%28string%20json%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivity", "IList<UserActivity> UserActivity.TryParseFromJsonArray(string json)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string ToJsonArray(global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.UserActivities.UserActivity> activities)
 		{
-			throw new global::System.NotImplementedException("The member string UserActivity.ToJsonArray(IEnumerable<UserActivity> activities) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserActivity.ToJsonArray%28IEnumerable%3CUserActivity%3E%20activities%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivity", "string UserActivity.ToJsonArray(IEnumerable<UserActivity> activities)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SaveAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction UserActivity.SaveAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20UserActivity.SaveAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivity", "IAsyncAction UserActivity.SaveAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.UserActivities.UserActivitySession CreateSession()
 		{
-			throw new global::System.NotImplementedException("The member UserActivitySession UserActivity.CreateSession() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserActivitySession%20UserActivity.CreateSession%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivity", "UserActivitySession UserActivity.CreateSession()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ToJson()
 		{
-			throw new global::System.NotImplementedException("The member string UserActivity.ToJson() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserActivity.ToJson%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivity", "string UserActivity.ToJson()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivity.ActivationUri.get

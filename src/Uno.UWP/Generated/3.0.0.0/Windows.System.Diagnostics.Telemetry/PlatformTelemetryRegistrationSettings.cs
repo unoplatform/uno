@@ -14,7 +14,7 @@ namespace Windows.System.Diagnostics.Telemetry
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PlatformTelemetryRegistrationSettings.StorageSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PlatformTelemetryRegistrationSettings.StorageSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings", "uint PlatformTelemetryRegistrationSettings.StorageSize");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.System.Diagnostics.Telemetry
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PlatformTelemetryRegistrationSettings.UploadQuotaSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PlatformTelemetryRegistrationSettings.UploadQuotaSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings", "uint PlatformTelemetryRegistrationSettings.UploadQuotaSize");
 			}
 			set
 			{

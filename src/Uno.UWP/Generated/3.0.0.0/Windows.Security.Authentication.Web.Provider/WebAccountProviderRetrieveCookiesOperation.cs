@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri WebAccountProviderRetrieveCookiesOperation.ApplicationCallbackUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20WebAccountProviderRetrieveCookiesOperation.ApplicationCallbackUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation", "Uri WebAccountProviderRetrieveCookiesOperation.ApplicationCallbackUri");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri WebAccountProviderRetrieveCookiesOperation.Context is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20WebAccountProviderRetrieveCookiesOperation.Context");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation", "Uri WebAccountProviderRetrieveCookiesOperation.Context");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<HttpCookie> WebAccountProviderRetrieveCookiesOperation.Cookies is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CHttpCookie%3E%20WebAccountProviderRetrieveCookiesOperation.Cookies");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation", "IList<HttpCookie> WebAccountProviderRetrieveCookiesOperation.Cookies");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccountProviderOperationKind WebAccountProviderRetrieveCookiesOperation.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccountProviderOperationKind%20WebAccountProviderRetrieveCookiesOperation.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation", "WebAccountProviderOperationKind WebAccountProviderRetrieveCookiesOperation.Kind");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri WebAccountProviderRetrieveCookiesOperation.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20WebAccountProviderRetrieveCookiesOperation.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderRetrieveCookiesOperation", "Uri WebAccountProviderRetrieveCookiesOperation.Uri");
 			}
 			set
 			{

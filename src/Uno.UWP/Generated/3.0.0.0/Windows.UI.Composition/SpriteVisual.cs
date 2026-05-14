@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionBrush SpriteVisual.Brush is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBrush%20SpriteVisual.Brush");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.SpriteVisual", "CompositionBrush SpriteVisual.Brush");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionShadow SpriteVisual.Shadow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionShadow%20SpriteVisual.Shadow");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.SpriteVisual", "CompositionShadow SpriteVisual.Shadow");
 			}
 			set
 			{

@@ -19,7 +19,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FrameExposureControl.Auto is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FrameExposureControl.Auto");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameExposureControl", "bool FrameExposureControl.Auto");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? FrameExposureControl.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20FrameExposureControl.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameExposureControl", "TimeSpan? FrameExposureControl.Value");
 			}
 			set
 			{

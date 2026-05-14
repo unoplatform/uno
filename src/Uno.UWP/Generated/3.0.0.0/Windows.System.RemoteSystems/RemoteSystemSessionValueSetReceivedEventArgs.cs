@@ -19,7 +19,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet RemoteSystemSessionValueSetReceivedEventArgs.Message is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20RemoteSystemSessionValueSetReceivedEventArgs.Message");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSessionValueSetReceivedEventArgs", "ValueSet RemoteSystemSessionValueSetReceivedEventArgs.Message");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RemoteSystemSessionParticipant RemoteSystemSessionValueSetReceivedEventArgs.Sender is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemSessionParticipant%20RemoteSystemSessionValueSetReceivedEventArgs.Sender");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSessionValueSetReceivedEventArgs", "RemoteSystemSessionParticipant RemoteSystemSessionValueSetReceivedEventArgs.Sender");
 			}
 		}
 #endif

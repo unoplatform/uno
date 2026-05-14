@@ -14,7 +14,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DevicePickerAppearance CastingDevicePicker.Appearance is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DevicePickerAppearance%20CastingDevicePicker.Appearance");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevicePicker", "DevicePickerAppearance CastingDevicePicker.Appearance");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CastingDevicePickerFilter CastingDevicePicker.Filter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CastingDevicePickerFilter%20CastingDevicePicker.Filter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevicePicker", "CastingDevicePickerFilter CastingDevicePicker.Filter");
 			}
 		}
 #endif

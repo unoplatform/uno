@@ -19,7 +19,7 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint WindowsRuntimeBuffer.Capacity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20WindowsRuntimeBuffer.Capacity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeBuffer", "uint WindowsRuntimeBuffer.Capacity");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint WindowsRuntimeBuffer.Length is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20WindowsRuntimeBuffer.Length");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeBuffer", "uint WindowsRuntimeBuffer.Length");
 			}
 			set
 			{
@@ -41,14 +41,14 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.Streams.IBuffer Create(int capacity)
 		{
-			throw new global::System.NotImplementedException("The member IBuffer WindowsRuntimeBuffer.Create(int capacity) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20WindowsRuntimeBuffer.Create%28int%20capacity%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeBuffer", "IBuffer WindowsRuntimeBuffer.Create(int capacity)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.Streams.IBuffer Create(byte[] data, int offset, int length, int capacity)
 		{
-			throw new global::System.NotImplementedException("The member IBuffer WindowsRuntimeBuffer.Create(byte[] data, int offset, int length, int capacity) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20WindowsRuntimeBuffer.Create%28byte%5B%5D%20data%2C%20int%20offset%2C%20int%20length%2C%20int%20capacity%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeBuffer", "IBuffer WindowsRuntimeBuffer.Create(byte[] data, int offset, int length, int capacity)");
 		}
 #endif
 		// Forced skipping of method System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeBuffer.~WindowsRuntimeBuffer()

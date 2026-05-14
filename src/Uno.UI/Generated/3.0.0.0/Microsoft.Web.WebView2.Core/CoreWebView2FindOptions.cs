@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2FindOptions.FindTerm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2FindOptions.FindTerm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2FindOptions", "string CoreWebView2FindOptions.FindTerm");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2FindOptions.IsCaseSensitive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2FindOptions.IsCaseSensitive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2FindOptions", "bool CoreWebView2FindOptions.IsCaseSensitive");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2FindOptions.ShouldHighlightAllMatches is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2FindOptions.ShouldHighlightAllMatches");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2FindOptions", "bool CoreWebView2FindOptions.ShouldHighlightAllMatches");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2FindOptions.ShouldMatchWord is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2FindOptions.ShouldMatchWord");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2FindOptions", "bool CoreWebView2FindOptions.ShouldMatchWord");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2FindOptions.SuppressDefaultFindDialog is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2FindOptions.SuppressDefaultFindDialog");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2FindOptions", "bool CoreWebView2FindOptions.SuppressDefaultFindDialog");
 			}
 			set
 			{

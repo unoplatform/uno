@@ -14,7 +14,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisementFilter BluetoothLEAdvertisementWatcher.AdvertisementFilter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothLEAdvertisementFilter%20BluetoothLEAdvertisementWatcher.AdvertisementFilter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "BluetoothLEAdvertisementFilter BluetoothLEAdvertisementWatcher.AdvertisementFilter");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementWatcher.AllowExtendedAdvertisements is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothLEAdvertisementWatcher.AllowExtendedAdvertisements");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "bool BluetoothLEAdvertisementWatcher.AllowExtendedAdvertisements");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan BluetoothLEAdvertisementWatcher.MaxOutOfRangeTimeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20BluetoothLEAdvertisementWatcher.MaxOutOfRangeTimeout");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "TimeSpan BluetoothLEAdvertisementWatcher.MaxOutOfRangeTimeout");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan BluetoothLEAdvertisementWatcher.MaxSamplingInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20BluetoothLEAdvertisementWatcher.MaxSamplingInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "TimeSpan BluetoothLEAdvertisementWatcher.MaxSamplingInterval");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan BluetoothLEAdvertisementWatcher.MinOutOfRangeTimeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20BluetoothLEAdvertisementWatcher.MinOutOfRangeTimeout");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "TimeSpan BluetoothLEAdvertisementWatcher.MinOutOfRangeTimeout");
 			}
 		}
 #endif
@@ -72,7 +72,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan BluetoothLEAdvertisementWatcher.MinSamplingInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20BluetoothLEAdvertisementWatcher.MinSamplingInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "TimeSpan BluetoothLEAdvertisementWatcher.MinSamplingInterval");
 			}
 		}
 #endif
@@ -82,7 +82,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothLEScanningMode BluetoothLEAdvertisementWatcher.ScanningMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothLEScanningMode%20BluetoothLEAdvertisementWatcher.ScanningMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "BluetoothLEScanningMode BluetoothLEAdvertisementWatcher.ScanningMode");
 			}
 			set
 			{
@@ -96,7 +96,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothSignalStrengthFilter BluetoothLEAdvertisementWatcher.SignalStrengthFilter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothSignalStrengthFilter%20BluetoothLEAdvertisementWatcher.SignalStrengthFilter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "BluetoothSignalStrengthFilter BluetoothLEAdvertisementWatcher.SignalStrengthFilter");
 			}
 			set
 			{
@@ -110,7 +110,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisementWatcherStatus BluetoothLEAdvertisementWatcher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothLEAdvertisementWatcherStatus%20BluetoothLEAdvertisementWatcher.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "BluetoothLEAdvertisementWatcherStatus BluetoothLEAdvertisementWatcher.Status");
 			}
 		}
 #endif

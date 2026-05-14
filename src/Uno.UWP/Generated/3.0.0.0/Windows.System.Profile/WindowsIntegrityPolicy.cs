@@ -14,7 +14,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WindowsIntegrityPolicy.CanDisable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WindowsIntegrityPolicy.CanDisable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.WindowsIntegrityPolicy", "bool WindowsIntegrityPolicy.CanDisable");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WindowsIntegrityPolicy.IsDisableSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WindowsIntegrityPolicy.IsDisableSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.WindowsIntegrityPolicy", "bool WindowsIntegrityPolicy.IsDisableSupported");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WindowsIntegrityPolicy.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WindowsIntegrityPolicy.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.WindowsIntegrityPolicy", "bool WindowsIntegrityPolicy.IsEnabled");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WindowsIntegrityPolicy.IsEnabledForTrial is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WindowsIntegrityPolicy.IsEnabledForTrial");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.WindowsIntegrityPolicy", "bool WindowsIntegrityPolicy.IsEnabledForTrial");
 			}
 		}
 #endif

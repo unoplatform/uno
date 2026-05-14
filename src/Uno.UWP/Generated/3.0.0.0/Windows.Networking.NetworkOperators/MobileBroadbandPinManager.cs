@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandPinType> MobileBroadbandPinManager.SupportedPins is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMobileBroadbandPinType%3E%20MobileBroadbandPinManager.SupportedPins");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandPinManager", "IReadOnlyList<MobileBroadbandPinType> MobileBroadbandPinManager.SupportedPins");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.NetworkOperators.MobileBroadbandPin GetPin(global::Windows.Networking.NetworkOperators.MobileBroadbandPinType pinType)
 		{
-			throw new global::System.NotImplementedException("The member MobileBroadbandPin MobileBroadbandPinManager.GetPin(MobileBroadbandPinType pinType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandPin%20MobileBroadbandPinManager.GetPin%28MobileBroadbandPinType%20pinType%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandPinManager", "MobileBroadbandPin MobileBroadbandPinManager.GetPin(MobileBroadbandPinType pinType)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandPinManager.SupportedPins.get

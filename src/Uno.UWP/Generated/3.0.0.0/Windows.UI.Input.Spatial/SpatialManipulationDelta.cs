@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SpatialManipulationDelta.Translation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpatialManipulationDelta.Translation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialManipulationDelta", "Vector3 SpatialManipulationDelta.Translation");
 			}
 		}
 #endif

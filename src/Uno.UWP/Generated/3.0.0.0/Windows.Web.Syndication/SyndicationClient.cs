@@ -14,7 +14,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SyndicationClient.BypassCacheOnRetrieve is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SyndicationClient.BypassCacheOnRetrieve");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationClient", "bool SyndicationClient.BypassCacheOnRetrieve");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SyndicationClient.MaxResponseBufferSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SyndicationClient.MaxResponseBufferSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationClient", "uint SyndicationClient.MaxResponseBufferSize");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential SyndicationClient.ProxyCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PasswordCredential%20SyndicationClient.ProxyCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationClient", "PasswordCredential SyndicationClient.ProxyCredential");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential SyndicationClient.ServerCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PasswordCredential%20SyndicationClient.ServerCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationClient", "PasswordCredential SyndicationClient.ServerCredential");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SyndicationClient.Timeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SyndicationClient.Timeout");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationClient", "uint SyndicationClient.Timeout");
 			}
 			set
 			{
@@ -105,7 +105,7 @@ namespace Windows.Web.Syndication
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Syndication.SyndicationFeed, global::Windows.Web.Syndication.RetrievalProgress> RetrieveFeedAsync(global::System.Uri uri)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<SyndicationFeed, RetrievalProgress> SyndicationClient.RetrieveFeedAsync(Uri uri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CSyndicationFeed%2C%20RetrievalProgress%3E%20SyndicationClient.RetrieveFeedAsync%28Uri%20uri%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationClient", "IAsyncOperationWithProgress<SyndicationFeed, RetrievalProgress> SyndicationClient.RetrieveFeedAsync(Uri uri)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Syndication.SyndicationClient.BypassCacheOnRetrieve.get

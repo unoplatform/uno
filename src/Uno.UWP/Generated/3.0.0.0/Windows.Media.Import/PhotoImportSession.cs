@@ -19,7 +19,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhotoImportSession.AppendSessionDateToDestinationFolder is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PhotoImportSession.AppendSessionDateToDestinationFolder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "bool PhotoImportSession.AppendSessionDateToDestinationFolder");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhotoImportSession.DestinationFileNamePrefix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhotoImportSession.DestinationFileNamePrefix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "string PhotoImportSession.DestinationFileNamePrefix");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IStorageFolder PhotoImportSession.DestinationFolder is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IStorageFolder%20PhotoImportSession.DestinationFolder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "IStorageFolder PhotoImportSession.DestinationFolder");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhotoImportSession.RememberDeselectedItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PhotoImportSession.RememberDeselectedItems");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "bool PhotoImportSession.RememberDeselectedItems");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PhotoImportSession.SessionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PhotoImportSession.SessionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "Guid PhotoImportSession.SessionId");
 			}
 		}
 #endif
@@ -85,7 +85,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhotoImportSource PhotoImportSession.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhotoImportSource%20PhotoImportSession.Source");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "PhotoImportSource PhotoImportSession.Source");
 			}
 		}
 #endif
@@ -95,7 +95,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhotoImportSubfolderCreationMode PhotoImportSession.SubfolderCreationMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhotoImportSubfolderCreationMode%20PhotoImportSession.SubfolderCreationMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "PhotoImportSubfolderCreationMode PhotoImportSession.SubfolderCreationMode");
 			}
 			set
 			{
@@ -109,7 +109,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhotoImportSubfolderDateFormat PhotoImportSession.SubfolderDateFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhotoImportSubfolderDateFormat%20PhotoImportSession.SubfolderDateFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "PhotoImportSubfolderDateFormat PhotoImportSession.SubfolderDateFormat");
 			}
 			set
 			{
@@ -121,7 +121,7 @@ namespace Windows.Media.Import
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Media.Import.PhotoImportFindItemsResult, uint> FindItemsAsync(global::Windows.Media.Import.PhotoImportContentTypeFilter contentTypeFilter, global::Windows.Media.Import.PhotoImportItemSelectionMode itemSelectionMode)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<PhotoImportFindItemsResult, uint> PhotoImportSession.FindItemsAsync(PhotoImportContentTypeFilter contentTypeFilter, PhotoImportItemSelectionMode itemSelectionMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CPhotoImportFindItemsResult%2C%20uint%3E%20PhotoImportSession.FindItemsAsync%28PhotoImportContentTypeFilter%20contentTypeFilter%2C%20PhotoImportItemSelectionMode%20itemSelectionMode%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSession", "IAsyncOperationWithProgress<PhotoImportFindItemsResult, uint> PhotoImportSession.FindItemsAsync(PhotoImportContentTypeFilter contentTypeFilter, PhotoImportItemSelectionMode itemSelectionMode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

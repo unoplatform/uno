@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2PermissionRequestedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2PermissionRequestedEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "bool CoreWebView2PermissionRequestedEventArgs.Handled");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2PermissionRequestedEventArgs.IsUserInitiated is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2PermissionRequestedEventArgs.IsUserInitiated");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "bool CoreWebView2PermissionRequestedEventArgs.IsUserInitiated");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2PermissionKind CoreWebView2PermissionRequestedEventArgs.PermissionKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2PermissionKind%20CoreWebView2PermissionRequestedEventArgs.PermissionKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "CoreWebView2PermissionKind CoreWebView2PermissionRequestedEventArgs.PermissionKind");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2PermissionRequestedEventArgs.SavesInProfile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2PermissionRequestedEventArgs.SavesInProfile");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "bool CoreWebView2PermissionRequestedEventArgs.SavesInProfile");
 			}
 			set
 			{
@@ -67,7 +67,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2PermissionState CoreWebView2PermissionRequestedEventArgs.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2PermissionState%20CoreWebView2PermissionRequestedEventArgs.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "CoreWebView2PermissionState CoreWebView2PermissionRequestedEventArgs.State");
 			}
 			set
 			{
@@ -81,7 +81,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2PermissionRequestedEventArgs.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2PermissionRequestedEventArgs.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "string CoreWebView2PermissionRequestedEventArgs.Uri");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral CoreWebView2PermissionRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreWebView2PermissionRequestedEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs", "Deferral CoreWebView2PermissionRequestedEventArgs.GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs.Handled.get

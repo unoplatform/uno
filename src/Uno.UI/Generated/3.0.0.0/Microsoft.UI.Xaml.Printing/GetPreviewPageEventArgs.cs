@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int GetPreviewPageEventArgs.PageNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20GetPreviewPageEventArgs.PageNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Printing.GetPreviewPageEventArgs", "int GetPreviewPageEventArgs.PageNumber");
 			}
 		}
 #endif

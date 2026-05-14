@@ -19,7 +19,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int HandMeshObserver.ModelId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20HandMeshObserver.ModelId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshObserver", "int HandMeshObserver.ModelId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HandPose HandMeshObserver.NeutralPose is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HandPose%20HandMeshObserver.NeutralPose");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshObserver", "HandPose HandMeshObserver.NeutralPose");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int HandMeshObserver.NeutralPoseVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20HandMeshObserver.NeutralPoseVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshObserver", "int HandMeshObserver.NeutralPoseVersion");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialInteractionSource HandMeshObserver.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialInteractionSource%20HandMeshObserver.Source");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshObserver", "SpatialInteractionSource HandMeshObserver.Source");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HandMeshObserver.TriangleIndexCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20HandMeshObserver.TriangleIndexCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshObserver", "uint HandMeshObserver.TriangleIndexCount");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HandMeshObserver.VertexCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20HandMeshObserver.VertexCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshObserver", "uint HandMeshObserver.VertexCount");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Perception.People
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Perception.People.HandMeshVertexState GetVertexStateForPose(global::Windows.Perception.People.HandPose handPose)
 		{
-			throw new global::System.NotImplementedException("The member HandMeshVertexState HandMeshObserver.GetVertexStateForPose(HandPose handPose) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HandMeshVertexState%20HandMeshObserver.GetVertexStateForPose%28HandPose%20handPose%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshObserver", "HandMeshVertexState HandMeshObserver.GetVertexStateForPose(HandPose handPose)");
 		}
 #endif
 		// Forced skipping of method Windows.Perception.People.HandMeshObserver.ModelId.get

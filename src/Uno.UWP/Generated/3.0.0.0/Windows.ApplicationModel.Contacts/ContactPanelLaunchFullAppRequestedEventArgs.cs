@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContactPanelLaunchFullAppRequestedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContactPanelLaunchFullAppRequestedEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactPanelLaunchFullAppRequestedEventArgs", "bool ContactPanelLaunchFullAppRequestedEventArgs.Handled");
 			}
 			set
 			{

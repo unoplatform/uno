@@ -19,7 +19,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IMemoryBuffer PerceptionFrame.FrameData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IMemoryBuffer%20PerceptionFrame.FrameData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionFrame", "IMemoryBuffer PerceptionFrame.FrameData");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet PerceptionFrame.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20PerceptionFrame.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionFrame", "ValueSet PerceptionFrame.Properties");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan PerceptionFrame.RelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20PerceptionFrame.RelativeTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionFrame", "TimeSpan PerceptionFrame.RelativeTime");
 			}
 			set
 			{

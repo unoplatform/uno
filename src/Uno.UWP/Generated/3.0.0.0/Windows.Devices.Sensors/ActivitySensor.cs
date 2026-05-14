@@ -19,7 +19,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ActivitySensor.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ActivitySensor.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensor", "string ActivitySensor.DeviceId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ActivitySensor.MinimumReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ActivitySensor.MinimumReportInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensor", "uint ActivitySensor.MinimumReportInterval");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ActivitySensor.PowerInMilliwatts is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ActivitySensor.PowerInMilliwatts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensor", "double ActivitySensor.PowerInMilliwatts");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ActivityType> ActivitySensor.SubscribedActivities is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CActivityType%3E%20ActivitySensor.SubscribedActivities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensor", "IList<ActivityType> ActivitySensor.SubscribedActivities");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ActivityType> ActivitySensor.SupportedActivities is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CActivityType%3E%20ActivitySensor.SupportedActivities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensor", "IReadOnlyList<ActivityType> ActivitySensor.SupportedActivities");
 			}
 		}
 #endif
@@ -67,42 +67,42 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.ActivitySensor> GetDefaultAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ActivitySensor> ActivitySensor.GetDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CActivitySensor%3E%20ActivitySensor.GetDefaultAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensor", "IAsyncOperation<ActivitySensor> ActivitySensor.GetDefaultAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string ActivitySensor.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ActivitySensor.GetDeviceSelector%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensor", "string ActivitySensor.GetDeviceSelector()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.ActivitySensor> FromIdAsync(string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ActivitySensor> ActivitySensor.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CActivitySensor%3E%20ActivitySensor.FromIdAsync%28string%20deviceId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensor", "IAsyncOperation<ActivitySensor> ActivitySensor.FromIdAsync(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sensors.ActivitySensorReading>> GetSystemHistoryAsync(global::System.DateTimeOffset fromTime)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<ActivitySensorReading>> ActivitySensor.GetSystemHistoryAsync(DateTimeOffset fromTime) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CActivitySensorReading%3E%3E%20ActivitySensor.GetSystemHistoryAsync%28DateTimeOffset%20fromTime%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensor", "IAsyncOperation<IReadOnlyList<ActivitySensorReading>> ActivitySensor.GetSystemHistoryAsync(DateTimeOffset fromTime)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sensors.ActivitySensorReading>> GetSystemHistoryAsync(global::System.DateTimeOffset fromTime, global::System.TimeSpan duration)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<ActivitySensorReading>> ActivitySensor.GetSystemHistoryAsync(DateTimeOffset fromTime, TimeSpan duration) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CActivitySensorReading%3E%3E%20ActivitySensor.GetSystemHistoryAsync%28DateTimeOffset%20fromTime%2C%20TimeSpan%20duration%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensor", "IAsyncOperation<IReadOnlyList<ActivitySensorReading>> ActivitySensor.GetSystemHistoryAsync(DateTimeOffset fromTime, TimeSpan duration)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.ActivitySensorReading> GetCurrentReadingAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ActivitySensorReading> ActivitySensor.GetCurrentReadingAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CActivitySensorReading%3E%20ActivitySensor.GetCurrentReadingAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensor", "IAsyncOperation<ActivitySensorReading> ActivitySensor.GetCurrentReadingAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sensors.ActivitySensor.ReadingChanged.add

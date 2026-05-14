@@ -14,7 +14,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FrameExposureCompensationControl FrameController.ExposureCompensationControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FrameExposureCompensationControl%20FrameController.ExposureCompensationControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameController", "FrameExposureCompensationControl FrameController.ExposureCompensationControl");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FrameExposureControl FrameController.ExposureControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FrameExposureControl%20FrameController.ExposureControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameController", "FrameExposureControl FrameController.ExposureControl");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FrameFlashControl FrameController.FlashControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FrameFlashControl%20FrameController.FlashControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameController", "FrameFlashControl FrameController.FlashControl");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FrameFocusControl FrameController.FocusControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FrameFocusControl%20FrameController.FocusControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameController", "FrameFocusControl FrameController.FocusControl");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FrameIsoSpeedControl FrameController.IsoSpeedControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FrameIsoSpeedControl%20FrameController.IsoSpeedControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameController", "FrameIsoSpeedControl FrameController.IsoSpeedControl");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool? FrameController.PhotoConfirmationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%3F%20FrameController.PhotoConfirmationEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameController", "bool? FrameController.PhotoConfirmationEnabled");
 			}
 			set
 			{

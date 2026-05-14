@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaBreak MediaBreakManager.CurrentBreak is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaBreak%20MediaBreakManager.CurrentBreak");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakManager", "MediaBreak MediaBreakManager.CurrentBreak");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackSession MediaBreakManager.PlaybackSession is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackSession%20MediaBreakManager.PlaybackSession");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakManager", "MediaPlaybackSession MediaBreakManager.PlaybackSession");
 			}
 		}
 #endif

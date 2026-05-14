@@ -19,7 +19,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int SceneNodeCollection.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SceneNodeCollection.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneNodeCollection", "int SceneNodeCollection.Count");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SceneNodeCollection.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SceneNodeCollection.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneNodeCollection", "bool SceneNodeCollection.IsReadOnly");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneNode SceneNodeCollection.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneNode%20SceneNodeCollection.this%5Bint%20index%5D");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneNodeCollection", "SceneNode SceneNodeCollection.this[int index]");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Composition.Scenes
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int IndexOf(global::Windows.UI.Composition.Scenes.SceneNode item)
 		{
-			throw new global::System.NotImplementedException("The member int SceneNodeCollection.IndexOf(SceneNode item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SceneNodeCollection.IndexOf%28SceneNode%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneNodeCollection", "int SceneNodeCollection.IndexOf(SceneNode item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -90,7 +90,7 @@ namespace Windows.UI.Composition.Scenes
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Contains(global::Windows.UI.Composition.Scenes.SceneNode item)
 		{
-			throw new global::System.NotImplementedException("The member bool SceneNodeCollection.Contains(SceneNode item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SceneNodeCollection.Contains%28SceneNode%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneNodeCollection", "bool SceneNodeCollection.Contains(SceneNode item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -104,14 +104,14 @@ namespace Windows.UI.Composition.Scenes
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Remove(global::Windows.UI.Composition.Scenes.SceneNode item)
 		{
-			throw new global::System.NotImplementedException("The member bool SceneNodeCollection.Remove(SceneNode item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SceneNodeCollection.Remove%28SceneNode%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneNodeCollection", "bool SceneNodeCollection.Remove(SceneNode item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.UI.Composition.Scenes.SceneNode> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<SceneNode> SceneNodeCollection.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CSceneNode%3E%20SceneNodeCollection.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneNodeCollection", "IEnumerator<SceneNode> SceneNodeCollection.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNodeCollection.System.Collections.IEnumerable.GetEnumerator()

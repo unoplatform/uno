@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeRequestedLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeRequestedLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "int LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeRequestedLength");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeStartIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeStartIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "int LinedFlowLayoutItemsInfoRequestedEventArgs.ItemsRangeStartIndex");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double LinedFlowLayoutItemsInfoRequestedEventArgs.MaxWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20LinedFlowLayoutItemsInfoRequestedEventArgs.MaxWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "double LinedFlowLayoutItemsInfoRequestedEventArgs.MaxWidth");
 			}
 			set
 			{
@@ -57,7 +57,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double LinedFlowLayoutItemsInfoRequestedEventArgs.MinWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20LinedFlowLayoutItemsInfoRequestedEventArgs.MinWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs", "double LinedFlowLayoutItemsInfoRequestedEventArgs.MinWidth");
 			}
 			set
 			{

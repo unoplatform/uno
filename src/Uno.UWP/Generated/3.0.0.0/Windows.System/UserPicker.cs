@@ -14,7 +14,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool UserPicker.AllowGuestAccounts is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20UserPicker.AllowGuestAccounts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserPicker", "bool UserPicker.AllowGuestAccounts");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User UserPicker.SuggestedSelectedUser is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20UserPicker.SuggestedSelectedUser");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserPicker", "User UserPicker.SuggestedSelectedUser");
 			}
 			set
 			{
@@ -48,14 +48,14 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSupported()
 		{
-			throw new global::System.NotImplementedException("The member bool UserPicker.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20UserPicker.IsSupported%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserPicker", "bool UserPicker.IsSupported()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.System.User> PickSingleUserAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<User> UserPicker.PickSingleUserAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUser%3E%20UserPicker.PickSingleUserAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserPicker", "IAsyncOperation<User> UserPicker.PickSingleUserAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.System.UserPicker.AllowGuestAccounts.get

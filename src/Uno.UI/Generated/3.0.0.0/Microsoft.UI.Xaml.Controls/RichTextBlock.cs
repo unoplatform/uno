@@ -239,7 +239,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double RichTextBlock.BaselineOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20RichTextBlock.BaselineOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlock", "double RichTextBlock.BaselineOffset");
 			}
 		}
 #endif
@@ -264,7 +264,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer RichTextBlock.ContentEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20RichTextBlock.ContentEnd");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlock", "TextPointer RichTextBlock.ContentEnd");
 			}
 		}
 #endif
@@ -274,7 +274,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer RichTextBlock.ContentStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20RichTextBlock.ContentStart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlock", "TextPointer RichTextBlock.ContentStart");
 			}
 		}
 #endif
@@ -525,7 +525,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer RichTextBlock.SelectionEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20RichTextBlock.SelectionEnd");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlock", "TextPointer RichTextBlock.SelectionEnd");
 			}
 		}
 #endif
@@ -563,7 +563,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer RichTextBlock.SelectionStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20RichTextBlock.SelectionStart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlock", "TextPointer RichTextBlock.SelectionStart");
 			}
 		}
 #endif
@@ -601,7 +601,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<TextHighlighter> RichTextBlock.TextHighlighters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CTextHighlighter%3E%20RichTextBlock.TextHighlighters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlock", "IList<TextHighlighter> RichTextBlock.TextHighlighters");
 			}
 		}
 #endif
@@ -724,7 +724,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Documents.TextPointer GetPositionFromPoint(global::Windows.Foundation.Point point)
 		{
-			throw new global::System.NotImplementedException("The member TextPointer RichTextBlock.GetPositionFromPoint(Point point) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20RichTextBlock.GetPositionFromPoint%28Point%20point%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlock", "TextPointer RichTextBlock.GetPositionFromPoint(Point point)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

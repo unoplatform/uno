@@ -19,7 +19,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer WiFiDirectServiceSessionDeferredEventArgs.DeferredSessionInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20WiFiDirectServiceSessionDeferredEventArgs.DeferredSessionInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionDeferredEventArgs", "IBuffer WiFiDirectServiceSessionDeferredEventArgs.DeferredSessionInfo");
 			}
 		}
 #endif

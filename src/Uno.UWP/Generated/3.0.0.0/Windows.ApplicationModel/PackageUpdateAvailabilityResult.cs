@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PackageUpdateAvailability PackageUpdateAvailabilityResult.Availability is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PackageUpdateAvailability%20PackageUpdateAvailabilityResult.Availability");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageUpdateAvailabilityResult", "PackageUpdateAvailability PackageUpdateAvailabilityResult.Availability");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception PackageUpdateAvailabilityResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20PackageUpdateAvailabilityResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageUpdateAvailabilityResult", "Exception PackageUpdateAvailabilityResult.ExtendedError");
 			}
 		}
 #endif

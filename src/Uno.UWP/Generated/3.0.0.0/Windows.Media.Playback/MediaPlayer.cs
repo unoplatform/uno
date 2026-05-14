@@ -14,7 +14,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MediaPlayer.AudioBalance is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20MediaPlayer.AudioBalance");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "double MediaPlayer.AudioBalance");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlayerAudioCategory MediaPlayer.AudioCategory is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlayerAudioCategory%20MediaPlayer.AudioCategory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "MediaPlayerAudioCategory MediaPlayer.AudioCategory");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceInformation MediaPlayer.AudioDevice is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceInformation%20MediaPlayer.AudioDevice");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "DeviceInformation MediaPlayer.AudioDevice");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlayerAudioDeviceType MediaPlayer.AudioDeviceType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlayerAudioDeviceType%20MediaPlayer.AudioDeviceType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "MediaPlayerAudioDeviceType MediaPlayer.AudioDeviceType");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioStateMonitor MediaPlayer.AudioStateMonitor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioStateMonitor%20MediaPlayer.AudioStateMonitor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "AudioStateMonitor MediaPlayer.AudioStateMonitor");
 			}
 		}
 #endif
@@ -81,7 +81,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaBreakManager MediaPlayer.BreakManager is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaBreakManager%20MediaPlayer.BreakManager");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "MediaBreakManager MediaPlayer.BreakManager");
 			}
 		}
 #endif
@@ -91,7 +91,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MediaPlayer.BufferingProgress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20MediaPlayer.BufferingProgress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "double MediaPlayer.BufferingProgress");
 			}
 		}
 #endif
@@ -101,7 +101,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaPlayer.CanPause is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlayer.CanPause");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "bool MediaPlayer.CanPause");
 			}
 		}
 #endif
@@ -111,7 +111,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaPlayer.CanSeek is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlayer.CanSeek");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "bool MediaPlayer.CanSeek");
 			}
 		}
 #endif
@@ -121,7 +121,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManager MediaPlayer.CommandManager is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackCommandManager%20MediaPlayer.CommandManager");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "MediaPlaybackCommandManager MediaPlayer.CommandManager");
 			}
 		}
 #endif
@@ -131,7 +131,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlayerState MediaPlayer.CurrentState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlayerState%20MediaPlayer.CurrentState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "MediaPlayerState MediaPlayer.CurrentState");
 			}
 		}
 #endif
@@ -141,7 +141,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaPlayer.IsLoopingEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlayer.IsLoopingEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "bool MediaPlayer.IsLoopingEnabled");
 			}
 			set
 			{
@@ -156,7 +156,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaPlayer.IsProtected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlayer.IsProtected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "bool MediaPlayer.IsProtected");
 			}
 		}
 #endif
@@ -166,7 +166,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaPlayer.IsVideoFrameServerEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlayer.IsVideoFrameServerEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "bool MediaPlayer.IsVideoFrameServerEnabled");
 			}
 			set
 			{
@@ -180,7 +180,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaPlayer.NaturalDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaPlayer.NaturalDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "TimeSpan MediaPlayer.NaturalDuration");
 			}
 		}
 #endif
@@ -190,7 +190,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlaybackMediaMarkerSequence MediaPlayer.PlaybackMediaMarkers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlaybackMediaMarkerSequence%20MediaPlayer.PlaybackMediaMarkers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "PlaybackMediaMarkerSequence MediaPlayer.PlaybackMediaMarkers");
 			}
 		}
 #endif
@@ -200,7 +200,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MediaPlayer.PlaybackRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20MediaPlayer.PlaybackRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "double MediaPlayer.PlaybackRate");
 			}
 			set
 			{
@@ -216,7 +216,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaProtectionManager MediaPlayer.ProtectionManager is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaProtectionManager%20MediaPlayer.ProtectionManager");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "MediaProtectionManager MediaPlayer.ProtectionManager");
 			}
 			set
 			{
@@ -230,7 +230,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaPlayer.RealTimePlayback is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlayer.RealTimePlayback");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "bool MediaPlayer.RealTimePlayback");
 			}
 			set
 			{
@@ -245,7 +245,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StereoscopicVideoRenderMode MediaPlayer.StereoscopicVideoRenderMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StereoscopicVideoRenderMode%20MediaPlayer.StereoscopicVideoRenderMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "StereoscopicVideoRenderMode MediaPlayer.StereoscopicVideoRenderMode");
 			}
 			set
 			{
@@ -259,7 +259,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemMediaTransportControls MediaPlayer.SystemMediaTransportControls is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemMediaTransportControls%20MediaPlayer.SystemMediaTransportControls");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "SystemMediaTransportControls MediaPlayer.SystemMediaTransportControls");
 			}
 		}
 #endif
@@ -269,7 +269,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaTimelineController MediaPlayer.TimelineController is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaTimelineController%20MediaPlayer.TimelineController");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "MediaTimelineController MediaPlayer.TimelineController");
 			}
 			set
 			{
@@ -283,7 +283,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaPlayer.TimelineControllerPositionOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaPlayer.TimelineControllerPositionOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "TimeSpan MediaPlayer.TimelineControllerPositionOffset");
 			}
 			set
 			{
@@ -377,7 +377,7 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Casting.CastingSource GetAsCastingSource()
 		{
-			throw new global::System.NotImplementedException("The member CastingSource MediaPlayer.GetAsCastingSource() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CastingSource%20MediaPlayer.GetAsCastingSource%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "CastingSource MediaPlayer.GetAsCastingSource()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.IsMutedChanged.add
@@ -426,14 +426,14 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool RenderSubtitlesToSurface(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface destination)
 		{
-			throw new global::System.NotImplementedException("The member bool MediaPlayer.RenderSubtitlesToSurface(IDirect3DSurface destination) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlayer.RenderSubtitlesToSurface%28IDirect3DSurface%20destination%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "bool MediaPlayer.RenderSubtitlesToSurface(IDirect3DSurface destination)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool RenderSubtitlesToSurface(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface destination, global::Windows.Foundation.Rect targetRectangle)
 		{
-			throw new global::System.NotImplementedException("The member bool MediaPlayer.RenderSubtitlesToSurface(IDirect3DSurface destination, Rect targetRectangle) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlayer.RenderSubtitlesToSurface%28IDirect3DSurface%20destination%2C%20Rect%20targetRectangle%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayer", "bool MediaPlayer.RenderSubtitlesToSurface(IDirect3DSurface destination, Rect targetRectangle)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.SubtitleFrameChanged.add

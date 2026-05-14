@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2Cookie.Domain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2Cookie.Domain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Cookie", "string CoreWebView2Cookie.Domain");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CoreWebView2Cookie.Expires is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CoreWebView2Cookie.Expires");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Cookie", "double CoreWebView2Cookie.Expires");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2Cookie.IsHttpOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2Cookie.IsHttpOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Cookie", "bool CoreWebView2Cookie.IsHttpOnly");
 			}
 			set
 			{
@@ -57,7 +57,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2Cookie.IsSecure is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2Cookie.IsSecure");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Cookie", "bool CoreWebView2Cookie.IsSecure");
 			}
 			set
 			{
@@ -71,7 +71,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2Cookie.IsSession is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2Cookie.IsSession");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Cookie", "bool CoreWebView2Cookie.IsSession");
 			}
 		}
 #endif
@@ -81,7 +81,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2Cookie.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2Cookie.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Cookie", "string CoreWebView2Cookie.Name");
 			}
 		}
 #endif
@@ -91,7 +91,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2Cookie.Path is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2Cookie.Path");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Cookie", "string CoreWebView2Cookie.Path");
 			}
 		}
 #endif
@@ -101,7 +101,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2CookieSameSiteKind CoreWebView2Cookie.SameSite is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2CookieSameSiteKind%20CoreWebView2Cookie.SameSite");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Cookie", "CoreWebView2CookieSameSiteKind CoreWebView2Cookie.SameSite");
 			}
 			set
 			{
@@ -115,7 +115,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2Cookie.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2Cookie.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Cookie", "string CoreWebView2Cookie.Value");
 			}
 			set
 			{

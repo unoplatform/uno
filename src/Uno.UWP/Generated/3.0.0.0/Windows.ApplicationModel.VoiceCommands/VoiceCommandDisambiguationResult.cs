@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VoiceCommandContentTile VoiceCommandDisambiguationResult.SelectedItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoiceCommandContentTile%20VoiceCommandDisambiguationResult.SelectedItem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandDisambiguationResult", "VoiceCommandContentTile VoiceCommandDisambiguationResult.SelectedItem");
 			}
 		}
 #endif

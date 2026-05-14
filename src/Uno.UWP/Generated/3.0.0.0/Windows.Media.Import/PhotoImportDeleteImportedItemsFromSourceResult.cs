@@ -19,7 +19,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PhotoImportItem> PhotoImportDeleteImportedItemsFromSourceResult.DeletedItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPhotoImportItem%3E%20PhotoImportDeleteImportedItemsFromSourceResult.DeletedItems");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "IReadOnlyList<PhotoImportItem> PhotoImportDeleteImportedItemsFromSourceResult.DeletedItems");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhotoImportDeleteImportedItemsFromSourceResult.HasSucceeded is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PhotoImportDeleteImportedItemsFromSourceResult.HasSucceeded");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "bool PhotoImportDeleteImportedItemsFromSourceResult.HasSucceeded");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PhotoImportDeleteImportedItemsFromSourceResult.PhotosCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PhotoImportDeleteImportedItemsFromSourceResult.PhotosCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "uint PhotoImportDeleteImportedItemsFromSourceResult.PhotosCount");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong PhotoImportDeleteImportedItemsFromSourceResult.PhotosSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20PhotoImportDeleteImportedItemsFromSourceResult.PhotosSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "ulong PhotoImportDeleteImportedItemsFromSourceResult.PhotosSizeInBytes");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhotoImportSession PhotoImportDeleteImportedItemsFromSourceResult.Session is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhotoImportSession%20PhotoImportDeleteImportedItemsFromSourceResult.Session");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "PhotoImportSession PhotoImportDeleteImportedItemsFromSourceResult.Session");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PhotoImportDeleteImportedItemsFromSourceResult.SiblingsCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PhotoImportDeleteImportedItemsFromSourceResult.SiblingsCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "uint PhotoImportDeleteImportedItemsFromSourceResult.SiblingsCount");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong PhotoImportDeleteImportedItemsFromSourceResult.SiblingsSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20PhotoImportDeleteImportedItemsFromSourceResult.SiblingsSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "ulong PhotoImportDeleteImportedItemsFromSourceResult.SiblingsSizeInBytes");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PhotoImportDeleteImportedItemsFromSourceResult.SidecarsCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PhotoImportDeleteImportedItemsFromSourceResult.SidecarsCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "uint PhotoImportDeleteImportedItemsFromSourceResult.SidecarsCount");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong PhotoImportDeleteImportedItemsFromSourceResult.SidecarsSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20PhotoImportDeleteImportedItemsFromSourceResult.SidecarsSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "ulong PhotoImportDeleteImportedItemsFromSourceResult.SidecarsSizeInBytes");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PhotoImportDeleteImportedItemsFromSourceResult.TotalCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PhotoImportDeleteImportedItemsFromSourceResult.TotalCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "uint PhotoImportDeleteImportedItemsFromSourceResult.TotalCount");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong PhotoImportDeleteImportedItemsFromSourceResult.TotalSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20PhotoImportDeleteImportedItemsFromSourceResult.TotalSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "ulong PhotoImportDeleteImportedItemsFromSourceResult.TotalSizeInBytes");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PhotoImportDeleteImportedItemsFromSourceResult.VideosCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PhotoImportDeleteImportedItemsFromSourceResult.VideosCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "uint PhotoImportDeleteImportedItemsFromSourceResult.VideosCount");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong PhotoImportDeleteImportedItemsFromSourceResult.VideosSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20PhotoImportDeleteImportedItemsFromSourceResult.VideosSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportDeleteImportedItemsFromSourceResult", "ulong PhotoImportDeleteImportedItemsFromSourceResult.VideosSizeInBytes");
 			}
 		}
 #endif

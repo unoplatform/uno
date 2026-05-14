@@ -19,7 +19,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, string> ResourceContext.QualifierValues is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20string%3E%20ResourceContext.QualifierValues");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceContext", "IDictionary<string, string> ResourceContext.QualifierValues");
 			}
 		}
 #endif

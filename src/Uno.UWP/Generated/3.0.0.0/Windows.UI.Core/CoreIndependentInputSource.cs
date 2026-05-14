@@ -19,7 +19,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreDispatcher CoreIndependentInputSource.Dispatcher is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreDispatcher%20CoreIndependentInputSource.Dispatcher");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreIndependentInputSource", "CoreDispatcher CoreIndependentInputSource.Dispatcher");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DispatcherQueue CoreIndependentInputSource.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherQueue%20CoreIndependentInputSource.DispatcherQueue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreIndependentInputSource", "DispatcherQueue CoreIndependentInputSource.DispatcherQueue");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreIndependentInputSource.HasCapture is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreIndependentInputSource.HasCapture");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreIndependentInputSource", "bool CoreIndependentInputSource.HasCapture");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreIndependentInputSource.IsInputEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreIndependentInputSource.IsInputEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreIndependentInputSource", "bool CoreIndependentInputSource.IsInputEnabled");
 			}
 			set
 			{
@@ -63,7 +63,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreCursor CoreIndependentInputSource.PointerCursor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreCursor%20CoreIndependentInputSource.PointerCursor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreIndependentInputSource", "CoreCursor CoreIndependentInputSource.PointerCursor");
 			}
 			set
 			{
@@ -77,7 +77,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point CoreIndependentInputSource.PointerPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20CoreIndependentInputSource.PointerPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreIndependentInputSource", "Point CoreIndependentInputSource.PointerPosition");
 			}
 		}
 #endif

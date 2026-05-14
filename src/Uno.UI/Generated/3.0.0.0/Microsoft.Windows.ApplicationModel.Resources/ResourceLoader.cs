@@ -24,7 +24,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDefaultResourceFilePath()
 		{
-			throw new global::System.NotImplementedException("The member string ResourceLoader.GetDefaultResourceFilePath() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ResourceLoader.GetDefaultResourceFilePath%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceLoader", "string ResourceLoader.GetDefaultResourceFilePath()");
 		}
 #endif
 		// Skipping already declared method Microsoft.Windows.ApplicationModel.Resources.ResourceLoader.GetString(string)
@@ -32,7 +32,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string GetStringForUri(global::System.Uri resourceUri)
 		{
-			throw new global::System.NotImplementedException("The member string ResourceLoader.GetStringForUri(Uri resourceUri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ResourceLoader.GetStringForUri%28Uri%20resourceUri%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceLoader", "string ResourceLoader.GetStringForUri(Uri resourceUri)");
 		}
 #endif
 	}

@@ -15,7 +15,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactBatchStatus ContactBatch.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactBatchStatus%20ContactBatch.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactBatch", "ContactBatchStatus ContactBatch.Status");
 			}
 		}
 #endif

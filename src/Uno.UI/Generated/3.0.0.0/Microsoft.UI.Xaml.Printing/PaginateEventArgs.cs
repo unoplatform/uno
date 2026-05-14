@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int PaginateEventArgs.CurrentPreviewPageNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20PaginateEventArgs.CurrentPreviewPageNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Printing.PaginateEventArgs", "int PaginateEventArgs.CurrentPreviewPageNumber");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTaskOptions PaginateEventArgs.PrintTaskOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTaskOptions%20PaginateEventArgs.PrintTaskOptions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Printing.PaginateEventArgs", "PrintTaskOptions PaginateEventArgs.PrintTaskOptions");
 			}
 		}
 #endif

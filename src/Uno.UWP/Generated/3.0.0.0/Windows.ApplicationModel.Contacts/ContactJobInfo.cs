@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactJobInfo.CompanyAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactJobInfo.CompanyAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.CompanyAddress");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactJobInfo.CompanyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactJobInfo.CompanyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.CompanyName");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactJobInfo.CompanyYomiName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactJobInfo.CompanyYomiName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.CompanyYomiName");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactJobInfo.Department is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactJobInfo.Department");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Department");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactJobInfo.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactJobInfo.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Description");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactJobInfo.Manager is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactJobInfo.Manager");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Manager");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactJobInfo.Office is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactJobInfo.Office");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Office");
 			}
 			set
 			{
@@ -112,7 +112,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactJobInfo.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactJobInfo.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactJobInfo", "string ContactJobInfo.Title");
 			}
 			set
 			{

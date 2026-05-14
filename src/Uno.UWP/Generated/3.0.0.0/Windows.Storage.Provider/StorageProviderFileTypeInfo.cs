@@ -14,7 +14,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorageProviderFileTypeInfo.FileExtension is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorageProviderFileTypeInfo.FileExtension");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderFileTypeInfo", "string StorageProviderFileTypeInfo.FileExtension");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorageProviderFileTypeInfo.IconResource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorageProviderFileTypeInfo.IconResource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderFileTypeInfo", "string StorageProviderFileTypeInfo.IconResource");
 			}
 		}
 #endif

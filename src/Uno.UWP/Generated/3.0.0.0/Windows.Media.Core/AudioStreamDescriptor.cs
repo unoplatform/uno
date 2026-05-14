@@ -14,7 +14,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioEncodingProperties AudioStreamDescriptor.EncodingProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioEncodingProperties%20AudioStreamDescriptor.EncodingProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "AudioEncodingProperties AudioStreamDescriptor.EncodingProperties");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AudioStreamDescriptor.IsSelected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AudioStreamDescriptor.IsSelected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "bool AudioStreamDescriptor.IsSelected");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AudioStreamDescriptor.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AudioStreamDescriptor.Label");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "string AudioStreamDescriptor.Label");
 			}
 			set
 			{
@@ -48,7 +48,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AudioStreamDescriptor.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AudioStreamDescriptor.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "string AudioStreamDescriptor.Language");
 			}
 			set
 			{
@@ -62,7 +62,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? AudioStreamDescriptor.LeadingEncoderPadding is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20AudioStreamDescriptor.LeadingEncoderPadding");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "uint? AudioStreamDescriptor.LeadingEncoderPadding");
 			}
 			set
 			{
@@ -76,7 +76,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AudioStreamDescriptor.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AudioStreamDescriptor.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "string AudioStreamDescriptor.Name");
 			}
 			set
 			{
@@ -90,7 +90,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? AudioStreamDescriptor.TrailingEncoderPadding is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20AudioStreamDescriptor.TrailingEncoderPadding");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "uint? AudioStreamDescriptor.TrailingEncoderPadding");
 			}
 			set
 			{
@@ -110,7 +110,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Core.AudioStreamDescriptor Copy()
 		{
-			throw new global::System.NotImplementedException("The member AudioStreamDescriptor AudioStreamDescriptor.Copy() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioStreamDescriptor%20AudioStreamDescriptor.Copy%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioStreamDescriptor", "AudioStreamDescriptor AudioStreamDescriptor.Copy()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.AudioStreamDescriptor.EncodingProperties.get

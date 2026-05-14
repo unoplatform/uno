@@ -14,7 +14,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemSupportDeviceInfo SystemSupportInfo.LocalDeviceInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemSupportDeviceInfo%20SystemSupportInfo.LocalDeviceInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportInfo", "SystemSupportDeviceInfo SystemSupportInfo.LocalDeviceInfo");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemSupportInfo.LocalSystemEdition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemSupportInfo.LocalSystemEdition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportInfo", "string SystemSupportInfo.LocalSystemEdition");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member OemSupportInfo SystemSupportInfo.OemSupportInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=OemSupportInfo%20SystemSupportInfo.OemSupportInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportInfo", "OemSupportInfo SystemSupportInfo.OemSupportInfo");
 			}
 		}
 #endif

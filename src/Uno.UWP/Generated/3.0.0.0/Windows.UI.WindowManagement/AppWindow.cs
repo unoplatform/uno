@@ -19,7 +19,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UIContentRoot AppWindow.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UIContentRoot%20AppWindow.Content");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindow", "UIContentRoot AppWindow.Content");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DispatcherQueue AppWindow.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherQueue%20AppWindow.DispatcherQueue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindow", "DispatcherQueue AppWindow.DispatcherQueue");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppWindowFrame AppWindow.Frame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppWindowFrame%20AppWindow.Frame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindow", "AppWindowFrame AppWindow.Frame");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppWindow.IsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppWindow.IsVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindow", "bool AppWindow.IsVisible");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppWindow.PersistedStateId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppWindow.PersistedStateId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindow", "string AppWindow.PersistedStateId");
 			}
 			set
 			{
@@ -73,7 +73,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppWindowPresenter AppWindow.Presenter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppWindowPresenter%20AppWindow.Presenter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindow", "AppWindowPresenter AppWindow.Presenter");
 			}
 		}
 #endif
@@ -83,7 +83,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppWindow.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppWindow.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindow", "string AppWindow.Title");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppWindowTitleBar AppWindow.TitleBar is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppWindowTitleBar%20AppWindow.TitleBar");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindow", "AppWindowTitleBar AppWindow.TitleBar");
 			}
 		}
 #endif
@@ -107,7 +107,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UIContext AppWindow.UIContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UIContext%20AppWindow.UIContext");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindow", "UIContext AppWindow.UIContext");
 			}
 		}
 #endif
@@ -117,7 +117,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WindowingEnvironment AppWindow.WindowingEnvironment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WindowingEnvironment%20AppWindow.WindowingEnvironment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindow", "WindowingEnvironment AppWindow.WindowingEnvironment");
 			}
 		}
 #endif
@@ -125,7 +125,7 @@ namespace Windows.UI.WindowManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.WindowManagement.AppWindow> TryCreateAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AppWindow> AppWindow.TryCreateAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppWindow%3E%20AppWindow.TryCreateAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindow", "IAsyncOperation<AppWindow> AppWindow.TryCreateAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -146,21 +146,21 @@ namespace Windows.UI.WindowManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction CloseAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction AppWindow.CloseAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AppWindow.CloseAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindow", "IAsyncAction AppWindow.CloseAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.WindowManagement.AppWindowPlacement GetPlacement()
 		{
-			throw new global::System.NotImplementedException("The member AppWindowPlacement AppWindow.GetPlacement() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppWindowPlacement%20AppWindow.GetPlacement%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindow", "AppWindowPlacement AppWindow.GetPlacement()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.WindowManagement.DisplayRegion> GetDisplayRegions()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<DisplayRegion> AppWindow.GetDisplayRegions() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CDisplayRegion%3E%20AppWindow.GetDisplayRegions%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindow", "IReadOnlyList<DisplayRegion> AppWindow.GetDisplayRegions()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -216,7 +216,7 @@ namespace Windows.UI.WindowManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryShowAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppWindow.TryShowAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20AppWindow.TryShowAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindow", "IAsyncOperation<bool> AppWindow.TryShowAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindow.Changed.add

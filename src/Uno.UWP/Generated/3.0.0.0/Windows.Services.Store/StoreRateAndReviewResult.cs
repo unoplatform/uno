@@ -15,7 +15,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreRateAndReviewResult.ExtendedJsonData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreRateAndReviewResult.ExtendedJsonData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreRateAndReviewResult", "string StoreRateAndReviewResult.ExtendedJsonData");
 			}
 		}
 #endif
@@ -26,7 +26,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StoreRateAndReviewResult.WasUpdated is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreRateAndReviewResult.WasUpdated");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreRateAndReviewResult", "bool StoreRateAndReviewResult.WasUpdated");
 			}
 		}
 #endif

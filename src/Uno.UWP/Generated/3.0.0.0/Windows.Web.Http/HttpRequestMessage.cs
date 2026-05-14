@@ -14,7 +14,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IHttpContent HttpRequestMessage.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IHttpContent%20HttpRequestMessage.Content");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpRequestMessage", "IHttpContent HttpRequestMessage.Content");
 			}
 			set
 			{
@@ -29,7 +29,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpMethod HttpRequestMessage.Method is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpMethod%20HttpRequestMessage.Method");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpRequestMessage", "HttpMethod HttpRequestMessage.Method");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, object> HttpRequestMessage.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20object%3E%20HttpRequestMessage.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpRequestMessage", "IDictionary<string, object> HttpRequestMessage.Properties");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpTransportInformation HttpRequestMessage.TransportInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpTransportInformation%20HttpRequestMessage.TransportInformation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpRequestMessage", "HttpTransportInformation HttpRequestMessage.TransportInformation");
 			}
 		}
 #endif

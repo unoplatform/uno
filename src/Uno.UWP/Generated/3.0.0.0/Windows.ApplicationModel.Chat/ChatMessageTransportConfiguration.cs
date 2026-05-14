@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> ChatMessageTransportConfiguration.ExtendedProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20object%3E%20ChatMessageTransportConfiguration.ExtendedProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration", "IReadOnlyDictionary<string, object> ChatMessageTransportConfiguration.ExtendedProperties");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ChatMessageTransportConfiguration.MaxAttachmentCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ChatMessageTransportConfiguration.MaxAttachmentCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration", "int ChatMessageTransportConfiguration.MaxAttachmentCount");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ChatMessageTransportConfiguration.MaxMessageSizeInKilobytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ChatMessageTransportConfiguration.MaxMessageSizeInKilobytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration", "int ChatMessageTransportConfiguration.MaxMessageSizeInKilobytes");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ChatMessageTransportConfiguration.MaxRecipientCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ChatMessageTransportConfiguration.MaxRecipientCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration", "int ChatMessageTransportConfiguration.MaxRecipientCount");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaEncodingProfile ChatMessageTransportConfiguration.SupportedVideoFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaEncodingProfile%20ChatMessageTransportConfiguration.SupportedVideoFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageTransportConfiguration", "MediaEncodingProfile ChatMessageTransportConfiguration.SupportedVideoFormat");
 			}
 		}
 #endif

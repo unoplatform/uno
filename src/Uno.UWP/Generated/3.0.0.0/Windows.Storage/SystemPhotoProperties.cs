@@ -19,7 +19,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemPhotoProperties.CameraManufacturer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemPhotoProperties.CameraManufacturer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemPhotoProperties", "string SystemPhotoProperties.CameraManufacturer");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemPhotoProperties.CameraModel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemPhotoProperties.CameraModel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemPhotoProperties", "string SystemPhotoProperties.CameraModel");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemPhotoProperties.DateTaken is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemPhotoProperties.DateTaken");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemPhotoProperties", "string SystemPhotoProperties.DateTaken");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemPhotoProperties.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemPhotoProperties.Orientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemPhotoProperties", "string SystemPhotoProperties.Orientation");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemPhotoProperties.PeopleNames is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemPhotoProperties.PeopleNames");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemPhotoProperties", "string SystemPhotoProperties.PeopleNames");
 			}
 		}
 #endif

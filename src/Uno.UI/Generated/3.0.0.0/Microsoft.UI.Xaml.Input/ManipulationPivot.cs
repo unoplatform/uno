@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point ManipulationPivot.Center is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20ManipulationPivot.Center");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Input.ManipulationPivot", "Point ManipulationPivot.Center");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ManipulationPivot.Radius is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ManipulationPivot.Radius");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Input.ManipulationPivot", "double ManipulationPivot.Radius");
 			}
 			set
 			{

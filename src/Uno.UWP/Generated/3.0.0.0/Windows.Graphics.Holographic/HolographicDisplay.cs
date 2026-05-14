@@ -19,7 +19,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HolographicAdapterId HolographicDisplay.AdapterId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicAdapterId%20HolographicDisplay.AdapterId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "HolographicAdapterId HolographicDisplay.AdapterId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HolographicDisplay.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HolographicDisplay.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "string HolographicDisplay.DisplayName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HolographicDisplay.IsOpaque is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HolographicDisplay.IsOpaque");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "bool HolographicDisplay.IsOpaque");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HolographicDisplay.IsStereo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HolographicDisplay.IsStereo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "bool HolographicDisplay.IsStereo");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size HolographicDisplay.MaxViewportSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20HolographicDisplay.MaxViewportSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "Size HolographicDisplay.MaxViewportSize");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double HolographicDisplay.RefreshRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20HolographicDisplay.RefreshRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "double HolographicDisplay.RefreshRate");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialLocator HolographicDisplay.SpatialLocator is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialLocator%20HolographicDisplay.SpatialLocator");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "SpatialLocator HolographicDisplay.SpatialLocator");
 			}
 		}
 #endif
@@ -87,14 +87,14 @@ namespace Windows.Graphics.Holographic
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Holographic.HolographicDisplay GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member HolographicDisplay HolographicDisplay.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicDisplay%20HolographicDisplay.GetDefault%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "HolographicDisplay HolographicDisplay.GetDefault()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Holographic.HolographicViewConfiguration TryGetViewConfiguration(global::Windows.Graphics.Holographic.HolographicViewConfigurationKind kind)
 		{
-			throw new global::System.NotImplementedException("The member HolographicViewConfiguration HolographicDisplay.TryGetViewConfiguration(HolographicViewConfigurationKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicViewConfiguration%20HolographicDisplay.TryGetViewConfiguration%28HolographicViewConfigurationKind%20kind%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicDisplay", "HolographicViewConfiguration HolographicDisplay.TryGetViewConfiguration(HolographicViewConfigurationKind kind)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.AdapterId.get

@@ -19,7 +19,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri ResponseInformation.ActualUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20ResponseInformation.ActualUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.ResponseInformation", "Uri ResponseInformation.ActualUri");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, string> ResponseInformation.Headers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20string%3E%20ResponseInformation.Headers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.ResponseInformation", "IReadOnlyDictionary<string, string> ResponseInformation.Headers");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ResponseInformation.IsResumable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ResponseInformation.IsResumable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.ResponseInformation", "bool ResponseInformation.IsResumable");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ResponseInformation.StatusCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ResponseInformation.StatusCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.ResponseInformation", "uint ResponseInformation.StatusCode");
 			}
 		}
 #endif

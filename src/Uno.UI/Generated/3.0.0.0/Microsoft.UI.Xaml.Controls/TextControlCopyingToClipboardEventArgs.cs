@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TextControlCopyingToClipboardEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20TextControlCopyingToClipboardEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs", "bool TextControlCopyingToClipboardEventArgs.Handled");
 			}
 			set
 			{

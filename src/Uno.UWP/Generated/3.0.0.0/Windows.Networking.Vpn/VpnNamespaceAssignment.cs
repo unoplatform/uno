@@ -14,7 +14,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<VpnNamespaceInfo> VpnNamespaceAssignment.NamespaceList is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnNamespaceInfo%3E%20VpnNamespaceAssignment.NamespaceList");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnNamespaceAssignment", "IList<VpnNamespaceInfo> VpnNamespaceAssignment.NamespaceList");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri VpnNamespaceAssignment.ProxyAutoConfigUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20VpnNamespaceAssignment.ProxyAutoConfigUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnNamespaceAssignment", "Uri VpnNamespaceAssignment.ProxyAutoConfigUri");
 			}
 			set
 			{

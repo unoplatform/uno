@@ -19,7 +19,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SystemFunctionLockIndicatorChangedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemFunctionLockIndicatorChangedEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs", "bool SystemFunctionLockIndicatorChangedEventArgs.Handled");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SystemFunctionLockIndicatorChangedEventArgs.IsIndicatorOn is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemFunctionLockIndicatorChangedEventArgs.IsIndicatorOn");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs", "bool SystemFunctionLockIndicatorChangedEventArgs.IsIndicatorOn");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong SystemFunctionLockIndicatorChangedEventArgs.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20SystemFunctionLockIndicatorChangedEventArgs.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs", "ulong SystemFunctionLockIndicatorChangedEventArgs.Timestamp");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<DetectedFace> FaceDetectionEffectFrame.DetectedFaces is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CDetectedFace%3E%20FaceDetectionEffectFrame.DetectedFaces");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffectFrame", "IReadOnlyList<DetectedFace> FaceDetectionEffectFrame.DetectedFaces");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? FaceDetectionEffectFrame.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20FaceDetectionEffectFrame.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffectFrame", "TimeSpan? FaceDetectionEffectFrame.Duration");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet FaceDetectionEffectFrame.ExtendedProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPropertySet%20FaceDetectionEffectFrame.ExtendedProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffectFrame", "IPropertySet FaceDetectionEffectFrame.ExtendedProperties");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FaceDetectionEffectFrame.IsDiscontinuous is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FaceDetectionEffectFrame.IsDiscontinuous");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffectFrame", "bool FaceDetectionEffectFrame.IsDiscontinuous");
 			}
 			set
 			{
@@ -67,7 +67,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FaceDetectionEffectFrame.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FaceDetectionEffectFrame.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffectFrame", "bool FaceDetectionEffectFrame.IsReadOnly");
 			}
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? FaceDetectionEffectFrame.RelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20FaceDetectionEffectFrame.RelativeTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffectFrame", "TimeSpan? FaceDetectionEffectFrame.RelativeTime");
 			}
 			set
 			{
@@ -91,7 +91,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? FaceDetectionEffectFrame.SystemRelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20FaceDetectionEffectFrame.SystemRelativeTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffectFrame", "TimeSpan? FaceDetectionEffectFrame.SystemRelativeTime");
 			}
 			set
 			{
@@ -105,7 +105,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string FaceDetectionEffectFrame.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FaceDetectionEffectFrame.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.FaceDetectionEffectFrame", "string FaceDetectionEffectFrame.Type");
 			}
 		}
 #endif

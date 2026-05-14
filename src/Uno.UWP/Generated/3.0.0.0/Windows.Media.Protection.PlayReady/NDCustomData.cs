@@ -14,7 +14,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte[] NDCustomData.CustomData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%5B%5D%20NDCustomData.CustomData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDCustomData", "byte[] NDCustomData.CustomData");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte[] NDCustomData.CustomDataTypeID is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%5B%5D%20NDCustomData.CustomDataTypeID");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDCustomData", "byte[] NDCustomData.CustomDataTypeID");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int H264ProfileIds.Baseline is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20H264ProfileIds.Baseline");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.H264ProfileIds", "int H264ProfileIds.Baseline");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int H264ProfileIds.ConstrainedBaseline is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20H264ProfileIds.ConstrainedBaseline");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.H264ProfileIds", "int H264ProfileIds.ConstrainedBaseline");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int H264ProfileIds.Extended is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20H264ProfileIds.Extended");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.H264ProfileIds", "int H264ProfileIds.Extended");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int H264ProfileIds.High is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20H264ProfileIds.High");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.H264ProfileIds", "int H264ProfileIds.High");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int H264ProfileIds.High10 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20H264ProfileIds.High10");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.H264ProfileIds", "int H264ProfileIds.High10");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int H264ProfileIds.High422 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20H264ProfileIds.High422");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.H264ProfileIds", "int H264ProfileIds.High422");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int H264ProfileIds.High444 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20H264ProfileIds.High444");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.H264ProfileIds", "int H264ProfileIds.High444");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int H264ProfileIds.Main is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20H264ProfileIds.Main");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.H264ProfileIds", "int H264ProfileIds.Main");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int H264ProfileIds.MultiviewHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20H264ProfileIds.MultiviewHigh");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.H264ProfileIds", "int H264ProfileIds.MultiviewHigh");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int H264ProfileIds.StereoHigh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20H264ProfileIds.StereoHigh");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.H264ProfileIds", "int H264ProfileIds.StereoHigh");
 			}
 		}
 #endif

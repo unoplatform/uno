@@ -14,7 +14,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CompositionEffectSourceParameter.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CompositionEffectSourceParameter.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionEffectSourceParameter", "string CompositionEffectSourceParameter.Name");
 			}
 		}
 #endif

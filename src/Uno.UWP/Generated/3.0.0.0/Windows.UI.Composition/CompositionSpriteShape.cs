@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionBrush CompositionSpriteShape.FillBrush is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBrush%20CompositionSpriteShape.FillBrush");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "CompositionBrush CompositionSpriteShape.FillBrush");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionGeometry CompositionSpriteShape.Geometry is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionGeometry%20CompositionSpriteShape.Geometry");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "CompositionGeometry CompositionSpriteShape.Geometry");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CompositionSpriteShape.IsStrokeNonScaling is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionSpriteShape.IsStrokeNonScaling");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "bool CompositionSpriteShape.IsStrokeNonScaling");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionBrush CompositionSpriteShape.StrokeBrush is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBrush%20CompositionSpriteShape.StrokeBrush");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "CompositionBrush CompositionSpriteShape.StrokeBrush");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionStrokeDashArray CompositionSpriteShape.StrokeDashArray is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionStrokeDashArray%20CompositionSpriteShape.StrokeDashArray");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "CompositionStrokeDashArray CompositionSpriteShape.StrokeDashArray");
 			}
 		}
 #endif
@@ -85,7 +85,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionStrokeCap CompositionSpriteShape.StrokeDashCap is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionStrokeCap%20CompositionSpriteShape.StrokeDashCap");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "CompositionStrokeCap CompositionSpriteShape.StrokeDashCap");
 			}
 			set
 			{
@@ -99,7 +99,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionSpriteShape.StrokeDashOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionSpriteShape.StrokeDashOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "float CompositionSpriteShape.StrokeDashOffset");
 			}
 			set
 			{
@@ -113,7 +113,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionStrokeCap CompositionSpriteShape.StrokeEndCap is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionStrokeCap%20CompositionSpriteShape.StrokeEndCap");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "CompositionStrokeCap CompositionSpriteShape.StrokeEndCap");
 			}
 			set
 			{
@@ -127,7 +127,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionStrokeLineJoin CompositionSpriteShape.StrokeLineJoin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionStrokeLineJoin%20CompositionSpriteShape.StrokeLineJoin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "CompositionStrokeLineJoin CompositionSpriteShape.StrokeLineJoin");
 			}
 			set
 			{
@@ -141,7 +141,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionSpriteShape.StrokeMiterLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionSpriteShape.StrokeMiterLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "float CompositionSpriteShape.StrokeMiterLimit");
 			}
 			set
 			{
@@ -155,7 +155,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionStrokeCap CompositionSpriteShape.StrokeStartCap is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionStrokeCap%20CompositionSpriteShape.StrokeStartCap");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "CompositionStrokeCap CompositionSpriteShape.StrokeStartCap");
 			}
 			set
 			{
@@ -169,7 +169,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionSpriteShape.StrokeThickness is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionSpriteShape.StrokeThickness");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionSpriteShape", "float CompositionSpriteShape.StrokeThickness");
 			}
 			set
 			{

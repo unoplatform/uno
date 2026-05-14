@@ -19,7 +19,7 @@ namespace Windows.Devices.Printers.Extensions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintNotificationEventDetails.EventData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintNotificationEventDetails.EventData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Extensions.PrintNotificationEventDetails", "string PrintNotificationEventDetails.EventData");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Devices.Printers.Extensions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintNotificationEventDetails.PrinterName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintNotificationEventDetails.PrinterName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Extensions.PrintNotificationEventDetails", "string PrintNotificationEventDetails.PrinterName");
 			}
 		}
 #endif

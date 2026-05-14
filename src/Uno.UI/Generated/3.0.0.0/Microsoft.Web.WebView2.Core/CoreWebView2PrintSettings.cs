@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2PrintCollation CoreWebView2PrintSettings.Collation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2PrintCollation%20CoreWebView2PrintSettings.Collation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings", "CoreWebView2PrintCollation CoreWebView2PrintSettings.Collation");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2PrintColorMode CoreWebView2PrintSettings.ColorMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2PrintColorMode%20CoreWebView2PrintSettings.ColorMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings", "CoreWebView2PrintColorMode CoreWebView2PrintSettings.ColorMode");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CoreWebView2PrintSettings.Copies is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2PrintSettings.Copies");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings", "int CoreWebView2PrintSettings.Copies");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2PrintDuplex CoreWebView2PrintSettings.Duplex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2PrintDuplex%20CoreWebView2PrintSettings.Duplex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings", "CoreWebView2PrintDuplex CoreWebView2PrintSettings.Duplex");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2PrintSettings.FooterUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2PrintSettings.FooterUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings", "string CoreWebView2PrintSettings.FooterUri");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2PrintSettings.HeaderTitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2PrintSettings.HeaderTitle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings", "string CoreWebView2PrintSettings.HeaderTitle");
 			}
 			set
 			{
@@ -103,7 +103,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CoreWebView2PrintSettings.MarginBottom is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CoreWebView2PrintSettings.MarginBottom");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings", "double CoreWebView2PrintSettings.MarginBottom");
 			}
 			set
 			{
@@ -117,7 +117,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CoreWebView2PrintSettings.MarginLeft is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CoreWebView2PrintSettings.MarginLeft");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings", "double CoreWebView2PrintSettings.MarginLeft");
 			}
 			set
 			{
@@ -131,7 +131,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CoreWebView2PrintSettings.MarginRight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CoreWebView2PrintSettings.MarginRight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings", "double CoreWebView2PrintSettings.MarginRight");
 			}
 			set
 			{
@@ -145,7 +145,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CoreWebView2PrintSettings.MarginTop is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CoreWebView2PrintSettings.MarginTop");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings", "double CoreWebView2PrintSettings.MarginTop");
 			}
 			set
 			{
@@ -159,7 +159,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2PrintMediaSize CoreWebView2PrintSettings.MediaSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2PrintMediaSize%20CoreWebView2PrintSettings.MediaSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings", "CoreWebView2PrintMediaSize CoreWebView2PrintSettings.MediaSize");
 			}
 			set
 			{
@@ -173,7 +173,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2PrintOrientation CoreWebView2PrintSettings.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2PrintOrientation%20CoreWebView2PrintSettings.Orientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings", "CoreWebView2PrintOrientation CoreWebView2PrintSettings.Orientation");
 			}
 			set
 			{
@@ -187,7 +187,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CoreWebView2PrintSettings.PageHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CoreWebView2PrintSettings.PageHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings", "double CoreWebView2PrintSettings.PageHeight");
 			}
 			set
 			{
@@ -201,7 +201,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2PrintSettings.PageRanges is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2PrintSettings.PageRanges");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings", "string CoreWebView2PrintSettings.PageRanges");
 			}
 			set
 			{
@@ -215,7 +215,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CoreWebView2PrintSettings.PageWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CoreWebView2PrintSettings.PageWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings", "double CoreWebView2PrintSettings.PageWidth");
 			}
 			set
 			{
@@ -229,7 +229,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CoreWebView2PrintSettings.PagesPerSide is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2PrintSettings.PagesPerSide");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings", "int CoreWebView2PrintSettings.PagesPerSide");
 			}
 			set
 			{
@@ -243,7 +243,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2PrintSettings.PrinterName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2PrintSettings.PrinterName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings", "string CoreWebView2PrintSettings.PrinterName");
 			}
 			set
 			{
@@ -257,7 +257,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CoreWebView2PrintSettings.ScaleFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CoreWebView2PrintSettings.ScaleFactor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings", "double CoreWebView2PrintSettings.ScaleFactor");
 			}
 			set
 			{
@@ -271,7 +271,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2PrintSettings.ShouldPrintBackgrounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2PrintSettings.ShouldPrintBackgrounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings", "bool CoreWebView2PrintSettings.ShouldPrintBackgrounds");
 			}
 			set
 			{
@@ -285,7 +285,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2PrintSettings.ShouldPrintHeaderAndFooter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2PrintSettings.ShouldPrintHeaderAndFooter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings", "bool CoreWebView2PrintSettings.ShouldPrintHeaderAndFooter");
 			}
 			set
 			{
@@ -299,7 +299,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2PrintSettings.ShouldPrintSelectionOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2PrintSettings.ShouldPrintSelectionOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings", "bool CoreWebView2PrintSettings.ShouldPrintSelectionOnly");
 			}
 			set
 			{

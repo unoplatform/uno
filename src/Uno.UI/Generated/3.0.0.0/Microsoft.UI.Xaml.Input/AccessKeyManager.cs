@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AccessKeyManager.AreKeyTipsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AccessKeyManager.AreKeyTipsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Input.AccessKeyManager", "bool AccessKeyManager.AreKeyTipsEnabled");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AccessKeyManager.IsDisplayModeEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AccessKeyManager.IsDisplayModeEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Input.AccessKeyManager", "bool AccessKeyManager.IsDisplayModeEnabled");
 			}
 		}
 #endif

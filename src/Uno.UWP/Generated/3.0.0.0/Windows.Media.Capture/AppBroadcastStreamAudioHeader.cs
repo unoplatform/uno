@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset AppBroadcastStreamAudioHeader.AbsoluteTimestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20AppBroadcastStreamAudioHeader.AbsoluteTimestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamAudioHeader", "DateTimeOffset AppBroadcastStreamAudioHeader.AbsoluteTimestamp");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan AppBroadcastStreamAudioHeader.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20AppBroadcastStreamAudioHeader.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamAudioHeader", "TimeSpan AppBroadcastStreamAudioHeader.Duration");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AppBroadcastStreamAudioHeader.FrameId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20AppBroadcastStreamAudioHeader.FrameId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamAudioHeader", "ulong AppBroadcastStreamAudioHeader.FrameId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppBroadcastStreamAudioHeader.HasDiscontinuity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppBroadcastStreamAudioHeader.HasDiscontinuity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamAudioHeader", "bool AppBroadcastStreamAudioHeader.HasDiscontinuity");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan AppBroadcastStreamAudioHeader.RelativeTimestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20AppBroadcastStreamAudioHeader.RelativeTimestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamAudioHeader", "TimeSpan AppBroadcastStreamAudioHeader.RelativeTimestamp");
 			}
 		}
 #endif

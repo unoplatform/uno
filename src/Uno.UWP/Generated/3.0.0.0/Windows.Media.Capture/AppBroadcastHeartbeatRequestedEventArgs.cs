@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppBroadcastHeartbeatRequestedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppBroadcastHeartbeatRequestedEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastHeartbeatRequestedEventArgs", "bool AppBroadcastHeartbeatRequestedEventArgs.Handled");
 			}
 			set
 			{

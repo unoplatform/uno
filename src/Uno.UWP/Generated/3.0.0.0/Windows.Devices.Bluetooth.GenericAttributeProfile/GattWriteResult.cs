@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte? GattWriteResult.ProtocolError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%3F%20GattWriteResult.ProtocolError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult", "byte? GattWriteResult.ProtocolError");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattCommunicationStatus GattWriteResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattCommunicationStatus%20GattWriteResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattWriteResult", "GattCommunicationStatus GattWriteResult.Status");
 			}
 		}
 #endif

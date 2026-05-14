@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UIElement XamlIsland.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UIElement%20XamlIsland.Content");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.XamlIsland", "UIElement XamlIsland.Content");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentIsland XamlIsland.ContentIsland is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIsland%20XamlIsland.ContentIsland");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.XamlIsland", "ContentIsland XamlIsland.ContentIsland");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemBackdrop XamlIsland.SystemBackdrop is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemBackdrop%20XamlIsland.SystemBackdrop");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.XamlIsland", "SystemBackdrop XamlIsland.SystemBackdrop");
 			}
 			set
 			{

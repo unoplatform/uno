@@ -19,7 +19,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DataProtectionInfo.Identity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DataProtectionInfo.Identity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.DataProtectionInfo", "string DataProtectionInfo.Identity");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DataProtectionStatus DataProtectionInfo.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataProtectionStatus%20DataProtectionInfo.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.DataProtectionInfo", "DataProtectionStatus DataProtectionInfo.Status");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppResourceGroupInfoWatcherStatus AppResourceGroupInfoWatcher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppResourceGroupInfoWatcherStatus%20AppResourceGroupInfoWatcher.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupInfoWatcher", "AppResourceGroupInfoWatcherStatus AppResourceGroupInfoWatcher.Status");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.Management.Workplace
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WorkplaceSettings.IsMicrosoftAccountOptional is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WorkplaceSettings.IsMicrosoftAccountOptional");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Workplace.WorkplaceSettings", "bool WorkplaceSettings.IsMicrosoftAccountOptional");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaSource MediaBinder.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaBinder.Source");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaBinder", "MediaSource MediaBinder.Source");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaBinder.Token is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaBinder.Token");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaBinder", "string MediaBinder.Token");
 			}
 			set
 			{

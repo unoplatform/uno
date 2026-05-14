@@ -19,7 +19,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IAudioNode AudioGraphConnection.Destination is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAudioNode%20AudioGraphConnection.Destination");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioGraphConnection", "IAudioNode AudioGraphConnection.Destination");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AudioGraphConnection.Gain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioGraphConnection.Gain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioGraphConnection", "double AudioGraphConnection.Gain");
 			}
 			set
 			{

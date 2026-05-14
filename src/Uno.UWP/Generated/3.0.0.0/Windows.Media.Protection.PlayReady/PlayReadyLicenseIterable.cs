@@ -28,7 +28,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Media.Protection.PlayReady.IPlayReadyLicense> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<IPlayReadyLicense> PlayReadyLicenseIterable.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CIPlayReadyLicense%3E%20PlayReadyLicenseIterable.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseIterable", "IEnumerator<IPlayReadyLicense> PlayReadyLicenseIterable.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseIterable.System.Collections.IEnumerable.GetEnumerator()

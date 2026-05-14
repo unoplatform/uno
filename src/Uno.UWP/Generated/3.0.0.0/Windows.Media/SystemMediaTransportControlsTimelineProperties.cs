@@ -14,7 +14,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SystemMediaTransportControlsTimelineProperties.EndTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SystemMediaTransportControlsTimelineProperties.EndTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsTimelineProperties", "TimeSpan SystemMediaTransportControlsTimelineProperties.EndTime");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SystemMediaTransportControlsTimelineProperties.MaxSeekTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SystemMediaTransportControlsTimelineProperties.MaxSeekTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsTimelineProperties", "TimeSpan SystemMediaTransportControlsTimelineProperties.MaxSeekTime");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SystemMediaTransportControlsTimelineProperties.MinSeekTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SystemMediaTransportControlsTimelineProperties.MinSeekTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsTimelineProperties", "TimeSpan SystemMediaTransportControlsTimelineProperties.MinSeekTime");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SystemMediaTransportControlsTimelineProperties.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SystemMediaTransportControlsTimelineProperties.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsTimelineProperties", "TimeSpan SystemMediaTransportControlsTimelineProperties.Position");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SystemMediaTransportControlsTimelineProperties.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SystemMediaTransportControlsTimelineProperties.StartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsTimelineProperties", "TimeSpan SystemMediaTransportControlsTimelineProperties.StartTime");
 			}
 			set
 			{

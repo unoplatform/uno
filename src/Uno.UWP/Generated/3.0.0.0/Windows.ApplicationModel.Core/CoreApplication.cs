@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreApplication.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreApplication.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Core.CoreApplication", "string CoreApplication.Id");
 			}
 		}
 #endif
@@ -25,7 +25,7 @@ namespace Windows.ApplicationModel.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet CoreApplication.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPropertySet%20CoreApplication.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Core.CoreApplication", "IPropertySet CoreApplication.Properties");
 			}
 		}
 #endif
@@ -66,14 +66,14 @@ namespace Windows.ApplicationModel.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Core.AppRestartFailureReason> RequestRestartAsync(string launchArguments)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AppRestartFailureReason> CoreApplication.RequestRestartAsync(string launchArguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppRestartFailureReason%3E%20CoreApplication.RequestRestartAsync%28string%20launchArguments%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Core.CoreApplication", "IAsyncOperation<AppRestartFailureReason> CoreApplication.RequestRestartAsync(string launchArguments)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Core.AppRestartFailureReason> RequestRestartForUserAsync(global::Windows.System.User user, string launchArguments)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AppRestartFailureReason> CoreApplication.RequestRestartForUserAsync(User user, string launchArguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppRestartFailureReason%3E%20CoreApplication.RequestRestartForUserAsync%28User%20user%2C%20string%20launchArguments%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Core.CoreApplication", "IAsyncOperation<AppRestartFailureReason> CoreApplication.RequestRestartForUserAsync(User user, string launchArguments)");
 		}
 #endif
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
@@ -105,21 +105,21 @@ namespace Windows.ApplicationModel.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Core.CoreApplicationView CreateNewView(string runtimeType, string entryPoint)
 		{
-			throw new global::System.NotImplementedException("The member CoreApplicationView CoreApplication.CreateNewView(string runtimeType, string entryPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreApplicationView%20CoreApplication.CreateNewView%28string%20runtimeType%2C%20string%20entryPoint%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Core.CoreApplication", "CoreApplicationView CoreApplication.CreateNewView(string runtimeType, string entryPoint)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Core.CoreApplicationView CreateNewView()
 		{
-			throw new global::System.NotImplementedException("The member CoreApplicationView CoreApplication.CreateNewView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreApplicationView%20CoreApplication.CreateNewView%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Core.CoreApplication", "CoreApplicationView CoreApplication.CreateNewView()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Core.CoreApplicationView CreateNewView(global::Windows.ApplicationModel.Core.IFrameworkViewSource viewSource)
 		{
-			throw new global::System.NotImplementedException("The member CoreApplicationView CoreApplication.CreateNewView(IFrameworkViewSource viewSource) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreApplicationView%20CoreApplication.CreateNewView%28IFrameworkViewSource%20viewSource%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Core.CoreApplication", "CoreApplicationView CoreApplication.CreateNewView(IFrameworkViewSource viewSource)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplication.Id.get

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailFolder EmailMailboxCreateFolderResult.Folder is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailFolder%20EmailMailboxCreateFolderResult.Folder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxCreateFolderResult", "EmailFolder EmailMailboxCreateFolderResult.Folder");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxCreateFolderStatus EmailMailboxCreateFolderResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxCreateFolderStatus%20EmailMailboxCreateFolderResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxCreateFolderResult", "EmailMailboxCreateFolderStatus EmailMailboxCreateFolderResult.Status");
 			}
 		}
 #endif

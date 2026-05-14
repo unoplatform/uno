@@ -19,7 +19,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Barometer.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Barometer.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Barometer", "string Barometer.DeviceId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Barometer.MaxBatchSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Barometer.MaxBatchSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Barometer", "uint Barometer.MaxBatchSize");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Barometer.MinimumReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Barometer.MinimumReportInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Barometer", "uint Barometer.MinimumReportInterval");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Barometer.ReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Barometer.ReportInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Barometer", "uint Barometer.ReportInterval");
 			}
 			set
 			{
@@ -63,7 +63,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Barometer.ReportLatency is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Barometer.ReportLatency");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Barometer", "uint Barometer.ReportLatency");
 			}
 			set
 			{
@@ -77,7 +77,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BarometerDataThreshold Barometer.ReportThreshold is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BarometerDataThreshold%20Barometer.ReportThreshold");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Barometer", "BarometerDataThreshold Barometer.ReportThreshold");
 			}
 		}
 #endif
@@ -85,28 +85,28 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__TVOS__")]
 		public static global::Windows.Devices.Sensors.Barometer GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member Barometer Barometer.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Barometer%20Barometer.GetDefault%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Barometer", "Barometer Barometer.GetDefault()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.Barometer> FromIdAsync(string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Barometer> Barometer.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBarometer%3E%20Barometer.FromIdAsync%28string%20deviceId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Barometer", "IAsyncOperation<Barometer> Barometer.FromIdAsync(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string Barometer.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Barometer.GetDeviceSelector%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Barometer", "string Barometer.GetDeviceSelector()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Sensors.BarometerReading GetCurrentReading()
 		{
-			throw new global::System.NotImplementedException("The member BarometerReading Barometer.GetCurrentReading() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BarometerReading%20Barometer.GetCurrentReading%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Barometer", "BarometerReading Barometer.GetCurrentReading()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sensors.Barometer.ReadingChanged.add

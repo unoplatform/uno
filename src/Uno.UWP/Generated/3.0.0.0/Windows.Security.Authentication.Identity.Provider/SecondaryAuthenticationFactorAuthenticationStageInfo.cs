@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SecondaryAuthenticationFactorAuthenticationStageInfo.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SecondaryAuthenticationFactorAuthenticationStageInfo.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthenticationStageInfo", "string SecondaryAuthenticationFactorAuthenticationStageInfo.DeviceId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SecondaryAuthenticationFactorAuthenticationScenario SecondaryAuthenticationFactorAuthenticationStageInfo.Scenario is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SecondaryAuthenticationFactorAuthenticationScenario%20SecondaryAuthenticationFactorAuthenticationStageInfo.Scenario");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthenticationStageInfo", "SecondaryAuthenticationFactorAuthenticationScenario SecondaryAuthenticationFactorAuthenticationStageInfo.Scenario");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SecondaryAuthenticationFactorAuthenticationStage SecondaryAuthenticationFactorAuthenticationStageInfo.Stage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SecondaryAuthenticationFactorAuthenticationStage%20SecondaryAuthenticationFactorAuthenticationStageInfo.Stage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthenticationStageInfo", "SecondaryAuthenticationFactorAuthenticationStage SecondaryAuthenticationFactorAuthenticationStageInfo.Stage");
 			}
 		}
 #endif

@@ -20,7 +20,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetBitmapAsync(global::Windows.Graphics.Imaging.SoftwareBitmap softwareBitmap)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction SoftwareBitmapSource.SetBitmapAsync(SoftwareBitmap softwareBitmap) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SoftwareBitmapSource.SetBitmapAsync%28SoftwareBitmap%20softwareBitmap%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Imaging.SoftwareBitmapSource", "IAsyncAction SoftwareBitmapSource.SetBitmapAsync(SoftwareBitmap softwareBitmap)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

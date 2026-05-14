@@ -14,7 +14,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsTextMessage.Body is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsTextMessage.Body");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage", "string SmsTextMessage.Body");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsEncoding SmsTextMessage.Encoding is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsEncoding%20SmsTextMessage.Encoding");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage", "SmsEncoding SmsTextMessage.Encoding");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsTextMessage.From is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsTextMessage.From");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage", "string SmsTextMessage.From");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SmsTextMessage.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SmsTextMessage.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage", "uint SmsTextMessage.Id");
 			}
 		}
 #endif
@@ -66,7 +66,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsMessageClass SmsTextMessage.MessageClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageClass%20SmsTextMessage.MessageClass");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage", "SmsMessageClass SmsTextMessage.MessageClass");
 			}
 		}
 #endif
@@ -76,7 +76,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SmsTextMessage.PartCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SmsTextMessage.PartCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage", "uint SmsTextMessage.PartCount");
 			}
 		}
 #endif
@@ -86,7 +86,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SmsTextMessage.PartNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SmsTextMessage.PartNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage", "uint SmsTextMessage.PartNumber");
 			}
 		}
 #endif
@@ -96,7 +96,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SmsTextMessage.PartReferenceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SmsTextMessage.PartReferenceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage", "uint SmsTextMessage.PartReferenceId");
 			}
 		}
 #endif
@@ -106,7 +106,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset SmsTextMessage.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20SmsTextMessage.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage", "DateTimeOffset SmsTextMessage.Timestamp");
 			}
 		}
 #endif
@@ -116,7 +116,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsTextMessage.To is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsTextMessage.To");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage", "string SmsTextMessage.To");
 			}
 			set
 			{
@@ -136,21 +136,21 @@ namespace Windows.Devices.Sms
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Sms.SmsTextMessage FromBinaryMessage(global::Windows.Devices.Sms.SmsBinaryMessage binaryMessage)
 		{
-			throw new global::System.NotImplementedException("The member SmsTextMessage SmsTextMessage.FromBinaryMessage(SmsBinaryMessage binaryMessage) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsTextMessage%20SmsTextMessage.FromBinaryMessage%28SmsBinaryMessage%20binaryMessage%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage", "SmsTextMessage SmsTextMessage.FromBinaryMessage(SmsBinaryMessage binaryMessage)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Sms.SmsTextMessage FromBinaryData(global::Windows.Devices.Sms.SmsDataFormat format, byte[] value)
 		{
-			throw new global::System.NotImplementedException("The member SmsTextMessage SmsTextMessage.FromBinaryData(SmsDataFormat format, byte[] value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsTextMessage%20SmsTextMessage.FromBinaryData%28SmsDataFormat%20format%2C%20byte%5B%5D%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage", "SmsTextMessage SmsTextMessage.FromBinaryData(SmsDataFormat format, byte[] value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sms.ISmsBinaryMessage> ToBinaryMessages(global::Windows.Devices.Sms.SmsDataFormat format)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<ISmsBinaryMessage> SmsTextMessage.ToBinaryMessages(SmsDataFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CISmsBinaryMessage%3E%20SmsTextMessage.ToBinaryMessages%28SmsDataFormat%20format%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage", "IReadOnlyList<ISmsBinaryMessage> SmsTextMessage.ToBinaryMessages(SmsDataFormat format)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsTextMessage.Body.get

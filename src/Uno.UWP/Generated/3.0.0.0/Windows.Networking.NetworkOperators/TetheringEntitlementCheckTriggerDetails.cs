@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TetheringEntitlementCheckTriggerDetails.NetworkAccountId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20TetheringEntitlementCheckTriggerDetails.NetworkAccountId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails", "string TetheringEntitlementCheckTriggerDetails.NetworkAccountId");
 			}
 		}
 #endif

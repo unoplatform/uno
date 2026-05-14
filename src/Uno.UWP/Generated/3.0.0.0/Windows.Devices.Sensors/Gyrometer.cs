@@ -14,7 +14,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Gyrometer.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Gyrometer.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Gyrometer", "string Gyrometer.DeviceId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Gyrometer.MaxBatchSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Gyrometer.MaxBatchSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Gyrometer", "uint Gyrometer.MaxBatchSize");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Gyrometer.MinimumReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Gyrometer.MinimumReportInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Gyrometer", "uint Gyrometer.MinimumReportInterval");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayOrientations Gyrometer.ReadingTransform is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayOrientations%20Gyrometer.ReadingTransform");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Gyrometer", "DisplayOrientations Gyrometer.ReadingTransform");
 			}
 			set
 			{
@@ -58,7 +58,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Gyrometer.ReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Gyrometer.ReportInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Gyrometer", "uint Gyrometer.ReportInterval");
 			}
 			set
 			{
@@ -72,7 +72,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Gyrometer.ReportLatency is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Gyrometer.ReportLatency");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Gyrometer", "uint Gyrometer.ReportLatency");
 			}
 			set
 			{
@@ -86,7 +86,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GyrometerDataThreshold Gyrometer.ReportThreshold is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GyrometerDataThreshold%20Gyrometer.ReportThreshold");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Gyrometer", "GyrometerDataThreshold Gyrometer.ReportThreshold");
 			}
 		}
 #endif
@@ -95,21 +95,21 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string Gyrometer.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Gyrometer.GetDeviceSelector%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Gyrometer", "string Gyrometer.GetDeviceSelector()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.Gyrometer> FromIdAsync(string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Gyrometer> Gyrometer.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGyrometer%3E%20Gyrometer.FromIdAsync%28string%20deviceId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Gyrometer", "IAsyncOperation<Gyrometer> Gyrometer.FromIdAsync(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Sensors.GyrometerReading GetCurrentReading()
 		{
-			throw new global::System.NotImplementedException("The member GyrometerReading Gyrometer.GetCurrentReading() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GyrometerReading%20Gyrometer.GetCurrentReading%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Gyrometer", "GyrometerReading Gyrometer.GetCurrentReading()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.ReadingChanged.add

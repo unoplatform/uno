@@ -19,7 +19,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemCpuUsage SystemDiagnosticInfo.CpuUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemCpuUsage%20SystemDiagnosticInfo.CpuUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemDiagnosticInfo", "SystemCpuUsage SystemDiagnosticInfo.CpuUsage");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemMemoryUsage SystemDiagnosticInfo.MemoryUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemMemoryUsage%20SystemDiagnosticInfo.MemoryUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemDiagnosticInfo", "SystemMemoryUsage SystemDiagnosticInfo.MemoryUsage");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.System.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.Diagnostics.SystemDiagnosticInfo GetForCurrentSystem()
 		{
-			throw new global::System.NotImplementedException("The member SystemDiagnosticInfo SystemDiagnosticInfo.GetForCurrentSystem() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemDiagnosticInfo%20SystemDiagnosticInfo.GetForCurrentSystem%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemDiagnosticInfo", "SystemDiagnosticInfo SystemDiagnosticInfo.GetForCurrentSystem()");
 		}
 #endif
 		// Forced skipping of method Windows.System.Diagnostics.SystemDiagnosticInfo.CpuUsage.get

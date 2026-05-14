@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RfcommConnectionTrigger.AllowMultipleConnections is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RfcommConnectionTrigger.AllowMultipleConnections");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.RfcommConnectionTrigger", "bool RfcommConnectionTrigger.AllowMultipleConnections");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RfcommInboundConnectionInformation RfcommConnectionTrigger.InboundConnection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RfcommInboundConnectionInformation%20RfcommConnectionTrigger.InboundConnection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.RfcommConnectionTrigger", "RfcommInboundConnectionInformation RfcommConnectionTrigger.InboundConnection");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RfcommOutboundConnectionInformation RfcommConnectionTrigger.OutboundConnection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RfcommOutboundConnectionInformation%20RfcommConnectionTrigger.OutboundConnection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.RfcommConnectionTrigger", "RfcommOutboundConnectionInformation RfcommConnectionTrigger.OutboundConnection");
 			}
 		}
 #endif
@@ -48,7 +48,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketProtectionLevel RfcommConnectionTrigger.ProtectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SocketProtectionLevel%20RfcommConnectionTrigger.ProtectionLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.RfcommConnectionTrigger", "SocketProtectionLevel RfcommConnectionTrigger.ProtectionLevel");
 			}
 			set
 			{
@@ -62,7 +62,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName RfcommConnectionTrigger.RemoteHostName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20RfcommConnectionTrigger.RemoteHostName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.RfcommConnectionTrigger", "HostName RfcommConnectionTrigger.RemoteHostName");
 			}
 			set
 			{

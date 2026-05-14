@@ -12,42 +12,42 @@ namespace Windows.Networking.Connectivity
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Connectivity.ConnectionProfile> GetConnectionProfiles()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<ConnectionProfile> NetworkInformation.GetConnectionProfiles() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CConnectionProfile%3E%20NetworkInformation.GetConnectionProfiles%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkInformation", "IReadOnlyList<ConnectionProfile> NetworkInformation.GetConnectionProfiles()");
 		}
 #endif
 #if false || false || false || IS_UNIT_TESTS || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static global::Windows.Networking.Connectivity.ConnectionProfile GetInternetConnectionProfile()
 		{
-			throw new global::System.NotImplementedException("The member ConnectionProfile NetworkInformation.GetInternetConnectionProfile() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ConnectionProfile%20NetworkInformation.GetInternetConnectionProfile%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkInformation", "ConnectionProfile NetworkInformation.GetInternetConnectionProfile()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Connectivity.LanIdentifier> GetLanIdentifiers()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<LanIdentifier> NetworkInformation.GetLanIdentifiers() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CLanIdentifier%3E%20NetworkInformation.GetLanIdentifiers%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkInformation", "IReadOnlyList<LanIdentifier> NetworkInformation.GetLanIdentifiers()");
 		}
 #endif
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.HostName> GetHostNames()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<HostName> NetworkInformation.GetHostNames() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CHostName%3E%20NetworkInformation.GetHostNames%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkInformation", "IReadOnlyList<HostName> NetworkInformation.GetHostNames()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.Connectivity.ProxyConfiguration> GetProxyConfigurationAsync(global::System.Uri uri)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ProxyConfiguration> NetworkInformation.GetProxyConfigurationAsync(Uri uri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CProxyConfiguration%3E%20NetworkInformation.GetProxyConfigurationAsync%28Uri%20uri%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkInformation", "IAsyncOperation<ProxyConfiguration> NetworkInformation.GetProxyConfigurationAsync(Uri uri)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.EndpointPair> GetSortedEndpointPairs(global::System.Collections.Generic.IEnumerable<global::Windows.Networking.EndpointPair> destinationList, global::Windows.Networking.HostNameSortOptions sortOptions)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<EndpointPair> NetworkInformation.GetSortedEndpointPairs(IEnumerable<EndpointPair> destinationList, HostNameSortOptions sortOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CEndpointPair%3E%20NetworkInformation.GetSortedEndpointPairs%28IEnumerable%3CEndpointPair%3E%20destinationList%2C%20HostNameSortOptions%20sortOptions%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkInformation", "IReadOnlyList<EndpointPair> NetworkInformation.GetSortedEndpointPairs(IEnumerable<EndpointPair> destinationList, HostNameSortOptions sortOptions)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkInformation.NetworkStatusChanged.add
@@ -56,7 +56,7 @@ namespace Windows.Networking.Connectivity
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Connectivity.ConnectionProfile>> FindConnectionProfilesAsync(global::Windows.Networking.Connectivity.ConnectionProfileFilter pProfileFilter)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<ConnectionProfile>> NetworkInformation.FindConnectionProfilesAsync(ConnectionProfileFilter pProfileFilter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CConnectionProfile%3E%3E%20NetworkInformation.FindConnectionProfilesAsync%28ConnectionProfileFilter%20pProfileFilter%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkInformation", "IAsyncOperation<IReadOnlyList<ConnectionProfile>> NetworkInformation.FindConnectionProfilesAsync(ConnectionProfileFilter pProfileFilter)");
 		}
 #endif
 #if false || false || false || IS_UNIT_TESTS || false || false || false

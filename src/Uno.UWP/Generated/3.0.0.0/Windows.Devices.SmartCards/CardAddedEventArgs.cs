@@ -19,7 +19,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCard CardAddedEventArgs.SmartCard is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCard%20CardAddedEventArgs.SmartCard");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.CardAddedEventArgs", "SmartCard CardAddedEventArgs.SmartCard");
 			}
 		}
 #endif

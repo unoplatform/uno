@@ -19,7 +19,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemSession.ControllerDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RemoteSystemSession.ControllerDisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSession", "string RemoteSystemSession.ControllerDisplayName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemSession.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RemoteSystemSession.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSession", "string RemoteSystemSession.DisplayName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemSession.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RemoteSystemSession.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSession", "string RemoteSystemSession.Id");
 			}
 		}
 #endif
@@ -47,21 +47,21 @@ namespace Windows.System.RemoteSystems
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.RemoteSystems.RemoteSystemSessionWatcher CreateWatcher()
 		{
-			throw new global::System.NotImplementedException("The member RemoteSystemSessionWatcher RemoteSystemSession.CreateWatcher() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemSessionWatcher%20RemoteSystemSession.CreateWatcher%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSession", "RemoteSystemSessionWatcher RemoteSystemSession.CreateWatcher()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher CreateParticipantWatcher()
 		{
-			throw new global::System.NotImplementedException("The member RemoteSystemSessionParticipantWatcher RemoteSystemSession.CreateParticipantWatcher() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemSessionParticipantWatcher%20RemoteSystemSession.CreateParticipantWatcher%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSession", "RemoteSystemSessionParticipantWatcher RemoteSystemSession.CreateParticipantWatcher()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> SendInvitationAsync(global::Windows.System.RemoteSystems.RemoteSystem invitee)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> RemoteSystemSession.SendInvitationAsync(RemoteSystem invitee) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20RemoteSystemSession.SendInvitationAsync%28RemoteSystem%20invitee%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSession", "IAsyncOperation<bool> RemoteSystemSession.SendInvitationAsync(RemoteSystem invitee)");
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSession.Disconnected.add

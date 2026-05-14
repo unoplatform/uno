@@ -14,7 +14,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> SpeechRecognitionListConstraint.Commands is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20SpeechRecognitionListConstraint.Commands");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "IList<string> SpeechRecognitionListConstraint.Commands");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpeechRecognitionListConstraint.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpeechRecognitionListConstraint.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "bool SpeechRecognitionListConstraint.IsEnabled");
 			}
 			set
 			{
@@ -38,7 +38,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintProbability SpeechRecognitionListConstraint.Probability is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognitionConstraintProbability%20SpeechRecognitionListConstraint.Probability");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "SpeechRecognitionConstraintProbability SpeechRecognitionListConstraint.Probability");
 			}
 			set
 			{
@@ -52,7 +52,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpeechRecognitionListConstraint.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SpeechRecognitionListConstraint.Tag");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "string SpeechRecognitionListConstraint.Tag");
 			}
 			set
 			{
@@ -66,7 +66,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintType SpeechRecognitionListConstraint.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognitionConstraintType%20SpeechRecognitionListConstraint.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "SpeechRecognitionConstraintType SpeechRecognitionListConstraint.Type");
 			}
 		}
 #endif

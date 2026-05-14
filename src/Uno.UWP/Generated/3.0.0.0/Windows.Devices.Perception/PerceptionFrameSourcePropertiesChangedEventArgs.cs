@@ -19,7 +19,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CollectionChange PerceptionFrameSourcePropertiesChangedEventArgs.CollectionChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CollectionChange%20PerceptionFrameSourcePropertiesChangedEventArgs.CollectionChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs", "CollectionChange PerceptionFrameSourcePropertiesChangedEventArgs.CollectionChange");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PerceptionFrameSourcePropertiesChangedEventArgs.Key is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PerceptionFrameSourcePropertiesChangedEventArgs.Key");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionFrameSourcePropertiesChangedEventArgs", "string PerceptionFrameSourcePropertiesChangedEventArgs.Key");
 			}
 		}
 #endif

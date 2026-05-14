@@ -19,7 +19,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool? DisplayPath.IsInterlaced is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%3F%20DisplayPath.IsInterlaced");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "bool? DisplayPath.IsInterlaced");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DisplayPath.IsStereo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DisplayPath.IsStereo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "bool DisplayPath.IsStereo");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayPresentationRate? DisplayPath.PresentationRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayPresentationRate%3F%20DisplayPath.PresentationRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "DisplayPresentationRate? DisplayPath.PresentationRate");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<Guid, object> DisplayPath.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3CGuid%2C%20object%3E%20DisplayPath.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "IDictionary<Guid, object> DisplayPath.Properties");
 			}
 		}
 #endif
@@ -71,7 +71,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayRotation DisplayPath.Rotation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayRotation%20DisplayPath.Rotation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "DisplayRotation DisplayPath.Rotation");
 			}
 			set
 			{
@@ -85,7 +85,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayPathScaling DisplayPath.Scaling is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayPathScaling%20DisplayPath.Scaling");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "DisplayPathScaling DisplayPath.Scaling");
 			}
 			set
 			{
@@ -99,7 +99,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DirectXPixelFormat DisplayPath.SourcePixelFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DirectXPixelFormat%20DisplayPath.SourcePixelFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "DirectXPixelFormat DisplayPath.SourcePixelFormat");
 			}
 			set
 			{
@@ -113,7 +113,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SizeInt32? DisplayPath.SourceResolution is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SizeInt32%3F%20DisplayPath.SourceResolution");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "SizeInt32? DisplayPath.SourceResolution");
 			}
 			set
 			{
@@ -127,7 +127,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayPathStatus DisplayPath.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayPathStatus%20DisplayPath.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "DisplayPathStatus DisplayPath.Status");
 			}
 		}
 #endif
@@ -137,7 +137,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayTarget DisplayPath.Target is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayTarget%20DisplayPath.Target");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "DisplayTarget DisplayPath.Target");
 			}
 		}
 #endif
@@ -147,7 +147,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SizeInt32? DisplayPath.TargetResolution is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SizeInt32%3F%20DisplayPath.TargetResolution");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "SizeInt32? DisplayPath.TargetResolution");
 			}
 			set
 			{
@@ -161,7 +161,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayView DisplayPath.View is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayView%20DisplayPath.View");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "DisplayView DisplayPath.View");
 			}
 		}
 #endif
@@ -171,7 +171,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayWireFormat DisplayPath.WireFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayWireFormat%20DisplayPath.WireFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "DisplayWireFormat DisplayPath.WireFormat");
 			}
 			set
 			{
@@ -183,7 +183,7 @@ namespace Windows.Devices.Display.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Display.Core.DisplayModeInfo> FindModes(global::Windows.Devices.Display.Core.DisplayModeQueryOptions flags)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<DisplayModeInfo> DisplayPath.FindModes(DisplayModeQueryOptions flags) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CDisplayModeInfo%3E%20DisplayPath.FindModes%28DisplayModeQueryOptions%20flags%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "IReadOnlyList<DisplayModeInfo> DisplayPath.FindModes(DisplayModeQueryOptions flags)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double HighDynamicRangeOutput.Certainty is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20HighDynamicRangeOutput.Certainty");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.HighDynamicRangeOutput", "double HighDynamicRangeOutput.Certainty");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<FrameController> HighDynamicRangeOutput.FrameControllers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CFrameController%3E%20HighDynamicRangeOutput.FrameControllers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.HighDynamicRangeOutput", "IReadOnlyList<FrameController> HighDynamicRangeOutput.FrameControllers");
 			}
 		}
 #endif

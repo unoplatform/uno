@@ -14,7 +14,7 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GameBar.IsInputRedirected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GameBar.IsInputRedirected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameBar", "bool GameBar.IsInputRedirected");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GameBar.Visible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GameBar.Visible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameBar", "bool GameBar.Visible");
 			}
 		}
 #endif

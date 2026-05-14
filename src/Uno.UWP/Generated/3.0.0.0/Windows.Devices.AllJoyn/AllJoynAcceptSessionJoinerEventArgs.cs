@@ -14,7 +14,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AllJoynAcceptSessionJoinerEventArgs.SameNetwork is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AllJoynAcceptSessionJoinerEventArgs.SameNetwork");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs", "bool AllJoynAcceptSessionJoinerEventArgs.SameNetwork");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AllJoynAcceptSessionJoinerEventArgs.SamePhysicalNode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AllJoynAcceptSessionJoinerEventArgs.SamePhysicalNode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs", "bool AllJoynAcceptSessionJoinerEventArgs.SamePhysicalNode");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort AllJoynAcceptSessionJoinerEventArgs.SessionPort is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20AllJoynAcceptSessionJoinerEventArgs.SessionPort");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs", "ushort AllJoynAcceptSessionJoinerEventArgs.SessionPort");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AllJoynTrafficType AllJoynAcceptSessionJoinerEventArgs.TrafficType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AllJoynTrafficType%20AllJoynAcceptSessionJoinerEventArgs.TrafficType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs", "AllJoynTrafficType AllJoynAcceptSessionJoinerEventArgs.TrafficType");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AllJoynAcceptSessionJoinerEventArgs.UniqueName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AllJoynAcceptSessionJoinerEventArgs.UniqueName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs", "string AllJoynAcceptSessionJoinerEventArgs.UniqueName");
 			}
 		}
 #endif

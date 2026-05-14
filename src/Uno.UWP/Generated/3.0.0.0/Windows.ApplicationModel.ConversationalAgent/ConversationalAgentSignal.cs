@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ConversationalAgentSignal.IsSignalVerificationRequired is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ConversationalAgentSignal.IsSignalVerificationRequired");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal", "bool ConversationalAgentSignal.IsSignalVerificationRequired");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object ConversationalAgentSignal.SignalContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ConversationalAgentSignal.SignalContext");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal", "object ConversationalAgentSignal.SignalContext");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan ConversationalAgentSignal.SignalEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20ConversationalAgentSignal.SignalEnd");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal", "TimeSpan ConversationalAgentSignal.SignalEnd");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ConversationalAgentSignal.SignalId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ConversationalAgentSignal.SignalId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal", "string ConversationalAgentSignal.SignalId");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ConversationalAgentSignal.SignalName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ConversationalAgentSignal.SignalName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal", "string ConversationalAgentSignal.SignalName");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan ConversationalAgentSignal.SignalStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20ConversationalAgentSignal.SignalStart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal", "TimeSpan ConversationalAgentSignal.SignalStart");
 			}
 			set
 			{

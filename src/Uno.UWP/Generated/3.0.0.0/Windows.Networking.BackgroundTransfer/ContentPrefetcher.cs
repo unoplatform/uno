@@ -14,7 +14,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> ContentPrefetcher.ContentUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CUri%3E%20ContentPrefetcher.ContentUris");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.ContentPrefetcher", "IList<Uri> ContentPrefetcher.ContentUris");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri ContentPrefetcher.IndirectContentUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20ContentPrefetcher.IndirectContentUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.ContentPrefetcher", "Uri ContentPrefetcher.IndirectContentUri");
 			}
 			set
 			{
@@ -38,7 +38,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? ContentPrefetcher.LastSuccessfulPrefetchTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20ContentPrefetcher.LastSuccessfulPrefetchTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.ContentPrefetcher", "DateTimeOffset? ContentPrefetcher.LastSuccessfulPrefetchTime");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbControlRequestType.AsByte is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20UsbControlRequestType.AsByte");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbControlRequestType", "byte UsbControlRequestType.AsByte");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbControlTransferType UsbControlRequestType.ControlTransferType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbControlTransferType%20UsbControlRequestType.ControlTransferType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbControlRequestType", "UsbControlTransferType UsbControlRequestType.ControlTransferType");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbTransferDirection UsbControlRequestType.Direction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbTransferDirection%20UsbControlRequestType.Direction");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbControlRequestType", "UsbTransferDirection UsbControlRequestType.Direction");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbControlRecipient UsbControlRequestType.Recipient is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbControlRecipient%20UsbControlRequestType.Recipient");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbControlRequestType", "UsbControlRecipient UsbControlRequestType.Recipient");
 			}
 			set
 			{

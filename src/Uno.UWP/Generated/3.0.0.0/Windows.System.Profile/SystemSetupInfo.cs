@@ -14,7 +14,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemOutOfBoxExperienceState SystemSetupInfo.OutOfBoxExperienceState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemOutOfBoxExperienceState%20SystemSetupInfo.OutOfBoxExperienceState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemSetupInfo", "SystemOutOfBoxExperienceState SystemSetupInfo.OutOfBoxExperienceState");
 			}
 		}
 #endif

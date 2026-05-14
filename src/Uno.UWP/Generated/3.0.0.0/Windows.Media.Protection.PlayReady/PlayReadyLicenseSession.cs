@@ -20,7 +20,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Protection.PlayReady.IPlayReadyLicenseAcquisitionServiceRequest CreateLAServiceRequest()
 		{
-			throw new global::System.NotImplementedException("The member IPlayReadyLicenseAcquisitionServiceRequest PlayReadyLicenseSession.CreateLAServiceRequest() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPlayReadyLicenseAcquisitionServiceRequest%20PlayReadyLicenseSession.CreateLAServiceRequest%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseSession", "IPlayReadyLicenseAcquisitionServiceRequest PlayReadyLicenseSession.CreateLAServiceRequest()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -34,7 +34,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Protection.PlayReady.PlayReadyLicenseIterable CreateLicenseIterable(global::Windows.Media.Protection.PlayReady.PlayReadyContentHeader contentHeader, bool fullyEvaluated)
 		{
-			throw new global::System.NotImplementedException("The member PlayReadyLicenseIterable PlayReadyLicenseSession.CreateLicenseIterable(PlayReadyContentHeader contentHeader, bool fullyEvaluated) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlayReadyLicenseIterable%20PlayReadyLicenseSession.CreateLicenseIterable%28PlayReadyContentHeader%20contentHeader%2C%20bool%20fullyEvaluated%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseSession", "PlayReadyLicenseIterable PlayReadyLicenseSession.CreateLicenseIterable(PlayReadyContentHeader contentHeader, bool fullyEvaluated)");
 		}
 #endif
 		// Processing: Windows.Media.Protection.PlayReady.IPlayReadyLicenseSession

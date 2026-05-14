@@ -19,7 +19,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BackgroundTransferCostPolicy DownloadOperation.CostPolicy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BackgroundTransferCostPolicy%20DownloadOperation.CostPolicy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.DownloadOperation", "BackgroundTransferCostPolicy DownloadOperation.CostPolicy");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebErrorStatus? DownloadOperation.CurrentWebErrorStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebErrorStatus%3F%20DownloadOperation.CurrentWebErrorStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.DownloadOperation", "WebErrorStatus? DownloadOperation.CurrentWebErrorStatus");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DownloadOperation.Group is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DownloadOperation.Group");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.DownloadOperation", "string DownloadOperation.Group");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid DownloadOperation.Guid is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20DownloadOperation.Guid");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.DownloadOperation", "Guid DownloadOperation.Guid");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DownloadOperation.IsRandomAccessRequired is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DownloadOperation.IsRandomAccessRequired");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.DownloadOperation", "bool DownloadOperation.IsRandomAccessRequired");
 			}
 			set
 			{
@@ -77,7 +77,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DownloadOperation.Method is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DownloadOperation.Method");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.DownloadOperation", "string DownloadOperation.Method");
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BackgroundTransferPriority DownloadOperation.Priority is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BackgroundTransferPriority%20DownloadOperation.Priority");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.DownloadOperation", "BackgroundTransferPriority DownloadOperation.Priority");
 			}
 			set
 			{
@@ -101,7 +101,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BackgroundDownloadProgress DownloadOperation.Progress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BackgroundDownloadProgress%20DownloadOperation.Progress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.DownloadOperation", "BackgroundDownloadProgress DownloadOperation.Progress");
 			}
 		}
 #endif
@@ -111,7 +111,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<WebErrorStatus> DownloadOperation.RecoverableWebErrorStatuses is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CWebErrorStatus%3E%20DownloadOperation.RecoverableWebErrorStatuses");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.DownloadOperation", "IList<WebErrorStatus> DownloadOperation.RecoverableWebErrorStatuses");
 			}
 		}
 #endif
@@ -121,7 +121,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri DownloadOperation.RequestedUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20DownloadOperation.RequestedUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.DownloadOperation", "Uri DownloadOperation.RequestedUri");
 			}
 			set
 			{
@@ -135,7 +135,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IStorageFile DownloadOperation.ResultFile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IStorageFile%20DownloadOperation.ResultFile");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.DownloadOperation", "IStorageFile DownloadOperation.ResultFile");
 			}
 		}
 #endif
@@ -145,7 +145,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BackgroundTransferGroup DownloadOperation.TransferGroup is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BackgroundTransferGroup%20DownloadOperation.TransferGroup");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.DownloadOperation", "BackgroundTransferGroup DownloadOperation.TransferGroup");
 			}
 		}
 #endif
@@ -153,14 +153,14 @@ namespace Windows.Networking.BackgroundTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Networking.BackgroundTransfer.DownloadOperation, global::Windows.Networking.BackgroundTransfer.DownloadOperation> StartAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<DownloadOperation, DownloadOperation> DownloadOperation.StartAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CDownloadOperation%2C%20DownloadOperation%3E%20DownloadOperation.StartAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.DownloadOperation", "IAsyncOperationWithProgress<DownloadOperation, DownloadOperation> DownloadOperation.StartAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Networking.BackgroundTransfer.DownloadOperation, global::Windows.Networking.BackgroundTransfer.DownloadOperation> AttachAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<DownloadOperation, DownloadOperation> DownloadOperation.AttachAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CDownloadOperation%2C%20DownloadOperation%3E%20DownloadOperation.AttachAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.DownloadOperation", "IAsyncOperationWithProgress<DownloadOperation, DownloadOperation> DownloadOperation.AttachAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -181,28 +181,28 @@ namespace Windows.Networking.BackgroundTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IInputStream GetResultStreamAt(ulong position)
 		{
-			throw new global::System.NotImplementedException("The member IInputStream DownloadOperation.GetResultStreamAt(ulong position) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IInputStream%20DownloadOperation.GetResultStreamAt%28ulong%20position%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.DownloadOperation", "IInputStream DownloadOperation.GetResultStreamAt(ulong position)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.BackgroundTransfer.ResponseInformation GetResponseInformation()
 		{
-			throw new global::System.NotImplementedException("The member ResponseInformation DownloadOperation.GetResponseInformation() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResponseInformation%20DownloadOperation.GetResponseInformation%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.DownloadOperation", "ResponseInformation DownloadOperation.GetResponseInformation()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IRandomAccessStreamReference GetResultRandomAccessStreamReference()
 		{
-			throw new global::System.NotImplementedException("The member IRandomAccessStreamReference DownloadOperation.GetResultRandomAccessStreamReference() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20DownloadOperation.GetResultRandomAccessStreamReference%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.DownloadOperation", "IRandomAccessStreamReference DownloadOperation.GetResultRandomAccessStreamReference()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.Networking.BackgroundTransfer.BackgroundTransferFileRange> GetDownloadedRanges()
 		{
-			throw new global::System.NotImplementedException("The member IList<BackgroundTransferFileRange> DownloadOperation.GetDownloadedRanges() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CBackgroundTransferFileRange%3E%20DownloadOperation.GetDownloadedRanges%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.DownloadOperation", "IList<BackgroundTransferFileRange> DownloadOperation.GetDownloadedRanges()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.RangesDownloaded.add

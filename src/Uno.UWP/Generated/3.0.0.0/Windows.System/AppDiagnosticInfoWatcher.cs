@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppDiagnosticInfoWatcherStatus AppDiagnosticInfoWatcher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppDiagnosticInfoWatcherStatus%20AppDiagnosticInfoWatcher.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppDiagnosticInfoWatcher", "AppDiagnosticInfoWatcherStatus AppDiagnosticInfoWatcher.Status");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int DnssdServiceInstanceCollection.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20DnssdServiceInstanceCollection.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstanceCollection", "int DnssdServiceInstanceCollection.Count");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DnssdServiceInstance DnssdServiceInstanceCollection.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DnssdServiceInstance%20DnssdServiceInstanceCollection.this%5Bint%20index%5D");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstanceCollection", "DnssdServiceInstance DnssdServiceInstanceCollection.this[int index]");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<DnssdServiceInstance> DnssdServiceInstanceCollection.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CDnssdServiceInstance%3E%20DnssdServiceInstanceCollection.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstanceCollection", "IEnumerator<DnssdServiceInstance> DnssdServiceInstanceCollection.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstanceCollection.System.Collections.IEnumerable.GetEnumerator()

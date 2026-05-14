@@ -14,7 +14,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> StoreProductOptions.ActionFilters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20StoreProductOptions.ActionFilters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProductOptions", "IList<string> StoreProductOptions.ActionFilters");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<RcsEndUserMessageAction> RcsEndUserMessage.Actions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CRcsEndUserMessageAction%3E%20RcsEndUserMessage.Actions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RcsEndUserMessage", "IReadOnlyList<RcsEndUserMessageAction> RcsEndUserMessage.Actions");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RcsEndUserMessage.IsPinRequired is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RcsEndUserMessage.IsPinRequired");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RcsEndUserMessage", "bool RcsEndUserMessage.IsPinRequired");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RcsEndUserMessage.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RcsEndUserMessage.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RcsEndUserMessage", "string RcsEndUserMessage.Text");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RcsEndUserMessage.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RcsEndUserMessage.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RcsEndUserMessage", "string RcsEndUserMessage.Title");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RcsEndUserMessage.TransportId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RcsEndUserMessage.TransportId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RcsEndUserMessage", "string RcsEndUserMessage.TransportId");
 			}
 		}
 #endif
@@ -67,14 +67,14 @@ namespace Windows.ApplicationModel.Chat
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SendResponseAsync(global::Windows.ApplicationModel.Chat.RcsEndUserMessageAction action)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction RcsEndUserMessage.SendResponseAsync(RcsEndUserMessageAction action) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20RcsEndUserMessage.SendResponseAsync%28RcsEndUserMessageAction%20action%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RcsEndUserMessage", "IAsyncAction RcsEndUserMessage.SendResponseAsync(RcsEndUserMessageAction action)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SendResponseWithPinAsync(global::Windows.ApplicationModel.Chat.RcsEndUserMessageAction action, string pin)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction RcsEndUserMessage.SendResponseWithPinAsync(RcsEndUserMessageAction action, string pin) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20RcsEndUserMessage.SendResponseWithPinAsync%28RcsEndUserMessageAction%20action%2C%20string%20pin%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RcsEndUserMessage", "IAsyncAction RcsEndUserMessage.SendResponseWithPinAsync(RcsEndUserMessageAction action, string pin)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessage.Actions.get

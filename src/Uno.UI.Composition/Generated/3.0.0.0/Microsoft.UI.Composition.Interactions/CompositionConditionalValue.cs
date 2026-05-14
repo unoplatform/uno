@@ -19,7 +19,7 @@ namespace Microsoft.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExpressionAnimation CompositionConditionalValue.Condition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ExpressionAnimation%20CompositionConditionalValue.Condition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.CompositionConditionalValue", "ExpressionAnimation CompositionConditionalValue.Condition");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExpressionAnimation CompositionConditionalValue.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ExpressionAnimation%20CompositionConditionalValue.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.CompositionConditionalValue", "ExpressionAnimation CompositionConditionalValue.Value");
 			}
 			set
 			{
@@ -45,7 +45,7 @@ namespace Microsoft.UI.Composition.Interactions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Composition.Interactions.CompositionConditionalValue Create(global::Microsoft.UI.Composition.Compositor compositor)
 		{
-			throw new global::System.NotImplementedException("The member CompositionConditionalValue CompositionConditionalValue.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionConditionalValue%20CompositionConditionalValue.Create%28Compositor%20compositor%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Interactions.CompositionConditionalValue", "CompositionConditionalValue CompositionConditionalValue.Create(Compositor compositor)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionConditionalValue.Condition.get

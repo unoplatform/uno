@@ -14,7 +14,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppWindowPresentationKind AppWindowPresentationConfiguration.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppWindowPresentationKind%20AppWindowPresentationConfiguration.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowPresentationConfiguration", "AppWindowPresentationKind AppWindowPresentationConfiguration.Kind");
 			}
 		}
 #endif

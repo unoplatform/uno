@@ -14,7 +14,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattCharacteristicProperties GattLocalCharacteristicParameters.CharacteristicProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattCharacteristicProperties%20GattLocalCharacteristicParameters.CharacteristicProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "GattCharacteristicProperties GattLocalCharacteristicParameters.CharacteristicProperties");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<GattPresentationFormat> GattLocalCharacteristicParameters.PresentationFormats is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CGattPresentationFormat%3E%20GattLocalCharacteristicParameters.PresentationFormats");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "IList<GattPresentationFormat> GattLocalCharacteristicParameters.PresentationFormats");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattProtectionLevel GattLocalCharacteristicParameters.ReadProtectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattProtectionLevel%20GattLocalCharacteristicParameters.ReadProtectionLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "GattProtectionLevel GattLocalCharacteristicParameters.ReadProtectionLevel");
 			}
 			set
 			{
@@ -52,7 +52,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer GattLocalCharacteristicParameters.StaticValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20GattLocalCharacteristicParameters.StaticValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "IBuffer GattLocalCharacteristicParameters.StaticValue");
 			}
 			set
 			{
@@ -66,7 +66,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GattLocalCharacteristicParameters.UserDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GattLocalCharacteristicParameters.UserDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "string GattLocalCharacteristicParameters.UserDescription");
 			}
 			set
 			{
@@ -80,7 +80,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattProtectionLevel GattLocalCharacteristicParameters.WriteProtectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattProtectionLevel%20GattLocalCharacteristicParameters.WriteProtectionLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters", "GattProtectionLevel GattLocalCharacteristicParameters.WriteProtectionLevel");
 			}
 			set
 			{

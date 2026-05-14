@@ -14,7 +14,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LampArrayEffectPlaylist.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LampArrayEffectPlaylist.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "int LampArrayEffectPlaylist.Count");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ILampArrayEffect LampArrayEffectPlaylist.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ILampArrayEffect%20LampArrayEffectPlaylist.this%5Bint%20index%5D");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "ILampArrayEffect LampArrayEffectPlaylist.this[int index]");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LampArrayEffectStartMode LampArrayEffectPlaylist.EffectStartMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LampArrayEffectStartMode%20LampArrayEffectPlaylist.EffectStartMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "LampArrayEffectStartMode LampArrayEffectPlaylist.EffectStartMode");
 			}
 			set
 			{
@@ -48,7 +48,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LampArrayEffectPlaylist.Occurrences is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LampArrayEffectPlaylist.Occurrences");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "int LampArrayEffectPlaylist.Occurrences");
 			}
 			set
 			{
@@ -62,7 +62,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LampArrayRepetitionMode LampArrayEffectPlaylist.RepetitionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LampArrayRepetitionMode%20LampArrayEffectPlaylist.RepetitionMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "LampArrayRepetitionMode LampArrayEffectPlaylist.RepetitionMode");
 			}
 			set
 			{
@@ -140,7 +140,7 @@ namespace Windows.Devices.Lights.Effects
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Devices.Lights.Effects.ILampArrayEffect> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<ILampArrayEffect> LampArrayEffectPlaylist.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CILampArrayEffect%3E%20LampArrayEffectPlaylist.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "IEnumerator<ILampArrayEffect> LampArrayEffectPlaylist.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.System.Collections.IEnumerable.GetEnumerator()

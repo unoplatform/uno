@@ -14,7 +14,7 @@ namespace Windows.System.Power.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double BackgroundEnergyDiagnostics.DeviceSpecificConversionFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20BackgroundEnergyDiagnostics.DeviceSpecificConversionFactor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.Diagnostics.BackgroundEnergyDiagnostics", "double BackgroundEnergyDiagnostics.DeviceSpecificConversionFactor");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.System.Power.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static ulong ComputeTotalEnergyUsage()
 		{
-			throw new global::System.NotImplementedException("The member ulong BackgroundEnergyDiagnostics.ComputeTotalEnergyUsage() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20BackgroundEnergyDiagnostics.ComputeTotalEnergyUsage%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.Diagnostics.BackgroundEnergyDiagnostics", "ulong BackgroundEnergyDiagnostics.ComputeTotalEnergyUsage()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

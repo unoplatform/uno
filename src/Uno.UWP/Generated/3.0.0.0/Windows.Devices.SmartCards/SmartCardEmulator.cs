@@ -19,7 +19,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort SmartCardEmulator.MaxAppletIdGroupRegistrations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20SmartCardEmulator.MaxAppletIdGroupRegistrations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulator", "ushort SmartCardEmulator.MaxAppletIdGroupRegistrations");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardEmulatorEnablementPolicy SmartCardEmulator.EnablementPolicy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardEmulatorEnablementPolicy%20SmartCardEmulator.EnablementPolicy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulator", "SmartCardEmulatorEnablementPolicy SmartCardEmulator.EnablementPolicy");
 			}
 		}
 #endif
@@ -37,35 +37,35 @@ namespace Windows.Devices.SmartCards
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardEmulator> GetDefaultAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SmartCardEmulator> SmartCardEmulator.GetDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmartCardEmulator%3E%20SmartCardEmulator.GetDefaultAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulator", "IAsyncOperation<SmartCardEmulator> SmartCardEmulator.GetDefaultAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration>> GetAppletIdGroupRegistrationsAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<SmartCardAppletIdGroupRegistration>> SmartCardEmulator.GetAppletIdGroupRegistrationsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CSmartCardAppletIdGroupRegistration%3E%3E%20SmartCardEmulator.GetAppletIdGroupRegistrationsAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulator", "IAsyncOperation<IReadOnlyList<SmartCardAppletIdGroupRegistration>> SmartCardEmulator.GetAppletIdGroupRegistrationsAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration> RegisterAppletIdGroupAsync(global::Windows.Devices.SmartCards.SmartCardAppletIdGroup appletIdGroup)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SmartCardAppletIdGroupRegistration> SmartCardEmulator.RegisterAppletIdGroupAsync(SmartCardAppletIdGroup appletIdGroup) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmartCardAppletIdGroupRegistration%3E%20SmartCardEmulator.RegisterAppletIdGroupAsync%28SmartCardAppletIdGroup%20appletIdGroup%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulator", "IAsyncOperation<SmartCardAppletIdGroupRegistration> SmartCardEmulator.RegisterAppletIdGroupAsync(SmartCardAppletIdGroup appletIdGroup)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction UnregisterAppletIdGroupAsync(global::Windows.Devices.SmartCards.SmartCardAppletIdGroupRegistration registration)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction SmartCardEmulator.UnregisterAppletIdGroupAsync(SmartCardAppletIdGroupRegistration registration) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SmartCardEmulator.UnregisterAppletIdGroupAsync%28SmartCardAppletIdGroupRegistration%20registration%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulator", "IAsyncAction SmartCardEmulator.UnregisterAppletIdGroupAsync(SmartCardAppletIdGroupRegistration registration)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSupported()
 		{
-			throw new global::System.NotImplementedException("The member bool SmartCardEmulator.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SmartCardEmulator.IsSupported%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulator", "bool SmartCardEmulator.IsSupported()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardEmulator.MaxAppletIdGroupRegistrations.get
@@ -80,7 +80,7 @@ namespace Windows.Devices.SmartCards
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsHostCardEmulationSupported()
 		{
-			throw new global::System.NotImplementedException("The member bool SmartCardEmulator.IsHostCardEmulationSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SmartCardEmulator.IsHostCardEmulationSupported%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardEmulator", "bool SmartCardEmulator.IsHostCardEmulationSupported()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardEmulator.ApduReceived.add

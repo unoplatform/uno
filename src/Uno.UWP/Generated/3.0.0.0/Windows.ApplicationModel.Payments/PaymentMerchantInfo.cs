@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentMerchantInfo.PackageFullName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentMerchantInfo.PackageFullName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentMerchantInfo", "string PaymentMerchantInfo.PackageFullName");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri PaymentMerchantInfo.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20PaymentMerchantInfo.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentMerchantInfo", "Uri PaymentMerchantInfo.Uri");
 			}
 		}
 #endif

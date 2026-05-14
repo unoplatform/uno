@@ -19,7 +19,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri CastingSource.PreferredSourceUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20CastingSource.PreferredSourceUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingSource", "Uri CastingSource.PreferredSourceUri");
 			}
 			set
 			{

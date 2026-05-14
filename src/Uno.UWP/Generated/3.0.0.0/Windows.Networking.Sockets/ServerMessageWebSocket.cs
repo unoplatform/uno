@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ServerMessageWebSocketControl ServerMessageWebSocket.Control is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ServerMessageWebSocketControl%20ServerMessageWebSocket.Control");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ServerMessageWebSocket", "ServerMessageWebSocketControl ServerMessageWebSocket.Control");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ServerMessageWebSocketInformation ServerMessageWebSocket.Information is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ServerMessageWebSocketInformation%20ServerMessageWebSocket.Information");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ServerMessageWebSocket", "ServerMessageWebSocketInformation ServerMessageWebSocket.Information");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IOutputStream ServerMessageWebSocket.OutputStream is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IOutputStream%20ServerMessageWebSocket.OutputStream");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ServerMessageWebSocket", "IOutputStream ServerMessageWebSocket.OutputStream");
 			}
 		}
 #endif

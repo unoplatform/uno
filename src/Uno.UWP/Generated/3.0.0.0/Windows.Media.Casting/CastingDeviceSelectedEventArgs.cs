@@ -19,7 +19,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CastingDevice CastingDeviceSelectedEventArgs.SelectedCastingDevice is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CastingDevice%20CastingDeviceSelectedEventArgs.SelectedCastingDevice");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDeviceSelectedEventArgs", "CastingDevice CastingDeviceSelectedEventArgs.SelectedCastingDevice");
 			}
 		}
 #endif

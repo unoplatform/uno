@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> ResourceContext.Languages is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20ResourceContext.Languages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceContext", "IReadOnlyList<string> ResourceContext.Languages");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IObservableMap<string, string> ResourceContext.QualifierValues is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IObservableMap%3Cstring%2C%20string%3E%20ResourceContext.QualifierValues");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceContext", "IObservableMap<string, string> ResourceContext.QualifierValues");
 			}
 		}
 #endif
@@ -44,14 +44,14 @@ namespace Windows.ApplicationModel.Resources.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Resources.Core.ResourceContext CreateMatchingContext(global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Resources.Core.ResourceQualifier> result)
 		{
-			throw new global::System.NotImplementedException("The member ResourceContext ResourceContext.CreateMatchingContext(IEnumerable<ResourceQualifier> result) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceContext%20ResourceContext.CreateMatchingContext%28IEnumerable%3CResourceQualifier%3E%20result%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceContext", "ResourceContext ResourceContext.CreateMatchingContext(IEnumerable<ResourceQualifier> result)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Resources.Core.ResourceContext GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member ResourceContext ResourceContext.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceContext%20ResourceContext.GetForCurrentView%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceContext", "ResourceContext ResourceContext.GetForCurrentView()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -79,7 +79,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Resources.Core.ResourceContext GetForViewIndependentUse()
 		{
-			throw new global::System.NotImplementedException("The member ResourceContext ResourceContext.GetForViewIndependentUse() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceContext%20ResourceContext.GetForViewIndependentUse%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceContext", "ResourceContext ResourceContext.GetForViewIndependentUse()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -93,7 +93,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Resources.Core.ResourceContext GetForUIContext(global::Windows.UI.UIContext context)
 		{
-			throw new global::System.NotImplementedException("The member ResourceContext ResourceContext.GetForUIContext(UIContext context) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceContext%20ResourceContext.GetForUIContext%28UIContext%20context%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceContext", "ResourceContext ResourceContext.GetForUIContext(UIContext context)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -121,7 +121,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Resources.Core.ResourceContext Clone()
 		{
-			throw new global::System.NotImplementedException("The member ResourceContext ResourceContext.Clone() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceContext%20ResourceContext.Clone%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceContext", "ResourceContext ResourceContext.Clone()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceContext.Languages.get

@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MediaPlaybackVideoTrackList.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20MediaPlaybackVideoTrackList.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackVideoTrackList", "int MediaPlaybackVideoTrackList.Count");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoTrack MediaPlaybackVideoTrackList.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoTrack%20MediaPlaybackVideoTrackList.this%5Bint%20index%5D");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackVideoTrackList", "VideoTrack MediaPlaybackVideoTrackList.this[int index]");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MediaPlaybackVideoTrackList.SelectedIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20MediaPlaybackVideoTrackList.SelectedIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackVideoTrackList", "int MediaPlaybackVideoTrackList.SelectedIndex");
 			}
 			set
 			{
@@ -53,7 +53,7 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Media.Core.VideoTrack> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<VideoTrack> MediaPlaybackVideoTrackList.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CVideoTrack%3E%20MediaPlaybackVideoTrackList.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackVideoTrackList", "IEnumerator<VideoTrack> MediaPlaybackVideoTrackList.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackVideoTrackList.System.Collections.IEnumerable.GetEnumerator()

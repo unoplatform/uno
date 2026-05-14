@@ -14,7 +14,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? Notification.ExpirationTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20Notification.ExpirationTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.Notification", "DateTimeOffset? Notification.ExpirationTime");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NotificationVisual Notification.Visual is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NotificationVisual%20Notification.Visual");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.Notification", "NotificationVisual Notification.Visual");
 			}
 			set
 			{

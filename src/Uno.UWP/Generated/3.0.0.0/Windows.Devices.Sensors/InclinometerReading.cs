@@ -19,7 +19,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? InclinometerReading.PerformanceCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20InclinometerReading.PerformanceCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.InclinometerReading", "TimeSpan? InclinometerReading.PerformanceCount");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InclinometerReading.PitchDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InclinometerReading.PitchDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.InclinometerReading", "float InclinometerReading.PitchDegrees");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> InclinometerReading.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20object%3E%20InclinometerReading.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.InclinometerReading", "IReadOnlyDictionary<string, object> InclinometerReading.Properties");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InclinometerReading.RollDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InclinometerReading.RollDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.InclinometerReading", "float InclinometerReading.RollDegrees");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset InclinometerReading.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20InclinometerReading.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.InclinometerReading", "DateTimeOffset InclinometerReading.Timestamp");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagnetometerAccuracy InclinometerReading.YawAccuracy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MagnetometerAccuracy%20InclinometerReading.YawAccuracy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.InclinometerReading", "MagnetometerAccuracy InclinometerReading.YawAccuracy");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InclinometerReading.YawDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InclinometerReading.YawDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.InclinometerReading", "float InclinometerReading.YawDegrees");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFile AppCaptureFileGeneratedEventArgs.File is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFile%20AppCaptureFileGeneratedEventArgs.File");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureFileGeneratedEventArgs", "StorageFile AppCaptureFileGeneratedEventArgs.File");
 			}
 		}
 #endif

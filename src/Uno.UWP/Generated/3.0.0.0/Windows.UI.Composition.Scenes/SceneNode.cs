@@ -19,7 +19,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneNodeCollection SceneNode.Children is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneNodeCollection%20SceneNode.Children");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneNode", "SceneNodeCollection SceneNode.Children");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneComponentCollection SceneNode.Components is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneComponentCollection%20SceneNode.Components");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneNode", "SceneComponentCollection SceneNode.Components");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneNode SceneNode.Parent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneNode%20SceneNode.Parent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneNode", "SceneNode SceneNode.Parent");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneModelTransform SceneNode.Transform is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneModelTransform%20SceneNode.Transform");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneNode", "SceneModelTransform SceneNode.Transform");
 			}
 		}
 #endif
@@ -57,14 +57,14 @@ namespace Windows.UI.Composition.Scenes
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Composition.Scenes.SceneNode Create(global::Windows.UI.Composition.Compositor compositor)
 		{
-			throw new global::System.NotImplementedException("The member SceneNode SceneNode.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneNode%20SceneNode.Create%28Compositor%20compositor%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneNode", "SceneNode SceneNode.Create(Compositor compositor)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.Scenes.SceneComponent FindFirstComponentOfType(global::Windows.UI.Composition.Scenes.SceneComponentType value)
 		{
-			throw new global::System.NotImplementedException("The member SceneComponent SceneNode.FindFirstComponentOfType(SceneComponentType value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneComponent%20SceneNode.FindFirstComponentOfType%28SceneComponentType%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneNode", "SceneComponent SceneNode.FindFirstComponentOfType(SceneComponentType value)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNode.Children.get

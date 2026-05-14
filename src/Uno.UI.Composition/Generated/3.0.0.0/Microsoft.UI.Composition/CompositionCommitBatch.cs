@@ -19,7 +19,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CompositionCommitBatch.IsActive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionCommitBatch.IsActive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionCommitBatch", "bool CompositionCommitBatch.IsActive");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CompositionCommitBatch.IsEnded is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionCommitBatch.IsEnded");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionCommitBatch", "bool CompositionCommitBatch.IsEnded");
 			}
 		}
 #endif

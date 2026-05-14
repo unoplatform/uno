@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AsyncActionCompletedHandler SignOutUserOperation.Completed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AsyncActionCompletedHandler%20SignOutUserOperation.Completed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.SignOutUserOperation", "AsyncActionCompletedHandler SignOutUserOperation.Completed");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception SignOutUserOperation.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20SignOutUserOperation.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.SignOutUserOperation", "Exception SignOutUserOperation.ErrorCode");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SignOutUserOperation.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SignOutUserOperation.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.SignOutUserOperation", "uint SignOutUserOperation.Id");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AsyncStatus SignOutUserOperation.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AsyncStatus%20SignOutUserOperation.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.SignOutUserOperation", "AsyncStatus SignOutUserOperation.Status");
 			}
 		}
 #endif

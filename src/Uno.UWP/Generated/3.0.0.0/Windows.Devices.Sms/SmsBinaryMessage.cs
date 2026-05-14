@@ -14,7 +14,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsDataFormat SmsBinaryMessage.Format is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsDataFormat%20SmsBinaryMessage.Format");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBinaryMessage", "SmsDataFormat SmsBinaryMessage.Format");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SmsBinaryMessage.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SmsBinaryMessage.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBinaryMessage", "uint SmsBinaryMessage.Id");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsMessageClass SmsBinaryMessage.MessageClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageClass%20SmsBinaryMessage.MessageClass");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBinaryMessage", "SmsMessageClass SmsBinaryMessage.MessageClass");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Devices.Sms
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public byte[] GetData()
 		{
-			throw new global::System.NotImplementedException("The member byte[] SmsBinaryMessage.GetData() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%5B%5D%20SmsBinaryMessage.GetData%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsBinaryMessage", "byte[] SmsBinaryMessage.GetData()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

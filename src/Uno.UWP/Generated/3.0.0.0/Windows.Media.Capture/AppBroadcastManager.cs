@@ -12,7 +12,7 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Capture.AppBroadcastGlobalSettings GetGlobalSettings()
 		{
-			throw new global::System.NotImplementedException("The member AppBroadcastGlobalSettings AppBroadcastManager.GetGlobalSettings() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastGlobalSettings%20AppBroadcastManager.GetGlobalSettings%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastManager", "AppBroadcastGlobalSettings AppBroadcastManager.GetGlobalSettings()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -26,7 +26,7 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Capture.AppBroadcastProviderSettings GetProviderSettings()
 		{
-			throw new global::System.NotImplementedException("The member AppBroadcastProviderSettings AppBroadcastManager.GetProviderSettings() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastProviderSettings%20AppBroadcastManager.GetProviderSettings%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastManager", "AppBroadcastProviderSettings AppBroadcastManager.GetProviderSettings()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

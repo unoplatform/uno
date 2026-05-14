@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintWorkflowConfiguration PrintWorkflowForegroundSetupRequestedEventArgs.Configuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintWorkflowConfiguration%20PrintWorkflowForegroundSetupRequestedEventArgs.Configuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSetupRequestedEventArgs", "PrintWorkflowConfiguration PrintWorkflowForegroundSetupRequestedEventArgs.Configuration");
 			}
 		}
 #endif
@@ -27,14 +27,14 @@ namespace Windows.Graphics.Printing.Workflow
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket> GetUserPrintTicketAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WorkflowPrintTicket> PrintWorkflowForegroundSetupRequestedEventArgs.GetUserPrintTicketAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWorkflowPrintTicket%3E%20PrintWorkflowForegroundSetupRequestedEventArgs.GetUserPrintTicketAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSetupRequestedEventArgs", "IAsyncOperation<WorkflowPrintTicket> PrintWorkflowForegroundSetupRequestedEventArgs.GetUserPrintTicketAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral PrintWorkflowForegroundSetupRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20PrintWorkflowForegroundSetupRequestedEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSetupRequestedEventArgs", "Deferral PrintWorkflowForegroundSetupRequestedEventArgs.GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowForegroundSetupRequestedEventArgs.Configuration.get

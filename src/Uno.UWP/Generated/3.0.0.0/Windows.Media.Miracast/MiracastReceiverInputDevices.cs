@@ -19,7 +19,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastReceiverGameControllerDevice MiracastReceiverInputDevices.GameController is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MiracastReceiverGameControllerDevice%20MiracastReceiverInputDevices.GameController");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverInputDevices", "MiracastReceiverGameControllerDevice MiracastReceiverInputDevices.GameController");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastReceiverKeyboardDevice MiracastReceiverInputDevices.Keyboard is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MiracastReceiverKeyboardDevice%20MiracastReceiverInputDevices.Keyboard");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverInputDevices", "MiracastReceiverKeyboardDevice MiracastReceiverInputDevices.Keyboard");
 			}
 		}
 #endif

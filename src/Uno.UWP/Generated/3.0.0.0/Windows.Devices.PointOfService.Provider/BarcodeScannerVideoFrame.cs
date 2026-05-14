@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapPixelFormat BarcodeScannerVideoFrame.Format is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapPixelFormat%20BarcodeScannerVideoFrame.Format");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame", "BitmapPixelFormat BarcodeScannerVideoFrame.Format");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeScannerVideoFrame.Height is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BarcodeScannerVideoFrame.Height");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame", "uint BarcodeScannerVideoFrame.Height");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.PointOfService.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer BarcodeScannerVideoFrame.PixelData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20BarcodeScannerVideoFrame.PixelData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame", "IBuffer BarcodeScannerVideoFrame.PixelData");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.PointOfService.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeScannerVideoFrame.Width is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BarcodeScannerVideoFrame.Width");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.Provider.BarcodeScannerVideoFrame", "uint BarcodeScannerVideoFrame.Width");
 			}
 		}
 #endif

@@ -12,7 +12,7 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Capture.AppCaptureSettings GetCurrentSettings()
 		{
-			throw new global::System.NotImplementedException("The member AppCaptureSettings AppCaptureManager.GetCurrentSettings() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppCaptureSettings%20AppCaptureManager.GetCurrentSettings%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureManager", "AppCaptureSettings AppCaptureManager.GetCurrentSettings()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

@@ -19,7 +19,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SensorRotationMatrix.M11 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SensorRotationMatrix.M11");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.SensorRotationMatrix", "float SensorRotationMatrix.M11");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SensorRotationMatrix.M12 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SensorRotationMatrix.M12");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.SensorRotationMatrix", "float SensorRotationMatrix.M12");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SensorRotationMatrix.M13 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SensorRotationMatrix.M13");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.SensorRotationMatrix", "float SensorRotationMatrix.M13");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SensorRotationMatrix.M21 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SensorRotationMatrix.M21");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.SensorRotationMatrix", "float SensorRotationMatrix.M21");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SensorRotationMatrix.M22 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SensorRotationMatrix.M22");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.SensorRotationMatrix", "float SensorRotationMatrix.M22");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SensorRotationMatrix.M23 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SensorRotationMatrix.M23");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.SensorRotationMatrix", "float SensorRotationMatrix.M23");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SensorRotationMatrix.M31 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SensorRotationMatrix.M31");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.SensorRotationMatrix", "float SensorRotationMatrix.M31");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SensorRotationMatrix.M32 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SensorRotationMatrix.M32");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.SensorRotationMatrix", "float SensorRotationMatrix.M32");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SensorRotationMatrix.M33 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SensorRotationMatrix.M33");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.SensorRotationMatrix", "float SensorRotationMatrix.M33");
 			}
 		}
 #endif

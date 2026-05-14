@@ -14,7 +14,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IVideoCompositorDefinition MediaOverlayLayer.CustomCompositorDefinition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IVideoCompositorDefinition%20MediaOverlayLayer.CustomCompositorDefinition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaOverlayLayer", "IVideoCompositorDefinition MediaOverlayLayer.CustomCompositorDefinition");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Editing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<MediaOverlay> MediaOverlayLayer.Overlays is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CMediaOverlay%3E%20MediaOverlayLayer.Overlays");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaOverlayLayer", "IList<MediaOverlay> MediaOverlayLayer.Overlays");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Editing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Editing.MediaOverlayLayer Clone()
 		{
-			throw new global::System.NotImplementedException("The member MediaOverlayLayer MediaOverlayLayer.Clone() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaOverlayLayer%20MediaOverlayLayer.Clone%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Editing.MediaOverlayLayer", "MediaOverlayLayer MediaOverlayLayer.Clone()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.CustomCompositorDefinition.get

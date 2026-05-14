@@ -14,7 +14,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WindowId ContentIslandEnvironment.AppWindowId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WindowId%20ContentIslandEnvironment.AppWindowId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIslandEnvironment", "WindowId ContentIslandEnvironment.AppWindowId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayId ContentIslandEnvironment.DisplayId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayId%20ContentIslandEnvironment.DisplayId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIslandEnvironment", "DisplayId ContentIslandEnvironment.DisplayId");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float ContentIslandEnvironment.DisplayScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ContentIslandEnvironment.DisplayScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIslandEnvironment", "float ContentIslandEnvironment.DisplayScale");
 			}
 		}
 #endif

@@ -12,7 +12,7 @@ namespace Windows.System.Profile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.Profile.HardwareToken GetPackageSpecificToken(global::Windows.Storage.Streams.IBuffer nonce)
 		{
-			throw new global::System.NotImplementedException("The member HardwareToken HardwareIdentification.GetPackageSpecificToken(IBuffer nonce) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HardwareToken%20HardwareIdentification.GetPackageSpecificToken%28IBuffer%20nonce%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.HardwareIdentification", "HardwareToken HardwareIdentification.GetPackageSpecificToken(IBuffer nonce)");
 		}
 #endif
 	}

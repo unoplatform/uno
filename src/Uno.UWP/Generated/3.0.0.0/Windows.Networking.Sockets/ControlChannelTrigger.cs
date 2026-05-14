@@ -14,7 +14,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ControlChannelTrigger.ControlChannelTriggerId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ControlChannelTrigger.ControlChannelTriggerId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "string ControlChannelTrigger.ControlChannelTriggerId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ControlChannelTrigger.CurrentKeepAliveIntervalInMinutes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ControlChannelTrigger.CurrentKeepAliveIntervalInMinutes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "uint ControlChannelTrigger.CurrentKeepAliveIntervalInMinutes");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ControlChannelTrigger.IsWakeFromLowPowerSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ControlChannelTrigger.IsWakeFromLowPowerSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "bool ControlChannelTrigger.IsWakeFromLowPowerSupported");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBackgroundTrigger ControlChannelTrigger.KeepAliveTrigger is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBackgroundTrigger%20ControlChannelTrigger.KeepAliveTrigger");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "IBackgroundTrigger ControlChannelTrigger.KeepAliveTrigger");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBackgroundTrigger ControlChannelTrigger.PushNotificationTrigger is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBackgroundTrigger%20ControlChannelTrigger.PushNotificationTrigger");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "IBackgroundTrigger ControlChannelTrigger.PushNotificationTrigger");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ControlChannelTrigger.ServerKeepAliveIntervalInMinutes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ControlChannelTrigger.ServerKeepAliveIntervalInMinutes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "uint ControlChannelTrigger.ServerKeepAliveIntervalInMinutes");
 			}
 			set
 			{
@@ -78,7 +78,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object ControlChannelTrigger.TransportObject is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ControlChannelTrigger.TransportObject");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "object ControlChannelTrigger.TransportObject");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Sockets.ControlChannelTriggerStatus WaitForPushEnabled()
 		{
-			throw new global::System.NotImplementedException("The member ControlChannelTriggerStatus ControlChannelTrigger.WaitForPushEnabled() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ControlChannelTriggerStatus%20ControlChannelTrigger.WaitForPushEnabled%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ControlChannelTrigger", "ControlChannelTriggerStatus ControlChannelTrigger.WaitForPushEnabled()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

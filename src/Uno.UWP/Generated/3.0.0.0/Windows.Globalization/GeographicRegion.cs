@@ -14,7 +14,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GeographicRegion.Code is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GeographicRegion.Code");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.GeographicRegion", "string GeographicRegion.Code");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GeographicRegion.CodeThreeDigit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GeographicRegion.CodeThreeDigit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.GeographicRegion", "string GeographicRegion.CodeThreeDigit");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GeographicRegion.CodeThreeLetter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GeographicRegion.CodeThreeLetter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.GeographicRegion", "string GeographicRegion.CodeThreeLetter");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GeographicRegion.CodeTwoLetter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GeographicRegion.CodeTwoLetter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.GeographicRegion", "string GeographicRegion.CodeTwoLetter");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> GeographicRegion.CurrenciesInUse is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20GeographicRegion.CurrenciesInUse");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.GeographicRegion", "IReadOnlyList<string> GeographicRegion.CurrenciesInUse");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GeographicRegion.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GeographicRegion.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.GeographicRegion", "string GeographicRegion.DisplayName");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GeographicRegion.NativeName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GeographicRegion.NativeName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.GeographicRegion", "string GeographicRegion.NativeName");
 			}
 		}
 #endif
@@ -98,7 +98,7 @@ namespace Windows.Globalization
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSupported(string geographicRegionCode)
 		{
-			throw new global::System.NotImplementedException("The member bool GeographicRegion.IsSupported(string geographicRegionCode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GeographicRegion.IsSupported%28string%20geographicRegionCode%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.GeographicRegion", "bool GeographicRegion.IsSupported(string geographicRegionCode)");
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.GeographicRegion.Code.get

@@ -19,7 +19,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? GeocoordinateSatelliteData.HorizontalDilutionOfPrecision is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%3F%20GeocoordinateSatelliteData.HorizontalDilutionOfPrecision");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeocoordinateSatelliteData", "double? GeocoordinateSatelliteData.HorizontalDilutionOfPrecision");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? GeocoordinateSatelliteData.PositionDilutionOfPrecision is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%3F%20GeocoordinateSatelliteData.PositionDilutionOfPrecision");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeocoordinateSatelliteData", "double? GeocoordinateSatelliteData.PositionDilutionOfPrecision");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? GeocoordinateSatelliteData.VerticalDilutionOfPrecision is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%3F%20GeocoordinateSatelliteData.VerticalDilutionOfPrecision");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeocoordinateSatelliteData", "double? GeocoordinateSatelliteData.VerticalDilutionOfPrecision");
 			}
 		}
 #endif

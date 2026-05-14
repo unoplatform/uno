@@ -12,7 +12,7 @@ namespace Microsoft.UI.Input.Interop
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Input.PenDevice FromPointerPoint(global::Microsoft.UI.Input.PointerPoint pointerPoint)
 		{
-			throw new global::System.NotImplementedException("The member PenDevice PenDeviceInterop.FromPointerPoint(PointerPoint pointerPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PenDevice%20PenDeviceInterop.FromPointerPoint%28PointerPoint%20pointerPoint%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.Interop.PenDeviceInterop", "PenDevice PenDeviceInterop.FromPointerPoint(PointerPoint pointerPoint)");
 		}
 #endif
 	}

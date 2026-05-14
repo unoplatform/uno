@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Hosting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DesktopWindowXamlSource.ShouldConstrainPopupsToWorkArea is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DesktopWindowXamlSource.ShouldConstrainPopupsToWorkArea");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource", "bool DesktopWindowXamlSource.ShouldConstrainPopupsToWorkArea");
 			}
 			set
 			{
@@ -30,7 +30,7 @@ namespace Microsoft.UI.Xaml.Hosting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DesktopChildSiteBridge DesktopWindowXamlSource.SiteBridge is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DesktopChildSiteBridge%20DesktopWindowXamlSource.SiteBridge");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource", "DesktopChildSiteBridge DesktopWindowXamlSource.SiteBridge");
 			}
 		}
 #endif
@@ -40,7 +40,7 @@ namespace Microsoft.UI.Xaml.Hosting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemBackdrop DesktopWindowXamlSource.SystemBackdrop is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemBackdrop%20DesktopWindowXamlSource.SystemBackdrop");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Hosting.DesktopWindowXamlSource", "SystemBackdrop DesktopWindowXamlSource.SystemBackdrop");
 			}
 			set
 			{

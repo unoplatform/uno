@@ -19,7 +19,7 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneNode SceneVisual.Root is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneNode%20SceneVisual.Root");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneVisual", "SceneNode SceneVisual.Root");
 			}
 			set
 			{
@@ -31,7 +31,7 @@ namespace Microsoft.UI.Composition.Scenes
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Composition.Scenes.SceneVisual Create(global::Microsoft.UI.Composition.Compositor compositor)
 		{
-			throw new global::System.NotImplementedException("The member SceneVisual SceneVisual.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneVisual%20SceneVisual.Create%28Compositor%20compositor%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneVisual", "SceneVisual SceneVisual.Create(Compositor compositor)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneVisual.Root.get

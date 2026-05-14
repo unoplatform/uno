@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastCameraOverlayLocation AppBroadcastGlobalSettings.CameraOverlayLocation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastCameraOverlayLocation%20AppBroadcastGlobalSettings.CameraOverlayLocation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastGlobalSettings", "AppBroadcastCameraOverlayLocation AppBroadcastGlobalSettings.CameraOverlayLocation");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastCameraOverlaySize AppBroadcastGlobalSettings.CameraOverlaySize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastCameraOverlaySize%20AppBroadcastGlobalSettings.CameraOverlaySize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastGlobalSettings", "AppBroadcastCameraOverlaySize AppBroadcastGlobalSettings.CameraOverlaySize");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppBroadcastGlobalSettings.HasHardwareEncoder is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppBroadcastGlobalSettings.HasHardwareEncoder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastGlobalSettings", "bool AppBroadcastGlobalSettings.HasHardwareEncoder");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppBroadcastGlobalSettings.IsAudioCaptureEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppBroadcastGlobalSettings.IsAudioCaptureEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastGlobalSettings", "bool AppBroadcastGlobalSettings.IsAudioCaptureEnabled");
 			}
 			set
 			{
@@ -71,7 +71,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppBroadcastGlobalSettings.IsBroadcastEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppBroadcastGlobalSettings.IsBroadcastEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastGlobalSettings", "bool AppBroadcastGlobalSettings.IsBroadcastEnabled");
 			}
 		}
 #endif
@@ -81,7 +81,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppBroadcastGlobalSettings.IsCameraCaptureEnabledByDefault is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppBroadcastGlobalSettings.IsCameraCaptureEnabledByDefault");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastGlobalSettings", "bool AppBroadcastGlobalSettings.IsCameraCaptureEnabledByDefault");
 			}
 			set
 			{
@@ -95,7 +95,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppBroadcastGlobalSettings.IsCursorImageCaptureEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppBroadcastGlobalSettings.IsCursorImageCaptureEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastGlobalSettings", "bool AppBroadcastGlobalSettings.IsCursorImageCaptureEnabled");
 			}
 			set
 			{
@@ -109,7 +109,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppBroadcastGlobalSettings.IsDisabledByPolicy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppBroadcastGlobalSettings.IsDisabledByPolicy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastGlobalSettings", "bool AppBroadcastGlobalSettings.IsDisabledByPolicy");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppBroadcastGlobalSettings.IsEchoCancellationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppBroadcastGlobalSettings.IsEchoCancellationEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastGlobalSettings", "bool AppBroadcastGlobalSettings.IsEchoCancellationEnabled");
 			}
 			set
 			{
@@ -133,7 +133,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppBroadcastGlobalSettings.IsGpuConstrained is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppBroadcastGlobalSettings.IsGpuConstrained");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastGlobalSettings", "bool AppBroadcastGlobalSettings.IsGpuConstrained");
 			}
 		}
 #endif
@@ -143,7 +143,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppBroadcastGlobalSettings.IsMicrophoneCaptureEnabledByDefault is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppBroadcastGlobalSettings.IsMicrophoneCaptureEnabledByDefault");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastGlobalSettings", "bool AppBroadcastGlobalSettings.IsMicrophoneCaptureEnabledByDefault");
 			}
 			set
 			{
@@ -157,7 +157,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AppBroadcastGlobalSettings.MicrophoneGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AppBroadcastGlobalSettings.MicrophoneGain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastGlobalSettings", "double AppBroadcastGlobalSettings.MicrophoneGain");
 			}
 			set
 			{
@@ -171,7 +171,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppBroadcastGlobalSettings.SelectedCameraId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppBroadcastGlobalSettings.SelectedCameraId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastGlobalSettings", "string AppBroadcastGlobalSettings.SelectedCameraId");
 			}
 			set
 			{
@@ -185,7 +185,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AppBroadcastGlobalSettings.SystemAudioGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AppBroadcastGlobalSettings.SystemAudioGain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastGlobalSettings", "double AppBroadcastGlobalSettings.SystemAudioGain");
 			}
 			set
 			{

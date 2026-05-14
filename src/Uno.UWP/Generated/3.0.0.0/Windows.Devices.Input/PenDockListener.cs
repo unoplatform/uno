@@ -17,14 +17,14 @@ namespace Windows.Devices.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Input.PenDockListener GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member PenDockListener PenDockListener.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PenDockListener%20PenDockListener.GetDefault%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PenDockListener", "PenDockListener PenDockListener.GetDefault()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsSupported()
 		{
-			throw new global::System.NotImplementedException("The member bool PenDockListener.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PenDockListener.IsSupported%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PenDockListener", "bool PenDockListener.IsSupported()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Input.PenDockListener.Docked.add

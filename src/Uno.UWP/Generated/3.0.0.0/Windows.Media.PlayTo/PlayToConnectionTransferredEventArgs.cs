@@ -19,7 +19,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlayToSource PlayToConnectionTransferredEventArgs.CurrentSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlayToSource%20PlayToConnectionTransferredEventArgs.CurrentSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs", "PlayToSource PlayToConnectionTransferredEventArgs.CurrentSource");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlayToSource PlayToConnectionTransferredEventArgs.PreviousSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlayToSource%20PlayToConnectionTransferredEventArgs.PreviousSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs", "PlayToSource PlayToConnectionTransferredEventArgs.PreviousSource");
 			}
 		}
 #endif

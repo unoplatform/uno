@@ -19,7 +19,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SystemFunctionButtonEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemFunctionButtonEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.SystemFunctionButtonEventArgs", "bool SystemFunctionButtonEventArgs.Handled");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong SystemFunctionButtonEventArgs.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20SystemFunctionButtonEventArgs.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.SystemFunctionButtonEventArgs", "ulong SystemFunctionButtonEventArgs.Timestamp");
 			}
 		}
 #endif

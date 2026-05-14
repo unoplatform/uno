@@ -17,28 +17,28 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.UserDataAccounts.UserDataAccount>> FindAccountsAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<UserDataAccount>> UserDataAccountStore.FindAccountsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CUserDataAccount%3E%3E%20UserDataAccountStore.FindAccountsAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore", "IAsyncOperation<IReadOnlyList<UserDataAccount>> UserDataAccountStore.FindAccountsAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataAccounts.UserDataAccount> GetAccountAsync(string id)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<UserDataAccount> UserDataAccountStore.GetAccountAsync(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUserDataAccount%3E%20UserDataAccountStore.GetAccountAsync%28string%20id%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore", "IAsyncOperation<UserDataAccount> UserDataAccountStore.GetAccountAsync(string id)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataAccounts.UserDataAccount> CreateAccountAsync(string userDisplayName)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<UserDataAccount> UserDataAccountStore.CreateAccountAsync(string userDisplayName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUserDataAccount%3E%20UserDataAccountStore.CreateAccountAsync%28string%20userDisplayName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore", "IAsyncOperation<UserDataAccount> UserDataAccountStore.CreateAccountAsync(string userDisplayName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataAccounts.UserDataAccount> CreateAccountAsync(string userDisplayName, string packageRelativeAppId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<UserDataAccount> UserDataAccountStore.CreateAccountAsync(string userDisplayName, string packageRelativeAppId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUserDataAccount%3E%20UserDataAccountStore.CreateAccountAsync%28string%20userDisplayName%2C%20string%20packageRelativeAppId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore", "IAsyncOperation<UserDataAccount> UserDataAccountStore.CreateAccountAsync(string userDisplayName, string packageRelativeAppId)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore.StoreChanged.add
@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataAccounts.UserDataAccount> CreateAccountAsync(string userDisplayName, string packageRelativeAppId, string enterpriseId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<UserDataAccount> UserDataAccountStore.CreateAccountAsync(string userDisplayName, string packageRelativeAppId, string enterpriseId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUserDataAccount%3E%20UserDataAccountStore.CreateAccountAsync%28string%20userDisplayName%2C%20string%20packageRelativeAppId%2C%20string%20enterpriseId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore", "IAsyncOperation<UserDataAccount> UserDataAccountStore.CreateAccountAsync(string userDisplayName, string packageRelativeAppId, string enterpriseId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

@@ -14,7 +14,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionGeometry.TrimEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionGeometry.TrimEnd");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionGeometry", "float CompositionGeometry.TrimEnd");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionGeometry.TrimOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionGeometry.TrimOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionGeometry", "float CompositionGeometry.TrimOffset");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionGeometry.TrimStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionGeometry.TrimStart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionGeometry", "float CompositionGeometry.TrimStart");
 			}
 			set
 			{

@@ -14,7 +14,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<VpnDomainNameInfo> VpnDomainNameAssignment.DomainNameList is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnDomainNameInfo%3E%20VpnDomainNameAssignment.DomainNameList");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameAssignment", "IList<VpnDomainNameInfo> VpnDomainNameAssignment.DomainNameList");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri VpnDomainNameAssignment.ProxyAutoConfigurationUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20VpnDomainNameAssignment.ProxyAutoConfigurationUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameAssignment", "Uri VpnDomainNameAssignment.ProxyAutoConfigurationUri");
 			}
 			set
 			{

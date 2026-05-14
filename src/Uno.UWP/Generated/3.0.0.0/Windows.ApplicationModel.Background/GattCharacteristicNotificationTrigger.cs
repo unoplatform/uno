@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattCharacteristic GattCharacteristicNotificationTrigger.Characteristic is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattCharacteristic%20GattCharacteristicNotificationTrigger.Characteristic");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger", "GattCharacteristic GattCharacteristicNotificationTrigger.Characteristic");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothEventTriggeringMode GattCharacteristicNotificationTrigger.EventTriggeringMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothEventTriggeringMode%20GattCharacteristicNotificationTrigger.EventTriggeringMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.GattCharacteristicNotificationTrigger", "BluetoothEventTriggeringMode GattCharacteristicNotificationTrigger.EventTriggeringMode");
 			}
 		}
 #endif

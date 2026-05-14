@@ -17,7 +17,7 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction WriteDataAsync(global::Windows.Storage.Streams.IBuffer value)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction MobileBroadbandDeviceServiceDataSession.WriteDataAsync(IBuffer value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20MobileBroadbandDeviceServiceDataSession.WriteDataAsync%28IBuffer%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataSession", "IAsyncAction MobileBroadbandDeviceServiceDataSession.WriteDataAsync(IBuffer value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

@@ -14,7 +14,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2EnvironmentOptions.AdditionalBrowserArguments is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2EnvironmentOptions.AdditionalBrowserArguments");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "string CoreWebView2EnvironmentOptions.AdditionalBrowserArguments");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2EnvironmentOptions.AllowSingleSignOnUsingOSPrimaryAccount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2EnvironmentOptions.AllowSingleSignOnUsingOSPrimaryAccount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "bool CoreWebView2EnvironmentOptions.AllowSingleSignOnUsingOSPrimaryAccount");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2EnvironmentOptions.AreBrowserExtensionsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2EnvironmentOptions.AreBrowserExtensionsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "bool CoreWebView2EnvironmentOptions.AreBrowserExtensionsEnabled");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2ChannelSearchKind CoreWebView2EnvironmentOptions.ChannelSearchKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ChannelSearchKind%20CoreWebView2EnvironmentOptions.ChannelSearchKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "CoreWebView2ChannelSearchKind CoreWebView2EnvironmentOptions.ChannelSearchKind");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<CoreWebView2CustomSchemeRegistration> CoreWebView2EnvironmentOptions.CustomSchemeRegistrations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CCoreWebView2CustomSchemeRegistration%3E%20CoreWebView2EnvironmentOptions.CustomSchemeRegistrations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "IList<CoreWebView2CustomSchemeRegistration> CoreWebView2EnvironmentOptions.CustomSchemeRegistrations");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2EnvironmentOptions.EnableTrackingPrevention is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2EnvironmentOptions.EnableTrackingPrevention");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "bool CoreWebView2EnvironmentOptions.EnableTrackingPrevention");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2EnvironmentOptions.ExclusiveUserDataFolderAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2EnvironmentOptions.ExclusiveUserDataFolderAccess");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "bool CoreWebView2EnvironmentOptions.ExclusiveUserDataFolderAccess");
 			}
 			set
 			{
@@ -112,7 +112,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2EnvironmentOptions.IsCustomCrashReportingEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2EnvironmentOptions.IsCustomCrashReportingEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "bool CoreWebView2EnvironmentOptions.IsCustomCrashReportingEnabled");
 			}
 			set
 			{
@@ -126,7 +126,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2EnvironmentOptions.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2EnvironmentOptions.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "string CoreWebView2EnvironmentOptions.Language");
 			}
 			set
 			{
@@ -140,7 +140,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2ReleaseChannels CoreWebView2EnvironmentOptions.ReleaseChannels is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ReleaseChannels%20CoreWebView2EnvironmentOptions.ReleaseChannels");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "CoreWebView2ReleaseChannels CoreWebView2EnvironmentOptions.ReleaseChannels");
 			}
 			set
 			{
@@ -154,7 +154,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2ScrollbarStyle CoreWebView2EnvironmentOptions.ScrollBarStyle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ScrollbarStyle%20CoreWebView2EnvironmentOptions.ScrollBarStyle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "CoreWebView2ScrollbarStyle CoreWebView2EnvironmentOptions.ScrollBarStyle");
 			}
 			set
 			{
@@ -168,7 +168,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2EnvironmentOptions.TargetCompatibleBrowserVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2EnvironmentOptions.TargetCompatibleBrowserVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "string CoreWebView2EnvironmentOptions.TargetCompatibleBrowserVersion");
 			}
 			set
 			{

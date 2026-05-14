@@ -14,7 +14,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardCertificateStoreNames.IntermediateCertificationAuthorities is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardCertificateStoreNames.IntermediateCertificationAuthorities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.StandardCertificateStoreNames", "string StandardCertificateStoreNames.IntermediateCertificationAuthorities");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardCertificateStoreNames.Personal is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardCertificateStoreNames.Personal");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.StandardCertificateStoreNames", "string StandardCertificateStoreNames.Personal");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardCertificateStoreNames.TrustedRootCertificationAuthorities is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardCertificateStoreNames.TrustedRootCertificationAuthorities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.StandardCertificateStoreNames", "string StandardCertificateStoreNames.TrustedRootCertificationAuthorities");
 			}
 		}
 #endif

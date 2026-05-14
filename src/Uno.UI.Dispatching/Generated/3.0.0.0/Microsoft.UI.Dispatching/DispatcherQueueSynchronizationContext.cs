@@ -34,7 +34,7 @@ namespace Microsoft.UI.Dispatching
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override global::System.Threading.SynchronizationContext CreateCopy()
 		{
-			throw new global::System.NotImplementedException("The member SynchronizationContext DispatcherQueueSynchronizationContext.CreateCopy() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SynchronizationContext%20DispatcherQueueSynchronizationContext.CreateCopy%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Dispatching.DispatcherQueueSynchronizationContext", "SynchronizationContext DispatcherQueueSynchronizationContext.CreateCopy()");
 		}
 #endif
 	}

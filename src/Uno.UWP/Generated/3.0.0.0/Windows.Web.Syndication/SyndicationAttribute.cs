@@ -14,7 +14,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationAttribute.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationAttribute.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationAttribute", "string SyndicationAttribute.Name");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationAttribute.Namespace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationAttribute.Namespace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationAttribute", "string SyndicationAttribute.Namespace");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationAttribute.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationAttribute.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationAttribute", "string SyndicationAttribute.Value");
 			}
 			set
 			{

@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> PaymentAddress.AddressLines is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20PaymentAddress.AddressLines");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentAddress", "IReadOnlyList<string> PaymentAddress.AddressLines");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentAddress.City is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentAddress.City");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentAddress", "string PaymentAddress.City");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentAddress.Country is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentAddress.Country");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentAddress", "string PaymentAddress.Country");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentAddress.DependentLocality is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentAddress.DependentLocality");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentAddress", "string PaymentAddress.DependentLocality");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentAddress.LanguageCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentAddress.LanguageCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentAddress", "string PaymentAddress.LanguageCode");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentAddress.Organization is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentAddress.Organization");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentAddress", "string PaymentAddress.Organization");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentAddress.PhoneNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentAddress.PhoneNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentAddress", "string PaymentAddress.PhoneNumber");
 			}
 			set
 			{
@@ -112,7 +112,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentAddress.PostalCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentAddress.PostalCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentAddress", "string PaymentAddress.PostalCode");
 			}
 			set
 			{
@@ -126,7 +126,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet PaymentAddress.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20PaymentAddress.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentAddress", "ValueSet PaymentAddress.Properties");
 			}
 		}
 #endif
@@ -136,7 +136,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentAddress.Recipient is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentAddress.Recipient");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentAddress", "string PaymentAddress.Recipient");
 			}
 			set
 			{
@@ -150,7 +150,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentAddress.Region is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentAddress.Region");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentAddress", "string PaymentAddress.Region");
 			}
 			set
 			{
@@ -164,7 +164,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentAddress.SortingCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentAddress.SortingCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentAddress", "string PaymentAddress.SortingCode");
 			}
 			set
 			{

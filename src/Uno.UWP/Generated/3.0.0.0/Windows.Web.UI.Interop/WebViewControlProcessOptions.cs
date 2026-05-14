@@ -14,7 +14,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebViewControlProcessOptions.EnterpriseId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebViewControlProcessOptions.EnterpriseId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlProcessOptions", "string WebViewControlProcessOptions.EnterpriseId");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebViewControlProcessCapabilityState WebViewControlProcessOptions.PrivateNetworkClientServerCapability is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebViewControlProcessCapabilityState%20WebViewControlProcessOptions.PrivateNetworkClientServerCapability");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlProcessOptions", "WebViewControlProcessCapabilityState WebViewControlProcessOptions.PrivateNetworkClientServerCapability");
 			}
 			set
 			{

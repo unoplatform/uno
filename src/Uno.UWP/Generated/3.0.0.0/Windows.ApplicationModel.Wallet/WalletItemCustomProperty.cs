@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WalletItemCustomProperty.AutoDetectLinks is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WalletItemCustomProperty.AutoDetectLinks");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "bool WalletItemCustomProperty.AutoDetectLinks");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WalletDetailViewPosition WalletItemCustomProperty.DetailViewPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WalletDetailViewPosition%20WalletItemCustomProperty.DetailViewPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "WalletDetailViewPosition WalletItemCustomProperty.DetailViewPosition");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WalletItemCustomProperty.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItemCustomProperty.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "string WalletItemCustomProperty.Name");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WalletSummaryViewPosition WalletItemCustomProperty.SummaryViewPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WalletSummaryViewPosition%20WalletItemCustomProperty.SummaryViewPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "WalletSummaryViewPosition WalletItemCustomProperty.SummaryViewPosition");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WalletItemCustomProperty.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletItemCustomProperty.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "string WalletItemCustomProperty.Value");
 			}
 			set
 			{

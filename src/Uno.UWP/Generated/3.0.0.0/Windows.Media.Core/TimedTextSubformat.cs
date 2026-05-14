@@ -14,7 +14,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int TimedTextSubformat.Length is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20TimedTextSubformat.Length");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextSubformat", "int TimedTextSubformat.Length");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int TimedTextSubformat.StartIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20TimedTextSubformat.StartIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextSubformat", "int TimedTextSubformat.StartIndex");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextStyle TimedTextSubformat.SubformatStyle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextStyle%20TimedTextSubformat.SubformatStyle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextSubformat", "TimedTextStyle TimedTextSubformat.SubformatStyle");
 			}
 			set
 			{

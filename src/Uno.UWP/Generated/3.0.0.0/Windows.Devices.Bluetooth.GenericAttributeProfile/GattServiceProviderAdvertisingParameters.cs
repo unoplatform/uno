@@ -14,7 +14,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GattServiceProviderAdvertisingParameters.IsConnectable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GattServiceProviderAdvertisingParameters.IsConnectable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProviderAdvertisingParameters", "bool GattServiceProviderAdvertisingParameters.IsConnectable");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GattServiceProviderAdvertisingParameters.IsDiscoverable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GattServiceProviderAdvertisingParameters.IsDiscoverable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProviderAdvertisingParameters", "bool GattServiceProviderAdvertisingParameters.IsDiscoverable");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer GattServiceProviderAdvertisingParameters.ServiceData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20GattServiceProviderAdvertisingParameters.ServiceData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProviderAdvertisingParameters", "IBuffer GattServiceProviderAdvertisingParameters.ServiceData");
 			}
 			set
 			{

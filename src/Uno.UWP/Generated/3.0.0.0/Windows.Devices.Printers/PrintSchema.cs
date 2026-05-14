@@ -17,21 +17,21 @@ namespace Windows.Devices.Printers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStreamWithContentType> GetDefaultPrintTicketAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStreamWithContentType> PrintSchema.GetDefaultPrintTicketAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStreamWithContentType%3E%20PrintSchema.GetDefaultPrintTicketAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.PrintSchema", "IAsyncOperation<IRandomAccessStreamWithContentType> PrintSchema.GetDefaultPrintTicketAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStreamWithContentType> GetCapabilitiesAsync(global::Windows.Storage.Streams.IRandomAccessStreamWithContentType constrainTicket)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStreamWithContentType> PrintSchema.GetCapabilitiesAsync(IRandomAccessStreamWithContentType constrainTicket) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStreamWithContentType%3E%20PrintSchema.GetCapabilitiesAsync%28IRandomAccessStreamWithContentType%20constrainTicket%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.PrintSchema", "IAsyncOperation<IRandomAccessStreamWithContentType> PrintSchema.GetCapabilitiesAsync(IRandomAccessStreamWithContentType constrainTicket)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStreamWithContentType> MergeAndValidateWithDefaultPrintTicketAsync(global::Windows.Storage.Streams.IRandomAccessStreamWithContentType deltaTicket)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStreamWithContentType> PrintSchema.MergeAndValidateWithDefaultPrintTicketAsync(IRandomAccessStreamWithContentType deltaTicket) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStreamWithContentType%3E%20PrintSchema.MergeAndValidateWithDefaultPrintTicketAsync%28IRandomAccessStreamWithContentType%20deltaTicket%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.PrintSchema", "IAsyncOperation<IRandomAccessStreamWithContentType> PrintSchema.MergeAndValidateWithDefaultPrintTicketAsync(IRandomAccessStreamWithContentType deltaTicket)");
 		}
 #endif
 	}

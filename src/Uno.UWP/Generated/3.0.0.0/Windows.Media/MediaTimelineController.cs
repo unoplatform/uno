@@ -14,7 +14,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MediaTimelineController.ClockRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20MediaTimelineController.ClockRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaTimelineController", "double MediaTimelineController.ClockRate");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? MediaTimelineController.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20MediaTimelineController.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaTimelineController", "TimeSpan? MediaTimelineController.Duration");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaTimelineController.IsLoopingEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaTimelineController.IsLoopingEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaTimelineController", "bool MediaTimelineController.IsLoopingEnabled");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaTimelineController.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaTimelineController.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaTimelineController", "TimeSpan MediaTimelineController.Position");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaTimelineControllerState MediaTimelineController.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaTimelineControllerState%20MediaTimelineController.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaTimelineController", "MediaTimelineControllerState MediaTimelineController.State");
 			}
 		}
 #endif

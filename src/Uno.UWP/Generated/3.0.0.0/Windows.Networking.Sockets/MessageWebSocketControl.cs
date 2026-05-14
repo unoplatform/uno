@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MessageWebSocketControl.ActualUnsolicitedPongInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MessageWebSocketControl.ActualUnsolicitedPongInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "TimeSpan MessageWebSocketControl.ActualUnsolicitedPongInterval");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate MessageWebSocketControl.ClientCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Certificate%20MessageWebSocketControl.ClientCertificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "Certificate MessageWebSocketControl.ClientCertificate");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MessageWebSocketControl.DesiredUnsolicitedPongInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MessageWebSocketControl.DesiredUnsolicitedPongInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "TimeSpan MessageWebSocketControl.DesiredUnsolicitedPongInterval");
 			}
 			set
 			{
@@ -57,7 +57,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ChainValidationResult> MessageWebSocketControl.IgnorableServerCertificateErrors is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CChainValidationResult%3E%20MessageWebSocketControl.IgnorableServerCertificateErrors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "IList<ChainValidationResult> MessageWebSocketControl.IgnorableServerCertificateErrors");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MessageWebSocketControl.MaxMessageSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MessageWebSocketControl.MaxMessageSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "uint MessageWebSocketControl.MaxMessageSize");
 			}
 			set
 			{
@@ -81,7 +81,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketMessageType MessageWebSocketControl.MessageType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SocketMessageType%20MessageWebSocketControl.MessageType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "SocketMessageType MessageWebSocketControl.MessageType");
 			}
 			set
 			{
@@ -95,7 +95,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MessageWebSocketControl.OutboundBufferSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MessageWebSocketControl.OutboundBufferSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "uint MessageWebSocketControl.OutboundBufferSizeInBytes");
 			}
 			set
 			{
@@ -109,7 +109,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential MessageWebSocketControl.ProxyCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PasswordCredential%20MessageWebSocketControl.ProxyCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "PasswordCredential MessageWebSocketControl.ProxyCredential");
 			}
 			set
 			{
@@ -123,7 +123,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MessageWebSocketReceiveMode MessageWebSocketControl.ReceiveMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MessageWebSocketReceiveMode%20MessageWebSocketControl.ReceiveMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "MessageWebSocketReceiveMode MessageWebSocketControl.ReceiveMode");
 			}
 			set
 			{
@@ -137,7 +137,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential MessageWebSocketControl.ServerCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PasswordCredential%20MessageWebSocketControl.ServerCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "PasswordCredential MessageWebSocketControl.ServerCredential");
 			}
 			set
 			{
@@ -151,7 +151,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> MessageWebSocketControl.SupportedProtocols is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20MessageWebSocketControl.SupportedProtocols");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketControl", "IList<string> MessageWebSocketControl.SupportedProtocols");
 			}
 		}
 #endif

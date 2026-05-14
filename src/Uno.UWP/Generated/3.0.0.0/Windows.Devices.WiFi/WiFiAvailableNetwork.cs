@@ -19,7 +19,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan WiFiAvailableNetwork.BeaconInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20WiFiAvailableNetwork.BeaconInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "TimeSpan WiFiAvailableNetwork.BeaconInterval");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WiFiAvailableNetwork.Bssid is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WiFiAvailableNetwork.Bssid");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "string WiFiAvailableNetwork.Bssid");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int WiFiAvailableNetwork.ChannelCenterFrequencyInKilohertz is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20WiFiAvailableNetwork.ChannelCenterFrequencyInKilohertz");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "int WiFiAvailableNetwork.ChannelCenterFrequencyInKilohertz");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WiFiAvailableNetwork.IsWiFiDirect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WiFiAvailableNetwork.IsWiFiDirect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "bool WiFiAvailableNetwork.IsWiFiDirect");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WiFiNetworkKind WiFiAvailableNetwork.NetworkKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WiFiNetworkKind%20WiFiAvailableNetwork.NetworkKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "WiFiNetworkKind WiFiAvailableNetwork.NetworkKind");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double WiFiAvailableNetwork.NetworkRssiInDecibelMilliwatts is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20WiFiAvailableNetwork.NetworkRssiInDecibelMilliwatts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "double WiFiAvailableNetwork.NetworkRssiInDecibelMilliwatts");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WiFiPhyKind WiFiAvailableNetwork.PhyKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WiFiPhyKind%20WiFiAvailableNetwork.PhyKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "WiFiPhyKind WiFiAvailableNetwork.PhyKind");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NetworkSecuritySettings WiFiAvailableNetwork.SecuritySettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NetworkSecuritySettings%20WiFiAvailableNetwork.SecuritySettings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "NetworkSecuritySettings WiFiAvailableNetwork.SecuritySettings");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte WiFiAvailableNetwork.SignalBars is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20WiFiAvailableNetwork.SignalBars");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "byte WiFiAvailableNetwork.SignalBars");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WiFiAvailableNetwork.Ssid is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WiFiAvailableNetwork.Ssid");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "string WiFiAvailableNetwork.Ssid");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan WiFiAvailableNetwork.Uptime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20WiFiAvailableNetwork.Uptime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiAvailableNetwork", "TimeSpan WiFiAvailableNetwork.Uptime");
 			}
 		}
 #endif

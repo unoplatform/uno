@@ -19,7 +19,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumArtist is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumArtist");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "string GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumArtist");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumTitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumTitle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "string GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumTitle");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumTrackCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumTrackCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "int GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumTrackCount");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GlobalSystemMediaTransportControlsSessionMediaProperties.Artist is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GlobalSystemMediaTransportControlsSessionMediaProperties.Artist");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "string GlobalSystemMediaTransportControlsSessionMediaProperties.Artist");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> GlobalSystemMediaTransportControlsSessionMediaProperties.Genres is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20GlobalSystemMediaTransportControlsSessionMediaProperties.Genres");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "IReadOnlyList<string> GlobalSystemMediaTransportControlsSessionMediaProperties.Genres");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackType? GlobalSystemMediaTransportControlsSessionMediaProperties.PlaybackType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackType%3F%20GlobalSystemMediaTransportControlsSessionMediaProperties.PlaybackType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "MediaPlaybackType? GlobalSystemMediaTransportControlsSessionMediaProperties.PlaybackType");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GlobalSystemMediaTransportControlsSessionMediaProperties.Subtitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GlobalSystemMediaTransportControlsSessionMediaProperties.Subtitle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "string GlobalSystemMediaTransportControlsSessionMediaProperties.Subtitle");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference GlobalSystemMediaTransportControlsSessionMediaProperties.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20GlobalSystemMediaTransportControlsSessionMediaProperties.Thumbnail");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "IRandomAccessStreamReference GlobalSystemMediaTransportControlsSessionMediaProperties.Thumbnail");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GlobalSystemMediaTransportControlsSessionMediaProperties.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GlobalSystemMediaTransportControlsSessionMediaProperties.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "string GlobalSystemMediaTransportControlsSessionMediaProperties.Title");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int GlobalSystemMediaTransportControlsSessionMediaProperties.TrackNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20GlobalSystemMediaTransportControlsSessionMediaProperties.TrackNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties", "int GlobalSystemMediaTransportControlsSessionMediaProperties.TrackNumber");
 			}
 		}
 #endif

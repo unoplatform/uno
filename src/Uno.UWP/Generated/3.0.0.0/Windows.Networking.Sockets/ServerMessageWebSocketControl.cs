@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketMessageType ServerMessageWebSocketControl.MessageType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SocketMessageType%20ServerMessageWebSocketControl.MessageType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ServerMessageWebSocketControl", "SocketMessageType ServerMessageWebSocketControl.MessageType");
 			}
 			set
 			{

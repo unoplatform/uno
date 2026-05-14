@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset LicenseInformation.ExpirationDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20LicenseInformation.ExpirationDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseInformation", "DateTimeOffset LicenseInformation.ExpirationDate");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LicenseInformation.IsActive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LicenseInformation.IsActive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseInformation", "bool LicenseInformation.IsActive");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LicenseInformation.IsTrial is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LicenseInformation.IsTrial");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseInformation", "bool LicenseInformation.IsTrial");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, ProductLicense> LicenseInformation.ProductLicenses is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20ProductLicense%3E%20LicenseInformation.ProductLicenses");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseInformation", "IReadOnlyDictionary<string, ProductLicense> LicenseInformation.ProductLicenses");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpMediaTypeHeaderValue.CharSet is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpMediaTypeHeaderValue.CharSet");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "string HttpMediaTypeHeaderValue.CharSet");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpMediaTypeHeaderValue.MediaType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpMediaTypeHeaderValue.MediaType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "string HttpMediaTypeHeaderValue.MediaType");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<HttpNameValueHeaderValue> HttpMediaTypeHeaderValue.Parameters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CHttpNameValueHeaderValue%3E%20HttpMediaTypeHeaderValue.Parameters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "IList<HttpNameValueHeaderValue> HttpMediaTypeHeaderValue.Parameters");
 			}
 		}
 #endif
@@ -58,21 +58,21 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Headers.HttpMediaTypeHeaderValue Parse(string input)
 		{
-			throw new global::System.NotImplementedException("The member HttpMediaTypeHeaderValue HttpMediaTypeHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpMediaTypeHeaderValue%20HttpMediaTypeHeaderValue.Parse%28string%20input%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "HttpMediaTypeHeaderValue HttpMediaTypeHeaderValue.Parse(string input)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpMediaTypeHeaderValue mediaTypeHeaderValue)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpMediaTypeHeaderValue.TryParse(string input, out HttpMediaTypeHeaderValue mediaTypeHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpMediaTypeHeaderValue.TryParse%28string%20input%2C%20out%20HttpMediaTypeHeaderValue%20mediaTypeHeaderValue%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "bool HttpMediaTypeHeaderValue.TryParse(string input, out HttpMediaTypeHeaderValue mediaTypeHeaderValue)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpMediaTypeHeaderValue.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpMediaTypeHeaderValue.ToString%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "string HttpMediaTypeHeaderValue.ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeHeaderValue.CharSet.get

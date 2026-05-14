@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer MagneticStripeReaderTrackData.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20MagneticStripeReaderTrackData.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderTrackData", "IBuffer MagneticStripeReaderTrackData.Data");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer MagneticStripeReaderTrackData.DiscretionaryData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20MagneticStripeReaderTrackData.DiscretionaryData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderTrackData", "IBuffer MagneticStripeReaderTrackData.DiscretionaryData");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer MagneticStripeReaderTrackData.EncryptedData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20MagneticStripeReaderTrackData.EncryptedData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderTrackData", "IBuffer MagneticStripeReaderTrackData.EncryptedData");
 			}
 		}
 #endif

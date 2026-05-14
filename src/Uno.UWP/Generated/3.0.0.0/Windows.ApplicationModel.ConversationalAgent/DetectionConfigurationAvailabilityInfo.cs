@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DetectionConfigurationAvailabilityInfo.HasLockScreenPermission is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DetectionConfigurationAvailabilityInfo.HasLockScreenPermission");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo", "bool DetectionConfigurationAvailabilityInfo.HasLockScreenPermission");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DetectionConfigurationAvailabilityInfo.HasPermission is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DetectionConfigurationAvailabilityInfo.HasPermission");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo", "bool DetectionConfigurationAvailabilityInfo.HasPermission");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DetectionConfigurationAvailabilityInfo.HasSystemResourceAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DetectionConfigurationAvailabilityInfo.HasSystemResourceAccess");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo", "bool DetectionConfigurationAvailabilityInfo.HasSystemResourceAccess");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DetectionConfigurationAvailabilityInfo.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DetectionConfigurationAvailabilityInfo.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo", "bool DetectionConfigurationAvailabilityInfo.IsEnabled");
 			}
 		}
 #endif

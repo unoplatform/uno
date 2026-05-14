@@ -14,7 +14,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UssdMessage.DataCodingScheme is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20UssdMessage.DataCodingScheme");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.UssdMessage", "byte UssdMessage.DataCodingScheme");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UssdMessage.PayloadAsText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UssdMessage.PayloadAsText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.UssdMessage", "string UssdMessage.PayloadAsText");
 			}
 			set
 			{
@@ -48,7 +48,7 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public byte[] GetPayload()
 		{
-			throw new global::System.NotImplementedException("The member byte[] UssdMessage.GetPayload() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%5B%5D%20UssdMessage.GetPayload%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.UssdMessage", "byte[] UssdMessage.GetPayload()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

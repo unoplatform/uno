@@ -19,7 +19,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastReceiverConnection MiracastReceiverDisconnectedEventArgs.Connection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MiracastReceiverConnection%20MiracastReceiverDisconnectedEventArgs.Connection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverDisconnectedEventArgs", "MiracastReceiverConnection MiracastReceiverDisconnectedEventArgs.Connection");
 			}
 		}
 #endif

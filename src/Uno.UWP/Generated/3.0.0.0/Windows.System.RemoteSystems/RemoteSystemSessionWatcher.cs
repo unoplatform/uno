@@ -19,7 +19,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RemoteSystemSessionWatcherStatus RemoteSystemSessionWatcher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemSessionWatcherStatus%20RemoteSystemSessionWatcher.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSessionWatcher", "RemoteSystemSessionWatcherStatus RemoteSystemSessionWatcher.Status");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorageProviderItemPropertyDefinition.DisplayNameResource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorageProviderItemPropertyDefinition.DisplayNameResource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderItemPropertyDefinition", "string StorageProviderItemPropertyDefinition.DisplayNameResource");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int StorageProviderItemPropertyDefinition.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20StorageProviderItemPropertyDefinition.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderItemPropertyDefinition", "int StorageProviderItemPropertyDefinition.Id");
 			}
 			set
 			{

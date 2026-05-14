@@ -21,7 +21,7 @@ namespace Windows.ApplicationModel.Resources
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Resources.ResourceLoader GetForUIContext(global::Windows.UI.UIContext context)
 		{
-			throw new global::System.NotImplementedException("The member ResourceLoader ResourceLoader.GetForUIContext(UIContext context) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceLoader%20ResourceLoader.GetForUIContext%28UIContext%20context%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.ResourceLoader", "ResourceLoader ResourceLoader.GetForUIContext(UIContext context)");
 		}
 #endif
 		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetString(string)

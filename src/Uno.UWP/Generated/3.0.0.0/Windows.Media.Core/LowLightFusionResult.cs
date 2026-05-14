@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SoftwareBitmap LowLightFusionResult.Frame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SoftwareBitmap%20LowLightFusionResult.Frame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.LowLightFusionResult", "SoftwareBitmap LowLightFusionResult.Frame");
 			}
 		}
 #endif

@@ -12,7 +12,7 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.RadialController CreateForWindow(nint hwnd)
 		{
-			throw new global::System.NotImplementedException("The member RadialController RadialControllerInterop.CreateForWindow(nint hwnd) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RadialController%20RadialControllerInterop.CreateForWindow%28nint%20hwnd%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerInterop", "RadialController RadialControllerInterop.CreateForWindow(nint hwnd)");
 		}
 #endif
 	}

@@ -14,7 +14,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan ImageCue.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20ImageCue.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.ImageCue", "TimeSpan ImageCue.Duration");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextSize ImageCue.Extent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextSize%20ImageCue.Extent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.ImageCue", "TimedTextSize ImageCue.Extent");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ImageCue.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ImageCue.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.ImageCue", "string ImageCue.Id");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextPoint ImageCue.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextPoint%20ImageCue.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.ImageCue", "TimedTextPoint ImageCue.Position");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SoftwareBitmap ImageCue.SoftwareBitmap is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SoftwareBitmap%20ImageCue.SoftwareBitmap");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.ImageCue", "SoftwareBitmap ImageCue.SoftwareBitmap");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan ImageCue.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20ImageCue.StartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.ImageCue", "TimeSpan ImageCue.StartTime");
 			}
 			set
 			{

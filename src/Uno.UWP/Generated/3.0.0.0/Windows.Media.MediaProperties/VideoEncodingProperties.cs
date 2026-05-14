@@ -14,7 +14,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint VideoEncodingProperties.Bitrate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20VideoEncodingProperties.Bitrate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "uint VideoEncodingProperties.Bitrate");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaRatio VideoEncodingProperties.FrameRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaRatio%20VideoEncodingProperties.FrameRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "MediaRatio VideoEncodingProperties.FrameRate");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint VideoEncodingProperties.Height is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20VideoEncodingProperties.Height");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "uint VideoEncodingProperties.Height");
 			}
 			set
 			{
@@ -52,7 +52,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaRatio VideoEncodingProperties.PixelAspectRatio is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaRatio%20VideoEncodingProperties.PixelAspectRatio");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "MediaRatio VideoEncodingProperties.PixelAspectRatio");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int VideoEncodingProperties.ProfileId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20VideoEncodingProperties.ProfileId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "int VideoEncodingProperties.ProfileId");
 			}
 			set
 			{
@@ -76,7 +76,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPropertySet VideoEncodingProperties.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPropertySet%20VideoEncodingProperties.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "MediaPropertySet VideoEncodingProperties.Properties");
 			}
 		}
 #endif
@@ -86,7 +86,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SphericalVideoFrameFormat VideoEncodingProperties.SphericalVideoFrameFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SphericalVideoFrameFormat%20VideoEncodingProperties.SphericalVideoFrameFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "SphericalVideoFrameFormat VideoEncodingProperties.SphericalVideoFrameFormat");
 			}
 		}
 #endif
@@ -96,7 +96,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StereoscopicVideoPackingMode VideoEncodingProperties.StereoscopicVideoPackingMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StereoscopicVideoPackingMode%20VideoEncodingProperties.StereoscopicVideoPackingMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "StereoscopicVideoPackingMode VideoEncodingProperties.StereoscopicVideoPackingMode");
 			}
 		}
 #endif
@@ -106,7 +106,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoEncodingProperties.Subtype is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoEncodingProperties.Subtype");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "string VideoEncodingProperties.Subtype");
 			}
 			set
 			{
@@ -120,7 +120,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoEncodingProperties.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoEncodingProperties.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "string VideoEncodingProperties.Type");
 			}
 		}
 #endif
@@ -130,7 +130,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint VideoEncodingProperties.Width is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20VideoEncodingProperties.Width");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "uint VideoEncodingProperties.Width");
 			}
 			set
 			{
@@ -150,28 +150,28 @@ namespace Windows.Media.MediaProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.VideoEncodingProperties CreateH264()
 		{
-			throw new global::System.NotImplementedException("The member VideoEncodingProperties VideoEncodingProperties.CreateH264() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoEncodingProperties%20VideoEncodingProperties.CreateH264%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "VideoEncodingProperties VideoEncodingProperties.CreateH264()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.VideoEncodingProperties CreateMpeg2()
 		{
-			throw new global::System.NotImplementedException("The member VideoEncodingProperties VideoEncodingProperties.CreateMpeg2() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoEncodingProperties%20VideoEncodingProperties.CreateMpeg2%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "VideoEncodingProperties VideoEncodingProperties.CreateMpeg2()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.VideoEncodingProperties CreateUncompressed(string subtype, uint width, uint height)
 		{
-			throw new global::System.NotImplementedException("The member VideoEncodingProperties VideoEncodingProperties.CreateUncompressed(string subtype, uint width, uint height) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoEncodingProperties%20VideoEncodingProperties.CreateUncompressed%28string%20subtype%2C%20uint%20width%2C%20uint%20height%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "VideoEncodingProperties VideoEncodingProperties.CreateUncompressed(string subtype, uint width, uint height)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.MediaProperties.VideoEncodingProperties CreateHevc()
 		{
-			throw new global::System.NotImplementedException("The member VideoEncodingProperties VideoEncodingProperties.CreateHevc() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoEncodingProperties%20VideoEncodingProperties.CreateHevc%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "VideoEncodingProperties VideoEncodingProperties.CreateHevc()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -185,14 +185,14 @@ namespace Windows.Media.MediaProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void GetFormatUserData(out byte[] value)
 		{
-			throw new global::System.NotImplementedException("The member void VideoEncodingProperties.GetFormatUserData(out byte[] value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=void%20VideoEncodingProperties.GetFormatUserData%28out%20byte%5B%5D%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "void VideoEncodingProperties.GetFormatUserData(out byte[] value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.VideoEncodingProperties Copy()
 		{
-			throw new global::System.NotImplementedException("The member VideoEncodingProperties VideoEncodingProperties.Copy() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoEncodingProperties%20VideoEncodingProperties.Copy%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.VideoEncodingProperties", "VideoEncodingProperties VideoEncodingProperties.Copy()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.VideoEncodingProperties.Bitrate.get

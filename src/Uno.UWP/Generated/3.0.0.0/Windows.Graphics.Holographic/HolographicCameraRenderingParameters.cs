@@ -19,7 +19,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDirect3DSurface HolographicCameraRenderingParameters.Direct3D11BackBuffer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDirect3DSurface%20HolographicCameraRenderingParameters.Direct3D11BackBuffer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCameraRenderingParameters", "IDirect3DSurface HolographicCameraRenderingParameters.Direct3D11BackBuffer");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDirect3DDevice HolographicCameraRenderingParameters.Direct3D11Device is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDirect3DDevice%20HolographicCameraRenderingParameters.Direct3D11Device");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCameraRenderingParameters", "IDirect3DDevice HolographicCameraRenderingParameters.Direct3D11Device");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HolographicCameraRenderingParameters.IsContentProtectionEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HolographicCameraRenderingParameters.IsContentProtectionEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCameraRenderingParameters", "bool HolographicCameraRenderingParameters.IsContentProtectionEnabled");
 			}
 			set
 			{
@@ -53,7 +53,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HolographicReprojectionMode HolographicCameraRenderingParameters.ReprojectionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicReprojectionMode%20HolographicCameraRenderingParameters.ReprojectionMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCameraRenderingParameters", "HolographicReprojectionMode HolographicCameraRenderingParameters.ReprojectionMode");
 			}
 			set
 			{

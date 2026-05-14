@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ICollection<string> ResourceQualifierObservableMap.Keys is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICollection%3Cstring%3E%20ResourceQualifierObservableMap.Keys");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceQualifierObservableMap", "ICollection<string> ResourceQualifierObservableMap.Keys");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ICollection<string> ResourceQualifierObservableMap.Values is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICollection%3Cstring%3E%20ResourceQualifierObservableMap.Values");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceQualifierObservableMap", "ICollection<string> ResourceQualifierObservableMap.Values");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ResourceQualifierObservableMap.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ResourceQualifierObservableMap.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceQualifierObservableMap", "int ResourceQualifierObservableMap.Count");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ResourceQualifierObservableMap.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ResourceQualifierObservableMap.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceQualifierObservableMap", "bool ResourceQualifierObservableMap.IsReadOnly");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ResourceQualifierObservableMap.this[string key] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ResourceQualifierObservableMap.this%5Bstring%20key%5D");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceQualifierObservableMap", "string ResourceQualifierObservableMap.this[string key]");
 			}
 			set
 			{
@@ -86,21 +86,21 @@ namespace Windows.ApplicationModel.Resources.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ContainsKey(string key)
 		{
-			throw new global::System.NotImplementedException("The member bool ResourceQualifierObservableMap.ContainsKey(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ResourceQualifierObservableMap.ContainsKey%28string%20key%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceQualifierObservableMap", "bool ResourceQualifierObservableMap.ContainsKey(string key)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Remove(string key)
 		{
-			throw new global::System.NotImplementedException("The member bool ResourceQualifierObservableMap.Remove(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ResourceQualifierObservableMap.Remove%28string%20key%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceQualifierObservableMap", "bool ResourceQualifierObservableMap.Remove(string key)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryGetValue(string key, out string value)
 		{
-			throw new global::System.NotImplementedException("The member bool ResourceQualifierObservableMap.TryGetValue(string key, out string value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ResourceQualifierObservableMap.TryGetValue%28string%20key%2C%20out%20string%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceQualifierObservableMap", "bool ResourceQualifierObservableMap.TryGetValue(string key, out string value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -121,7 +121,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Contains(global::System.Collections.Generic.KeyValuePair<string, string> item)
 		{
-			throw new global::System.NotImplementedException("The member bool ResourceQualifierObservableMap.Contains(KeyValuePair<string, string> item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ResourceQualifierObservableMap.Contains%28KeyValuePair%3Cstring%2C%20string%3E%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceQualifierObservableMap", "bool ResourceQualifierObservableMap.Contains(KeyValuePair<string, string> item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -136,7 +136,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, string>> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<KeyValuePair<string, string>> ResourceQualifierObservableMap.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CKeyValuePair%3Cstring%2C%20string%3E%3E%20ResourceQualifierObservableMap.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceQualifierObservableMap", "IEnumerator<KeyValuePair<string, string>> ResourceQualifierObservableMap.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierObservableMap.System.Collections.IEnumerable.GetEnumerator()

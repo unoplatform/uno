@@ -19,7 +19,7 @@ namespace Windows.Devices.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceUseDetails.Arguments is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceUseDetails.Arguments");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Background.DeviceUseDetails", "string DeviceUseDetails.Arguments");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceUseDetails.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceUseDetails.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Background.DeviceUseDetails", "string DeviceUseDetails.DeviceId");
 			}
 		}
 #endif

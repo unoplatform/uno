@@ -14,7 +14,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynWatcherStoppedEventArgs.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20AllJoynWatcherStoppedEventArgs.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynWatcherStoppedEventArgs", "int AllJoynWatcherStoppedEventArgs.Status");
 			}
 		}
 #endif

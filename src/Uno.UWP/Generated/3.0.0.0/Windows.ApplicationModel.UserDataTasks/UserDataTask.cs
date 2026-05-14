@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? UserDataTask.CompletedDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20UserDataTask.CompletedDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "DateTimeOffset? UserDataTask.CompletedDate");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataTask.Details is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserDataTask.Details");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "string UserDataTask.Details");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskDetailsKind UserDataTask.DetailsKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskDetailsKind%20UserDataTask.DetailsKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "UserDataTaskDetailsKind UserDataTask.DetailsKind");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? UserDataTask.DueDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20UserDataTask.DueDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "DateTimeOffset? UserDataTask.DueDate");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataTask.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserDataTask.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "string UserDataTask.Id");
 			}
 		}
 #endif
@@ -80,7 +80,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskKind UserDataTask.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskKind%20UserDataTask.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "UserDataTaskKind UserDataTask.Kind");
 			}
 		}
 #endif
@@ -90,7 +90,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataTask.ListId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserDataTask.ListId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "string UserDataTask.ListId");
 			}
 		}
 #endif
@@ -100,7 +100,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskPriority UserDataTask.Priority is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskPriority%20UserDataTask.Priority");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "UserDataTaskPriority UserDataTask.Priority");
 			}
 			set
 			{
@@ -114,7 +114,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskRecurrenceProperties UserDataTask.RecurrenceProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskRecurrenceProperties%20UserDataTask.RecurrenceProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "UserDataTaskRecurrenceProperties UserDataTask.RecurrenceProperties");
 			}
 			set
 			{
@@ -128,7 +128,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskRegenerationProperties UserDataTask.RegenerationProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskRegenerationProperties%20UserDataTask.RegenerationProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "UserDataTaskRegenerationProperties UserDataTask.RegenerationProperties");
 			}
 			set
 			{
@@ -142,7 +142,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? UserDataTask.Reminder is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20UserDataTask.Reminder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "DateTimeOffset? UserDataTask.Reminder");
 			}
 			set
 			{
@@ -156,7 +156,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataTask.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserDataTask.RemoteId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "string UserDataTask.RemoteId");
 			}
 			set
 			{
@@ -170,7 +170,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskSensitivity UserDataTask.Sensitivity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskSensitivity%20UserDataTask.Sensitivity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "UserDataTaskSensitivity UserDataTask.Sensitivity");
 			}
 			set
 			{
@@ -184,7 +184,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? UserDataTask.StartDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20UserDataTask.StartDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "DateTimeOffset? UserDataTask.StartDate");
 			}
 			set
 			{
@@ -198,7 +198,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataTask.Subject is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserDataTask.Subject");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTask", "string UserDataTask.Subject");
 			}
 			set
 			{

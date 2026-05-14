@@ -19,7 +19,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpatialAnchorExportSufficiency.IsMinimallySufficient is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialAnchorExportSufficiency.IsMinimallySufficient");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchorExportSufficiency", "bool SpatialAnchorExportSufficiency.IsMinimallySufficient");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double SpatialAnchorExportSufficiency.RecommendedSufficiencyLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SpatialAnchorExportSufficiency.RecommendedSufficiencyLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchorExportSufficiency", "double SpatialAnchorExportSufficiency.RecommendedSufficiencyLevel");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double SpatialAnchorExportSufficiency.SufficiencyLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SpatialAnchorExportSufficiency.SufficiencyLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialAnchorExportSufficiency", "double SpatialAnchorExportSufficiency.SufficiencyLevel");
 			}
 		}
 #endif

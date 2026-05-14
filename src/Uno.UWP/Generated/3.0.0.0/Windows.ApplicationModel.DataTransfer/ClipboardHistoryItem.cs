@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DataPackageView ClipboardHistoryItem.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataPackageView%20ClipboardHistoryItem.Content");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem", "DataPackageView ClipboardHistoryItem.Content");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ClipboardHistoryItem.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ClipboardHistoryItem.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem", "string ClipboardHistoryItem.Id");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset ClipboardHistoryItem.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20ClipboardHistoryItem.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem", "DateTimeOffset ClipboardHistoryItem.Timestamp");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong DataUsage.BytesReceived is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20DataUsage.BytesReceived");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.DataUsage", "ulong DataUsage.BytesReceived");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong DataUsage.BytesSent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20DataUsage.BytesSent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.DataUsage", "ulong DataUsage.BytesSent");
 			}
 		}
 #endif

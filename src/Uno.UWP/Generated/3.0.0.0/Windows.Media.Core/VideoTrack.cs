@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoTrack.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoTrack.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoTrack", "string VideoTrack.Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoTrack.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoTrack.Label");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoTrack", "string VideoTrack.Label");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoTrack.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoTrack.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoTrack", "string VideoTrack.Language");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoTrack.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoTrack.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoTrack", "string VideoTrack.Name");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackItem VideoTrack.PlaybackItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackItem%20VideoTrack.PlaybackItem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoTrack", "MediaPlaybackItem VideoTrack.PlaybackItem");
 			}
 		}
 #endif
@@ -73,7 +73,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoTrackSupportInfo VideoTrack.SupportInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoTrackSupportInfo%20VideoTrack.SupportInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoTrack", "VideoTrackSupportInfo VideoTrack.SupportInfo");
 			}
 		}
 #endif
@@ -83,7 +83,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaTrackKind VideoTrack.TrackKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaTrackKind%20VideoTrack.TrackKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoTrack", "MediaTrackKind VideoTrack.TrackKind");
 			}
 		}
 #endif
@@ -91,7 +91,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.VideoEncodingProperties GetEncodingProperties()
 		{
-			throw new global::System.NotImplementedException("The member VideoEncodingProperties VideoTrack.GetEncodingProperties() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoEncodingProperties%20VideoTrack.GetEncodingProperties%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoTrack", "VideoEncodingProperties VideoTrack.GetEncodingProperties()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.VideoTrack.OpenFailed.add

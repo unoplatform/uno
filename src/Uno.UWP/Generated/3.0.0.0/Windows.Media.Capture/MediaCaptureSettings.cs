@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaCaptureSettings.AudioDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaCaptureSettings.AudioDeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureSettings", "string MediaCaptureSettings.AudioDeviceId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioProcessing MediaCaptureSettings.AudioProcessing is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioProcessing%20MediaCaptureSettings.AudioProcessing");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureSettings", "AudioProcessing MediaCaptureSettings.AudioProcessing");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaCaptureSettings.CameraSoundRequiredForRegion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaCaptureSettings.CameraSoundRequiredForRegion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureSettings", "bool MediaCaptureSettings.CameraSoundRequiredForRegion");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaCaptureSettings.ConcurrentRecordAndPhotoSequenceSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaCaptureSettings.ConcurrentRecordAndPhotoSequenceSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureSettings", "bool MediaCaptureSettings.ConcurrentRecordAndPhotoSequenceSupported");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaCaptureSettings.ConcurrentRecordAndPhotoSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaCaptureSettings.ConcurrentRecordAndPhotoSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureSettings", "bool MediaCaptureSettings.ConcurrentRecordAndPhotoSupported");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDirect3DDevice MediaCaptureSettings.Direct3D11Device is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDirect3DDevice%20MediaCaptureSettings.Direct3D11Device");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureSettings", "IDirect3DDevice MediaCaptureSettings.Direct3D11Device");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? MediaCaptureSettings.Horizontal35mmEquivalentFocalLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20MediaCaptureSettings.Horizontal35mmEquivalentFocalLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureSettings", "uint? MediaCaptureSettings.Horizontal35mmEquivalentFocalLength");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCategory MediaCaptureSettings.MediaCategory is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaCategory%20MediaCaptureSettings.MediaCategory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureSettings", "MediaCategory MediaCaptureSettings.MediaCategory");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhotoCaptureSource MediaCaptureSettings.PhotoCaptureSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhotoCaptureSource%20MediaCaptureSettings.PhotoCaptureSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureSettings", "PhotoCaptureSource MediaCaptureSettings.PhotoCaptureSource");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? MediaCaptureSettings.PitchOffsetDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20MediaCaptureSettings.PitchOffsetDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureSettings", "int? MediaCaptureSettings.PitchOffsetDegrees");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StreamingCaptureMode MediaCaptureSettings.StreamingCaptureMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StreamingCaptureMode%20MediaCaptureSettings.StreamingCaptureMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureSettings", "StreamingCaptureMode MediaCaptureSettings.StreamingCaptureMode");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? MediaCaptureSettings.Vertical35mmEquivalentFocalLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20MediaCaptureSettings.Vertical35mmEquivalentFocalLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureSettings", "uint? MediaCaptureSettings.Vertical35mmEquivalentFocalLength");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoDeviceCharacteristic MediaCaptureSettings.VideoDeviceCharacteristic is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoDeviceCharacteristic%20MediaCaptureSettings.VideoDeviceCharacteristic");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureSettings", "VideoDeviceCharacteristic MediaCaptureSettings.VideoDeviceCharacteristic");
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaCaptureSettings.VideoDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaCaptureSettings.VideoDeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureSettings", "string MediaCaptureSettings.VideoDeviceId");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StagePackageOptions.AllowUnsigned is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StagePackageOptions.AllowUnsigned");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.StagePackageOptions", "bool StagePackageOptions.AllowUnsigned");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> StagePackageOptions.DependencyPackageUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CUri%3E%20StagePackageOptions.DependencyPackageUris");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.StagePackageOptions", "IList<Uri> StagePackageOptions.DependencyPackageUris");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StagePackageOptions.DeveloperMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StagePackageOptions.DeveloperMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.StagePackageOptions", "bool StagePackageOptions.DeveloperMode");
 			}
 			set
 			{
@@ -52,7 +52,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri StagePackageOptions.ExternalLocationUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20StagePackageOptions.ExternalLocationUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.StagePackageOptions", "Uri StagePackageOptions.ExternalLocationUri");
 			}
 			set
 			{
@@ -66,7 +66,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StagePackageOptions.ForceUpdateFromAnyVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StagePackageOptions.ForceUpdateFromAnyVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.StagePackageOptions", "bool StagePackageOptions.ForceUpdateFromAnyVersion");
 			}
 			set
 			{
@@ -80,7 +80,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StagePackageOptions.InstallAllResources is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StagePackageOptions.InstallAllResources");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.StagePackageOptions", "bool StagePackageOptions.InstallAllResources");
 			}
 			set
 			{
@@ -94,7 +94,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> StagePackageOptions.OptionalPackageFamilyNames is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20StagePackageOptions.OptionalPackageFamilyNames");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.StagePackageOptions", "IList<string> StagePackageOptions.OptionalPackageFamilyNames");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> StagePackageOptions.OptionalPackageUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CUri%3E%20StagePackageOptions.OptionalPackageUris");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.StagePackageOptions", "IList<Uri> StagePackageOptions.OptionalPackageUris");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> StagePackageOptions.RelatedPackageUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CUri%3E%20StagePackageOptions.RelatedPackageUris");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.StagePackageOptions", "IList<Uri> StagePackageOptions.RelatedPackageUris");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StagePackageOptions.RequiredContentGroupOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StagePackageOptions.RequiredContentGroupOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.StagePackageOptions", "bool StagePackageOptions.RequiredContentGroupOnly");
 			}
 			set
 			{
@@ -138,7 +138,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StagePackageOptions.StageInPlace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StagePackageOptions.StageInPlace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.StagePackageOptions", "bool StagePackageOptions.StageInPlace");
 			}
 			set
 			{
@@ -152,7 +152,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StubPackageOption StagePackageOptions.StubPackageOption is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StubPackageOption%20StagePackageOptions.StubPackageOption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.StagePackageOptions", "StubPackageOption StagePackageOptions.StubPackageOption");
 			}
 			set
 			{
@@ -166,7 +166,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PackageVolume StagePackageOptions.TargetVolume is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PackageVolume%20StagePackageOptions.TargetVolume");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.StagePackageOptions", "PackageVolume StagePackageOptions.TargetVolume");
 			}
 			set
 			{

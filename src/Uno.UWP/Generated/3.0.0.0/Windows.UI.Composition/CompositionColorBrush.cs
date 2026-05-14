@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color CompositionColorBrush.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20CompositionColorBrush.Color");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionColorBrush", "Color CompositionColorBrush.Color");
 			}
 			set
 			{

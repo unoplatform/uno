@@ -14,7 +14,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EchoEffectDefinition.ActivatableClassId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EchoEffectDefinition.ActivatableClassId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EchoEffectDefinition", "string EchoEffectDefinition.ActivatableClassId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EchoEffectDefinition.Delay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20EchoEffectDefinition.Delay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EchoEffectDefinition", "double EchoEffectDefinition.Delay");
 			}
 			set
 			{
@@ -38,7 +38,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EchoEffectDefinition.Feedback is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20EchoEffectDefinition.Feedback");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EchoEffectDefinition", "double EchoEffectDefinition.Feedback");
 			}
 			set
 			{
@@ -52,7 +52,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet EchoEffectDefinition.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPropertySet%20EchoEffectDefinition.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EchoEffectDefinition", "IPropertySet EchoEffectDefinition.Properties");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EchoEffectDefinition.WetDryMix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20EchoEffectDefinition.WetDryMix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EchoEffectDefinition", "double EchoEffectDefinition.WetDryMix");
 			}
 			set
 			{

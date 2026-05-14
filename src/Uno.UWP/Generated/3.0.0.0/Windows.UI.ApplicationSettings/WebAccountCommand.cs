@@ -14,7 +14,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SupportedWebAccountActions WebAccountCommand.Actions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SupportedWebAccountActions%20WebAccountCommand.Actions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.WebAccountCommand", "SupportedWebAccountActions WebAccountCommand.Actions");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccountCommandInvokedHandler WebAccountCommand.Invoked is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccountCommandInvokedHandler%20WebAccountCommand.Invoked");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.WebAccountCommand", "WebAccountCommandInvokedHandler WebAccountCommand.Invoked");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccount WebAccountCommand.WebAccount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccount%20WebAccountCommand.WebAccount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.WebAccountCommand", "WebAccount WebAccountCommand.WebAccount");
 			}
 		}
 #endif

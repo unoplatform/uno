@@ -14,7 +14,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomPromptBooleanInput.Compulsory is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomPromptBooleanInput.Compulsory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptBooleanInput", "bool VpnCustomPromptBooleanInput.Compulsory");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnCustomPromptBooleanInput.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnCustomPromptBooleanInput.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptBooleanInput", "string VpnCustomPromptBooleanInput.DisplayName");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomPromptBooleanInput.Emphasized is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomPromptBooleanInput.Emphasized");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptBooleanInput", "bool VpnCustomPromptBooleanInput.Emphasized");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomPromptBooleanInput.InitialValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomPromptBooleanInput.InitialValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptBooleanInput", "bool VpnCustomPromptBooleanInput.InitialValue");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomPromptBooleanInput.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomPromptBooleanInput.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptBooleanInput", "bool VpnCustomPromptBooleanInput.Value");
 			}
 		}
 #endif

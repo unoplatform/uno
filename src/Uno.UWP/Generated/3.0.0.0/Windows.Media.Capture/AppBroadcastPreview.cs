@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? AppBroadcastPreview.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20AppBroadcastPreview.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreview", "uint? AppBroadcastPreview.ErrorCode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastPreviewState AppBroadcastPreview.PreviewState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastPreviewState%20AppBroadcastPreview.PreviewState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreview", "AppBroadcastPreviewState AppBroadcastPreview.PreviewState");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastPreviewStreamReader AppBroadcastPreview.PreviewStreamReader is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastPreviewStreamReader%20AppBroadcastPreview.PreviewStreamReader");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreview", "AppBroadcastPreviewStreamReader AppBroadcastPreview.PreviewStreamReader");
 			}
 		}
 #endif

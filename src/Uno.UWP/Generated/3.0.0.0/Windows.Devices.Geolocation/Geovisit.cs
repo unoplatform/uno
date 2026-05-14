@@ -19,7 +19,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Geoposition Geovisit.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Geoposition%20Geovisit.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geovisit", "Geoposition Geovisit.Position");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VisitStateChange Geovisit.StateChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VisitStateChange%20Geovisit.StateChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geovisit", "VisitStateChange Geovisit.StateChange");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset Geovisit.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20Geovisit.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geovisit", "DateTimeOffset Geovisit.Timestamp");
 			}
 		}
 #endif

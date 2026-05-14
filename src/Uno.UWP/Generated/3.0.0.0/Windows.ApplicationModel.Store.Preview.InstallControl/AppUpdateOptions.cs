@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppUpdateOptions.AllowForcedAppRestart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppUpdateOptions.AllowForcedAppRestart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions", "bool AppUpdateOptions.AllowForcedAppRestart");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppUpdateOptions.AutomaticallyDownloadAndInstallUpdateIfFound is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppUpdateOptions.AutomaticallyDownloadAndInstallUpdateIfFound");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions", "bool AppUpdateOptions.AutomaticallyDownloadAndInstallUpdateIfFound");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppUpdateOptions.CatalogId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppUpdateOptions.CatalogId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppUpdateOptions", "string AppUpdateOptions.CatalogId");
 			}
 			set
 			{

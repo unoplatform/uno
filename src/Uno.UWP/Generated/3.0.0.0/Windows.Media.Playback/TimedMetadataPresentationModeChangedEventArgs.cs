@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedMetadataTrackPresentationMode TimedMetadataPresentationModeChangedEventArgs.NewPresentationMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedMetadataTrackPresentationMode%20TimedMetadataPresentationModeChangedEventArgs.NewPresentationMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.TimedMetadataPresentationModeChangedEventArgs", "TimedMetadataTrackPresentationMode TimedMetadataPresentationModeChangedEventArgs.NewPresentationMode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedMetadataTrackPresentationMode TimedMetadataPresentationModeChangedEventArgs.OldPresentationMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedMetadataTrackPresentationMode%20TimedMetadataPresentationModeChangedEventArgs.OldPresentationMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.TimedMetadataPresentationModeChangedEventArgs", "TimedMetadataTrackPresentationMode TimedMetadataPresentationModeChangedEventArgs.OldPresentationMode");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedMetadataTrack TimedMetadataPresentationModeChangedEventArgs.Track is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedMetadataTrack%20TimedMetadataPresentationModeChangedEventArgs.Track");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.TimedMetadataPresentationModeChangedEventArgs", "TimedMetadataTrack TimedMetadataPresentationModeChangedEventArgs.Track");
 			}
 		}
 #endif

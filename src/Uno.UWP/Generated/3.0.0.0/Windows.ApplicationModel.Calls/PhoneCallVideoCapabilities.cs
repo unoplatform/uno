@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhoneCallVideoCapabilities.IsVideoCallingCapable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PhoneCallVideoCapabilities.IsVideoCallingCapable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneCallVideoCapabilities", "bool PhoneCallVideoCapabilities.IsVideoCallingCapable");
 			}
 		}
 #endif

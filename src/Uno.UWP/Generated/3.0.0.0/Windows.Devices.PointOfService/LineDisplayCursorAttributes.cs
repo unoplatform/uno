@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LineDisplayCursorType LineDisplayCursorAttributes.CursorType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LineDisplayCursorType%20LineDisplayCursorAttributes.CursorType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCursorAttributes", "LineDisplayCursorType LineDisplayCursorAttributes.CursorType");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCursorAttributes.IsAutoAdvanceEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LineDisplayCursorAttributes.IsAutoAdvanceEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCursorAttributes", "bool LineDisplayCursorAttributes.IsAutoAdvanceEnabled");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCursorAttributes.IsBlinkEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LineDisplayCursorAttributes.IsBlinkEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCursorAttributes", "bool LineDisplayCursorAttributes.IsBlinkEnabled");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point LineDisplayCursorAttributes.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20LineDisplayCursorAttributes.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCursorAttributes", "Point LineDisplayCursorAttributes.Position");
 			}
 			set
 			{

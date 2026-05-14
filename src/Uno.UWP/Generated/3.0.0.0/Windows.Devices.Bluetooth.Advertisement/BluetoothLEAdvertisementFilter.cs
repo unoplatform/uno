@@ -14,7 +14,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisement BluetoothLEAdvertisementFilter.Advertisement is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothLEAdvertisement%20BluetoothLEAdvertisementFilter.Advertisement");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter", "BluetoothLEAdvertisement BluetoothLEAdvertisementFilter.Advertisement");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<BluetoothLEAdvertisementBytePattern> BluetoothLEAdvertisementFilter.BytePatterns is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CBluetoothLEAdvertisementBytePattern%3E%20BluetoothLEAdvertisementFilter.BytePatterns");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter", "IList<BluetoothLEAdvertisementBytePattern> BluetoothLEAdvertisementFilter.BytePatterns");
 			}
 		}
 #endif

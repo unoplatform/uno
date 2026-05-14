@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanEdit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailIrmInfo.CanEdit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailIrmInfo", "bool EmailIrmInfo.CanEdit");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanExtractData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailIrmInfo.CanExtractData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailIrmInfo", "bool EmailIrmInfo.CanExtractData");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanForward is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailIrmInfo.CanForward");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailIrmInfo", "bool EmailIrmInfo.CanForward");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanModifyRecipientsOnResponse is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailIrmInfo.CanModifyRecipientsOnResponse");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailIrmInfo", "bool EmailIrmInfo.CanModifyRecipientsOnResponse");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanPrintData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailIrmInfo.CanPrintData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailIrmInfo", "bool EmailIrmInfo.CanPrintData");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanRemoveIrmOnResponse is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailIrmInfo.CanRemoveIrmOnResponse");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailIrmInfo", "bool EmailIrmInfo.CanRemoveIrmOnResponse");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanReply is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailIrmInfo.CanReply");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailIrmInfo", "bool EmailIrmInfo.CanReply");
 			}
 			set
 			{
@@ -112,7 +112,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanReplyAll is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailIrmInfo.CanReplyAll");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailIrmInfo", "bool EmailIrmInfo.CanReplyAll");
 			}
 			set
 			{
@@ -126,7 +126,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset EmailIrmInfo.ExpirationDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20EmailIrmInfo.ExpirationDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailIrmInfo", "DateTimeOffset EmailIrmInfo.ExpirationDate");
 			}
 			set
 			{
@@ -140,7 +140,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.IsIrmOriginator is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailIrmInfo.IsIrmOriginator");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailIrmInfo", "bool EmailIrmInfo.IsIrmOriginator");
 			}
 			set
 			{
@@ -154,7 +154,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.IsProgramaticAccessAllowed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailIrmInfo.IsProgramaticAccessAllowed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailIrmInfo", "bool EmailIrmInfo.IsProgramaticAccessAllowed");
 			}
 			set
 			{
@@ -168,7 +168,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailIrmTemplate EmailIrmInfo.Template is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailIrmTemplate%20EmailIrmInfo.Template");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailIrmInfo", "EmailIrmTemplate EmailIrmInfo.Template");
 			}
 			set
 			{

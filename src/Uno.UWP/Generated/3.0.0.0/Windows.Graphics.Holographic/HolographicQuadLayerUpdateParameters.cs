@@ -19,7 +19,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HolographicQuadLayerUpdateParameters.CanAcquireWithHardwareProtection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HolographicQuadLayerUpdateParameters.CanAcquireWithHardwareProtection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters", "bool HolographicQuadLayerUpdateParameters.CanAcquireWithHardwareProtection");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Holographic
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface AcquireBufferToUpdateContent()
 		{
-			throw new global::System.NotImplementedException("The member IDirect3DSurface HolographicQuadLayerUpdateParameters.AcquireBufferToUpdateContent() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDirect3DSurface%20HolographicQuadLayerUpdateParameters.AcquireBufferToUpdateContent%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters", "IDirect3DSurface HolographicQuadLayerUpdateParameters.AcquireBufferToUpdateContent()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -69,7 +69,7 @@ namespace Windows.Graphics.Holographic
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface AcquireBufferToUpdateContentWithHardwareProtection()
 		{
-			throw new global::System.NotImplementedException("The member IDirect3DSurface HolographicQuadLayerUpdateParameters.AcquireBufferToUpdateContentWithHardwareProtection() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDirect3DSurface%20HolographicQuadLayerUpdateParameters.AcquireBufferToUpdateContentWithHardwareProtection%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters", "IDirect3DSurface HolographicQuadLayerUpdateParameters.AcquireBufferToUpdateContentWithHardwareProtection()");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters.CanAcquireWithHardwareProtection.get

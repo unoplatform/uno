@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Appointment AddAppointmentOperation.AppointmentInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Appointment%20AddAppointmentOperation.AppointmentInformation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentsProvider.AddAppointmentOperation", "Appointment AddAppointmentOperation.AppointmentInformation");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AddAppointmentOperation.SourcePackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AddAppointmentOperation.SourcePackageFamilyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentsProvider.AddAppointmentOperation", "string AddAppointmentOperation.SourcePackageFamilyName");
 			}
 		}
 #endif

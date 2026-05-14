@@ -14,7 +14,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AltitudeReferenceSystem Geopoint.AltitudeReferenceSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AltitudeReferenceSystem%20Geopoint.AltitudeReferenceSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geopoint", "AltitudeReferenceSystem Geopoint.AltitudeReferenceSystem");
 			}
 		}
 #endif
@@ -26,7 +26,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Geopoint.SpatialReferenceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Geopoint.SpatialReferenceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geopoint", "uint Geopoint.SpatialReferenceId");
 			}
 		}
 #endif

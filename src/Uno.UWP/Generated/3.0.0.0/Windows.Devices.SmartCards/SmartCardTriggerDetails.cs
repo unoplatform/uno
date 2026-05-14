@@ -19,7 +19,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardEmulator SmartCardTriggerDetails.Emulator is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardEmulator%20SmartCardTriggerDetails.Emulator");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardTriggerDetails", "SmartCardEmulator SmartCardTriggerDetails.Emulator");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCard SmartCardTriggerDetails.SmartCard is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCard%20SmartCardTriggerDetails.SmartCard");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardTriggerDetails", "SmartCard SmartCardTriggerDetails.SmartCard");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer SmartCardTriggerDetails.SourceAppletId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20SmartCardTriggerDetails.SourceAppletId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardTriggerDetails", "IBuffer SmartCardTriggerDetails.SourceAppletId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer SmartCardTriggerDetails.TriggerData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20SmartCardTriggerDetails.TriggerData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardTriggerDetails", "IBuffer SmartCardTriggerDetails.TriggerData");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardTriggerType SmartCardTriggerDetails.TriggerType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardTriggerType%20SmartCardTriggerDetails.TriggerType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardTriggerDetails", "SmartCardTriggerType SmartCardTriggerDetails.TriggerType");
 			}
 		}
 #endif
@@ -67,14 +67,14 @@ namespace Windows.Devices.SmartCards
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryLaunchCurrentAppAsync(string arguments)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SmartCardTriggerDetails.TryLaunchCurrentAppAsync(string arguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20SmartCardTriggerDetails.TryLaunchCurrentAppAsync%28string%20arguments%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardTriggerDetails", "IAsyncOperation<bool> SmartCardTriggerDetails.TryLaunchCurrentAppAsync(string arguments)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryLaunchCurrentAppAsync(string arguments, global::Windows.Devices.SmartCards.SmartCardLaunchBehavior behavior)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SmartCardTriggerDetails.TryLaunchCurrentAppAsync(string arguments, SmartCardLaunchBehavior behavior) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20SmartCardTriggerDetails.TryLaunchCurrentAppAsync%28string%20arguments%2C%20SmartCardLaunchBehavior%20behavior%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardTriggerDetails", "IAsyncOperation<bool> SmartCardTriggerDetails.TryLaunchCurrentAppAsync(string arguments, SmartCardLaunchBehavior behavior)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardTriggerDetails.Emulator.get

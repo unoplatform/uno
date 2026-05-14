@@ -14,7 +14,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TetheringWiFiBand NetworkOperatorTetheringAccessPointConfiguration.Band is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TetheringWiFiBand%20NetworkOperatorTetheringAccessPointConfiguration.Band");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration", "TetheringWiFiBand NetworkOperatorTetheringAccessPointConfiguration.Band");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NetworkOperatorTetheringAccessPointConfiguration.Passphrase is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NetworkOperatorTetheringAccessPointConfiguration.Passphrase");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration", "string NetworkOperatorTetheringAccessPointConfiguration.Passphrase");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NetworkOperatorTetheringAccessPointConfiguration.Ssid is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NetworkOperatorTetheringAccessPointConfiguration.Ssid");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration", "string NetworkOperatorTetheringAccessPointConfiguration.Ssid");
 			}
 			set
 			{
@@ -62,14 +62,14 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsBandSupported(global::Windows.Networking.NetworkOperators.TetheringWiFiBand band)
 		{
-			throw new global::System.NotImplementedException("The member bool NetworkOperatorTetheringAccessPointConfiguration.IsBandSupported(TetheringWiFiBand band) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20NetworkOperatorTetheringAccessPointConfiguration.IsBandSupported%28TetheringWiFiBand%20band%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration", "bool NetworkOperatorTetheringAccessPointConfiguration.IsBandSupported(TetheringWiFiBand band)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> IsBandSupportedAsync(global::Windows.Networking.NetworkOperators.TetheringWiFiBand band)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> NetworkOperatorTetheringAccessPointConfiguration.IsBandSupportedAsync(TetheringWiFiBand band) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20NetworkOperatorTetheringAccessPointConfiguration.IsBandSupportedAsync%28TetheringWiFiBand%20band%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration", "IAsyncOperation<bool> NetworkOperatorTetheringAccessPointConfiguration.IsBandSupportedAsync(TetheringWiFiBand band)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.Band.get

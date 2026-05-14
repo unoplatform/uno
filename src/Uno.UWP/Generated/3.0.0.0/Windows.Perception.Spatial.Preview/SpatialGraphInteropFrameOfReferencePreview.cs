@@ -19,7 +19,7 @@ namespace Windows.Perception.Spatial.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialCoordinateSystem SpatialGraphInteropFrameOfReferencePreview.CoordinateSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialCoordinateSystem%20SpatialGraphInteropFrameOfReferencePreview.CoordinateSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview", "SpatialCoordinateSystem SpatialGraphInteropFrameOfReferencePreview.CoordinateSystem");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Perception.Spatial.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Matrix4x4 SpatialGraphInteropFrameOfReferencePreview.CoordinateSystemToNodeTransform is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix4x4%20SpatialGraphInteropFrameOfReferencePreview.CoordinateSystemToNodeTransform");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview", "Matrix4x4 SpatialGraphInteropFrameOfReferencePreview.CoordinateSystemToNodeTransform");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Perception.Spatial.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid SpatialGraphInteropFrameOfReferencePreview.NodeId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20SpatialGraphInteropFrameOfReferencePreview.NodeId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Preview.SpatialGraphInteropFrameOfReferencePreview", "Guid SpatialGraphInteropFrameOfReferencePreview.NodeId");
 			}
 		}
 #endif

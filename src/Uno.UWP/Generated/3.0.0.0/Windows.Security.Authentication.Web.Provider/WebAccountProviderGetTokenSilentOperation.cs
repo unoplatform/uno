@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset WebAccountProviderGetTokenSilentOperation.CacheExpirationTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20WebAccountProviderGetTokenSilentOperation.CacheExpirationTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderGetTokenSilentOperation", "DateTimeOffset WebAccountProviderGetTokenSilentOperation.CacheExpirationTime");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccountProviderOperationKind WebAccountProviderGetTokenSilentOperation.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccountProviderOperationKind%20WebAccountProviderGetTokenSilentOperation.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderGetTokenSilentOperation", "WebAccountProviderOperationKind WebAccountProviderGetTokenSilentOperation.Kind");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebProviderTokenRequest WebAccountProviderGetTokenSilentOperation.ProviderRequest is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebProviderTokenRequest%20WebAccountProviderGetTokenSilentOperation.ProviderRequest");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderGetTokenSilentOperation", "WebProviderTokenRequest WebAccountProviderGetTokenSilentOperation.ProviderRequest");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<WebProviderTokenResponse> WebAccountProviderGetTokenSilentOperation.ProviderResponses is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CWebProviderTokenResponse%3E%20WebAccountProviderGetTokenSilentOperation.ProviderResponses");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderGetTokenSilentOperation", "IList<WebProviderTokenResponse> WebAccountProviderGetTokenSilentOperation.ProviderResponses");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AudioFrameOutputNode.ConsumeInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AudioFrameOutputNode.ConsumeInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioFrameOutputNode", "bool AudioFrameOutputNode.ConsumeInput");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<IAudioEffectDefinition> AudioFrameOutputNode.EffectDefinitions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CIAudioEffectDefinition%3E%20AudioFrameOutputNode.EffectDefinitions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioFrameOutputNode", "IList<IAudioEffectDefinition> AudioFrameOutputNode.EffectDefinitions");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioEncodingProperties AudioFrameOutputNode.EncodingProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioEncodingProperties%20AudioFrameOutputNode.EncodingProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioFrameOutputNode", "AudioEncodingProperties AudioFrameOutputNode.EncodingProperties");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AudioFrameOutputNode.OutgoingGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioFrameOutputNode.OutgoingGain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioFrameOutputNode", "double AudioFrameOutputNode.OutgoingGain");
 			}
 			set
 			{
@@ -65,7 +65,7 @@ namespace Windows.Media.Audio
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.AudioFrame GetFrame()
 		{
-			throw new global::System.NotImplementedException("The member AudioFrame AudioFrameOutputNode.GetFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioFrame%20AudioFrameOutputNode.GetFrame%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioFrameOutputNode", "AudioFrame AudioFrameOutputNode.GetFrame()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

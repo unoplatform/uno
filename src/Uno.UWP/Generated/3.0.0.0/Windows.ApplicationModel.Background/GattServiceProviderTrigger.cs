@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattServiceProviderAdvertisingParameters GattServiceProviderTrigger.AdvertisingParameters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattServiceProviderAdvertisingParameters%20GattServiceProviderTrigger.AdvertisingParameters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.GattServiceProviderTrigger", "GattServiceProviderAdvertisingParameters GattServiceProviderTrigger.AdvertisingParameters");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattLocalService GattServiceProviderTrigger.Service is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattLocalService%20GattServiceProviderTrigger.Service");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.GattServiceProviderTrigger", "GattLocalService GattServiceProviderTrigger.Service");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GattServiceProviderTrigger.TriggerId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GattServiceProviderTrigger.TriggerId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.GattServiceProviderTrigger", "string GattServiceProviderTrigger.TriggerId");
 			}
 		}
 #endif
@@ -51,7 +51,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.GattServiceProviderTriggerResult> CreateAsync(string triggerId, global::System.Guid serviceUuid)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattServiceProviderTriggerResult> GattServiceProviderTrigger.CreateAsync(string triggerId, Guid serviceUuid) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGattServiceProviderTriggerResult%3E%20GattServiceProviderTrigger.CreateAsync%28string%20triggerId%2C%20Guid%20serviceUuid%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.GattServiceProviderTrigger", "IAsyncOperation<GattServiceProviderTriggerResult> GattServiceProviderTrigger.CreateAsync(string triggerId, Guid serviceUuid)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTrigger.AdvertisingParameters.get

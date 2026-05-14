@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTaskOptions AddPagesEventArgs.PrintTaskOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTaskOptions%20AddPagesEventArgs.PrintTaskOptions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Printing.AddPagesEventArgs", "PrintTaskOptions AddPagesEventArgs.PrintTaskOptions");
 			}
 		}
 #endif

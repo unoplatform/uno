@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardTriggerType SmartCardTrigger.TriggerType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardTriggerType%20SmartCardTrigger.TriggerType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.SmartCardTrigger", "SmartCardTriggerType SmartCardTrigger.TriggerType");
 			}
 		}
 #endif

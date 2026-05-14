@@ -14,7 +14,7 @@ namespace Windows.Globalization.Collation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CharacterGroupings.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CharacterGroupings.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Collation.CharacterGroupings", "int CharacterGroupings.Count");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Globalization.Collation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CharacterGrouping CharacterGroupings.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CharacterGrouping%20CharacterGroupings.this%5Bint%20index%5D");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Collation.CharacterGroupings", "CharacterGrouping CharacterGroupings.this[int index]");
 			}
 		}
 #endif
@@ -48,7 +48,7 @@ namespace Windows.Globalization.Collation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Lookup(string text)
 		{
-			throw new global::System.NotImplementedException("The member string CharacterGroupings.Lookup(string text) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CharacterGroupings.Lookup%28string%20text%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Collation.CharacterGroupings", "string CharacterGroupings.Lookup(string text)");
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.Count.get
@@ -57,7 +57,7 @@ namespace Windows.Globalization.Collation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Globalization.Collation.CharacterGrouping> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<CharacterGrouping> CharacterGroupings.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CCharacterGrouping%3E%20CharacterGroupings.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Collation.CharacterGroupings", "IEnumerator<CharacterGrouping> CharacterGroupings.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.System.Collections.IEnumerable.GetEnumerator()

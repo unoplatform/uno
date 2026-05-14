@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool IsoSpeedControl.Auto is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20IsoSpeedControl.Auto");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.IsoSpeedControl", "bool IsoSpeedControl.Auto");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint IsoSpeedControl.Max is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20IsoSpeedControl.Max");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.IsoSpeedControl", "uint IsoSpeedControl.Max");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint IsoSpeedControl.Min is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20IsoSpeedControl.Min");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.IsoSpeedControl", "uint IsoSpeedControl.Min");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IsoSpeedPreset IsoSpeedControl.Preset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IsoSpeedPreset%20IsoSpeedControl.Preset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.IsoSpeedControl", "IsoSpeedPreset IsoSpeedControl.Preset");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint IsoSpeedControl.Step is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20IsoSpeedControl.Step");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.IsoSpeedControl", "uint IsoSpeedControl.Step");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool IsoSpeedControl.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20IsoSpeedControl.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.IsoSpeedControl", "bool IsoSpeedControl.Supported");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<IsoSpeedPreset> IsoSpeedControl.SupportedPresets is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CIsoSpeedPreset%3E%20IsoSpeedControl.SupportedPresets");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.IsoSpeedControl", "IReadOnlyList<IsoSpeedPreset> IsoSpeedControl.SupportedPresets");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint IsoSpeedControl.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20IsoSpeedControl.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.IsoSpeedControl", "uint IsoSpeedControl.Value");
 			}
 		}
 #endif
@@ -97,21 +97,21 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetPresetAsync(global::Windows.Media.Devices.IsoSpeedPreset preset)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction IsoSpeedControl.SetPresetAsync(IsoSpeedPreset preset) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20IsoSpeedControl.SetPresetAsync%28IsoSpeedPreset%20preset%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.IsoSpeedControl", "IAsyncAction IsoSpeedControl.SetPresetAsync(IsoSpeedPreset preset)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetValueAsync(uint isoSpeed)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction IsoSpeedControl.SetValueAsync(uint isoSpeed) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20IsoSpeedControl.SetValueAsync%28uint%20isoSpeed%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.IsoSpeedControl", "IAsyncAction IsoSpeedControl.SetValueAsync(uint isoSpeed)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetAutoAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction IsoSpeedControl.SetAutoAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20IsoSpeedControl.SetAutoAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.IsoSpeedControl", "IAsyncAction IsoSpeedControl.SetAutoAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.IsoSpeedControl.Auto.get

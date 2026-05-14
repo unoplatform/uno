@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ExpressionAnimation.Expression is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ExpressionAnimation.Expression");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ExpressionAnimation", "string ExpressionAnimation.Expression");
 			}
 			set
 			{

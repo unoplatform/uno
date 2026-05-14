@@ -19,7 +19,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool UnconstrainedTransferRequestResult.IsUnconstrained is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20UnconstrainedTransferRequestResult.IsUnconstrained");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.UnconstrainedTransferRequestResult", "bool UnconstrainedTransferRequestResult.IsUnconstrained");
 			}
 		}
 #endif

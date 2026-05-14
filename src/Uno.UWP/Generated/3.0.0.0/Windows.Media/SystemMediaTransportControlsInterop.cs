@@ -12,7 +12,7 @@ namespace Windows.Media
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.SystemMediaTransportControls GetForWindow(nint appWindow)
 		{
-			throw new global::System.NotImplementedException("The member SystemMediaTransportControls SystemMediaTransportControlsInterop.GetForWindow(nint appWindow) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemMediaTransportControls%20SystemMediaTransportControlsInterop.GetForWindow%28nint%20appWindow%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsInterop", "SystemMediaTransportControls SystemMediaTransportControlsInterop.GetForWindow(nint appWindow)");
 		}
 #endif
 	}

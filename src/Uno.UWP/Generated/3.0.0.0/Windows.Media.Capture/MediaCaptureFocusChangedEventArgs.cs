@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCaptureFocusState MediaCaptureFocusChangedEventArgs.FocusState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaCaptureFocusState%20MediaCaptureFocusChangedEventArgs.FocusState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureFocusChangedEventArgs", "MediaCaptureFocusState MediaCaptureFocusChangedEventArgs.FocusState");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort AllJoynCredentialsRequestedEventArgs.AttemptCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20AllJoynCredentialsRequestedEventArgs.AttemptCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs", "ushort AllJoynCredentialsRequestedEventArgs.AttemptCount");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AllJoynCredentials AllJoynCredentialsRequestedEventArgs.Credentials is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AllJoynCredentials%20AllJoynCredentialsRequestedEventArgs.Credentials");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs", "AllJoynCredentials AllJoynCredentialsRequestedEventArgs.Credentials");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AllJoynCredentialsRequestedEventArgs.PeerUniqueName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AllJoynCredentialsRequestedEventArgs.PeerUniqueName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs", "string AllJoynCredentialsRequestedEventArgs.PeerUniqueName");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AllJoynCredentialsRequestedEventArgs.RequestedUserName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AllJoynCredentialsRequestedEventArgs.RequestedUserName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs", "string AllJoynCredentialsRequestedEventArgs.RequestedUserName");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Devices.AllJoyn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral AllJoynCredentialsRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20AllJoynCredentialsRequestedEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs", "Deferral AllJoynCredentialsRequestedEventArgs.GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs.AttemptCount.get

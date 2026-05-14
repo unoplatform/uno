@@ -12,7 +12,7 @@ namespace Windows.Networking.Connectivity
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.Connectivity.ConnectionSession> AcquireConnectionAsync(global::Windows.Networking.Connectivity.CellularApnContext cellularApnContext)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ConnectionSession> ConnectivityManager.AcquireConnectionAsync(CellularApnContext cellularApnContext) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CConnectionSession%3E%20ConnectivityManager.AcquireConnectionAsync%28CellularApnContext%20cellularApnContext%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectivityManager", "IAsyncOperation<ConnectionSession> ConnectivityManager.AcquireConnectionAsync(CellularApnContext cellularApnContext)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

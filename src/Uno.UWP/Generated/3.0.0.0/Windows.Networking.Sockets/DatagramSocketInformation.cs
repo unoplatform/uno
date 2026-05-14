@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName DatagramSocketInformation.LocalAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20DatagramSocketInformation.LocalAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketInformation", "HostName DatagramSocketInformation.LocalAddress");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DatagramSocketInformation.LocalPort is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DatagramSocketInformation.LocalPort");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketInformation", "string DatagramSocketInformation.LocalPort");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName DatagramSocketInformation.RemoteAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20DatagramSocketInformation.RemoteAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketInformation", "HostName DatagramSocketInformation.RemoteAddress");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DatagramSocketInformation.RemotePort is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DatagramSocketInformation.RemotePort");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocketInformation", "string DatagramSocketInformation.RemotePort");
 			}
 		}
 #endif

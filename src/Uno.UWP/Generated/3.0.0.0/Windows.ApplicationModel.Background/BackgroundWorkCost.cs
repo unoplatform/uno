@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BackgroundWorkCostValue BackgroundWorkCost.CurrentBackgroundWorkCost is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BackgroundWorkCostValue%20BackgroundWorkCost.CurrentBackgroundWorkCost");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundWorkCost", "BackgroundWorkCostValue BackgroundWorkCost.CurrentBackgroundWorkCost");
 			}
 		}
 #endif

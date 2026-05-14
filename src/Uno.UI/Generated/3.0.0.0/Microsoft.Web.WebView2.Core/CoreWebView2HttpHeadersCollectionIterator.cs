@@ -15,7 +15,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object CoreWebView2HttpHeadersCollectionIterator.Current is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20CoreWebView2HttpHeadersCollectionIterator.Current");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator", "object CoreWebView2HttpHeadersCollectionIterator.Current");
 			}
 		}
 #endif

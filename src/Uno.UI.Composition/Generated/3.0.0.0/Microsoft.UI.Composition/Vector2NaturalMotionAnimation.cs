@@ -14,7 +14,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2? Vector2NaturalMotionAnimation.FinalValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%3F%20Vector2NaturalMotionAnimation.FinalValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Vector2NaturalMotionAnimation", "Vector2? Vector2NaturalMotionAnimation.FinalValue");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2? Vector2NaturalMotionAnimation.InitialValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%3F%20Vector2NaturalMotionAnimation.InitialValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Vector2NaturalMotionAnimation", "Vector2? Vector2NaturalMotionAnimation.InitialValue");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 Vector2NaturalMotionAnimation.InitialVelocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20Vector2NaturalMotionAnimation.InitialVelocity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Vector2NaturalMotionAnimation", "Vector2 Vector2NaturalMotionAnimation.InitialVelocity");
 			}
 			set
 			{

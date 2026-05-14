@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect? FlyoutShowOptions.ExclusionRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%3F%20FlyoutShowOptions.ExclusionRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions", "Rect? FlyoutShowOptions.ExclusionRect");
 			}
 			set
 			{

@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisement BluetoothLEAdvertisementReceivedEventArgs.Advertisement is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothLEAdvertisement%20BluetoothLEAdvertisementReceivedEventArgs.Advertisement");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "BluetoothLEAdvertisement BluetoothLEAdvertisementReceivedEventArgs.Advertisement");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisementType BluetoothLEAdvertisementReceivedEventArgs.AdvertisementType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothLEAdvertisementType%20BluetoothLEAdvertisementReceivedEventArgs.AdvertisementType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "BluetoothLEAdvertisementType BluetoothLEAdvertisementReceivedEventArgs.AdvertisementType");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong BluetoothLEAdvertisementReceivedEventArgs.BluetoothAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20BluetoothLEAdvertisementReceivedEventArgs.BluetoothAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "ulong BluetoothLEAdvertisementReceivedEventArgs.BluetoothAddress");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothAddressType BluetoothLEAdvertisementReceivedEventArgs.BluetoothAddressType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothAddressType%20BluetoothLEAdvertisementReceivedEventArgs.BluetoothAddressType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "BluetoothAddressType BluetoothLEAdvertisementReceivedEventArgs.BluetoothAddressType");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementReceivedEventArgs.IsAnonymous is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothLEAdvertisementReceivedEventArgs.IsAnonymous");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "bool BluetoothLEAdvertisementReceivedEventArgs.IsAnonymous");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementReceivedEventArgs.IsConnectable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothLEAdvertisementReceivedEventArgs.IsConnectable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "bool BluetoothLEAdvertisementReceivedEventArgs.IsConnectable");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementReceivedEventArgs.IsDirected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothLEAdvertisementReceivedEventArgs.IsDirected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "bool BluetoothLEAdvertisementReceivedEventArgs.IsDirected");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementReceivedEventArgs.IsScanResponse is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothLEAdvertisementReceivedEventArgs.IsScanResponse");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "bool BluetoothLEAdvertisementReceivedEventArgs.IsScanResponse");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementReceivedEventArgs.IsScannable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothLEAdvertisementReceivedEventArgs.IsScannable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "bool BluetoothLEAdvertisementReceivedEventArgs.IsScannable");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member short BluetoothLEAdvertisementReceivedEventArgs.RawSignalStrengthInDBm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=short%20BluetoothLEAdvertisementReceivedEventArgs.RawSignalStrengthInDBm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "short BluetoothLEAdvertisementReceivedEventArgs.RawSignalStrengthInDBm");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset BluetoothLEAdvertisementReceivedEventArgs.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20BluetoothLEAdvertisementReceivedEventArgs.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "DateTimeOffset BluetoothLEAdvertisementReceivedEventArgs.Timestamp");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member short? BluetoothLEAdvertisementReceivedEventArgs.TransmitPowerLevelInDBm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=short%3F%20BluetoothLEAdvertisementReceivedEventArgs.TransmitPowerLevelInDBm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "short? BluetoothLEAdvertisementReceivedEventArgs.TransmitPowerLevelInDBm");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionRoundedRectangleGeometry.CornerRadius is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionRoundedRectangleGeometry.CornerRadius");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionRoundedRectangleGeometry", "Vector2 CompositionRoundedRectangleGeometry.CornerRadius");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionRoundedRectangleGeometry.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionRoundedRectangleGeometry.Offset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionRoundedRectangleGeometry", "Vector2 CompositionRoundedRectangleGeometry.Offset");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionRoundedRectangleGeometry.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionRoundedRectangleGeometry.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionRoundedRectangleGeometry", "Vector2 CompositionRoundedRectangleGeometry.Size");
 			}
 			set
 			{

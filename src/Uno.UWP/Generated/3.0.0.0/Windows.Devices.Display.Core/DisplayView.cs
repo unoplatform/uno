@@ -19,7 +19,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SizeInt32? DisplayView.ContentResolution is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SizeInt32%3F%20DisplayView.ContentResolution");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayView", "SizeInt32? DisplayView.ContentResolution");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<DisplayPath> DisplayView.Paths is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CDisplayPath%3E%20DisplayView.Paths");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayView", "IReadOnlyList<DisplayPath> DisplayView.Paths");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<Guid, object> DisplayView.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3CGuid%2C%20object%3E%20DisplayView.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayView", "IDictionary<Guid, object> DisplayView.Properties");
 			}
 		}
 #endif

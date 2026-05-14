@@ -19,7 +19,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFolder StorageLibraryContentChangedTriggerDetails.Folder is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFolder%20StorageLibraryContentChangedTriggerDetails.Folder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.StorageLibraryContentChangedTriggerDetails", "StorageFolder StorageLibraryContentChangedTriggerDetails.Folder");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.Storage.Search
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Search.StorageItemQueryResult CreateModifiedSinceQuery(global::System.DateTimeOffset lastQueryTime)
 		{
-			throw new global::System.NotImplementedException("The member StorageItemQueryResult StorageLibraryContentChangedTriggerDetails.CreateModifiedSinceQuery(DateTimeOffset lastQueryTime) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageItemQueryResult%20StorageLibraryContentChangedTriggerDetails.CreateModifiedSinceQuery%28DateTimeOffset%20lastQueryTime%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.StorageLibraryContentChangedTriggerDetails", "StorageItemQueryResult StorageLibraryContentChangedTriggerDetails.CreateModifiedSinceQuery(DateTimeOffset lastQueryTime)");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Search.StorageLibraryContentChangedTriggerDetails.Folder.get

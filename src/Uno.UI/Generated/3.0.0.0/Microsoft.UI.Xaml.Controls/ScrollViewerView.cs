@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ScrollViewerView.HorizontalOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ScrollViewerView.HorizontalOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ScrollViewerView", "double ScrollViewerView.HorizontalOffset");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ScrollViewerView.VerticalOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ScrollViewerView.VerticalOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ScrollViewerView", "double ScrollViewerView.VerticalOffset");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float ScrollViewerView.ZoomFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ScrollViewerView.ZoomFactor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ScrollViewerView", "float ScrollViewerView.ZoomFactor");
 			}
 		}
 #endif

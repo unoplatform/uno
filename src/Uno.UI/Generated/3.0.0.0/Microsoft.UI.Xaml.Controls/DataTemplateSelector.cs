@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.UIElement GetElement(global::Microsoft.UI.Xaml.ElementFactoryGetArgs args)
 		{
-			throw new global::System.NotImplementedException("The member UIElement DataTemplateSelector.GetElement(ElementFactoryGetArgs args) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UIElement%20DataTemplateSelector.GetElement%28ElementFactoryGetArgs%20args%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.DataTemplateSelector", "UIElement DataTemplateSelector.GetElement(ElementFactoryGetArgs args)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

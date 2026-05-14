@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan AppCaptureDurationGeneratedEventArgs.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20AppCaptureDurationGeneratedEventArgs.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureDurationGeneratedEventArgs", "TimeSpan AppCaptureDurationGeneratedEventArgs.Duration");
 			}
 		}
 #endif

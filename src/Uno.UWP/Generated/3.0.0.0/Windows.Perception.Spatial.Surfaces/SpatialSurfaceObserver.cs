@@ -20,21 +20,21 @@ namespace Windows.Perception.Spatial.Surfaces
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Perception.Spatial.SpatialPerceptionAccessStatus> RequestAccessAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SpatialPerceptionAccessStatus> SpatialSurfaceObserver.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSpatialPerceptionAccessStatus%3E%20SpatialSurfaceObserver.RequestAccessAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver", "IAsyncOperation<SpatialPerceptionAccessStatus> SpatialSurfaceObserver.RequestAccessAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSupported()
 		{
-			throw new global::System.NotImplementedException("The member bool SpatialSurfaceObserver.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialSurfaceObserver.IsSupported%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver", "bool SpatialSurfaceObserver.IsSupported()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyDictionary<global::System.Guid, global::Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo> GetObservedSurfaces()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyDictionary<Guid, SpatialSurfaceInfo> SpatialSurfaceObserver.GetObservedSurfaces() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3CGuid%2C%20SpatialSurfaceInfo%3E%20SpatialSurfaceObserver.GetObservedSurfaces%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver", "IReadOnlyDictionary<Guid, SpatialSurfaceInfo> SpatialSurfaceObserver.GetObservedSurfaces()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

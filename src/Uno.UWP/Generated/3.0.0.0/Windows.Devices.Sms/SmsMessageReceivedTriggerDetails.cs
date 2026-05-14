@@ -19,7 +19,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsAppMessage SmsMessageReceivedTriggerDetails.AppMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsAppMessage%20SmsMessageReceivedTriggerDetails.AppMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "SmsAppMessage SmsMessageReceivedTriggerDetails.AppMessage");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsBroadcastMessage SmsMessageReceivedTriggerDetails.BroadcastMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsBroadcastMessage%20SmsMessageReceivedTriggerDetails.BroadcastMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "SmsBroadcastMessage SmsMessageReceivedTriggerDetails.BroadcastMessage");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsMessageType SmsMessageReceivedTriggerDetails.MessageType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageType%20SmsMessageReceivedTriggerDetails.MessageType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "SmsMessageType SmsMessageReceivedTriggerDetails.MessageType");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsStatusMessage SmsMessageReceivedTriggerDetails.StatusMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsStatusMessage%20SmsMessageReceivedTriggerDetails.StatusMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "SmsStatusMessage SmsMessageReceivedTriggerDetails.StatusMessage");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsTextMessage2 SmsMessageReceivedTriggerDetails.TextMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsTextMessage2%20SmsMessageReceivedTriggerDetails.TextMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "SmsTextMessage2 SmsMessageReceivedTriggerDetails.TextMessage");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsVoicemailMessage SmsMessageReceivedTriggerDetails.VoicemailMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsVoicemailMessage%20SmsMessageReceivedTriggerDetails.VoicemailMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "SmsVoicemailMessage SmsMessageReceivedTriggerDetails.VoicemailMessage");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsWapMessage SmsMessageReceivedTriggerDetails.WapMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsWapMessage%20SmsMessageReceivedTriggerDetails.WapMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsMessageReceivedTriggerDetails", "SmsWapMessage SmsMessageReceivedTriggerDetails.WapMessage");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccountProviderOperationKind WebAccountProviderManageAccountOperation.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccountProviderOperationKind%20WebAccountProviderManageAccountOperation.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderManageAccountOperation", "WebAccountProviderOperationKind WebAccountProviderManageAccountOperation.Kind");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccount WebAccountProviderManageAccountOperation.WebAccount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccount%20WebAccountProviderManageAccountOperation.WebAccount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebAccountProviderManageAccountOperation", "WebAccount WebAccountProviderManageAccountOperation.WebAccount");
 			}
 		}
 #endif

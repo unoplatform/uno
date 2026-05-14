@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong EmailMailboxAction.ChangeNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20EmailMailboxAction.ChangeNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAction", "ulong EmailMailboxAction.ChangeNumber");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxActionKind EmailMailboxAction.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxActionKind%20EmailMailboxAction.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxAction", "EmailMailboxActionKind EmailMailboxAction.Kind");
 			}
 		}
 #endif

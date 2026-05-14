@@ -19,7 +19,7 @@ namespace Windows.Management.Update
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet PreviewBuildsState.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20PreviewBuildsState.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Update.PreviewBuildsState", "ValueSet PreviewBuildsState.Properties");
 			}
 		}
 #endif

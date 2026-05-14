@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri AppInstallerInfo.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20AppInstallerInfo.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppInstallerInfo", "Uri AppInstallerInfo.Uri");
 			}
 		}
 #endif

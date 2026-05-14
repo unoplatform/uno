@@ -14,7 +14,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SettingsCommand SettingsCommand.AccountsCommand is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SettingsCommand%20SettingsCommand.AccountsCommand");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.SettingsCommand", "SettingsCommand SettingsCommand.AccountsCommand");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object SettingsCommand.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20SettingsCommand.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.SettingsCommand", "object SettingsCommand.Id");
 			}
 			set
 			{
@@ -38,7 +38,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UICommandInvokedHandler SettingsCommand.Invoked is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UICommandInvokedHandler%20SettingsCommand.Invoked");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.SettingsCommand", "UICommandInvokedHandler SettingsCommand.Invoked");
 			}
 			set
 			{
@@ -52,7 +52,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SettingsCommand.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SettingsCommand.Label");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.SettingsCommand", "string SettingsCommand.Label");
 			}
 			set
 			{

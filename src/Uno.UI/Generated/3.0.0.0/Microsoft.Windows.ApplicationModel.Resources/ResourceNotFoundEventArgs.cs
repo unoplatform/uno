@@ -19,7 +19,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ResourceContext ResourceNotFoundEventArgs.Context is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceContext%20ResourceNotFoundEventArgs.Context");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs", "ResourceContext ResourceNotFoundEventArgs.Context");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ResourceNotFoundEventArgs.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ResourceNotFoundEventArgs.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs", "string ResourceNotFoundEventArgs.Name");
 			}
 		}
 #endif

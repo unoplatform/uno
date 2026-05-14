@@ -14,7 +14,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> KnownCSimFilePaths.EFSpn is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cuint%3E%20KnownCSimFilePaths.EFSpn");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.KnownCSimFilePaths", "IReadOnlyList<uint> KnownCSimFilePaths.EFSpn");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> KnownCSimFilePaths.Gid1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cuint%3E%20KnownCSimFilePaths.Gid1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.KnownCSimFilePaths", "IReadOnlyList<uint> KnownCSimFilePaths.Gid1");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> KnownCSimFilePaths.Gid2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cuint%3E%20KnownCSimFilePaths.Gid2");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.KnownCSimFilePaths", "IReadOnlyList<uint> KnownCSimFilePaths.Gid2");
 			}
 		}
 #endif

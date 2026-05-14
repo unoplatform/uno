@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsChangedEventArgs.Action is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ItemsChangedEventArgs.Action");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs", "int ItemsChangedEventArgs.Action");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsChangedEventArgs.ItemCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ItemsChangedEventArgs.ItemCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs", "int ItemsChangedEventArgs.ItemCount");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsChangedEventArgs.ItemUICount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ItemsChangedEventArgs.ItemUICount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs", "int ItemsChangedEventArgs.ItemUICount");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GeneratorPosition ItemsChangedEventArgs.OldPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GeneratorPosition%20ItemsChangedEventArgs.OldPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs", "GeneratorPosition ItemsChangedEventArgs.OldPosition");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GeneratorPosition ItemsChangedEventArgs.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GeneratorPosition%20ItemsChangedEventArgs.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs", "GeneratorPosition ItemsChangedEventArgs.Position");
 			}
 		}
 #endif

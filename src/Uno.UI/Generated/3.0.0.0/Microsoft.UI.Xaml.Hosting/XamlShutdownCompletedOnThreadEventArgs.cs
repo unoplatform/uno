@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml.Hosting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDispatcherQueueDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral XamlShutdownCompletedOnThreadEventArgs.GetDispatcherQueueDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20XamlShutdownCompletedOnThreadEventArgs.GetDispatcherQueueDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Hosting.XamlShutdownCompletedOnThreadEventArgs", "Deferral XamlShutdownCompletedOnThreadEventArgs.GetDispatcherQueueDeferral()");
 		}
 #endif
 	}

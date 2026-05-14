@@ -19,7 +19,7 @@ namespace Windows.UI.Core.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SystemNavigationCloseRequestedPreviewEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemNavigationCloseRequestedPreviewEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs", "bool SystemNavigationCloseRequestedPreviewEventArgs.Handled");
 			}
 			set
 			{
@@ -31,7 +31,7 @@ namespace Windows.UI.Core.Preview
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral SystemNavigationCloseRequestedPreviewEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20SystemNavigationCloseRequestedPreviewEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs", "Deferral SystemNavigationCloseRequestedPreviewEventArgs.GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs.Handled.get

@@ -17,7 +17,7 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Capture.GameBarServicesManager GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member GameBarServicesManager GameBarServicesManager.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameBarServicesManager%20GameBarServicesManager.GetDefault%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.GameBarServicesManager", "GameBarServicesManager GameBarServicesManager.GetDefault()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.GameBarServicesManager.GameBarServicesCreated.add

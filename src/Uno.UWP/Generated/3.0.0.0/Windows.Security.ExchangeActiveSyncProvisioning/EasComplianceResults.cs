@@ -19,7 +19,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EasComplianceResults.Compliant is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EasComplianceResults.Compliant");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "bool EasComplianceResults.Compliant");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EasDisallowConvenienceLogonResult EasComplianceResults.DisallowConvenienceLogonResult is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EasDisallowConvenienceLogonResult%20EasComplianceResults.DisallowConvenienceLogonResult");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "EasDisallowConvenienceLogonResult EasComplianceResults.DisallowConvenienceLogonResult");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EasEncryptionProviderType EasComplianceResults.EncryptionProviderType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EasEncryptionProviderType%20EasComplianceResults.EncryptionProviderType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "EasEncryptionProviderType EasComplianceResults.EncryptionProviderType");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EasMaxInactivityTimeLockResult EasComplianceResults.MaxInactivityTimeLockResult is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EasMaxInactivityTimeLockResult%20EasComplianceResults.MaxInactivityTimeLockResult");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "EasMaxInactivityTimeLockResult EasComplianceResults.MaxInactivityTimeLockResult");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EasMaxPasswordFailedAttemptsResult EasComplianceResults.MaxPasswordFailedAttemptsResult is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EasMaxPasswordFailedAttemptsResult%20EasComplianceResults.MaxPasswordFailedAttemptsResult");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "EasMaxPasswordFailedAttemptsResult EasComplianceResults.MaxPasswordFailedAttemptsResult");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EasMinPasswordComplexCharactersResult EasComplianceResults.MinPasswordComplexCharactersResult is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EasMinPasswordComplexCharactersResult%20EasComplianceResults.MinPasswordComplexCharactersResult");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "EasMinPasswordComplexCharactersResult EasComplianceResults.MinPasswordComplexCharactersResult");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EasMinPasswordLengthResult EasComplianceResults.MinPasswordLengthResult is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EasMinPasswordLengthResult%20EasComplianceResults.MinPasswordLengthResult");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "EasMinPasswordLengthResult EasComplianceResults.MinPasswordLengthResult");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EasPasswordExpirationResult EasComplianceResults.PasswordExpirationResult is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EasPasswordExpirationResult%20EasComplianceResults.PasswordExpirationResult");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "EasPasswordExpirationResult EasComplianceResults.PasswordExpirationResult");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EasPasswordHistoryResult EasComplianceResults.PasswordHistoryResult is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EasPasswordHistoryResult%20EasComplianceResults.PasswordHistoryResult");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "EasPasswordHistoryResult EasComplianceResults.PasswordHistoryResult");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EasRequireEncryptionResult EasComplianceResults.RequireEncryptionResult is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EasRequireEncryptionResult%20EasComplianceResults.RequireEncryptionResult");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.ExchangeActiveSyncProvisioning.EasComplianceResults", "EasRequireEncryptionResult EasComplianceResults.RequireEncryptionResult");
 			}
 		}
 #endif

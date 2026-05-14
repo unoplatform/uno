@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMailboxProposeNewTimeForMeetingRequest.Comment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailMailboxProposeNewTimeForMeetingRequest.Comment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxProposeNewTimeForMeetingRequest", "string EmailMailboxProposeNewTimeForMeetingRequest.Comment");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMailboxProposeNewTimeForMeetingRequest.EmailMailboxId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailMailboxProposeNewTimeForMeetingRequest.EmailMailboxId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxProposeNewTimeForMeetingRequest", "string EmailMailboxProposeNewTimeForMeetingRequest.EmailMailboxId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMailboxProposeNewTimeForMeetingRequest.EmailMessageId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailMailboxProposeNewTimeForMeetingRequest.EmailMessageId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxProposeNewTimeForMeetingRequest", "string EmailMailboxProposeNewTimeForMeetingRequest.EmailMessageId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan EmailMailboxProposeNewTimeForMeetingRequest.NewDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20EmailMailboxProposeNewTimeForMeetingRequest.NewDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxProposeNewTimeForMeetingRequest", "TimeSpan EmailMailboxProposeNewTimeForMeetingRequest.NewDuration");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset EmailMailboxProposeNewTimeForMeetingRequest.NewStartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20EmailMailboxProposeNewTimeForMeetingRequest.NewStartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxProposeNewTimeForMeetingRequest", "DateTimeOffset EmailMailboxProposeNewTimeForMeetingRequest.NewStartTime");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMailboxProposeNewTimeForMeetingRequest.Subject is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailMailboxProposeNewTimeForMeetingRequest.Subject");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxProposeNewTimeForMeetingRequest", "string EmailMailboxProposeNewTimeForMeetingRequest.Subject");
 			}
 		}
 #endif
@@ -77,14 +77,14 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxProposeNewTimeForMeetingRequest.ReportCompletedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20EmailMailboxProposeNewTimeForMeetingRequest.ReportCompletedAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxProposeNewTimeForMeetingRequest", "IAsyncAction EmailMailboxProposeNewTimeForMeetingRequest.ReportCompletedAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxProposeNewTimeForMeetingRequest.ReportFailedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20EmailMailboxProposeNewTimeForMeetingRequest.ReportFailedAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxProposeNewTimeForMeetingRequest", "IAsyncAction EmailMailboxProposeNewTimeForMeetingRequest.ReportFailedAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxProposeNewTimeForMeetingRequest.Comment.get

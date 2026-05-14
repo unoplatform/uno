@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CashDrawerStatus CashDrawerStatusUpdatedEventArgs.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CashDrawerStatus%20CashDrawerStatusUpdatedEventArgs.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.CashDrawerStatusUpdatedEventArgs", "CashDrawerStatus CashDrawerStatusUpdatedEventArgs.Status");
 			}
 		}
 #endif

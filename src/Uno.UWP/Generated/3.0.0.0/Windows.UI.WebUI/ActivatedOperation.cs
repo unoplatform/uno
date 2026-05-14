@@ -17,7 +17,7 @@ namespace Windows.UI.WebUI
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.WebUI.ActivatedDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member ActivatedDeferral ActivatedOperation.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedDeferral%20ActivatedOperation.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.ActivatedOperation", "ActivatedDeferral ActivatedOperation.GetDeferral()");
 		}
 #endif
 	}

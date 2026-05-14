@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int BrushCollection.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20BrushCollection.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.BrushCollection", "int BrushCollection.Count");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BrushCollection.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BrushCollection.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.BrushCollection", "bool BrushCollection.IsReadOnly");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Brush BrushCollection.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Brush%20BrushCollection.this%5Bint%20index%5D");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.BrushCollection", "Brush BrushCollection.this[int index]");
 			}
 			set
 			{
@@ -58,7 +58,7 @@ namespace Microsoft.UI.Xaml.Media
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int IndexOf(global::Microsoft.UI.Xaml.Media.Brush item)
 		{
-			throw new global::System.NotImplementedException("The member int BrushCollection.IndexOf(Brush item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20BrushCollection.IndexOf%28Brush%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.BrushCollection", "int BrushCollection.IndexOf(Brush item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -93,7 +93,7 @@ namespace Microsoft.UI.Xaml.Media
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Contains(global::Microsoft.UI.Xaml.Media.Brush item)
 		{
-			throw new global::System.NotImplementedException("The member bool BrushCollection.Contains(Brush item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BrushCollection.Contains%28Brush%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.BrushCollection", "bool BrushCollection.Contains(Brush item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -107,14 +107,14 @@ namespace Microsoft.UI.Xaml.Media
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Remove(global::Microsoft.UI.Xaml.Media.Brush item)
 		{
-			throw new global::System.NotImplementedException("The member bool BrushCollection.Remove(Brush item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BrushCollection.Remove%28Brush%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.BrushCollection", "bool BrushCollection.Remove(Brush item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Microsoft.UI.Xaml.Media.Brush> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<Brush> BrushCollection.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CBrush%3E%20BrushCollection.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.BrushCollection", "IEnumerator<Brush> BrushCollection.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.BrushCollection.System.Collections.IEnumerable.GetEnumerator()

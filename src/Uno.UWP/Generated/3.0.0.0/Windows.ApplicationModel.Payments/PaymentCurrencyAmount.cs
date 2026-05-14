@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentCurrencyAmount.Currency is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentCurrencyAmount.Currency");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentCurrencyAmount", "string PaymentCurrencyAmount.Currency");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentCurrencyAmount.CurrencySystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentCurrencyAmount.CurrencySystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentCurrencyAmount", "string PaymentCurrencyAmount.CurrencySystem");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentCurrencyAmount.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentCurrencyAmount.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentCurrencyAmount", "string PaymentCurrencyAmount.Value");
 			}
 			set
 			{

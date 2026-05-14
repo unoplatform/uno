@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderStatusUpdatedEventArgs.ExtendedStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MagneticStripeReaderStatusUpdatedEventArgs.ExtendedStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs", "uint MagneticStripeReaderStatusUpdatedEventArgs.ExtendedStatus");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagneticStripeReaderStatus MagneticStripeReaderStatusUpdatedEventArgs.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MagneticStripeReaderStatus%20MagneticStripeReaderStatusUpdatedEventArgs.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderStatusUpdatedEventArgs", "MagneticStripeReaderStatus MagneticStripeReaderStatusUpdatedEventArgs.Status");
 			}
 		}
 #endif

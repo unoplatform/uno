@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketActivityTriggerReason SocketActivityTriggerDetails.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SocketActivityTriggerReason%20SocketActivityTriggerDetails.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.SocketActivityTriggerDetails", "SocketActivityTriggerReason SocketActivityTriggerDetails.Reason");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketActivityInformation SocketActivityTriggerDetails.SocketInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SocketActivityInformation%20SocketActivityTriggerDetails.SocketInformation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.SocketActivityTriggerDetails", "SocketActivityInformation SocketActivityTriggerDetails.SocketInformation");
 			}
 		}
 #endif

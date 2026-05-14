@@ -19,7 +19,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string FileUpdateRequest.ContentId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FileUpdateRequest.ContentId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.FileUpdateRequest", "string FileUpdateRequest.ContentId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFile FileUpdateRequest.File is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFile%20FileUpdateRequest.File");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.FileUpdateRequest", "StorageFile FileUpdateRequest.File");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FileUpdateStatus FileUpdateRequest.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileUpdateStatus%20FileUpdateRequest.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.FileUpdateRequest", "FileUpdateStatus FileUpdateRequest.Status");
 			}
 			set
 			{
@@ -53,7 +53,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string FileUpdateRequest.UserInputNeededMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FileUpdateRequest.UserInputNeededMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.FileUpdateRequest", "string FileUpdateRequest.UserInputNeededMessage");
 			}
 			set
 			{
@@ -65,7 +65,7 @@ namespace Windows.Storage.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Provider.FileUpdateRequestDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member FileUpdateRequestDeferral FileUpdateRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileUpdateRequestDeferral%20FileUpdateRequest.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.FileUpdateRequest", "FileUpdateRequestDeferral FileUpdateRequest.GetDeferral()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

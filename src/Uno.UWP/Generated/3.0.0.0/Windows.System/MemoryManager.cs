@@ -14,7 +14,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong MemoryManager.AppMemoryUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20MemoryManager.AppMemoryUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.MemoryManager", "ulong MemoryManager.AppMemoryUsage");
 			}
 		}
 #endif
@@ -25,7 +25,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong MemoryManager.AppMemoryUsageLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20MemoryManager.AppMemoryUsageLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.MemoryManager", "ulong MemoryManager.AppMemoryUsageLimit");
 			}
 		}
 #endif
@@ -35,7 +35,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong MemoryManager.ExpectedAppMemoryUsageLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20MemoryManager.ExpectedAppMemoryUsageLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.MemoryManager", "ulong MemoryManager.ExpectedAppMemoryUsageLimit");
 			}
 		}
 #endif
@@ -49,21 +49,21 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.AppMemoryReport GetAppMemoryReport()
 		{
-			throw new global::System.NotImplementedException("The member AppMemoryReport MemoryManager.GetAppMemoryReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppMemoryReport%20MemoryManager.GetAppMemoryReport%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.MemoryManager", "AppMemoryReport MemoryManager.GetAppMemoryReport()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.ProcessMemoryReport GetProcessMemoryReport()
 		{
-			throw new global::System.NotImplementedException("The member ProcessMemoryReport MemoryManager.GetProcessMemoryReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProcessMemoryReport%20MemoryManager.GetProcessMemoryReport%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.MemoryManager", "ProcessMemoryReport MemoryManager.GetProcessMemoryReport()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TrySetAppMemoryUsageLimit(ulong value)
 		{
-			throw new global::System.NotImplementedException("The member bool MemoryManager.TrySetAppMemoryUsageLimit(ulong value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MemoryManager.TrySetAppMemoryUsageLimit%28ulong%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.MemoryManager", "bool MemoryManager.TrySetAppMemoryUsageLimit(ulong value)");
 		}
 #endif
 		// Forced skipping of method Windows.System.MemoryManager.AppMemoryUsage.get

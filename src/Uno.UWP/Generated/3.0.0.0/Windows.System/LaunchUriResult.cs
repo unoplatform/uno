@@ -14,7 +14,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet LaunchUriResult.Result is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20LaunchUriResult.Result");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LaunchUriResult", "ValueSet LaunchUriResult.Result");
 			}
 		}
 #endif

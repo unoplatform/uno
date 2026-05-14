@@ -19,7 +19,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DisplayRegion.DisplayMonitorDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DisplayRegion.DisplayMonitorDeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.DisplayRegion", "string DisplayRegion.DisplayMonitorDeviceId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DisplayRegion.IsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DisplayRegion.IsVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.DisplayRegion", "bool DisplayRegion.IsVisible");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WindowingEnvironment DisplayRegion.WindowingEnvironment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WindowingEnvironment%20DisplayRegion.WindowingEnvironment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.DisplayRegion", "WindowingEnvironment DisplayRegion.WindowingEnvironment");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point DisplayRegion.WorkAreaOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20DisplayRegion.WorkAreaOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.DisplayRegion", "Point DisplayRegion.WorkAreaOffset");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size DisplayRegion.WorkAreaSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20DisplayRegion.WorkAreaSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.DisplayRegion", "Size DisplayRegion.WorkAreaSize");
 			}
 		}
 #endif

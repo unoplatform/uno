@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactFieldCategory ContactLocationField.Category is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactFieldCategory%20ContactLocationField.Category");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "ContactFieldCategory ContactLocationField.Category");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactLocationField.City is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactLocationField.City");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "string ContactLocationField.City");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactLocationField.Country is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactLocationField.Country");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "string ContactLocationField.Country");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactLocationField.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactLocationField.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "string ContactLocationField.Name");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactLocationField.PostalCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactLocationField.PostalCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "string ContactLocationField.PostalCode");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactLocationField.Region is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactLocationField.Region");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "string ContactLocationField.Region");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactLocationField.Street is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactLocationField.Street");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "string ContactLocationField.Street");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactFieldType ContactLocationField.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactFieldType%20ContactLocationField.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "ContactFieldType ContactLocationField.Type");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactLocationField.UnstructuredAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactLocationField.UnstructuredAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "string ContactLocationField.UnstructuredAddress");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactLocationField.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactLocationField.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactLocationField", "string ContactLocationField.Value");
 			}
 		}
 #endif

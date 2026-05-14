@@ -14,7 +14,7 @@ namespace Windows.Services.Cortana
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri CortanaActionableInsightsOptions.ContentSourceWebLink is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20CortanaActionableInsightsOptions.ContentSourceWebLink");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Cortana.CortanaActionableInsightsOptions", "Uri CortanaActionableInsightsOptions.ContentSourceWebLink");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Services.Cortana
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CortanaActionableInsightsOptions.SurroundingText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CortanaActionableInsightsOptions.SurroundingText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Cortana.CortanaActionableInsightsOptions", "string CortanaActionableInsightsOptions.SurroundingText");
 			}
 			set
 			{

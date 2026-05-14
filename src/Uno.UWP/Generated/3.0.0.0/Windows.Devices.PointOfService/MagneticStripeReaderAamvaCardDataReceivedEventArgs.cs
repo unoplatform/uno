@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Address is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MagneticStripeReaderAamvaCardDataReceivedEventArgs.Address");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Address");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderAamvaCardDataReceivedEventArgs.BirthDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MagneticStripeReaderAamvaCardDataReceivedEventArgs.BirthDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.BirthDate");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderAamvaCardDataReceivedEventArgs.City is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MagneticStripeReaderAamvaCardDataReceivedEventArgs.City");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.City");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Class is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MagneticStripeReaderAamvaCardDataReceivedEventArgs.Class");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Class");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Endorsements is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MagneticStripeReaderAamvaCardDataReceivedEventArgs.Endorsements");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Endorsements");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderAamvaCardDataReceivedEventArgs.ExpirationDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MagneticStripeReaderAamvaCardDataReceivedEventArgs.ExpirationDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.ExpirationDate");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderAamvaCardDataReceivedEventArgs.EyeColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MagneticStripeReaderAamvaCardDataReceivedEventArgs.EyeColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.EyeColor");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderAamvaCardDataReceivedEventArgs.FirstName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MagneticStripeReaderAamvaCardDataReceivedEventArgs.FirstName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.FirstName");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Gender is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MagneticStripeReaderAamvaCardDataReceivedEventArgs.Gender");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Gender");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderAamvaCardDataReceivedEventArgs.HairColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MagneticStripeReaderAamvaCardDataReceivedEventArgs.HairColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.HairColor");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Height is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MagneticStripeReaderAamvaCardDataReceivedEventArgs.Height");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Height");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderAamvaCardDataReceivedEventArgs.LicenseNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MagneticStripeReaderAamvaCardDataReceivedEventArgs.LicenseNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.LicenseNumber");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderAamvaCardDataReceivedEventArgs.PostalCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MagneticStripeReaderAamvaCardDataReceivedEventArgs.PostalCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.PostalCode");
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagneticStripeReaderReport MagneticStripeReaderAamvaCardDataReceivedEventArgs.Report is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MagneticStripeReaderReport%20MagneticStripeReaderAamvaCardDataReceivedEventArgs.Report");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "MagneticStripeReaderReport MagneticStripeReaderAamvaCardDataReceivedEventArgs.Report");
 			}
 		}
 #endif
@@ -159,7 +159,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Restrictions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MagneticStripeReaderAamvaCardDataReceivedEventArgs.Restrictions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Restrictions");
 			}
 		}
 #endif
@@ -169,7 +169,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderAamvaCardDataReceivedEventArgs.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MagneticStripeReaderAamvaCardDataReceivedEventArgs.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.State");
 			}
 		}
 #endif
@@ -179,7 +179,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Suffix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MagneticStripeReaderAamvaCardDataReceivedEventArgs.Suffix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Suffix");
 			}
 		}
 #endif
@@ -189,7 +189,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Surname is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MagneticStripeReaderAamvaCardDataReceivedEventArgs.Surname");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Surname");
 			}
 		}
 #endif
@@ -199,7 +199,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Weight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MagneticStripeReaderAamvaCardDataReceivedEventArgs.Weight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs", "string MagneticStripeReaderAamvaCardDataReceivedEventArgs.Weight");
 			}
 		}
 #endif

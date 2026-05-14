@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintPageRangeOptionDetails.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintPageRangeOptionDetails.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintPageRangeOptionDetails", "string PrintPageRangeOptionDetails.Description");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintPageRangeOptionDetails.ErrorText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintPageRangeOptionDetails.ErrorText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintPageRangeOptionDetails", "string PrintPageRangeOptionDetails.ErrorText");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintPageRangeOptionDetails.OptionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintPageRangeOptionDetails.OptionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintPageRangeOptionDetails", "string PrintPageRangeOptionDetails.OptionId");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintOptionType PrintPageRangeOptionDetails.OptionType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOptionType%20PrintPageRangeOptionDetails.OptionType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintPageRangeOptionDetails", "PrintOptionType PrintPageRangeOptionDetails.OptionType");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintOptionStates PrintPageRangeOptionDetails.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOptionStates%20PrintPageRangeOptionDetails.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintPageRangeOptionDetails", "PrintOptionStates PrintPageRangeOptionDetails.State");
 			}
 			set
 			{
@@ -81,7 +81,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object PrintPageRangeOptionDetails.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20PrintPageRangeOptionDetails.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintPageRangeOptionDetails", "object PrintPageRangeOptionDetails.Value");
 			}
 		}
 #endif
@@ -91,7 +91,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintPageRangeOptionDetails.WarningText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintPageRangeOptionDetails.WarningText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintPageRangeOptionDetails", "string PrintPageRangeOptionDetails.WarningText");
 			}
 			set
 			{
@@ -103,7 +103,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetValue(object value)
 		{
-			throw new global::System.NotImplementedException("The member bool PrintPageRangeOptionDetails.TrySetValue(object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintPageRangeOptionDetails.TrySetValue%28object%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintPageRangeOptionDetails", "bool PrintPageRangeOptionDetails.TrySetValue(object value)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintPageRangeOptionDetails.Description.get

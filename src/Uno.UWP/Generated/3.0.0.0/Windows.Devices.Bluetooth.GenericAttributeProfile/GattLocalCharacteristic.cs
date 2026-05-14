@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattCharacteristicProperties GattLocalCharacteristic.CharacteristicProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattCharacteristicProperties%20GattLocalCharacteristic.CharacteristicProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic", "GattCharacteristicProperties GattLocalCharacteristic.CharacteristicProperties");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<GattLocalDescriptor> GattLocalCharacteristic.Descriptors is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CGattLocalDescriptor%3E%20GattLocalCharacteristic.Descriptors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic", "IReadOnlyList<GattLocalDescriptor> GattLocalCharacteristic.Descriptors");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<GattPresentationFormat> GattLocalCharacteristic.PresentationFormats is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CGattPresentationFormat%3E%20GattLocalCharacteristic.PresentationFormats");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic", "IReadOnlyList<GattPresentationFormat> GattLocalCharacteristic.PresentationFormats");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattProtectionLevel GattLocalCharacteristic.ReadProtectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattProtectionLevel%20GattLocalCharacteristic.ReadProtectionLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic", "GattProtectionLevel GattLocalCharacteristic.ReadProtectionLevel");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer GattLocalCharacteristic.StaticValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20GattLocalCharacteristic.StaticValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic", "IBuffer GattLocalCharacteristic.StaticValue");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<GattSubscribedClient> GattLocalCharacteristic.SubscribedClients is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CGattSubscribedClient%3E%20GattLocalCharacteristic.SubscribedClients");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic", "IReadOnlyList<GattSubscribedClient> GattLocalCharacteristic.SubscribedClients");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GattLocalCharacteristic.UserDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GattLocalCharacteristic.UserDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic", "string GattLocalCharacteristic.UserDescription");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattLocalCharacteristic.Uuid is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattLocalCharacteristic.Uuid");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic", "Guid GattLocalCharacteristic.Uuid");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattProtectionLevel GattLocalCharacteristic.WriteProtectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattProtectionLevel%20GattLocalCharacteristic.WriteProtectionLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic", "GattProtectionLevel GattLocalCharacteristic.WriteProtectionLevel");
 			}
 		}
 #endif
@@ -107,21 +107,21 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalDescriptorResult> CreateDescriptorAsync(global::System.Guid descriptorUuid, global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalDescriptorParameters parameters)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattLocalDescriptorResult> GattLocalCharacteristic.CreateDescriptorAsync(Guid descriptorUuid, GattLocalDescriptorParameters parameters) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGattLocalDescriptorResult%3E%20GattLocalCharacteristic.CreateDescriptorAsync%28Guid%20descriptorUuid%2C%20GattLocalDescriptorParameters%20parameters%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic", "IAsyncOperation<GattLocalDescriptorResult> GattLocalCharacteristic.CreateDescriptorAsync(Guid descriptorUuid, GattLocalDescriptorParameters parameters)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult>> NotifyValueAsync(global::Windows.Storage.Streams.IBuffer value)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<GattClientNotificationResult>> GattLocalCharacteristic.NotifyValueAsync(IBuffer value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CGattClientNotificationResult%3E%3E%20GattLocalCharacteristic.NotifyValueAsync%28IBuffer%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic", "IAsyncOperation<IReadOnlyList<GattClientNotificationResult>> GattLocalCharacteristic.NotifyValueAsync(IBuffer value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult> NotifyValueAsync(global::Windows.Storage.Streams.IBuffer value, global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattSubscribedClient subscribedClient)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattClientNotificationResult> GattLocalCharacteristic.NotifyValueAsync(IBuffer value, GattSubscribedClient subscribedClient) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGattClientNotificationResult%3E%20GattLocalCharacteristic.NotifyValueAsync%28IBuffer%20value%2C%20GattSubscribedClient%20subscribedClient%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic", "IAsyncOperation<GattClientNotificationResult> GattLocalCharacteristic.NotifyValueAsync(IBuffer value, GattSubscribedClient subscribedClient)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristic.ReadRequested.add

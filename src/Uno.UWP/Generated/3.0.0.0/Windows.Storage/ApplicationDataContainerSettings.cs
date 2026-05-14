@@ -19,7 +19,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ICollection<string> ApplicationDataContainerSettings.Keys is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICollection%3Cstring%3E%20ApplicationDataContainerSettings.Keys");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationDataContainerSettings", "ICollection<string> ApplicationDataContainerSettings.Keys");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ICollection<object> ApplicationDataContainerSettings.Values is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICollection%3Cobject%3E%20ApplicationDataContainerSettings.Values");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationDataContainerSettings", "ICollection<object> ApplicationDataContainerSettings.Values");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ApplicationDataContainerSettings.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ApplicationDataContainerSettings.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationDataContainerSettings", "int ApplicationDataContainerSettings.Count");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ApplicationDataContainerSettings.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationDataContainerSettings.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationDataContainerSettings", "bool ApplicationDataContainerSettings.IsReadOnly");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object ApplicationDataContainerSettings.this[string key] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ApplicationDataContainerSettings.this%5Bstring%20key%5D");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationDataContainerSettings", "object ApplicationDataContainerSettings.this[string key]");
 			}
 			set
 			{
@@ -86,21 +86,21 @@ namespace Windows.Storage
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ContainsKey(string key)
 		{
-			throw new global::System.NotImplementedException("The member bool ApplicationDataContainerSettings.ContainsKey(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationDataContainerSettings.ContainsKey%28string%20key%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationDataContainerSettings", "bool ApplicationDataContainerSettings.ContainsKey(string key)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Remove(string key)
 		{
-			throw new global::System.NotImplementedException("The member bool ApplicationDataContainerSettings.Remove(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationDataContainerSettings.Remove%28string%20key%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationDataContainerSettings", "bool ApplicationDataContainerSettings.Remove(string key)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryGetValue(string key, out object value)
 		{
-			throw new global::System.NotImplementedException("The member bool ApplicationDataContainerSettings.TryGetValue(string key, out object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationDataContainerSettings.TryGetValue%28string%20key%2C%20out%20object%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationDataContainerSettings", "bool ApplicationDataContainerSettings.TryGetValue(string key, out object value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -121,7 +121,7 @@ namespace Windows.Storage
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Contains(global::System.Collections.Generic.KeyValuePair<string, object> item)
 		{
-			throw new global::System.NotImplementedException("The member bool ApplicationDataContainerSettings.Contains(KeyValuePair<string, object> item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationDataContainerSettings.Contains%28KeyValuePair%3Cstring%2C%20object%3E%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationDataContainerSettings", "bool ApplicationDataContainerSettings.Contains(KeyValuePair<string, object> item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -136,7 +136,7 @@ namespace Windows.Storage
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, object>> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<KeyValuePair<string, object>> ApplicationDataContainerSettings.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CKeyValuePair%3Cstring%2C%20object%3E%3E%20ApplicationDataContainerSettings.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationDataContainerSettings", "IEnumerator<KeyValuePair<string, object>> ApplicationDataContainerSettings.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.ApplicationDataContainerSettings.System.Collections.IEnumerable.GetEnumerator()

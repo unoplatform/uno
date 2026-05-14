@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESimAuthenticationPreference ESimServiceInfo.AuthenticationPreference is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ESimAuthenticationPreference%20ESimServiceInfo.AuthenticationPreference");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimServiceInfo", "ESimAuthenticationPreference ESimServiceInfo.AuthenticationPreference");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ESimServiceInfo.IsESimUiEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ESimServiceInfo.IsESimUiEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimServiceInfo", "bool ESimServiceInfo.IsESimUiEnabled");
 			}
 		}
 #endif

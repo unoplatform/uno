@@ -20,14 +20,14 @@ namespace Windows.Data.Xml.Xsl
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string TransformToString(global::Windows.Data.Xml.Dom.IXmlNode inputNode)
 		{
-			throw new global::System.NotImplementedException("The member string XsltProcessor.TransformToString(IXmlNode inputNode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20XsltProcessor.TransformToString%28IXmlNode%20inputNode%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Xsl.XsltProcessor", "string XsltProcessor.TransformToString(IXmlNode inputNode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.XmlDocument TransformToDocument(global::Windows.Data.Xml.Dom.IXmlNode inputNode)
 		{
-			throw new global::System.NotImplementedException("The member XmlDocument XsltProcessor.TransformToDocument(IXmlNode inputNode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XmlDocument%20XsltProcessor.TransformToDocument%28IXmlNode%20inputNode%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Xsl.XsltProcessor", "XmlDocument XsltProcessor.TransformToDocument(IXmlNode inputNode)");
 		}
 #endif
 	}

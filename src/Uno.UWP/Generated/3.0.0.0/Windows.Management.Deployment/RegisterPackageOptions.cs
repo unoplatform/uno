@@ -14,7 +14,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RegisterPackageOptions.AllowUnsigned is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RegisterPackageOptions.AllowUnsigned");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.RegisterPackageOptions", "bool RegisterPackageOptions.AllowUnsigned");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PackageVolume RegisterPackageOptions.AppDataVolume is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PackageVolume%20RegisterPackageOptions.AppDataVolume");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.RegisterPackageOptions", "PackageVolume RegisterPackageOptions.AppDataVolume");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RegisterPackageOptions.DeferRegistrationWhenPackagesAreInUse is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RegisterPackageOptions.DeferRegistrationWhenPackagesAreInUse");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.RegisterPackageOptions", "bool RegisterPackageOptions.DeferRegistrationWhenPackagesAreInUse");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> RegisterPackageOptions.DependencyPackageUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CUri%3E%20RegisterPackageOptions.DependencyPackageUris");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.RegisterPackageOptions", "IList<Uri> RegisterPackageOptions.DependencyPackageUris");
 			}
 		}
 #endif
@@ -66,7 +66,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RegisterPackageOptions.DeveloperMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RegisterPackageOptions.DeveloperMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.RegisterPackageOptions", "bool RegisterPackageOptions.DeveloperMode");
 			}
 			set
 			{
@@ -80,7 +80,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri RegisterPackageOptions.ExternalLocationUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20RegisterPackageOptions.ExternalLocationUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.RegisterPackageOptions", "Uri RegisterPackageOptions.ExternalLocationUri");
 			}
 			set
 			{
@@ -94,7 +94,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RegisterPackageOptions.ForceAppShutdown is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RegisterPackageOptions.ForceAppShutdown");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.RegisterPackageOptions", "bool RegisterPackageOptions.ForceAppShutdown");
 			}
 			set
 			{
@@ -108,7 +108,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RegisterPackageOptions.ForceTargetAppShutdown is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RegisterPackageOptions.ForceTargetAppShutdown");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.RegisterPackageOptions", "bool RegisterPackageOptions.ForceTargetAppShutdown");
 			}
 			set
 			{
@@ -122,7 +122,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RegisterPackageOptions.ForceUpdateFromAnyVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RegisterPackageOptions.ForceUpdateFromAnyVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.RegisterPackageOptions", "bool RegisterPackageOptions.ForceUpdateFromAnyVersion");
 			}
 			set
 			{
@@ -136,7 +136,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RegisterPackageOptions.InstallAllResources is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RegisterPackageOptions.InstallAllResources");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.RegisterPackageOptions", "bool RegisterPackageOptions.InstallAllResources");
 			}
 			set
 			{
@@ -150,7 +150,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> RegisterPackageOptions.OptionalPackageFamilyNames is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20RegisterPackageOptions.OptionalPackageFamilyNames");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.RegisterPackageOptions", "IList<string> RegisterPackageOptions.OptionalPackageFamilyNames");
 			}
 		}
 #endif
@@ -160,7 +160,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RegisterPackageOptions.StageInPlace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RegisterPackageOptions.StageInPlace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.RegisterPackageOptions", "bool RegisterPackageOptions.StageInPlace");
 			}
 			set
 			{

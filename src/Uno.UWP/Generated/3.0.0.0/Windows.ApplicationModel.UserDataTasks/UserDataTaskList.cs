@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataTaskList.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserDataTaskList.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "string UserDataTaskList.DisplayName");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataTaskList.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserDataTaskList.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "string UserDataTaskList.Id");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskListLimitedWriteOperations UserDataTaskList.LimitedWriteOperations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskListLimitedWriteOperations%20UserDataTaskList.LimitedWriteOperations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "UserDataTaskListLimitedWriteOperations UserDataTaskList.LimitedWriteOperations");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskListOtherAppReadAccess UserDataTaskList.OtherAppReadAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskListOtherAppReadAccess%20UserDataTaskList.OtherAppReadAccess");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "UserDataTaskListOtherAppReadAccess UserDataTaskList.OtherAppReadAccess");
 			}
 			set
 			{
@@ -67,7 +67,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskListOtherAppWriteAccess UserDataTaskList.OtherAppWriteAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskListOtherAppWriteAccess%20UserDataTaskList.OtherAppWriteAccess");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "UserDataTaskListOtherAppWriteAccess UserDataTaskList.OtherAppWriteAccess");
 			}
 			set
 			{
@@ -81,7 +81,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataTaskList.SourceDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserDataTaskList.SourceDisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "string UserDataTaskList.SourceDisplayName");
 			}
 		}
 #endif
@@ -91,7 +91,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskListSyncManager UserDataTaskList.SyncManager is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskListSyncManager%20UserDataTaskList.SyncManager");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "UserDataTaskListSyncManager UserDataTaskList.SyncManager");
 			}
 		}
 #endif
@@ -101,7 +101,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataTaskList.UserDataAccountId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserDataTaskList.UserDataAccountId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "string UserDataTaskList.UserDataAccountId");
 			}
 		}
 #endif
@@ -109,56 +109,56 @@ namespace Windows.ApplicationModel.UserDataTasks
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RegisterSyncManagerAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction UserDataTaskList.RegisterSyncManagerAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20UserDataTaskList.RegisterSyncManagerAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "IAsyncAction UserDataTaskList.RegisterSyncManagerAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.UserDataTasks.UserDataTaskReader GetTaskReader()
 		{
-			throw new global::System.NotImplementedException("The member UserDataTaskReader UserDataTaskList.GetTaskReader() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskReader%20UserDataTaskList.GetTaskReader%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "UserDataTaskReader UserDataTaskList.GetTaskReader()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.UserDataTasks.UserDataTaskReader GetTaskReader(global::Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions options)
 		{
-			throw new global::System.NotImplementedException("The member UserDataTaskReader UserDataTaskList.GetTaskReader(UserDataTaskQueryOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskReader%20UserDataTaskList.GetTaskReader%28UserDataTaskQueryOptions%20options%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "UserDataTaskReader UserDataTaskList.GetTaskReader(UserDataTaskQueryOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataTasks.UserDataTask> GetTaskAsync(string userDataTask)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<UserDataTask> UserDataTaskList.GetTaskAsync(string userDataTask) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUserDataTask%3E%20UserDataTaskList.GetTaskAsync%28string%20userDataTask%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "IAsyncOperation<UserDataTask> UserDataTaskList.GetTaskAsync(string userDataTask)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SaveTaskAsync(global::Windows.ApplicationModel.UserDataTasks.UserDataTask userDataTask)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction UserDataTaskList.SaveTaskAsync(UserDataTask userDataTask) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20UserDataTaskList.SaveTaskAsync%28UserDataTask%20userDataTask%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "IAsyncAction UserDataTaskList.SaveTaskAsync(UserDataTask userDataTask)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DeleteTaskAsync(string userDataTaskId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction UserDataTaskList.DeleteTaskAsync(string userDataTaskId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20UserDataTaskList.DeleteTaskAsync%28string%20userDataTaskId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "IAsyncAction UserDataTaskList.DeleteTaskAsync(string userDataTaskId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DeleteAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction UserDataTaskList.DeleteAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20UserDataTaskList.DeleteAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "IAsyncAction UserDataTaskList.DeleteAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SaveAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction UserDataTaskList.SaveAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20UserDataTaskList.SaveAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskList", "IAsyncAction UserDataTaskList.SaveAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskList.DisplayName.get

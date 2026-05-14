@@ -14,7 +14,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementDataTypes.AdvertisingInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20BluetoothLEAdvertisementDataTypes.AdvertisingInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes", "byte BluetoothLEAdvertisementDataTypes.AdvertisingInterval");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementDataTypes.Appearance is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20BluetoothLEAdvertisementDataTypes.Appearance");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes", "byte BluetoothLEAdvertisementDataTypes.Appearance");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementDataTypes.CompleteLocalName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20BluetoothLEAdvertisementDataTypes.CompleteLocalName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes", "byte BluetoothLEAdvertisementDataTypes.CompleteLocalName");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementDataTypes.CompleteService128BitUuids is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20BluetoothLEAdvertisementDataTypes.CompleteService128BitUuids");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes", "byte BluetoothLEAdvertisementDataTypes.CompleteService128BitUuids");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementDataTypes.CompleteService16BitUuids is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20BluetoothLEAdvertisementDataTypes.CompleteService16BitUuids");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes", "byte BluetoothLEAdvertisementDataTypes.CompleteService16BitUuids");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementDataTypes.CompleteService32BitUuids is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20BluetoothLEAdvertisementDataTypes.CompleteService32BitUuids");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes", "byte BluetoothLEAdvertisementDataTypes.CompleteService32BitUuids");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementDataTypes.Flags is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20BluetoothLEAdvertisementDataTypes.Flags");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes", "byte BluetoothLEAdvertisementDataTypes.Flags");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementDataTypes.IncompleteService128BitUuids is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20BluetoothLEAdvertisementDataTypes.IncompleteService128BitUuids");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes", "byte BluetoothLEAdvertisementDataTypes.IncompleteService128BitUuids");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementDataTypes.IncompleteService16BitUuids is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20BluetoothLEAdvertisementDataTypes.IncompleteService16BitUuids");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes", "byte BluetoothLEAdvertisementDataTypes.IncompleteService16BitUuids");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementDataTypes.IncompleteService32BitUuids is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20BluetoothLEAdvertisementDataTypes.IncompleteService32BitUuids");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes", "byte BluetoothLEAdvertisementDataTypes.IncompleteService32BitUuids");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementDataTypes.ManufacturerSpecificData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20BluetoothLEAdvertisementDataTypes.ManufacturerSpecificData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes", "byte BluetoothLEAdvertisementDataTypes.ManufacturerSpecificData");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementDataTypes.PublicTargetAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20BluetoothLEAdvertisementDataTypes.PublicTargetAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes", "byte BluetoothLEAdvertisementDataTypes.PublicTargetAddress");
 			}
 		}
 #endif
@@ -134,7 +134,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementDataTypes.RandomTargetAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20BluetoothLEAdvertisementDataTypes.RandomTargetAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes", "byte BluetoothLEAdvertisementDataTypes.RandomTargetAddress");
 			}
 		}
 #endif
@@ -144,7 +144,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementDataTypes.ServiceData128BitUuids is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20BluetoothLEAdvertisementDataTypes.ServiceData128BitUuids");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes", "byte BluetoothLEAdvertisementDataTypes.ServiceData128BitUuids");
 			}
 		}
 #endif
@@ -154,7 +154,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementDataTypes.ServiceData16BitUuids is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20BluetoothLEAdvertisementDataTypes.ServiceData16BitUuids");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes", "byte BluetoothLEAdvertisementDataTypes.ServiceData16BitUuids");
 			}
 		}
 #endif
@@ -164,7 +164,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementDataTypes.ServiceData32BitUuids is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20BluetoothLEAdvertisementDataTypes.ServiceData32BitUuids");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes", "byte BluetoothLEAdvertisementDataTypes.ServiceData32BitUuids");
 			}
 		}
 #endif
@@ -174,7 +174,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementDataTypes.ServiceSolicitation128BitUuids is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20BluetoothLEAdvertisementDataTypes.ServiceSolicitation128BitUuids");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes", "byte BluetoothLEAdvertisementDataTypes.ServiceSolicitation128BitUuids");
 			}
 		}
 #endif
@@ -184,7 +184,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementDataTypes.ServiceSolicitation16BitUuids is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20BluetoothLEAdvertisementDataTypes.ServiceSolicitation16BitUuids");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes", "byte BluetoothLEAdvertisementDataTypes.ServiceSolicitation16BitUuids");
 			}
 		}
 #endif
@@ -194,7 +194,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementDataTypes.ServiceSolicitation32BitUuids is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20BluetoothLEAdvertisementDataTypes.ServiceSolicitation32BitUuids");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes", "byte BluetoothLEAdvertisementDataTypes.ServiceSolicitation32BitUuids");
 			}
 		}
 #endif
@@ -204,7 +204,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementDataTypes.ShortenedLocalName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20BluetoothLEAdvertisementDataTypes.ShortenedLocalName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes", "byte BluetoothLEAdvertisementDataTypes.ShortenedLocalName");
 			}
 		}
 #endif
@@ -214,7 +214,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementDataTypes.SlaveConnectionIntervalRange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20BluetoothLEAdvertisementDataTypes.SlaveConnectionIntervalRange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes", "byte BluetoothLEAdvertisementDataTypes.SlaveConnectionIntervalRange");
 			}
 		}
 #endif
@@ -224,7 +224,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte BluetoothLEAdvertisementDataTypes.TxPowerLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20BluetoothLEAdvertisementDataTypes.TxPowerLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes", "byte BluetoothLEAdvertisementDataTypes.TxPowerLevel");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebViewControlPermissionRequest WebViewControlPermissionRequestedEventArgs.PermissionRequest is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebViewControlPermissionRequest%20WebViewControlPermissionRequestedEventArgs.PermissionRequest");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlPermissionRequestedEventArgs", "WebViewControlPermissionRequest WebViewControlPermissionRequestedEventArgs.PermissionRequest");
 			}
 		}
 #endif

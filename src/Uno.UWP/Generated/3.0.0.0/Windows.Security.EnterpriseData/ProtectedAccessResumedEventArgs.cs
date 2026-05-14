@@ -19,7 +19,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> ProtectedAccessResumedEventArgs.Identities is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20ProtectedAccessResumedEventArgs.Identities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectedAccessResumedEventArgs", "IReadOnlyList<string> ProtectedAccessResumedEventArgs.Identities");
 			}
 		}
 #endif

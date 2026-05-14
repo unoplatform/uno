@@ -19,7 +19,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WiFiWpsConfigurationStatus WiFiWpsConfigurationResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WiFiWpsConfigurationStatus%20WiFiWpsConfigurationResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiWpsConfigurationResult", "WiFiWpsConfigurationStatus WiFiWpsConfigurationResult.Status");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<WiFiWpsKind> WiFiWpsConfigurationResult.SupportedWpsKinds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CWiFiWpsKind%3E%20WiFiWpsConfigurationResult.SupportedWpsKinds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiWpsConfigurationResult", "IReadOnlyList<WiFiWpsKind> WiFiWpsConfigurationResult.SupportedWpsKinds");
 			}
 		}
 #endif

@@ -27,7 +27,7 @@ namespace Windows.Foundation.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Diagnostics.ErrorOptions GetErrorOptions()
 		{
-			throw new global::System.NotImplementedException("The member ErrorOptions RuntimeBrokerErrorSettings.GetErrorOptions() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ErrorOptions%20RuntimeBrokerErrorSettings.GetErrorOptions%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.RuntimeBrokerErrorSettings", "ErrorOptions RuntimeBrokerErrorSettings.GetErrorOptions()");
 		}
 #endif
 		// Processing: Windows.Foundation.Diagnostics.IErrorReportingSettings

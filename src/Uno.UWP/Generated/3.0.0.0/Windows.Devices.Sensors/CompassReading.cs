@@ -14,7 +14,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagnetometerAccuracy CompassReading.HeadingAccuracy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MagnetometerAccuracy%20CompassReading.HeadingAccuracy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.CompassReading", "MagnetometerAccuracy CompassReading.HeadingAccuracy");
 			}
 		}
 #endif
@@ -26,7 +26,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? CompassReading.PerformanceCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20CompassReading.PerformanceCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.CompassReading", "TimeSpan? CompassReading.PerformanceCount");
 			}
 		}
 #endif
@@ -36,7 +36,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> CompassReading.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20object%3E%20CompassReading.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.CompassReading", "IReadOnlyDictionary<string, object> CompassReading.Properties");
 			}
 		}
 #endif

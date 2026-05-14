@@ -12,7 +12,7 @@ namespace Windows.Networking.BackgroundTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.WebErrorStatus GetStatus(int hresult)
 		{
-			throw new global::System.NotImplementedException("The member WebErrorStatus BackgroundTransferError.GetStatus(int hresult) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebErrorStatus%20BackgroundTransferError.GetStatus%28int%20hresult%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferError", "WebErrorStatus BackgroundTransferError.GetStatus(int hresult)");
 		}
 #endif
 	}

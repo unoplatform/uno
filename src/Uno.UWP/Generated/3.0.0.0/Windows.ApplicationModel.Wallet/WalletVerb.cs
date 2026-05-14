@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WalletVerb.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletVerb.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletVerb", "string WalletVerb.Name");
 			}
 			set
 			{

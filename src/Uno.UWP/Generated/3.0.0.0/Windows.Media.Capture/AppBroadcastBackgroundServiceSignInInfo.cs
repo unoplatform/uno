@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAuthenticationResult AppBroadcastBackgroundServiceSignInInfo.AuthenticationResult is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAuthenticationResult%20AppBroadcastBackgroundServiceSignInInfo.AuthenticationResult");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "WebAuthenticationResult AppBroadcastBackgroundServiceSignInInfo.AuthenticationResult");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri AppBroadcastBackgroundServiceSignInInfo.OAuthCallbackUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20AppBroadcastBackgroundServiceSignInInfo.OAuthCallbackUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "Uri AppBroadcastBackgroundServiceSignInInfo.OAuthCallbackUri");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri AppBroadcastBackgroundServiceSignInInfo.OAuthRequestUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20AppBroadcastBackgroundServiceSignInInfo.OAuthRequestUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "Uri AppBroadcastBackgroundServiceSignInInfo.OAuthRequestUri");
 			}
 			set
 			{
@@ -57,7 +57,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastSignInState AppBroadcastBackgroundServiceSignInInfo.SignInState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastSignInState%20AppBroadcastBackgroundServiceSignInInfo.SignInState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "AppBroadcastSignInState AppBroadcastBackgroundServiceSignInInfo.SignInState");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppBroadcastBackgroundServiceSignInInfo.UserName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppBroadcastBackgroundServiceSignInInfo.UserName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundServiceSignInInfo", "string AppBroadcastBackgroundServiceSignInInfo.UserName");
 			}
 			set
 			{

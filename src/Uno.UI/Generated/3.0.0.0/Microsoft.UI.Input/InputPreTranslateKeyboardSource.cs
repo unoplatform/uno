@@ -17,7 +17,7 @@ namespace Microsoft.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Input.InputPreTranslateKeyboardSource GetForIsland(global::Microsoft.UI.Content.ContentIsland island)
 		{
-			throw new global::System.NotImplementedException("The member InputPreTranslateKeyboardSource InputPreTranslateKeyboardSource.GetForIsland(ContentIsland island) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputPreTranslateKeyboardSource%20InputPreTranslateKeyboardSource.GetForIsland%28ContentIsland%20island%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputPreTranslateKeyboardSource", "InputPreTranslateKeyboardSource InputPreTranslateKeyboardSource.GetForIsland(ContentIsland island)");
 		}
 #endif
 	}

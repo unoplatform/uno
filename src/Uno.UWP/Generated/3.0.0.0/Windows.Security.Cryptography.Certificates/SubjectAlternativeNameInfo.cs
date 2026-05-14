@@ -14,7 +14,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> SubjectAlternativeNameInfo.DistinguishedName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20SubjectAlternativeNameInfo.DistinguishedName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IReadOnlyList<string> SubjectAlternativeNameInfo.DistinguishedName");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> SubjectAlternativeNameInfo.DistinguishedNames is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20SubjectAlternativeNameInfo.DistinguishedNames");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IList<string> SubjectAlternativeNameInfo.DistinguishedNames");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> SubjectAlternativeNameInfo.DnsName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20SubjectAlternativeNameInfo.DnsName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IReadOnlyList<string> SubjectAlternativeNameInfo.DnsName");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> SubjectAlternativeNameInfo.DnsNames is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20SubjectAlternativeNameInfo.DnsNames");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IList<string> SubjectAlternativeNameInfo.DnsNames");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> SubjectAlternativeNameInfo.EmailName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20SubjectAlternativeNameInfo.EmailName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IReadOnlyList<string> SubjectAlternativeNameInfo.EmailName");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> SubjectAlternativeNameInfo.EmailNames is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20SubjectAlternativeNameInfo.EmailNames");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IList<string> SubjectAlternativeNameInfo.EmailNames");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CertificateExtension SubjectAlternativeNameInfo.Extension is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CertificateExtension%20SubjectAlternativeNameInfo.Extension");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "CertificateExtension SubjectAlternativeNameInfo.Extension");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> SubjectAlternativeNameInfo.IPAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20SubjectAlternativeNameInfo.IPAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IReadOnlyList<string> SubjectAlternativeNameInfo.IPAddress");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> SubjectAlternativeNameInfo.IPAddresses is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20SubjectAlternativeNameInfo.IPAddresses");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IList<string> SubjectAlternativeNameInfo.IPAddresses");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> SubjectAlternativeNameInfo.PrincipalName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20SubjectAlternativeNameInfo.PrincipalName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IReadOnlyList<string> SubjectAlternativeNameInfo.PrincipalName");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> SubjectAlternativeNameInfo.PrincipalNames is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20SubjectAlternativeNameInfo.PrincipalNames");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IList<string> SubjectAlternativeNameInfo.PrincipalNames");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> SubjectAlternativeNameInfo.Url is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20SubjectAlternativeNameInfo.Url");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IReadOnlyList<string> SubjectAlternativeNameInfo.Url");
 			}
 		}
 #endif
@@ -134,7 +134,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> SubjectAlternativeNameInfo.Urls is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20SubjectAlternativeNameInfo.Urls");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo", "IList<string> SubjectAlternativeNameInfo.Urls");
 			}
 		}
 #endif

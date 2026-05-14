@@ -19,7 +19,7 @@ namespace Windows.Devices.Input.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GazeDevicePreview GazeDeviceWatcherUpdatedPreviewEventArgs.Device is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GazeDevicePreview%20GazeDeviceWatcherUpdatedPreviewEventArgs.Device");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazeDeviceWatcherUpdatedPreviewEventArgs", "GazeDevicePreview GazeDeviceWatcherUpdatedPreviewEventArgs.Device");
 			}
 		}
 #endif

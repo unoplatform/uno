@@ -19,7 +19,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MiracastReceiverGameControllerDevice.IsRequestedByTransmitter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MiracastReceiverGameControllerDevice.IsRequestedByTransmitter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverGameControllerDevice", "bool MiracastReceiverGameControllerDevice.IsRequestedByTransmitter");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MiracastReceiverGameControllerDevice.IsTransmittingInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MiracastReceiverGameControllerDevice.IsTransmittingInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverGameControllerDevice", "bool MiracastReceiverGameControllerDevice.IsTransmittingInput");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastReceiverGameControllerDeviceUsageMode MiracastReceiverGameControllerDevice.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MiracastReceiverGameControllerDeviceUsageMode%20MiracastReceiverGameControllerDevice.Mode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverGameControllerDevice", "MiracastReceiverGameControllerDeviceUsageMode MiracastReceiverGameControllerDevice.Mode");
 			}
 			set
 			{
@@ -53,7 +53,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MiracastReceiverGameControllerDevice.TransmitInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MiracastReceiverGameControllerDevice.TransmitInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverGameControllerDevice", "bool MiracastReceiverGameControllerDevice.TransmitInput");
 			}
 			set
 			{

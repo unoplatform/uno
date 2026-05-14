@@ -14,7 +14,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MobileBroadbandAntennaSar.AntennaIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20MobileBroadbandAntennaSar.AntennaIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandAntennaSar", "int MobileBroadbandAntennaSar.AntennaIndex");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MobileBroadbandAntennaSar.SarBackoffIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20MobileBroadbandAntennaSar.SarBackoffIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandAntennaSar", "int MobileBroadbandAntennaSar.SarBackoffIndex");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialAnchor SpatialEntity.Anchor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialAnchor%20SpatialEntity.Anchor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialEntity", "SpatialAnchor SpatialEntity.Anchor");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpatialEntity.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SpatialEntity.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialEntity", "string SpatialEntity.Id");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet SpatialEntity.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20SpatialEntity.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialEntity", "ValueSet SpatialEntity.Properties");
 			}
 		}
 #endif

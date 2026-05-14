@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedMetadataTrackErrorCode TimedMetadataTrackError.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedMetadataTrackErrorCode%20TimedMetadataTrackError.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrackError", "TimedMetadataTrackErrorCode TimedMetadataTrackError.ErrorCode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception TimedMetadataTrackError.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20TimedMetadataTrackError.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedMetadataTrackError", "Exception TimedMetadataTrackError.ExtendedError");
 			}
 		}
 #endif

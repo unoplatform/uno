@@ -17,7 +17,7 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.EdgeGesture GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member EdgeGesture EdgeGesture.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EdgeGesture%20EdgeGesture.GetForCurrentView%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.EdgeGesture", "EdgeGesture EdgeGesture.GetForCurrentView()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.EdgeGesture.Canceled.add

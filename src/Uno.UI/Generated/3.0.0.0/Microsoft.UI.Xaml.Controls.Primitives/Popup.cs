@@ -64,7 +64,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Popup.IsConstrainedToRootBounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Popup.IsConstrainedToRootBounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.Popup", "bool Popup.IsConstrainedToRootBounds");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VoipPhoneCallMedia CallAnswerEventArgs.AcceptedMedia is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoipPhoneCallMedia%20CallAnswerEventArgs.AcceptedMedia");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.CallAnswerEventArgs", "VoipPhoneCallMedia CallAnswerEventArgs.AcceptedMedia");
 			}
 		}
 #endif

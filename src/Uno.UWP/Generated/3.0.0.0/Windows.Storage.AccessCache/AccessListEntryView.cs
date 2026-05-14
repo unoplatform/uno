@@ -19,7 +19,7 @@ namespace Windows.Storage.AccessCache
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AccessListEntryView.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20AccessListEntryView.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.AccessListEntryView", "int AccessListEntryView.Count");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage.AccessCache
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AccessListEntry AccessListEntryView.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AccessListEntry%20AccessListEntryView.this%5Bint%20index%5D");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.AccessListEntryView", "AccessListEntry AccessListEntryView.this[int index]");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Storage.AccessCache
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Storage.AccessCache.AccessListEntry> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<AccessListEntry> AccessListEntryView.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CAccessListEntry%3E%20AccessListEntryView.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.AccessListEntryView", "IEnumerator<AccessListEntry> AccessListEntryView.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntryView.System.Collections.IEnumerable.GetEnumerator()

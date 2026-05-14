@@ -187,7 +187,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ItemIndexRange> ListViewBase.SelectedRanges is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CItemIndexRange%3E%20ListViewBase.SelectedRanges");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ListViewBase", "IReadOnlyList<ItemIndexRange> ListViewBase.SelectedRanges");
 			}
 		}
 #endif
@@ -262,7 +262,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Microsoft.UI.Xaml.Data.LoadMoreItemsResult> LoadMoreItemsAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<LoadMoreItemsResult> ListViewBase.LoadMoreItemsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CLoadMoreItemsResult%3E%20ListViewBase.LoadMoreItemsAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ListViewBase", "IAsyncOperation<LoadMoreItemsResult> ListViewBase.LoadMoreItemsAsync()");
 		}
 #endif
 #if false || false || false || IS_UNIT_TESTS || false || false || false
@@ -297,21 +297,21 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsDragSource()
 		{
-			throw new global::System.NotImplementedException("The member bool ListViewBase.IsDragSource() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ListViewBase.IsDragSource%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ListViewBase", "bool ListViewBase.IsDragSource()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryStartConnectedAnimationAsync(global::Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation animation, object item, string elementName)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ListViewBase.TryStartConnectedAnimationAsync(ConnectedAnimation animation, object item, string elementName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20ListViewBase.TryStartConnectedAnimationAsync%28ConnectedAnimation%20animation%2C%20object%20item%2C%20string%20elementName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ListViewBase", "IAsyncOperation<bool> ListViewBase.TryStartConnectedAnimationAsync(ConnectedAnimation animation, object item, string elementName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation PrepareConnectedAnimation(string key, object item, string elementName)
 		{
-			throw new global::System.NotImplementedException("The member ConnectedAnimation ListViewBase.PrepareConnectedAnimation(string key, object item, string elementName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ConnectedAnimation%20ListViewBase.PrepareConnectedAnimation%28string%20key%2C%20object%20item%2C%20string%20elementName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ListViewBase", "ConnectedAnimation ListViewBase.PrepareConnectedAnimation(string key, object item, string elementName)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.ChoosingGroupHeaderContainer.add

@@ -14,7 +14,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.AttackDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayBlinkEffect.AttackDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.AttackDuration");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color LampArrayBlinkEffect.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20LampArrayBlinkEffect.Color");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "Color LampArrayBlinkEffect.Color");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.DecayDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayBlinkEffect.DecayDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.DecayDuration");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LampArrayBlinkEffect.Occurrences is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LampArrayBlinkEffect.Occurrences");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "int LampArrayBlinkEffect.Occurrences");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.RepetitionDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayBlinkEffect.RepetitionDelay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.RepetitionDelay");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LampArrayRepetitionMode LampArrayBlinkEffect.RepetitionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LampArrayRepetitionMode%20LampArrayBlinkEffect.RepetitionMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "LampArrayRepetitionMode LampArrayBlinkEffect.RepetitionMode");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.StartDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayBlinkEffect.StartDelay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.StartDelay");
 			}
 			set
 			{
@@ -112,7 +112,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBlinkEffect.SustainDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayBlinkEffect.SustainDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "TimeSpan LampArrayBlinkEffect.SustainDuration");
 			}
 			set
 			{
@@ -126,7 +126,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LampArrayBlinkEffect.ZIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LampArrayBlinkEffect.ZIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "int LampArrayBlinkEffect.ZIndex");
 			}
 			set
 			{

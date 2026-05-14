@@ -19,7 +19,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ProcessCpuUsage ProcessDiagnosticInfo.CpuUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProcessCpuUsage%20ProcessDiagnosticInfo.CpuUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "ProcessCpuUsage ProcessDiagnosticInfo.CpuUsage");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ProcessDiskUsage ProcessDiagnosticInfo.DiskUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProcessDiskUsage%20ProcessDiagnosticInfo.DiskUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "ProcessDiskUsage ProcessDiagnosticInfo.DiskUsage");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProcessDiagnosticInfo.ExecutableFileName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProcessDiagnosticInfo.ExecutableFileName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "string ProcessDiagnosticInfo.ExecutableFileName");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ProcessDiagnosticInfo.IsPackaged is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ProcessDiagnosticInfo.IsPackaged");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "bool ProcessDiagnosticInfo.IsPackaged");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ProcessMemoryUsage ProcessDiagnosticInfo.MemoryUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProcessMemoryUsage%20ProcessDiagnosticInfo.MemoryUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "ProcessMemoryUsage ProcessDiagnosticInfo.MemoryUsage");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ProcessDiagnosticInfo ProcessDiagnosticInfo.Parent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProcessDiagnosticInfo%20ProcessDiagnosticInfo.Parent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "ProcessDiagnosticInfo ProcessDiagnosticInfo.Parent");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ProcessDiagnosticInfo.ProcessId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ProcessDiagnosticInfo.ProcessId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "uint ProcessDiagnosticInfo.ProcessId");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset ProcessDiagnosticInfo.ProcessStartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20ProcessDiagnosticInfo.ProcessStartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "DateTimeOffset ProcessDiagnosticInfo.ProcessStartTime");
 			}
 		}
 #endif
@@ -97,28 +97,28 @@ namespace Windows.System.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.System.Diagnostics.ProcessDiagnosticInfo> GetForProcesses()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<ProcessDiagnosticInfo> ProcessDiagnosticInfo.GetForProcesses() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CProcessDiagnosticInfo%3E%20ProcessDiagnosticInfo.GetForProcesses%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "IReadOnlyList<ProcessDiagnosticInfo> ProcessDiagnosticInfo.GetForProcesses()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.Diagnostics.ProcessDiagnosticInfo GetForCurrentProcess()
 		{
-			throw new global::System.NotImplementedException("The member ProcessDiagnosticInfo ProcessDiagnosticInfo.GetForCurrentProcess() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProcessDiagnosticInfo%20ProcessDiagnosticInfo.GetForCurrentProcess%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "ProcessDiagnosticInfo ProcessDiagnosticInfo.GetForCurrentProcess()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.Diagnostics.ProcessDiagnosticInfo TryGetForProcessId(uint processId)
 		{
-			throw new global::System.NotImplementedException("The member ProcessDiagnosticInfo ProcessDiagnosticInfo.TryGetForProcessId(uint processId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProcessDiagnosticInfo%20ProcessDiagnosticInfo.TryGetForProcessId%28uint%20processId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "ProcessDiagnosticInfo ProcessDiagnosticInfo.TryGetForProcessId(uint processId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.System.AppDiagnosticInfo> GetAppDiagnosticInfos()
 		{
-			throw new global::System.NotImplementedException("The member IList<AppDiagnosticInfo> ProcessDiagnosticInfo.GetAppDiagnosticInfos() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CAppDiagnosticInfo%3E%20ProcessDiagnosticInfo.GetAppDiagnosticInfos%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiagnosticInfo", "IList<AppDiagnosticInfo> ProcessDiagnosticInfo.GetAppDiagnosticInfos()");
 		}
 #endif
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.CpuUsage.get

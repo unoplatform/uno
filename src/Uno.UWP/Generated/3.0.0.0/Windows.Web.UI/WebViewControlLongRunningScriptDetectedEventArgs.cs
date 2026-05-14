@@ -19,7 +19,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan WebViewControlLongRunningScriptDetectedEventArgs.ExecutionTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20WebViewControlLongRunningScriptDetectedEventArgs.ExecutionTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs", "TimeSpan WebViewControlLongRunningScriptDetectedEventArgs.ExecutionTime");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebViewControlLongRunningScriptDetectedEventArgs.StopPageScriptExecution is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WebViewControlLongRunningScriptDetectedEventArgs.StopPageScriptExecution");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs", "bool WebViewControlLongRunningScriptDetectedEventArgs.StopPageScriptExecution");
 			}
 			set
 			{

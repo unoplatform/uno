@@ -14,7 +14,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionShape.CenterPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionShape.CenterPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionShape", "Vector2 CompositionShape.CenterPoint");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionShape.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionShape.Offset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionShape", "Vector2 CompositionShape.Offset");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionShape.RotationAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionShape.RotationAngle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionShape", "float CompositionShape.RotationAngle");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionShape.RotationAngleInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionShape.RotationAngleInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionShape", "float CompositionShape.RotationAngleInDegrees");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionShape.Scale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionShape.Scale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionShape", "Vector2 CompositionShape.Scale");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Matrix3x2 CompositionShape.TransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix3x2%20CompositionShape.TransformMatrix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionShape", "Matrix3x2 CompositionShape.TransformMatrix");
 			}
 			set
 			{

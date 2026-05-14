@@ -19,7 +19,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StorageItemThumbnail.CanRead is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StorageItemThumbnail.CanRead");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "bool StorageItemThumbnail.CanRead");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StorageItemThumbnail.CanWrite is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StorageItemThumbnail.CanWrite");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "bool StorageItemThumbnail.CanWrite");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorageItemThumbnail.ContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorageItemThumbnail.ContentType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "string StorageItemThumbnail.ContentType");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint StorageItemThumbnail.OriginalHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20StorageItemThumbnail.OriginalHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "uint StorageItemThumbnail.OriginalHeight");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint StorageItemThumbnail.OriginalWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20StorageItemThumbnail.OriginalWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "uint StorageItemThumbnail.OriginalWidth");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong StorageItemThumbnail.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20StorageItemThumbnail.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "ulong StorageItemThumbnail.Position");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StorageItemThumbnail.ReturnedSmallerCachedSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StorageItemThumbnail.ReturnedSmallerCachedSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "bool StorageItemThumbnail.ReturnedSmallerCachedSize");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong StorageItemThumbnail.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20StorageItemThumbnail.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "ulong StorageItemThumbnail.Size");
 			}
 			set
 			{
@@ -103,7 +103,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ThumbnailType StorageItemThumbnail.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ThumbnailType%20StorageItemThumbnail.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "ThumbnailType StorageItemThumbnail.Type");
 			}
 		}
 #endif
@@ -111,14 +111,14 @@ namespace Windows.Storage.FileProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IInputStream GetInputStreamAt(ulong position)
 		{
-			throw new global::System.NotImplementedException("The member IInputStream StorageItemThumbnail.GetInputStreamAt(ulong position) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IInputStream%20StorageItemThumbnail.GetInputStreamAt%28ulong%20position%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "IInputStream StorageItemThumbnail.GetInputStreamAt(ulong position)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IOutputStream GetOutputStreamAt(ulong position)
 		{
-			throw new global::System.NotImplementedException("The member IOutputStream StorageItemThumbnail.GetOutputStreamAt(ulong position) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IOutputStream%20StorageItemThumbnail.GetOutputStreamAt%28ulong%20position%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "IOutputStream StorageItemThumbnail.GetOutputStreamAt(ulong position)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -132,21 +132,21 @@ namespace Windows.Storage.FileProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IRandomAccessStream CloneStream()
 		{
-			throw new global::System.NotImplementedException("The member IRandomAccessStream StorageItemThumbnail.CloneStream() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStream%20StorageItemThumbnail.CloneStream%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "IRandomAccessStream StorageItemThumbnail.CloneStream()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<uint, uint> WriteAsync(global::Windows.Storage.Streams.IBuffer buffer)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<uint, uint> StorageItemThumbnail.WriteAsync(IBuffer buffer) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3Cuint%2C%20uint%3E%20StorageItemThumbnail.WriteAsync%28IBuffer%20buffer%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "IAsyncOperationWithProgress<uint, uint> StorageItemThumbnail.WriteAsync(IBuffer buffer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> FlushAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> StorageItemThumbnail.FlushAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20StorageItemThumbnail.FlushAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "IAsyncOperation<bool> StorageItemThumbnail.FlushAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -160,7 +160,7 @@ namespace Windows.Storage.FileProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Storage.Streams.IBuffer, uint> ReadAsync(global::Windows.Storage.Streams.IBuffer buffer, uint count, global::Windows.Storage.Streams.InputStreamOptions options)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<IBuffer, uint> StorageItemThumbnail.ReadAsync(IBuffer buffer, uint count, InputStreamOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CIBuffer%2C%20uint%3E%20StorageItemThumbnail.ReadAsync%28IBuffer%20buffer%2C%20uint%20count%2C%20InputStreamOptions%20options%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.FileProperties.StorageItemThumbnail", "IAsyncOperationWithProgress<IBuffer, uint> StorageItemThumbnail.ReadAsync(IBuffer buffer, uint count, InputStreamOptions options)");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.FileProperties.StorageItemThumbnail.CanRead.get

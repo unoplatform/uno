@@ -19,7 +19,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PerceptionInfraredFrameReader.IsPaused is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PerceptionInfraredFrameReader.IsPaused");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameReader", "bool PerceptionInfraredFrameReader.IsPaused");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PerceptionInfraredFrameSource PerceptionInfraredFrameReader.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionInfraredFrameSource%20PerceptionInfraredFrameReader.Source");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameReader", "PerceptionInfraredFrameSource PerceptionInfraredFrameReader.Source");
 			}
 		}
 #endif
@@ -41,7 +41,7 @@ namespace Windows.Devices.Perception
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Perception.PerceptionInfraredFrame TryReadLatestFrame()
 		{
-			throw new global::System.NotImplementedException("The member PerceptionInfraredFrame PerceptionInfraredFrameReader.TryReadLatestFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionInfraredFrame%20PerceptionInfraredFrameReader.TryReadLatestFrame%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionInfraredFrameReader", "PerceptionInfraredFrame PerceptionInfraredFrameReader.TryReadLatestFrame()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.PerceptionInfraredFrameReader.FrameArrived.add

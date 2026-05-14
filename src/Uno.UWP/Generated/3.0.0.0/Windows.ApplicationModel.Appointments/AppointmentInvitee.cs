@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentInvitee.Address is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentInvitee.Address");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentInvitee", "string AppointmentInvitee.Address");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentInvitee.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentInvitee.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentInvitee", "string AppointmentInvitee.DisplayName");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppointmentParticipantResponse AppointmentInvitee.Response is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentParticipantResponse%20AppointmentInvitee.Response");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentInvitee", "AppointmentParticipantResponse AppointmentInvitee.Response");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppointmentParticipantRole AppointmentInvitee.Role is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentParticipantRole%20AppointmentInvitee.Role");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentInvitee", "AppointmentParticipantRole AppointmentInvitee.Role");
 			}
 			set
 			{

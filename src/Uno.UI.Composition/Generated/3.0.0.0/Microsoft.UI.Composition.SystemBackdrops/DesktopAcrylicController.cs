@@ -14,7 +14,7 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color DesktopAcrylicController.FallbackColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20DesktopAcrylicController.FallbackColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController", "Color DesktopAcrylicController.FallbackColor");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DesktopAcrylicController.IsClosed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DesktopAcrylicController.IsClosed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController", "bool DesktopAcrylicController.IsClosed");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DesktopAcrylicKind DesktopAcrylicController.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DesktopAcrylicKind%20DesktopAcrylicController.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController", "DesktopAcrylicKind DesktopAcrylicController.Kind");
 			}
 			set
 			{
@@ -52,7 +52,7 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float DesktopAcrylicController.LuminosityOpacity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20DesktopAcrylicController.LuminosityOpacity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController", "float DesktopAcrylicController.LuminosityOpacity");
 			}
 			set
 			{
@@ -66,7 +66,7 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemBackdropState DesktopAcrylicController.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemBackdropState%20DesktopAcrylicController.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController", "SystemBackdropState DesktopAcrylicController.State");
 			}
 		}
 #endif
@@ -76,7 +76,7 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color DesktopAcrylicController.TintColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20DesktopAcrylicController.TintColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController", "Color DesktopAcrylicController.TintColor");
 			}
 			set
 			{
@@ -90,7 +90,7 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float DesktopAcrylicController.TintOpacity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20DesktopAcrylicController.TintOpacity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController", "float DesktopAcrylicController.TintOpacity");
 			}
 			set
 			{
@@ -112,14 +112,14 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool SetTarget(global::Microsoft.UI.WindowId windowId, global::Windows.UI.Composition.CompositionTarget desktopWindowTarget)
 		{
-			throw new global::System.NotImplementedException("The member bool DesktopAcrylicController.SetTarget(WindowId windowId, CompositionTarget desktopWindowTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DesktopAcrylicController.SetTarget%28WindowId%20windowId%2C%20CompositionTarget%20desktopWindowTarget%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController", "bool DesktopAcrylicController.SetTarget(WindowId windowId, CompositionTarget desktopWindowTarget)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool SetTarget(global::Windows.UI.Core.CoreWindow coreWindow, global::Windows.UI.Composition.CompositionTarget compositionTarget)
 		{
-			throw new global::System.NotImplementedException("The member bool DesktopAcrylicController.SetTarget(CoreWindow coreWindow, CompositionTarget compositionTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DesktopAcrylicController.SetTarget%28CoreWindow%20coreWindow%2C%20CompositionTarget%20compositionTarget%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController", "bool DesktopAcrylicController.SetTarget(CoreWindow coreWindow, CompositionTarget compositionTarget)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -133,7 +133,7 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool AddSystemBackdropTarget(global::Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop systemBackdropTarget)
 		{
-			throw new global::System.NotImplementedException("The member bool DesktopAcrylicController.AddSystemBackdropTarget(ICompositionSupportsSystemBackdrop systemBackdropTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DesktopAcrylicController.AddSystemBackdropTarget%28ICompositionSupportsSystemBackdrop%20systemBackdropTarget%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController", "bool DesktopAcrylicController.AddSystemBackdropTarget(ICompositionSupportsSystemBackdrop systemBackdropTarget)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -147,7 +147,7 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool RemoveSystemBackdropTarget(global::Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop systemBackdropTarget)
 		{
-			throw new global::System.NotImplementedException("The member bool DesktopAcrylicController.RemoveSystemBackdropTarget(ICompositionSupportsSystemBackdrop systemBackdropTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DesktopAcrylicController.RemoveSystemBackdropTarget%28ICompositionSupportsSystemBackdrop%20systemBackdropTarget%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController", "bool DesktopAcrylicController.RemoveSystemBackdropTarget(ICompositionSupportsSystemBackdrop systemBackdropTarget)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

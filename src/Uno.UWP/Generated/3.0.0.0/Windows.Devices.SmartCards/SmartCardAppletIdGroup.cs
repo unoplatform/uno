@@ -14,7 +14,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort SmartCardAppletIdGroup.MaxAppletIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20SmartCardAppletIdGroup.MaxAppletIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "ushort SmartCardAppletIdGroup.MaxAppletIds");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<IBuffer> SmartCardAppletIdGroup.AppletIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CIBuffer%3E%20SmartCardAppletIdGroup.AppletIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "IList<IBuffer> SmartCardAppletIdGroup.AppletIds");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SmartCardAppletIdGroup.AutomaticEnablement is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SmartCardAppletIdGroup.AutomaticEnablement");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "bool SmartCardAppletIdGroup.AutomaticEnablement");
 			}
 			set
 			{
@@ -48,7 +48,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmartCardAppletIdGroup.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmartCardAppletIdGroup.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "string SmartCardAppletIdGroup.Description");
 			}
 			set
 			{
@@ -62,7 +62,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmartCardAppletIdGroup.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmartCardAppletIdGroup.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "string SmartCardAppletIdGroup.DisplayName");
 			}
 			set
 			{
@@ -76,7 +76,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference SmartCardAppletIdGroup.Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20SmartCardAppletIdGroup.Logo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "IRandomAccessStreamReference SmartCardAppletIdGroup.Logo");
 			}
 			set
 			{
@@ -90,7 +90,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet SmartCardAppletIdGroup.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20SmartCardAppletIdGroup.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "ValueSet SmartCardAppletIdGroup.Properties");
 			}
 		}
 #endif
@@ -100,7 +100,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SmartCardAppletIdGroup.SecureUserAuthenticationRequired is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SmartCardAppletIdGroup.SecureUserAuthenticationRequired");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "bool SmartCardAppletIdGroup.SecureUserAuthenticationRequired");
 			}
 			set
 			{
@@ -114,7 +114,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardEmulationCategory SmartCardAppletIdGroup.SmartCardEmulationCategory is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardEmulationCategory%20SmartCardAppletIdGroup.SmartCardEmulationCategory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "SmartCardEmulationCategory SmartCardAppletIdGroup.SmartCardEmulationCategory");
 			}
 			set
 			{
@@ -128,7 +128,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardEmulationType SmartCardAppletIdGroup.SmartCardEmulationType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardEmulationType%20SmartCardAppletIdGroup.SmartCardEmulationType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAppletIdGroup", "SmartCardEmulationType SmartCardAppletIdGroup.SmartCardEmulationType");
 			}
 			set
 			{

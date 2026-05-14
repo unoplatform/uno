@@ -14,7 +14,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Quaternion PerceptionCorrelation.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Quaternion%20PerceptionCorrelation.Orientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionCorrelation", "Quaternion PerceptionCorrelation.Orientation");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 PerceptionCorrelation.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20PerceptionCorrelation.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionCorrelation", "Vector3 PerceptionCorrelation.Position");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PerceptionCorrelation.TargetId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PerceptionCorrelation.TargetId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionCorrelation", "string PerceptionCorrelation.TargetId");
 			}
 		}
 #endif

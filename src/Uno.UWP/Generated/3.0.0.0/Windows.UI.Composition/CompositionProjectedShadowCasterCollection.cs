@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CompositionProjectedShadowCasterCollection.MaxRespectedCasters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CompositionProjectedShadowCasterCollection.MaxRespectedCasters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionProjectedShadowCasterCollection", "int CompositionProjectedShadowCasterCollection.MaxRespectedCasters");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CompositionProjectedShadowCasterCollection.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CompositionProjectedShadowCasterCollection.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionProjectedShadowCasterCollection", "int CompositionProjectedShadowCasterCollection.Count");
 			}
 		}
 #endif
@@ -80,7 +80,7 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.UI.Composition.CompositionProjectedShadowCaster> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<CompositionProjectedShadowCaster> CompositionProjectedShadowCasterCollection.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CCompositionProjectedShadowCaster%3E%20CompositionProjectedShadowCasterCollection.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionProjectedShadowCasterCollection", "IEnumerator<CompositionProjectedShadowCaster> CompositionProjectedShadowCasterCollection.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.CompositionProjectedShadowCasterCollection.System.Collections.IEnumerable.GetEnumerator()

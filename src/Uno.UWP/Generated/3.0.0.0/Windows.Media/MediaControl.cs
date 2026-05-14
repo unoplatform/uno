@@ -14,7 +14,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri MediaControl.AlbumArt is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20MediaControl.AlbumArt");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaControl", "Uri MediaControl.AlbumArt");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaControl.ArtistName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaControl.ArtistName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaControl", "string MediaControl.ArtistName");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaControl.IsPlaying is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaControl.IsPlaying");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaControl", "bool MediaControl.IsPlaying");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SoundLevel MediaControl.SoundLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SoundLevel%20MediaControl.SoundLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaControl", "SoundLevel MediaControl.SoundLevel");
 			}
 		}
 #endif
@@ -66,7 +66,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaControl.TrackName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaControl.TrackName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaControl", "string MediaControl.TrackName");
 			}
 			set
 			{

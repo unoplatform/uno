@@ -14,7 +14,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterRuler.AreTickMarksVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkPresenterRuler.AreTickMarksVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterRuler", "bool InkPresenterRuler.AreTickMarksVisible");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color InkPresenterRuler.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20InkPresenterRuler.BackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterRuler", "Color InkPresenterRuler.BackgroundColor");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color InkPresenterRuler.ForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20InkPresenterRuler.ForegroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterRuler", "Color InkPresenterRuler.ForegroundColor");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterRuler.IsCompassVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkPresenterRuler.IsCompassVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterRuler", "bool InkPresenterRuler.IsCompassVisible");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterRuler.IsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkPresenterRuler.IsVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterRuler", "bool InkPresenterRuler.IsVisible");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkPresenterStencilKind InkPresenterRuler.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkPresenterStencilKind%20InkPresenterRuler.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterRuler", "InkPresenterStencilKind InkPresenterRuler.Kind");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double InkPresenterRuler.Length is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InkPresenterRuler.Length");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterRuler", "double InkPresenterRuler.Length");
 			}
 			set
 			{
@@ -108,7 +108,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Matrix3x2 InkPresenterRuler.Transform is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix3x2%20InkPresenterRuler.Transform");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterRuler", "Matrix3x2 InkPresenterRuler.Transform");
 			}
 			set
 			{
@@ -122,7 +122,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double InkPresenterRuler.Width is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InkPresenterRuler.Width");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterRuler", "double InkPresenterRuler.Width");
 			}
 			set
 			{

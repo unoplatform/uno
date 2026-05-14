@@ -14,7 +14,7 @@ namespace WinRT.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ref readonly Guid IID.IID_IUnknown is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ref%20readonly%20Guid%20IID.IID_IUnknown");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "ref readonly Guid IID.IID_IUnknown");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace WinRT.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ref readonly Guid IID.IID_IInspectable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ref%20readonly%20Guid%20IID.IID_IInspectable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "ref readonly Guid IID.IID_IInspectable");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace WinRT.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ref readonly Guid IID.IID_IActivationFactory is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ref%20readonly%20Guid%20IID.IID_IActivationFactory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "ref readonly Guid IID.IID_IActivationFactory");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace WinRT.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ref readonly Guid IID.IID_IAgileObject is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ref%20readonly%20Guid%20IID.IID_IAgileObject");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "ref readonly Guid IID.IID_IAgileObject");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace WinRT.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ref readonly Guid IID.IID_IMarshal is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ref%20readonly%20Guid%20IID.IID_IMarshal");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "ref readonly Guid IID.IID_IMarshal");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace WinRT.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ref readonly Guid IID.IID_IBuffer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ref%20readonly%20Guid%20IID.IID_IBuffer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "ref readonly Guid IID.IID_IBuffer");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace WinRT.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ref readonly Guid IID.IID_IBufferByteAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ref%20readonly%20Guid%20IID.IID_IBufferByteAccess");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "ref readonly Guid IID.IID_IBufferByteAccess");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace WinRT.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ref readonly Guid IID.IID_IMemoryBufferByteAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ref%20readonly%20Guid%20IID.IID_IMemoryBufferByteAccess");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "ref readonly Guid IID.IID_IMemoryBufferByteAccess");
 			}
 		}
 #endif

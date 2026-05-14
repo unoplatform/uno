@@ -19,7 +19,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HidBooleanControlDescription HidBooleanControl.ControlDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HidBooleanControlDescription%20HidBooleanControl.ControlDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "HidBooleanControlDescription HidBooleanControl.ControlDescription");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HidBooleanControl.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20HidBooleanControl.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "uint HidBooleanControl.Id");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HidBooleanControl.IsActive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HidBooleanControl.IsActive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "bool HidBooleanControl.IsActive");
 			}
 			set
 			{
@@ -53,7 +53,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort HidBooleanControl.UsageId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20HidBooleanControl.UsageId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "ushort HidBooleanControl.UsageId");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort HidBooleanControl.UsagePage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20HidBooleanControl.UsagePage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "ushort HidBooleanControl.UsagePage");
 			}
 		}
 #endif

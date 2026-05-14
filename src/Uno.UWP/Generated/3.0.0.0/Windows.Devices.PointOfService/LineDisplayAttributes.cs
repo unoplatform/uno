@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LineDisplayAttributes.BlinkRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LineDisplayAttributes.BlinkRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayAttributes", "TimeSpan LineDisplayAttributes.BlinkRate");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LineDisplayAttributes.Brightness is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LineDisplayAttributes.Brightness");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayAttributes", "int LineDisplayAttributes.Brightness");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LineDisplayAttributes.CharacterSet is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LineDisplayAttributes.CharacterSet");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayAttributes", "int LineDisplayAttributes.CharacterSet");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LineDisplayWindow LineDisplayAttributes.CurrentWindow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LineDisplayWindow%20LineDisplayAttributes.CurrentWindow");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayAttributes", "LineDisplayWindow LineDisplayAttributes.CurrentWindow");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayAttributes.IsCharacterSetMappingEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LineDisplayAttributes.IsCharacterSetMappingEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayAttributes", "bool LineDisplayAttributes.IsCharacterSetMappingEnabled");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayAttributes.IsPowerNotifyEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LineDisplayAttributes.IsPowerNotifyEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayAttributes", "bool LineDisplayAttributes.IsPowerNotifyEnabled");
 			}
 			set
 			{
@@ -103,7 +103,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size LineDisplayAttributes.ScreenSizeInCharacters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20LineDisplayAttributes.ScreenSizeInCharacters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayAttributes", "Size LineDisplayAttributes.ScreenSizeInCharacters");
 			}
 			set
 			{

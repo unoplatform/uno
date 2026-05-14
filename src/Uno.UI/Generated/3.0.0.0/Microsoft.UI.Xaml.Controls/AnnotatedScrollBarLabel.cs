@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object AnnotatedScrollBarLabel.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20AnnotatedScrollBarLabel.Content");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel", "object AnnotatedScrollBarLabel.Content");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AnnotatedScrollBarLabel.ScrollOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AnnotatedScrollBarLabel.ScrollOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.AnnotatedScrollBarLabel", "double AnnotatedScrollBarLabel.ScrollOffset");
 			}
 		}
 #endif

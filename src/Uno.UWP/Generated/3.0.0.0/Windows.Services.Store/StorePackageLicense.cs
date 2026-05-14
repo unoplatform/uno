@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StorePackageLicense.IsValid is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StorePackageLicense.IsValid");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePackageLicense", "bool StorePackageLicense.IsValid");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Package StorePackageLicense.Package is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Package%20StorePackageLicense.Package");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePackageLicense", "Package StorePackageLicense.Package");
 			}
 		}
 #endif

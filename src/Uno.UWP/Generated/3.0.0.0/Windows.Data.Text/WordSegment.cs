@@ -19,7 +19,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<AlternateWordForm> WordSegment.AlternateForms is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CAlternateWordForm%3E%20WordSegment.AlternateForms");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.WordSegment", "IReadOnlyList<AlternateWordForm> WordSegment.AlternateForms");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextSegment WordSegment.SourceTextSegment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextSegment%20WordSegment.SourceTextSegment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.WordSegment", "TextSegment WordSegment.SourceTextSegment");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WordSegment.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WordSegment.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.WordSegment", "string WordSegment.Text");
 			}
 		}
 #endif

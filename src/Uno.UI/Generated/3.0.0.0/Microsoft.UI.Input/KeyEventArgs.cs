@@ -19,7 +19,7 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool KeyEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20KeyEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.KeyEventArgs", "bool KeyEventArgs.Handled");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhysicalKeyStatus KeyEventArgs.KeyStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhysicalKeyStatus%20KeyEventArgs.KeyStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.KeyEventArgs", "PhysicalKeyStatus KeyEventArgs.KeyStatus");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong KeyEventArgs.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20KeyEventArgs.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.KeyEventArgs", "ulong KeyEventArgs.Timestamp");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKey KeyEventArgs.VirtualKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKey%20KeyEventArgs.VirtualKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.KeyEventArgs", "VirtualKey KeyEventArgs.VirtualKey");
 			}
 		}
 #endif

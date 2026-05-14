@@ -19,7 +19,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<NotificationBinding> NotificationVisual.Bindings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CNotificationBinding%3E%20NotificationVisual.Bindings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.NotificationVisual", "IList<NotificationBinding> NotificationVisual.Bindings");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NotificationVisual.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NotificationVisual.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.NotificationVisual", "string NotificationVisual.Language");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Notifications
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Notifications.NotificationBinding GetBinding(string templateName)
 		{
-			throw new global::System.NotImplementedException("The member NotificationBinding NotificationVisual.GetBinding(string templateName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NotificationBinding%20NotificationVisual.GetBinding%28string%20templateName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.NotificationVisual", "NotificationBinding NotificationVisual.GetBinding(string templateName)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.NotificationVisual.Bindings.get

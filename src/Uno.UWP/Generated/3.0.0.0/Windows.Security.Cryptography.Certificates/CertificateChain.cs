@@ -17,21 +17,21 @@ namespace Windows.Security.Cryptography.Certificates
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Cryptography.Certificates.ChainValidationResult Validate()
 		{
-			throw new global::System.NotImplementedException("The member ChainValidationResult CertificateChain.Validate() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChainValidationResult%20CertificateChain.Validate%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateChain", "ChainValidationResult CertificateChain.Validate()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Cryptography.Certificates.ChainValidationResult Validate(global::Windows.Security.Cryptography.Certificates.ChainValidationParameters parameter)
 		{
-			throw new global::System.NotImplementedException("The member ChainValidationResult CertificateChain.Validate(ChainValidationParameters parameter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChainValidationResult%20CertificateChain.Validate%28ChainValidationParameters%20parameter%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateChain", "ChainValidationResult CertificateChain.Validate(ChainValidationParameters parameter)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Security.Cryptography.Certificates.Certificate> GetCertificates(bool includeRoot)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<Certificate> CertificateChain.GetCertificates(bool includeRoot) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CCertificate%3E%20CertificateChain.GetCertificates%28bool%20includeRoot%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateChain", "IReadOnlyList<Certificate> CertificateChain.GetCertificates(bool includeRoot)");
 		}
 #endif
 	}

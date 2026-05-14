@@ -17,21 +17,21 @@ namespace Windows.Devices.Enumeration
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DevicePairingResult> PairAsync(global::Windows.Devices.Enumeration.DevicePairingKinds pairingKindsSupported)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DevicePairingResult> DeviceInformationCustomPairing.PairAsync(DevicePairingKinds pairingKindsSupported) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDevicePairingResult%3E%20DeviceInformationCustomPairing.PairAsync%28DevicePairingKinds%20pairingKindsSupported%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformationCustomPairing", "IAsyncOperation<DevicePairingResult> DeviceInformationCustomPairing.PairAsync(DevicePairingKinds pairingKindsSupported)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DevicePairingResult> PairAsync(global::Windows.Devices.Enumeration.DevicePairingKinds pairingKindsSupported, global::Windows.Devices.Enumeration.DevicePairingProtectionLevel minProtectionLevel)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DevicePairingResult> DeviceInformationCustomPairing.PairAsync(DevicePairingKinds pairingKindsSupported, DevicePairingProtectionLevel minProtectionLevel) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDevicePairingResult%3E%20DeviceInformationCustomPairing.PairAsync%28DevicePairingKinds%20pairingKindsSupported%2C%20DevicePairingProtectionLevel%20minProtectionLevel%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformationCustomPairing", "IAsyncOperation<DevicePairingResult> DeviceInformationCustomPairing.PairAsync(DevicePairingKinds pairingKindsSupported, DevicePairingProtectionLevel minProtectionLevel)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DevicePairingResult> PairAsync(global::Windows.Devices.Enumeration.DevicePairingKinds pairingKindsSupported, global::Windows.Devices.Enumeration.DevicePairingProtectionLevel minProtectionLevel, global::Windows.Devices.Enumeration.IDevicePairingSettings devicePairingSettings)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DevicePairingResult> DeviceInformationCustomPairing.PairAsync(DevicePairingKinds pairingKindsSupported, DevicePairingProtectionLevel minProtectionLevel, IDevicePairingSettings devicePairingSettings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDevicePairingResult%3E%20DeviceInformationCustomPairing.PairAsync%28DevicePairingKinds%20pairingKindsSupported%2C%20DevicePairingProtectionLevel%20minProtectionLevel%2C%20IDevicePairingSettings%20devicePairingSettings%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformationCustomPairing", "IAsyncOperation<DevicePairingResult> DeviceInformationCustomPairing.PairAsync(DevicePairingKinds pairingKindsSupported, DevicePairingProtectionLevel minProtectionLevel, IDevicePairingSettings devicePairingSettings)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCustomPairing.PairingRequested.add

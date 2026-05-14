@@ -14,7 +14,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomComboBox.Bordered is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomComboBox.Bordered");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomComboBox", "bool VpnCustomComboBox.Bordered");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomComboBox.Compulsory is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomComboBox.Compulsory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomComboBox", "bool VpnCustomComboBox.Compulsory");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnCustomComboBox.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnCustomComboBox.Label");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomComboBox", "string VpnCustomComboBox.Label");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> VpnCustomComboBox.OptionsText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20VpnCustomComboBox.OptionsText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomComboBox", "IReadOnlyList<string> VpnCustomComboBox.OptionsText");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint VpnCustomComboBox.Selected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20VpnCustomComboBox.Selected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomComboBox", "uint VpnCustomComboBox.Selected");
 			}
 		}
 #endif

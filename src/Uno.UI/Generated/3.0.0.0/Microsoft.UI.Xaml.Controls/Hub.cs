@@ -155,7 +155,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IObservableVector<object> Hub.SectionHeaders is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IObservableVector%3Cobject%3E%20Hub.SectionHeaders");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Hub", "IObservableVector<object> Hub.SectionHeaders");
 			}
 		}
 #endif
@@ -165,7 +165,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<HubSection> Hub.Sections is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CHubSection%3E%20Hub.Sections");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Hub", "IList<HubSection> Hub.Sections");
 			}
 		}
 #endif
@@ -175,7 +175,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<HubSection> Hub.SectionsInView is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CHubSection%3E%20Hub.SectionsInView");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Hub", "IList<HubSection> Hub.SectionsInView");
 			}
 		}
 #endif

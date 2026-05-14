@@ -19,7 +19,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int WebUIView.ApplicationViewId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20WebUIView.ApplicationViewId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIView", "int WebUIView.ApplicationViewId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebUIView.CanGoBack is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WebUIView.CanGoBack");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIView", "bool WebUIView.CanGoBack");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebUIView.CanGoForward is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WebUIView.CanGoForward");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIView", "bool WebUIView.CanGoForward");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebUIView.ContainsFullScreenElement is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WebUIView.ContainsFullScreenElement");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIView", "bool WebUIView.ContainsFullScreenElement");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color WebUIView.DefaultBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20WebUIView.DefaultBackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIView", "Color WebUIView.DefaultBackgroundColor");
 			}
 			set
 			{
@@ -73,7 +73,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<WebViewControlDeferredPermissionRequest> WebUIView.DeferredPermissionRequests is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CWebViewControlDeferredPermissionRequest%3E%20WebUIView.DeferredPermissionRequests");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIView", "IReadOnlyList<WebViewControlDeferredPermissionRequest> WebUIView.DeferredPermissionRequests");
 			}
 		}
 #endif
@@ -83,7 +83,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebUIView.DocumentTitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebUIView.DocumentTitle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIView", "string WebUIView.DocumentTitle");
 			}
 		}
 #endif
@@ -93,7 +93,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebUIView.IgnoreApplicationContentUriRulesNavigationRestrictions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WebUIView.IgnoreApplicationContentUriRulesNavigationRestrictions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIView", "bool WebUIView.IgnoreApplicationContentUriRulesNavigationRestrictions");
 			}
 			set
 			{
@@ -107,7 +107,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebViewControlSettings WebUIView.Settings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebViewControlSettings%20WebUIView.Settings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIView", "WebViewControlSettings WebUIView.Settings");
 			}
 		}
 #endif
@@ -117,7 +117,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri WebUIView.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20WebUIView.Source");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIView", "Uri WebUIView.Source");
 			}
 			set
 			{
@@ -129,14 +129,14 @@ namespace Windows.UI.WebUI
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.WebUI.WebUIView> CreateAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WebUIView> WebUIView.CreateAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebUIView%3E%20WebUIView.CreateAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIView", "IAsyncOperation<WebUIView> WebUIView.CreateAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.WebUI.WebUIView> CreateAsync(global::System.Uri uri)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WebUIView> WebUIView.CreateAsync(Uri uri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebUIView%3E%20WebUIView.CreateAsync%28Uri%20uri%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIView", "IAsyncOperation<WebUIView> WebUIView.CreateAsync(Uri uri)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.Activated.add
@@ -203,35 +203,35 @@ namespace Windows.UI.WebUI
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<string> InvokeScriptAsync(string scriptName, global::System.Collections.Generic.IEnumerable<string> arguments)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> WebUIView.InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20WebUIView.InvokeScriptAsync%28string%20scriptName%2C%20IEnumerable%3Cstring%3E%20arguments%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIView", "IAsyncOperation<string> WebUIView.InvokeScriptAsync(string scriptName, IEnumerable<string> arguments)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction CapturePreviewToStreamAsync(global::Windows.Storage.Streams.IRandomAccessStream stream)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction WebUIView.CapturePreviewToStreamAsync(IRandomAccessStream stream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebUIView.CapturePreviewToStreamAsync%28IRandomAccessStream%20stream%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIView", "IAsyncAction WebUIView.CapturePreviewToStreamAsync(IRandomAccessStream stream)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.DataTransfer.DataPackage> CaptureSelectedContentToDataPackageAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DataPackage> WebUIView.CaptureSelectedContentToDataPackageAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDataPackage%3E%20WebUIView.CaptureSelectedContentToDataPackageAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIView", "IAsyncOperation<DataPackage> WebUIView.CaptureSelectedContentToDataPackageAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Uri BuildLocalStreamUri(string contentIdentifier, string relativePath)
 		{
-			throw new global::System.NotImplementedException("The member Uri WebUIView.BuildLocalStreamUri(string contentIdentifier, string relativePath) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20WebUIView.BuildLocalStreamUri%28string%20contentIdentifier%2C%20string%20relativePath%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIView", "Uri WebUIView.BuildLocalStreamUri(string contentIdentifier, string relativePath)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void GetDeferredPermissionRequestById(uint id, out global::Windows.Web.UI.WebViewControlDeferredPermissionRequest result)
 		{
-			throw new global::System.NotImplementedException("The member void WebUIView.GetDeferredPermissionRequestById(uint id, out WebViewControlDeferredPermissionRequest result) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=void%20WebUIView.GetDeferredPermissionRequestById%28uint%20id%2C%20out%20WebViewControlDeferredPermissionRequest%20result%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIView", "void WebUIView.GetDeferredPermissionRequestById(uint id, out WebViewControlDeferredPermissionRequest result)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.ContainsFullScreenElementChanged.add

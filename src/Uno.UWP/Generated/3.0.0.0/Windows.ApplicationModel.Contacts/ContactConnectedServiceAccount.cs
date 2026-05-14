@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactConnectedServiceAccount.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactConnectedServiceAccount.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount", "string ContactConnectedServiceAccount.Id");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactConnectedServiceAccount.ServiceName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactConnectedServiceAccount.ServiceName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount", "string ContactConnectedServiceAccount.ServiceName");
 			}
 			set
 			{

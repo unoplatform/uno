@@ -19,7 +19,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint GipFirmwareUpdateResult.ExtendedErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20GipFirmwareUpdateResult.ExtendedErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipFirmwareUpdateResult", "uint GipFirmwareUpdateResult.ExtendedErrorCode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint GipFirmwareUpdateResult.FinalComponentId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20GipFirmwareUpdateResult.FinalComponentId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipFirmwareUpdateResult", "uint GipFirmwareUpdateResult.FinalComponentId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Gaming.Input.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GipFirmwareUpdateStatus GipFirmwareUpdateResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GipFirmwareUpdateStatus%20GipFirmwareUpdateResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Custom.GipFirmwareUpdateResult", "GipFirmwareUpdateStatus GipFirmwareUpdateResult.Status");
 			}
 		}
 #endif

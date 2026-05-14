@@ -19,7 +19,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynSession.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20AllJoynSession.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynSession", "int AllJoynSession.Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AllJoynSession.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20AllJoynSession.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynSession", "int AllJoynSession.Status");
 			}
 		}
 #endif
@@ -37,21 +37,21 @@ namespace Windows.Devices.AllJoyn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.AllJoyn.AllJoynSession> GetFromServiceInfoAsync(global::Windows.Devices.AllJoyn.AllJoynServiceInfo serviceInfo)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AllJoynSession> AllJoynSession.GetFromServiceInfoAsync(AllJoynServiceInfo serviceInfo) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAllJoynSession%3E%20AllJoynSession.GetFromServiceInfoAsync%28AllJoynServiceInfo%20serviceInfo%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynSession", "IAsyncOperation<AllJoynSession> AllJoynSession.GetFromServiceInfoAsync(AllJoynServiceInfo serviceInfo)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.AllJoyn.AllJoynSession> GetFromServiceInfoAsync(global::Windows.Devices.AllJoyn.AllJoynServiceInfo serviceInfo, global::Windows.Devices.AllJoyn.AllJoynBusAttachment busAttachment)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AllJoynSession> AllJoynSession.GetFromServiceInfoAsync(AllJoynServiceInfo serviceInfo, AllJoynBusAttachment busAttachment) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAllJoynSession%3E%20AllJoynSession.GetFromServiceInfoAsync%28AllJoynServiceInfo%20serviceInfo%2C%20AllJoynBusAttachment%20busAttachment%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynSession", "IAsyncOperation<AllJoynSession> AllJoynSession.GetFromServiceInfoAsync(AllJoynServiceInfo serviceInfo, AllJoynBusAttachment busAttachment)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<int> RemoveMemberAsync(string uniqueName)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<int> AllJoynSession.RemoveMemberAsync(string uniqueName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cint%3E%20AllJoynSession.RemoveMemberAsync%28string%20uniqueName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynSession", "IAsyncOperation<int> AllJoynSession.RemoveMemberAsync(string uniqueName)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.Lost.add

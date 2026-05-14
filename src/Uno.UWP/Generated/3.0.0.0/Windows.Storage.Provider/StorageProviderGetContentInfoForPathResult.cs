@@ -14,7 +14,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorageProviderGetContentInfoForPathResult.ContentId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorageProviderGetContentInfoForPathResult.ContentId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderGetContentInfoForPathResult", "string StorageProviderGetContentInfoForPathResult.ContentId");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorageProviderGetContentInfoForPathResult.ContentUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorageProviderGetContentInfoForPathResult.ContentUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderGetContentInfoForPathResult", "string StorageProviderGetContentInfoForPathResult.ContentUri");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageProviderUriSourceStatus StorageProviderGetContentInfoForPathResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageProviderUriSourceStatus%20StorageProviderGetContentInfoForPathResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderGetContentInfoForPathResult", "StorageProviderUriSourceStatus StorageProviderGetContentInfoForPathResult.Status");
 			}
 			set
 			{

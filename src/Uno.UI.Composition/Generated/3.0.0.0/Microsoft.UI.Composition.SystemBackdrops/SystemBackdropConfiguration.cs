@@ -14,7 +14,7 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? SystemBackdropConfiguration.HighContrastBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20SystemBackdropConfiguration.HighContrastBackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "Color? SystemBackdropConfiguration.HighContrastBackgroundColor");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SystemBackdropConfiguration.IsHighContrast is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemBackdropConfiguration.IsHighContrast");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "bool SystemBackdropConfiguration.IsHighContrast");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SystemBackdropConfiguration.IsInputActive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemBackdropConfiguration.IsInputActive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "bool SystemBackdropConfiguration.IsInputActive");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemBackdropTheme SystemBackdropConfiguration.Theme is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemBackdropTheme%20SystemBackdropConfiguration.Theme");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "SystemBackdropTheme SystemBackdropConfiguration.Theme");
 			}
 			set
 			{

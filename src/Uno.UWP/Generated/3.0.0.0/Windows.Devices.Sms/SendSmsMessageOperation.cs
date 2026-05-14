@@ -19,7 +19,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AsyncActionCompletedHandler SendSmsMessageOperation.Completed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AsyncActionCompletedHandler%20SendSmsMessageOperation.Completed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SendSmsMessageOperation", "AsyncActionCompletedHandler SendSmsMessageOperation.Completed");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception SendSmsMessageOperation.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20SendSmsMessageOperation.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SendSmsMessageOperation", "Exception SendSmsMessageOperation.ErrorCode");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SendSmsMessageOperation.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SendSmsMessageOperation.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SendSmsMessageOperation", "uint SendSmsMessageOperation.Id");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AsyncStatus SendSmsMessageOperation.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AsyncStatus%20SendSmsMessageOperation.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SendSmsMessageOperation", "AsyncStatus SendSmsMessageOperation.Status");
 			}
 		}
 #endif

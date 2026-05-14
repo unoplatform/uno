@@ -19,7 +19,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivitySensorReading ActivitySensorReadingChangeReport.Reading is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivitySensorReading%20ActivitySensorReadingChangeReport.Reading");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensorReadingChangeReport", "ActivitySensorReading ActivitySensorReadingChangeReport.Reading");
 			}
 		}
 #endif

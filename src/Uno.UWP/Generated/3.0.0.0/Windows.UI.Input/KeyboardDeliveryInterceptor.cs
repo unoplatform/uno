@@ -19,7 +19,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool KeyboardDeliveryInterceptor.IsInterceptionEnabledWhenInForeground is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20KeyboardDeliveryInterceptor.IsInterceptionEnabledWhenInForeground");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.KeyboardDeliveryInterceptor", "bool KeyboardDeliveryInterceptor.IsInterceptionEnabledWhenInForeground");
 			}
 			set
 			{
@@ -31,7 +31,7 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.KeyboardDeliveryInterceptor GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member KeyboardDeliveryInterceptor KeyboardDeliveryInterceptor.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=KeyboardDeliveryInterceptor%20KeyboardDeliveryInterceptor.GetForCurrentView%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.KeyboardDeliveryInterceptor", "KeyboardDeliveryInterceptor KeyboardDeliveryInterceptor.GetForCurrentView()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.KeyboardDeliveryInterceptor.KeyDown.add

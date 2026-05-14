@@ -14,7 +14,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MseSourceBufferList MseStreamSource.ActiveSourceBuffers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MseSourceBufferList%20MseStreamSource.ActiveSourceBuffers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MseStreamSource", "MseSourceBufferList MseStreamSource.ActiveSourceBuffers");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? MseStreamSource.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20MseStreamSource.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MseStreamSource", "TimeSpan? MseStreamSource.Duration");
 			}
 			set
 			{
@@ -38,7 +38,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MseTimeRange? MseStreamSource.LiveSeekableRange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MseTimeRange%3F%20MseStreamSource.LiveSeekableRange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MseStreamSource", "MseTimeRange? MseStreamSource.LiveSeekableRange");
 			}
 			set
 			{
@@ -52,7 +52,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MseReadyState MseStreamSource.ReadyState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MseReadyState%20MseStreamSource.ReadyState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MseStreamSource", "MseReadyState MseStreamSource.ReadyState");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MseSourceBufferList MseStreamSource.SourceBuffers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MseSourceBufferList%20MseStreamSource.SourceBuffers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MseStreamSource", "MseSourceBufferList MseStreamSource.SourceBuffers");
 			}
 		}
 #endif
@@ -78,14 +78,14 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsContentTypeSupported(string contentType)
 		{
-			throw new global::System.NotImplementedException("The member bool MseStreamSource.IsContentTypeSupported(string contentType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MseStreamSource.IsContentTypeSupported%28string%20contentType%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MseStreamSource", "bool MseStreamSource.IsContentTypeSupported(string contentType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Core.MseSourceBuffer AddSourceBuffer(string mimeType)
 		{
-			throw new global::System.NotImplementedException("The member MseSourceBuffer MseStreamSource.AddSourceBuffer(string mimeType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MseSourceBuffer%20MseStreamSource.AddSourceBuffer%28string%20mimeType%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MseStreamSource", "MseSourceBuffer MseStreamSource.AddSourceBuffer(string mimeType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

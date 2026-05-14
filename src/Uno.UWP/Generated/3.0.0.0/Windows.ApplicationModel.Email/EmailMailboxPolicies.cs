@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxPolicies.AllowSmimeSoftCertificates is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMailboxPolicies.AllowSmimeSoftCertificates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxPolicies", "bool EmailMailboxPolicies.AllowSmimeSoftCertificates");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxAllowedSmimeEncryptionAlgorithmNegotiation EmailMailboxPolicies.AllowedSmimeEncryptionAlgorithmNegotiation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxAllowedSmimeEncryptionAlgorithmNegotiation%20EmailMailboxPolicies.AllowedSmimeEncryptionAlgorithmNegotiation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxPolicies", "EmailMailboxAllowedSmimeEncryptionAlgorithmNegotiation EmailMailboxPolicies.AllowedSmimeEncryptionAlgorithmNegotiation");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxPolicies.MustEncryptSmimeMessages is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMailboxPolicies.MustEncryptSmimeMessages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxPolicies", "bool EmailMailboxPolicies.MustEncryptSmimeMessages");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxPolicies.MustSignSmimeMessages is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailMailboxPolicies.MustSignSmimeMessages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxPolicies", "bool EmailMailboxPolicies.MustSignSmimeMessages");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxSmimeEncryptionAlgorithm? EmailMailboxPolicies.RequiredSmimeEncryptionAlgorithm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxSmimeEncryptionAlgorithm%3F%20EmailMailboxPolicies.RequiredSmimeEncryptionAlgorithm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxPolicies", "EmailMailboxSmimeEncryptionAlgorithm? EmailMailboxPolicies.RequiredSmimeEncryptionAlgorithm");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxSmimeSigningAlgorithm? EmailMailboxPolicies.RequiredSmimeSigningAlgorithm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxSmimeSigningAlgorithm%3F%20EmailMailboxPolicies.RequiredSmimeSigningAlgorithm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxPolicies", "EmailMailboxSmimeSigningAlgorithm? EmailMailboxPolicies.RequiredSmimeSigningAlgorithm");
 			}
 			set
 			{

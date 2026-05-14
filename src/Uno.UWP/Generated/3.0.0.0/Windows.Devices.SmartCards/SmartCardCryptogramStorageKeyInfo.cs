@@ -19,7 +19,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer SmartCardCryptogramStorageKeyInfo.Attestation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20SmartCardCryptogramStorageKeyInfo.Attestation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "IBuffer SmartCardCryptogramStorageKeyInfo.Attestation");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer SmartCardCryptogramStorageKeyInfo.AttestationCertificateChain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20SmartCardCryptogramStorageKeyInfo.AttestationCertificateChain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "IBuffer SmartCardCryptogramStorageKeyInfo.AttestationCertificateChain");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardCryptographicKeyAttestationStatus SmartCardCryptogramStorageKeyInfo.AttestationStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardCryptographicKeyAttestationStatus%20SmartCardCryptogramStorageKeyInfo.AttestationStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "SmartCardCryptographicKeyAttestationStatus SmartCardCryptogramStorageKeyInfo.AttestationStatus");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardCryptogramStorageKeyCapabilities SmartCardCryptogramStorageKeyInfo.Capabilities is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardCryptogramStorageKeyCapabilities%20SmartCardCryptogramStorageKeyInfo.Capabilities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "SmartCardCryptogramStorageKeyCapabilities SmartCardCryptogramStorageKeyInfo.Capabilities");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardCryptogramGeneratorOperationStatus SmartCardCryptogramStorageKeyInfo.OperationStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardCryptogramGeneratorOperationStatus%20SmartCardCryptogramStorageKeyInfo.OperationStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "SmartCardCryptogramGeneratorOperationStatus SmartCardCryptogramStorageKeyInfo.OperationStatus");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmartCardCryptogramStorageKeyInfo.OperationalRequirements is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmartCardCryptogramStorageKeyInfo.OperationalRequirements");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "string SmartCardCryptogramStorageKeyInfo.OperationalRequirements");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer SmartCardCryptogramStorageKeyInfo.PublicKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20SmartCardCryptogramStorageKeyInfo.PublicKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "IBuffer SmartCardCryptogramStorageKeyInfo.PublicKey");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CryptographicPublicKeyBlobType SmartCardCryptogramStorageKeyInfo.PublicKeyBlobType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CryptographicPublicKeyBlobType%20SmartCardCryptogramStorageKeyInfo.PublicKeyBlobType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramStorageKeyInfo", "CryptographicPublicKeyBlobType SmartCardCryptogramStorageKeyInfo.PublicKeyBlobType");
 			}
 		}
 #endif

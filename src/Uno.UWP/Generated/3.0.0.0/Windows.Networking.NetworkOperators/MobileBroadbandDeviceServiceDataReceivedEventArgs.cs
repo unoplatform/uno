@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer MobileBroadbandDeviceServiceDataReceivedEventArgs.ReceivedData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20MobileBroadbandDeviceServiceDataReceivedEventArgs.ReceivedData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataReceivedEventArgs", "IBuffer MobileBroadbandDeviceServiceDataReceivedEventArgs.ReceivedData");
 			}
 		}
 #endif

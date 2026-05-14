@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color ShareProvider.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20ShareProvider.BackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareProvider", "Color ShareProvider.BackgroundColor");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RandomAccessStreamReference ShareProvider.DisplayIcon is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RandomAccessStreamReference%20ShareProvider.DisplayIcon");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareProvider", "RandomAccessStreamReference ShareProvider.DisplayIcon");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object ShareProvider.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ShareProvider.Tag");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareProvider", "object ShareProvider.Tag");
 			}
 			set
 			{
@@ -48,7 +48,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ShareProvider.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ShareProvider.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareProvider", "string ShareProvider.Title");
 			}
 		}
 #endif

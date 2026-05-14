@@ -19,7 +19,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NetworkAdapter IPInformation.NetworkAdapter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NetworkAdapter%20IPInformation.NetworkAdapter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.IPInformation", "NetworkAdapter IPInformation.NetworkAdapter");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte? IPInformation.PrefixLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%3F%20IPInformation.PrefixLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.IPInformation", "byte? IPInformation.PrefixLength");
 			}
 		}
 #endif

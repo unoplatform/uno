@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppUriHandlerRegistration.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppUriHandlerRegistration.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistration", "string AppUriHandlerRegistration.Name");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User AppUriHandlerRegistration.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20AppUriHandlerRegistration.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistration", "User AppUriHandlerRegistration.User");
 			}
 		}
 #endif
@@ -37,14 +37,14 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.System.AppUriHandlerHost>> GetAppAddedHostsAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IList<AppUriHandlerHost>> AppUriHandlerRegistration.GetAppAddedHostsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIList%3CAppUriHandlerHost%3E%3E%20AppUriHandlerRegistration.GetAppAddedHostsAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistration", "IAsyncOperation<IList<AppUriHandlerHost>> AppUriHandlerRegistration.GetAppAddedHostsAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetAppAddedHostsAsync(global::System.Collections.Generic.IEnumerable<global::Windows.System.AppUriHandlerHost> hosts)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction AppUriHandlerRegistration.SetAppAddedHostsAsync(IEnumerable<AppUriHandlerHost> hosts) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AppUriHandlerRegistration.SetAppAddedHostsAsync%28IEnumerable%3CAppUriHandlerHost%3E%20hosts%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistration", "IAsyncAction AppUriHandlerRegistration.SetAppAddedHostsAsync(IEnumerable<AppUriHandlerHost> hosts)");
 		}
 #endif
 		// Forced skipping of method Windows.System.AppUriHandlerRegistration.Name.get

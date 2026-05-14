@@ -24,14 +24,14 @@ namespace Windows.ApplicationModel.DataTransfer
 		[global::Uno.NotImplemented("__TVOS__")]
 		public static global::Windows.ApplicationModel.DataTransfer.DataTransferManager GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member DataTransferManager DataTransferManager.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataTransferManager%20DataTransferManager.GetForCurrentView%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.DataTransferManager", "DataTransferManager DataTransferManager.GetForCurrentView()");
 		}
 #endif
 #if false || false || __TVOS__ || false || false || false || false
 		[global::Uno.NotImplemented("__TVOS__")]
 		public static bool IsSupported()
 		{
-			throw new global::System.NotImplementedException("The member bool DataTransferManager.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DataTransferManager.IsSupported%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.DataTransferManager", "bool DataTransferManager.IsSupported()");
 		}
 #endif
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__

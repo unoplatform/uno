@@ -14,7 +14,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Dsa is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KeyAlgorithmNames.Dsa");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "string KeyAlgorithmNames.Dsa");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KeyAlgorithmNames.Ecdh");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "string KeyAlgorithmNames.Ecdh");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdh256 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KeyAlgorithmNames.Ecdh256");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "string KeyAlgorithmNames.Ecdh256");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdh384 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KeyAlgorithmNames.Ecdh384");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "string KeyAlgorithmNames.Ecdh384");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdh521 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KeyAlgorithmNames.Ecdh521");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "string KeyAlgorithmNames.Ecdh521");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdsa is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KeyAlgorithmNames.Ecdsa");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "string KeyAlgorithmNames.Ecdsa");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdsa256 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KeyAlgorithmNames.Ecdsa256");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "string KeyAlgorithmNames.Ecdsa256");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdsa384 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KeyAlgorithmNames.Ecdsa384");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "string KeyAlgorithmNames.Ecdsa384");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Ecdsa521 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KeyAlgorithmNames.Ecdsa521");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "string KeyAlgorithmNames.Ecdsa521");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyAlgorithmNames.Rsa is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KeyAlgorithmNames.Rsa");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyAlgorithmNames", "string KeyAlgorithmNames.Rsa");
 			}
 		}
 #endif

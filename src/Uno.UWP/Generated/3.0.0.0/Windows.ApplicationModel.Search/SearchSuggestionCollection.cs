@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SearchSuggestionCollection.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SearchSuggestionCollection.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchSuggestionCollection", "uint SearchSuggestionCollection.Size");
 			}
 		}
 #endif

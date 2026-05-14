@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MuteChangeEventArgs.Muted is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MuteChangeEventArgs.Muted");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.MuteChangeEventArgs", "bool MuteChangeEventArgs.Muted");
 			}
 		}
 #endif

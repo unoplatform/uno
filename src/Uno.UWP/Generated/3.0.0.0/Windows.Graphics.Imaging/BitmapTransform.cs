@@ -14,7 +14,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapBounds BitmapTransform.Bounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapBounds%20BitmapTransform.Bounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTransform", "BitmapBounds BitmapTransform.Bounds");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapFlip BitmapTransform.Flip is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapFlip%20BitmapTransform.Flip");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTransform", "BitmapFlip BitmapTransform.Flip");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapInterpolationMode BitmapTransform.InterpolationMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapInterpolationMode%20BitmapTransform.InterpolationMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTransform", "BitmapInterpolationMode BitmapTransform.InterpolationMode");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapRotation BitmapTransform.Rotation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapRotation%20BitmapTransform.Rotation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTransform", "BitmapRotation BitmapTransform.Rotation");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BitmapTransform.ScaledHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BitmapTransform.ScaledHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTransform", "uint BitmapTransform.ScaledHeight");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BitmapTransform.ScaledWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BitmapTransform.ScaledWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapTransform", "uint BitmapTransform.ScaledWidth");
 			}
 			set
 			{

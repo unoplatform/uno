@@ -19,7 +19,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RadialControllerMenu RadialController.Menu is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RadialControllerMenu%20RadialController.Menu");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialController", "RadialControllerMenu RadialController.Menu");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double RadialController.RotationResolutionInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20RadialController.RotationResolutionInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialController", "double RadialController.RotationResolutionInDegrees");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RadialController.UseAutomaticHapticFeedback is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RadialController.UseAutomaticHapticFeedback");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialController", "bool RadialController.UseAutomaticHapticFeedback");
 			}
 			set
 			{
@@ -55,14 +55,14 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSupported()
 		{
-			throw new global::System.NotImplementedException("The member bool RadialController.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RadialController.IsSupported%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialController", "bool RadialController.IsSupported()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.RadialController CreateForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member RadialController RadialController.CreateForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RadialController%20RadialController.CreateForCurrentView%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialController", "RadialController RadialController.CreateForCurrentView()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.RadialController.ButtonClicked.add

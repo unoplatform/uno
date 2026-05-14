@@ -14,7 +14,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.Bit2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.Bit2");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.Bit2");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.Boolean is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.Boolean");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.Boolean");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.DUInt16 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.DUInt16");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.DUInt16");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.Float is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.Float");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.Float");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.Float32 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.Float32");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.Float32");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.Float64 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.Float64");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.Float64");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.Nibble is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.Nibble");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.Nibble");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.SFloat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.SFloat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.SFloat");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.SInt12 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.SInt12");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.SInt12");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.SInt128 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.SInt128");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.SInt128");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.SInt16 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.SInt16");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.SInt16");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.SInt24 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.SInt24");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.SInt24");
 			}
 		}
 #endif
@@ -134,7 +134,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.SInt32 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.SInt32");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.SInt32");
 			}
 		}
 #endif
@@ -144,7 +144,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.SInt48 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.SInt48");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.SInt48");
 			}
 		}
 #endif
@@ -154,7 +154,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.SInt64 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.SInt64");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.SInt64");
 			}
 		}
 #endif
@@ -164,7 +164,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.SInt8 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.SInt8");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.SInt8");
 			}
 		}
 #endif
@@ -174,7 +174,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.Struct is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.Struct");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.Struct");
 			}
 		}
 #endif
@@ -184,7 +184,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.UInt12 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.UInt12");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.UInt12");
 			}
 		}
 #endif
@@ -194,7 +194,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.UInt128 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.UInt128");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.UInt128");
 			}
 		}
 #endif
@@ -204,7 +204,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.UInt16 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.UInt16");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.UInt16");
 			}
 		}
 #endif
@@ -214,7 +214,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.UInt24 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.UInt24");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.UInt24");
 			}
 		}
 #endif
@@ -224,7 +224,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.UInt32 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.UInt32");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.UInt32");
 			}
 		}
 #endif
@@ -234,7 +234,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.UInt48 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.UInt48");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.UInt48");
 			}
 		}
 #endif
@@ -244,7 +244,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.UInt64 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.UInt64");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.UInt64");
 			}
 		}
 #endif
@@ -254,7 +254,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.UInt8 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.UInt8");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.UInt8");
 			}
 		}
 #endif
@@ -264,7 +264,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.Utf16 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.Utf16");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.Utf16");
 			}
 		}
 #endif
@@ -274,7 +274,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormatTypes.Utf8 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormatTypes.Utf8");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes", "byte GattPresentationFormatTypes.Utf8");
 			}
 		}
 #endif

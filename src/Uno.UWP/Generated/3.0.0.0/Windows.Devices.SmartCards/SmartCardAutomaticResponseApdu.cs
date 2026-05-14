@@ -14,7 +14,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SmartCardAutomaticResponseApdu.AllowWhenCryptogramGeneratorNotPrepared is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SmartCardAutomaticResponseApdu.AllowWhenCryptogramGeneratorNotPrepared");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu", "bool SmartCardAutomaticResponseApdu.AllowWhenCryptogramGeneratorNotPrepared");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer SmartCardAutomaticResponseApdu.AppletId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20SmartCardAutomaticResponseApdu.AppletId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu", "IBuffer SmartCardAutomaticResponseApdu.AppletId");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer SmartCardAutomaticResponseApdu.CommandApdu is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20SmartCardAutomaticResponseApdu.CommandApdu");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu", "IBuffer SmartCardAutomaticResponseApdu.CommandApdu");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer SmartCardAutomaticResponseApdu.CommandApduBitMask is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20SmartCardAutomaticResponseApdu.CommandApduBitMask");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu", "IBuffer SmartCardAutomaticResponseApdu.CommandApduBitMask");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? SmartCardAutomaticResponseApdu.InputState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20SmartCardAutomaticResponseApdu.InputState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu", "uint? SmartCardAutomaticResponseApdu.InputState");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? SmartCardAutomaticResponseApdu.OutputState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20SmartCardAutomaticResponseApdu.OutputState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu", "uint? SmartCardAutomaticResponseApdu.OutputState");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer SmartCardAutomaticResponseApdu.ResponseApdu is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20SmartCardAutomaticResponseApdu.ResponseApdu");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu", "IBuffer SmartCardAutomaticResponseApdu.ResponseApdu");
 			}
 			set
 			{
@@ -112,7 +112,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SmartCardAutomaticResponseApdu.ShouldMatchLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SmartCardAutomaticResponseApdu.ShouldMatchLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardAutomaticResponseApdu", "bool SmartCardAutomaticResponseApdu.ShouldMatchLength");
 			}
 			set
 			{

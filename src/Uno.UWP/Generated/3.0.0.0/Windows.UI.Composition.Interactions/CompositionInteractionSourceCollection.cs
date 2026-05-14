@@ -19,7 +19,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CompositionInteractionSourceCollection.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CompositionInteractionSourceCollection.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection", "int CompositionInteractionSourceCollection.Count");
 			}
 		}
 #endif
@@ -48,7 +48,7 @@ namespace Windows.UI.Composition.Interactions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.UI.Composition.Interactions.ICompositionInteractionSource> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<ICompositionInteractionSource> CompositionInteractionSourceCollection.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CICompositionInteractionSource%3E%20CompositionInteractionSourceCollection.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection", "IEnumerator<ICompositionInteractionSource> CompositionInteractionSourceCollection.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection.System.Collections.IEnumerable.GetEnumerator()

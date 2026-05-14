@@ -19,7 +19,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastReceiverCursorImageChannel MiracastReceiverConnection.CursorImageChannel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MiracastReceiverCursorImageChannel%20MiracastReceiverConnection.CursorImageChannel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverConnection", "MiracastReceiverCursorImageChannel MiracastReceiverConnection.CursorImageChannel");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastReceiverInputDevices MiracastReceiverConnection.InputDevices is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MiracastReceiverInputDevices%20MiracastReceiverConnection.InputDevices");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverConnection", "MiracastReceiverInputDevices MiracastReceiverConnection.InputDevices");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastReceiverStreamControl MiracastReceiverConnection.StreamControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MiracastReceiverStreamControl%20MiracastReceiverConnection.StreamControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverConnection", "MiracastReceiverStreamControl MiracastReceiverConnection.StreamControl");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastTransmitter MiracastReceiverConnection.Transmitter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MiracastTransmitter%20MiracastReceiverConnection.Transmitter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverConnection", "MiracastTransmitter MiracastReceiverConnection.Transmitter");
 			}
 		}
 #endif
@@ -78,7 +78,7 @@ namespace Windows.Media.Miracast
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction PauseAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction MiracastReceiverConnection.PauseAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20MiracastReceiverConnection.PauseAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverConnection", "IAsyncAction MiracastReceiverConnection.PauseAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -92,7 +92,7 @@ namespace Windows.Media.Miracast
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ResumeAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction MiracastReceiverConnection.ResumeAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20MiracastReceiverConnection.ResumeAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverConnection", "IAsyncAction MiracastReceiverConnection.ResumeAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

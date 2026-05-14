@@ -19,7 +19,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EqualizerBand.Bandwidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20EqualizerBand.Bandwidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EqualizerBand", "double EqualizerBand.Bandwidth");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EqualizerBand.FrequencyCenter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20EqualizerBand.FrequencyCenter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EqualizerBand", "double EqualizerBand.FrequencyCenter");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EqualizerBand.Gain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20EqualizerBand.Gain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EqualizerBand", "double EqualizerBand.Gain");
 			}
 			set
 			{

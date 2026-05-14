@@ -19,7 +19,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point DisplayMonitor.BluePrimary is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20DisplayMonitor.BluePrimary");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "Point DisplayMonitor.BluePrimary");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayMonitorConnectionKind DisplayMonitor.ConnectionKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayMonitorConnectionKind%20DisplayMonitor.ConnectionKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "DisplayMonitorConnectionKind DisplayMonitor.ConnectionKind");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DisplayMonitor.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DisplayMonitor.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "string DisplayMonitor.DeviceId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DisplayMonitor.DisplayAdapterDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DisplayMonitor.DisplayAdapterDeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "string DisplayMonitor.DisplayAdapterDeviceId");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayAdapterId DisplayMonitor.DisplayAdapterId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayAdapterId%20DisplayMonitor.DisplayAdapterId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "DisplayAdapterId DisplayMonitor.DisplayAdapterId");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint DisplayMonitor.DisplayAdapterTargetId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20DisplayMonitor.DisplayAdapterTargetId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "uint DisplayMonitor.DisplayAdapterTargetId");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DisplayMonitor.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DisplayMonitor.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "string DisplayMonitor.DisplayName");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point DisplayMonitor.GreenPrimary is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20DisplayMonitor.GreenPrimary");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "Point DisplayMonitor.GreenPrimary");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DisplayMonitor.IsDolbyVisionSupportedInHdrMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DisplayMonitor.IsDolbyVisionSupportedInHdrMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "bool DisplayMonitor.IsDolbyVisionSupportedInHdrMode");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float DisplayMonitor.MaxAverageFullFrameLuminanceInNits is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20DisplayMonitor.MaxAverageFullFrameLuminanceInNits");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "float DisplayMonitor.MaxAverageFullFrameLuminanceInNits");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float DisplayMonitor.MaxLuminanceInNits is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20DisplayMonitor.MaxLuminanceInNits");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "float DisplayMonitor.MaxLuminanceInNits");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float DisplayMonitor.MinLuminanceInNits is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20DisplayMonitor.MinLuminanceInNits");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "float DisplayMonitor.MinLuminanceInNits");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SizeInt32 DisplayMonitor.NativeResolutionInRawPixels is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SizeInt32%20DisplayMonitor.NativeResolutionInRawPixels");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "SizeInt32 DisplayMonitor.NativeResolutionInRawPixels");
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayMonitorPhysicalConnectorKind DisplayMonitor.PhysicalConnector is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayMonitorPhysicalConnectorKind%20DisplayMonitor.PhysicalConnector");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "DisplayMonitorPhysicalConnectorKind DisplayMonitor.PhysicalConnector");
 			}
 		}
 #endif
@@ -159,7 +159,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size? DisplayMonitor.PhysicalSizeInInches is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%3F%20DisplayMonitor.PhysicalSizeInInches");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "Size? DisplayMonitor.PhysicalSizeInInches");
 			}
 		}
 #endif
@@ -169,7 +169,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float DisplayMonitor.RawDpiX is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20DisplayMonitor.RawDpiX");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "float DisplayMonitor.RawDpiX");
 			}
 		}
 #endif
@@ -179,7 +179,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float DisplayMonitor.RawDpiY is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20DisplayMonitor.RawDpiY");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "float DisplayMonitor.RawDpiY");
 			}
 		}
 #endif
@@ -189,7 +189,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point DisplayMonitor.RedPrimary is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20DisplayMonitor.RedPrimary");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "Point DisplayMonitor.RedPrimary");
 			}
 		}
 #endif
@@ -199,7 +199,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayMonitorUsageKind DisplayMonitor.UsageKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayMonitorUsageKind%20DisplayMonitor.UsageKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "DisplayMonitorUsageKind DisplayMonitor.UsageKind");
 			}
 		}
 #endif
@@ -209,7 +209,7 @@ namespace Windows.Devices.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point DisplayMonitor.WhitePoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20DisplayMonitor.WhitePoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "Point DisplayMonitor.WhitePoint");
 			}
 		}
 #endif
@@ -217,28 +217,28 @@ namespace Windows.Devices.Display
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string DisplayMonitor.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DisplayMonitor.GetDeviceSelector%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "string DisplayMonitor.GetDeviceSelector()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Display.DisplayMonitor> FromIdAsync(string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DisplayMonitor> DisplayMonitor.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDisplayMonitor%3E%20DisplayMonitor.FromIdAsync%28string%20deviceId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "IAsyncOperation<DisplayMonitor> DisplayMonitor.FromIdAsync(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Display.DisplayMonitor> FromInterfaceIdAsync(string deviceInterfaceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DisplayMonitor> DisplayMonitor.FromInterfaceIdAsync(string deviceInterfaceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDisplayMonitor%3E%20DisplayMonitor.FromInterfaceIdAsync%28string%20deviceInterfaceId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "IAsyncOperation<DisplayMonitor> DisplayMonitor.FromInterfaceIdAsync(string deviceInterfaceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public byte[] GetDescriptor(global::Windows.Devices.Display.DisplayMonitorDescriptorKind descriptorKind)
 		{
-			throw new global::System.NotImplementedException("The member byte[] DisplayMonitor.GetDescriptor(DisplayMonitorDescriptorKind descriptorKind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%5B%5D%20DisplayMonitor.GetDescriptor%28DisplayMonitorDescriptorKind%20descriptorKind%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.DisplayMonitor", "byte[] DisplayMonitor.GetDescriptor(DisplayMonitorDescriptorKind descriptorKind)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.BluePrimary.get

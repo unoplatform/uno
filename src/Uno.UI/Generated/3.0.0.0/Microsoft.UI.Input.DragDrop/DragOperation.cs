@@ -14,7 +14,7 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DataPackageOperation DragOperation.AllowedOperations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataPackageOperation%20DragOperation.AllowedOperations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragOperation", "DataPackageOperation DragOperation.AllowedOperations");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DataPackage DragOperation.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataPackage%20DragOperation.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragOperation", "DataPackage DragOperation.Data");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DragUIContentMode DragOperation.DragUIContentMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DragUIContentMode%20DragOperation.DragUIContentMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragOperation", "DragUIContentMode DragOperation.DragUIContentMode");
 			}
 			set
 			{
@@ -72,7 +72,7 @@ namespace Microsoft.UI.Input.DragDrop
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.DataTransfer.DataPackageOperation> StartAsync(global::Microsoft.UI.Input.DragDrop.DragDropManager initialTarget, global::Microsoft.UI.Input.PointerPoint initialPointerPoint)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DataPackageOperation> DragOperation.StartAsync(DragDropManager initialTarget, PointerPoint initialPointerPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDataPackageOperation%3E%20DragOperation.StartAsync%28DragDropManager%20initialTarget%2C%20PointerPoint%20initialPointerPoint%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragOperation", "IAsyncOperation<DataPackageOperation> DragOperation.StartAsync(DragDropManager initialTarget, PointerPoint initialPointerPoint)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

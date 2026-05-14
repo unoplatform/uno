@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml.Markup
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.Markup.XamlBinaryWriterErrorInformation Write(global::System.Collections.Generic.IList<global::Windows.Storage.Streams.IRandomAccessStream> inputStreams, global::System.Collections.Generic.IList<global::Windows.Storage.Streams.IRandomAccessStream> outputStreams, global::Microsoft.UI.Xaml.Markup.IXamlMetadataProvider xamlMetadataProvider)
 		{
-			throw new global::System.NotImplementedException("The member XamlBinaryWriterErrorInformation XamlBinaryWriter.Write(IList<IRandomAccessStream> inputStreams, IList<IRandomAccessStream> outputStreams, IXamlMetadataProvider xamlMetadataProvider) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XamlBinaryWriterErrorInformation%20XamlBinaryWriter.Write%28IList%3CIRandomAccessStream%3E%20inputStreams%2C%20IList%3CIRandomAccessStream%3E%20outputStreams%2C%20IXamlMetadataProvider%20xamlMetadataProvider%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Markup.XamlBinaryWriter", "XamlBinaryWriterErrorInformation XamlBinaryWriter.Write(IList<IRandomAccessStream> inputStreams, IList<IRandomAccessStream> outputStreams, IXamlMetadataProvider xamlMetadataProvider)");
 		}
 #endif
 	}

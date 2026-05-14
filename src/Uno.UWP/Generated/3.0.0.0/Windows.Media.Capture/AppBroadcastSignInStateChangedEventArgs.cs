@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastSignInResult AppBroadcastSignInStateChangedEventArgs.Result is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastSignInResult%20AppBroadcastSignInStateChangedEventArgs.Result");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastSignInStateChangedEventArgs", "AppBroadcastSignInResult AppBroadcastSignInStateChangedEventArgs.Result");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastSignInState AppBroadcastSignInStateChangedEventArgs.SignInState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastSignInState%20AppBroadcastSignInStateChangedEventArgs.SignInState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastSignInStateChangedEventArgs", "AppBroadcastSignInState AppBroadcastSignInStateChangedEventArgs.SignInState");
 			}
 		}
 #endif

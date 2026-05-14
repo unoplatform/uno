@@ -14,7 +14,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomPromptOptionSelector.Compulsory is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomPromptOptionSelector.Compulsory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptOptionSelector", "bool VpnCustomPromptOptionSelector.Compulsory");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnCustomPromptOptionSelector.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnCustomPromptOptionSelector.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptOptionSelector", "string VpnCustomPromptOptionSelector.DisplayName");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomPromptOptionSelector.Emphasized is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomPromptOptionSelector.Emphasized");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptOptionSelector", "bool VpnCustomPromptOptionSelector.Emphasized");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> VpnCustomPromptOptionSelector.Options is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20VpnCustomPromptOptionSelector.Options");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptOptionSelector", "IList<string> VpnCustomPromptOptionSelector.Options");
 			}
 		}
 #endif
@@ -66,7 +66,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint VpnCustomPromptOptionSelector.SelectedIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20VpnCustomPromptOptionSelector.SelectedIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomPromptOptionSelector", "uint VpnCustomPromptOptionSelector.SelectedIndex");
 			}
 		}
 #endif

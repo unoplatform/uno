@@ -14,7 +14,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameSourceProperties.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionFrameSourceProperties.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionFrameSourceProperties", "string KnownPerceptionFrameSourceProperties.DeviceId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameSourceProperties.DeviceModelVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionFrameSourceProperties.DeviceModelVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionFrameSourceProperties", "string KnownPerceptionFrameSourceProperties.DeviceModelVersion");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameSourceProperties.EnclosureLocation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionFrameSourceProperties.EnclosureLocation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionFrameSourceProperties", "string KnownPerceptionFrameSourceProperties.EnclosureLocation");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameSourceProperties.FrameKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionFrameSourceProperties.FrameKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionFrameSourceProperties", "string KnownPerceptionFrameSourceProperties.FrameKind");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameSourceProperties.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionFrameSourceProperties.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionFrameSourceProperties", "string KnownPerceptionFrameSourceProperties.Id");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameSourceProperties.PhysicalDeviceIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionFrameSourceProperties.PhysicalDeviceIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionFrameSourceProperties", "string KnownPerceptionFrameSourceProperties.PhysicalDeviceIds");
 			}
 		}
 #endif

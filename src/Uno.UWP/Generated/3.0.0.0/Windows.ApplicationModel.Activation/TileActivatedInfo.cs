@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ShownTileNotification> TileActivatedInfo.RecentlyShownNotifications is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CShownTileNotification%3E%20TileActivatedInfo.RecentlyShownNotifications");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.TileActivatedInfo", "IReadOnlyList<ShownTileNotification> TileActivatedInfo.RecentlyShownNotifications");
 			}
 		}
 #endif

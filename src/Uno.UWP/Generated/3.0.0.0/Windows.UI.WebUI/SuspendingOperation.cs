@@ -19,7 +19,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset SuspendingOperation.Deadline is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20SuspendingOperation.Deadline");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.SuspendingOperation", "DateTimeOffset SuspendingOperation.Deadline");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.UI.WebUI
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.SuspendingDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member SuspendingDeferral SuspendingOperation.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SuspendingDeferral%20SuspendingOperation.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.SuspendingOperation", "SuspendingDeferral SuspendingOperation.GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.WebUI.SuspendingOperation.Deadline.get

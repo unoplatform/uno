@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<Guid, BackgroundTaskRegistration> BackgroundTaskRegistrationGroup.AllTasks is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3CGuid%2C%20BackgroundTaskRegistration%3E%20BackgroundTaskRegistrationGroup.AllTasks");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup", "IReadOnlyDictionary<Guid, BackgroundTaskRegistration> BackgroundTaskRegistrationGroup.AllTasks");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string BackgroundTaskRegistrationGroup.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20BackgroundTaskRegistrationGroup.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup", "string BackgroundTaskRegistrationGroup.Id");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string BackgroundTaskRegistrationGroup.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20BackgroundTaskRegistrationGroup.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup", "string BackgroundTaskRegistrationGroup.Name");
 			}
 		}
 #endif

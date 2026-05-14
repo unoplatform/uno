@@ -14,7 +14,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SpeechCue.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SpeechCue.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SpeechCue", "TimeSpan SpeechCue.Duration");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? SpeechCue.EndPositionInInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20SpeechCue.EndPositionInInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SpeechCue", "int? SpeechCue.EndPositionInInput");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpeechCue.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SpeechCue.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SpeechCue", "string SpeechCue.Id");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? SpeechCue.StartPositionInInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20SpeechCue.StartPositionInInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SpeechCue", "int? SpeechCue.StartPositionInInput");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SpeechCue.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SpeechCue.StartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SpeechCue", "TimeSpan SpeechCue.StartTime");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpeechCue.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SpeechCue.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SpeechCue", "string SpeechCue.Text");
 			}
 			set
 			{

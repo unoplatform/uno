@@ -19,7 +19,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PackageInstallState PackageUserInformation.InstallState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PackageInstallState%20PackageUserInformation.InstallState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageUserInformation", "PackageInstallState PackageUserInformation.InstallState");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PackageUserInformation.UserSecurityId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PackageUserInformation.UserSecurityId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageUserInformation", "string PackageUserInformation.UserSecurityId");
 			}
 		}
 #endif

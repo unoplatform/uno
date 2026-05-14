@@ -14,7 +14,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsTextMessage2.Body is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsTextMessage2.Body");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage2", "string SmsTextMessage2.Body");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsTextMessage2.CallbackNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsTextMessage2.CallbackNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage2", "string SmsTextMessage2.CallbackNumber");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CellularClass SmsTextMessage2.CellularClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CellularClass%20SmsTextMessage2.CellularClass");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage2", "CellularClass SmsTextMessage2.CellularClass");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsTextMessage2.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsTextMessage2.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage2", "string SmsTextMessage2.DeviceId");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsEncoding SmsTextMessage2.Encoding is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsEncoding%20SmsTextMessage2.Encoding");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage2", "SmsEncoding SmsTextMessage2.Encoding");
 			}
 			set
 			{
@@ -76,7 +76,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsTextMessage2.From is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsTextMessage2.From");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage2", "string SmsTextMessage2.From");
 			}
 		}
 #endif
@@ -86,7 +86,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SmsTextMessage2.IsDeliveryNotificationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SmsTextMessage2.IsDeliveryNotificationEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage2", "bool SmsTextMessage2.IsDeliveryNotificationEnabled");
 			}
 			set
 			{
@@ -100,7 +100,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsMessageClass SmsTextMessage2.MessageClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageClass%20SmsTextMessage2.MessageClass");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage2", "SmsMessageClass SmsTextMessage2.MessageClass");
 			}
 		}
 #endif
@@ -110,7 +110,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsMessageType SmsTextMessage2.MessageType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageType%20SmsTextMessage2.MessageType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage2", "SmsMessageType SmsTextMessage2.MessageType");
 			}
 		}
 #endif
@@ -120,7 +120,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int SmsTextMessage2.ProtocolId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmsTextMessage2.ProtocolId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage2", "int SmsTextMessage2.ProtocolId");
 			}
 		}
 #endif
@@ -130,7 +130,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int SmsTextMessage2.RetryAttemptCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmsTextMessage2.RetryAttemptCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage2", "int SmsTextMessage2.RetryAttemptCount");
 			}
 			set
 			{
@@ -144,7 +144,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsTextMessage2.SimIccId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsTextMessage2.SimIccId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage2", "string SmsTextMessage2.SimIccId");
 			}
 		}
 #endif
@@ -154,7 +154,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int SmsTextMessage2.TeleserviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmsTextMessage2.TeleserviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage2", "int SmsTextMessage2.TeleserviceId");
 			}
 		}
 #endif
@@ -164,7 +164,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset SmsTextMessage2.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20SmsTextMessage2.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage2", "DateTimeOffset SmsTextMessage2.Timestamp");
 			}
 		}
 #endif
@@ -174,7 +174,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsTextMessage2.To is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsTextMessage2.To");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsTextMessage2", "string SmsTextMessage2.To");
 			}
 			set
 			{

@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CompositionStrokeDashArray.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CompositionStrokeDashArray.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionStrokeDashArray", "int CompositionStrokeDashArray.Count");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CompositionStrokeDashArray.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionStrokeDashArray.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionStrokeDashArray", "bool CompositionStrokeDashArray.IsReadOnly");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionStrokeDashArray.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionStrokeDashArray.this%5Bint%20index%5D");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionStrokeDashArray", "float CompositionStrokeDashArray.this[int index]");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int IndexOf(float item)
 		{
-			throw new global::System.NotImplementedException("The member int CompositionStrokeDashArray.IndexOf(float item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CompositionStrokeDashArray.IndexOf%28float%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionStrokeDashArray", "int CompositionStrokeDashArray.IndexOf(float item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -90,7 +90,7 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Contains(float item)
 		{
-			throw new global::System.NotImplementedException("The member bool CompositionStrokeDashArray.Contains(float item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionStrokeDashArray.Contains%28float%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionStrokeDashArray", "bool CompositionStrokeDashArray.Contains(float item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -104,14 +104,14 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Remove(float item)
 		{
-			throw new global::System.NotImplementedException("The member bool CompositionStrokeDashArray.Remove(float item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionStrokeDashArray.Remove%28float%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionStrokeDashArray", "bool CompositionStrokeDashArray.Remove(float item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<float> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<float> CompositionStrokeDashArray.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3Cfloat%3E%20CompositionStrokeDashArray.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionStrokeDashArray", "IEnumerator<float> CompositionStrokeDashArray.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.CompositionStrokeDashArray.System.Collections.IEnumerable.GetEnumerator()

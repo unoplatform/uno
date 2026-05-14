@@ -17,7 +17,7 @@ namespace Windows.Media.Devices.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Numerics.Vector3 UnprojectPoint(global::Windows.Foundation.Point sourcePoint, global::Windows.Perception.Spatial.SpatialCoordinateSystem targetCoordinateSystem)
 		{
-			throw new global::System.NotImplementedException("The member Vector3 DepthCorrelatedCoordinateMapper.UnprojectPoint(Point sourcePoint, SpatialCoordinateSystem targetCoordinateSystem) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20DepthCorrelatedCoordinateMapper.UnprojectPoint%28Point%20sourcePoint%2C%20SpatialCoordinateSystem%20targetCoordinateSystem%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper", "Vector3 DepthCorrelatedCoordinateMapper.UnprojectPoint(Point sourcePoint, SpatialCoordinateSystem targetCoordinateSystem)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -31,7 +31,7 @@ namespace Windows.Media.Devices.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Point MapPoint(global::Windows.Foundation.Point sourcePoint, global::Windows.Perception.Spatial.SpatialCoordinateSystem targetCoordinateSystem, global::Windows.Media.Devices.Core.CameraIntrinsics targetCameraIntrinsics)
 		{
-			throw new global::System.NotImplementedException("The member Point DepthCorrelatedCoordinateMapper.MapPoint(Point sourcePoint, SpatialCoordinateSystem targetCoordinateSystem, CameraIntrinsics targetCameraIntrinsics) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20DepthCorrelatedCoordinateMapper.MapPoint%28Point%20sourcePoint%2C%20SpatialCoordinateSystem%20targetCoordinateSystem%2C%20CameraIntrinsics%20targetCameraIntrinsics%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.DepthCorrelatedCoordinateMapper", "Point DepthCorrelatedCoordinateMapper.MapPoint(Point sourcePoint, SpatialCoordinateSystem targetCoordinateSystem, CameraIntrinsics targetCameraIntrinsics)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

@@ -19,7 +19,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float? FrameExposureCompensationControl.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%3F%20FrameExposureCompensationControl.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameExposureCompensationControl", "float? FrameExposureCompensationControl.Value");
 			}
 			set
 			{

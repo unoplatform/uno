@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2Notification.BadgeUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2Notification.BadgeUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Notification", "string CoreWebView2Notification.BadgeUri");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2Notification.Body is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2Notification.Body");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Notification", "string CoreWebView2Notification.Body");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2Notification.BodyImageUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2Notification.BodyImageUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Notification", "string CoreWebView2Notification.BodyImageUri");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2TextDirectionKind CoreWebView2Notification.Direction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2TextDirectionKind%20CoreWebView2Notification.Direction");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Notification", "CoreWebView2TextDirectionKind CoreWebView2Notification.Direction");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2Notification.IconUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2Notification.IconUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Notification", "string CoreWebView2Notification.IconUri");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2Notification.IsSilent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2Notification.IsSilent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Notification", "bool CoreWebView2Notification.IsSilent");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2Notification.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2Notification.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Notification", "string CoreWebView2Notification.Language");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2Notification.RequiresInteraction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2Notification.RequiresInteraction");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Notification", "bool CoreWebView2Notification.RequiresInteraction");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2Notification.ShouldRenotify is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2Notification.ShouldRenotify");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Notification", "bool CoreWebView2Notification.ShouldRenotify");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2Notification.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2Notification.Tag");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Notification", "string CoreWebView2Notification.Tag");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CoreWebView2Notification.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CoreWebView2Notification.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Notification", "double CoreWebView2Notification.Timestamp");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2Notification.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2Notification.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Notification", "string CoreWebView2Notification.Title");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ulong> CoreWebView2Notification.VibrationPattern is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Culong%3E%20CoreWebView2Notification.VibrationPattern");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Notification", "IReadOnlyList<ulong> CoreWebView2Notification.VibrationPattern");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan PerceptionTimestamp.PredictionAmount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20PerceptionTimestamp.PredictionAmount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.PerceptionTimestamp", "TimeSpan PerceptionTimestamp.PredictionAmount");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan PerceptionTimestamp.SystemRelativeTargetTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20PerceptionTimestamp.SystemRelativeTargetTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.PerceptionTimestamp", "TimeSpan PerceptionTimestamp.SystemRelativeTargetTime");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset PerceptionTimestamp.TargetTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20PerceptionTimestamp.TargetTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.PerceptionTimestamp", "DateTimeOffset PerceptionTimestamp.TargetTime");
 			}
 		}
 #endif

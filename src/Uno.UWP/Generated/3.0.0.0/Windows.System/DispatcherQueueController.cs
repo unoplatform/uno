@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DispatcherQueue DispatcherQueueController.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherQueue%20DispatcherQueueController.DispatcherQueue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.DispatcherQueueController", "DispatcherQueue DispatcherQueueController.DispatcherQueue");
 			}
 		}
 #endif
@@ -27,14 +27,14 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.DispatcherQueueController CreateOnDedicatedThread()
 		{
-			throw new global::System.NotImplementedException("The member DispatcherQueueController DispatcherQueueController.CreateOnDedicatedThread() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherQueueController%20DispatcherQueueController.CreateOnDedicatedThread%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.DispatcherQueueController", "DispatcherQueueController DispatcherQueueController.CreateOnDedicatedThread()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ShutdownQueueAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction DispatcherQueueController.ShutdownQueueAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20DispatcherQueueController.ShutdownQueueAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.DispatcherQueueController", "IAsyncAction DispatcherQueueController.ShutdownQueueAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.System.DispatcherQueueController.DispatcherQueue.get

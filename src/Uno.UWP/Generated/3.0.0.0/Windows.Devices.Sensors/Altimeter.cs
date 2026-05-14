@@ -19,7 +19,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Altimeter.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Altimeter.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Altimeter", "string Altimeter.DeviceId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Altimeter.MaxBatchSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Altimeter.MaxBatchSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Altimeter", "uint Altimeter.MaxBatchSize");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Altimeter.MinimumReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Altimeter.MinimumReportInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Altimeter", "uint Altimeter.MinimumReportInterval");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Altimeter.ReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Altimeter.ReportInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Altimeter", "uint Altimeter.ReportInterval");
 			}
 			set
 			{
@@ -63,7 +63,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Altimeter.ReportLatency is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Altimeter.ReportLatency");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Altimeter", "uint Altimeter.ReportLatency");
 			}
 			set
 			{
@@ -75,14 +75,14 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Sensors.Altimeter GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member Altimeter Altimeter.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Altimeter%20Altimeter.GetDefault%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Altimeter", "Altimeter Altimeter.GetDefault()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Sensors.AltimeterReading GetCurrentReading()
 		{
-			throw new global::System.NotImplementedException("The member AltimeterReading Altimeter.GetCurrentReading() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AltimeterReading%20Altimeter.GetCurrentReading%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Altimeter", "AltimeterReading Altimeter.GetCurrentReading()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sensors.Altimeter.ReadingChanged.add

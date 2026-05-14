@@ -14,7 +14,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemConnectionRequest.ConnectionToken is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RemoteSystemConnectionRequest.ConnectionToken");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemConnectionRequest", "string RemoteSystemConnectionRequest.ConnectionToken");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RemoteSystem RemoteSystemConnectionRequest.RemoteSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystem%20RemoteSystemConnectionRequest.RemoteSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemConnectionRequest", "RemoteSystem RemoteSystemConnectionRequest.RemoteSystem");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RemoteSystemApp RemoteSystemConnectionRequest.RemoteSystemApp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemApp%20RemoteSystemConnectionRequest.RemoteSystemApp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemConnectionRequest", "RemoteSystemApp RemoteSystemConnectionRequest.RemoteSystemApp");
 			}
 		}
 #endif
@@ -50,21 +50,21 @@ namespace Windows.System.RemoteSystems
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.RemoteSystems.RemoteSystemConnectionRequest CreateForApp(global::Windows.System.RemoteSystems.RemoteSystemApp remoteSystemApp)
 		{
-			throw new global::System.NotImplementedException("The member RemoteSystemConnectionRequest RemoteSystemConnectionRequest.CreateForApp(RemoteSystemApp remoteSystemApp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemConnectionRequest%20RemoteSystemConnectionRequest.CreateForApp%28RemoteSystemApp%20remoteSystemApp%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemConnectionRequest", "RemoteSystemConnectionRequest RemoteSystemConnectionRequest.CreateForApp(RemoteSystemApp remoteSystemApp)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.RemoteSystems.RemoteSystemConnectionRequest CreateFromConnectionToken(string connectionToken)
 		{
-			throw new global::System.NotImplementedException("The member RemoteSystemConnectionRequest RemoteSystemConnectionRequest.CreateFromConnectionToken(string connectionToken) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemConnectionRequest%20RemoteSystemConnectionRequest.CreateFromConnectionToken%28string%20connectionToken%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemConnectionRequest", "RemoteSystemConnectionRequest RemoteSystemConnectionRequest.CreateFromConnectionToken(string connectionToken)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.System.RemoteSystems.RemoteSystemConnectionRequest CreateFromConnectionTokenForUser(global::Windows.System.User user, string connectionToken)
 		{
-			throw new global::System.NotImplementedException("The member RemoteSystemConnectionRequest RemoteSystemConnectionRequest.CreateFromConnectionTokenForUser(User user, string connectionToken) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemConnectionRequest%20RemoteSystemConnectionRequest.CreateFromConnectionTokenForUser%28User%20user%2C%20string%20connectionToken%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemConnectionRequest", "RemoteSystemConnectionRequest RemoteSystemConnectionRequest.CreateFromConnectionTokenForUser(User user, string connectionToken)");
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionRequest.ConnectionToken.get

@@ -19,7 +19,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapAlphaMode BitmapFrame.BitmapAlphaMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapAlphaMode%20BitmapFrame.BitmapAlphaMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "BitmapAlphaMode BitmapFrame.BitmapAlphaMode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapPixelFormat BitmapFrame.BitmapPixelFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapPixelFormat%20BitmapFrame.BitmapPixelFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "BitmapPixelFormat BitmapFrame.BitmapPixelFormat");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapPropertiesView BitmapFrame.BitmapProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapPropertiesView%20BitmapFrame.BitmapProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "BitmapPropertiesView BitmapFrame.BitmapProperties");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double BitmapFrame.DpiX is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20BitmapFrame.DpiX");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "double BitmapFrame.DpiX");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double BitmapFrame.DpiY is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20BitmapFrame.DpiY");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "double BitmapFrame.DpiY");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BitmapFrame.OrientedPixelHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BitmapFrame.OrientedPixelHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "uint BitmapFrame.OrientedPixelHeight");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BitmapFrame.OrientedPixelWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BitmapFrame.OrientedPixelWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "uint BitmapFrame.OrientedPixelWidth");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BitmapFrame.PixelHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BitmapFrame.PixelHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "uint BitmapFrame.PixelHeight");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BitmapFrame.PixelWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BitmapFrame.PixelWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "uint BitmapFrame.PixelWidth");
 			}
 		}
 #endif
@@ -107,42 +107,42 @@ namespace Windows.Graphics.Imaging
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.ImageStream> GetThumbnailAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ImageStream> BitmapFrame.GetThumbnailAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CImageStream%3E%20BitmapFrame.GetThumbnailAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "IAsyncOperation<ImageStream> BitmapFrame.GetThumbnailAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.PixelDataProvider> GetPixelDataAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PixelDataProvider> BitmapFrame.GetPixelDataAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPixelDataProvider%3E%20BitmapFrame.GetPixelDataAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "IAsyncOperation<PixelDataProvider> BitmapFrame.GetPixelDataAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.PixelDataProvider> GetPixelDataAsync(global::Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat, global::Windows.Graphics.Imaging.BitmapAlphaMode alphaMode, global::Windows.Graphics.Imaging.BitmapTransform transform, global::Windows.Graphics.Imaging.ExifOrientationMode exifOrientationMode, global::Windows.Graphics.Imaging.ColorManagementMode colorManagementMode)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PixelDataProvider> BitmapFrame.GetPixelDataAsync(BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapTransform transform, ExifOrientationMode exifOrientationMode, ColorManagementMode colorManagementMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPixelDataProvider%3E%20BitmapFrame.GetPixelDataAsync%28BitmapPixelFormat%20pixelFormat%2C%20BitmapAlphaMode%20alphaMode%2C%20BitmapTransform%20transform%2C%20ExifOrientationMode%20exifOrientationMode%2C%20ColorManagementMode%20colorManagementMode%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "IAsyncOperation<PixelDataProvider> BitmapFrame.GetPixelDataAsync(BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapTransform transform, ExifOrientationMode exifOrientationMode, ColorManagementMode colorManagementMode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.SoftwareBitmap> GetSoftwareBitmapAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SoftwareBitmap> BitmapFrame.GetSoftwareBitmapAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSoftwareBitmap%3E%20BitmapFrame.GetSoftwareBitmapAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "IAsyncOperation<SoftwareBitmap> BitmapFrame.GetSoftwareBitmapAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.SoftwareBitmap> GetSoftwareBitmapAsync(global::Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat, global::Windows.Graphics.Imaging.BitmapAlphaMode alphaMode)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SoftwareBitmap> BitmapFrame.GetSoftwareBitmapAsync(BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSoftwareBitmap%3E%20BitmapFrame.GetSoftwareBitmapAsync%28BitmapPixelFormat%20pixelFormat%2C%20BitmapAlphaMode%20alphaMode%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "IAsyncOperation<SoftwareBitmap> BitmapFrame.GetSoftwareBitmapAsync(BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.SoftwareBitmap> GetSoftwareBitmapAsync(global::Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat, global::Windows.Graphics.Imaging.BitmapAlphaMode alphaMode, global::Windows.Graphics.Imaging.BitmapTransform transform, global::Windows.Graphics.Imaging.ExifOrientationMode exifOrientationMode, global::Windows.Graphics.Imaging.ColorManagementMode colorManagementMode)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SoftwareBitmap> BitmapFrame.GetSoftwareBitmapAsync(BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapTransform transform, ExifOrientationMode exifOrientationMode, ColorManagementMode colorManagementMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSoftwareBitmap%3E%20BitmapFrame.GetSoftwareBitmapAsync%28BitmapPixelFormat%20pixelFormat%2C%20BitmapAlphaMode%20alphaMode%2C%20BitmapTransform%20transform%2C%20ExifOrientationMode%20exifOrientationMode%2C%20ColorManagementMode%20colorManagementMode%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapFrame", "IAsyncOperation<SoftwareBitmap> BitmapFrame.GetSoftwareBitmapAsync(BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapTransform transform, ExifOrientationMode exifOrientationMode, ColorManagementMode colorManagementMode)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapFrame.BitmapAlphaMode.get

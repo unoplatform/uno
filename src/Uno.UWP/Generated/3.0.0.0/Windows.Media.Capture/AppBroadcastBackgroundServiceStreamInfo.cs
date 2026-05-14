@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppBroadcastBackgroundServiceStreamInfo.AudioCodec is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppBroadcastBackgroundServiceStreamInfo.AudioCodec");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundServiceStreamInfo", "string AppBroadcastBackgroundServiceStreamInfo.AudioCodec");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AppBroadcastBackgroundServiceStreamInfo.BandwidthTestBitrate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20AppBroadcastBackgroundServiceStreamInfo.BandwidthTestBitrate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundServiceStreamInfo", "ulong AppBroadcastBackgroundServiceStreamInfo.BandwidthTestBitrate");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastStreamReader AppBroadcastBackgroundServiceStreamInfo.BroadcastStreamReader is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastStreamReader%20AppBroadcastBackgroundServiceStreamInfo.BroadcastStreamReader");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundServiceStreamInfo", "AppBroadcastStreamReader AppBroadcastBackgroundServiceStreamInfo.BroadcastStreamReader");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AppBroadcastBackgroundServiceStreamInfo.DesiredVideoEncodingBitrate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20AppBroadcastBackgroundServiceStreamInfo.DesiredVideoEncodingBitrate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundServiceStreamInfo", "ulong AppBroadcastBackgroundServiceStreamInfo.DesiredVideoEncodingBitrate");
 			}
 			set
 			{
@@ -71,7 +71,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastStreamState AppBroadcastBackgroundServiceStreamInfo.StreamState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastStreamState%20AppBroadcastBackgroundServiceStreamInfo.StreamState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundServiceStreamInfo", "AppBroadcastStreamState AppBroadcastBackgroundServiceStreamInfo.StreamState");
 			}
 		}
 #endif

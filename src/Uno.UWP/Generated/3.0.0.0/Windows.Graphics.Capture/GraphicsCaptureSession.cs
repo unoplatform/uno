@@ -19,7 +19,7 @@ namespace Windows.Graphics.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GraphicsCaptureSession.IsCursorCaptureEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GraphicsCaptureSession.IsCursorCaptureEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Capture.GraphicsCaptureSession", "bool GraphicsCaptureSession.IsCursorCaptureEnabled");
 			}
 			set
 			{
@@ -31,7 +31,7 @@ namespace Windows.Graphics.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSupported()
 		{
-			throw new global::System.NotImplementedException("The member bool GraphicsCaptureSession.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GraphicsCaptureSession.IsSupported%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Capture.GraphicsCaptureSession", "bool GraphicsCaptureSession.IsSupported()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

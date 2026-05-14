@@ -15,7 +15,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object CoreWindow.AutomationHostProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20CoreWindow.AutomationHostProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindow", "object CoreWindow.AutomationHostProvider");
 			}
 		}
 #endif
@@ -26,7 +26,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet CoreWindow.CustomProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPropertySet%20CoreWindow.CustomProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindow", "IPropertySet CoreWindow.CustomProperties");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWindowFlowDirection CoreWindow.FlowDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWindowFlowDirection%20CoreWindow.FlowDirection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindow", "CoreWindowFlowDirection CoreWindow.FlowDirection");
 			}
 			set
 			{
@@ -52,7 +52,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWindow.IsInputEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWindow.IsInputEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindow", "bool CoreWindow.IsInputEnabled");
 			}
 			set
 			{
@@ -68,7 +68,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UIContext CoreWindow.UIContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UIContext%20CoreWindow.UIContext");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindow", "UIContext CoreWindow.UIContext");
 			}
 		}
 #endif
@@ -136,7 +136,7 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string GetCurrentKeyEventDeviceId()
 		{
-			throw new global::System.NotImplementedException("The member string CoreWindow.GetCurrentKeyEventDeviceId() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWindow.GetCurrentKeyEventDeviceId%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreWindow", "string CoreWindow.GetCurrentKeyEventDeviceId()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.CoreWindow.ClosestInteractiveBoundsRequested.add

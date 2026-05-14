@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTicketParameterDataType PrintTicketParameterDefinition.DataType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTicketParameterDataType%20PrintTicketParameterDefinition.DataType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition", "PrintTicketParameterDataType PrintTicketParameterDefinition.DataType");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintTicketParameterDefinition.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintTicketParameterDefinition.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition", "string PrintTicketParameterDefinition.Name");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int PrintTicketParameterDefinition.RangeMax is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20PrintTicketParameterDefinition.RangeMax");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition", "int PrintTicketParameterDefinition.RangeMax");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int PrintTicketParameterDefinition.RangeMin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20PrintTicketParameterDefinition.RangeMin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition", "int PrintTicketParameterDefinition.RangeMin");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintTicketParameterDefinition.UnitType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintTicketParameterDefinition.UnitType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition", "string PrintTicketParameterDefinition.UnitType");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintTicketParameterDefinition.XmlNamespace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintTicketParameterDefinition.XmlNamespace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition", "string PrintTicketParameterDefinition.XmlNamespace");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IXmlNode PrintTicketParameterDefinition.XmlNode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IXmlNode%20PrintTicketParameterDefinition.XmlNode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition", "IXmlNode PrintTicketParameterDefinition.XmlNode");
 			}
 		}
 #endif

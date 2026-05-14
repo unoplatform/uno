@@ -14,7 +14,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionClip.AnchorPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionClip.AnchorPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionClip", "Vector2 CompositionClip.AnchorPoint");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionClip.CenterPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionClip.CenterPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionClip", "Vector2 CompositionClip.CenterPoint");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionClip.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionClip.Offset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionClip", "Vector2 CompositionClip.Offset");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionClip.RotationAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionClip.RotationAngle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionClip", "float CompositionClip.RotationAngle");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionClip.RotationAngleInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionClip.RotationAngleInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionClip", "float CompositionClip.RotationAngleInDegrees");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionClip.Scale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionClip.Scale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionClip", "Vector2 CompositionClip.Scale");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Matrix3x2 CompositionClip.TransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix3x2%20CompositionClip.TransformMatrix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionClip", "Matrix3x2 CompositionClip.TransformMatrix");
 			}
 			set
 			{

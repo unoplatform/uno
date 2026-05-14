@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CallControl.HasRinger is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CallControl.HasRinger");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.CallControl", "bool CallControl.HasRinger");
 			}
 		}
 #endif
@@ -27,28 +27,28 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Devices.CallControl GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member CallControl CallControl.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CallControl%20CallControl.GetDefault%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.CallControl", "CallControl CallControl.GetDefault()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Devices.CallControl FromId(string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member CallControl CallControl.FromId(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CallControl%20CallControl.FromId%28string%20deviceId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.CallControl", "CallControl CallControl.FromId(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ulong IndicateNewIncomingCall(bool enableRinger, string callerId)
 		{
-			throw new global::System.NotImplementedException("The member ulong CallControl.IndicateNewIncomingCall(bool enableRinger, string callerId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20CallControl.IndicateNewIncomingCall%28bool%20enableRinger%2C%20string%20callerId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.CallControl", "ulong CallControl.IndicateNewIncomingCall(bool enableRinger, string callerId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ulong IndicateNewOutgoingCall()
 		{
-			throw new global::System.NotImplementedException("The member ulong CallControl.IndicateNewOutgoingCall() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20CallControl.IndicateNewOutgoingCall%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.CallControl", "ulong CallControl.IndicateNewOutgoingCall()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

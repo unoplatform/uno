@@ -14,7 +14,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PerceptionCorrelation> PerceptionCorrelationGroup.RelativeLocations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPerceptionCorrelation%3E%20PerceptionCorrelationGroup.RelativeLocations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionCorrelationGroup", "IReadOnlyList<PerceptionCorrelation> PerceptionCorrelationGroup.RelativeLocations");
 			}
 		}
 #endif

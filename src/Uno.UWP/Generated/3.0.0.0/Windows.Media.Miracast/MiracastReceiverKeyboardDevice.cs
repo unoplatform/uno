@@ -19,7 +19,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MiracastReceiverKeyboardDevice.IsRequestedByTransmitter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MiracastReceiverKeyboardDevice.IsRequestedByTransmitter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverKeyboardDevice", "bool MiracastReceiverKeyboardDevice.IsRequestedByTransmitter");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MiracastReceiverKeyboardDevice.IsTransmittingInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MiracastReceiverKeyboardDevice.IsTransmittingInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverKeyboardDevice", "bool MiracastReceiverKeyboardDevice.IsTransmittingInput");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MiracastReceiverKeyboardDevice.TransmitInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MiracastReceiverKeyboardDevice.TransmitInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverKeyboardDevice", "bool MiracastReceiverKeyboardDevice.TransmitInput");
 			}
 			set
 			{

@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneCallHistoryEntryQueryDesiredMedia PhoneCallHistoryEntryQueryOptions.DesiredMedia is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneCallHistoryEntryQueryDesiredMedia%20PhoneCallHistoryEntryQueryOptions.DesiredMedia");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions", "PhoneCallHistoryEntryQueryDesiredMedia PhoneCallHistoryEntryQueryOptions.DesiredMedia");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> PhoneCallHistoryEntryQueryOptions.SourceIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20PhoneCallHistoryEntryQueryOptions.SourceIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions", "IList<string> PhoneCallHistoryEntryQueryOptions.SourceIds");
 			}
 		}
 #endif

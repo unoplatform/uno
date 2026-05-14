@@ -48,7 +48,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ScrollContentPresenter.HorizontalOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ScrollContentPresenter.HorizontalOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ScrollContentPresenter", "double ScrollContentPresenter.HorizontalOffset");
 			}
 		}
 #endif
@@ -73,7 +73,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ScrollContentPresenter.VerticalOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ScrollContentPresenter.VerticalOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ScrollContentPresenter", "double ScrollContentPresenter.VerticalOffset");
 			}
 		}
 #endif

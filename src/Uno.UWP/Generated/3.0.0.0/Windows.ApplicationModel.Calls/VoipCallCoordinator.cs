@@ -17,28 +17,28 @@ namespace Windows.ApplicationModel.Calls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Calls.VoipCallCoordinator GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member VoipCallCoordinator VoipCallCoordinator.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoipCallCoordinator%20VoipCallCoordinator.GetDefault%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "VoipCallCoordinator VoipCallCoordinator.GetDefault()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.VoipPhoneCallResourceReservationStatus> ReserveCallResourcesAsync(string taskEntryPoint)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<VoipPhoneCallResourceReservationStatus> VoipCallCoordinator.ReserveCallResourcesAsync(string taskEntryPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CVoipPhoneCallResourceReservationStatus%3E%20VoipCallCoordinator.ReserveCallResourcesAsync%28string%20taskEntryPoint%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "IAsyncOperation<VoipPhoneCallResourceReservationStatus> VoipCallCoordinator.ReserveCallResourcesAsync(string taskEntryPoint)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Calls.VoipPhoneCall RequestNewIncomingCall(string context, string contactName, string contactNumber, global::System.Uri contactImage, string serviceName, global::System.Uri brandingImage, string callDetails, global::System.Uri ringtone, global::Windows.ApplicationModel.Calls.VoipPhoneCallMedia media, global::System.TimeSpan ringTimeout)
 		{
-			throw new global::System.NotImplementedException("The member VoipPhoneCall VoipCallCoordinator.RequestNewIncomingCall(string context, string contactName, string contactNumber, Uri contactImage, string serviceName, Uri brandingImage, string callDetails, Uri ringtone, VoipPhoneCallMedia media, TimeSpan ringTimeout) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoipPhoneCall%20VoipCallCoordinator.RequestNewIncomingCall%28string%20context%2C%20string%20contactName%2C%20string%20contactNumber%2C%20Uri%20contactImage%2C%20string%20serviceName%2C%20Uri%20brandingImage%2C%20string%20callDetails%2C%20Uri%20ringtone%2C%20VoipPhoneCallMedia%20media%2C%20TimeSpan%20ringTimeout%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "VoipPhoneCall VoipCallCoordinator.RequestNewIncomingCall(string context, string contactName, string contactNumber, Uri contactImage, string serviceName, Uri brandingImage, string callDetails, Uri ringtone, VoipPhoneCallMedia media, TimeSpan ringTimeout)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Calls.VoipPhoneCall RequestNewOutgoingCall(string context, string contactName, string serviceName, global::Windows.ApplicationModel.Calls.VoipPhoneCallMedia media)
 		{
-			throw new global::System.NotImplementedException("The member VoipPhoneCall VoipCallCoordinator.RequestNewOutgoingCall(string context, string contactName, string serviceName, VoipPhoneCallMedia media) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoipPhoneCall%20VoipCallCoordinator.RequestNewOutgoingCall%28string%20context%2C%20string%20contactName%2C%20string%20serviceName%2C%20VoipPhoneCallMedia%20media%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "VoipPhoneCall VoipCallCoordinator.RequestNewOutgoingCall(string context, string contactName, string serviceName, VoipPhoneCallMedia media)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -59,14 +59,14 @@ namespace Windows.ApplicationModel.Calls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Calls.VoipPhoneCall RequestOutgoingUpgradeToVideoCall(global::System.Guid callUpgradeGuid, string context, string contactName, string serviceName)
 		{
-			throw new global::System.NotImplementedException("The member VoipPhoneCall VoipCallCoordinator.RequestOutgoingUpgradeToVideoCall(Guid callUpgradeGuid, string context, string contactName, string serviceName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoipPhoneCall%20VoipCallCoordinator.RequestOutgoingUpgradeToVideoCall%28Guid%20callUpgradeGuid%2C%20string%20context%2C%20string%20contactName%2C%20string%20serviceName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "VoipPhoneCall VoipCallCoordinator.RequestOutgoingUpgradeToVideoCall(Guid callUpgradeGuid, string context, string contactName, string serviceName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Calls.VoipPhoneCall RequestIncomingUpgradeToVideoCall(string context, string contactName, string contactNumber, global::System.Uri contactImage, string serviceName, global::System.Uri brandingImage, string callDetails, global::System.Uri ringtone, global::System.TimeSpan ringTimeout)
 		{
-			throw new global::System.NotImplementedException("The member VoipPhoneCall VoipCallCoordinator.RequestIncomingUpgradeToVideoCall(string context, string contactName, string contactNumber, Uri contactImage, string serviceName, Uri brandingImage, string callDetails, Uri ringtone, TimeSpan ringTimeout) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoipPhoneCall%20VoipCallCoordinator.RequestIncomingUpgradeToVideoCall%28string%20context%2C%20string%20contactName%2C%20string%20contactNumber%2C%20Uri%20contactImage%2C%20string%20serviceName%2C%20Uri%20brandingImage%2C%20string%20callDetails%2C%20Uri%20ringtone%2C%20TimeSpan%20ringTimeout%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "VoipPhoneCall VoipCallCoordinator.RequestIncomingUpgradeToVideoCall(string context, string contactName, string contactNumber, Uri contactImage, string serviceName, Uri brandingImage, string callDetails, Uri ringtone, TimeSpan ringTimeout)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -89,28 +89,28 @@ namespace Windows.ApplicationModel.Calls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Calls.VoipPhoneCall SetupNewAcceptedCall(string context, string contactName, string contactNumber, string serviceName, global::Windows.ApplicationModel.Calls.VoipPhoneCallMedia media)
 		{
-			throw new global::System.NotImplementedException("The member VoipPhoneCall VoipCallCoordinator.SetupNewAcceptedCall(string context, string contactName, string contactNumber, string serviceName, VoipPhoneCallMedia media) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoipPhoneCall%20VoipCallCoordinator.SetupNewAcceptedCall%28string%20context%2C%20string%20contactName%2C%20string%20contactNumber%2C%20string%20serviceName%2C%20VoipPhoneCallMedia%20media%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "VoipPhoneCall VoipCallCoordinator.SetupNewAcceptedCall(string context, string contactName, string contactNumber, string serviceName, VoipPhoneCallMedia media)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Calls.VoipPhoneCall RequestNewAppInitiatedCall(string context, string contactName, string contactNumber, string serviceName, global::Windows.ApplicationModel.Calls.VoipPhoneCallMedia media)
 		{
-			throw new global::System.NotImplementedException("The member VoipPhoneCall VoipCallCoordinator.RequestNewAppInitiatedCall(string context, string contactName, string contactNumber, string serviceName, VoipPhoneCallMedia media) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoipPhoneCall%20VoipCallCoordinator.RequestNewAppInitiatedCall%28string%20context%2C%20string%20contactName%2C%20string%20contactNumber%2C%20string%20serviceName%2C%20VoipPhoneCallMedia%20media%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "VoipPhoneCall VoipCallCoordinator.RequestNewAppInitiatedCall(string context, string contactName, string contactNumber, string serviceName, VoipPhoneCallMedia media)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Calls.VoipPhoneCall RequestNewIncomingCall(string context, string contactName, string contactNumber, global::System.Uri contactImage, string serviceName, global::System.Uri brandingImage, string callDetails, global::System.Uri ringtone, global::Windows.ApplicationModel.Calls.VoipPhoneCallMedia media, global::System.TimeSpan ringTimeout, string contactRemoteId)
 		{
-			throw new global::System.NotImplementedException("The member VoipPhoneCall VoipCallCoordinator.RequestNewIncomingCall(string context, string contactName, string contactNumber, Uri contactImage, string serviceName, Uri brandingImage, string callDetails, Uri ringtone, VoipPhoneCallMedia media, TimeSpan ringTimeout, string contactRemoteId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoipPhoneCall%20VoipCallCoordinator.RequestNewIncomingCall%28string%20context%2C%20string%20contactName%2C%20string%20contactNumber%2C%20Uri%20contactImage%2C%20string%20serviceName%2C%20Uri%20brandingImage%2C%20string%20callDetails%2C%20Uri%20ringtone%2C%20VoipPhoneCallMedia%20media%2C%20TimeSpan%20ringTimeout%2C%20string%20contactRemoteId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "VoipPhoneCall VoipCallCoordinator.RequestNewIncomingCall(string context, string contactName, string contactNumber, Uri contactImage, string serviceName, Uri brandingImage, string callDetails, Uri ringtone, VoipPhoneCallMedia media, TimeSpan ringTimeout, string contactRemoteId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.VoipPhoneCallResourceReservationStatus> ReserveCallResourcesAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<VoipPhoneCallResourceReservationStatus> VoipCallCoordinator.ReserveCallResourcesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CVoipPhoneCallResourceReservationStatus%3E%20VoipCallCoordinator.ReserveCallResourcesAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "IAsyncOperation<VoipPhoneCallResourceReservationStatus> VoipCallCoordinator.ReserveCallResourcesAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

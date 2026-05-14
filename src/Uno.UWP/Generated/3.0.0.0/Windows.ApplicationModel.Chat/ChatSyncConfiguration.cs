@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChatSyncConfiguration.IsSyncEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChatSyncConfiguration.IsSyncEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatSyncConfiguration", "bool ChatSyncConfiguration.IsSyncEnabled");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ChatRestoreHistorySpan ChatSyncConfiguration.RestoreHistorySpan is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChatRestoreHistorySpan%20ChatSyncConfiguration.RestoreHistorySpan");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatSyncConfiguration", "ChatRestoreHistorySpan ChatSyncConfiguration.RestoreHistorySpan");
 			}
 			set
 			{

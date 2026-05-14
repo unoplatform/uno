@@ -19,7 +19,7 @@ namespace Windows.Devices.Printers.Extensions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object PrintTaskConfiguration.PrinterExtensionContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20PrintTaskConfiguration.PrinterExtensionContext");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Extensions.PrintTaskConfiguration", "object PrintTaskConfiguration.PrinterExtensionContext");
 			}
 		}
 #endif

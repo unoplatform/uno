@@ -12,14 +12,14 @@ namespace Windows.ApplicationModel.DataTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetStaticFragment(string htmlFormat)
 		{
-			throw new global::System.NotImplementedException("The member string HtmlFormatHelper.GetStaticFragment(string htmlFormat) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HtmlFormatHelper.GetStaticFragment%28string%20htmlFormat%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.HtmlFormatHelper", "string HtmlFormatHelper.GetStaticFragment(string htmlFormat)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string CreateHtmlFormat(string htmlFragment)
 		{
-			throw new global::System.NotImplementedException("The member string HtmlFormatHelper.CreateHtmlFormat(string htmlFragment) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HtmlFormatHelper.CreateHtmlFormat%28string%20htmlFragment%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.HtmlFormatHelper", "string HtmlFormatHelper.CreateHtmlFormat(string htmlFragment)");
 		}
 #endif
 	}

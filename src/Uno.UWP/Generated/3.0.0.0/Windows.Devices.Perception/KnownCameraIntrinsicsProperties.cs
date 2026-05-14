@@ -14,7 +14,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownCameraIntrinsicsProperties.FocalLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownCameraIntrinsicsProperties.FocalLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownCameraIntrinsicsProperties", "string KnownCameraIntrinsicsProperties.FocalLength");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownCameraIntrinsicsProperties.PrincipalPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownCameraIntrinsicsProperties.PrincipalPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownCameraIntrinsicsProperties", "string KnownCameraIntrinsicsProperties.PrincipalPoint");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownCameraIntrinsicsProperties.RadialDistortion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownCameraIntrinsicsProperties.RadialDistortion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownCameraIntrinsicsProperties", "string KnownCameraIntrinsicsProperties.RadialDistortion");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownCameraIntrinsicsProperties.TangentialDistortion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownCameraIntrinsicsProperties.TangentialDistortion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownCameraIntrinsicsProperties", "string KnownCameraIntrinsicsProperties.TangentialDistortion");
 			}
 		}
 #endif

@@ -20,7 +20,7 @@ namespace Windows.UI.Shell
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Guid Register(global::Windows.UI.Shell.SecurityAppKind kind, string displayName, global::System.Uri detailsUri, bool registerPerUser)
 		{
-			throw new global::System.NotImplementedException("The member Guid SecurityAppManager.Register(SecurityAppKind kind, string displayName, Uri detailsUri, bool registerPerUser) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20SecurityAppManager.Register%28SecurityAppKind%20kind%2C%20string%20displayName%2C%20Uri%20detailsUri%2C%20bool%20registerPerUser%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Shell.SecurityAppManager", "Guid SecurityAppManager.Register(SecurityAppKind kind, string displayName, Uri detailsUri, bool registerPerUser)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

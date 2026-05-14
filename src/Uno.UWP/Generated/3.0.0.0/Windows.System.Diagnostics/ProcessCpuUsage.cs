@@ -17,7 +17,7 @@ namespace Windows.System.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.Diagnostics.ProcessCpuUsageReport GetReport()
 		{
-			throw new global::System.NotImplementedException("The member ProcessCpuUsageReport ProcessCpuUsage.GetReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProcessCpuUsageReport%20ProcessCpuUsage.GetReport%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessCpuUsage", "ProcessCpuUsageReport ProcessCpuUsage.GetReport()");
 		}
 #endif
 	}

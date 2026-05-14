@@ -14,7 +14,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ICollection<string> HttpContentHeaderCollection.Keys is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICollection%3Cstring%3E%20HttpContentHeaderCollection.Keys");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentHeaderCollection", "ICollection<string> HttpContentHeaderCollection.Keys");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ICollection<string> HttpContentHeaderCollection.Values is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICollection%3Cstring%3E%20HttpContentHeaderCollection.Values");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentHeaderCollection", "ICollection<string> HttpContentHeaderCollection.Values");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int HttpContentHeaderCollection.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20HttpContentHeaderCollection.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentHeaderCollection", "int HttpContentHeaderCollection.Count");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HttpContentHeaderCollection.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpContentHeaderCollection.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentHeaderCollection", "bool HttpContentHeaderCollection.IsReadOnly");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpContentHeaderCollection.this[string key] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpContentHeaderCollection.this%5Bstring%20key%5D");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentHeaderCollection", "string HttpContentHeaderCollection.this[string key]");
 			}
 			set
 			{
@@ -68,7 +68,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpContentDispositionHeaderValue HttpContentHeaderCollection.ContentDisposition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpContentDispositionHeaderValue%20HttpContentHeaderCollection.ContentDisposition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentHeaderCollection", "HttpContentDispositionHeaderValue HttpContentHeaderCollection.ContentDisposition");
 			}
 			set
 			{
@@ -82,7 +82,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpContentCodingHeaderValueCollection HttpContentHeaderCollection.ContentEncoding is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpContentCodingHeaderValueCollection%20HttpContentHeaderCollection.ContentEncoding");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentHeaderCollection", "HttpContentCodingHeaderValueCollection HttpContentHeaderCollection.ContentEncoding");
 			}
 		}
 #endif
@@ -92,7 +92,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpLanguageHeaderValueCollection HttpContentHeaderCollection.ContentLanguage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpLanguageHeaderValueCollection%20HttpContentHeaderCollection.ContentLanguage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentHeaderCollection", "HttpLanguageHeaderValueCollection HttpContentHeaderCollection.ContentLanguage");
 			}
 		}
 #endif
@@ -102,7 +102,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong? HttpContentHeaderCollection.ContentLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%3F%20HttpContentHeaderCollection.ContentLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentHeaderCollection", "ulong? HttpContentHeaderCollection.ContentLength");
 			}
 			set
 			{
@@ -116,7 +116,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri HttpContentHeaderCollection.ContentLocation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20HttpContentHeaderCollection.ContentLocation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentHeaderCollection", "Uri HttpContentHeaderCollection.ContentLocation");
 			}
 			set
 			{
@@ -130,7 +130,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer HttpContentHeaderCollection.ContentMD5 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20HttpContentHeaderCollection.ContentMD5");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentHeaderCollection", "IBuffer HttpContentHeaderCollection.ContentMD5");
 			}
 			set
 			{
@@ -144,7 +144,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpContentRangeHeaderValue HttpContentHeaderCollection.ContentRange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpContentRangeHeaderValue%20HttpContentHeaderCollection.ContentRange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentHeaderCollection", "HttpContentRangeHeaderValue HttpContentHeaderCollection.ContentRange");
 			}
 			set
 			{
@@ -158,7 +158,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpMediaTypeHeaderValue HttpContentHeaderCollection.ContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpMediaTypeHeaderValue%20HttpContentHeaderCollection.ContentType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentHeaderCollection", "HttpMediaTypeHeaderValue HttpContentHeaderCollection.ContentType");
 			}
 			set
 			{
@@ -172,7 +172,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? HttpContentHeaderCollection.Expires is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20HttpContentHeaderCollection.Expires");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentHeaderCollection", "DateTimeOffset? HttpContentHeaderCollection.Expires");
 			}
 			set
 			{
@@ -186,7 +186,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? HttpContentHeaderCollection.LastModified is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20HttpContentHeaderCollection.LastModified");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentHeaderCollection", "DateTimeOffset? HttpContentHeaderCollection.LastModified");
 			}
 			set
 			{
@@ -213,7 +213,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryAppendWithoutValidation(string name, string value)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpContentHeaderCollection.TryAppendWithoutValidation(string name, string value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpContentHeaderCollection.TryAppendWithoutValidation%28string%20name%2C%20string%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentHeaderCollection", "bool HttpContentHeaderCollection.TryAppendWithoutValidation(string name, string value)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentHeaderCollection.Keys.get
@@ -233,21 +233,21 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ContainsKey(string key)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpContentHeaderCollection.ContainsKey(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpContentHeaderCollection.ContainsKey%28string%20key%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentHeaderCollection", "bool HttpContentHeaderCollection.ContainsKey(string key)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Remove(string key)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpContentHeaderCollection.Remove(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpContentHeaderCollection.Remove%28string%20key%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentHeaderCollection", "bool HttpContentHeaderCollection.Remove(string key)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryGetValue(string key, out string value)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpContentHeaderCollection.TryGetValue(string key, out string value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpContentHeaderCollection.TryGetValue%28string%20key%2C%20out%20string%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentHeaderCollection", "bool HttpContentHeaderCollection.TryGetValue(string key, out string value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -268,7 +268,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Contains(global::System.Collections.Generic.KeyValuePair<string, string> item)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpContentHeaderCollection.Contains(KeyValuePair<string, string> item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpContentHeaderCollection.Contains%28KeyValuePair%3Cstring%2C%20string%3E%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentHeaderCollection", "bool HttpContentHeaderCollection.Contains(KeyValuePair<string, string> item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -283,7 +283,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, string>> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<KeyValuePair<string, string>> HttpContentHeaderCollection.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CKeyValuePair%3Cstring%2C%20string%3E%3E%20HttpContentHeaderCollection.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentHeaderCollection", "IEnumerator<KeyValuePair<string, string>> HttpContentHeaderCollection.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentHeaderCollection.System.Collections.IEnumerable.GetEnumerator()
@@ -291,7 +291,7 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpContentHeaderCollection.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpContentHeaderCollection.ToString%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentHeaderCollection", "string HttpContentHeaderCollection.ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentHeaderCollection.ContentDisposition.get

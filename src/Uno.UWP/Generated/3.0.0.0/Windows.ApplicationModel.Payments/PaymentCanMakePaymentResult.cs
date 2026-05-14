@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentCanMakePaymentResultStatus PaymentCanMakePaymentResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentCanMakePaymentResultStatus%20PaymentCanMakePaymentResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentCanMakePaymentResult", "PaymentCanMakePaymentResultStatus PaymentCanMakePaymentResult.Status");
 			}
 		}
 #endif

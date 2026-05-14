@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataAccountContentKinds UserDataAccountProviderAddAccountOperation.ContentKinds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataAccountContentKinds%20UserDataAccountProviderAddAccountOperation.ContentKinds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation", "UserDataAccountContentKinds UserDataAccountProviderAddAccountOperation.ContentKinds");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataAccountProviderOperationKind UserDataAccountProviderAddAccountOperation.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataAccountProviderOperationKind%20UserDataAccountProviderAddAccountOperation.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation", "UserDataAccountProviderOperationKind UserDataAccountProviderAddAccountOperation.Kind");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UserDataAccountPartnerAccountInfo> UserDataAccountProviderAddAccountOperation.PartnerAccountInfos is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CUserDataAccountPartnerAccountInfo%3E%20UserDataAccountProviderAddAccountOperation.PartnerAccountInfos");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderAddAccountOperation", "IReadOnlyList<UserDataAccountPartnerAccountInfo> UserDataAccountProviderAddAccountOperation.PartnerAccountInfos");
 			}
 		}
 #endif

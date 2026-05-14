@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long CoreWebView2DownloadOperation.BytesReceived is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=long%20CoreWebView2DownloadOperation.BytesReceived");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2DownloadOperation", "long CoreWebView2DownloadOperation.BytesReceived");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2DownloadOperation.CanResume is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2DownloadOperation.CanResume");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2DownloadOperation", "bool CoreWebView2DownloadOperation.CanResume");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2DownloadOperation.ContentDisposition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2DownloadOperation.ContentDisposition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2DownloadOperation", "string CoreWebView2DownloadOperation.ContentDisposition");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2DownloadOperation.EstimatedEndTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2DownloadOperation.EstimatedEndTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2DownloadOperation", "string CoreWebView2DownloadOperation.EstimatedEndTime");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2DownloadInterruptReason CoreWebView2DownloadOperation.InterruptReason is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2DownloadInterruptReason%20CoreWebView2DownloadOperation.InterruptReason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2DownloadOperation", "CoreWebView2DownloadInterruptReason CoreWebView2DownloadOperation.InterruptReason");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2DownloadOperation.MimeType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2DownloadOperation.MimeType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2DownloadOperation", "string CoreWebView2DownloadOperation.MimeType");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2DownloadOperation.ResultFilePath is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2DownloadOperation.ResultFilePath");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2DownloadOperation", "string CoreWebView2DownloadOperation.ResultFilePath");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2DownloadState CoreWebView2DownloadOperation.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2DownloadState%20CoreWebView2DownloadOperation.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2DownloadOperation", "CoreWebView2DownloadState CoreWebView2DownloadOperation.State");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long CoreWebView2DownloadOperation.TotalBytesToReceive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=long%20CoreWebView2DownloadOperation.TotalBytesToReceive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2DownloadOperation", "long CoreWebView2DownloadOperation.TotalBytesToReceive");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2DownloadOperation.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2DownloadOperation.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2DownloadOperation", "string CoreWebView2DownloadOperation.Uri");
 			}
 		}
 #endif

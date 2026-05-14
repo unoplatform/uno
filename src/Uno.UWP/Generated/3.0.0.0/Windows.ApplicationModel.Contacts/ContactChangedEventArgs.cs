@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.Contacts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Contacts.ContactChangedDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member ContactChangedDeferral ContactChangedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactChangedDeferral%20ContactChangedEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactChangedEventArgs", "ContactChangedDeferral ContactChangedEventArgs.GetDeferral()");
 		}
 #endif
 	}

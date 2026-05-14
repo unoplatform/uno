@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ActivationSignalDetector.CanCreateConfigurations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ActivationSignalDetector.CanCreateConfigurations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector", "bool ActivationSignalDetector.CanCreateConfigurations");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationSignalDetectorKind ActivationSignalDetector.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivationSignalDetectorKind%20ActivationSignalDetector.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector", "ActivationSignalDetectorKind ActivationSignalDetector.Kind");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ActivationSignalDetector.ProviderId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ActivationSignalDetector.ProviderId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector", "string ActivationSignalDetector.ProviderId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> ActivationSignalDetector.SupportedModelDataTypes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20ActivationSignalDetector.SupportedModelDataTypes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector", "IReadOnlyList<string> ActivationSignalDetector.SupportedModelDataTypes");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ActivationSignalDetectorPowerState> ActivationSignalDetector.SupportedPowerStates is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CActivationSignalDetectorPowerState%3E%20ActivationSignalDetector.SupportedPowerStates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector", "IReadOnlyList<ActivationSignalDetectorPowerState> ActivationSignalDetector.SupportedPowerStates");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ActivationSignalDetectionTrainingDataFormat> ActivationSignalDetector.SupportedTrainingDataFormats is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CActivationSignalDetectionTrainingDataFormat%3E%20ActivationSignalDetector.SupportedTrainingDataFormats");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector", "IReadOnlyList<ActivationSignalDetectionTrainingDataFormat> ActivationSignalDetector.SupportedTrainingDataFormats");
 			}
 		}
 #endif
@@ -77,14 +77,14 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<string> GetSupportedModelIdsForSignalId(string signalId)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<string> ActivationSignalDetector.GetSupportedModelIdsForSignalId(string signalId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20ActivationSignalDetector.GetSupportedModelIdsForSignalId%28string%20signalId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector", "IReadOnlyList<string> ActivationSignalDetector.GetSupportedModelIdsForSignalId(string signalId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<string>> GetSupportedModelIdsForSignalIdAsync(string signalId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<string>> ActivationSignalDetector.GetSupportedModelIdsForSignalIdAsync(string signalId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3Cstring%3E%3E%20ActivationSignalDetector.GetSupportedModelIdsForSignalIdAsync%28string%20signalId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector", "IAsyncOperation<IReadOnlyList<string>> ActivationSignalDetector.GetSupportedModelIdsForSignalIdAsync(string signalId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -98,35 +98,35 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction CreateConfigurationAsync(string signalId, string modelId, string displayName)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ActivationSignalDetector.CreateConfigurationAsync(string signalId, string modelId, string displayName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ActivationSignalDetector.CreateConfigurationAsync%28string%20signalId%2C%20string%20modelId%2C%20string%20displayName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector", "IAsyncAction ActivationSignalDetector.CreateConfigurationAsync(string signalId, string modelId, string displayName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration> GetConfigurations()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<ActivationSignalDetectionConfiguration> ActivationSignalDetector.GetConfigurations() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CActivationSignalDetectionConfiguration%3E%20ActivationSignalDetector.GetConfigurations%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector", "IReadOnlyList<ActivationSignalDetectionConfiguration> ActivationSignalDetector.GetConfigurations()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration>> GetConfigurationsAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<ActivationSignalDetectionConfiguration>> ActivationSignalDetector.GetConfigurationsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CActivationSignalDetectionConfiguration%3E%3E%20ActivationSignalDetector.GetConfigurationsAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector", "IAsyncOperation<IReadOnlyList<ActivationSignalDetectionConfiguration>> ActivationSignalDetector.GetConfigurationsAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration GetConfiguration(string signalId, string modelId)
 		{
-			throw new global::System.NotImplementedException("The member ActivationSignalDetectionConfiguration ActivationSignalDetector.GetConfiguration(string signalId, string modelId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivationSignalDetectionConfiguration%20ActivationSignalDetector.GetConfiguration%28string%20signalId%2C%20string%20modelId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector", "ActivationSignalDetectionConfiguration ActivationSignalDetector.GetConfiguration(string signalId, string modelId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration> GetConfigurationAsync(string signalId, string modelId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ActivationSignalDetectionConfiguration> ActivationSignalDetector.GetConfigurationAsync(string signalId, string modelId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CActivationSignalDetectionConfiguration%3E%20ActivationSignalDetector.GetConfigurationAsync%28string%20signalId%2C%20string%20modelId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector", "IAsyncOperation<ActivationSignalDetectionConfiguration> ActivationSignalDetector.GetConfigurationAsync(string signalId, string modelId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -140,7 +140,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RemoveConfigurationAsync(string signalId, string modelId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ActivationSignalDetector.RemoveConfigurationAsync(string signalId, string modelId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ActivationSignalDetector.RemoveConfigurationAsync%28string%20signalId%2C%20string%20modelId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector", "IAsyncAction ActivationSignalDetector.RemoveConfigurationAsync(string signalId, string modelId)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector.CanCreateConfigurations.get

@@ -14,7 +14,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextRegion TimedTextCue.CueRegion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextRegion%20TimedTextCue.CueRegion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextCue", "TimedTextRegion TimedTextCue.CueRegion");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextStyle TimedTextCue.CueStyle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextStyle%20TimedTextCue.CueStyle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextCue", "TimedTextStyle TimedTextCue.CueStyle");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan TimedTextCue.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20TimedTextCue.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextCue", "TimeSpan TimedTextCue.Duration");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TimedTextCue.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20TimedTextCue.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextCue", "string TimedTextCue.Id");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<TimedTextLine> TimedTextCue.Lines is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CTimedTextLine%3E%20TimedTextCue.Lines");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextCue", "IList<TimedTextLine> TimedTextCue.Lines");
 			}
 		}
 #endif
@@ -80,7 +80,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan TimedTextCue.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20TimedTextCue.StartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextCue", "TimeSpan TimedTextCue.StartTime");
 			}
 			set
 			{

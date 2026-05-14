@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentOptionPresence PaymentOptions.RequestPayerEmail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentOptionPresence%20PaymentOptions.RequestPayerEmail");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentOptions", "PaymentOptionPresence PaymentOptions.RequestPayerEmail");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentOptionPresence PaymentOptions.RequestPayerName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentOptionPresence%20PaymentOptions.RequestPayerName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentOptions", "PaymentOptionPresence PaymentOptions.RequestPayerName");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentOptionPresence PaymentOptions.RequestPayerPhoneNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentOptionPresence%20PaymentOptions.RequestPayerPhoneNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentOptions", "PaymentOptionPresence PaymentOptions.RequestPayerPhoneNumber");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PaymentOptions.RequestShipping is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PaymentOptions.RequestShipping");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentOptions", "bool PaymentOptions.RequestShipping");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentShippingType PaymentOptions.ShippingType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentShippingType%20PaymentOptions.ShippingType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentOptions", "PaymentShippingType PaymentOptions.ShippingType");
 			}
 			set
 			{

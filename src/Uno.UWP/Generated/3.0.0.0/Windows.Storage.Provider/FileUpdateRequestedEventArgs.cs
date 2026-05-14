@@ -19,7 +19,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FileUpdateRequest FileUpdateRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileUpdateRequest%20FileUpdateRequestedEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.FileUpdateRequestedEventArgs", "FileUpdateRequest FileUpdateRequestedEventArgs.Request");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet MediaPlayerDataReceivedEventArgs.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20MediaPlayerDataReceivedEventArgs.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlayerDataReceivedEventArgs", "ValueSet MediaPlayerDataReceivedEventArgs.Data");
 			}
 		}
 #endif

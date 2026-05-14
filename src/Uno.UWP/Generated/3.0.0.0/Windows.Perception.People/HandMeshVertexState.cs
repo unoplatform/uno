@@ -19,7 +19,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialCoordinateSystem HandMeshVertexState.CoordinateSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialCoordinateSystem%20HandMeshVertexState.CoordinateSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshVertexState", "SpatialCoordinateSystem HandMeshVertexState.CoordinateSystem");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PerceptionTimestamp HandMeshVertexState.UpdateTimestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionTimestamp%20HandMeshVertexState.UpdateTimestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshVertexState", "PerceptionTimestamp HandMeshVertexState.UpdateTimestamp");
 			}
 		}
 #endif

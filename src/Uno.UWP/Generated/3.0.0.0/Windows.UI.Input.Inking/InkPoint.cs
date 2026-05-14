@@ -14,7 +14,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point InkPoint.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20InkPoint.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPoint", "Point InkPoint.Position");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InkPoint.Pressure is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InkPoint.Pressure");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPoint", "float InkPoint.Pressure");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InkPoint.TiltX is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InkPoint.TiltX");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPoint", "float InkPoint.TiltX");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InkPoint.TiltY is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InkPoint.TiltY");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPoint", "float InkPoint.TiltY");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong InkPoint.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20InkPoint.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPoint", "ulong InkPoint.Timestamp");
 			}
 		}
 #endif

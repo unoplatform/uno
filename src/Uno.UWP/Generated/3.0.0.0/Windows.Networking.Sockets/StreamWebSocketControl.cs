@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan StreamWebSocketControl.ActualUnsolicitedPongInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20StreamWebSocketControl.ActualUnsolicitedPongInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "TimeSpan StreamWebSocketControl.ActualUnsolicitedPongInterval");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate StreamWebSocketControl.ClientCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Certificate%20StreamWebSocketControl.ClientCertificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "Certificate StreamWebSocketControl.ClientCertificate");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan StreamWebSocketControl.DesiredUnsolicitedPongInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20StreamWebSocketControl.DesiredUnsolicitedPongInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "TimeSpan StreamWebSocketControl.DesiredUnsolicitedPongInterval");
 			}
 			set
 			{
@@ -57,7 +57,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ChainValidationResult> StreamWebSocketControl.IgnorableServerCertificateErrors is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CChainValidationResult%3E%20StreamWebSocketControl.IgnorableServerCertificateErrors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "IList<ChainValidationResult> StreamWebSocketControl.IgnorableServerCertificateErrors");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StreamWebSocketControl.NoDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StreamWebSocketControl.NoDelay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "bool StreamWebSocketControl.NoDelay");
 			}
 			set
 			{
@@ -81,7 +81,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint StreamWebSocketControl.OutboundBufferSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20StreamWebSocketControl.OutboundBufferSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "uint StreamWebSocketControl.OutboundBufferSizeInBytes");
 			}
 			set
 			{
@@ -95,7 +95,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential StreamWebSocketControl.ProxyCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PasswordCredential%20StreamWebSocketControl.ProxyCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "PasswordCredential StreamWebSocketControl.ProxyCredential");
 			}
 			set
 			{
@@ -109,7 +109,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential StreamWebSocketControl.ServerCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PasswordCredential%20StreamWebSocketControl.ServerCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "PasswordCredential StreamWebSocketControl.ServerCredential");
 			}
 			set
 			{
@@ -123,7 +123,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> StreamWebSocketControl.SupportedProtocols is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20StreamWebSocketControl.SupportedProtocols");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocketControl", "IList<string> StreamWebSocketControl.SupportedProtocols");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PackageInstallingEventArgs.ActivityId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PackageInstallingEventArgs.ActivityId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageInstallingEventArgs", "Guid PackageInstallingEventArgs.ActivityId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception PackageInstallingEventArgs.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20PackageInstallingEventArgs.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageInstallingEventArgs", "Exception PackageInstallingEventArgs.ErrorCode");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PackageInstallingEventArgs.IsComplete is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PackageInstallingEventArgs.IsComplete");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageInstallingEventArgs", "bool PackageInstallingEventArgs.IsComplete");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Package PackageInstallingEventArgs.Package is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Package%20PackageInstallingEventArgs.Package");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageInstallingEventArgs", "Package PackageInstallingEventArgs.Package");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double PackageInstallingEventArgs.Progress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20PackageInstallingEventArgs.Progress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageInstallingEventArgs", "double PackageInstallingEventArgs.Progress");
 			}
 		}
 #endif

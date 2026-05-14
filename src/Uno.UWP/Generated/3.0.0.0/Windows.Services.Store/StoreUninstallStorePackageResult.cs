@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception StoreUninstallStorePackageResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20StoreUninstallStorePackageResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreUninstallStorePackageResult", "Exception StoreUninstallStorePackageResult.ExtendedError");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StoreUninstallStorePackageStatus StoreUninstallStorePackageResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StoreUninstallStorePackageStatus%20StoreUninstallStorePackageResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreUninstallStorePackageResult", "StoreUninstallStorePackageStatus StoreUninstallStorePackageResult.Status");
 			}
 		}
 #endif

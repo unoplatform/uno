@@ -14,7 +14,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member XmlDocument BadgeNotification.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XmlDocument%20BadgeNotification.Content");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.BadgeNotification", "XmlDocument BadgeNotification.Content");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? BadgeNotification.ExpirationTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20BadgeNotification.ExpirationTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.BadgeNotification", "DateTimeOffset? BadgeNotification.ExpirationTime");
 			}
 			set
 			{

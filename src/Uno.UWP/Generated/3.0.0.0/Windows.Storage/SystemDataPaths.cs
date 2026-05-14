@@ -19,7 +19,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.Fonts is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemDataPaths.Fonts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemDataPaths", "string SystemDataPaths.Fonts");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.ProgramData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemDataPaths.ProgramData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemDataPaths", "string SystemDataPaths.ProgramData");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.Public is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemDataPaths.Public");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemDataPaths", "string SystemDataPaths.Public");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.PublicDesktop is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemDataPaths.PublicDesktop");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemDataPaths", "string SystemDataPaths.PublicDesktop");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.PublicDocuments is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemDataPaths.PublicDocuments");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemDataPaths", "string SystemDataPaths.PublicDocuments");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.PublicDownloads is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemDataPaths.PublicDownloads");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemDataPaths", "string SystemDataPaths.PublicDownloads");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.PublicMusic is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemDataPaths.PublicMusic");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemDataPaths", "string SystemDataPaths.PublicMusic");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.PublicPictures is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemDataPaths.PublicPictures");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemDataPaths", "string SystemDataPaths.PublicPictures");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.PublicVideos is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemDataPaths.PublicVideos");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemDataPaths", "string SystemDataPaths.PublicVideos");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.System is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemDataPaths.System");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemDataPaths", "string SystemDataPaths.System");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.SystemArm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemDataPaths.SystemArm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemDataPaths", "string SystemDataPaths.SystemArm");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.SystemHost is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemDataPaths.SystemHost");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemDataPaths", "string SystemDataPaths.SystemHost");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.SystemX64 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemDataPaths.SystemX64");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemDataPaths", "string SystemDataPaths.SystemX64");
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.SystemX86 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemDataPaths.SystemX86");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemDataPaths", "string SystemDataPaths.SystemX86");
 			}
 		}
 #endif
@@ -159,7 +159,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.UserProfiles is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemDataPaths.UserProfiles");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemDataPaths", "string SystemDataPaths.UserProfiles");
 			}
 		}
 #endif
@@ -169,7 +169,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemDataPaths.Windows is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemDataPaths.Windows");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemDataPaths", "string SystemDataPaths.Windows");
 			}
 		}
 #endif
@@ -177,7 +177,7 @@ namespace Windows.Storage
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.SystemDataPaths GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member SystemDataPaths SystemDataPaths.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemDataPaths%20SystemDataPaths.GetDefault%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemDataPaths", "SystemDataPaths SystemDataPaths.GetDefault()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.SystemDataPaths.Fonts.get

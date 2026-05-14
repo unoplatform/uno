@@ -14,7 +14,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PrintPageInfo.DpiX is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PrintPageInfo.DpiX");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintPageInfo", "uint PrintPageInfo.DpiX");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PrintPageInfo.DpiY is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PrintPageInfo.DpiY");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintPageInfo", "uint PrintPageInfo.DpiY");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintMediaSize PrintPageInfo.MediaSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintMediaSize%20PrintPageInfo.MediaSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintPageInfo", "PrintMediaSize PrintPageInfo.MediaSize");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintOrientation PrintPageInfo.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOrientation%20PrintPageInfo.Orientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintPageInfo", "PrintOrientation PrintPageInfo.Orientation");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size PrintPageInfo.PageSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20PrintPageInfo.PageSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintPageInfo", "Size PrintPageInfo.PageSize");
 			}
 			set
 			{

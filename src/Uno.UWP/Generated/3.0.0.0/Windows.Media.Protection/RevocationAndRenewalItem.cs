@@ -19,7 +19,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RevocationAndRenewalItem.HeaderHash is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RevocationAndRenewalItem.HeaderHash");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.RevocationAndRenewalItem", "string RevocationAndRenewalItem.HeaderHash");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RevocationAndRenewalItem.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RevocationAndRenewalItem.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.RevocationAndRenewalItem", "string RevocationAndRenewalItem.Name");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RevocationAndRenewalItem.PublicKeyHash is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RevocationAndRenewalItem.PublicKeyHash");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.RevocationAndRenewalItem", "string RevocationAndRenewalItem.PublicKeyHash");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RevocationAndRenewalReasons RevocationAndRenewalItem.Reasons is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RevocationAndRenewalReasons%20RevocationAndRenewalItem.Reasons");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.RevocationAndRenewalItem", "RevocationAndRenewalReasons RevocationAndRenewalItem.Reasons");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RevocationAndRenewalItem.RenewalId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RevocationAndRenewalItem.RenewalId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.RevocationAndRenewalItem", "string RevocationAndRenewalItem.RenewalId");
 			}
 		}
 #endif

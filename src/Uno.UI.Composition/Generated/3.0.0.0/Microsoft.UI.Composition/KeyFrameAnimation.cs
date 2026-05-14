@@ -14,7 +14,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AnimationDelayBehavior KeyFrameAnimation.DelayBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AnimationDelayBehavior%20KeyFrameAnimation.DelayBehavior");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.KeyFrameAnimation", "AnimationDelayBehavior KeyFrameAnimation.DelayBehavior");
 			}
 			set
 			{

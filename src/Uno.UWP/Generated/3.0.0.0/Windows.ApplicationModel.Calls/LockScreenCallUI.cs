@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LockScreenCallUI.CallTitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20LockScreenCallUI.CallTitle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.LockScreenCallUI", "string LockScreenCallUI.CallTitle");
 			}
 			set
 			{

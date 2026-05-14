@@ -19,7 +19,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 InteractionTrackerValuesChangedArgs.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20InteractionTrackerValuesChangedArgs.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs", "Vector3 InteractionTrackerValuesChangedArgs.Position");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int InteractionTrackerValuesChangedArgs.RequestId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTrackerValuesChangedArgs.RequestId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs", "int InteractionTrackerValuesChangedArgs.RequestId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Composition.Interactions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InteractionTrackerValuesChangedArgs.Scale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InteractionTrackerValuesChangedArgs.Scale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs", "float InteractionTrackerValuesChangedArgs.Scale");
 			}
 		}
 #endif

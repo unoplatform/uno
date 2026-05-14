@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneAudioRoutingEndpoint PhoneDialOptions.AudioEndpoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneAudioRoutingEndpoint%20PhoneDialOptions.AudioEndpoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneDialOptions", "PhoneAudioRoutingEndpoint PhoneDialOptions.AudioEndpoint");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Contact PhoneDialOptions.Contact is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Contact%20PhoneDialOptions.Contact");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneDialOptions", "Contact PhoneDialOptions.Contact");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactPhone PhoneDialOptions.ContactPhone is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactPhone%20PhoneDialOptions.ContactPhone");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneDialOptions", "ContactPhone PhoneDialOptions.ContactPhone");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneDialOptions.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneDialOptions.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneDialOptions", "string PhoneDialOptions.DisplayName");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneCallMedia PhoneDialOptions.Media is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneCallMedia%20PhoneDialOptions.Media");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneDialOptions", "PhoneCallMedia PhoneDialOptions.Media");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneDialOptions.Number is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneDialOptions.Number");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneDialOptions", "string PhoneDialOptions.Number");
 			}
 			set
 			{

@@ -19,7 +19,7 @@ namespace Windows.Storage.Pickers.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PickerClosingOperation PickerClosingEventArgs.ClosingOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PickerClosingOperation%20PickerClosingEventArgs.ClosingOperation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.PickerClosingEventArgs", "PickerClosingOperation PickerClosingEventArgs.ClosingOperation");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage.Pickers.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PickerClosingEventArgs.IsCanceled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PickerClosingEventArgs.IsCanceled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.PickerClosingEventArgs", "bool PickerClosingEventArgs.IsCanceled");
 			}
 		}
 #endif

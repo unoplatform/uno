@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs", "string MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.DeviceId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCaptureDeviceExclusiveControlStatus MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaCaptureDeviceExclusiveControlStatus%20MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs", "MediaCaptureDeviceExclusiveControlStatus MediaCaptureDeviceExclusiveControlStatusChangedEventArgs.Status");
 			}
 		}
 #endif

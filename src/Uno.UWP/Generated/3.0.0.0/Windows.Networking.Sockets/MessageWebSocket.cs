@@ -14,7 +14,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MessageWebSocketControl MessageWebSocket.Control is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MessageWebSocketControl%20MessageWebSocket.Control");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocket", "MessageWebSocketControl MessageWebSocket.Control");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MessageWebSocketInformation MessageWebSocket.Information is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MessageWebSocketInformation%20MessageWebSocket.Information");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocket", "MessageWebSocketInformation MessageWebSocket.Information");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IOutputStream MessageWebSocket.OutputStream is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IOutputStream%20MessageWebSocket.OutputStream");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocket", "IOutputStream MessageWebSocket.OutputStream");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ConnectAsync(global::System.Uri uri)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction MessageWebSocket.ConnectAsync(Uri uri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20MessageWebSocket.ConnectAsync%28Uri%20uri%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocket", "IAsyncAction MessageWebSocket.ConnectAsync(Uri uri)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -84,14 +84,14 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<uint, uint> SendNonfinalFrameAsync(global::Windows.Storage.Streams.IBuffer data)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<uint, uint> MessageWebSocket.SendNonfinalFrameAsync(IBuffer data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3Cuint%2C%20uint%3E%20MessageWebSocket.SendNonfinalFrameAsync%28IBuffer%20data%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocket", "IAsyncOperationWithProgress<uint, uint> MessageWebSocket.SendNonfinalFrameAsync(IBuffer data)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<uint, uint> SendFinalFrameAsync(global::Windows.Storage.Streams.IBuffer data)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<uint, uint> MessageWebSocket.SendFinalFrameAsync(IBuffer data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3Cuint%2C%20uint%3E%20MessageWebSocket.SendFinalFrameAsync%28IBuffer%20data%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocket", "IAsyncOperationWithProgress<uint, uint> MessageWebSocket.SendFinalFrameAsync(IBuffer data)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.Control.get

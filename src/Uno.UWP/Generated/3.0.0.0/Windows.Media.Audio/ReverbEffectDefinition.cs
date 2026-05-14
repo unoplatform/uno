@@ -14,7 +14,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ReverbEffectDefinition.ActivatableClassId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ReverbEffectDefinition.ActivatableClassId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "string ReverbEffectDefinition.ActivatableClassId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ReverbEffectDefinition.DecayTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ReverbEffectDefinition.DecayTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "double ReverbEffectDefinition.DecayTime");
 			}
 			set
 			{
@@ -38,7 +38,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ReverbEffectDefinition.Density is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ReverbEffectDefinition.Density");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "double ReverbEffectDefinition.Density");
 			}
 			set
 			{
@@ -52,7 +52,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReverbEffectDefinition.DisableLateField is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ReverbEffectDefinition.DisableLateField");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "bool ReverbEffectDefinition.DisableLateField");
 			}
 			set
 			{
@@ -66,7 +66,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte ReverbEffectDefinition.EarlyDiffusion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20ReverbEffectDefinition.EarlyDiffusion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "byte ReverbEffectDefinition.EarlyDiffusion");
 			}
 			set
 			{
@@ -80,7 +80,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte ReverbEffectDefinition.HighEQCutoff is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20ReverbEffectDefinition.HighEQCutoff");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "byte ReverbEffectDefinition.HighEQCutoff");
 			}
 			set
 			{
@@ -94,7 +94,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte ReverbEffectDefinition.HighEQGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20ReverbEffectDefinition.HighEQGain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "byte ReverbEffectDefinition.HighEQGain");
 			}
 			set
 			{
@@ -108,7 +108,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte ReverbEffectDefinition.LateDiffusion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20ReverbEffectDefinition.LateDiffusion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "byte ReverbEffectDefinition.LateDiffusion");
 			}
 			set
 			{
@@ -122,7 +122,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte ReverbEffectDefinition.LowEQCutoff is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20ReverbEffectDefinition.LowEQCutoff");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "byte ReverbEffectDefinition.LowEQCutoff");
 			}
 			set
 			{
@@ -136,7 +136,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte ReverbEffectDefinition.LowEQGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20ReverbEffectDefinition.LowEQGain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "byte ReverbEffectDefinition.LowEQGain");
 			}
 			set
 			{
@@ -150,7 +150,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte ReverbEffectDefinition.PositionLeft is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20ReverbEffectDefinition.PositionLeft");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "byte ReverbEffectDefinition.PositionLeft");
 			}
 			set
 			{
@@ -164,7 +164,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte ReverbEffectDefinition.PositionMatrixLeft is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20ReverbEffectDefinition.PositionMatrixLeft");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "byte ReverbEffectDefinition.PositionMatrixLeft");
 			}
 			set
 			{
@@ -178,7 +178,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte ReverbEffectDefinition.PositionMatrixRight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20ReverbEffectDefinition.PositionMatrixRight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "byte ReverbEffectDefinition.PositionMatrixRight");
 			}
 			set
 			{
@@ -192,7 +192,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte ReverbEffectDefinition.PositionRight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20ReverbEffectDefinition.PositionRight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "byte ReverbEffectDefinition.PositionRight");
 			}
 			set
 			{
@@ -206,7 +206,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet ReverbEffectDefinition.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPropertySet%20ReverbEffectDefinition.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "IPropertySet ReverbEffectDefinition.Properties");
 			}
 		}
 #endif
@@ -216,7 +216,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte ReverbEffectDefinition.RearDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20ReverbEffectDefinition.RearDelay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "byte ReverbEffectDefinition.RearDelay");
 			}
 			set
 			{
@@ -230,7 +230,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ReverbEffectDefinition.ReflectionsDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ReverbEffectDefinition.ReflectionsDelay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "uint ReverbEffectDefinition.ReflectionsDelay");
 			}
 			set
 			{
@@ -244,7 +244,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ReverbEffectDefinition.ReflectionsGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ReverbEffectDefinition.ReflectionsGain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "double ReverbEffectDefinition.ReflectionsGain");
 			}
 			set
 			{
@@ -258,7 +258,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte ReverbEffectDefinition.ReverbDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20ReverbEffectDefinition.ReverbDelay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "byte ReverbEffectDefinition.ReverbDelay");
 			}
 			set
 			{
@@ -272,7 +272,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ReverbEffectDefinition.ReverbGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ReverbEffectDefinition.ReverbGain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "double ReverbEffectDefinition.ReverbGain");
 			}
 			set
 			{
@@ -286,7 +286,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ReverbEffectDefinition.RoomFilterFreq is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ReverbEffectDefinition.RoomFilterFreq");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "double ReverbEffectDefinition.RoomFilterFreq");
 			}
 			set
 			{
@@ -300,7 +300,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ReverbEffectDefinition.RoomFilterHF is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ReverbEffectDefinition.RoomFilterHF");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "double ReverbEffectDefinition.RoomFilterHF");
 			}
 			set
 			{
@@ -314,7 +314,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ReverbEffectDefinition.RoomFilterMain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ReverbEffectDefinition.RoomFilterMain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "double ReverbEffectDefinition.RoomFilterMain");
 			}
 			set
 			{
@@ -328,7 +328,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ReverbEffectDefinition.RoomSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ReverbEffectDefinition.RoomSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "double ReverbEffectDefinition.RoomSize");
 			}
 			set
 			{
@@ -342,7 +342,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ReverbEffectDefinition.WetDryMix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ReverbEffectDefinition.WetDryMix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.ReverbEffectDefinition", "double ReverbEffectDefinition.WetDryMix");
 			}
 			set
 			{

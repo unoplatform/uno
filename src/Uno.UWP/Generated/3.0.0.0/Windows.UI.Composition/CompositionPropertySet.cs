@@ -73,56 +73,56 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.CompositionGetValueStatus TryGetColor(string propertyName, out global::Windows.UI.Color value)
 		{
-			throw new global::System.NotImplementedException("The member CompositionGetValueStatus CompositionPropertySet.TryGetColor(string propertyName, out Color value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionGetValueStatus%20CompositionPropertySet.TryGetColor%28string%20propertyName%2C%20out%20Color%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionPropertySet", "CompositionGetValueStatus CompositionPropertySet.TryGetColor(string propertyName, out Color value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.CompositionGetValueStatus TryGetMatrix3x2(string propertyName, out global::System.Numerics.Matrix3x2 value)
 		{
-			throw new global::System.NotImplementedException("The member CompositionGetValueStatus CompositionPropertySet.TryGetMatrix3x2(string propertyName, out Matrix3x2 value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionGetValueStatus%20CompositionPropertySet.TryGetMatrix3x2%28string%20propertyName%2C%20out%20Matrix3x2%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionPropertySet", "CompositionGetValueStatus CompositionPropertySet.TryGetMatrix3x2(string propertyName, out Matrix3x2 value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.CompositionGetValueStatus TryGetMatrix4x4(string propertyName, out global::System.Numerics.Matrix4x4 value)
 		{
-			throw new global::System.NotImplementedException("The member CompositionGetValueStatus CompositionPropertySet.TryGetMatrix4x4(string propertyName, out Matrix4x4 value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionGetValueStatus%20CompositionPropertySet.TryGetMatrix4x4%28string%20propertyName%2C%20out%20Matrix4x4%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionPropertySet", "CompositionGetValueStatus CompositionPropertySet.TryGetMatrix4x4(string propertyName, out Matrix4x4 value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.CompositionGetValueStatus TryGetQuaternion(string propertyName, out global::System.Numerics.Quaternion value)
 		{
-			throw new global::System.NotImplementedException("The member CompositionGetValueStatus CompositionPropertySet.TryGetQuaternion(string propertyName, out Quaternion value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionGetValueStatus%20CompositionPropertySet.TryGetQuaternion%28string%20propertyName%2C%20out%20Quaternion%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionPropertySet", "CompositionGetValueStatus CompositionPropertySet.TryGetQuaternion(string propertyName, out Quaternion value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.CompositionGetValueStatus TryGetScalar(string propertyName, out float value)
 		{
-			throw new global::System.NotImplementedException("The member CompositionGetValueStatus CompositionPropertySet.TryGetScalar(string propertyName, out float value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionGetValueStatus%20CompositionPropertySet.TryGetScalar%28string%20propertyName%2C%20out%20float%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionPropertySet", "CompositionGetValueStatus CompositionPropertySet.TryGetScalar(string propertyName, out float value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.CompositionGetValueStatus TryGetVector2(string propertyName, out global::System.Numerics.Vector2 value)
 		{
-			throw new global::System.NotImplementedException("The member CompositionGetValueStatus CompositionPropertySet.TryGetVector2(string propertyName, out Vector2 value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionGetValueStatus%20CompositionPropertySet.TryGetVector2%28string%20propertyName%2C%20out%20Vector2%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionPropertySet", "CompositionGetValueStatus CompositionPropertySet.TryGetVector2(string propertyName, out Vector2 value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.CompositionGetValueStatus TryGetVector3(string propertyName, out global::System.Numerics.Vector3 value)
 		{
-			throw new global::System.NotImplementedException("The member CompositionGetValueStatus CompositionPropertySet.TryGetVector3(string propertyName, out Vector3 value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionGetValueStatus%20CompositionPropertySet.TryGetVector3%28string%20propertyName%2C%20out%20Vector3%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionPropertySet", "CompositionGetValueStatus CompositionPropertySet.TryGetVector3(string propertyName, out Vector3 value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.CompositionGetValueStatus TryGetVector4(string propertyName, out global::System.Numerics.Vector4 value)
 		{
-			throw new global::System.NotImplementedException("The member CompositionGetValueStatus CompositionPropertySet.TryGetVector4(string propertyName, out Vector4 value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionGetValueStatus%20CompositionPropertySet.TryGetVector4%28string%20propertyName%2C%20out%20Vector4%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionPropertySet", "CompositionGetValueStatus CompositionPropertySet.TryGetVector4(string propertyName, out Vector4 value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -136,7 +136,7 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.CompositionGetValueStatus TryGetBoolean(string propertyName, out bool value)
 		{
-			throw new global::System.NotImplementedException("The member CompositionGetValueStatus CompositionPropertySet.TryGetBoolean(string propertyName, out bool value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionGetValueStatus%20CompositionPropertySet.TryGetBoolean%28string%20propertyName%2C%20out%20bool%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionPropertySet", "CompositionGetValueStatus CompositionPropertySet.TryGetBoolean(string propertyName, out bool value)");
 		}
 #endif
 	}

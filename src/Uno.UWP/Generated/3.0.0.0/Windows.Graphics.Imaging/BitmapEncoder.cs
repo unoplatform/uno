@@ -21,7 +21,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapProperties BitmapEncoder.BitmapContainerProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapProperties%20BitmapEncoder.BitmapContainerProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapEncoder", "BitmapProperties BitmapEncoder.BitmapContainerProperties");
 			}
 		}
 #endif
@@ -31,7 +31,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapProperties BitmapEncoder.BitmapProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapProperties%20BitmapEncoder.BitmapProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapEncoder", "BitmapProperties BitmapEncoder.BitmapProperties");
 			}
 		}
 #endif
@@ -41,7 +41,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapTransform BitmapEncoder.BitmapTransform is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapTransform%20BitmapEncoder.BitmapTransform");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapEncoder", "BitmapTransform BitmapEncoder.BitmapTransform");
 			}
 		}
 #endif
@@ -51,7 +51,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BitmapCodecInformation BitmapEncoder.EncoderInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapCodecInformation%20BitmapEncoder.EncoderInformation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapEncoder", "BitmapCodecInformation BitmapEncoder.EncoderInformation");
 			}
 		}
 #endif
@@ -61,7 +61,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BitmapEncoder.GeneratedThumbnailHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BitmapEncoder.GeneratedThumbnailHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapEncoder", "uint BitmapEncoder.GeneratedThumbnailHeight");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BitmapEncoder.GeneratedThumbnailWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20BitmapEncoder.GeneratedThumbnailWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapEncoder", "uint BitmapEncoder.GeneratedThumbnailWidth");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BitmapEncoder.IsThumbnailGenerated is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BitmapEncoder.IsThumbnailGenerated");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapEncoder", "bool BitmapEncoder.IsThumbnailGenerated");
 			}
 			set
 			{
@@ -101,35 +101,35 @@ namespace Windows.Graphics.Imaging
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Imaging.BitmapCodecInformation> GetEncoderInformationEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<BitmapCodecInformation> BitmapEncoder.GetEncoderInformationEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CBitmapCodecInformation%3E%20BitmapEncoder.GetEncoderInformationEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapEncoder", "IReadOnlyList<BitmapCodecInformation> BitmapEncoder.GetEncoderInformationEnumerator()");
 		}
 #endif
 #if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.BitmapEncoder> CreateAsync(global::System.Guid encoderId, global::Windows.Storage.Streams.IRandomAccessStream stream)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<BitmapEncoder> BitmapEncoder.CreateAsync(Guid encoderId, IRandomAccessStream stream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBitmapEncoder%3E%20BitmapEncoder.CreateAsync%28Guid%20encoderId%2C%20IRandomAccessStream%20stream%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapEncoder", "IAsyncOperation<BitmapEncoder> BitmapEncoder.CreateAsync(Guid encoderId, IRandomAccessStream stream)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.BitmapEncoder> CreateAsync(global::System.Guid encoderId, global::Windows.Storage.Streams.IRandomAccessStream stream, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, global::Windows.Graphics.Imaging.BitmapTypedValue>> encodingOptions)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<BitmapEncoder> BitmapEncoder.CreateAsync(Guid encoderId, IRandomAccessStream stream, IEnumerable<KeyValuePair<string, BitmapTypedValue>> encodingOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBitmapEncoder%3E%20BitmapEncoder.CreateAsync%28Guid%20encoderId%2C%20IRandomAccessStream%20stream%2C%20IEnumerable%3CKeyValuePair%3Cstring%2C%20BitmapTypedValue%3E%3E%20encodingOptions%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapEncoder", "IAsyncOperation<BitmapEncoder> BitmapEncoder.CreateAsync(Guid encoderId, IRandomAccessStream stream, IEnumerable<KeyValuePair<string, BitmapTypedValue>> encodingOptions)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.BitmapEncoder> CreateForTranscodingAsync(global::Windows.Storage.Streams.IRandomAccessStream stream, global::Windows.Graphics.Imaging.BitmapDecoder bitmapDecoder)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<BitmapEncoder> BitmapEncoder.CreateForTranscodingAsync(IRandomAccessStream stream, BitmapDecoder bitmapDecoder) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBitmapEncoder%3E%20BitmapEncoder.CreateForTranscodingAsync%28IRandomAccessStream%20stream%2C%20BitmapDecoder%20bitmapDecoder%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapEncoder", "IAsyncOperation<BitmapEncoder> BitmapEncoder.CreateForTranscodingAsync(IRandomAccessStream stream, BitmapDecoder bitmapDecoder)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.BitmapEncoder> CreateForInPlacePropertyEncodingAsync(global::Windows.Graphics.Imaging.BitmapDecoder bitmapDecoder)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<BitmapEncoder> BitmapEncoder.CreateForInPlacePropertyEncodingAsync(BitmapDecoder bitmapDecoder) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBitmapEncoder%3E%20BitmapEncoder.CreateForInPlacePropertyEncodingAsync%28BitmapDecoder%20bitmapDecoder%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapEncoder", "IAsyncOperation<BitmapEncoder> BitmapEncoder.CreateForInPlacePropertyEncodingAsync(BitmapDecoder bitmapDecoder)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.BmpEncoderId.get
@@ -150,21 +150,21 @@ namespace Windows.Graphics.Imaging
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction GoToNextFrameAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction BitmapEncoder.GoToNextFrameAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BitmapEncoder.GoToNextFrameAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapEncoder", "IAsyncAction BitmapEncoder.GoToNextFrameAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction GoToNextFrameAsync(global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, global::Windows.Graphics.Imaging.BitmapTypedValue>> encodingOptions)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction BitmapEncoder.GoToNextFrameAsync(IEnumerable<KeyValuePair<string, BitmapTypedValue>> encodingOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BitmapEncoder.GoToNextFrameAsync%28IEnumerable%3CKeyValuePair%3Cstring%2C%20BitmapTypedValue%3E%3E%20encodingOptions%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapEncoder", "IAsyncAction BitmapEncoder.GoToNextFrameAsync(IEnumerable<KeyValuePair<string, BitmapTypedValue>> encodingOptions)");
 		}
 #endif
 #if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction FlushAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction BitmapEncoder.FlushAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BitmapEncoder.FlushAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapEncoder", "IAsyncAction BitmapEncoder.FlushAsync()");
 		}
 #endif
 #if false || false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__

@@ -14,7 +14,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StorageProviderSyncRootInfo.AllowPinning is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StorageProviderSyncRootInfo.AllowPinning");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "bool StorageProviderSyncRootInfo.AllowPinning");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer StorageProviderSyncRootInfo.Context is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20StorageProviderSyncRootInfo.Context");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "IBuffer StorageProviderSyncRootInfo.Context");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorageProviderSyncRootInfo.DisplayNameResource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorageProviderSyncRootInfo.DisplayNameResource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "string StorageProviderSyncRootInfo.DisplayNameResource");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<StorageProviderFileTypeInfo> StorageProviderSyncRootInfo.FallbackFileTypeInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CStorageProviderFileTypeInfo%3E%20StorageProviderSyncRootInfo.FallbackFileTypeInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "IList<StorageProviderFileTypeInfo> StorageProviderSyncRootInfo.FallbackFileTypeInfo");
 			}
 		}
 #endif
@@ -66,7 +66,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageProviderHardlinkPolicy StorageProviderSyncRootInfo.HardlinkPolicy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageProviderHardlinkPolicy%20StorageProviderSyncRootInfo.HardlinkPolicy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "StorageProviderHardlinkPolicy StorageProviderSyncRootInfo.HardlinkPolicy");
 			}
 			set
 			{
@@ -80,7 +80,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageProviderHydrationPolicy StorageProviderSyncRootInfo.HydrationPolicy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageProviderHydrationPolicy%20StorageProviderSyncRootInfo.HydrationPolicy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "StorageProviderHydrationPolicy StorageProviderSyncRootInfo.HydrationPolicy");
 			}
 			set
 			{
@@ -94,7 +94,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageProviderHydrationPolicyModifier StorageProviderSyncRootInfo.HydrationPolicyModifier is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageProviderHydrationPolicyModifier%20StorageProviderSyncRootInfo.HydrationPolicyModifier");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "StorageProviderHydrationPolicyModifier StorageProviderSyncRootInfo.HydrationPolicyModifier");
 			}
 			set
 			{
@@ -108,7 +108,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorageProviderSyncRootInfo.IconResource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorageProviderSyncRootInfo.IconResource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "string StorageProviderSyncRootInfo.IconResource");
 			}
 			set
 			{
@@ -122,7 +122,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorageProviderSyncRootInfo.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorageProviderSyncRootInfo.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "string StorageProviderSyncRootInfo.Id");
 			}
 			set
 			{
@@ -136,7 +136,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageProviderInSyncPolicy StorageProviderSyncRootInfo.InSyncPolicy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageProviderInSyncPolicy%20StorageProviderSyncRootInfo.InSyncPolicy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "StorageProviderInSyncPolicy StorageProviderSyncRootInfo.InSyncPolicy");
 			}
 			set
 			{
@@ -150,7 +150,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IStorageFolder StorageProviderSyncRootInfo.Path is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IStorageFolder%20StorageProviderSyncRootInfo.Path");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "IStorageFolder StorageProviderSyncRootInfo.Path");
 			}
 			set
 			{
@@ -164,7 +164,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageProviderPopulationPolicy StorageProviderSyncRootInfo.PopulationPolicy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageProviderPopulationPolicy%20StorageProviderSyncRootInfo.PopulationPolicy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "StorageProviderPopulationPolicy StorageProviderSyncRootInfo.PopulationPolicy");
 			}
 			set
 			{
@@ -178,7 +178,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageProviderProtectionMode StorageProviderSyncRootInfo.ProtectionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageProviderProtectionMode%20StorageProviderSyncRootInfo.ProtectionMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "StorageProviderProtectionMode StorageProviderSyncRootInfo.ProtectionMode");
 			}
 			set
 			{
@@ -192,7 +192,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid StorageProviderSyncRootInfo.ProviderId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20StorageProviderSyncRootInfo.ProviderId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "Guid StorageProviderSyncRootInfo.ProviderId");
 			}
 			set
 			{
@@ -206,7 +206,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri StorageProviderSyncRootInfo.RecycleBinUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20StorageProviderSyncRootInfo.RecycleBinUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "Uri StorageProviderSyncRootInfo.RecycleBinUri");
 			}
 			set
 			{
@@ -220,7 +220,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StorageProviderSyncRootInfo.ShowSiblingsAsGroup is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StorageProviderSyncRootInfo.ShowSiblingsAsGroup");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "bool StorageProviderSyncRootInfo.ShowSiblingsAsGroup");
 			}
 			set
 			{
@@ -234,7 +234,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<StorageProviderItemPropertyDefinition> StorageProviderSyncRootInfo.StorageProviderItemPropertyDefinitions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CStorageProviderItemPropertyDefinition%3E%20StorageProviderSyncRootInfo.StorageProviderItemPropertyDefinitions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "IList<StorageProviderItemPropertyDefinition> StorageProviderSyncRootInfo.StorageProviderItemPropertyDefinitions");
 			}
 		}
 #endif
@@ -244,7 +244,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorageProviderSyncRootInfo.Version is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorageProviderSyncRootInfo.Version");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderSyncRootInfo", "string StorageProviderSyncRootInfo.Version");
 			}
 			set
 			{

@@ -14,7 +14,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebTokenResponse WebProviderTokenResponse.ClientResponse is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebTokenResponse%20WebProviderTokenResponse.ClientResponse");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Provider.WebProviderTokenResponse", "WebTokenResponse WebProviderTokenResponse.ClientResponse");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppBroadcastProviderSettings.AudioEncodingBitrate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppBroadcastProviderSettings.AudioEncodingBitrate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastProviderSettings", "uint AppBroadcastProviderSettings.AudioEncodingBitrate");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppBroadcastProviderSettings.CustomVideoEncodingBitrate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppBroadcastProviderSettings.CustomVideoEncodingBitrate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastProviderSettings", "uint AppBroadcastProviderSettings.CustomVideoEncodingBitrate");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppBroadcastProviderSettings.CustomVideoEncodingHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppBroadcastProviderSettings.CustomVideoEncodingHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastProviderSettings", "uint AppBroadcastProviderSettings.CustomVideoEncodingHeight");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppBroadcastProviderSettings.CustomVideoEncodingWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppBroadcastProviderSettings.CustomVideoEncodingWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastProviderSettings", "uint AppBroadcastProviderSettings.CustomVideoEncodingWidth");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppBroadcastProviderSettings.DefaultBroadcastTitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppBroadcastProviderSettings.DefaultBroadcastTitle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastProviderSettings", "string AppBroadcastProviderSettings.DefaultBroadcastTitle");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastVideoEncodingBitrateMode AppBroadcastProviderSettings.VideoEncodingBitrateMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastVideoEncodingBitrateMode%20AppBroadcastProviderSettings.VideoEncodingBitrateMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastProviderSettings", "AppBroadcastVideoEncodingBitrateMode AppBroadcastProviderSettings.VideoEncodingBitrateMode");
 			}
 			set
 			{
@@ -103,7 +103,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastVideoEncodingResolutionMode AppBroadcastProviderSettings.VideoEncodingResolutionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastVideoEncodingResolutionMode%20AppBroadcastProviderSettings.VideoEncodingResolutionMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastProviderSettings", "AppBroadcastVideoEncodingResolutionMode AppBroadcastProviderSettings.VideoEncodingResolutionMode");
 			}
 			set
 			{

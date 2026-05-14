@@ -19,7 +19,7 @@ namespace Windows.Devices.Input.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GazePointPreview GazeEnteredPreviewEventArgs.CurrentPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GazePointPreview%20GazeEnteredPreviewEventArgs.CurrentPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs", "GazePointPreview GazeEnteredPreviewEventArgs.CurrentPoint");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Input.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GazeEnteredPreviewEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GazeEnteredPreviewEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazeEnteredPreviewEventArgs", "bool GazeEnteredPreviewEventArgs.Handled");
 			}
 			set
 			{

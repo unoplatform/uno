@@ -19,7 +19,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MediaRatio.Denominator is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MediaRatio.Denominator");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaRatio", "uint MediaRatio.Denominator");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MediaRatio.Numerator is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MediaRatio.Numerator");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaRatio", "uint MediaRatio.Numerator");
 			}
 			set
 			{

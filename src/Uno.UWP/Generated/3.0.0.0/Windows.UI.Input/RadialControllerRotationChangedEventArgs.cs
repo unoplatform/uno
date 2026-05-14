@@ -19,7 +19,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RadialControllerScreenContact RadialControllerRotationChangedEventArgs.Contact is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RadialControllerScreenContact%20RadialControllerRotationChangedEventArgs.Contact");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerRotationChangedEventArgs", "RadialControllerScreenContact RadialControllerRotationChangedEventArgs.Contact");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RadialControllerRotationChangedEventArgs.IsButtonPressed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RadialControllerRotationChangedEventArgs.IsButtonPressed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerRotationChangedEventArgs", "bool RadialControllerRotationChangedEventArgs.IsButtonPressed");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double RadialControllerRotationChangedEventArgs.RotationDeltaInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20RadialControllerRotationChangedEventArgs.RotationDeltaInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerRotationChangedEventArgs", "double RadialControllerRotationChangedEventArgs.RotationDeltaInDegrees");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SimpleHapticsController RadialControllerRotationChangedEventArgs.SimpleHapticsController is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SimpleHapticsController%20RadialControllerRotationChangedEventArgs.SimpleHapticsController");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerRotationChangedEventArgs", "SimpleHapticsController RadialControllerRotationChangedEventArgs.SimpleHapticsController");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset AppointmentConflictResult.Date is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20AppointmentConflictResult.Date");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentConflictResult", "DateTimeOffset AppointmentConflictResult.Date");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppointmentConflictType AppointmentConflictResult.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentConflictType%20AppointmentConflictResult.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentConflictResult", "AppointmentConflictType AppointmentConflictResult.Type");
 			}
 		}
 #endif

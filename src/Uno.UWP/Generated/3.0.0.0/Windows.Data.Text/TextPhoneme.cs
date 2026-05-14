@@ -19,7 +19,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TextPhoneme.DisplayText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20TextPhoneme.DisplayText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextPhoneme", "string TextPhoneme.DisplayText");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TextPhoneme.ReadingText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20TextPhoneme.ReadingText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.TextPhoneme", "string TextPhoneme.ReadingText");
 			}
 		}
 #endif

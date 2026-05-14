@@ -14,7 +14,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RetailInfo.IsDemoModeEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RetailInfo.IsDemoModeEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.RetailInfo", "bool RetailInfo.IsDemoModeEnabled");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> RetailInfo.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20object%3E%20RetailInfo.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.RetailInfo", "IReadOnlyDictionary<string, object> RetailInfo.Properties");
 			}
 		}
 #endif

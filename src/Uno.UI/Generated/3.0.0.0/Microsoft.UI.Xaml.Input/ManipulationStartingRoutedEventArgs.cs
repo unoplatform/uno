@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ManipulationPivot ManipulationStartingRoutedEventArgs.Pivot is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ManipulationPivot%20ManipulationStartingRoutedEventArgs.Pivot");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs", "ManipulationPivot ManipulationStartingRoutedEventArgs.Pivot");
 			}
 			set
 			{

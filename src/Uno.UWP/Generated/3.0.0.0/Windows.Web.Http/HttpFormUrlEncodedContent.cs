@@ -14,7 +14,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpContentHeaderCollection HttpFormUrlEncodedContent.Headers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpContentHeaderCollection%20HttpFormUrlEncodedContent.Headers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpFormUrlEncodedContent", "HttpContentHeaderCollection HttpFormUrlEncodedContent.Headers");
 			}
 		}
 #endif
@@ -30,42 +30,42 @@ namespace Windows.Web.Http
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<ulong, ulong> BufferAllAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<ulong, ulong> HttpFormUrlEncodedContent.BufferAllAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3Culong%2C%20ulong%3E%20HttpFormUrlEncodedContent.BufferAllAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpFormUrlEncodedContent", "IAsyncOperationWithProgress<ulong, ulong> HttpFormUrlEncodedContent.BufferAllAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Storage.Streams.IBuffer, ulong> ReadAsBufferAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<IBuffer, ulong> HttpFormUrlEncodedContent.ReadAsBufferAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CIBuffer%2C%20ulong%3E%20HttpFormUrlEncodedContent.ReadAsBufferAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpFormUrlEncodedContent", "IAsyncOperationWithProgress<IBuffer, ulong> HttpFormUrlEncodedContent.ReadAsBufferAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Storage.Streams.IInputStream, ulong> ReadAsInputStreamAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<IInputStream, ulong> HttpFormUrlEncodedContent.ReadAsInputStreamAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CIInputStream%2C%20ulong%3E%20HttpFormUrlEncodedContent.ReadAsInputStreamAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpFormUrlEncodedContent", "IAsyncOperationWithProgress<IInputStream, ulong> HttpFormUrlEncodedContent.ReadAsInputStreamAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<string, ulong> ReadAsStringAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<string, ulong> HttpFormUrlEncodedContent.ReadAsStringAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3Cstring%2C%20ulong%3E%20HttpFormUrlEncodedContent.ReadAsStringAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpFormUrlEncodedContent", "IAsyncOperationWithProgress<string, ulong> HttpFormUrlEncodedContent.ReadAsStringAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryComputeLength(out ulong length)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpFormUrlEncodedContent.TryComputeLength(out ulong length) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpFormUrlEncodedContent.TryComputeLength%28out%20ulong%20length%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpFormUrlEncodedContent", "bool HttpFormUrlEncodedContent.TryComputeLength(out ulong length)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<ulong, ulong> WriteToStreamAsync(global::Windows.Storage.Streams.IOutputStream outputStream)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<ulong, ulong> HttpFormUrlEncodedContent.WriteToStreamAsync(IOutputStream outputStream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3Culong%2C%20ulong%3E%20HttpFormUrlEncodedContent.WriteToStreamAsync%28IOutputStream%20outputStream%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpFormUrlEncodedContent", "IAsyncOperationWithProgress<ulong, ulong> HttpFormUrlEncodedContent.WriteToStreamAsync(IOutputStream outputStream)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -79,7 +79,7 @@ namespace Windows.Web.Http
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpFormUrlEncodedContent.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpFormUrlEncodedContent.ToString%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpFormUrlEncodedContent", "string HttpFormUrlEncodedContent.ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.HttpFormUrlEncodedContent.Headers.get

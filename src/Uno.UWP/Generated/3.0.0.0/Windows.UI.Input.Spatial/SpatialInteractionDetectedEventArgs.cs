@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialInteraction SpatialInteractionDetectedEventArgs.Interaction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialInteraction%20SpatialInteractionDetectedEventArgs.Interaction");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionDetectedEventArgs", "SpatialInteraction SpatialInteractionDetectedEventArgs.Interaction");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialInteractionSource SpatialInteractionDetectedEventArgs.InteractionSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialInteractionSource%20SpatialInteractionDetectedEventArgs.InteractionSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionDetectedEventArgs", "SpatialInteractionSource SpatialInteractionDetectedEventArgs.InteractionSource");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialInteractionSourceKind SpatialInteractionDetectedEventArgs.InteractionSourceKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialInteractionSourceKind%20SpatialInteractionDetectedEventArgs.InteractionSourceKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionDetectedEventArgs", "SpatialInteractionSourceKind SpatialInteractionDetectedEventArgs.InteractionSourceKind");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.UI.Input.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.Spatial.SpatialPointerPose TryGetPointerPose(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
 		{
-			throw new global::System.NotImplementedException("The member SpatialPointerPose SpatialInteractionDetectedEventArgs.TryGetPointerPose(SpatialCoordinateSystem coordinateSystem) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialPointerPose%20SpatialInteractionDetectedEventArgs.TryGetPointerPose%28SpatialCoordinateSystem%20coordinateSystem%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionDetectedEventArgs", "SpatialPointerPose SpatialInteractionDetectedEventArgs.TryGetPointerPose(SpatialCoordinateSystem coordinateSystem)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionDetectedEventArgs.Interaction.get

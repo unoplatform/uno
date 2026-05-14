@@ -14,7 +14,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CellularApnContext.AccessPointName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CellularApnContext.AccessPointName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.CellularApnContext", "string CellularApnContext.AccessPointName");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CellularApnAuthenticationType CellularApnContext.AuthenticationType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CellularApnAuthenticationType%20CellularApnContext.AuthenticationType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.CellularApnContext", "CellularApnAuthenticationType CellularApnContext.AuthenticationType");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CellularApnContext.IsCompressionEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CellularApnContext.IsCompressionEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.CellularApnContext", "bool CellularApnContext.IsCompressionEnabled");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CellularApnContext.Password is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CellularApnContext.Password");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.CellularApnContext", "string CellularApnContext.Password");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CellularApnContext.ProfileName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CellularApnContext.ProfileName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.CellularApnContext", "string CellularApnContext.ProfileName");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CellularApnContext.ProviderId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CellularApnContext.ProviderId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.CellularApnContext", "string CellularApnContext.ProviderId");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CellularApnContext.UserName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CellularApnContext.UserName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.CellularApnContext", "string CellularApnContext.UserName");
 			}
 			set
 			{

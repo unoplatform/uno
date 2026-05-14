@@ -14,7 +14,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RegionOfInterest.AutoExposureEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RegionOfInterest.AutoExposureEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionOfInterest", "bool RegionOfInterest.AutoExposureEnabled");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RegionOfInterest.AutoFocusEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RegionOfInterest.AutoFocusEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionOfInterest", "bool RegionOfInterest.AutoFocusEnabled");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RegionOfInterest.AutoWhiteBalanceEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RegionOfInterest.AutoWhiteBalanceEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionOfInterest", "bool RegionOfInterest.AutoWhiteBalanceEnabled");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect RegionOfInterest.Bounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20RegionOfInterest.Bounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionOfInterest", "Rect RegionOfInterest.Bounds");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RegionOfInterest.BoundsNormalized is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RegionOfInterest.BoundsNormalized");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionOfInterest", "bool RegionOfInterest.BoundsNormalized");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RegionOfInterestType RegionOfInterest.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RegionOfInterestType%20RegionOfInterest.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionOfInterest", "RegionOfInterestType RegionOfInterest.Type");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint RegionOfInterest.Weight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20RegionOfInterest.Weight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.RegionOfInterest", "uint RegionOfInterest.Weight");
 			}
 			set
 			{

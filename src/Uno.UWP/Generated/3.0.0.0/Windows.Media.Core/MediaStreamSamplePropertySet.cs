@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ICollection<Guid> MediaStreamSamplePropertySet.Keys is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICollection%3CGuid%3E%20MediaStreamSamplePropertySet.Keys");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSamplePropertySet", "ICollection<Guid> MediaStreamSamplePropertySet.Keys");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ICollection<object> MediaStreamSamplePropertySet.Values is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICollection%3Cobject%3E%20MediaStreamSamplePropertySet.Values");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSamplePropertySet", "ICollection<object> MediaStreamSamplePropertySet.Values");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MediaStreamSamplePropertySet.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20MediaStreamSamplePropertySet.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSamplePropertySet", "int MediaStreamSamplePropertySet.Count");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaStreamSamplePropertySet.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaStreamSamplePropertySet.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSamplePropertySet", "bool MediaStreamSamplePropertySet.IsReadOnly");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object MediaStreamSamplePropertySet.this[Guid key] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20MediaStreamSamplePropertySet.this%5BGuid%20key%5D");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSamplePropertySet", "object MediaStreamSamplePropertySet.this[Guid key]");
 			}
 			set
 			{
@@ -84,21 +84,21 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ContainsKey(global::System.Guid key)
 		{
-			throw new global::System.NotImplementedException("The member bool MediaStreamSamplePropertySet.ContainsKey(Guid key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaStreamSamplePropertySet.ContainsKey%28Guid%20key%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSamplePropertySet", "bool MediaStreamSamplePropertySet.ContainsKey(Guid key)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Remove(global::System.Guid key)
 		{
-			throw new global::System.NotImplementedException("The member bool MediaStreamSamplePropertySet.Remove(Guid key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaStreamSamplePropertySet.Remove%28Guid%20key%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSamplePropertySet", "bool MediaStreamSamplePropertySet.Remove(Guid key)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryGetValue(global::System.Guid key, out object value)
 		{
-			throw new global::System.NotImplementedException("The member bool MediaStreamSamplePropertySet.TryGetValue(Guid key, out object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaStreamSamplePropertySet.TryGetValue%28Guid%20key%2C%20out%20object%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSamplePropertySet", "bool MediaStreamSamplePropertySet.TryGetValue(Guid key, out object value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -119,7 +119,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Contains(global::System.Collections.Generic.KeyValuePair<global::System.Guid, object> item)
 		{
-			throw new global::System.NotImplementedException("The member bool MediaStreamSamplePropertySet.Contains(KeyValuePair<Guid, object> item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaStreamSamplePropertySet.Contains%28KeyValuePair%3CGuid%2C%20object%3E%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSamplePropertySet", "bool MediaStreamSamplePropertySet.Contains(KeyValuePair<Guid, object> item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -134,7 +134,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<global::System.Guid, object>> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<KeyValuePair<Guid, object>> MediaStreamSamplePropertySet.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CKeyValuePair%3CGuid%2C%20object%3E%3E%20MediaStreamSamplePropertySet.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSamplePropertySet", "IEnumerator<KeyValuePair<Guid, object>> MediaStreamSamplePropertySet.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.MediaStreamSamplePropertySet.System.Collections.IEnumerable.GetEnumerator()

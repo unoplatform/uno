@@ -14,7 +14,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset SmartCardCryptogramMaterialPackageCharacteristics.DateImported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20SmartCardCryptogramMaterialPackageCharacteristics.DateImported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramMaterialPackageCharacteristics", "DateTimeOffset SmartCardCryptogramMaterialPackageCharacteristics.DateImported");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardCryptogramMaterialPackageFormat SmartCardCryptogramMaterialPackageCharacteristics.PackageFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardCryptogramMaterialPackageFormat%20SmartCardCryptogramMaterialPackageCharacteristics.PackageFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramMaterialPackageCharacteristics", "SmartCardCryptogramMaterialPackageFormat SmartCardCryptogramMaterialPackageCharacteristics.PackageFormat");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmartCardCryptogramMaterialPackageCharacteristics.PackageName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmartCardCryptogramMaterialPackageCharacteristics.PackageName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramMaterialPackageCharacteristics", "string SmartCardCryptogramMaterialPackageCharacteristics.PackageName");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmartCardCryptogramMaterialPackageCharacteristics.StorageKeyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmartCardCryptogramMaterialPackageCharacteristics.StorageKeyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramMaterialPackageCharacteristics", "string SmartCardCryptogramMaterialPackageCharacteristics.StorageKeyName");
 			}
 		}
 #endif

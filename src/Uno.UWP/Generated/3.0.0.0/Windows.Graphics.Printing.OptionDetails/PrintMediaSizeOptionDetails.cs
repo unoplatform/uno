@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintMediaSizeOptionDetails.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintMediaSizeOptionDetails.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails", "string PrintMediaSizeOptionDetails.Description");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintMediaSizeOptionDetails.ErrorText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintMediaSizeOptionDetails.ErrorText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails", "string PrintMediaSizeOptionDetails.ErrorText");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<object> PrintMediaSizeOptionDetails.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cobject%3E%20PrintMediaSizeOptionDetails.Items");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails", "IReadOnlyList<object> PrintMediaSizeOptionDetails.Items");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintMediaSizeOptionDetails.OptionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintMediaSizeOptionDetails.OptionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails", "string PrintMediaSizeOptionDetails.OptionId");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintOptionType PrintMediaSizeOptionDetails.OptionType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOptionType%20PrintMediaSizeOptionDetails.OptionType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails", "PrintOptionType PrintMediaSizeOptionDetails.OptionType");
 			}
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintOptionStates PrintMediaSizeOptionDetails.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOptionStates%20PrintMediaSizeOptionDetails.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails", "PrintOptionStates PrintMediaSizeOptionDetails.State");
 			}
 			set
 			{
@@ -91,7 +91,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object PrintMediaSizeOptionDetails.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20PrintMediaSizeOptionDetails.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails", "object PrintMediaSizeOptionDetails.Value");
 			}
 		}
 #endif
@@ -101,7 +101,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintMediaSizeOptionDetails.WarningText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintMediaSizeOptionDetails.WarningText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails", "string PrintMediaSizeOptionDetails.WarningText");
 			}
 			set
 			{
@@ -113,7 +113,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetValue(object value)
 		{
-			throw new global::System.NotImplementedException("The member bool PrintMediaSizeOptionDetails.TrySetValue(object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintMediaSizeOptionDetails.TrySetValue%28object%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails", "bool PrintMediaSizeOptionDetails.TrySetValue(object value)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintMediaSizeOptionDetails.Description.get

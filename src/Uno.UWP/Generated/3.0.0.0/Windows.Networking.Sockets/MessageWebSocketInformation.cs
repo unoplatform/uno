@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BandwidthStatistics MessageWebSocketInformation.BandwidthStatistics is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BandwidthStatistics%20MessageWebSocketInformation.BandwidthStatistics");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketInformation", "BandwidthStatistics MessageWebSocketInformation.BandwidthStatistics");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName MessageWebSocketInformation.LocalAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20MessageWebSocketInformation.LocalAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketInformation", "HostName MessageWebSocketInformation.LocalAddress");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MessageWebSocketInformation.Protocol is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MessageWebSocketInformation.Protocol");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketInformation", "string MessageWebSocketInformation.Protocol");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate MessageWebSocketInformation.ServerCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Certificate%20MessageWebSocketInformation.ServerCertificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketInformation", "Certificate MessageWebSocketInformation.ServerCertificate");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketSslErrorSeverity MessageWebSocketInformation.ServerCertificateErrorSeverity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SocketSslErrorSeverity%20MessageWebSocketInformation.ServerCertificateErrorSeverity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketInformation", "SocketSslErrorSeverity MessageWebSocketInformation.ServerCertificateErrorSeverity");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ChainValidationResult> MessageWebSocketInformation.ServerCertificateErrors is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CChainValidationResult%3E%20MessageWebSocketInformation.ServerCertificateErrors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketInformation", "IReadOnlyList<ChainValidationResult> MessageWebSocketInformation.ServerCertificateErrors");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Certificate> MessageWebSocketInformation.ServerIntermediateCertificates is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CCertificate%3E%20MessageWebSocketInformation.ServerIntermediateCertificates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketInformation", "IReadOnlyList<Certificate> MessageWebSocketInformation.ServerIntermediateCertificates");
 			}
 		}
 #endif

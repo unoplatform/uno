@@ -19,7 +19,7 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceInformation WiFiDirectConnectionRequest.DeviceInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceInformation%20WiFiDirectConnectionRequest.DeviceInformation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest", "DeviceInformation WiFiDirectConnectionRequest.DeviceInformation");
 			}
 		}
 #endif

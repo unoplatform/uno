@@ -14,7 +14,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri LockScreen.OriginalImageFile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20LockScreen.OriginalImageFile");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.LockScreen", "Uri LockScreen.OriginalImageFile");
 			}
 		}
 #endif
@@ -22,35 +22,35 @@ namespace Windows.System.UserProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.UserProfile.SetImageFeedResult> RequestSetImageFeedAsync(global::System.Uri syndicationFeedUri)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SetImageFeedResult> LockScreen.RequestSetImageFeedAsync(Uri syndicationFeedUri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSetImageFeedResult%3E%20LockScreen.RequestSetImageFeedAsync%28Uri%20syndicationFeedUri%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.LockScreen", "IAsyncOperation<SetImageFeedResult> LockScreen.RequestSetImageFeedAsync(Uri syndicationFeedUri)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryRemoveImageFeed()
 		{
-			throw new global::System.NotImplementedException("The member bool LockScreen.TryRemoveImageFeed() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LockScreen.TryRemoveImageFeed%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.LockScreen", "bool LockScreen.TryRemoveImageFeed()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.Streams.IRandomAccessStream GetImageStream()
 		{
-			throw new global::System.NotImplementedException("The member IRandomAccessStream LockScreen.GetImageStream() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStream%20LockScreen.GetImageStream%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.LockScreen", "IRandomAccessStream LockScreen.GetImageStream()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction SetImageFileAsync(global::Windows.Storage.IStorageFile value)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction LockScreen.SetImageFileAsync(IStorageFile value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20LockScreen.SetImageFileAsync%28IStorageFile%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.LockScreen", "IAsyncAction LockScreen.SetImageFileAsync(IStorageFile value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction SetImageStreamAsync(global::Windows.Storage.Streams.IRandomAccessStream value)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction LockScreen.SetImageStreamAsync(IRandomAccessStream value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20LockScreen.SetImageStreamAsync%28IRandomAccessStream%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.LockScreen", "IAsyncAction LockScreen.SetImageStreamAsync(IRandomAccessStream value)");
 		}
 #endif
 		// Forced skipping of method Windows.System.UserProfile.LockScreen.OriginalImageFile.get

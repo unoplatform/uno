@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceCommand.CommandName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceCommand.CommandName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommand", "string VoiceCommand.CommandName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, IReadOnlyList<string>> VoiceCommand.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20IReadOnlyList%3Cstring%3E%3E%20VoiceCommand.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommand", "IReadOnlyDictionary<string, IReadOnlyList<string>> VoiceCommand.Properties");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionResult VoiceCommand.SpeechRecognitionResult is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognitionResult%20VoiceCommand.SpeechRecognitionResult");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommand", "SpeechRecognitionResult VoiceCommand.SpeechRecognitionResult");
 			}
 		}
 #endif

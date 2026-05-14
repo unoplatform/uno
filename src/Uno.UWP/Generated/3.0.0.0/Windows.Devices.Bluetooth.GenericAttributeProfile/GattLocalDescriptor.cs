@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattProtectionLevel GattLocalDescriptor.ReadProtectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattProtectionLevel%20GattLocalDescriptor.ReadProtectionLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalDescriptor", "GattProtectionLevel GattLocalDescriptor.ReadProtectionLevel");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer GattLocalDescriptor.StaticValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20GattLocalDescriptor.StaticValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalDescriptor", "IBuffer GattLocalDescriptor.StaticValue");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattLocalDescriptor.Uuid is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattLocalDescriptor.Uuid");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalDescriptor", "Guid GattLocalDescriptor.Uuid");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattProtectionLevel GattLocalDescriptor.WriteProtectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattProtectionLevel%20GattLocalDescriptor.WriteProtectionLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalDescriptor", "GattProtectionLevel GattLocalDescriptor.WriteProtectionLevel");
 			}
 		}
 #endif

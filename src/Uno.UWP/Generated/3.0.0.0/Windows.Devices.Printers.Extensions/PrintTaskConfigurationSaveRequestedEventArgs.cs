@@ -19,7 +19,7 @@ namespace Windows.Devices.Printers.Extensions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTaskConfigurationSaveRequest PrintTaskConfigurationSaveRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTaskConfigurationSaveRequest%20PrintTaskConfigurationSaveRequestedEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Extensions.PrintTaskConfigurationSaveRequestedEventArgs", "PrintTaskConfigurationSaveRequest PrintTaskConfigurationSaveRequestedEventArgs.Request");
 			}
 		}
 #endif

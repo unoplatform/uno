@@ -19,7 +19,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float HtmlPrintDocumentSource.BottomMargin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20HtmlPrintDocumentSource.BottomMargin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.BottomMargin");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintContent HtmlPrintDocumentSource.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintContent%20HtmlPrintDocumentSource.Content");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "PrintContent HtmlPrintDocumentSource.Content");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HtmlPrintDocumentSource.EnableHeaderFooter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HtmlPrintDocumentSource.EnableHeaderFooter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "bool HtmlPrintDocumentSource.EnableHeaderFooter");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float HtmlPrintDocumentSource.LeftMargin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20HtmlPrintDocumentSource.LeftMargin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.LeftMargin");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HtmlPrintDocumentSource.PageRange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HtmlPrintDocumentSource.PageRange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "string HtmlPrintDocumentSource.PageRange");
 			}
 		}
 #endif
@@ -85,7 +85,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float HtmlPrintDocumentSource.PercentScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20HtmlPrintDocumentSource.PercentScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.PercentScale");
 			}
 			set
 			{
@@ -99,7 +99,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float HtmlPrintDocumentSource.RightMargin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20HtmlPrintDocumentSource.RightMargin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.RightMargin");
 			}
 			set
 			{
@@ -113,7 +113,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HtmlPrintDocumentSource.ShrinkToFit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HtmlPrintDocumentSource.ShrinkToFit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "bool HtmlPrintDocumentSource.ShrinkToFit");
 			}
 			set
 			{
@@ -127,7 +127,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float HtmlPrintDocumentSource.TopMargin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20HtmlPrintDocumentSource.TopMargin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "float HtmlPrintDocumentSource.TopMargin");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.UI.WebUI
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetPageRange(string strPageRange)
 		{
-			throw new global::System.NotImplementedException("The member bool HtmlPrintDocumentSource.TrySetPageRange(string strPageRange) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HtmlPrintDocumentSource.TrySetPageRange%28string%20strPageRange%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.HtmlPrintDocumentSource", "bool HtmlPrintDocumentSource.TrySetPageRange(string strPageRange)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

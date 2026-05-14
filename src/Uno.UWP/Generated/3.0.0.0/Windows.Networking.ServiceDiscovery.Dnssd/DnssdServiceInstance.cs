@@ -14,7 +14,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DnssdServiceInstance.DnssdServiceInstanceName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DnssdServiceInstance.DnssdServiceInstanceName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "string DnssdServiceInstance.DnssdServiceInstanceName");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName DnssdServiceInstance.HostName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20DnssdServiceInstance.HostName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "HostName DnssdServiceInstance.HostName");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort DnssdServiceInstance.Port is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20DnssdServiceInstance.Port");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "ushort DnssdServiceInstance.Port");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort DnssdServiceInstance.Priority is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20DnssdServiceInstance.Priority");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "ushort DnssdServiceInstance.Priority");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, string> DnssdServiceInstance.TextAttributes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20string%3E%20DnssdServiceInstance.TextAttributes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "IDictionary<string, string> DnssdServiceInstance.TextAttributes");
 			}
 		}
 #endif
@@ -80,7 +80,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort DnssdServiceInstance.Weight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20DnssdServiceInstance.Weight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "ushort DnssdServiceInstance.Weight");
 			}
 			set
 			{
@@ -100,35 +100,35 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult> RegisterStreamSocketListenerAsync(global::Windows.Networking.Sockets.StreamSocketListener socket)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DnssdRegistrationResult> DnssdServiceInstance.RegisterStreamSocketListenerAsync(StreamSocketListener socket) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDnssdRegistrationResult%3E%20DnssdServiceInstance.RegisterStreamSocketListenerAsync%28StreamSocketListener%20socket%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "IAsyncOperation<DnssdRegistrationResult> DnssdServiceInstance.RegisterStreamSocketListenerAsync(StreamSocketListener socket)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult> RegisterStreamSocketListenerAsync(global::Windows.Networking.Sockets.StreamSocketListener socket, global::Windows.Networking.Connectivity.NetworkAdapter adapter)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DnssdRegistrationResult> DnssdServiceInstance.RegisterStreamSocketListenerAsync(StreamSocketListener socket, NetworkAdapter adapter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDnssdRegistrationResult%3E%20DnssdServiceInstance.RegisterStreamSocketListenerAsync%28StreamSocketListener%20socket%2C%20NetworkAdapter%20adapter%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "IAsyncOperation<DnssdRegistrationResult> DnssdServiceInstance.RegisterStreamSocketListenerAsync(StreamSocketListener socket, NetworkAdapter adapter)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult> RegisterDatagramSocketAsync(global::Windows.Networking.Sockets.DatagramSocket socket)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DnssdRegistrationResult> DnssdServiceInstance.RegisterDatagramSocketAsync(DatagramSocket socket) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDnssdRegistrationResult%3E%20DnssdServiceInstance.RegisterDatagramSocketAsync%28DatagramSocket%20socket%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "IAsyncOperation<DnssdRegistrationResult> DnssdServiceInstance.RegisterDatagramSocketAsync(DatagramSocket socket)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult> RegisterDatagramSocketAsync(global::Windows.Networking.Sockets.DatagramSocket socket, global::Windows.Networking.Connectivity.NetworkAdapter adapter)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DnssdRegistrationResult> DnssdServiceInstance.RegisterDatagramSocketAsync(DatagramSocket socket, NetworkAdapter adapter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDnssdRegistrationResult%3E%20DnssdServiceInstance.RegisterDatagramSocketAsync%28DatagramSocket%20socket%2C%20NetworkAdapter%20adapter%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "IAsyncOperation<DnssdRegistrationResult> DnssdServiceInstance.RegisterDatagramSocketAsync(DatagramSocket socket, NetworkAdapter adapter)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string DnssdServiceInstance.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DnssdServiceInstance.ToString%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "string DnssdServiceInstance.ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.DnssdServiceInstanceName.get

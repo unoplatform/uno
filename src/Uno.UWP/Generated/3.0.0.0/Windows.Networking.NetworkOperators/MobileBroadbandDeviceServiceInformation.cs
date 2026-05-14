@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid MobileBroadbandDeviceServiceInformation.DeviceServiceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20MobileBroadbandDeviceServiceInformation.DeviceServiceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation", "Guid MobileBroadbandDeviceServiceInformation.DeviceServiceId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MobileBroadbandDeviceServiceInformation.IsDataReadSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MobileBroadbandDeviceServiceInformation.IsDataReadSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation", "bool MobileBroadbandDeviceServiceInformation.IsDataReadSupported");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MobileBroadbandDeviceServiceInformation.IsDataWriteSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MobileBroadbandDeviceServiceInformation.IsDataWriteSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceInformation", "bool MobileBroadbandDeviceServiceInformation.IsDataWriteSupported");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong? HttpContentRangeHeaderValue.FirstBytePosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%3F%20HttpContentRangeHeaderValue.FirstBytePosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "ulong? HttpContentRangeHeaderValue.FirstBytePosition");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong? HttpContentRangeHeaderValue.LastBytePosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%3F%20HttpContentRangeHeaderValue.LastBytePosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "ulong? HttpContentRangeHeaderValue.LastBytePosition");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong? HttpContentRangeHeaderValue.Length is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%3F%20HttpContentRangeHeaderValue.Length");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "ulong? HttpContentRangeHeaderValue.Length");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpContentRangeHeaderValue.Unit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpContentRangeHeaderValue.Unit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "string HttpContentRangeHeaderValue.Unit");
 			}
 			set
 			{
@@ -80,21 +80,21 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Headers.HttpContentRangeHeaderValue Parse(string input)
 		{
-			throw new global::System.NotImplementedException("The member HttpContentRangeHeaderValue HttpContentRangeHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpContentRangeHeaderValue%20HttpContentRangeHeaderValue.Parse%28string%20input%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "HttpContentRangeHeaderValue HttpContentRangeHeaderValue.Parse(string input)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpContentRangeHeaderValue contentRangeHeaderValue)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpContentRangeHeaderValue.TryParse(string input, out HttpContentRangeHeaderValue contentRangeHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpContentRangeHeaderValue.TryParse%28string%20input%2C%20out%20HttpContentRangeHeaderValue%20contentRangeHeaderValue%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "bool HttpContentRangeHeaderValue.TryParse(string input, out HttpContentRangeHeaderValue contentRangeHeaderValue)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpContentRangeHeaderValue.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpContentRangeHeaderValue.ToString%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "string HttpContentRangeHeaderValue.ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentRangeHeaderValue.FirstBytePosition.get

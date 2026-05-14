@@ -21,7 +21,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple FindItemByProperty(global::Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple startAfter, global::Microsoft.UI.Xaml.Automation.AutomationProperty automationProperty, object value)
 		{
-			throw new global::System.NotImplementedException("The member IRawElementProviderSimple LoopingSelectorAutomationPeer.FindItemByProperty(IRawElementProviderSimple startAfter, AutomationProperty automationProperty, object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRawElementProviderSimple%20LoopingSelectorAutomationPeer.FindItemByProperty%28IRawElementProviderSimple%20startAfter%2C%20AutomationProperty%20automationProperty%2C%20object%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer", "IRawElementProviderSimple LoopingSelectorAutomationPeer.FindItemByProperty(IRawElementProviderSimple startAfter, AutomationProperty automationProperty, object value)");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorAutomationPeer.Scroll(Microsoft.UI.Xaml.Automation.ScrollAmount, Microsoft.UI.Xaml.Automation.ScrollAmount)

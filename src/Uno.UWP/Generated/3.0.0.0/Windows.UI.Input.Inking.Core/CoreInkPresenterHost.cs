@@ -14,7 +14,7 @@ namespace Windows.UI.Input.Inking.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkPresenter CoreInkPresenterHost.InkPresenter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkPresenter%20CoreInkPresenterHost.InkPresenter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreInkPresenterHost", "InkPresenter CoreInkPresenterHost.InkPresenter");
 			}
 		}
 #endif

@@ -25,14 +25,14 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ShouldYield()
 		{
-			throw new global::System.NotImplementedException("The member bool CoreDispatcher.ShouldYield() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreDispatcher.ShouldYield%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreDispatcher", "bool CoreDispatcher.ShouldYield()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ShouldYield(global::Windows.UI.Core.CoreDispatcherPriority priority)
 		{
-			throw new global::System.NotImplementedException("The member bool CoreDispatcher.ShouldYield(CoreDispatcherPriority priority) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreDispatcher.ShouldYield%28CoreDispatcherPriority%20priority%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreDispatcher", "bool CoreDispatcher.ShouldYield(CoreDispatcherPriority priority)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -46,14 +46,14 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryRunAsync(global::Windows.UI.Core.CoreDispatcherPriority priority, global::Windows.UI.Core.DispatchedHandler agileCallback)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> CoreDispatcher.TryRunAsync(CoreDispatcherPriority priority, DispatchedHandler agileCallback) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20CoreDispatcher.TryRunAsync%28CoreDispatcherPriority%20priority%2C%20DispatchedHandler%20agileCallback%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreDispatcher", "IAsyncOperation<bool> CoreDispatcher.TryRunAsync(CoreDispatcherPriority priority, DispatchedHandler agileCallback)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> TryRunIdleAsync(global::Windows.UI.Core.IdleDispatchedHandler agileCallback)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> CoreDispatcher.TryRunIdleAsync(IdleDispatchedHandler agileCallback) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20CoreDispatcher.TryRunIdleAsync%28IdleDispatchedHandler%20agileCallback%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CoreDispatcher", "IAsyncOperation<bool> CoreDispatcher.TryRunIdleAsync(IdleDispatchedHandler agileCallback)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.CoreDispatcher.CurrentPriority.get

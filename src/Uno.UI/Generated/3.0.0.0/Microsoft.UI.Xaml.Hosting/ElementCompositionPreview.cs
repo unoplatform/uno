@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Hosting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Composition.Visual GetElementChildVisual(global::Microsoft.UI.Xaml.UIElement element)
 		{
-			throw new global::System.NotImplementedException("The member Visual ElementCompositionPreview.GetElementChildVisual(UIElement element) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Visual%20ElementCompositionPreview.GetElementChildVisual%28UIElement%20element%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Hosting.ElementCompositionPreview", "Visual ElementCompositionPreview.GetElementChildVisual(UIElement element)");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.SetElementChildVisual(Microsoft.UI.Xaml.UIElement, Microsoft.UI.Composition.Visual)
@@ -21,7 +21,7 @@ namespace Microsoft.UI.Xaml.Hosting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Composition.CompositionPropertySet GetScrollViewerManipulationPropertySet(global::Microsoft.UI.Xaml.Controls.ScrollViewer scrollViewer)
 		{
-			throw new global::System.NotImplementedException("The member CompositionPropertySet ElementCompositionPreview.GetScrollViewerManipulationPropertySet(ScrollViewer scrollViewer) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionPropertySet%20ElementCompositionPreview.GetScrollViewerManipulationPropertySet%28ScrollViewer%20scrollViewer%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Hosting.ElementCompositionPreview", "CompositionPropertySet ElementCompositionPreview.GetScrollViewerManipulationPropertySet(ScrollViewer scrollViewer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -49,7 +49,7 @@ namespace Microsoft.UI.Xaml.Hosting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Composition.CompositionPropertySet GetPointerPositionPropertySet(global::Microsoft.UI.Xaml.UIElement targetElement)
 		{
-			throw new global::System.NotImplementedException("The member CompositionPropertySet ElementCompositionPreview.GetPointerPositionPropertySet(UIElement targetElement) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionPropertySet%20ElementCompositionPreview.GetPointerPositionPropertySet%28UIElement%20targetElement%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Hosting.ElementCompositionPreview", "CompositionPropertySet ElementCompositionPreview.GetPointerPositionPropertySet(UIElement targetElement)");
 		}
 #endif
 	}

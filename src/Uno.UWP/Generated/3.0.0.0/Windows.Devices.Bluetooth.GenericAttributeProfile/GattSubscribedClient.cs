@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort GattSubscribedClient.MaxNotificationSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20GattSubscribedClient.MaxNotificationSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattSubscribedClient", "ushort GattSubscribedClient.MaxNotificationSize");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattSession GattSubscribedClient.Session is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattSession%20GattSubscribedClient.Session");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattSubscribedClient", "GattSession GattSubscribedClient.Session");
 			}
 		}
 #endif

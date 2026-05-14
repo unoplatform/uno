@@ -14,7 +14,7 @@ namespace Windows.UI.Composition.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Compositor CompositorController.Compositor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Compositor%20CompositorController.Compositor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Core.CompositorController", "Compositor CompositorController.Compositor");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.UI.Composition.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction EnsurePreviousCommitCompletedAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction CompositorController.EnsurePreviousCommitCompletedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20CompositorController.EnsurePreviousCommitCompletedAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Core.CompositorController", "IAsyncAction CompositorController.EnsurePreviousCommitCompletedAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.Core.CompositorController.CommitNeeded.add

@@ -19,7 +19,7 @@ namespace Windows.Security.DataProtection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataBufferUnprotectStatus UserDataBufferUnprotectResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataBufferUnprotectStatus%20UserDataBufferUnprotectResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.DataProtection.UserDataBufferUnprotectResult", "UserDataBufferUnprotectStatus UserDataBufferUnprotectResult.Status");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.DataProtection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer UserDataBufferUnprotectResult.UnprotectedBuffer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20UserDataBufferUnprotectResult.UnprotectedBuffer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.DataProtection.UserDataBufferUnprotectResult", "IBuffer UserDataBufferUnprotectResult.UnprotectedBuffer");
 			}
 		}
 #endif

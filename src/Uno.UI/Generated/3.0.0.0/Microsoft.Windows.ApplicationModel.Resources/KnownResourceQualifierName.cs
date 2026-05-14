@@ -14,7 +14,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownResourceQualifierName.Contrast is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownResourceQualifierName.Contrast");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "string KnownResourceQualifierName.Contrast");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownResourceQualifierName.Custom is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownResourceQualifierName.Custom");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "string KnownResourceQualifierName.Custom");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownResourceQualifierName.DeviceFamily is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownResourceQualifierName.DeviceFamily");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "string KnownResourceQualifierName.DeviceFamily");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownResourceQualifierName.HomeRegion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownResourceQualifierName.HomeRegion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "string KnownResourceQualifierName.HomeRegion");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownResourceQualifierName.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownResourceQualifierName.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "string KnownResourceQualifierName.Language");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownResourceQualifierName.LayoutDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownResourceQualifierName.LayoutDirection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "string KnownResourceQualifierName.LayoutDirection");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownResourceQualifierName.Scale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownResourceQualifierName.Scale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "string KnownResourceQualifierName.Scale");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownResourceQualifierName.TargetSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownResourceQualifierName.TargetSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "string KnownResourceQualifierName.TargetSize");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownResourceQualifierName.Theme is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownResourceQualifierName.Theme");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName", "string KnownResourceQualifierName.Theme");
 			}
 		}
 #endif

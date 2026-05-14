@@ -14,7 +14,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, string> AdaptiveNotificationText.Hints is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20string%3E%20AdaptiveNotificationText.Hints");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.AdaptiveNotificationText", "IDictionary<string, string> AdaptiveNotificationText.Hints");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AdaptiveNotificationContentKind AdaptiveNotificationText.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AdaptiveNotificationContentKind%20AdaptiveNotificationText.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.AdaptiveNotificationText", "AdaptiveNotificationContentKind AdaptiveNotificationText.Kind");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AdaptiveNotificationText.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AdaptiveNotificationText.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.AdaptiveNotificationText", "string AdaptiveNotificationText.Language");
 			}
 			set
 			{
@@ -48,7 +48,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AdaptiveNotificationText.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AdaptiveNotificationText.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.AdaptiveNotificationText", "string AdaptiveNotificationText.Text");
 			}
 			set
 			{

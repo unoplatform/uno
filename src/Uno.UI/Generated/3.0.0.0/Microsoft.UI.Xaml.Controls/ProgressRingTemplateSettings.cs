@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ProgressRingTemplateSettings.EllipseDiameter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ProgressRingTemplateSettings.EllipseDiameter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings", "double ProgressRingTemplateSettings.EllipseDiameter");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Thickness ProgressRingTemplateSettings.EllipseOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Thickness%20ProgressRingTemplateSettings.EllipseOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings", "Thickness ProgressRingTemplateSettings.EllipseOffset");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ProgressRingTemplateSettings.MaxSideLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ProgressRingTemplateSettings.MaxSideLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings", "double ProgressRingTemplateSettings.MaxSideLength");
 			}
 		}
 #endif

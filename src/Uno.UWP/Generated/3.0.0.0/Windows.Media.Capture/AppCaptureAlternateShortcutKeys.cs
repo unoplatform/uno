@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKey AppCaptureAlternateShortcutKeys.SaveHistoricalVideoKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKey%20AppCaptureAlternateShortcutKeys.SaveHistoricalVideoKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.SaveHistoricalVideoKey");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKeyModifiers AppCaptureAlternateShortcutKeys.SaveHistoricalVideoKeyModifiers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKeyModifiers%20AppCaptureAlternateShortcutKeys.SaveHistoricalVideoKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.SaveHistoricalVideoKeyModifiers");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKey AppCaptureAlternateShortcutKeys.TakeScreenshotKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKey%20AppCaptureAlternateShortcutKeys.TakeScreenshotKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.TakeScreenshotKey");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKeyModifiers AppCaptureAlternateShortcutKeys.TakeScreenshotKeyModifiers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKeyModifiers%20AppCaptureAlternateShortcutKeys.TakeScreenshotKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.TakeScreenshotKeyModifiers");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKey AppCaptureAlternateShortcutKeys.ToggleBroadcastKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKey%20AppCaptureAlternateShortcutKeys.ToggleBroadcastKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleBroadcastKey");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleBroadcastKeyModifiers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKeyModifiers%20AppCaptureAlternateShortcutKeys.ToggleBroadcastKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleBroadcastKeyModifiers");
 			}
 			set
 			{
@@ -103,7 +103,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKey AppCaptureAlternateShortcutKeys.ToggleCameraCaptureKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKey%20AppCaptureAlternateShortcutKeys.ToggleCameraCaptureKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleCameraCaptureKey");
 			}
 			set
 			{
@@ -117,7 +117,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleCameraCaptureKeyModifiers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKeyModifiers%20AppCaptureAlternateShortcutKeys.ToggleCameraCaptureKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleCameraCaptureKeyModifiers");
 			}
 			set
 			{
@@ -131,7 +131,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKey AppCaptureAlternateShortcutKeys.ToggleGameBarKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKey%20AppCaptureAlternateShortcutKeys.ToggleGameBarKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleGameBarKey");
 			}
 			set
 			{
@@ -145,7 +145,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleGameBarKeyModifiers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKeyModifiers%20AppCaptureAlternateShortcutKeys.ToggleGameBarKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleGameBarKeyModifiers");
 			}
 			set
 			{
@@ -159,7 +159,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKey AppCaptureAlternateShortcutKeys.ToggleMicrophoneCaptureKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKey%20AppCaptureAlternateShortcutKeys.ToggleMicrophoneCaptureKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleMicrophoneCaptureKey");
 			}
 			set
 			{
@@ -173,7 +173,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleMicrophoneCaptureKeyModifiers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKeyModifiers%20AppCaptureAlternateShortcutKeys.ToggleMicrophoneCaptureKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleMicrophoneCaptureKeyModifiers");
 			}
 			set
 			{
@@ -187,7 +187,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKey AppCaptureAlternateShortcutKeys.ToggleRecordingIndicatorKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKey%20AppCaptureAlternateShortcutKeys.ToggleRecordingIndicatorKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleRecordingIndicatorKey");
 			}
 			set
 			{
@@ -201,7 +201,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleRecordingIndicatorKeyModifiers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKeyModifiers%20AppCaptureAlternateShortcutKeys.ToggleRecordingIndicatorKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleRecordingIndicatorKeyModifiers");
 			}
 			set
 			{
@@ -215,7 +215,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKey AppCaptureAlternateShortcutKeys.ToggleRecordingKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKey%20AppCaptureAlternateShortcutKeys.ToggleRecordingKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleRecordingKey");
 			}
 			set
 			{
@@ -229,7 +229,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleRecordingKeyModifiers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKeyModifiers%20AppCaptureAlternateShortcutKeys.ToggleRecordingKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleRecordingKeyModifiers");
 			}
 			set
 			{

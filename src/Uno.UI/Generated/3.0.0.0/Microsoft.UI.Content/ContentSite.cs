@@ -14,7 +14,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 ContentSite.ActualSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20ContentSite.ActualSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSite", "Vector2 ContentSite.ActualSize");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SizeInt32 ContentSite.ClientSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SizeInt32%20ContentSite.ClientSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSite", "SizeInt32 ContentSite.ClientSize");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentCoordinateConverter ContentSite.CoordinateConverter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentCoordinateConverter%20ContentSite.CoordinateConverter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSite", "ContentCoordinateConverter ContentSite.CoordinateConverter");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DispatcherQueue ContentSite.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherQueue%20ContentSite.DispatcherQueue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSite", "DispatcherQueue ContentSite.DispatcherQueue");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentSiteEnvironment ContentSite.Environment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentSiteEnvironment%20ContentSite.Environment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSite", "ContentSiteEnvironment ContentSite.Environment");
 			}
 		}
 #endif
@@ -72,7 +72,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContentSite.IsClosed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSite.IsClosed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSite", "bool ContentSite.IsClosed");
 			}
 		}
 #endif
@@ -82,7 +82,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContentSite.IsConnected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSite.IsConnected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSite", "bool ContentSite.IsConnected");
 			}
 		}
 #endif
@@ -92,7 +92,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContentSite.IsSiteEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSite.IsSiteEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSite", "bool ContentSite.IsSiteEnabled");
 			}
 			set
 			{
@@ -107,7 +107,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentLayoutDirection ContentSite.LayoutDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentLayoutDirection%20ContentSite.LayoutDirection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSite", "ContentLayoutDirection ContentSite.LayoutDirection");
 			}
 			set
 			{
@@ -121,7 +121,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Matrix4x4 ContentSite.LocalToClientTransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix4x4%20ContentSite.LocalToClientTransformMatrix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSite", "Matrix4x4 ContentSite.LocalToClientTransformMatrix");
 			}
 		}
 #endif
@@ -131,7 +131,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Matrix4x4 ContentSite.LocalToParentTransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix4x4%20ContentSite.LocalToParentTransformMatrix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSite", "Matrix4x4 ContentSite.LocalToParentTransformMatrix");
 			}
 			set
 			{
@@ -147,7 +147,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContentSite.ProcessesKeyboardInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSite.ProcessesKeyboardInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSite", "bool ContentSite.ProcessesKeyboardInput");
 			}
 			set
 			{
@@ -161,7 +161,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContentSite.ProcessesPointerInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSite.ProcessesPointerInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSite", "bool ContentSite.ProcessesPointerInput");
 			}
 			set
 			{
@@ -176,7 +176,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 ContentSite.RequestedSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20ContentSite.RequestedSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSite", "Vector2 ContentSite.RequestedSize");
 			}
 		}
 #endif
@@ -186,7 +186,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContentSite.ShouldApplyRasterizationScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSite.ShouldApplyRasterizationScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSite", "bool ContentSite.ShouldApplyRasterizationScale");
 			}
 			set
 			{
@@ -199,7 +199,7 @@ namespace Microsoft.UI.Content
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Content.ContentDeferral GetIslandStateChangeDeferral()
 		{
-			throw new global::System.NotImplementedException("The member ContentDeferral ContentSite.GetIslandStateChangeDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentDeferral%20ContentSite.GetIslandStateChangeDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSite", "ContentDeferral ContentSite.GetIslandStateChangeDeferral()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.RequestedStateChanged.add

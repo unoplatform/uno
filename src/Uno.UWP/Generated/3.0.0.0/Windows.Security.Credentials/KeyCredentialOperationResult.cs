@@ -19,7 +19,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer KeyCredentialOperationResult.Result is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20KeyCredentialOperationResult.Result");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialOperationResult", "IBuffer KeyCredentialOperationResult.Result");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member KeyCredentialStatus KeyCredentialOperationResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=KeyCredentialStatus%20KeyCredentialOperationResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialOperationResult", "KeyCredentialStatus KeyCredentialOperationResult.Status");
 			}
 		}
 #endif

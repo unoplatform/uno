@@ -19,7 +19,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? AdaptiveMediaSourceCorrelatedTimes.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20AdaptiveMediaSourceCorrelatedTimes.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCorrelatedTimes", "TimeSpan? AdaptiveMediaSourceCorrelatedTimes.Position");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? AdaptiveMediaSourceCorrelatedTimes.PresentationTimeStamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20AdaptiveMediaSourceCorrelatedTimes.PresentationTimeStamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCorrelatedTimes", "TimeSpan? AdaptiveMediaSourceCorrelatedTimes.PresentationTimeStamp");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? AdaptiveMediaSourceCorrelatedTimes.ProgramDateTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20AdaptiveMediaSourceCorrelatedTimes.ProgramDateTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCorrelatedTimes", "DateTimeOffset? AdaptiveMediaSourceCorrelatedTimes.ProgramDateTime");
 			}
 		}
 #endif

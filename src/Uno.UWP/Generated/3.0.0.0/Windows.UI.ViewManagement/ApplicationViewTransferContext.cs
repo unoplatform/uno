@@ -14,7 +14,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ApplicationViewTransferContext.DataPackageFormatId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ApplicationViewTransferContext.DataPackageFormatId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationViewTransferContext", "string ApplicationViewTransferContext.DataPackageFormatId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ApplicationViewTransferContext.ViewId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ApplicationViewTransferContext.ViewId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationViewTransferContext", "int ApplicationViewTransferContext.ViewId");
 			}
 			set
 			{

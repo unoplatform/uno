@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DebugSettings.FailFastOnErrors is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DebugSettings.FailFastOnErrors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.DebugSettings", "bool DebugSettings.FailFastOnErrors");
 			}
 			set
 			{
@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DebugSettings.IsXamlResourceReferenceTracingEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DebugSettings.IsXamlResourceReferenceTracingEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.DebugSettings", "bool DebugSettings.IsXamlResourceReferenceTracingEnabled");
 			}
 			set
 			{
@@ -45,7 +45,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LayoutCycleDebugBreakLevel DebugSettings.LayoutCycleDebugBreakLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LayoutCycleDebugBreakLevel%20DebugSettings.LayoutCycleDebugBreakLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.DebugSettings", "LayoutCycleDebugBreakLevel DebugSettings.LayoutCycleDebugBreakLevel");
 			}
 			set
 			{

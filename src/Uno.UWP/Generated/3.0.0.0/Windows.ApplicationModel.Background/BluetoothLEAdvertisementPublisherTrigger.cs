@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisement BluetoothLEAdvertisementPublisherTrigger.Advertisement is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothLEAdvertisement%20BluetoothLEAdvertisementPublisherTrigger.Advertisement");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger", "BluetoothLEAdvertisement BluetoothLEAdvertisementPublisherTrigger.Advertisement");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementPublisherTrigger.IncludeTransmitPowerLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothLEAdvertisementPublisherTrigger.IncludeTransmitPowerLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger", "bool BluetoothLEAdvertisementPublisherTrigger.IncludeTransmitPowerLevel");
 			}
 			set
 			{
@@ -38,7 +38,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementPublisherTrigger.IsAnonymous is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothLEAdvertisementPublisherTrigger.IsAnonymous");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger", "bool BluetoothLEAdvertisementPublisherTrigger.IsAnonymous");
 			}
 			set
 			{
@@ -52,7 +52,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member short? BluetoothLEAdvertisementPublisherTrigger.PreferredTransmitPowerLevelInDBm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=short%3F%20BluetoothLEAdvertisementPublisherTrigger.PreferredTransmitPowerLevelInDBm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger", "short? BluetoothLEAdvertisementPublisherTrigger.PreferredTransmitPowerLevelInDBm");
 			}
 			set
 			{
@@ -66,7 +66,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothLEAdvertisementPublisherTrigger.UseExtendedFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothLEAdvertisementPublisherTrigger.UseExtendedFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger", "bool BluetoothLEAdvertisementPublisherTrigger.UseExtendedFormat");
 			}
 			set
 			{

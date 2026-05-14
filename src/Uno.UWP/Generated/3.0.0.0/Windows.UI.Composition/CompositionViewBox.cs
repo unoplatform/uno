@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionViewBox.HorizontalAlignmentRatio is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionViewBox.HorizontalAlignmentRatio");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionViewBox", "float CompositionViewBox.HorizontalAlignmentRatio");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionViewBox.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionViewBox.Offset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionViewBox", "Vector2 CompositionViewBox.Offset");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionViewBox.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionViewBox.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionViewBox", "Vector2 CompositionViewBox.Size");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionStretch CompositionViewBox.Stretch is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionStretch%20CompositionViewBox.Stretch");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionViewBox", "CompositionStretch CompositionViewBox.Stretch");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CompositionViewBox.VerticalAlignmentRatio is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CompositionViewBox.VerticalAlignmentRatio");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionViewBox", "float CompositionViewBox.VerticalAlignmentRatio");
 			}
 			set
 			{

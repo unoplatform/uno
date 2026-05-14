@@ -19,7 +19,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DisplayManagerDisabledEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DisplayManagerDisabledEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayManagerDisabledEventArgs", "bool DisplayManagerDisabledEventArgs.Handled");
 			}
 			set
 			{
@@ -31,7 +31,7 @@ namespace Windows.Devices.Display.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral DisplayManagerDisabledEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20DisplayManagerDisabledEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayManagerDisabledEventArgs", "Deferral DisplayManagerDisabledEventArgs.GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayManagerDisabledEventArgs.Handled.get

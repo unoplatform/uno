@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppBroadcastBackgroundService.AppId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppBroadcastBackgroundService.AppId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "string AppBroadcastBackgroundService.AppId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppBroadcastBackgroundService.BroadcastChannel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppBroadcastBackgroundService.BroadcastChannel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "string AppBroadcastBackgroundService.BroadcastChannel");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppBroadcastBackgroundService.BroadcastLanguage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppBroadcastBackgroundService.BroadcastLanguage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "string AppBroadcastBackgroundService.BroadcastLanguage");
 			}
 			set
 			{
@@ -57,7 +57,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppBroadcastBackgroundService.BroadcastTitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppBroadcastBackgroundService.BroadcastTitle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "string AppBroadcastBackgroundService.BroadcastTitle");
 			}
 			set
 			{
@@ -71,7 +71,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastPlugInState AppBroadcastBackgroundService.PlugInState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastPlugInState%20AppBroadcastBackgroundService.PlugInState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "AppBroadcastPlugInState AppBroadcastBackgroundService.PlugInState");
 			}
 			set
 			{
@@ -85,7 +85,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastBackgroundServiceSignInInfo AppBroadcastBackgroundService.SignInInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastBackgroundServiceSignInInfo%20AppBroadcastBackgroundService.SignInInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "AppBroadcastBackgroundServiceSignInInfo AppBroadcastBackgroundService.SignInInfo");
 			}
 			set
 			{
@@ -99,7 +99,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastBackgroundServiceStreamInfo AppBroadcastBackgroundService.StreamInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastBackgroundServiceStreamInfo%20AppBroadcastBackgroundService.StreamInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "AppBroadcastBackgroundServiceStreamInfo AppBroadcastBackgroundService.StreamInfo");
 			}
 			set
 			{
@@ -113,7 +113,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppBroadcastBackgroundService.TitleId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppBroadcastBackgroundService.TitleId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "string AppBroadcastBackgroundService.TitleId");
 			}
 		}
 #endif
@@ -123,7 +123,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppBroadcastBackgroundService.ViewerCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppBroadcastBackgroundService.ViewerCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastBackgroundService", "uint AppBroadcastBackgroundService.ViewerCount");
 			}
 			set
 			{

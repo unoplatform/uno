@@ -14,7 +14,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VisitMonitoringScope GeovisitMonitor.MonitoringScope is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VisitMonitoringScope%20GeovisitMonitor.MonitoringScope");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeovisitMonitor", "VisitMonitoringScope GeovisitMonitor.MonitoringScope");
 			}
 		}
 #endif
@@ -30,7 +30,7 @@ namespace Windows.Devices.Geolocation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geovisit> GetLastReportAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Geovisit> GeovisitMonitor.GetLastReportAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGeovisit%3E%20GeovisitMonitor.GetLastReportAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeovisitMonitor", "IAsyncOperation<Geovisit> GeovisitMonitor.GetLastReportAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

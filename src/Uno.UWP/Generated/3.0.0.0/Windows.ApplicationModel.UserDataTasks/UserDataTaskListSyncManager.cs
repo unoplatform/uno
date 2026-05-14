@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset UserDataTaskListSyncManager.LastAttemptedSyncTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20UserDataTaskListSyncManager.LastAttemptedSyncTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager", "DateTimeOffset UserDataTaskListSyncManager.LastAttemptedSyncTime");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset UserDataTaskListSyncManager.LastSuccessfulSyncTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20UserDataTaskListSyncManager.LastSuccessfulSyncTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager", "DateTimeOffset UserDataTaskListSyncManager.LastSuccessfulSyncTime");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskListSyncStatus UserDataTaskListSyncManager.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskListSyncStatus%20UserDataTaskListSyncManager.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager", "UserDataTaskListSyncStatus UserDataTaskListSyncManager.Status");
 			}
 			set
 			{
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> SyncAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> UserDataTaskListSyncManager.SyncAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20UserDataTaskListSyncManager.SyncAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager", "IAsyncOperation<bool> UserDataTaskListSyncManager.SyncAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.SyncStatusChanged.add

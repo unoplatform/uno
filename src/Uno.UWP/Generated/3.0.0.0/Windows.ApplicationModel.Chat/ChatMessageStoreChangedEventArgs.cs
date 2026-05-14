@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChatMessageStoreChangedEventArgs.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatMessageStoreChangedEventArgs.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageStoreChangedEventArgs", "string ChatMessageStoreChangedEventArgs.Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ChatStoreChangedEventKind ChatMessageStoreChangedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChatStoreChangedEventKind%20ChatMessageStoreChangedEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageStoreChangedEventArgs", "ChatStoreChangedEventKind ChatMessageStoreChangedEventArgs.Kind");
 			}
 		}
 #endif

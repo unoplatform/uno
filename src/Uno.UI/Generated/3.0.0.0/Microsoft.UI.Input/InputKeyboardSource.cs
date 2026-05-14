@@ -13,21 +13,21 @@ namespace Microsoft.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Input.InputKeyboardSource GetForIsland(global::Microsoft.UI.Content.ContentIsland island)
 		{
-			throw new global::System.NotImplementedException("The member InputKeyboardSource InputKeyboardSource.GetForIsland(ContentIsland island) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputKeyboardSource%20InputKeyboardSource.GetForIsland%28ContentIsland%20island%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputKeyboardSource", "InputKeyboardSource InputKeyboardSource.GetForIsland(ContentIsland island)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Input.VirtualKeyStates GetCurrentKeyState(global::Windows.System.VirtualKey virtualKey)
 		{
-			throw new global::System.NotImplementedException("The member VirtualKeyStates InputKeyboardSource.GetCurrentKeyState(VirtualKey virtualKey) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKeyStates%20InputKeyboardSource.GetCurrentKeyState%28VirtualKey%20virtualKey%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputKeyboardSource", "VirtualKeyStates InputKeyboardSource.GetCurrentKeyState(VirtualKey virtualKey)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Input.VirtualKeyStates GetKeyState(global::Windows.System.VirtualKey virtualKey)
 		{
-			throw new global::System.NotImplementedException("The member VirtualKeyStates InputKeyboardSource.GetKeyState(VirtualKey virtualKey) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKeyStates%20InputKeyboardSource.GetKeyState%28VirtualKey%20virtualKey%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputKeyboardSource", "VirtualKeyStates InputKeyboardSource.GetKeyState(VirtualKey virtualKey)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.CharacterReceived.add

@@ -29,7 +29,7 @@ namespace Windows.Graphics.Display
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetColorProfileAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> DisplayInformation.GetColorProfileAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStream%3E%20DisplayInformation.GetColorProfileAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayInformation", "IAsyncOperation<IRandomAccessStream> DisplayInformation.GetColorProfileAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.ColorProfileChanged.add
@@ -44,7 +44,7 @@ namespace Windows.Graphics.Display
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Display.AdvancedColorInfo GetAdvancedColorInfo()
 		{
-			throw new global::System.NotImplementedException("The member AdvancedColorInfo DisplayInformation.GetAdvancedColorInfo() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AdvancedColorInfo%20DisplayInformation.GetAdvancedColorInfo%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayInformation", "AdvancedColorInfo DisplayInformation.GetAdvancedColorInfo()");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.AdvancedColorInfoChanged.add

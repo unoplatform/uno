@@ -19,7 +19,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionAudioProblem SpeechRecognitionQualityDegradingEventArgs.Problem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognitionAudioProblem%20SpeechRecognitionQualityDegradingEventArgs.Problem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs", "SpeechRecognitionAudioProblem SpeechRecognitionQualityDegradingEventArgs.Problem");
 			}
 		}
 #endif

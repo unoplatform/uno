@@ -20,7 +20,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Media.Protection.PlayReady.IPlayReadySecureStopServiceRequest> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<IPlayReadySecureStopServiceRequest> PlayReadySecureStopIterable.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CIPlayReadySecureStopServiceRequest%3E%20PlayReadySecureStopIterable.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadySecureStopIterable", "IEnumerator<IPlayReadySecureStopServiceRequest> PlayReadySecureStopIterable.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopIterable.System.Collections.IEnumerable.GetEnumerator()

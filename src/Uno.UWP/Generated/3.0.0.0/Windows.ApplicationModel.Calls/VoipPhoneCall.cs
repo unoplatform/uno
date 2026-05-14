@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VoipPhoneCallMedia VoipPhoneCall.CallMedia is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoipPhoneCallMedia%20VoipPhoneCall.CallMedia");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipPhoneCall", "VoipPhoneCallMedia VoipPhoneCall.CallMedia");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoipPhoneCall.ContactName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoipPhoneCall.ContactName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipPhoneCall", "string VoipPhoneCall.ContactName");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset VoipPhoneCall.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20VoipPhoneCall.StartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipPhoneCall", "DateTimeOffset VoipPhoneCall.StartTime");
 			}
 			set
 			{

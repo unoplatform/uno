@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Panel MediaCaptureRelativePanelWatcher.RelativePanel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Panel%20MediaCaptureRelativePanelWatcher.RelativePanel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureRelativePanelWatcher", "Panel MediaCaptureRelativePanelWatcher.RelativePanel");
 			}
 		}
 #endif

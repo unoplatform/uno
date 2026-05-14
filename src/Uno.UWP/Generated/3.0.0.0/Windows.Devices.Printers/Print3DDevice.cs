@@ -19,7 +19,7 @@ namespace Windows.Devices.Printers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintSchema Print3DDevice.PrintSchema is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintSchema%20Print3DDevice.PrintSchema");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Print3DDevice", "PrintSchema Print3DDevice.PrintSchema");
 			}
 		}
 #endif
@@ -27,14 +27,14 @@ namespace Windows.Devices.Printers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Printers.Print3DDevice> FromIdAsync(string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Print3DDevice> Print3DDevice.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPrint3DDevice%3E%20Print3DDevice.FromIdAsync%28string%20deviceId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Print3DDevice", "IAsyncOperation<Print3DDevice> Print3DDevice.FromIdAsync(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string Print3DDevice.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Print3DDevice.GetDeviceSelector%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Printers.Print3DDevice", "string Print3DDevice.GetDeviceSelector()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Printers.Print3DDevice.PrintSchema.get

@@ -14,7 +14,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LoggingChannel.Enabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LoggingChannel.Enabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.LoggingChannel", "bool LoggingChannel.Enabled");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid LoggingChannel.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20LoggingChannel.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.LoggingChannel", "Guid LoggingChannel.Id");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LoggingLevel LoggingChannel.Level is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LoggingLevel%20LoggingChannel.Level");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.LoggingChannel", "LoggingLevel LoggingChannel.Level");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LoggingChannel.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20LoggingChannel.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.LoggingChannel", "string LoggingChannel.Name");
 			}
 		}
 #endif
@@ -113,21 +113,21 @@ namespace Windows.Foundation.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsEnabled()
 		{
-			throw new global::System.NotImplementedException("The member bool LoggingChannel.IsEnabled() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LoggingChannel.IsEnabled%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.LoggingChannel", "bool LoggingChannel.IsEnabled()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsEnabled(global::Windows.Foundation.Diagnostics.LoggingLevel level)
 		{
-			throw new global::System.NotImplementedException("The member bool LoggingChannel.IsEnabled(LoggingLevel level) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LoggingChannel.IsEnabled%28LoggingLevel%20level%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.LoggingChannel", "bool LoggingChannel.IsEnabled(LoggingLevel level)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsEnabled(global::Windows.Foundation.Diagnostics.LoggingLevel level, long keywords)
 		{
-			throw new global::System.NotImplementedException("The member bool LoggingChannel.IsEnabled(LoggingLevel level, long keywords) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LoggingChannel.IsEnabled%28LoggingLevel%20level%2C%20long%20keywords%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.LoggingChannel", "bool LoggingChannel.IsEnabled(LoggingLevel level, long keywords)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -162,28 +162,28 @@ namespace Windows.Foundation.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Diagnostics.LoggingActivity StartActivity(string startEventName)
 		{
-			throw new global::System.NotImplementedException("The member LoggingActivity LoggingChannel.StartActivity(string startEventName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LoggingActivity%20LoggingChannel.StartActivity%28string%20startEventName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.LoggingChannel", "LoggingActivity LoggingChannel.StartActivity(string startEventName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Diagnostics.LoggingActivity StartActivity(string startEventName, global::Windows.Foundation.Diagnostics.LoggingFields fields)
 		{
-			throw new global::System.NotImplementedException("The member LoggingActivity LoggingChannel.StartActivity(string startEventName, LoggingFields fields) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LoggingActivity%20LoggingChannel.StartActivity%28string%20startEventName%2C%20LoggingFields%20fields%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.LoggingChannel", "LoggingActivity LoggingChannel.StartActivity(string startEventName, LoggingFields fields)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Diagnostics.LoggingActivity StartActivity(string startEventName, global::Windows.Foundation.Diagnostics.LoggingFields fields, global::Windows.Foundation.Diagnostics.LoggingLevel level)
 		{
-			throw new global::System.NotImplementedException("The member LoggingActivity LoggingChannel.StartActivity(string startEventName, LoggingFields fields, LoggingLevel level) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LoggingActivity%20LoggingChannel.StartActivity%28string%20startEventName%2C%20LoggingFields%20fields%2C%20LoggingLevel%20level%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.LoggingChannel", "LoggingActivity LoggingChannel.StartActivity(string startEventName, LoggingFields fields, LoggingLevel level)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Diagnostics.LoggingActivity StartActivity(string startEventName, global::Windows.Foundation.Diagnostics.LoggingFields fields, global::Windows.Foundation.Diagnostics.LoggingLevel level, global::Windows.Foundation.Diagnostics.LoggingOptions options)
 		{
-			throw new global::System.NotImplementedException("The member LoggingActivity LoggingChannel.StartActivity(string startEventName, LoggingFields fields, LoggingLevel level, LoggingOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LoggingActivity%20LoggingChannel.StartActivity%28string%20startEventName%2C%20LoggingFields%20fields%2C%20LoggingLevel%20level%2C%20LoggingOptions%20options%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.LoggingChannel", "LoggingActivity LoggingChannel.StartActivity(string startEventName, LoggingFields fields, LoggingLevel level, LoggingOptions options)");
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingChannel.Enabled.get

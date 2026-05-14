@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialInteractionSourceKind SpatialHoldCompletedEventArgs.InteractionSourceKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialInteractionSourceKind%20SpatialHoldCompletedEventArgs.InteractionSourceKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialHoldCompletedEventArgs", "SpatialInteractionSourceKind SpatialHoldCompletedEventArgs.InteractionSourceKind");
 			}
 		}
 #endif

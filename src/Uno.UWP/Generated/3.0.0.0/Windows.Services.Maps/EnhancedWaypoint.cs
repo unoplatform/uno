@@ -14,7 +14,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WaypointKind EnhancedWaypoint.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WaypointKind%20EnhancedWaypoint.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.EnhancedWaypoint", "WaypointKind EnhancedWaypoint.Kind");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Geopoint EnhancedWaypoint.Point is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Geopoint%20EnhancedWaypoint.Point");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.EnhancedWaypoint", "Geopoint EnhancedWaypoint.Point");
 			}
 		}
 #endif

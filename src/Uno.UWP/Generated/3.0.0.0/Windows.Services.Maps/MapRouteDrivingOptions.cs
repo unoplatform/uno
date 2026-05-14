@@ -14,7 +14,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? MapRouteDrivingOptions.DepartureTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20MapRouteDrivingOptions.DepartureTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteDrivingOptions", "DateTimeOffset? MapRouteDrivingOptions.DepartureTime");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? MapRouteDrivingOptions.InitialHeading is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%3F%20MapRouteDrivingOptions.InitialHeading");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteDrivingOptions", "double? MapRouteDrivingOptions.InitialHeading");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MapRouteDrivingOptions.MaxAlternateRouteCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MapRouteDrivingOptions.MaxAlternateRouteCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteDrivingOptions", "uint MapRouteDrivingOptions.MaxAlternateRouteCount");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MapRouteOptimization MapRouteDrivingOptions.RouteOptimization is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MapRouteOptimization%20MapRouteDrivingOptions.RouteOptimization");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteDrivingOptions", "MapRouteOptimization MapRouteDrivingOptions.RouteOptimization");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MapRouteRestrictions MapRouteDrivingOptions.RouteRestrictions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MapRouteRestrictions%20MapRouteDrivingOptions.RouteRestrictions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteDrivingOptions", "MapRouteRestrictions MapRouteDrivingOptions.RouteRestrictions");
 			}
 			set
 			{

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RemoteParticipantComposingChangedEventArgs.IsComposing is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RemoteParticipantComposingChangedEventArgs.IsComposing");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs", "bool RemoteParticipantComposingChangedEventArgs.IsComposing");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteParticipantComposingChangedEventArgs.ParticipantAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RemoteParticipantComposingChangedEventArgs.ParticipantAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs", "string RemoteParticipantComposingChangedEventArgs.ParticipantAddress");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteParticipantComposingChangedEventArgs.TransportId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RemoteParticipantComposingChangedEventArgs.TransportId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs", "string RemoteParticipantComposingChangedEventArgs.TransportId");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<SizeUInt32> PosPrinterFontProperty.CharacterSizes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CSizeUInt32%3E%20PosPrinterFontProperty.CharacterSizes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterFontProperty", "IReadOnlyList<SizeUInt32> PosPrinterFontProperty.CharacterSizes");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PosPrinterFontProperty.IsScalableToAnySize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PosPrinterFontProperty.IsScalableToAnySize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterFontProperty", "bool PosPrinterFontProperty.IsScalableToAnySize");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PosPrinterFontProperty.TypeFace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PosPrinterFontProperty.TypeFace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterFontProperty", "string PosPrinterFontProperty.TypeFace");
 			}
 		}
 #endif

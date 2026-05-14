@@ -30,7 +30,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<object> ListBox.SelectedItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cobject%3E%20ListBox.SelectedItems");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ListBox", "IList<object> ListBox.SelectedItems");
 			}
 		}
 #endif

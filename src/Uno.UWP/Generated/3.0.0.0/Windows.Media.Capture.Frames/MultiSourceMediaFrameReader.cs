@@ -19,7 +19,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaFrameReaderAcquisitionMode MultiSourceMediaFrameReader.AcquisitionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaFrameReaderAcquisitionMode%20MultiSourceMediaFrameReader.AcquisitionMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MultiSourceMediaFrameReader", "MediaFrameReaderAcquisitionMode MultiSourceMediaFrameReader.AcquisitionMode");
 			}
 			set
 			{
@@ -31,21 +31,21 @@ namespace Windows.Media.Capture.Frames
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Capture.Frames.MultiSourceMediaFrameReference TryAcquireLatestFrame()
 		{
-			throw new global::System.NotImplementedException("The member MultiSourceMediaFrameReference MultiSourceMediaFrameReader.TryAcquireLatestFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MultiSourceMediaFrameReference%20MultiSourceMediaFrameReader.TryAcquireLatestFrame%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MultiSourceMediaFrameReader", "MultiSourceMediaFrameReference MultiSourceMediaFrameReader.TryAcquireLatestFrame()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Capture.Frames.MultiSourceMediaFrameReaderStartStatus> StartAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<MultiSourceMediaFrameReaderStartStatus> MultiSourceMediaFrameReader.StartAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMultiSourceMediaFrameReaderStartStatus%3E%20MultiSourceMediaFrameReader.StartAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MultiSourceMediaFrameReader", "IAsyncOperation<MultiSourceMediaFrameReaderStartStatus> MultiSourceMediaFrameReader.StartAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction StopAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction MultiSourceMediaFrameReader.StopAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20MultiSourceMediaFrameReader.StopAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MultiSourceMediaFrameReader", "IAsyncAction MultiSourceMediaFrameReader.StopAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.Frames.MultiSourceMediaFrameReader.FrameArrived.add

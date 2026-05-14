@@ -19,7 +19,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer AdaptiveMediaSourceDownloadResult.Buffer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20AdaptiveMediaSourceDownloadResult.Buffer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "IBuffer AdaptiveMediaSourceDownloadResult.Buffer");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AdaptiveMediaSourceDownloadResult.ContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AdaptiveMediaSourceDownloadResult.ContentType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "string AdaptiveMediaSourceDownloadResult.ContentType");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AdaptiveMediaSourceDownloadResult.ExtendedStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AdaptiveMediaSourceDownloadResult.ExtendedStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "uint AdaptiveMediaSourceDownloadResult.ExtendedStatus");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IInputStream AdaptiveMediaSourceDownloadResult.InputStream is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IInputStream%20AdaptiveMediaSourceDownloadResult.InputStream");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "IInputStream AdaptiveMediaSourceDownloadResult.InputStream");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong? AdaptiveMediaSourceDownloadResult.ResourceByteRangeLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%3F%20AdaptiveMediaSourceDownloadResult.ResourceByteRangeLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "ulong? AdaptiveMediaSourceDownloadResult.ResourceByteRangeLength");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong? AdaptiveMediaSourceDownloadResult.ResourceByteRangeOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%3F%20AdaptiveMediaSourceDownloadResult.ResourceByteRangeOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "ulong? AdaptiveMediaSourceDownloadResult.ResourceByteRangeOffset");
 			}
 			set
 			{
@@ -103,7 +103,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri AdaptiveMediaSourceDownloadResult.ResourceUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20AdaptiveMediaSourceDownloadResult.ResourceUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadResult", "Uri AdaptiveMediaSourceDownloadResult.ResourceUri");
 			}
 			set
 			{

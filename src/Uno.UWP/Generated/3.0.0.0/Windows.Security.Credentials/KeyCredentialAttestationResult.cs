@@ -19,7 +19,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer KeyCredentialAttestationResult.AttestationBuffer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20KeyCredentialAttestationResult.AttestationBuffer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialAttestationResult", "IBuffer KeyCredentialAttestationResult.AttestationBuffer");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer KeyCredentialAttestationResult.CertificateChainBuffer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20KeyCredentialAttestationResult.CertificateChainBuffer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialAttestationResult", "IBuffer KeyCredentialAttestationResult.CertificateChainBuffer");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member KeyCredentialAttestationStatus KeyCredentialAttestationResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=KeyCredentialAttestationStatus%20KeyCredentialAttestationResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialAttestationResult", "KeyCredentialAttestationStatus KeyCredentialAttestationResult.Status");
 			}
 		}
 #endif

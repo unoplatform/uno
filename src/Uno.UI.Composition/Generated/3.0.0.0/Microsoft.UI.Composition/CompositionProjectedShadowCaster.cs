@@ -19,7 +19,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionBrush CompositionProjectedShadowCaster.Brush is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBrush%20CompositionProjectedShadowCaster.Brush");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionProjectedShadowCaster", "CompositionBrush CompositionProjectedShadowCaster.Brush");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Visual CompositionProjectedShadowCaster.CastingVisual is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Visual%20CompositionProjectedShadowCaster.CastingVisual");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionProjectedShadowCaster", "Visual CompositionProjectedShadowCaster.CastingVisual");
 			}
 			set
 			{

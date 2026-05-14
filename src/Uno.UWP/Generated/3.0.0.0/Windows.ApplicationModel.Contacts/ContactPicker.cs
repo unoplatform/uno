@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactPicker.CommitButtonText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactPicker.CommitButtonText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactPicker", "string ContactPicker.CommitButtonText");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> ContactPicker.DesiredFields is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20ContactPicker.DesiredFields");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactPicker", "IList<string> ContactPicker.DesiredFields");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ContactFieldType> ContactPicker.DesiredFieldsWithContactFieldType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CContactFieldType%3E%20ContactPicker.DesiredFieldsWithContactFieldType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactPicker", "IList<ContactFieldType> ContactPicker.DesiredFieldsWithContactFieldType");
 			}
 		}
 #endif
@@ -48,7 +48,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactSelectionMode ContactPicker.SelectionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactSelectionMode%20ContactPicker.SelectionMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactPicker", "ContactSelectionMode ContactPicker.SelectionMode");
 			}
 			set
 			{
@@ -62,7 +62,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User ContactPicker.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20ContactPicker.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactPicker", "User ContactPicker.User");
 			}
 		}
 #endif
@@ -72,7 +72,7 @@ namespace Windows.ApplicationModel.Contacts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Contacts.ContactPicker CreateForUser(global::Windows.System.User user)
 		{
-			throw new global::System.NotImplementedException("The member ContactPicker ContactPicker.CreateForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactPicker%20ContactPicker.CreateForUser%28User%20user%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactPicker", "ContactPicker ContactPicker.CreateForUser(User user)");
 		}
 #endif
 		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactPicker.IsSupportedAsync()
@@ -80,14 +80,14 @@ namespace Windows.ApplicationModel.Contacts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Contacts.ContactInformation> PickSingleContactAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ContactInformation> ContactPicker.PickSingleContactAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CContactInformation%3E%20ContactPicker.PickSingleContactAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactPicker", "IAsyncOperation<ContactInformation> ContactPicker.PickSingleContactAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Contacts.ContactInformation>> PickMultipleContactsAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<ContactInformation>> ContactPicker.PickMultipleContactsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CContactInformation%3E%3E%20ContactPicker.PickMultipleContactsAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactPicker", "IAsyncOperation<IReadOnlyList<ContactInformation>> ContactPicker.PickMultipleContactsAsync()");
 		}
 #endif
 		// Skipping already declared method Windows.ApplicationModel.Contacts.ContactPicker.PickContactAsync()

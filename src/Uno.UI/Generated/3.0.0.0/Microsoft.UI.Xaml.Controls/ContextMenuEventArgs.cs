@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ContextMenuEventArgs.CursorLeft is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ContextMenuEventArgs.CursorLeft");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ContextMenuEventArgs", "double ContextMenuEventArgs.CursorLeft");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ContextMenuEventArgs.CursorTop is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ContextMenuEventArgs.CursorTop");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ContextMenuEventArgs", "double ContextMenuEventArgs.CursorTop");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContextMenuEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContextMenuEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ContextMenuEventArgs", "bool ContextMenuEventArgs.Handled");
 			}
 			set
 			{

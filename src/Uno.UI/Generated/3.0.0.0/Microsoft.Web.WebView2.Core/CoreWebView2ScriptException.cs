@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2ScriptException.ColumnNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2ScriptException.ColumnNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ScriptException", "uint CoreWebView2ScriptException.ColumnNumber");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2ScriptException.LineNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2ScriptException.LineNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ScriptException", "uint CoreWebView2ScriptException.LineNumber");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2ScriptException.Message is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2ScriptException.Message");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ScriptException", "string CoreWebView2ScriptException.Message");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2ScriptException.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2ScriptException.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ScriptException", "string CoreWebView2ScriptException.Name");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2ScriptException.ToJson is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2ScriptException.ToJson");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ScriptException", "string CoreWebView2ScriptException.ToJson");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhoneLine.CanDial is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PhoneLine.CanDial");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLine", "bool PhoneLine.CanDial");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneLineCellularDetails PhoneLine.CellularDetails is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneLineCellularDetails%20PhoneLine.CellularDetails");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLine", "PhoneLineCellularDetails PhoneLine.CellularDetails");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color PhoneLine.DisplayColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20PhoneLine.DisplayColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLine", "Color PhoneLine.DisplayColor");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneLine.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneLine.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLine", "string PhoneLine.DisplayName");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PhoneLine.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PhoneLine.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLine", "Guid PhoneLine.Id");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneLineConfiguration PhoneLine.LineConfiguration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneLineConfiguration%20PhoneLine.LineConfiguration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLine", "PhoneLineConfiguration PhoneLine.LineConfiguration");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneLine.NetworkName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneLine.NetworkName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLine", "string PhoneLine.NetworkName");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneNetworkState PhoneLine.NetworkState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneNetworkState%20PhoneLine.NetworkState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLine", "PhoneNetworkState PhoneLine.NetworkState");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhoneLine.SupportsTile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PhoneLine.SupportsTile");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLine", "bool PhoneLine.SupportsTile");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneLineTransport PhoneLine.Transport is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneLineTransport%20PhoneLine.Transport");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLine", "PhoneLineTransport PhoneLine.Transport");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneLine.TransportDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneLine.TransportDeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLine", "string PhoneLine.TransportDeviceId");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneCallVideoCapabilities PhoneLine.VideoCallingCapabilities is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneCallVideoCapabilities%20PhoneLine.VideoCallingCapabilities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLine", "PhoneCallVideoCapabilities PhoneLine.VideoCallingCapabilities");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneVoicemail PhoneLine.Voicemail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneVoicemail%20PhoneLine.Voicemail");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLine", "PhoneVoicemail PhoneLine.Voicemail");
 			}
 		}
 #endif
@@ -147,14 +147,14 @@ namespace Windows.ApplicationModel.Calls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneLine> FromIdAsync(global::System.Guid lineId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneLine> PhoneLine.FromIdAsync(Guid lineId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPhoneLine%3E%20PhoneLine.FromIdAsync%28Guid%20lineId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLine", "IAsyncOperation<PhoneLine> PhoneLine.FromIdAsync(Guid lineId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> IsImmediateDialNumberAsync(string number)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> PhoneLine.IsImmediateDialNumberAsync(string number) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20PhoneLine.IsImmediateDialNumberAsync%28string%20number%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLine", "IAsyncOperation<bool> PhoneLine.IsImmediateDialNumberAsync(string number)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

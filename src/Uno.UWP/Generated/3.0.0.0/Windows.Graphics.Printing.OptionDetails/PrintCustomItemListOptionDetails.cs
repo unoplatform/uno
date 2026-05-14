@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintCustomItemListOptionDetails.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintCustomItemListOptionDetails.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCustomItemListOptionDetails", "string PrintCustomItemListOptionDetails.Description");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintCustomItemListOptionDetails.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintCustomItemListOptionDetails.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCustomItemListOptionDetails", "string PrintCustomItemListOptionDetails.DisplayName");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintCustomItemListOptionDetails.ErrorText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintCustomItemListOptionDetails.ErrorText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCustomItemListOptionDetails", "string PrintCustomItemListOptionDetails.ErrorText");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<object> PrintCustomItemListOptionDetails.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cobject%3E%20PrintCustomItemListOptionDetails.Items");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCustomItemListOptionDetails", "IReadOnlyList<object> PrintCustomItemListOptionDetails.Items");
 			}
 		}
 #endif
@@ -71,7 +71,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintCustomItemListOptionDetails.OptionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintCustomItemListOptionDetails.OptionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCustomItemListOptionDetails", "string PrintCustomItemListOptionDetails.OptionId");
 			}
 		}
 #endif
@@ -81,7 +81,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintOptionType PrintCustomItemListOptionDetails.OptionType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOptionType%20PrintCustomItemListOptionDetails.OptionType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCustomItemListOptionDetails", "PrintOptionType PrintCustomItemListOptionDetails.OptionType");
 			}
 		}
 #endif
@@ -91,7 +91,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintOptionStates PrintCustomItemListOptionDetails.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintOptionStates%20PrintCustomItemListOptionDetails.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCustomItemListOptionDetails", "PrintOptionStates PrintCustomItemListOptionDetails.State");
 			}
 			set
 			{
@@ -105,7 +105,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object PrintCustomItemListOptionDetails.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20PrintCustomItemListOptionDetails.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCustomItemListOptionDetails", "object PrintCustomItemListOptionDetails.Value");
 			}
 		}
 #endif
@@ -115,7 +115,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintCustomItemListOptionDetails.WarningText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintCustomItemListOptionDetails.WarningText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCustomItemListOptionDetails", "string PrintCustomItemListOptionDetails.WarningText");
 			}
 			set
 			{
@@ -127,7 +127,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetValue(object value)
 		{
-			throw new global::System.NotImplementedException("The member bool PrintCustomItemListOptionDetails.TrySetValue(object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintCustomItemListOptionDetails.TrySetValue%28object%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCustomItemListOptionDetails", "bool PrintCustomItemListOptionDetails.TrySetValue(object value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

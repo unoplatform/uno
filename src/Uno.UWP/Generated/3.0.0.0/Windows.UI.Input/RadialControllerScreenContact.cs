@@ -19,7 +19,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect RadialControllerScreenContact.Bounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20RadialControllerScreenContact.Bounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerScreenContact", "Rect RadialControllerScreenContact.Bounds");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point RadialControllerScreenContact.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20RadialControllerScreenContact.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerScreenContact", "Point RadialControllerScreenContact.Position");
 			}
 		}
 #endif

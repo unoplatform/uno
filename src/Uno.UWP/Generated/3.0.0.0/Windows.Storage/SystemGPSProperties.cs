@@ -19,7 +19,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemGPSProperties.LatitudeDecimal is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemGPSProperties.LatitudeDecimal");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemGPSProperties", "string SystemGPSProperties.LatitudeDecimal");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemGPSProperties.LongitudeDecimal is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemGPSProperties.LongitudeDecimal");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemGPSProperties", "string SystemGPSProperties.LongitudeDecimal");
 			}
 		}
 #endif

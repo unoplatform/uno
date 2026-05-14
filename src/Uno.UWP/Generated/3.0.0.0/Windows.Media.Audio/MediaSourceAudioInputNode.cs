@@ -19,7 +19,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaSourceAudioInputNode.ConsumeInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaSourceAudioInputNode.ConsumeInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.MediaSourceAudioInputNode", "bool MediaSourceAudioInputNode.ConsumeInput");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaSourceAudioInputNode.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaSourceAudioInputNode.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.MediaSourceAudioInputNode", "TimeSpan MediaSourceAudioInputNode.Duration");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<IAudioEffectDefinition> MediaSourceAudioInputNode.EffectDefinitions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CIAudioEffectDefinition%3E%20MediaSourceAudioInputNode.EffectDefinitions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.MediaSourceAudioInputNode", "IList<IAudioEffectDefinition> MediaSourceAudioInputNode.EffectDefinitions");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioNodeEmitter MediaSourceAudioInputNode.Emitter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioNodeEmitter%20MediaSourceAudioInputNode.Emitter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.MediaSourceAudioInputNode", "AudioNodeEmitter MediaSourceAudioInputNode.Emitter");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioEncodingProperties MediaSourceAudioInputNode.EncodingProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioEncodingProperties%20MediaSourceAudioInputNode.EncodingProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.MediaSourceAudioInputNode", "AudioEncodingProperties MediaSourceAudioInputNode.EncodingProperties");
 			}
 		}
 #endif
@@ -73,7 +73,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? MediaSourceAudioInputNode.EndTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20MediaSourceAudioInputNode.EndTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.MediaSourceAudioInputNode", "TimeSpan? MediaSourceAudioInputNode.EndTime");
 			}
 			set
 			{
@@ -87,7 +87,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? MediaSourceAudioInputNode.LoopCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20MediaSourceAudioInputNode.LoopCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.MediaSourceAudioInputNode", "int? MediaSourceAudioInputNode.LoopCount");
 			}
 			set
 			{
@@ -101,7 +101,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaSource MediaSourceAudioInputNode.MediaSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaSourceAudioInputNode.MediaSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.MediaSourceAudioInputNode", "MediaSource MediaSourceAudioInputNode.MediaSource");
 			}
 		}
 #endif
@@ -111,7 +111,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<AudioGraphConnection> MediaSourceAudioInputNode.OutgoingConnections is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CAudioGraphConnection%3E%20MediaSourceAudioInputNode.OutgoingConnections");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.MediaSourceAudioInputNode", "IReadOnlyList<AudioGraphConnection> MediaSourceAudioInputNode.OutgoingConnections");
 			}
 		}
 #endif
@@ -121,7 +121,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MediaSourceAudioInputNode.OutgoingGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20MediaSourceAudioInputNode.OutgoingGain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.MediaSourceAudioInputNode", "double MediaSourceAudioInputNode.OutgoingGain");
 			}
 			set
 			{
@@ -135,7 +135,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MediaSourceAudioInputNode.PlaybackSpeedFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20MediaSourceAudioInputNode.PlaybackSpeedFactor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.MediaSourceAudioInputNode", "double MediaSourceAudioInputNode.PlaybackSpeedFactor");
 			}
 			set
 			{
@@ -149,7 +149,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaSourceAudioInputNode.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaSourceAudioInputNode.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.MediaSourceAudioInputNode", "TimeSpan MediaSourceAudioInputNode.Position");
 			}
 		}
 #endif
@@ -159,7 +159,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? MediaSourceAudioInputNode.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20MediaSourceAudioInputNode.StartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.MediaSourceAudioInputNode", "TimeSpan? MediaSourceAudioInputNode.StartTime");
 			}
 			set
 			{

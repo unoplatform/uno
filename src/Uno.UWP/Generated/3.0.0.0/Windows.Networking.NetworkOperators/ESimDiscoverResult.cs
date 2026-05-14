@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ESimDiscoverEvent> ESimDiscoverResult.Events is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CESimDiscoverEvent%3E%20ESimDiscoverResult.Events");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimDiscoverResult", "IReadOnlyList<ESimDiscoverEvent> ESimDiscoverResult.Events");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESimDiscoverResultKind ESimDiscoverResult.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ESimDiscoverResultKind%20ESimDiscoverResult.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimDiscoverResult", "ESimDiscoverResultKind ESimDiscoverResult.Kind");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESimProfileMetadata ESimDiscoverResult.ProfileMetadata is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ESimProfileMetadata%20ESimDiscoverResult.ProfileMetadata");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimDiscoverResult", "ESimProfileMetadata ESimDiscoverResult.ProfileMetadata");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESimOperationResult ESimDiscoverResult.Result is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ESimOperationResult%20ESimDiscoverResult.Result");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimDiscoverResult", "ESimOperationResult ESimDiscoverResult.Result");
 			}
 		}
 #endif

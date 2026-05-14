@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMailboxForwardMeetingRequest.Comment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailMailboxForwardMeetingRequest.Comment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "string EmailMailboxForwardMeetingRequest.Comment");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMailboxForwardMeetingRequest.EmailMailboxId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailMailboxForwardMeetingRequest.EmailMailboxId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "string EmailMailboxForwardMeetingRequest.EmailMailboxId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMailboxForwardMeetingRequest.EmailMessageId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailMailboxForwardMeetingRequest.EmailMessageId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "string EmailMailboxForwardMeetingRequest.EmailMessageId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMailboxForwardMeetingRequest.ForwardHeader is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailMailboxForwardMeetingRequest.ForwardHeader");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "string EmailMailboxForwardMeetingRequest.ForwardHeader");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMessageBodyKind EmailMailboxForwardMeetingRequest.ForwardHeaderType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMessageBodyKind%20EmailMailboxForwardMeetingRequest.ForwardHeaderType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "EmailMessageBodyKind EmailMailboxForwardMeetingRequest.ForwardHeaderType");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<EmailRecipient> EmailMailboxForwardMeetingRequest.Recipients is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CEmailRecipient%3E%20EmailMailboxForwardMeetingRequest.Recipients");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "IReadOnlyList<EmailRecipient> EmailMailboxForwardMeetingRequest.Recipients");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMailboxForwardMeetingRequest.Subject is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailMailboxForwardMeetingRequest.Subject");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "string EmailMailboxForwardMeetingRequest.Subject");
 			}
 		}
 #endif
@@ -87,14 +87,14 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxForwardMeetingRequest.ReportCompletedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20EmailMailboxForwardMeetingRequest.ReportCompletedAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "IAsyncAction EmailMailboxForwardMeetingRequest.ReportCompletedAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxForwardMeetingRequest.ReportFailedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20EmailMailboxForwardMeetingRequest.ReportFailedAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest", "IAsyncAction EmailMailboxForwardMeetingRequest.ReportFailedAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequest.Comment.get

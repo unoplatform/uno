@@ -19,7 +19,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RemoteSystem RemoteSystemAddedEventArgs.RemoteSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystem%20RemoteSystemAddedEventArgs.RemoteSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemAddedEventArgs", "RemoteSystem RemoteSystemAddedEventArgs.RemoteSystem");
 			}
 		}
 #endif

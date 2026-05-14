@@ -19,7 +19,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DevicePairingProtectionLevel DevicePairingResult.ProtectionLevelUsed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DevicePairingProtectionLevel%20DevicePairingResult.ProtectionLevelUsed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePairingResult", "DevicePairingProtectionLevel DevicePairingResult.ProtectionLevelUsed");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DevicePairingResultStatus DevicePairingResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DevicePairingResultStatus%20DevicePairingResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePairingResult", "DevicePairingResultStatus DevicePairingResult.Status");
 			}
 		}
 #endif

@@ -15,7 +15,7 @@ namespace Windows.Storage.Pickers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet FolderPicker.ContinuationData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20FolderPicker.ContinuationData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FolderPicker", "ValueSet FolderPicker.ContinuationData");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Storage.Pickers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User FolderPicker.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20FolderPicker.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FolderPicker", "User FolderPicker.User");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Storage.Pickers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.Pickers.FolderPicker CreateForUser(global::Windows.System.User user)
 		{
-			throw new global::System.NotImplementedException("The member FolderPicker FolderPicker.CreateForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FolderPicker%20FolderPicker.CreateForUser%28User%20user%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FolderPicker", "FolderPicker FolderPicker.CreateForUser(User user)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -53,7 +53,7 @@ namespace Windows.Storage.Pickers
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> PickSingleFolderAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFolder> FolderPicker.PickSingleFolderAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFolder%3E%20FolderPicker.PickSingleFolderAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.FolderPicker", "IAsyncOperation<StorageFolder> FolderPicker.PickSingleFolderAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.CommitButtonText.get

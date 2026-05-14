@@ -90,7 +90,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double TextBlock.BaselineOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20TextBlock.BaselineOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.TextBlock", "double TextBlock.BaselineOffset");
 			}
 		}
 #endif
@@ -101,7 +101,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer TextBlock.ContentEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20TextBlock.ContentEnd");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.TextBlock", "TextPointer TextBlock.ContentEnd");
 			}
 		}
 #endif
@@ -111,7 +111,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer TextBlock.ContentStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20TextBlock.ContentStart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.TextBlock", "TextPointer TextBlock.ContentStart");
 			}
 		}
 #endif
@@ -174,7 +174,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer TextBlock.SelectionEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20TextBlock.SelectionEnd");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.TextBlock", "TextPointer TextBlock.SelectionEnd");
 			}
 		}
 #endif
@@ -212,7 +212,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer TextBlock.SelectionStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20TextBlock.SelectionStart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.TextBlock", "TextPointer TextBlock.SelectionStart");
 			}
 		}
 #endif
@@ -297,7 +297,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.CompositionBrush GetAlphaMask()
 		{
-			throw new global::System.NotImplementedException("The member CompositionBrush TextBlock.GetAlphaMask() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBrush%20TextBlock.GetAlphaMask%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.TextBlock", "CompositionBrush TextBlock.GetAlphaMask()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__

@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2LaunchingExternalUriSchemeEventArgs.Cancel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2LaunchingExternalUriSchemeEventArgs.Cancel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2LaunchingExternalUriSchemeEventArgs", "bool CoreWebView2LaunchingExternalUriSchemeEventArgs.Cancel");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2LaunchingExternalUriSchemeEventArgs.InitiatingOrigin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2LaunchingExternalUriSchemeEventArgs.InitiatingOrigin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2LaunchingExternalUriSchemeEventArgs", "string CoreWebView2LaunchingExternalUriSchemeEventArgs.InitiatingOrigin");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2LaunchingExternalUriSchemeEventArgs.IsUserInitiated is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2LaunchingExternalUriSchemeEventArgs.IsUserInitiated");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2LaunchingExternalUriSchemeEventArgs", "bool CoreWebView2LaunchingExternalUriSchemeEventArgs.IsUserInitiated");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2LaunchingExternalUriSchemeEventArgs.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2LaunchingExternalUriSchemeEventArgs.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2LaunchingExternalUriSchemeEventArgs", "string CoreWebView2LaunchingExternalUriSchemeEventArgs.Uri");
 			}
 		}
 #endif
@@ -61,7 +61,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral CoreWebView2LaunchingExternalUriSchemeEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreWebView2LaunchingExternalUriSchemeEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2LaunchingExternalUriSchemeEventArgs", "Deferral CoreWebView2LaunchingExternalUriSchemeEventArgs.GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2LaunchingExternalUriSchemeEventArgs.Cancel.get

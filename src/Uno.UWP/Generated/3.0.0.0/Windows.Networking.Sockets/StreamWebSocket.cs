@@ -14,7 +14,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StreamWebSocketControl StreamWebSocket.Control is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StreamWebSocketControl%20StreamWebSocket.Control");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocket", "StreamWebSocketControl StreamWebSocket.Control");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StreamWebSocketInformation StreamWebSocket.Information is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StreamWebSocketInformation%20StreamWebSocket.Information");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocket", "StreamWebSocketInformation StreamWebSocket.Information");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IInputStream StreamWebSocket.InputStream is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IInputStream%20StreamWebSocket.InputStream");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocket", "IInputStream StreamWebSocket.InputStream");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IOutputStream StreamWebSocket.OutputStream is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IOutputStream%20StreamWebSocket.OutputStream");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocket", "IOutputStream StreamWebSocket.OutputStream");
 			}
 		}
 #endif
@@ -60,7 +60,7 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ConnectAsync(global::System.Uri uri)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StreamWebSocket.ConnectAsync(Uri uri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20StreamWebSocket.ConnectAsync%28Uri%20uri%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamWebSocket", "IAsyncAction StreamWebSocket.ConnectAsync(Uri uri)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

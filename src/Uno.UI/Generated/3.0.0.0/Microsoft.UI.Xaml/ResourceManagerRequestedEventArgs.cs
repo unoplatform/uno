@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IResourceManager ResourceManagerRequestedEventArgs.CustomResourceManager is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IResourceManager%20ResourceManagerRequestedEventArgs.CustomResourceManager");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs", "IResourceManager ResourceManagerRequestedEventArgs.CustomResourceManager");
 			}
 			set
 			{

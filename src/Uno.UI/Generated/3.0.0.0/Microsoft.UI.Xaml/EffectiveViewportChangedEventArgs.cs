@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EffectiveViewportChangedEventArgs.BringIntoViewDistanceX is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20EffectiveViewportChangedEventArgs.BringIntoViewDistanceX");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs", "double EffectiveViewportChangedEventArgs.BringIntoViewDistanceX");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EffectiveViewportChangedEventArgs.BringIntoViewDistanceY is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20EffectiveViewportChangedEventArgs.BringIntoViewDistanceY");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs", "double EffectiveViewportChangedEventArgs.BringIntoViewDistanceY");
 			}
 		}
 #endif
@@ -35,7 +35,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect EffectiveViewportChangedEventArgs.MaxViewport is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20EffectiveViewportChangedEventArgs.MaxViewport");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs", "Rect EffectiveViewportChangedEventArgs.MaxViewport");
 			}
 		}
 #endif

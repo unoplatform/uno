@@ -13,14 +13,14 @@ namespace Microsoft.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Input.InputFocusController GetForIsland(global::Microsoft.UI.Content.ContentIsland island)
 		{
-			throw new global::System.NotImplementedException("The member InputFocusController InputFocusController.GetForIsland(ContentIsland island) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputFocusController%20InputFocusController.GetForIsland%28ContentIsland%20island%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputFocusController", "InputFocusController InputFocusController.GetForIsland(ContentIsland island)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetFocus()
 		{
-			throw new global::System.NotImplementedException("The member bool InputFocusController.TrySetFocus() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InputFocusController.TrySetFocus%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputFocusController", "bool InputFocusController.TrySetFocus()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.InputFocusController.GotFocus.add

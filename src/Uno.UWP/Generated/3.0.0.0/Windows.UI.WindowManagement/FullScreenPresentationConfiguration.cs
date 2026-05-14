@@ -14,7 +14,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FullScreenPresentationConfiguration.IsExclusive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FullScreenPresentationConfiguration.IsExclusive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.FullScreenPresentationConfiguration", "bool FullScreenPresentationConfiguration.IsExclusive");
 			}
 			set
 			{

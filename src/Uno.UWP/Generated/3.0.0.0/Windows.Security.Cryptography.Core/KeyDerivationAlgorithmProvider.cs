@@ -19,7 +19,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmProvider.AlgorithmName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KeyDerivationAlgorithmProvider.AlgorithmName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider", "string KeyDerivationAlgorithmProvider.AlgorithmName");
 			}
 		}
 #endif
@@ -27,14 +27,14 @@ namespace Windows.Security.Cryptography.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider OpenAlgorithm(string algorithm)
 		{
-			throw new global::System.NotImplementedException("The member KeyDerivationAlgorithmProvider KeyDerivationAlgorithmProvider.OpenAlgorithm(string algorithm) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=KeyDerivationAlgorithmProvider%20KeyDerivationAlgorithmProvider.OpenAlgorithm%28string%20algorithm%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider", "KeyDerivationAlgorithmProvider KeyDerivationAlgorithmProvider.OpenAlgorithm(string algorithm)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Cryptography.Core.CryptographicKey CreateKey(global::Windows.Storage.Streams.IBuffer keyMaterial)
 		{
-			throw new global::System.NotImplementedException("The member CryptographicKey KeyDerivationAlgorithmProvider.CreateKey(IBuffer keyMaterial) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CryptographicKey%20KeyDerivationAlgorithmProvider.CreateKey%28IBuffer%20keyMaterial%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider", "CryptographicKey KeyDerivationAlgorithmProvider.CreateKey(IBuffer keyMaterial)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Core.KeyDerivationAlgorithmProvider.AlgorithmName.get

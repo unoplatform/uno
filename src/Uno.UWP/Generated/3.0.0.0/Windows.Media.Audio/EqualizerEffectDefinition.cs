@@ -14,7 +14,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EqualizerEffectDefinition.ActivatableClassId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EqualizerEffectDefinition.ActivatableClassId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EqualizerEffectDefinition", "string EqualizerEffectDefinition.ActivatableClassId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<EqualizerBand> EqualizerEffectDefinition.Bands is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CEqualizerBand%3E%20EqualizerEffectDefinition.Bands");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EqualizerEffectDefinition", "IReadOnlyList<EqualizerBand> EqualizerEffectDefinition.Bands");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet EqualizerEffectDefinition.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPropertySet%20EqualizerEffectDefinition.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.EqualizerEffectDefinition", "IPropertySet EqualizerEffectDefinition.Properties");
 			}
 		}
 #endif

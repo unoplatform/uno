@@ -19,7 +19,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float FrameExposureCompensationCapabilities.Max is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20FrameExposureCompensationCapabilities.Max");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameExposureCompensationCapabilities", "float FrameExposureCompensationCapabilities.Max");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float FrameExposureCompensationCapabilities.Min is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20FrameExposureCompensationCapabilities.Min");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameExposureCompensationCapabilities", "float FrameExposureCompensationCapabilities.Min");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float FrameExposureCompensationCapabilities.Step is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20FrameExposureCompensationCapabilities.Step");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameExposureCompensationCapabilities", "float FrameExposureCompensationCapabilities.Step");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FrameExposureCompensationCapabilities.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FrameExposureCompensationCapabilities.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameExposureCompensationCapabilities", "bool FrameExposureCompensationCapabilities.Supported");
 			}
 		}
 #endif

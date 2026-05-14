@@ -19,7 +19,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PerceptionDepthFrameSource PerceptionDepthFrameSourceAddedEventArgs.FrameSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionDepthFrameSource%20PerceptionDepthFrameSourceAddedEventArgs.FrameSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionDepthFrameSourceAddedEventArgs", "PerceptionDepthFrameSource PerceptionDepthFrameSourceAddedEventArgs.FrameSource");
 			}
 		}
 #endif

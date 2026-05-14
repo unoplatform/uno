@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception StoreSendRequestResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20StoreSendRequestResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreSendRequestResult", "Exception StoreSendRequestResult.ExtendedError");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpStatusCode StoreSendRequestResult.HttpStatusCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpStatusCode%20StoreSendRequestResult.HttpStatusCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreSendRequestResult", "HttpStatusCode StoreSendRequestResult.HttpStatusCode");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreSendRequestResult.Response is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreSendRequestResult.Response");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreSendRequestResult", "string StoreSendRequestResult.Response");
 			}
 		}
 #endif

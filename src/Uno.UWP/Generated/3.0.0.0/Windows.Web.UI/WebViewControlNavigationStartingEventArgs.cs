@@ -19,7 +19,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebViewControlNavigationStartingEventArgs.Cancel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WebViewControlNavigationStartingEventArgs.Cancel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlNavigationStartingEventArgs", "bool WebViewControlNavigationStartingEventArgs.Cancel");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri WebViewControlNavigationStartingEventArgs.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20WebViewControlNavigationStartingEventArgs.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlNavigationStartingEventArgs", "Uri WebViewControlNavigationStartingEventArgs.Uri");
 			}
 		}
 #endif

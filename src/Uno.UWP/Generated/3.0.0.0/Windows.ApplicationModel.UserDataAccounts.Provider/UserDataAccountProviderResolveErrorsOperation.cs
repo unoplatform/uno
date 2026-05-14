@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataAccountProviderOperationKind UserDataAccountProviderResolveErrorsOperation.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataAccountProviderOperationKind%20UserDataAccountProviderResolveErrorsOperation.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderResolveErrorsOperation", "UserDataAccountProviderOperationKind UserDataAccountProviderResolveErrorsOperation.Kind");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataAccountProviderResolveErrorsOperation.UserDataAccountId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserDataAccountProviderResolveErrorsOperation.UserDataAccountId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.Provider.UserDataAccountProviderResolveErrorsOperation", "string UserDataAccountProviderResolveErrorsOperation.UserDataAccountId");
 			}
 		}
 #endif

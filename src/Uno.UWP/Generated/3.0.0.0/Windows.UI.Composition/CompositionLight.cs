@@ -14,7 +14,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VisualUnorderedCollection CompositionLight.ExclusionsFromTargets is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VisualUnorderedCollection%20CompositionLight.ExclusionsFromTargets");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionLight", "VisualUnorderedCollection CompositionLight.ExclusionsFromTargets");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CompositionLight.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionLight.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionLight", "bool CompositionLight.IsEnabled");
 			}
 			set
 			{
@@ -38,7 +38,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VisualUnorderedCollection CompositionLight.Targets is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VisualUnorderedCollection%20CompositionLight.Targets");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionLight", "VisualUnorderedCollection CompositionLight.Targets");
 			}
 		}
 #endif

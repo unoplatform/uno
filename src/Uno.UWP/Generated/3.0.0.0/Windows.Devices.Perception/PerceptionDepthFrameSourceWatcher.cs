@@ -19,7 +19,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceWatcherStatus PerceptionDepthFrameSourceWatcher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceWatcherStatus%20PerceptionDepthFrameSourceWatcher.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher", "DeviceWatcherStatus PerceptionDepthFrameSourceWatcher.Status");
 			}
 		}
 #endif

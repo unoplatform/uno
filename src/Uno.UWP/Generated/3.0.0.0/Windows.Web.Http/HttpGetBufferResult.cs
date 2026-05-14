@@ -19,7 +19,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception HttpGetBufferResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20HttpGetBufferResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpGetBufferResult", "Exception HttpGetBufferResult.ExtendedError");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpRequestMessage HttpGetBufferResult.RequestMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpRequestMessage%20HttpGetBufferResult.RequestMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpGetBufferResult", "HttpRequestMessage HttpGetBufferResult.RequestMessage");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpResponseMessage HttpGetBufferResult.ResponseMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpResponseMessage%20HttpGetBufferResult.ResponseMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpGetBufferResult", "HttpResponseMessage HttpGetBufferResult.ResponseMessage");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HttpGetBufferResult.Succeeded is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpGetBufferResult.Succeeded");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpGetBufferResult", "bool HttpGetBufferResult.Succeeded");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer HttpGetBufferResult.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20HttpGetBufferResult.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpGetBufferResult", "IBuffer HttpGetBufferResult.Value");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Web.Http
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpGetBufferResult.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpGetBufferResult.ToString%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpGetBufferResult", "string HttpGetBufferResult.ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.HttpGetBufferResult.ExtendedError.get

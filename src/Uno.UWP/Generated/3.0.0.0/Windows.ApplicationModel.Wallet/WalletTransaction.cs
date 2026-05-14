@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WalletTransaction.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletTransaction.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletTransaction", "string WalletTransaction.Description");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WalletTransaction.DisplayAmount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletTransaction.DisplayAmount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletTransaction", "string WalletTransaction.DisplayAmount");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WalletTransaction.DisplayLocation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WalletTransaction.DisplayLocation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletTransaction", "string WalletTransaction.DisplayLocation");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WalletTransaction.IgnoreTimeOfDay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WalletTransaction.IgnoreTimeOfDay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletTransaction", "bool WalletTransaction.IgnoreTimeOfDay");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WalletTransaction.IsLaunchable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WalletTransaction.IsLaunchable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletTransaction", "bool WalletTransaction.IsLaunchable");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? WalletTransaction.TransactionDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20WalletTransaction.TransactionDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Wallet.WalletTransaction", "DateTimeOffset? WalletTransaction.TransactionDate");
 			}
 			set
 			{

@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.ExtendedExecution
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ExtendedExecutionSession.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ExtendedExecutionSession.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession", "string ExtendedExecutionSession.Description");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.ExtendedExecution
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ExtendedExecutionSession.PercentProgress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ExtendedExecutionSession.PercentProgress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession", "uint ExtendedExecutionSession.PercentProgress");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.ExtendedExecution
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExtendedExecutionReason ExtendedExecutionSession.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ExtendedExecutionReason%20ExtendedExecutionSession.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession", "ExtendedExecutionReason ExtendedExecutionSession.Reason");
 			}
 			set
 			{
@@ -62,7 +62,7 @@ namespace Windows.ApplicationModel.ExtendedExecution
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionResult> RequestExtensionAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ExtendedExecutionResult> ExtendedExecutionSession.RequestExtensionAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CExtendedExecutionResult%3E%20ExtendedExecutionSession.RequestExtensionAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession", "IAsyncOperation<ExtendedExecutionResult> ExtendedExecutionSession.RequestExtensionAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession.Revoked.add

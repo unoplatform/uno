@@ -14,7 +14,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioRenderCategory AudioGraphSettings.AudioRenderCategory is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioRenderCategory%20AudioGraphSettings.AudioRenderCategory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioGraphSettings", "AudioRenderCategory AudioGraphSettings.AudioRenderCategory");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioProcessing AudioGraphSettings.DesiredRenderDeviceAudioProcessing is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioProcessing%20AudioGraphSettings.DesiredRenderDeviceAudioProcessing");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioGraphSettings", "AudioProcessing AudioGraphSettings.DesiredRenderDeviceAudioProcessing");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AudioGraphSettings.DesiredSamplesPerQuantum is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20AudioGraphSettings.DesiredSamplesPerQuantum");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioGraphSettings", "int AudioGraphSettings.DesiredSamplesPerQuantum");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioEncodingProperties AudioGraphSettings.EncodingProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioEncodingProperties%20AudioGraphSettings.EncodingProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioGraphSettings", "AudioEncodingProperties AudioGraphSettings.EncodingProperties");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AudioGraphSettings.MaxPlaybackSpeedFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioGraphSettings.MaxPlaybackSpeedFactor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioGraphSettings", "double AudioGraphSettings.MaxPlaybackSpeedFactor");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceInformation AudioGraphSettings.PrimaryRenderDevice is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceInformation%20AudioGraphSettings.PrimaryRenderDevice");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioGraphSettings", "DeviceInformation AudioGraphSettings.PrimaryRenderDevice");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member QuantumSizeSelectionMode AudioGraphSettings.QuantumSizeSelectionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=QuantumSizeSelectionMode%20AudioGraphSettings.QuantumSizeSelectionMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioGraphSettings", "QuantumSizeSelectionMode AudioGraphSettings.QuantumSizeSelectionMode");
 			}
 			set
 			{

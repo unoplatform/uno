@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CompositionShapeCollection.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CompositionShapeCollection.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionShapeCollection", "int CompositionShapeCollection.Count");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CompositionShapeCollection.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionShapeCollection.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionShapeCollection", "bool CompositionShapeCollection.IsReadOnly");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionShape CompositionShapeCollection.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionShape%20CompositionShapeCollection.this%5Bint%20index%5D");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionShapeCollection", "CompositionShape CompositionShapeCollection.this[int index]");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int IndexOf(global::Windows.UI.Composition.CompositionShape item)
 		{
-			throw new global::System.NotImplementedException("The member int CompositionShapeCollection.IndexOf(CompositionShape item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CompositionShapeCollection.IndexOf%28CompositionShape%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionShapeCollection", "int CompositionShapeCollection.IndexOf(CompositionShape item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -90,7 +90,7 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Contains(global::Windows.UI.Composition.CompositionShape item)
 		{
-			throw new global::System.NotImplementedException("The member bool CompositionShapeCollection.Contains(CompositionShape item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionShapeCollection.Contains%28CompositionShape%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionShapeCollection", "bool CompositionShapeCollection.Contains(CompositionShape item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -104,14 +104,14 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Remove(global::Windows.UI.Composition.CompositionShape item)
 		{
-			throw new global::System.NotImplementedException("The member bool CompositionShapeCollection.Remove(CompositionShape item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionShapeCollection.Remove%28CompositionShape%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionShapeCollection", "bool CompositionShapeCollection.Remove(CompositionShape item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.UI.Composition.CompositionShape> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<CompositionShape> CompositionShapeCollection.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CCompositionShape%3E%20CompositionShapeCollection.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionShapeCollection", "IEnumerator<CompositionShape> CompositionShapeCollection.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.CompositionShapeCollection.System.Collections.IEnumerable.GetEnumerator()

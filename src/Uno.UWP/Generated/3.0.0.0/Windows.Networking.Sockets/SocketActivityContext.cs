@@ -14,7 +14,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer SocketActivityContext.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20SocketActivityContext.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.SocketActivityContext", "IBuffer SocketActivityContext.Data");
 			}
 		}
 #endif

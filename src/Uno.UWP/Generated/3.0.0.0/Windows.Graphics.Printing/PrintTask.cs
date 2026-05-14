@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PrintTask.Is3DManufacturingTargetEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintTask.Is3DManufacturingTargetEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTask", "bool PrintTask.Is3DManufacturingTargetEnabled");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PrintTask.IsPreviewEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintTask.IsPreviewEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTask", "bool PrintTask.IsPreviewEnabled");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PrintTask.IsPrinterTargetEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintTask.IsPrinterTargetEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTask", "bool PrintTask.IsPrinterTargetEnabled");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTaskOptions PrintTask.Options is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTaskOptions%20PrintTask.Options");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTask", "PrintTaskOptions PrintTask.Options");
 			}
 		}
 #endif
@@ -71,7 +71,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DataPackagePropertySet PrintTask.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataPackagePropertySet%20PrintTask.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTask", "DataPackagePropertySet PrintTask.Properties");
 			}
 		}
 #endif
@@ -81,7 +81,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPrintDocumentSource PrintTask.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPrintDocumentSource%20PrintTask.Source");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTask", "IPrintDocumentSource PrintTask.Source");
 			}
 		}
 #endif

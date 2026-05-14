@@ -14,7 +14,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GestureRecognizer.AutoProcessInertia is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GestureRecognizer.AutoProcessInertia");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "bool GestureRecognizer.AutoProcessInertia");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GestureRecognizer.CrossSlideExact is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GestureRecognizer.CrossSlideExact");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "bool GestureRecognizer.CrossSlideExact");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GestureRecognizer.CrossSlideHorizontally is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GestureRecognizer.CrossSlideHorizontally");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "bool GestureRecognizer.CrossSlideHorizontally");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CrossSlideThresholds GestureRecognizer.CrossSlideThresholds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CrossSlideThresholds%20GestureRecognizer.CrossSlideThresholds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "CrossSlideThresholds GestureRecognizer.CrossSlideThresholds");
 			}
 			set
 			{
@@ -71,7 +71,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint GestureRecognizer.HoldMaxContactCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20GestureRecognizer.HoldMaxContactCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "uint GestureRecognizer.HoldMaxContactCount");
 			}
 			set
 			{
@@ -85,7 +85,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint GestureRecognizer.HoldMinContactCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20GestureRecognizer.HoldMinContactCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "uint GestureRecognizer.HoldMinContactCount");
 			}
 			set
 			{
@@ -99,7 +99,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float GestureRecognizer.HoldRadius is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20GestureRecognizer.HoldRadius");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "float GestureRecognizer.HoldRadius");
 			}
 			set
 			{
@@ -113,7 +113,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan GestureRecognizer.HoldStartDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20GestureRecognizer.HoldStartDelay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "TimeSpan GestureRecognizer.HoldStartDelay");
 			}
 			set
 			{
@@ -127,7 +127,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaExpansion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20GestureRecognizer.InertiaExpansion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaExpansion");
 			}
 			set
 			{
@@ -141,7 +141,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaExpansionDeceleration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20GestureRecognizer.InertiaExpansionDeceleration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaExpansionDeceleration");
 			}
 			set
 			{
@@ -155,7 +155,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaRotationAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20GestureRecognizer.InertiaRotationAngle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaRotationAngle");
 			}
 			set
 			{
@@ -169,7 +169,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaRotationDeceleration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20GestureRecognizer.InertiaRotationDeceleration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaRotationDeceleration");
 			}
 			set
 			{
@@ -183,7 +183,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaTranslationDeceleration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20GestureRecognizer.InertiaTranslationDeceleration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaTranslationDeceleration");
 			}
 			set
 			{
@@ -197,7 +197,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaTranslationDisplacement is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20GestureRecognizer.InertiaTranslationDisplacement");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaTranslationDisplacement");
 			}
 			set
 			{
@@ -212,7 +212,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GestureRecognizer.IsInertial is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GestureRecognizer.IsInertial");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "bool GestureRecognizer.IsInertial");
 			}
 		}
 #endif
@@ -222,7 +222,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GestureRecognizer.ManipulationExact is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GestureRecognizer.ManipulationExact");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "bool GestureRecognizer.ManipulationExact");
 			}
 			set
 			{
@@ -236,7 +236,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MouseWheelParameters GestureRecognizer.MouseWheelParameters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MouseWheelParameters%20GestureRecognizer.MouseWheelParameters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "MouseWheelParameters GestureRecognizer.MouseWheelParameters");
 			}
 		}
 #endif
@@ -246,7 +246,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point GestureRecognizer.PivotCenter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20GestureRecognizer.PivotCenter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "Point GestureRecognizer.PivotCenter");
 			}
 			set
 			{
@@ -260,7 +260,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float GestureRecognizer.PivotRadius is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20GestureRecognizer.PivotRadius");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "float GestureRecognizer.PivotRadius");
 			}
 			set
 			{
@@ -274,7 +274,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GestureRecognizer.ShowGestureFeedback is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GestureRecognizer.ShowGestureFeedback");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "bool GestureRecognizer.ShowGestureFeedback");
 			}
 			set
 			{
@@ -288,7 +288,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint GestureRecognizer.TapMaxContactCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20GestureRecognizer.TapMaxContactCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "uint GestureRecognizer.TapMaxContactCount");
 			}
 			set
 			{
@@ -302,7 +302,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint GestureRecognizer.TapMinContactCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20GestureRecognizer.TapMinContactCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "uint GestureRecognizer.TapMinContactCount");
 			}
 			set
 			{
@@ -316,7 +316,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint GestureRecognizer.TranslationMaxContactCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20GestureRecognizer.TranslationMaxContactCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "uint GestureRecognizer.TranslationMaxContactCount");
 			}
 			set
 			{
@@ -330,7 +330,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint GestureRecognizer.TranslationMinContactCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20GestureRecognizer.TranslationMinContactCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.GestureRecognizer", "uint GestureRecognizer.TranslationMinContactCount");
 			}
 			set
 			{

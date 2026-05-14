@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CustomSystemEventTriggerRecurrence CustomSystemEventTrigger.Recurrence is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CustomSystemEventTriggerRecurrence%20CustomSystemEventTrigger.Recurrence");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.CustomSystemEventTrigger", "CustomSystemEventTriggerRecurrence CustomSystemEventTrigger.Recurrence");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CustomSystemEventTrigger.TriggerId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CustomSystemEventTrigger.TriggerId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.CustomSystemEventTrigger", "string CustomSystemEventTrigger.TriggerId");
 			}
 		}
 #endif

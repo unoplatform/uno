@@ -14,7 +14,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DatagramSocketControl DatagramSocket.Control is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DatagramSocketControl%20DatagramSocket.Control");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocket", "DatagramSocketControl DatagramSocket.Control");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DatagramSocketInformation DatagramSocket.Information is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DatagramSocketInformation%20DatagramSocket.Information");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocket", "DatagramSocketInformation DatagramSocket.Information");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IOutputStream DatagramSocket.OutputStream is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IOutputStream%20DatagramSocket.OutputStream");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocket", "IOutputStream DatagramSocket.OutputStream");
 			}
 		}
 #endif
@@ -50,42 +50,42 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.EndpointPair>> GetEndpointPairsAsync(global::Windows.Networking.HostName remoteHostName, string remoteServiceName)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<EndpointPair>> DatagramSocket.GetEndpointPairsAsync(HostName remoteHostName, string remoteServiceName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CEndpointPair%3E%3E%20DatagramSocket.GetEndpointPairsAsync%28HostName%20remoteHostName%2C%20string%20remoteServiceName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocket", "IAsyncOperation<IReadOnlyList<EndpointPair>> DatagramSocket.GetEndpointPairsAsync(HostName remoteHostName, string remoteServiceName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.EndpointPair>> GetEndpointPairsAsync(global::Windows.Networking.HostName remoteHostName, string remoteServiceName, global::Windows.Networking.HostNameSortOptions sortOptions)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<EndpointPair>> DatagramSocket.GetEndpointPairsAsync(HostName remoteHostName, string remoteServiceName, HostNameSortOptions sortOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CEndpointPair%3E%3E%20DatagramSocket.GetEndpointPairsAsync%28HostName%20remoteHostName%2C%20string%20remoteServiceName%2C%20HostNameSortOptions%20sortOptions%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocket", "IAsyncOperation<IReadOnlyList<EndpointPair>> DatagramSocket.GetEndpointPairsAsync(HostName remoteHostName, string remoteServiceName, HostNameSortOptions sortOptions)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ConnectAsync(global::Windows.Networking.HostName remoteHostName, string remoteServiceName)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction DatagramSocket.ConnectAsync(HostName remoteHostName, string remoteServiceName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20DatagramSocket.ConnectAsync%28HostName%20remoteHostName%2C%20string%20remoteServiceName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocket", "IAsyncAction DatagramSocket.ConnectAsync(HostName remoteHostName, string remoteServiceName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ConnectAsync(global::Windows.Networking.EndpointPair endpointPair)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction DatagramSocket.ConnectAsync(EndpointPair endpointPair) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20DatagramSocket.ConnectAsync%28EndpointPair%20endpointPair%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocket", "IAsyncAction DatagramSocket.ConnectAsync(EndpointPair endpointPair)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction BindServiceNameAsync(string localServiceName)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction DatagramSocket.BindServiceNameAsync(string localServiceName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20DatagramSocket.BindServiceNameAsync%28string%20localServiceName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocket", "IAsyncAction DatagramSocket.BindServiceNameAsync(string localServiceName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction BindEndpointAsync(global::Windows.Networking.HostName localHostName, string localServiceName)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction DatagramSocket.BindEndpointAsync(HostName localHostName, string localServiceName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20DatagramSocket.BindEndpointAsync%28HostName%20localHostName%2C%20string%20localServiceName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocket", "IAsyncAction DatagramSocket.BindEndpointAsync(HostName localHostName, string localServiceName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -99,14 +99,14 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IOutputStream> GetOutputStreamAsync(global::Windows.Networking.HostName remoteHostName, string remoteServiceName)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IOutputStream> DatagramSocket.GetOutputStreamAsync(HostName remoteHostName, string remoteServiceName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIOutputStream%3E%20DatagramSocket.GetOutputStreamAsync%28HostName%20remoteHostName%2C%20string%20remoteServiceName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocket", "IAsyncOperation<IOutputStream> DatagramSocket.GetOutputStreamAsync(HostName remoteHostName, string remoteServiceName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IOutputStream> GetOutputStreamAsync(global::Windows.Networking.EndpointPair endpointPair)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IOutputStream> DatagramSocket.GetOutputStreamAsync(EndpointPair endpointPair) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIOutputStream%3E%20DatagramSocket.GetOutputStreamAsync%28EndpointPair%20endpointPair%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocket", "IAsyncOperation<IOutputStream> DatagramSocket.GetOutputStreamAsync(EndpointPair endpointPair)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.DatagramSocket.MessageReceived.add
@@ -122,14 +122,14 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction BindServiceNameAsync(string localServiceName, global::Windows.Networking.Connectivity.NetworkAdapter adapter)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction DatagramSocket.BindServiceNameAsync(string localServiceName, NetworkAdapter adapter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20DatagramSocket.BindServiceNameAsync%28string%20localServiceName%2C%20NetworkAdapter%20adapter%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocket", "IAsyncAction DatagramSocket.BindServiceNameAsync(string localServiceName, NetworkAdapter adapter)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction CancelIOAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction DatagramSocket.CancelIOAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20DatagramSocket.CancelIOAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.DatagramSocket", "IAsyncAction DatagramSocket.CancelIOAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

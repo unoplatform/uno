@@ -14,7 +14,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ToastCollection.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ToastCollection.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ToastCollection", "string ToastCollection.DisplayName");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri ToastCollection.Icon is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20ToastCollection.Icon");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ToastCollection", "Uri ToastCollection.Icon");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ToastCollection.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ToastCollection.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ToastCollection", "string ToastCollection.Id");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ToastCollection.LaunchArgs is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ToastCollection.LaunchArgs");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ToastCollection", "string ToastCollection.LaunchArgs");
 			}
 			set
 			{

@@ -31,14 +31,14 @@ namespace Windows.UI.WebUI
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Core.AppRestartFailureReason> RequestRestartAsync(string launchArguments)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AppRestartFailureReason> WebUIApplication.RequestRestartAsync(string launchArguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppRestartFailureReason%3E%20WebUIApplication.RequestRestartAsync%28string%20launchArguments%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIApplication", "IAsyncOperation<AppRestartFailureReason> WebUIApplication.RequestRestartAsync(string launchArguments)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Core.AppRestartFailureReason> RequestRestartForUserAsync(global::Windows.System.User user, string launchArguments)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AppRestartFailureReason> WebUIApplication.RequestRestartForUserAsync(User user, string launchArguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppRestartFailureReason%3E%20WebUIApplication.RequestRestartForUserAsync%28User%20user%2C%20string%20launchArguments%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.WebUIApplication", "IAsyncOperation<AppRestartFailureReason> WebUIApplication.RequestRestartForUserAsync(User user, string launchArguments)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.BackgroundActivated.add

@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactWebsite.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactWebsite.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactWebsite", "string ContactWebsite.Description");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactWebsite.RawValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactWebsite.RawValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactWebsite", "string ContactWebsite.RawValue");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri ContactWebsite.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20ContactWebsite.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactWebsite", "Uri ContactWebsite.Uri");
 			}
 			set
 			{

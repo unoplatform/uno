@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactFieldCategory ContactField.Category is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactFieldCategory%20ContactField.Category");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactField", "ContactFieldCategory ContactField.Category");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactField.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactField.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactField", "string ContactField.Name");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactFieldType ContactField.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactFieldType%20ContactField.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactField", "ContactFieldType ContactField.Type");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactField.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactField.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactField", "string ContactField.Value");
 			}
 		}
 #endif

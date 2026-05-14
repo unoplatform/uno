@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PosPrinterCartridgeSensors SlipPrinterCapabilities.CartridgeSensors is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PosPrinterCartridgeSensors%20SlipPrinterCapabilities.CartridgeSensors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "PosPrinterCartridgeSensors SlipPrinterCapabilities.CartridgeSensors");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PosPrinterColorCapabilities SlipPrinterCapabilities.ColorCartridgeCapabilities is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PosPrinterColorCapabilities%20SlipPrinterCapabilities.ColorCartridgeCapabilities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "PosPrinterColorCapabilities SlipPrinterCapabilities.ColorCartridgeCapabilities");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.Is180RotationSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.Is180RotationSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.Is180RotationSupported");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsBarcodeSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsBarcodeSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsBarcodeSupported");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsBitmapSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsBitmapSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsBitmapSupported");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsBoldSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsBoldSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsBoldSupported");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsBothSidesPrintingSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsBothSidesPrintingSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsBothSidesPrintingSupported");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsDoubleHighDoubleWidePrintSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsDoubleHighDoubleWidePrintSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsDoubleHighDoubleWidePrintSupported");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsDoubleHighPrintSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsDoubleHighPrintSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsDoubleHighPrintSupported");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsDoubleWidePrintSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsDoubleWidePrintSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsDoubleWidePrintSupported");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsDualColorSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsDualColorSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsDualColorSupported");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsFullLengthSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsFullLengthSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsFullLengthSupported");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsItalicSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsItalicSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsItalicSupported");
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsLeft90RotationSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsLeft90RotationSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsLeft90RotationSupported");
 			}
 		}
 #endif
@@ -159,7 +159,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsPaperEmptySensorSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsPaperEmptySensorSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsPaperEmptySensorSupported");
 			}
 		}
 #endif
@@ -169,7 +169,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsPaperNearEndSensorSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsPaperNearEndSensorSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsPaperNearEndSensorSupported");
 			}
 		}
 #endif
@@ -179,7 +179,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsPrintAreaSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsPrintAreaSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsPrintAreaSupported");
 			}
 		}
 #endif
@@ -189,7 +189,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsPrinterPresent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsPrinterPresent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsPrinterPresent");
 			}
 		}
 #endif
@@ -199,7 +199,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsReversePaperFeedByLineSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsReversePaperFeedByLineSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsReversePaperFeedByLineSupported");
 			}
 		}
 #endif
@@ -209,7 +209,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsReversePaperFeedByMapModeUnitSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsReversePaperFeedByMapModeUnitSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsReversePaperFeedByMapModeUnitSupported");
 			}
 		}
 #endif
@@ -219,7 +219,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsReverseVideoSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsReverseVideoSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsReverseVideoSupported");
 			}
 		}
 #endif
@@ -229,7 +229,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsRight90RotationSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsRight90RotationSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsRight90RotationSupported");
 			}
 		}
 #endif
@@ -239,7 +239,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsStrikethroughSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsStrikethroughSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsStrikethroughSupported");
 			}
 		}
 #endif
@@ -249,7 +249,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsSubscriptSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsSubscriptSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsSubscriptSupported");
 			}
 		}
 #endif
@@ -259,7 +259,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsSuperscriptSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsSuperscriptSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsSuperscriptSupported");
 			}
 		}
 #endif
@@ -269,7 +269,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SlipPrinterCapabilities.IsUnderlineSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SlipPrinterCapabilities.IsUnderlineSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "bool SlipPrinterCapabilities.IsUnderlineSupported");
 			}
 		}
 #endif
@@ -279,7 +279,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PosPrinterRuledLineCapabilities SlipPrinterCapabilities.RuledLineCapabilities is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PosPrinterRuledLineCapabilities%20SlipPrinterCapabilities.RuledLineCapabilities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "PosPrinterRuledLineCapabilities SlipPrinterCapabilities.RuledLineCapabilities");
 			}
 		}
 #endif
@@ -289,7 +289,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PosPrinterRotation> SlipPrinterCapabilities.SupportedBarcodeRotations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPosPrinterRotation%3E%20SlipPrinterCapabilities.SupportedBarcodeRotations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IReadOnlyList<PosPrinterRotation> SlipPrinterCapabilities.SupportedBarcodeRotations");
 			}
 		}
 #endif
@@ -299,7 +299,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PosPrinterRotation> SlipPrinterCapabilities.SupportedBitmapRotations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPosPrinterRotation%3E%20SlipPrinterCapabilities.SupportedBitmapRotations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IReadOnlyList<PosPrinterRotation> SlipPrinterCapabilities.SupportedBitmapRotations");
 			}
 		}
 #endif
@@ -309,7 +309,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> SlipPrinterCapabilities.SupportedCharactersPerLine is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cuint%3E%20SlipPrinterCapabilities.SupportedCharactersPerLine");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.SlipPrinterCapabilities", "IReadOnlyList<uint> SlipPrinterCapabilities.SupportedCharactersPerLine");
 			}
 		}
 #endif

@@ -28,21 +28,21 @@ namespace Windows.Media.ContentRestrictions
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.ContentRestrictions.ContentRestrictionsBrowsePolicy> GetBrowsePolicyAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ContentRestrictionsBrowsePolicy> RatedContentRestrictions.GetBrowsePolicyAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CContentRestrictionsBrowsePolicy%3E%20RatedContentRestrictions.GetBrowsePolicyAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentRestrictions", "IAsyncOperation<ContentRestrictionsBrowsePolicy> RatedContentRestrictions.GetBrowsePolicyAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.ContentRestrictions.ContentAccessRestrictionLevel> GetRestrictionLevelAsync(global::Windows.Media.ContentRestrictions.RatedContentDescription RatedContentDescription)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ContentAccessRestrictionLevel> RatedContentRestrictions.GetRestrictionLevelAsync(RatedContentDescription RatedContentDescription) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CContentAccessRestrictionLevel%3E%20RatedContentRestrictions.GetRestrictionLevelAsync%28RatedContentDescription%20RatedContentDescription%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentRestrictions", "IAsyncOperation<ContentAccessRestrictionLevel> RatedContentRestrictions.GetRestrictionLevelAsync(RatedContentDescription RatedContentDescription)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> RequestContentAccessAsync(global::Windows.Media.ContentRestrictions.RatedContentDescription RatedContentDescription)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> RatedContentRestrictions.RequestContentAccessAsync(RatedContentDescription RatedContentDescription) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20RatedContentRestrictions.RequestContentAccessAsync%28RatedContentDescription%20RatedContentDescription%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ContentRestrictions.RatedContentRestrictions", "IAsyncOperation<bool> RatedContentRestrictions.RequestContentAccessAsync(RatedContentDescription RatedContentDescription)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.ContentRestrictions.RatedContentRestrictions.RestrictionsChanged.add

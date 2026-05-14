@@ -14,7 +14,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RemoteSystemDiscoveryType RemoteSystemDiscoveryTypeFilter.RemoteSystemDiscoveryType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemDiscoveryType%20RemoteSystemDiscoveryTypeFilter.RemoteSystemDiscoveryType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemDiscoveryTypeFilter", "RemoteSystemDiscoveryType RemoteSystemDiscoveryTypeFilter.RemoteSystemDiscoveryType");
 			}
 		}
 #endif

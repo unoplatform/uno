@@ -14,7 +14,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ResourceCandidateKind ResourceCandidate.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceCandidateKind%20ResourceCandidate.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate", "ResourceCandidateKind ResourceCandidate.Kind");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, string> ResourceCandidate.QualifierValues is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20string%3E%20ResourceCandidate.QualifierValues");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate", "IReadOnlyDictionary<string, string> ResourceCandidate.QualifierValues");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte[] ResourceCandidate.ValueAsBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%5B%5D%20ResourceCandidate.ValueAsBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate", "byte[] ResourceCandidate.ValueAsBytes");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ResourceCandidate.ValueAsString is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ResourceCandidate.ValueAsString");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate", "string ResourceCandidate.ValueAsString");
 			}
 		}
 #endif

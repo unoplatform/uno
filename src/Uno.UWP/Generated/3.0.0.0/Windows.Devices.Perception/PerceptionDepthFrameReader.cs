@@ -19,7 +19,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PerceptionDepthFrameReader.IsPaused is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PerceptionDepthFrameReader.IsPaused");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionDepthFrameReader", "bool PerceptionDepthFrameReader.IsPaused");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PerceptionDepthFrameSource PerceptionDepthFrameReader.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionDepthFrameSource%20PerceptionDepthFrameReader.Source");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionDepthFrameReader", "PerceptionDepthFrameSource PerceptionDepthFrameReader.Source");
 			}
 		}
 #endif
@@ -41,7 +41,7 @@ namespace Windows.Devices.Perception
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Perception.PerceptionDepthFrame TryReadLatestFrame()
 		{
-			throw new global::System.NotImplementedException("The member PerceptionDepthFrame PerceptionDepthFrameReader.TryReadLatestFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionDepthFrame%20PerceptionDepthFrameReader.TryReadLatestFrame%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionDepthFrameReader", "PerceptionDepthFrame PerceptionDepthFrameReader.TryReadLatestFrame()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.FrameArrived.add

@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2ScriptException CoreWebView2ExecuteScriptResult.Exception is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ScriptException%20CoreWebView2ExecuteScriptResult.Exception");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ExecuteScriptResult", "CoreWebView2ScriptException CoreWebView2ExecuteScriptResult.Exception");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2ExecuteScriptResult.ResultAsJson is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2ExecuteScriptResult.ResultAsJson");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ExecuteScriptResult", "string CoreWebView2ExecuteScriptResult.ResultAsJson");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2ExecuteScriptResult.Succeeded is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2ExecuteScriptResult.Succeeded");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ExecuteScriptResult", "bool CoreWebView2ExecuteScriptResult.Succeeded");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int TryGetResultAsString(out string stringResult)
 		{
-			throw new global::System.NotImplementedException("The member int CoreWebView2ExecuteScriptResult.TryGetResultAsString(out string stringResult) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2ExecuteScriptResult.TryGetResultAsString%28out%20string%20stringResult%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ExecuteScriptResult", "int CoreWebView2ExecuteScriptResult.TryGetResultAsString(out string stringResult)");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ExecuteScriptResult.Exception.get

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Contact ContactListCreateOrUpdateContactRequest.Contact is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Contact%20ContactListCreateOrUpdateContactRequest.Contact");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest", "Contact ContactListCreateOrUpdateContactRequest.Contact");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactListCreateOrUpdateContactRequest.ContactListId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactListCreateOrUpdateContactRequest.ContactListId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest", "string ContactListCreateOrUpdateContactRequest.ContactListId");
 			}
 		}
 #endif
@@ -37,14 +37,14 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync(global::Windows.ApplicationModel.Contacts.Contact createdOrUpdatedContact)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ContactListCreateOrUpdateContactRequest.ReportCompletedAsync(Contact createdOrUpdatedContact) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ContactListCreateOrUpdateContactRequest.ReportCompletedAsync%28Contact%20createdOrUpdatedContact%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest", "IAsyncAction ContactListCreateOrUpdateContactRequest.ReportCompletedAsync(Contact createdOrUpdatedContact)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ContactListCreateOrUpdateContactRequest.ReportFailedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ContactListCreateOrUpdateContactRequest.ReportFailedAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest", "IAsyncAction ContactListCreateOrUpdateContactRequest.ReportFailedAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest.Contact.get

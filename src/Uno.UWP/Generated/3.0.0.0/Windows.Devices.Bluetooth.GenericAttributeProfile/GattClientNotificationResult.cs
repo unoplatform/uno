@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort GattClientNotificationResult.BytesSent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20GattClientNotificationResult.BytesSent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult", "ushort GattClientNotificationResult.BytesSent");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte? GattClientNotificationResult.ProtocolError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%3F%20GattClientNotificationResult.ProtocolError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult", "byte? GattClientNotificationResult.ProtocolError");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattCommunicationStatus GattClientNotificationResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattCommunicationStatus%20GattClientNotificationResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult", "GattCommunicationStatus GattClientNotificationResult.Status");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattSubscribedClient GattClientNotificationResult.SubscribedClient is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattSubscribedClient%20GattClientNotificationResult.SubscribedClient");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult", "GattSubscribedClient GattClientNotificationResult.SubscribedClient");
 			}
 		}
 #endif

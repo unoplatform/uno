@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.UserDataTasks.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTask UserDataTaskListCreateOrUpdateTaskRequest.Task is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTask%20UserDataTaskListCreateOrUpdateTaskRequest.Task");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListCreateOrUpdateTaskRequest", "UserDataTask UserDataTaskListCreateOrUpdateTaskRequest.Task");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.UserDataTasks.DataProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserDataTaskListCreateOrUpdateTaskRequest.TaskListId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserDataTaskListCreateOrUpdateTaskRequest.TaskListId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListCreateOrUpdateTaskRequest", "string UserDataTaskListCreateOrUpdateTaskRequest.TaskListId");
 			}
 		}
 #endif
@@ -37,14 +37,14 @@ namespace Windows.ApplicationModel.UserDataTasks.DataProvider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync(global::Windows.ApplicationModel.UserDataTasks.UserDataTask createdOrUpdatedUserDataTask)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction UserDataTaskListCreateOrUpdateTaskRequest.ReportCompletedAsync(UserDataTask createdOrUpdatedUserDataTask) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20UserDataTaskListCreateOrUpdateTaskRequest.ReportCompletedAsync%28UserDataTask%20createdOrUpdatedUserDataTask%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListCreateOrUpdateTaskRequest", "IAsyncAction UserDataTaskListCreateOrUpdateTaskRequest.ReportCompletedAsync(UserDataTask createdOrUpdatedUserDataTask)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction UserDataTaskListCreateOrUpdateTaskRequest.ReportFailedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20UserDataTaskListCreateOrUpdateTaskRequest.ReportFailedAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListCreateOrUpdateTaskRequest", "IAsyncAction UserDataTaskListCreateOrUpdateTaskRequest.ReportFailedAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskListCreateOrUpdateTaskRequest.Task.get

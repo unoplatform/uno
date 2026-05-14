@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> PinnedContactIdsQueryResult.ContactIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20PinnedContactIdsQueryResult.ContactIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.PinnedContactIdsQueryResult", "IList<string> PinnedContactIdsQueryResult.ContactIds");
 			}
 		}
 #endif

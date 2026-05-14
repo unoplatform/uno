@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Media
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration GetDefaultSystemBackdropConfiguration(global::Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop target, global::Microsoft.UI.Xaml.XamlRoot xamlRoot)
 		{
-			throw new global::System.NotImplementedException("The member SystemBackdropConfiguration SystemBackdrop.GetDefaultSystemBackdropConfiguration(ICompositionSupportsSystemBackdrop target, XamlRoot xamlRoot) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemBackdropConfiguration%20SystemBackdrop.GetDefaultSystemBackdropConfiguration%28ICompositionSupportsSystemBackdrop%20target%2C%20XamlRoot%20xamlRoot%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.SystemBackdrop", "SystemBackdropConfiguration SystemBackdrop.GetDefaultSystemBackdropConfiguration(ICompositionSupportsSystemBackdrop target, XamlRoot xamlRoot)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppInstallOptions.AllowForcedAppRestart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppInstallOptions.AllowForcedAppRestart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "bool AppInstallOptions.AllowForcedAppRestart");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppInstallOptions.CampaignId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppInstallOptions.CampaignId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "string AppInstallOptions.CampaignId");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppInstallOptions.CatalogId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppInstallOptions.CatalogId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "string AppInstallOptions.CatalogId");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppInstallationToastNotificationMode AppInstallOptions.CompletedInstallToastNotificationMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppInstallationToastNotificationMode%20AppInstallOptions.CompletedInstallToastNotificationMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "AppInstallationToastNotificationMode AppInstallOptions.CompletedInstallToastNotificationMode");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppInstallOptions.ExtendedCampaignId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppInstallOptions.ExtendedCampaignId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "string AppInstallOptions.ExtendedCampaignId");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppInstallOptions.ForceUseOfNonRemovableStorage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppInstallOptions.ForceUseOfNonRemovableStorage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "bool AppInstallOptions.ForceUseOfNonRemovableStorage");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppInstallOptions.InstallForAllUsers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppInstallOptions.InstallForAllUsers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "bool AppInstallOptions.InstallForAllUsers");
 			}
 			set
 			{
@@ -112,7 +112,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppInstallationToastNotificationMode AppInstallOptions.InstallInProgressToastNotificationMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppInstallationToastNotificationMode%20AppInstallOptions.InstallInProgressToastNotificationMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "AppInstallationToastNotificationMode AppInstallOptions.InstallInProgressToastNotificationMode");
 			}
 			set
 			{
@@ -126,7 +126,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppInstallOptions.LaunchAfterInstall is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppInstallOptions.LaunchAfterInstall");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "bool AppInstallOptions.LaunchAfterInstall");
 			}
 			set
 			{
@@ -140,7 +140,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppInstallOptions.PinToDesktopAfterInstall is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppInstallOptions.PinToDesktopAfterInstall");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "bool AppInstallOptions.PinToDesktopAfterInstall");
 			}
 			set
 			{
@@ -154,7 +154,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppInstallOptions.PinToStartAfterInstall is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppInstallOptions.PinToStartAfterInstall");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "bool AppInstallOptions.PinToStartAfterInstall");
 			}
 			set
 			{
@@ -168,7 +168,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppInstallOptions.PinToTaskbarAfterInstall is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppInstallOptions.PinToTaskbarAfterInstall");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "bool AppInstallOptions.PinToTaskbarAfterInstall");
 			}
 			set
 			{
@@ -182,7 +182,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppInstallOptions.Repair is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppInstallOptions.Repair");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "bool AppInstallOptions.Repair");
 			}
 			set
 			{
@@ -196,7 +196,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppInstallOptions.StageButDoNotInstall is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppInstallOptions.StageButDoNotInstall");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "bool AppInstallOptions.StageButDoNotInstall");
 			}
 			set
 			{
@@ -210,7 +210,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PackageVolume AppInstallOptions.TargetVolume is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PackageVolume%20AppInstallOptions.TargetVolume");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallOptions", "PackageVolume AppInstallOptions.TargetVolume");
 			}
 			set
 			{

@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? MseSourceBuffer.AppendWindowEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20MseSourceBuffer.AppendWindowEnd");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MseSourceBuffer", "TimeSpan? MseSourceBuffer.AppendWindowEnd");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MseSourceBuffer.AppendWindowStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MseSourceBuffer.AppendWindowStart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MseSourceBuffer", "TimeSpan MseSourceBuffer.AppendWindowStart");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MseTimeRange> MseSourceBuffer.Buffered is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMseTimeRange%3E%20MseSourceBuffer.Buffered");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MseSourceBuffer", "IReadOnlyList<MseTimeRange> MseSourceBuffer.Buffered");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MseSourceBuffer.IsUpdating is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MseSourceBuffer.IsUpdating");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MseSourceBuffer", "bool MseSourceBuffer.IsUpdating");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MseAppendMode MseSourceBuffer.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MseAppendMode%20MseSourceBuffer.Mode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MseSourceBuffer", "MseAppendMode MseSourceBuffer.Mode");
 			}
 			set
 			{
@@ -81,7 +81,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MseSourceBuffer.TimestampOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MseSourceBuffer.TimestampOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MseSourceBuffer", "TimeSpan MseSourceBuffer.TimestampOffset");
 			}
 			set
 			{

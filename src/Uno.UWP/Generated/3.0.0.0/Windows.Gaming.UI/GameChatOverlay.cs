@@ -19,7 +19,7 @@ namespace Windows.Gaming.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GameChatOverlayPosition GameChatOverlay.DesiredPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameChatOverlayPosition%20GameChatOverlay.DesiredPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameChatOverlay", "GameChatOverlayPosition GameChatOverlay.DesiredPosition");
 			}
 			set
 			{
@@ -31,7 +31,7 @@ namespace Windows.Gaming.UI
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Gaming.UI.GameChatOverlay GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member GameChatOverlay GameChatOverlay.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameChatOverlay%20GameChatOverlay.GetDefault%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.UI.GameChatOverlay", "GameChatOverlay GameChatOverlay.GetDefault()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

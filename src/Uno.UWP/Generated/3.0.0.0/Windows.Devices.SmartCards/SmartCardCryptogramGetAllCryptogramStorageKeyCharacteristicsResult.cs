@@ -14,7 +14,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<SmartCardCryptogramStorageKeyCharacteristics> SmartCardCryptogramGetAllCryptogramStorageKeyCharacteristicsResult.Characteristics is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CSmartCardCryptogramStorageKeyCharacteristics%3E%20SmartCardCryptogramGetAllCryptogramStorageKeyCharacteristicsResult.Characteristics");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGetAllCryptogramStorageKeyCharacteristicsResult", "IReadOnlyList<SmartCardCryptogramStorageKeyCharacteristics> SmartCardCryptogramGetAllCryptogramStorageKeyCharacteristicsResult.Characteristics");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardCryptogramGeneratorOperationStatus SmartCardCryptogramGetAllCryptogramStorageKeyCharacteristicsResult.OperationStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardCryptogramGeneratorOperationStatus%20SmartCardCryptogramGetAllCryptogramStorageKeyCharacteristicsResult.OperationStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramGetAllCryptogramStorageKeyCharacteristicsResult", "SmartCardCryptogramGeneratorOperationStatus SmartCardCryptogramGetAllCryptogramStorageKeyCharacteristicsResult.OperationStatus");
 			}
 		}
 #endif

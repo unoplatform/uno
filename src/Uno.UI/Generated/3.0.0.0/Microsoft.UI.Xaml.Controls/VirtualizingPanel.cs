@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ItemContainerGenerator VirtualizingPanel.ItemContainerGenerator is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ItemContainerGenerator%20VirtualizingPanel.ItemContainerGenerator");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.VirtualizingPanel", "ItemContainerGenerator VirtualizingPanel.ItemContainerGenerator");
 			}
 		}
 #endif

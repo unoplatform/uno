@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CoreWebView2PointerInfo.ButtonChangeKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2PointerInfo.ButtonChangeKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "int CoreWebView2PointerInfo.ButtonChangeKind");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect CoreWebView2PointerInfo.DisplayRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20CoreWebView2PointerInfo.DisplayRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "Rect CoreWebView2PointerInfo.DisplayRect");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.FrameId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.FrameId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.FrameId");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point CoreWebView2PointerInfo.HimetricLocation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20CoreWebView2PointerInfo.HimetricLocation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "Point CoreWebView2PointerInfo.HimetricLocation");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point CoreWebView2PointerInfo.HimetricLocationRaw is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20CoreWebView2PointerInfo.HimetricLocationRaw");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "Point CoreWebView2PointerInfo.HimetricLocationRaw");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.HistoryCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.HistoryCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.HistoryCount");
 			}
 			set
 			{
@@ -103,7 +103,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CoreWebView2PointerInfo.InputData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2PointerInfo.InputData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "int CoreWebView2PointerInfo.InputData");
 			}
 			set
 			{
@@ -117,7 +117,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.KeyStates is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.KeyStates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.KeyStates");
 			}
 			set
 			{
@@ -131,7 +131,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.PenFlags is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.PenFlags");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.PenFlags");
 			}
 			set
 			{
@@ -145,7 +145,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.PenMask is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.PenMask");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.PenMask");
 			}
 			set
 			{
@@ -159,7 +159,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.PenPressure is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.PenPressure");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.PenPressure");
 			}
 			set
 			{
@@ -173,7 +173,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.PenRotation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.PenRotation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.PenRotation");
 			}
 			set
 			{
@@ -187,7 +187,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CoreWebView2PointerInfo.PenTiltX is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2PointerInfo.PenTiltX");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "int CoreWebView2PointerInfo.PenTiltX");
 			}
 			set
 			{
@@ -201,7 +201,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CoreWebView2PointerInfo.PenTiltY is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2PointerInfo.PenTiltY");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "int CoreWebView2PointerInfo.PenTiltY");
 			}
 			set
 			{
@@ -215,7 +215,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong CoreWebView2PointerInfo.PerformanceCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20CoreWebView2PointerInfo.PerformanceCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "ulong CoreWebView2PointerInfo.PerformanceCount");
 			}
 			set
 			{
@@ -229,7 +229,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point CoreWebView2PointerInfo.PixelLocation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20CoreWebView2PointerInfo.PixelLocation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "Point CoreWebView2PointerInfo.PixelLocation");
 			}
 			set
 			{
@@ -243,7 +243,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point CoreWebView2PointerInfo.PixelLocationRaw is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20CoreWebView2PointerInfo.PixelLocationRaw");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "Point CoreWebView2PointerInfo.PixelLocationRaw");
 			}
 			set
 			{
@@ -257,7 +257,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect CoreWebView2PointerInfo.PointerDeviceRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20CoreWebView2PointerInfo.PointerDeviceRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "Rect CoreWebView2PointerInfo.PointerDeviceRect");
 			}
 			set
 			{
@@ -271,7 +271,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.PointerFlags is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.PointerFlags");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.PointerFlags");
 			}
 			set
 			{
@@ -285,7 +285,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.PointerId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.PointerId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.PointerId");
 			}
 			set
 			{
@@ -299,7 +299,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.PointerKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.PointerKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.PointerKind");
 			}
 			set
 			{
@@ -313,7 +313,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.Time is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.Time");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.Time");
 			}
 			set
 			{
@@ -327,7 +327,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect CoreWebView2PointerInfo.TouchContact is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20CoreWebView2PointerInfo.TouchContact");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "Rect CoreWebView2PointerInfo.TouchContact");
 			}
 			set
 			{
@@ -341,7 +341,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect CoreWebView2PointerInfo.TouchContactRaw is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20CoreWebView2PointerInfo.TouchContactRaw");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "Rect CoreWebView2PointerInfo.TouchContactRaw");
 			}
 			set
 			{
@@ -355,7 +355,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.TouchFlags is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.TouchFlags");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.TouchFlags");
 			}
 			set
 			{
@@ -369,7 +369,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.TouchMask is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.TouchMask");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.TouchMask");
 			}
 			set
 			{
@@ -383,7 +383,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.TouchOrientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.TouchOrientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.TouchOrientation");
 			}
 			set
 			{
@@ -397,7 +397,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.TouchPressure is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.TouchPressure");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.TouchPressure");
 			}
 			set
 			{

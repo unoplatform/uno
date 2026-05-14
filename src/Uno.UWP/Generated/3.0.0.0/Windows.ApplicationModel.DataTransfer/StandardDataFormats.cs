@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.ApplicationLink is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardDataFormats.ApplicationLink");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.StandardDataFormats", "string StandardDataFormats.ApplicationLink");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.Bitmap is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardDataFormats.Bitmap");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.StandardDataFormats", "string StandardDataFormats.Bitmap");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.Html is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardDataFormats.Html");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.StandardDataFormats", "string StandardDataFormats.Html");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.Rtf is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardDataFormats.Rtf");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.StandardDataFormats", "string StandardDataFormats.Rtf");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.StorageItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardDataFormats.StorageItems");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.StandardDataFormats", "string StandardDataFormats.StorageItems");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardDataFormats.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.StandardDataFormats", "string StandardDataFormats.Text");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardDataFormats.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.StandardDataFormats", "string StandardDataFormats.Uri");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.UserActivityJsonArray is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardDataFormats.UserActivityJsonArray");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.StandardDataFormats", "string StandardDataFormats.UserActivityJsonArray");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.WebLink is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardDataFormats.WebLink");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.StandardDataFormats", "string StandardDataFormats.WebLink");
 			}
 		}
 #endif

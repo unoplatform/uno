@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactCardHeaderKind ContactCardOptions.HeaderKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactCardHeaderKind%20ContactCardOptions.HeaderKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactCardOptions", "ContactCardHeaderKind ContactCardOptions.HeaderKind");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactCardTabKind ContactCardOptions.InitialTabKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactCardTabKind%20ContactCardOptions.InitialTabKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactCardOptions", "ContactCardTabKind ContactCardOptions.InitialTabKind");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> ContactCardOptions.ServerSearchContactListIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20ContactCardOptions.ServerSearchContactListIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactCardOptions", "IList<string> ContactCardOptions.ServerSearchContactListIds");
 			}
 		}
 #endif

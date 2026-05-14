@@ -19,7 +19,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HolographicSpace.IsAvailable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HolographicSpace.IsAvailable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicSpace", "bool HolographicSpace.IsAvailable");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HolographicSpace.IsConfigured is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HolographicSpace.IsConfigured");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicSpace", "bool HolographicSpace.IsConfigured");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HolographicSpace.IsSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HolographicSpace.IsSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicSpace", "bool HolographicSpace.IsSupported");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HolographicAdapterId HolographicSpace.PrimaryAdapterId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicAdapterId%20HolographicSpace.PrimaryAdapterId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicSpace", "HolographicAdapterId HolographicSpace.PrimaryAdapterId");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HolographicSpaceUserPresence HolographicSpace.UserPresence is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicSpaceUserPresence%20HolographicSpace.UserPresence");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicSpace", "HolographicSpaceUserPresence HolographicSpace.UserPresence");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Graphics.Holographic
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Holographic.HolographicSpace CreateForCoreWindow(global::Windows.UI.Core.CoreWindow window)
 		{
-			throw new global::System.NotImplementedException("The member HolographicSpace HolographicSpace.CreateForCoreWindow(CoreWindow window) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicSpace%20HolographicSpace.CreateForCoreWindow%28CoreWindow%20window%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicSpace", "HolographicSpace HolographicSpace.CreateForCoreWindow(CoreWindow window)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.IsAvailableChanged.add
@@ -86,7 +86,7 @@ namespace Windows.Graphics.Holographic
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Holographic.HolographicFrame CreateNextFrame()
 		{
-			throw new global::System.NotImplementedException("The member HolographicFrame HolographicSpace.CreateNextFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicFrame%20HolographicSpace.CreateNextFrame%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicSpace", "HolographicFrame HolographicSpace.CreateNextFrame()");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.CameraAdded.add
@@ -111,7 +111,7 @@ namespace Windows.Graphics.Holographic
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Holographic.HolographicFramePresentationMonitor CreateFramePresentationMonitor(uint maxQueuedReports)
 		{
-			throw new global::System.NotImplementedException("The member HolographicFramePresentationMonitor HolographicSpace.CreateFramePresentationMonitor(uint maxQueuedReports) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicFramePresentationMonitor%20HolographicSpace.CreateFramePresentationMonitor%28uint%20maxQueuedReports%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicSpace", "HolographicFramePresentationMonitor HolographicSpace.CreateFramePresentationMonitor(uint maxQueuedReports)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.UserPresenceChanged.add
@@ -120,7 +120,7 @@ namespace Windows.Graphics.Holographic
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Holographic.HolographicFrameScanoutMonitor CreateFrameScanoutMonitor(uint maxQueuedReports)
 		{
-			throw new global::System.NotImplementedException("The member HolographicFrameScanoutMonitor HolographicSpace.CreateFrameScanoutMonitor(uint maxQueuedReports) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicFrameScanoutMonitor%20HolographicSpace.CreateFrameScanoutMonitor%28uint%20maxQueuedReports%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicSpace", "HolographicFrameScanoutMonitor HolographicSpace.CreateFrameScanoutMonitor(uint maxQueuedReports)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.PrimaryAdapterId.get

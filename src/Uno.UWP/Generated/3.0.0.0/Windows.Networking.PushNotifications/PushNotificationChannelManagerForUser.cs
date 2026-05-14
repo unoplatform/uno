@@ -19,7 +19,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User PushNotificationChannelManagerForUser.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20PushNotificationChannelManagerForUser.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationChannelManagerForUser", "User PushNotificationChannelManagerForUser.User");
 			}
 		}
 #endif
@@ -27,35 +27,35 @@ namespace Windows.Networking.PushNotifications
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.PushNotifications.PushNotificationChannel> CreatePushNotificationChannelForApplicationAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PushNotificationChannel> PushNotificationChannelManagerForUser.CreatePushNotificationChannelForApplicationAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPushNotificationChannel%3E%20PushNotificationChannelManagerForUser.CreatePushNotificationChannelForApplicationAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationChannelManagerForUser", "IAsyncOperation<PushNotificationChannel> PushNotificationChannelManagerForUser.CreatePushNotificationChannelForApplicationAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.PushNotifications.PushNotificationChannel> CreatePushNotificationChannelForApplicationAsync(string applicationId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PushNotificationChannel> PushNotificationChannelManagerForUser.CreatePushNotificationChannelForApplicationAsync(string applicationId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPushNotificationChannel%3E%20PushNotificationChannelManagerForUser.CreatePushNotificationChannelForApplicationAsync%28string%20applicationId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationChannelManagerForUser", "IAsyncOperation<PushNotificationChannel> PushNotificationChannelManagerForUser.CreatePushNotificationChannelForApplicationAsync(string applicationId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.PushNotifications.PushNotificationChannel> CreatePushNotificationChannelForSecondaryTileAsync(string tileId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PushNotificationChannel> PushNotificationChannelManagerForUser.CreatePushNotificationChannelForSecondaryTileAsync(string tileId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPushNotificationChannel%3E%20PushNotificationChannelManagerForUser.CreatePushNotificationChannelForSecondaryTileAsync%28string%20tileId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationChannelManagerForUser", "IAsyncOperation<PushNotificationChannel> PushNotificationChannelManagerForUser.CreatePushNotificationChannelForSecondaryTileAsync(string tileId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.PushNotifications.PushNotificationChannel> CreateRawPushNotificationChannelWithAlternateKeyForApplicationAsync(global::Windows.Storage.Streams.IBuffer appServerKey, string channelId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PushNotificationChannel> PushNotificationChannelManagerForUser.CreateRawPushNotificationChannelWithAlternateKeyForApplicationAsync(IBuffer appServerKey, string channelId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPushNotificationChannel%3E%20PushNotificationChannelManagerForUser.CreateRawPushNotificationChannelWithAlternateKeyForApplicationAsync%28IBuffer%20appServerKey%2C%20string%20channelId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationChannelManagerForUser", "IAsyncOperation<PushNotificationChannel> PushNotificationChannelManagerForUser.CreateRawPushNotificationChannelWithAlternateKeyForApplicationAsync(IBuffer appServerKey, string channelId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.PushNotifications.PushNotificationChannel> CreateRawPushNotificationChannelWithAlternateKeyForApplicationAsync(global::Windows.Storage.Streams.IBuffer appServerKey, string channelId, string appId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PushNotificationChannel> PushNotificationChannelManagerForUser.CreateRawPushNotificationChannelWithAlternateKeyForApplicationAsync(IBuffer appServerKey, string channelId, string appId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPushNotificationChannel%3E%20PushNotificationChannelManagerForUser.CreateRawPushNotificationChannelWithAlternateKeyForApplicationAsync%28IBuffer%20appServerKey%2C%20string%20channelId%2C%20string%20appId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationChannelManagerForUser", "IAsyncOperation<PushNotificationChannel> PushNotificationChannelManagerForUser.CreateRawPushNotificationChannelWithAlternateKeyForApplicationAsync(IBuffer appServerKey, string channelId, string appId)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannelManagerForUser.User.get

@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceCommandUserMessage.DisplayMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceCommandUserMessage.DisplayMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage", "string VoiceCommandUserMessage.DisplayMessage");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceCommandUserMessage.SpokenMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceCommandUserMessage.SpokenMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage", "string VoiceCommandUserMessage.SpokenMessage");
 			}
 			set
 			{

@@ -14,7 +14,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool? ConnectionProfileFilter.IsBackgroundDataUsageRestricted is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%3F%20ConnectionProfileFilter.IsBackgroundDataUsageRestricted");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfileFilter", "bool? ConnectionProfileFilter.IsBackgroundDataUsageRestricted");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ConnectionProfileFilter.IsConnected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ConnectionProfileFilter.IsConnected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfileFilter", "bool ConnectionProfileFilter.IsConnected");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool? ConnectionProfileFilter.IsOverDataLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%3F%20ConnectionProfileFilter.IsOverDataLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfileFilter", "bool? ConnectionProfileFilter.IsOverDataLimit");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool? ConnectionProfileFilter.IsRoaming is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%3F%20ConnectionProfileFilter.IsRoaming");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfileFilter", "bool? ConnectionProfileFilter.IsRoaming");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ConnectionProfileFilter.IsWlanConnectionProfile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ConnectionProfileFilter.IsWlanConnectionProfile");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfileFilter", "bool ConnectionProfileFilter.IsWlanConnectionProfile");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ConnectionProfileFilter.IsWwanConnectionProfile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ConnectionProfileFilter.IsWwanConnectionProfile");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfileFilter", "bool ConnectionProfileFilter.IsWwanConnectionProfile");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NetworkCostType ConnectionProfileFilter.NetworkCostType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NetworkCostType%20ConnectionProfileFilter.NetworkCostType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfileFilter", "NetworkCostType ConnectionProfileFilter.NetworkCostType");
 			}
 			set
 			{
@@ -112,7 +112,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid? ConnectionProfileFilter.PurposeGuid is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%3F%20ConnectionProfileFilter.PurposeGuid");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfileFilter", "Guid? ConnectionProfileFilter.PurposeGuid");
 			}
 			set
 			{
@@ -126,7 +126,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer ConnectionProfileFilter.RawData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20ConnectionProfileFilter.RawData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfileFilter", "IBuffer ConnectionProfileFilter.RawData");
 			}
 		}
 #endif
@@ -136,7 +136,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid? ConnectionProfileFilter.ServiceProviderGuid is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%3F%20ConnectionProfileFilter.ServiceProviderGuid");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfileFilter", "Guid? ConnectionProfileFilter.ServiceProviderGuid");
 			}
 			set
 			{

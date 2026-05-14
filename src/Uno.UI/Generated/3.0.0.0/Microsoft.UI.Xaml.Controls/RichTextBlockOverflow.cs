@@ -54,7 +54,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double RichTextBlockOverflow.BaselineOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20RichTextBlockOverflow.BaselineOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "double RichTextBlockOverflow.BaselineOffset");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer RichTextBlockOverflow.ContentEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20RichTextBlockOverflow.ContentEnd");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "TextPointer RichTextBlockOverflow.ContentEnd");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RichTextBlock RichTextBlockOverflow.ContentSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RichTextBlock%20RichTextBlockOverflow.ContentSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "RichTextBlock RichTextBlockOverflow.ContentSource");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer RichTextBlockOverflow.ContentStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20RichTextBlockOverflow.ContentStart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "TextPointer RichTextBlockOverflow.ContentStart");
 			}
 		}
 #endif
@@ -161,7 +161,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Documents.TextPointer GetPositionFromPoint(global::Windows.Foundation.Point point)
 		{
-			throw new global::System.NotImplementedException("The member TextPointer RichTextBlockOverflow.GetPositionFromPoint(Point point) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20RichTextBlockOverflow.GetPositionFromPoint%28Point%20point%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "TextPointer RichTextBlockOverflow.GetPositionFromPoint(Point point)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichTextBlockOverflow.IsTextTrimmedChanged.add

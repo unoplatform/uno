@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AudioTrack.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AudioTrack.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioTrack", "string AudioTrack.Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AudioTrack.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AudioTrack.Label");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioTrack", "string AudioTrack.Label");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AudioTrack.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AudioTrack.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioTrack", "string AudioTrack.Language");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AudioTrack.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AudioTrack.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioTrack", "string AudioTrack.Name");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackItem AudioTrack.PlaybackItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackItem%20AudioTrack.PlaybackItem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioTrack", "MediaPlaybackItem AudioTrack.PlaybackItem");
 			}
 		}
 #endif
@@ -73,7 +73,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioTrackSupportInfo AudioTrack.SupportInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioTrackSupportInfo%20AudioTrack.SupportInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioTrack", "AudioTrackSupportInfo AudioTrack.SupportInfo");
 			}
 		}
 #endif
@@ -83,7 +83,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaTrackKind AudioTrack.TrackKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaTrackKind%20AudioTrack.TrackKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioTrack", "MediaTrackKind AudioTrack.TrackKind");
 			}
 		}
 #endif
@@ -91,7 +91,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.AudioEncodingProperties GetEncodingProperties()
 		{
-			throw new global::System.NotImplementedException("The member AudioEncodingProperties AudioTrack.GetEncodingProperties() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioEncodingProperties%20AudioTrack.GetEncodingProperties%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.AudioTrack", "AudioEncodingProperties AudioTrack.GetEncodingProperties()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.AudioTrack.OpenFailed.add

@@ -14,7 +14,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionGradientBrush.AnchorPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionGradientBrush.AnchorPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionGradientBrush", "Vector2 CompositionGradientBrush.AnchorPoint");
 			}
 			set
 			{
@@ -31,7 +31,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionColorSpace CompositionGradientBrush.InterpolationSpace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionColorSpace%20CompositionGradientBrush.InterpolationSpace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionGradientBrush", "CompositionColorSpace CompositionGradientBrush.InterpolationSpace");
 			}
 			set
 			{

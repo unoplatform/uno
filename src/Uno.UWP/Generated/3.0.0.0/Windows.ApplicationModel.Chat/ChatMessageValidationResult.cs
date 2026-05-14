@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? ChatMessageValidationResult.MaxPartCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20ChatMessageValidationResult.MaxPartCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageValidationResult", "uint? ChatMessageValidationResult.MaxPartCount");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? ChatMessageValidationResult.PartCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20ChatMessageValidationResult.PartCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageValidationResult", "uint? ChatMessageValidationResult.PartCount");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? ChatMessageValidationResult.RemainingCharacterCountInPart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20ChatMessageValidationResult.RemainingCharacterCountInPart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageValidationResult", "uint? ChatMessageValidationResult.RemainingCharacterCountInPart");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ChatMessageValidationStatus ChatMessageValidationResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChatMessageValidationStatus%20ChatMessageValidationResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageValidationResult", "ChatMessageValidationStatus ChatMessageValidationResult.Status");
 			}
 		}
 #endif

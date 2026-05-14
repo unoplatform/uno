@@ -17,7 +17,7 @@ namespace Windows.UI.WindowManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.WindowManagement.AppWindowFrameStyle GetFrameStyle()
 		{
-			throw new global::System.NotImplementedException("The member AppWindowFrameStyle AppWindowFrame.GetFrameStyle() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppWindowFrameStyle%20AppWindowFrame.GetFrameStyle%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowFrame", "AppWindowFrameStyle AppWindowFrame.GetFrameStyle()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

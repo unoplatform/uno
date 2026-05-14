@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception VideoTrackOpenFailedEventArgs.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20VideoTrackOpenFailedEventArgs.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoTrackOpenFailedEventArgs", "Exception VideoTrackOpenFailedEventArgs.ExtendedError");
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UIElement ElementFactoryRecycleArgs.Element is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UIElement%20ElementFactoryRecycleArgs.Element");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ElementFactoryRecycleArgs", "UIElement ElementFactoryRecycleArgs.Element");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UIElement ElementFactoryRecycleArgs.Parent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UIElement%20ElementFactoryRecycleArgs.Parent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ElementFactoryRecycleArgs", "UIElement ElementFactoryRecycleArgs.Parent");
 			}
 			set
 			{

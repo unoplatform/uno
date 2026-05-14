@@ -14,7 +14,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AltitudeReferenceSystem Geopath.AltitudeReferenceSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AltitudeReferenceSystem%20Geopath.AltitudeReferenceSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geopath", "AltitudeReferenceSystem Geopath.AltitudeReferenceSystem");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GeoshapeType Geopath.GeoshapeType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GeoshapeType%20Geopath.GeoshapeType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geopath", "GeoshapeType Geopath.GeoshapeType");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<BasicGeoposition> Geopath.Positions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CBasicGeoposition%3E%20Geopath.Positions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geopath", "IReadOnlyList<BasicGeoposition> Geopath.Positions");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Geopath.SpatialReferenceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Geopath.SpatialReferenceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geopath", "uint Geopath.SpatialReferenceId");
 			}
 		}
 #endif

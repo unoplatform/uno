@@ -18,7 +18,7 @@ namespace Windows.Data.Xml.Dom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string XmlDocument.DocumentUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20XmlDocument.DocumentUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlDocument", "string XmlDocument.DocumentUri");
 			}
 		}
 #endif
@@ -42,14 +42,14 @@ namespace Windows.Data.Xml.Dom
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Data.Xml.Dom.XmlDocument> LoadFromUriAsync(global::System.Uri uri)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<XmlDocument> XmlDocument.LoadFromUriAsync(Uri uri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CXmlDocument%3E%20XmlDocument.LoadFromUriAsync%28Uri%20uri%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlDocument", "IAsyncOperation<XmlDocument> XmlDocument.LoadFromUriAsync(Uri uri)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Data.Xml.Dom.XmlDocument> LoadFromUriAsync(global::System.Uri uri, global::Windows.Data.Xml.Dom.XmlLoadSettings loadSettings)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<XmlDocument> XmlDocument.LoadFromUriAsync(Uri uri, XmlLoadSettings loadSettings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CXmlDocument%3E%20XmlDocument.LoadFromUriAsync%28Uri%20uri%2C%20XmlLoadSettings%20loadSettings%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlDocument", "IAsyncOperation<XmlDocument> XmlDocument.LoadFromUriAsync(Uri uri, XmlLoadSettings loadSettings)");
 		}
 #endif
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.LoadFromFileAsync(Windows.Storage.IStorageFile)
@@ -57,7 +57,7 @@ namespace Windows.Data.Xml.Dom
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Data.Xml.Dom.XmlDocument> LoadFromFileAsync(global::Windows.Storage.IStorageFile file, global::Windows.Data.Xml.Dom.XmlLoadSettings loadSettings)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<XmlDocument> XmlDocument.LoadFromFileAsync(IStorageFile file, XmlLoadSettings loadSettings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CXmlDocument%3E%20XmlDocument.LoadFromFileAsync%28IStorageFile%20file%2C%20XmlLoadSettings%20loadSettings%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlDocument", "IAsyncOperation<XmlDocument> XmlDocument.LoadFromFileAsync(IStorageFile file, XmlLoadSettings loadSettings)");
 		}
 #endif
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.CreateElement(string)
@@ -87,14 +87,14 @@ namespace Windows.Data.Xml.Dom
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.IXmlNode SelectSingleNodeNS(string xpath, object namespaces)
 		{
-			throw new global::System.NotImplementedException("The member IXmlNode XmlDocument.SelectSingleNodeNS(string xpath, object namespaces) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IXmlNode%20XmlDocument.SelectSingleNodeNS%28string%20xpath%2C%20object%20namespaces%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlDocument", "IXmlNode XmlDocument.SelectSingleNodeNS(string xpath, object namespaces)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.XmlNodeList SelectNodesNS(string xpath, object namespaces)
 		{
-			throw new global::System.NotImplementedException("The member XmlNodeList XmlDocument.SelectNodesNS(string xpath, object namespaces) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XmlNodeList%20XmlDocument.SelectNodesNS%28string%20xpath%2C%20object%20namespaces%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlDocument", "XmlNodeList XmlDocument.SelectNodesNS(string xpath, object namespaces)");
 		}
 #endif
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.LoadXml(string)

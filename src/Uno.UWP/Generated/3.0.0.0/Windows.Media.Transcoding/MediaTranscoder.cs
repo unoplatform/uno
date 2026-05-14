@@ -14,7 +14,7 @@ namespace Windows.Media.Transcoding
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaTranscoder.AlwaysReencode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaTranscoder.AlwaysReencode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "bool MediaTranscoder.AlwaysReencode");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Media.Transcoding
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaTranscoder.HardwareAccelerationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaTranscoder.HardwareAccelerationEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "bool MediaTranscoder.HardwareAccelerationEnabled");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Media.Transcoding
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaTranscoder.TrimStartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaTranscoder.TrimStartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "TimeSpan MediaTranscoder.TrimStartTime");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Windows.Media.Transcoding
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaTranscoder.TrimStopTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaTranscoder.TrimStopTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "TimeSpan MediaTranscoder.TrimStopTime");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Windows.Media.Transcoding
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaVideoProcessingAlgorithm MediaTranscoder.VideoProcessingAlgorithm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaVideoProcessingAlgorithm%20MediaTranscoder.VideoProcessingAlgorithm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "MediaVideoProcessingAlgorithm MediaTranscoder.VideoProcessingAlgorithm");
 			}
 			set
 			{
@@ -125,21 +125,21 @@ namespace Windows.Media.Transcoding
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Transcoding.PrepareTranscodeResult> PrepareFileTranscodeAsync(global::Windows.Storage.IStorageFile source, global::Windows.Storage.IStorageFile destination, global::Windows.Media.MediaProperties.MediaEncodingProfile profile)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PrepareTranscodeResult> MediaTranscoder.PrepareFileTranscodeAsync(IStorageFile source, IStorageFile destination, MediaEncodingProfile profile) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPrepareTranscodeResult%3E%20MediaTranscoder.PrepareFileTranscodeAsync%28IStorageFile%20source%2C%20IStorageFile%20destination%2C%20MediaEncodingProfile%20profile%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "IAsyncOperation<PrepareTranscodeResult> MediaTranscoder.PrepareFileTranscodeAsync(IStorageFile source, IStorageFile destination, MediaEncodingProfile profile)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Transcoding.PrepareTranscodeResult> PrepareStreamTranscodeAsync(global::Windows.Storage.Streams.IRandomAccessStream source, global::Windows.Storage.Streams.IRandomAccessStream destination, global::Windows.Media.MediaProperties.MediaEncodingProfile profile)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PrepareTranscodeResult> MediaTranscoder.PrepareStreamTranscodeAsync(IRandomAccessStream source, IRandomAccessStream destination, MediaEncodingProfile profile) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPrepareTranscodeResult%3E%20MediaTranscoder.PrepareStreamTranscodeAsync%28IRandomAccessStream%20source%2C%20IRandomAccessStream%20destination%2C%20MediaEncodingProfile%20profile%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "IAsyncOperation<PrepareTranscodeResult> MediaTranscoder.PrepareStreamTranscodeAsync(IRandomAccessStream source, IRandomAccessStream destination, MediaEncodingProfile profile)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Transcoding.PrepareTranscodeResult> PrepareMediaStreamSourceTranscodeAsync(global::Windows.Media.Core.IMediaSource source, global::Windows.Storage.Streams.IRandomAccessStream destination, global::Windows.Media.MediaProperties.MediaEncodingProfile profile)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PrepareTranscodeResult> MediaTranscoder.PrepareMediaStreamSourceTranscodeAsync(IMediaSource source, IRandomAccessStream destination, MediaEncodingProfile profile) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPrepareTranscodeResult%3E%20MediaTranscoder.PrepareMediaStreamSourceTranscodeAsync%28IMediaSource%20source%2C%20IRandomAccessStream%20destination%2C%20MediaEncodingProfile%20profile%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.MediaTranscoder", "IAsyncOperation<PrepareTranscodeResult> MediaTranscoder.PrepareMediaStreamSourceTranscodeAsync(IMediaSource source, IRandomAccessStream destination, MediaEncodingProfile profile)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Transcoding.MediaTranscoder.AlwaysReencode.get

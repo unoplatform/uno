@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneAnalysisRecommendation SceneAnalysisEffectFrame.AnalysisRecommendation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneAnalysisRecommendation%20SceneAnalysisEffectFrame.AnalysisRecommendation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "SceneAnalysisRecommendation SceneAnalysisEffectFrame.AnalysisRecommendation");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? SceneAnalysisEffectFrame.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20SceneAnalysisEffectFrame.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "TimeSpan? SceneAnalysisEffectFrame.Duration");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet SceneAnalysisEffectFrame.ExtendedProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPropertySet%20SceneAnalysisEffectFrame.ExtendedProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "IPropertySet SceneAnalysisEffectFrame.ExtendedProperties");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CapturedFrameControlValues SceneAnalysisEffectFrame.FrameControlValues is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CapturedFrameControlValues%20SceneAnalysisEffectFrame.FrameControlValues");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "CapturedFrameControlValues SceneAnalysisEffectFrame.FrameControlValues");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HighDynamicRangeOutput SceneAnalysisEffectFrame.HighDynamicRange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HighDynamicRangeOutput%20SceneAnalysisEffectFrame.HighDynamicRange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "HighDynamicRangeOutput SceneAnalysisEffectFrame.HighDynamicRange");
 			}
 		}
 #endif
@@ -73,7 +73,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SceneAnalysisEffectFrame.IsDiscontinuous is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SceneAnalysisEffectFrame.IsDiscontinuous");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "bool SceneAnalysisEffectFrame.IsDiscontinuous");
 			}
 			set
 			{
@@ -87,7 +87,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SceneAnalysisEffectFrame.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SceneAnalysisEffectFrame.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "bool SceneAnalysisEffectFrame.IsReadOnly");
 			}
 		}
 #endif
@@ -97,7 +97,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? SceneAnalysisEffectFrame.RelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20SceneAnalysisEffectFrame.RelativeTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "TimeSpan? SceneAnalysisEffectFrame.RelativeTime");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? SceneAnalysisEffectFrame.SystemRelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20SceneAnalysisEffectFrame.SystemRelativeTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "TimeSpan? SceneAnalysisEffectFrame.SystemRelativeTime");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SceneAnalysisEffectFrame.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SceneAnalysisEffectFrame.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffectFrame", "string SceneAnalysisEffectFrame.Type");
 			}
 		}
 #endif

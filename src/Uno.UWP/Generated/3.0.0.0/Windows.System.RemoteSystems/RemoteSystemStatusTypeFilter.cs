@@ -14,7 +14,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RemoteSystemStatusType RemoteSystemStatusTypeFilter.RemoteSystemStatusType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemStatusType%20RemoteSystemStatusTypeFilter.RemoteSystemStatusType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemStatusTypeFilter", "RemoteSystemStatusType RemoteSystemStatusTypeFilter.RemoteSystemStatusType");
 			}
 		}
 #endif

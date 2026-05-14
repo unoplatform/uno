@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2SaveAsUIShowingEventArgs.AllowReplace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2SaveAsUIShowingEventArgs.AllowReplace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "bool CoreWebView2SaveAsUIShowingEventArgs.AllowReplace");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2SaveAsUIShowingEventArgs.Cancel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2SaveAsUIShowingEventArgs.Cancel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "bool CoreWebView2SaveAsUIShowingEventArgs.Cancel");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2SaveAsUIShowingEventArgs.ContentMimeType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2SaveAsUIShowingEventArgs.ContentMimeType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "string CoreWebView2SaveAsUIShowingEventArgs.ContentMimeType");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2SaveAsKind CoreWebView2SaveAsUIShowingEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2SaveAsKind%20CoreWebView2SaveAsUIShowingEventArgs.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "CoreWebView2SaveAsKind CoreWebView2SaveAsUIShowingEventArgs.Kind");
 			}
 			set
 			{
@@ -71,7 +71,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2SaveAsUIShowingEventArgs.SaveAsFilePath is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2SaveAsUIShowingEventArgs.SaveAsFilePath");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "string CoreWebView2SaveAsUIShowingEventArgs.SaveAsFilePath");
 			}
 			set
 			{
@@ -85,7 +85,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2SaveAsUIShowingEventArgs.SuppressDefaultDialog is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2SaveAsUIShowingEventArgs.SuppressDefaultDialog");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "bool CoreWebView2SaveAsUIShowingEventArgs.SuppressDefaultDialog");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral CoreWebView2SaveAsUIShowingEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreWebView2SaveAsUIShowingEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs", "Deferral CoreWebView2SaveAsUIShowingEventArgs.GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs.AllowReplace.get

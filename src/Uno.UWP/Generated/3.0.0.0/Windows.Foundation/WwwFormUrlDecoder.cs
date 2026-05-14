@@ -14,7 +14,7 @@ namespace Windows.Foundation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int WwwFormUrlDecoder.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20WwwFormUrlDecoder.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.WwwFormUrlDecoder", "int WwwFormUrlDecoder.Count");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Foundation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IWwwFormUrlDecoderEntry WwwFormUrlDecoder.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IWwwFormUrlDecoderEntry%20WwwFormUrlDecoder.this%5Bint%20index%5D");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.WwwFormUrlDecoder", "IWwwFormUrlDecoderEntry WwwFormUrlDecoder.this[int index]");
 			}
 		}
 #endif
@@ -40,7 +40,7 @@ namespace Windows.Foundation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string GetFirstValueByName(string name)
 		{
-			throw new global::System.NotImplementedException("The member string WwwFormUrlDecoder.GetFirstValueByName(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WwwFormUrlDecoder.GetFirstValueByName%28string%20name%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.WwwFormUrlDecoder", "string WwwFormUrlDecoder.GetFirstValueByName(string name)");
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.Count.get
@@ -49,7 +49,7 @@ namespace Windows.Foundation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Foundation.IWwwFormUrlDecoderEntry> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<IWwwFormUrlDecoderEntry> WwwFormUrlDecoder.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CIWwwFormUrlDecoderEntry%3E%20WwwFormUrlDecoder.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.WwwFormUrlDecoder", "IEnumerator<IWwwFormUrlDecoderEntry> WwwFormUrlDecoder.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.System.Collections.IEnumerable.GetEnumerator()

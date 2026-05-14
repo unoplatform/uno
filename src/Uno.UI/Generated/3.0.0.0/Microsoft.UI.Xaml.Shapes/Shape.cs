@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Transform Shape.GeometryTransform is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Transform%20Shape.GeometryTransform");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Shapes.Shape", "Transform Shape.GeometryTransform");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.CompositionBrush GetAlphaMask()
 		{
-			throw new global::System.NotImplementedException("The member CompositionBrush Shape.GetAlphaMask() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBrush%20Shape.GetAlphaMask%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Shapes.Shape", "CompositionBrush Shape.GetAlphaMask()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Fill.get

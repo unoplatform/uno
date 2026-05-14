@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> EmailQueryOptions.FolderIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20EmailQueryOptions.FolderIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailQueryOptions", "IList<string> EmailQueryOptions.FolderIds");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailQueryKind EmailQueryOptions.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailQueryKind%20EmailQueryOptions.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailQueryOptions", "EmailQueryKind EmailQueryOptions.Kind");
 			}
 			set
 			{
@@ -38,7 +38,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailQuerySortDirection EmailQueryOptions.SortDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailQuerySortDirection%20EmailQueryOptions.SortDirection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailQueryOptions", "EmailQuerySortDirection EmailQueryOptions.SortDirection");
 			}
 			set
 			{
@@ -52,7 +52,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailQuerySortProperty EmailQueryOptions.SortProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailQuerySortProperty%20EmailQueryOptions.SortProperty");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailQueryOptions", "EmailQuerySortProperty EmailQueryOptions.SortProperty");
 			}
 			set
 			{
@@ -66,7 +66,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailQueryTextSearch EmailQueryOptions.TextSearch is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailQueryTextSearch%20EmailQueryOptions.TextSearch");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailQueryOptions", "EmailQueryTextSearch EmailQueryOptions.TextSearch");
 			}
 		}
 #endif

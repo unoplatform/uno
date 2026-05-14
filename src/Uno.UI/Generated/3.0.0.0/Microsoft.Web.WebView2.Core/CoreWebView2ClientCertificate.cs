@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2ClientCertificate.DerEncodedSerialNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2ClientCertificate.DerEncodedSerialNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate", "string CoreWebView2ClientCertificate.DerEncodedSerialNumber");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2ClientCertificate.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2ClientCertificate.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate", "string CoreWebView2ClientCertificate.DisplayName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2ClientCertificate.Issuer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2ClientCertificate.Issuer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate", "string CoreWebView2ClientCertificate.Issuer");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2ClientCertificateKind CoreWebView2ClientCertificate.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ClientCertificateKind%20CoreWebView2ClientCertificate.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate", "CoreWebView2ClientCertificateKind CoreWebView2ClientCertificate.Kind");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> CoreWebView2ClientCertificate.PemEncodedIssuerCertificateChain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20CoreWebView2ClientCertificate.PemEncodedIssuerCertificateChain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate", "IReadOnlyList<string> CoreWebView2ClientCertificate.PemEncodedIssuerCertificateChain");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2ClientCertificate.Subject is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2ClientCertificate.Subject");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate", "string CoreWebView2ClientCertificate.Subject");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CoreWebView2ClientCertificate.ValidFrom is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CoreWebView2ClientCertificate.ValidFrom");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate", "double CoreWebView2ClientCertificate.ValidFrom");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CoreWebView2ClientCertificate.ValidTo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CoreWebView2ClientCertificate.ValidTo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate", "double CoreWebView2ClientCertificate.ValidTo");
 			}
 		}
 #endif
@@ -97,14 +97,14 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Cryptography.Certificates.Certificate ToCertificate()
 		{
-			throw new global::System.NotImplementedException("The member Certificate CoreWebView2ClientCertificate.ToCertificate() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Certificate%20CoreWebView2ClientCertificate.ToCertificate%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate", "Certificate CoreWebView2ClientCertificate.ToCertificate()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ToPemEncoding()
 		{
-			throw new global::System.NotImplementedException("The member string CoreWebView2ClientCertificate.ToPemEncoding() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2ClientCertificate.ToPemEncoding%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate", "string CoreWebView2ClientCertificate.ToPemEncoding()");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificate.DerEncodedSerialNumber.get

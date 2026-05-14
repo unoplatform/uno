@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect InkAnalysisWritingRegion.BoundingRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20InkAnalysisWritingRegion.BoundingRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "Rect InkAnalysisWritingRegion.BoundingRect");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<IInkAnalysisNode> InkAnalysisWritingRegion.Children is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CIInkAnalysisNode%3E%20InkAnalysisWritingRegion.Children");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "IReadOnlyList<IInkAnalysisNode> InkAnalysisWritingRegion.Children");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint InkAnalysisWritingRegion.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20InkAnalysisWritingRegion.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "uint InkAnalysisWritingRegion.Id");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkAnalysisNodeKind InkAnalysisWritingRegion.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkAnalysisNodeKind%20InkAnalysisWritingRegion.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "InkAnalysisNodeKind InkAnalysisWritingRegion.Kind");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IInkAnalysisNode InkAnalysisWritingRegion.Parent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IInkAnalysisNode%20InkAnalysisWritingRegion.Parent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "IInkAnalysisNode InkAnalysisWritingRegion.Parent");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string InkAnalysisWritingRegion.RecognizedText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20InkAnalysisWritingRegion.RecognizedText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "string InkAnalysisWritingRegion.RecognizedText");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Point> InkAnalysisWritingRegion.RotatedBoundingRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPoint%3E%20InkAnalysisWritingRegion.RotatedBoundingRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "IReadOnlyList<Point> InkAnalysisWritingRegion.RotatedBoundingRect");
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<uint> GetStrokeIds()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<uint> InkAnalysisWritingRegion.GetStrokeIds() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cuint%3E%20InkAnalysisWritingRegion.GetStrokeIds%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion", "IReadOnlyList<uint> InkAnalysisWritingRegion.GetStrokeIds()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisWritingRegion.BoundingRect.get

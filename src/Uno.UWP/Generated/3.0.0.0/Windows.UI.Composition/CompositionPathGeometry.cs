@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionPath CompositionPathGeometry.Path is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionPath%20CompositionPathGeometry.Path");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionPathGeometry", "CompositionPath CompositionPathGeometry.Path");
 			}
 			set
 			{

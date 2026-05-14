@@ -290,7 +290,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RichEditTextDocument RichEditBox.Document is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RichEditTextDocument%20RichEditBox.Document");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichEditBox", "RichEditTextDocument RichEditBox.Document");
 			}
 		}
 #endif
@@ -520,7 +520,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RichEditTextDocument RichEditBox.TextDocument is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RichEditTextDocument%20RichEditBox.TextDocument");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichEditBox", "RichEditTextDocument RichEditBox.TextDocument");
 			}
 		}
 #endif
@@ -582,7 +582,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<string>> GetLinguisticAlternativesAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<string>> RichEditBox.GetLinguisticAlternativesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3Cstring%3E%3E%20RichEditBox.GetLinguisticAlternativesAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichEditBox", "IAsyncOperation<IReadOnlyList<string>> RichEditBox.GetLinguisticAlternativesAsync()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBox.CandidateWindowBoundsChanged.add

@@ -19,7 +19,7 @@ namespace Windows.Graphics.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GraphicsCaptureItem.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GraphicsCaptureItem.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Capture.GraphicsCaptureItem", "string GraphicsCaptureItem.DisplayName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SizeInt32 GraphicsCaptureItem.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SizeInt32%20GraphicsCaptureItem.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Capture.GraphicsCaptureItem", "SizeInt32 GraphicsCaptureItem.Size");
 			}
 		}
 #endif

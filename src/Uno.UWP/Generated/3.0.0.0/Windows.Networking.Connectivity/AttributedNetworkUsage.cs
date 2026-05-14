@@ -19,7 +19,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AttributedNetworkUsage.AttributionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AttributedNetworkUsage.AttributionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.AttributedNetworkUsage", "string AttributedNetworkUsage.AttributionId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AttributedNetworkUsage.AttributionName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AttributedNetworkUsage.AttributionName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.AttributedNetworkUsage", "string AttributedNetworkUsage.AttributionName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference AttributedNetworkUsage.AttributionThumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20AttributedNetworkUsage.AttributionThumbnail");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.AttributedNetworkUsage", "IRandomAccessStreamReference AttributedNetworkUsage.AttributionThumbnail");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AttributedNetworkUsage.BytesReceived is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20AttributedNetworkUsage.BytesReceived");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.AttributedNetworkUsage", "ulong AttributedNetworkUsage.BytesReceived");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AttributedNetworkUsage.BytesSent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20AttributedNetworkUsage.BytesSent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.AttributedNetworkUsage", "ulong AttributedNetworkUsage.BytesSent");
 			}
 		}
 #endif

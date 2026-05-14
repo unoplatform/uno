@@ -19,7 +19,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBitmapRequestedEventArgs.SinceStarted is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayBitmapRequestedEventArgs.SinceStarted");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBitmapRequestedEventArgs", "TimeSpan LampArrayBitmapRequestedEventArgs.SinceStarted");
 			}
 		}
 #endif

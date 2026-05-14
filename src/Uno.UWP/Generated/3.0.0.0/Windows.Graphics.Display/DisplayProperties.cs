@@ -14,7 +14,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayOrientations DisplayProperties.AutoRotationPreferences is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayOrientations%20DisplayProperties.AutoRotationPreferences");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayProperties", "DisplayOrientations DisplayProperties.AutoRotationPreferences");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayOrientations DisplayProperties.CurrentOrientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayOrientations%20DisplayProperties.CurrentOrientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayProperties", "DisplayOrientations DisplayProperties.CurrentOrientation");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float DisplayProperties.LogicalDpi is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20DisplayProperties.LogicalDpi");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayProperties", "float DisplayProperties.LogicalDpi");
 			}
 		}
 #endif
@@ -48,7 +48,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayOrientations DisplayProperties.NativeOrientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayOrientations%20DisplayProperties.NativeOrientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayProperties", "DisplayOrientations DisplayProperties.NativeOrientation");
 			}
 		}
 #endif
@@ -58,7 +58,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ResolutionScale DisplayProperties.ResolutionScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResolutionScale%20DisplayProperties.ResolutionScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayProperties", "ResolutionScale DisplayProperties.ResolutionScale");
 			}
 		}
 #endif
@@ -68,7 +68,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DisplayProperties.StereoEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DisplayProperties.StereoEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayProperties", "bool DisplayProperties.StereoEnabled");
 			}
 		}
 #endif
@@ -76,7 +76,7 @@ namespace Windows.Graphics.Display
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetColorProfileAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> DisplayProperties.GetColorProfileAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStream%3E%20DisplayProperties.GetColorProfileAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayProperties", "IAsyncOperation<IRandomAccessStream> DisplayProperties.GetColorProfileAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Display.DisplayProperties.ColorProfileChanged.add

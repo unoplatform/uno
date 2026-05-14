@@ -19,7 +19,7 @@ namespace Windows.Storage.Pickers.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> FileSavePickerUI.AllowedFileTypes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20FileSavePickerUI.AllowedFileTypes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.FileSavePickerUI", "IReadOnlyList<string> FileSavePickerUI.AllowedFileTypes");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage.Pickers.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string FileSavePickerUI.FileName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FileSavePickerUI.FileName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.FileSavePickerUI", "string FileSavePickerUI.FileName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Storage.Pickers.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string FileSavePickerUI.SettingsIdentifier is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FileSavePickerUI.SettingsIdentifier");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.FileSavePickerUI", "string FileSavePickerUI.SettingsIdentifier");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Storage.Pickers.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string FileSavePickerUI.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FileSavePickerUI.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.FileSavePickerUI", "string FileSavePickerUI.Title");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Storage.Pickers.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Pickers.Provider.SetFileNameResult TrySetFileName(string value)
 		{
-			throw new global::System.NotImplementedException("The member SetFileNameResult FileSavePickerUI.TrySetFileName(string value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SetFileNameResult%20FileSavePickerUI.TrySetFileName%28string%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.FileSavePickerUI", "SetFileNameResult FileSavePickerUI.TrySetFileName(string value)");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Pickers.Provider.FileSavePickerUI.FileNameChanged.add

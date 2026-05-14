@@ -14,7 +14,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float Lamp.BrightnessLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20Lamp.BrightnessLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Lamp", "float Lamp.BrightnessLevel");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color Lamp.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20Lamp.Color");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Lamp", "Color Lamp.Color");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Lamp.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Lamp.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Lamp", "string Lamp.DeviceId");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Lamp.IsColorSettable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Lamp.IsColorSettable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Lamp", "bool Lamp.IsColorSettable");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Lamp.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Lamp.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Lamp", "bool Lamp.IsEnabled");
 			}
 			set
 			{
@@ -74,14 +74,14 @@ namespace Windows.Devices.Lights
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string Lamp.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Lamp.GetDeviceSelector%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Lamp", "string Lamp.GetDeviceSelector()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Lights.Lamp> FromIdAsync(string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Lamp> Lamp.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CLamp%3E%20Lamp.FromIdAsync%28string%20deviceId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Lamp", "IAsyncOperation<Lamp> Lamp.FromIdAsync(string deviceId)");
 		}
 #endif
 		// Skipping already declared method Windows.Devices.Lights.Lamp.GetDefaultAsync()

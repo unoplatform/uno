@@ -17,14 +17,14 @@ namespace Windows.Devices.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Input.PenButtonListener GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member PenButtonListener PenButtonListener.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PenButtonListener%20PenButtonListener.GetDefault%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PenButtonListener", "PenButtonListener PenButtonListener.GetDefault()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsSupported()
 		{
-			throw new global::System.NotImplementedException("The member bool PenButtonListener.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PenButtonListener.IsSupported%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PenButtonListener", "bool PenButtonListener.IsSupported()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Input.PenButtonListener.IsSupportedChanged.add

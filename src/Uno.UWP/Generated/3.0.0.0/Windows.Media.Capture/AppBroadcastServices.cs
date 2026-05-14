@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppBroadcastServices.BroadcastLanguage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppBroadcastServices.BroadcastLanguage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "string AppBroadcastServices.BroadcastLanguage");
 			}
 			set
 			{
@@ -33,7 +33,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppBroadcastServices.BroadcastTitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppBroadcastServices.BroadcastTitle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "string AppBroadcastServices.BroadcastTitle");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppBroadcastServices.CanCapture is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppBroadcastServices.CanCapture");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "bool AppBroadcastServices.CanCapture");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastCaptureTargetType AppBroadcastServices.CaptureTargetType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastCaptureTargetType%20AppBroadcastServices.CaptureTargetType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "AppBroadcastCaptureTargetType AppBroadcastServices.CaptureTargetType");
 			}
 			set
 			{
@@ -71,7 +71,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastState AppBroadcastServices.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastState%20AppBroadcastServices.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "AppBroadcastState AppBroadcastServices.State");
 			}
 		}
 #endif
@@ -81,7 +81,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppBroadcastServices.UserName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppBroadcastServices.UserName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "string AppBroadcastServices.UserName");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<uint> EnterBroadcastModeAsync(global::Windows.Media.Capture.AppBroadcastPlugIn plugIn)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<uint> AppBroadcastServices.EnterBroadcastModeAsync(AppBroadcastPlugIn plugIn) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cuint%3E%20AppBroadcastServices.EnterBroadcastModeAsync%28AppBroadcastPlugIn%20plugIn%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "IAsyncOperation<uint> AppBroadcastServices.EnterBroadcastModeAsync(AppBroadcastPlugIn plugIn)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -124,7 +124,7 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Capture.AppBroadcastPreview StartPreview(global::Windows.Foundation.Size desiredSize)
 		{
-			throw new global::System.NotImplementedException("The member AppBroadcastPreview AppBroadcastServices.StartPreview(Size desiredSize) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastPreview%20AppBroadcastServices.StartPreview%28Size%20desiredSize%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastServices", "AppBroadcastPreview AppBroadcastServices.StartPreview(Size desiredSize)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastServices.BroadcastLanguage.get

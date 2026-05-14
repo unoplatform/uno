@@ -12,21 +12,21 @@ namespace Windows.Security.Authentication.Web
 		[global::Uno.NotImplemented("__TVOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Web.WebAuthenticationResult> AuthenticateAsync(global::Windows.Security.Authentication.Web.WebAuthenticationOptions options, global::System.Uri requestUri, global::System.Uri callbackUri)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAuthenticationResult> WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions options, Uri requestUri, Uri callbackUri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAuthenticationResult%3E%20WebAuthenticationBroker.AuthenticateAsync%28WebAuthenticationOptions%20options%2C%20Uri%20requestUri%2C%20Uri%20callbackUri%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.WebAuthenticationBroker", "IAsyncOperation<WebAuthenticationResult> WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions options, Uri requestUri, Uri callbackUri)");
 		}
 #endif
 #if false || false || __TVOS__ || false || false || false || false
 		[global::Uno.NotImplemented("__TVOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Web.WebAuthenticationResult> AuthenticateAsync(global::Windows.Security.Authentication.Web.WebAuthenticationOptions options, global::System.Uri requestUri)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAuthenticationResult> WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions options, Uri requestUri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAuthenticationResult%3E%20WebAuthenticationBroker.AuthenticateAsync%28WebAuthenticationOptions%20options%2C%20Uri%20requestUri%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.WebAuthenticationBroker", "IAsyncOperation<WebAuthenticationResult> WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions options, Uri requestUri)");
 		}
 #endif
 #if false || false || __TVOS__ || false || false || false || false
 		[global::Uno.NotImplemented("__TVOS__")]
 		public static global::System.Uri GetCurrentApplicationCallbackUri()
 		{
-			throw new global::System.NotImplementedException("The member Uri WebAuthenticationBroker.GetCurrentApplicationCallbackUri() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20WebAuthenticationBroker.GetCurrentApplicationCallbackUri%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.WebAuthenticationBroker", "Uri WebAuthenticationBroker.GetCurrentApplicationCallbackUri()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -54,14 +54,14 @@ namespace Windows.Security.Authentication.Web
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Web.WebAuthenticationResult> AuthenticateSilentlyAsync(global::System.Uri requestUri)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAuthenticationResult> WebAuthenticationBroker.AuthenticateSilentlyAsync(Uri requestUri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAuthenticationResult%3E%20WebAuthenticationBroker.AuthenticateSilentlyAsync%28Uri%20requestUri%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.WebAuthenticationBroker", "IAsyncOperation<WebAuthenticationResult> WebAuthenticationBroker.AuthenticateSilentlyAsync(Uri requestUri)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Web.WebAuthenticationResult> AuthenticateSilentlyAsync(global::System.Uri requestUri, global::Windows.Security.Authentication.Web.WebAuthenticationOptions options)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WebAuthenticationResult> WebAuthenticationBroker.AuthenticateSilentlyAsync(Uri requestUri, WebAuthenticationOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebAuthenticationResult%3E%20WebAuthenticationBroker.AuthenticateSilentlyAsync%28Uri%20requestUri%2C%20WebAuthenticationOptions%20options%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.WebAuthenticationBroker", "IAsyncOperation<WebAuthenticationResult> WebAuthenticationBroker.AuthenticateSilentlyAsync(Uri requestUri, WebAuthenticationOptions options)");
 		}
 #endif
 	}

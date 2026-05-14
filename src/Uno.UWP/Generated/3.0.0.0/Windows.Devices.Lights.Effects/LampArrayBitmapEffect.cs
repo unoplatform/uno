@@ -14,7 +14,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBitmapEffect.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayBitmapEffect.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBitmapEffect", "TimeSpan LampArrayBitmapEffect.Duration");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBitmapEffect.StartDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayBitmapEffect.StartDelay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBitmapEffect", "TimeSpan LampArrayBitmapEffect.StartDelay");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size LampArrayBitmapEffect.SuggestedBitmapSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20LampArrayBitmapEffect.SuggestedBitmapSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBitmapEffect", "Size LampArrayBitmapEffect.SuggestedBitmapSize");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBitmapEffect.UpdateInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayBitmapEffect.UpdateInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBitmapEffect", "TimeSpan LampArrayBitmapEffect.UpdateInterval");
 			}
 			set
 			{
@@ -66,7 +66,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LampArrayBitmapEffect.ZIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LampArrayBitmapEffect.ZIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayBitmapEffect", "int LampArrayBitmapEffect.ZIndex");
 			}
 			set
 			{

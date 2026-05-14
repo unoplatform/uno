@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControlCapabilities MediaDeviceControl.Capabilities is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaDeviceControlCapabilities%20MediaDeviceControl.Capabilities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.MediaDeviceControl", "MediaDeviceControlCapabilities MediaDeviceControl.Capabilities");
 			}
 		}
 #endif
@@ -27,28 +27,28 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryGetValue(out double value)
 		{
-			throw new global::System.NotImplementedException("The member bool MediaDeviceControl.TryGetValue(out double value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaDeviceControl.TryGetValue%28out%20double%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.MediaDeviceControl", "bool MediaDeviceControl.TryGetValue(out double value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetValue(double value)
 		{
-			throw new global::System.NotImplementedException("The member bool MediaDeviceControl.TrySetValue(double value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaDeviceControl.TrySetValue%28double%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.MediaDeviceControl", "bool MediaDeviceControl.TrySetValue(double value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryGetAuto(out bool value)
 		{
-			throw new global::System.NotImplementedException("The member bool MediaDeviceControl.TryGetAuto(out bool value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaDeviceControl.TryGetAuto%28out%20bool%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.MediaDeviceControl", "bool MediaDeviceControl.TryGetAuto(out bool value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetAuto(bool value)
 		{
-			throw new global::System.NotImplementedException("The member bool MediaDeviceControl.TrySetAuto(bool value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaDeviceControl.TrySetAuto%28bool%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.MediaDeviceControl", "bool MediaDeviceControl.TrySetAuto(bool value)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.MediaDeviceControl.Capabilities.get

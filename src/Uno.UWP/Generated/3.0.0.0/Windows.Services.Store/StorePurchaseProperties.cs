@@ -14,7 +14,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorePurchaseProperties.ExtendedJsonData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorePurchaseProperties.ExtendedJsonData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePurchaseProperties", "string StorePurchaseProperties.ExtendedJsonData");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorePurchaseProperties.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorePurchaseProperties.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePurchaseProperties", "string StorePurchaseProperties.Name");
 			}
 			set
 			{

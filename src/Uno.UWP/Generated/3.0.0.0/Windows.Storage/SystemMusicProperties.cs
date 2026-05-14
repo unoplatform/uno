@@ -19,7 +19,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMusicProperties.AlbumArtist is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemMusicProperties.AlbumArtist");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "string SystemMusicProperties.AlbumArtist");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMusicProperties.AlbumTitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemMusicProperties.AlbumTitle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "string SystemMusicProperties.AlbumTitle");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMusicProperties.Artist is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemMusicProperties.Artist");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "string SystemMusicProperties.Artist");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMusicProperties.Composer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemMusicProperties.Composer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "string SystemMusicProperties.Composer");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMusicProperties.Conductor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemMusicProperties.Conductor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "string SystemMusicProperties.Conductor");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMusicProperties.DisplayArtist is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemMusicProperties.DisplayArtist");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "string SystemMusicProperties.DisplayArtist");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMusicProperties.Genre is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemMusicProperties.Genre");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "string SystemMusicProperties.Genre");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMusicProperties.TrackNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemMusicProperties.TrackNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemMusicProperties", "string SystemMusicProperties.TrackNumber");
 			}
 		}
 #endif

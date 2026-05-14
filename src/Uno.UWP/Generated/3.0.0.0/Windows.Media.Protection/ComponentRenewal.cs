@@ -12,7 +12,7 @@ namespace Windows.Media.Protection
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Media.Protection.RenewalStatus, uint> RenewSystemComponentsAsync(global::Windows.Media.Protection.RevocationAndRenewalInformation information)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<RenewalStatus, uint> ComponentRenewal.RenewSystemComponentsAsync(RevocationAndRenewalInformation information) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CRenewalStatus%2C%20uint%3E%20ComponentRenewal.RenewSystemComponentsAsync%28RevocationAndRenewalInformation%20information%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.ComponentRenewal", "IAsyncOperationWithProgress<RenewalStatus, uint> ComponentRenewal.RenewSystemComponentsAsync(RevocationAndRenewalInformation information)");
 		}
 #endif
 	}

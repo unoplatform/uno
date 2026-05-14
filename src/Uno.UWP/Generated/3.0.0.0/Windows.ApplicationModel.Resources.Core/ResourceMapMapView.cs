@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IEnumerable<string> ResourceMapMapView.Keys is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerable%3Cstring%3E%20ResourceMapMapView.Keys");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceMapMapView", "IEnumerable<string> ResourceMapMapView.Keys");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IEnumerable<ResourceMap> ResourceMapMapView.Values is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerable%3CResourceMap%3E%20ResourceMapMapView.Values");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceMapMapView", "IEnumerable<ResourceMap> ResourceMapMapView.Values");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ResourceMapMapView.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ResourceMapMapView.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceMapMapView", "int ResourceMapMapView.Count");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ResourceMap ResourceMapMapView.this[string key] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceMap%20ResourceMapMapView.this%5Bstring%20key%5D");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceMapMapView", "ResourceMap ResourceMapMapView.this[string key]");
 			}
 		}
 #endif
@@ -61,21 +61,21 @@ namespace Windows.ApplicationModel.Resources.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ContainsKey(string key)
 		{
-			throw new global::System.NotImplementedException("The member bool ResourceMapMapView.ContainsKey(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ResourceMapMapView.ContainsKey%28string%20key%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceMapMapView", "bool ResourceMapMapView.ContainsKey(string key)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryGetValue(string key, out global::Windows.ApplicationModel.Resources.Core.ResourceMap value)
 		{
-			throw new global::System.NotImplementedException("The member bool ResourceMapMapView.TryGetValue(string key, out ResourceMap value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ResourceMapMapView.TryGetValue%28string%20key%2C%20out%20ResourceMap%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceMapMapView", "bool ResourceMapMapView.TryGetValue(string key, out ResourceMap value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, global::Windows.ApplicationModel.Resources.Core.ResourceMap>> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<KeyValuePair<string, ResourceMap>> ResourceMapMapView.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CKeyValuePair%3Cstring%2C%20ResourceMap%3E%3E%20ResourceMapMapView.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceMapMapView", "IEnumerator<KeyValuePair<string, ResourceMap>> ResourceMapMapView.GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMapMapView.System.Collections.IEnumerable.GetEnumerator()

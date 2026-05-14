@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppBroadcastPlugIn.AppId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppBroadcastPlugIn.AppId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPlugIn", "string AppBroadcastPlugIn.AppId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppBroadcastPlugIn.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppBroadcastPlugIn.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPlugIn", "string AppBroadcastPlugIn.DisplayName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference AppBroadcastPlugIn.Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20AppBroadcastPlugIn.Logo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPlugIn", "IRandomAccessStreamReference AppBroadcastPlugIn.Logo");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastProviderSettings AppBroadcastPlugIn.ProviderSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastProviderSettings%20AppBroadcastPlugIn.ProviderSettings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPlugIn", "AppBroadcastProviderSettings AppBroadcastPlugIn.ProviderSettings");
 			}
 		}
 #endif

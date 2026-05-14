@@ -14,7 +14,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnPlugInProfile.AlwaysOn is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnPlugInProfile.AlwaysOn");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "bool VpnPlugInProfile.AlwaysOn");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<VpnAppId> VpnPlugInProfile.AppTriggers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnAppId%3E%20VpnPlugInProfile.AppTriggers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "IList<VpnAppId> VpnPlugInProfile.AppTriggers");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnManagementConnectionStatus VpnPlugInProfile.ConnectionStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnManagementConnectionStatus%20VpnPlugInProfile.ConnectionStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "VpnManagementConnectionStatus VpnPlugInProfile.ConnectionStatus");
 			}
 		}
 #endif
@@ -48,7 +48,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnPlugInProfile.CustomConfiguration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnPlugInProfile.CustomConfiguration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "string VpnPlugInProfile.CustomConfiguration");
 			}
 			set
 			{
@@ -62,7 +62,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<VpnDomainNameInfo> VpnPlugInProfile.DomainNameInfoList is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnDomainNameInfo%3E%20VpnPlugInProfile.DomainNameInfoList");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "IList<VpnDomainNameInfo> VpnPlugInProfile.DomainNameInfoList");
 			}
 		}
 #endif
@@ -72,7 +72,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnPlugInProfile.ProfileName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnPlugInProfile.ProfileName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "string VpnPlugInProfile.ProfileName");
 			}
 			set
 			{
@@ -86,7 +86,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnPlugInProfile.RememberCredentials is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnPlugInProfile.RememberCredentials");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "bool VpnPlugInProfile.RememberCredentials");
 			}
 			set
 			{
@@ -100,7 +100,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnPlugInProfile.RequireVpnClientAppUI is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnPlugInProfile.RequireVpnClientAppUI");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "bool VpnPlugInProfile.RequireVpnClientAppUI");
 			}
 			set
 			{
@@ -114,7 +114,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<VpnRoute> VpnPlugInProfile.Routes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnRoute%3E%20VpnPlugInProfile.Routes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "IList<VpnRoute> VpnPlugInProfile.Routes");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> VpnPlugInProfile.ServerUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CUri%3E%20VpnPlugInProfile.ServerUris");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "IList<Uri> VpnPlugInProfile.ServerUris");
 			}
 		}
 #endif
@@ -134,7 +134,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<VpnTrafficFilter> VpnPlugInProfile.TrafficFilters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnTrafficFilter%3E%20VpnPlugInProfile.TrafficFilters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "IList<VpnTrafficFilter> VpnPlugInProfile.TrafficFilters");
 			}
 		}
 #endif
@@ -144,7 +144,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnPlugInProfile.VpnPluginPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnPlugInProfile.VpnPluginPackageFamilyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPlugInProfile", "string VpnPlugInProfile.VpnPluginPackageFamilyName");
 			}
 			set
 			{

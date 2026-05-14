@@ -14,7 +14,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.BackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.BackgroundColor");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.ButtonBackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonBackgroundColor");
 			}
 			set
 			{
@@ -42,7 +42,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.ButtonForegroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonForegroundColor");
 			}
 			set
 			{
@@ -56,7 +56,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonHoverBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.ButtonHoverBackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonHoverBackgroundColor");
 			}
 			set
 			{
@@ -70,7 +70,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonHoverForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.ButtonHoverForegroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonHoverForegroundColor");
 			}
 			set
 			{
@@ -84,7 +84,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonInactiveBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.ButtonInactiveBackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonInactiveBackgroundColor");
 			}
 			set
 			{
@@ -98,7 +98,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonInactiveForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.ButtonInactiveForegroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonInactiveForegroundColor");
 			}
 			set
 			{
@@ -112,7 +112,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonPressedBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.ButtonPressedBackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonPressedBackgroundColor");
 			}
 			set
 			{
@@ -126,7 +126,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonPressedForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.ButtonPressedForegroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonPressedForegroundColor");
 			}
 			set
 			{
@@ -141,7 +141,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.ForegroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ForegroundColor");
 			}
 			set
 			{
@@ -156,7 +156,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IconShowOptions AppWindowTitleBar.IconShowOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IconShowOptions%20AppWindowTitleBar.IconShowOptions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "IconShowOptions AppWindowTitleBar.IconShowOptions");
 			}
 			set
 			{
@@ -170,7 +170,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.InactiveBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.InactiveBackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.InactiveBackgroundColor");
 			}
 			set
 			{
@@ -184,7 +184,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.InactiveForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.InactiveForegroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.InactiveForegroundColor");
 			}
 			set
 			{
@@ -198,7 +198,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AppWindowTitleBar.LeftInset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20AppWindowTitleBar.LeftInset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "int AppWindowTitleBar.LeftInset");
 			}
 		}
 #endif
@@ -209,7 +209,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TitleBarTheme AppWindowTitleBar.PreferredTheme is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TitleBarTheme%20AppWindowTitleBar.PreferredTheme");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "TitleBarTheme AppWindowTitleBar.PreferredTheme");
 			}
 			set
 			{
@@ -223,7 +223,7 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int AppWindowTitleBar.RightInset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20AppWindowTitleBar.RightInset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.AppWindowTitleBar", "int AppWindowTitleBar.RightInset");
 			}
 		}
 #endif

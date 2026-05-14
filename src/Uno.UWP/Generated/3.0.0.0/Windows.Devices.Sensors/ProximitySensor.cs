@@ -14,7 +14,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProximitySensor.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProximitySensor.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ProximitySensor", "string ProximitySensor.DeviceId");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? ProximitySensor.MaxDistanceInMillimeters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20ProximitySensor.MaxDistanceInMillimeters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ProximitySensor", "uint? ProximitySensor.MaxDistanceInMillimeters");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? ProximitySensor.MinDistanceInMillimeters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20ProximitySensor.MinDistanceInMillimeters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ProximitySensor", "uint? ProximitySensor.MinDistanceInMillimeters");
 			}
 		}
 #endif
@@ -43,28 +43,28 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Sensors.ProximitySensor FromId(string sensorId)
 		{
-			throw new global::System.NotImplementedException("The member ProximitySensor ProximitySensor.FromId(string sensorId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProximitySensor%20ProximitySensor.FromId%28string%20sensorId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ProximitySensor", "ProximitySensor ProximitySensor.FromId(string sensorId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sensors.ProximitySensorReading> GetReadingsFromTriggerDetails(global::Windows.Devices.Sensors.SensorDataThresholdTriggerDetails triggerDetails)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<ProximitySensorReading> ProximitySensor.GetReadingsFromTriggerDetails(SensorDataThresholdTriggerDetails triggerDetails) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CProximitySensorReading%3E%20ProximitySensor.GetReadingsFromTriggerDetails%28SensorDataThresholdTriggerDetails%20triggerDetails%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ProximitySensor", "IReadOnlyList<ProximitySensorReading> ProximitySensor.GetReadingsFromTriggerDetails(SensorDataThresholdTriggerDetails triggerDetails)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Sensors.ProximitySensorReading GetCurrentReading()
 		{
-			throw new global::System.NotImplementedException("The member ProximitySensorReading ProximitySensor.GetCurrentReading() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProximitySensorReading%20ProximitySensor.GetCurrentReading%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ProximitySensor", "ProximitySensorReading ProximitySensor.GetCurrentReading()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Sensors.ProximitySensorDisplayOnOffController CreateDisplayOnOffController()
 		{
-			throw new global::System.NotImplementedException("The member ProximitySensorDisplayOnOffController ProximitySensor.CreateDisplayOnOffController() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProximitySensorDisplayOnOffController%20ProximitySensor.CreateDisplayOnOffController%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ProximitySensor", "ProximitySensorDisplayOnOffController ProximitySensor.CreateDisplayOnOffController()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sensors.ProximitySensor.ReadingChanged.add

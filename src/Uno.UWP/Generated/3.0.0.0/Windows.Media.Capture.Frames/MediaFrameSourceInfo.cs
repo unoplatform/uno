@@ -19,7 +19,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialCoordinateSystem MediaFrameSourceInfo.CoordinateSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialCoordinateSystem%20MediaFrameSourceInfo.CoordinateSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "SpatialCoordinateSystem MediaFrameSourceInfo.CoordinateSystem");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceInformation MediaFrameSourceInfo.DeviceInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceInformation%20MediaFrameSourceInfo.DeviceInformation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "DeviceInformation MediaFrameSourceInfo.DeviceInformation");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaFrameSourceInfo.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaFrameSourceInfo.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "string MediaFrameSourceInfo.Id");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaStreamType MediaFrameSourceInfo.MediaStreamType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaStreamType%20MediaFrameSourceInfo.MediaStreamType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "MediaStreamType MediaFrameSourceInfo.MediaStreamType");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaFrameSourceInfo.ProfileId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaFrameSourceInfo.ProfileId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "string MediaFrameSourceInfo.ProfileId");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<Guid, object> MediaFrameSourceInfo.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3CGuid%2C%20object%3E%20MediaFrameSourceInfo.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "IReadOnlyDictionary<Guid, object> MediaFrameSourceInfo.Properties");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaFrameSourceGroup MediaFrameSourceInfo.SourceGroup is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaFrameSourceGroup%20MediaFrameSourceInfo.SourceGroup");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "MediaFrameSourceGroup MediaFrameSourceInfo.SourceGroup");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaFrameSourceKind MediaFrameSourceInfo.SourceKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaFrameSourceKind%20MediaFrameSourceInfo.SourceKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "MediaFrameSourceKind MediaFrameSourceInfo.SourceKind");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MediaCaptureVideoProfileMediaDescription> MediaFrameSourceInfo.VideoProfileMediaDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaCaptureVideoProfileMediaDescription%3E%20MediaFrameSourceInfo.VideoProfileMediaDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "IReadOnlyList<MediaCaptureVideoProfileMediaDescription> MediaFrameSourceInfo.VideoProfileMediaDescription");
 			}
 		}
 #endif
@@ -107,7 +107,7 @@ namespace Windows.Media.Capture.Frames
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Enumeration.Panel GetRelativePanel(global::Windows.UI.WindowManagement.DisplayRegion displayRegion)
 		{
-			throw new global::System.NotImplementedException("The member Panel MediaFrameSourceInfo.GetRelativePanel(DisplayRegion displayRegion) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Panel%20MediaFrameSourceInfo.GetRelativePanel%28DisplayRegion%20displayRegion%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "Panel MediaFrameSourceInfo.GetRelativePanel(DisplayRegion displayRegion)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.CoordinateSystem.get

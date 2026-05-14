@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoEncodingProperties VideoStreamConfiguration.InputProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoEncodingProperties%20VideoStreamConfiguration.InputProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.VideoStreamConfiguration", "VideoEncodingProperties VideoStreamConfiguration.InputProperties");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoEncodingProperties VideoStreamConfiguration.OutputProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoEncodingProperties%20VideoStreamConfiguration.OutputProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.VideoStreamConfiguration", "VideoEncodingProperties VideoStreamConfiguration.OutputProperties");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastBackgroundService AppBroadcastTriggerDetails.BackgroundService is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastBackgroundService%20AppBroadcastTriggerDetails.BackgroundService");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastTriggerDetails", "AppBroadcastBackgroundService AppBroadcastTriggerDetails.BackgroundService");
 			}
 		}
 #endif

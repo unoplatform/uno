@@ -14,7 +14,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlatformDataCollectionLevel PlatformDiagnosticsAndUsageDataSettings.CollectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlatformDataCollectionLevel%20PlatformDiagnosticsAndUsageDataSettings.CollectionLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.PlatformDiagnosticsAndUsageDataSettings", "PlatformDataCollectionLevel PlatformDiagnosticsAndUsageDataSettings.CollectionLevel");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.System.Profile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool CanCollectDiagnostics(global::Windows.System.Profile.PlatformDataCollectionLevel level)
 		{
-			throw new global::System.NotImplementedException("The member bool PlatformDiagnosticsAndUsageDataSettings.CanCollectDiagnostics(PlatformDataCollectionLevel level) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PlatformDiagnosticsAndUsageDataSettings.CanCollectDiagnostics%28PlatformDataCollectionLevel%20level%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.PlatformDiagnosticsAndUsageDataSettings", "bool PlatformDiagnosticsAndUsageDataSettings.CanCollectDiagnostics(PlatformDataCollectionLevel level)");
 		}
 #endif
 		// Forced skipping of method Windows.System.Profile.PlatformDiagnosticsAndUsageDataSettings.CollectionLevelChanged.add

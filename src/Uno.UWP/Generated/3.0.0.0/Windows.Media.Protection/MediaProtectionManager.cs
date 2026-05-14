@@ -14,7 +14,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet MediaProtectionManager.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPropertySet%20MediaProtectionManager.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.MediaProtectionManager", "IPropertySet MediaProtectionManager.Properties");
 			}
 		}
 #endif

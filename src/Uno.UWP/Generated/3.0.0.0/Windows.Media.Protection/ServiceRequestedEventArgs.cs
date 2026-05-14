@@ -19,7 +19,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaProtectionServiceCompletion ServiceRequestedEventArgs.Completion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaProtectionServiceCompletion%20ServiceRequestedEventArgs.Completion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.ServiceRequestedEventArgs", "MediaProtectionServiceCompletion ServiceRequestedEventArgs.Completion");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackItem ServiceRequestedEventArgs.MediaPlaybackItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackItem%20ServiceRequestedEventArgs.MediaPlaybackItem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.ServiceRequestedEventArgs", "MediaPlaybackItem ServiceRequestedEventArgs.MediaPlaybackItem");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IMediaProtectionServiceRequest ServiceRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IMediaProtectionServiceRequest%20ServiceRequestedEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.ServiceRequestedEventArgs", "IMediaProtectionServiceRequest ServiceRequestedEventArgs.Request");
 			}
 		}
 #endif

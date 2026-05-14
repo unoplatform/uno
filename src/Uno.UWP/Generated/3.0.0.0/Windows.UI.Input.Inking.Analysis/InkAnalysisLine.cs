@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect InkAnalysisLine.BoundingRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20InkAnalysisLine.BoundingRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisLine", "Rect InkAnalysisLine.BoundingRect");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<IInkAnalysisNode> InkAnalysisLine.Children is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CIInkAnalysisNode%3E%20InkAnalysisLine.Children");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisLine", "IReadOnlyList<IInkAnalysisNode> InkAnalysisLine.Children");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint InkAnalysisLine.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20InkAnalysisLine.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisLine", "uint InkAnalysisLine.Id");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int InkAnalysisLine.IndentLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InkAnalysisLine.IndentLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisLine", "int InkAnalysisLine.IndentLevel");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkAnalysisNodeKind InkAnalysisLine.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkAnalysisNodeKind%20InkAnalysisLine.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisLine", "InkAnalysisNodeKind InkAnalysisLine.Kind");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IInkAnalysisNode InkAnalysisLine.Parent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IInkAnalysisNode%20InkAnalysisLine.Parent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisLine", "IInkAnalysisNode InkAnalysisLine.Parent");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string InkAnalysisLine.RecognizedText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20InkAnalysisLine.RecognizedText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisLine", "string InkAnalysisLine.RecognizedText");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Point> InkAnalysisLine.RotatedBoundingRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPoint%3E%20InkAnalysisLine.RotatedBoundingRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisLine", "IReadOnlyList<Point> InkAnalysisLine.RotatedBoundingRect");
 			}
 		}
 #endif
@@ -97,7 +97,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<uint> GetStrokeIds()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<uint> InkAnalysisLine.GetStrokeIds() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cuint%3E%20InkAnalysisLine.GetStrokeIds%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisLine", "IReadOnlyList<uint> InkAnalysisLine.GetStrokeIds()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisLine.BoundingRect.get

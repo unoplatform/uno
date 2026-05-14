@@ -14,7 +14,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorageProviderGetPathForContentUriResult.Path is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorageProviderGetPathForContentUriResult.Path");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderGetPathForContentUriResult", "string StorageProviderGetPathForContentUriResult.Path");
 			}
 			set
 			{
@@ -28,7 +28,7 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageProviderUriSourceStatus StorageProviderGetPathForContentUriResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageProviderUriSourceStatus%20StorageProviderGetPathForContentUriResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderGetPathForContentUriResult", "StorageProviderUriSourceStatus StorageProviderGetPathForContentUriResult.Status");
 			}
 			set
 			{

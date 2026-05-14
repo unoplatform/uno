@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESim ESimUpdatedEventArgs.ESim is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ESim%20ESimUpdatedEventArgs.ESim");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimUpdatedEventArgs", "ESim ESimUpdatedEventArgs.ESim");
 			}
 		}
 #endif

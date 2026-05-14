@@ -19,7 +19,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RemoteSystemSessionJoinRequest RemoteSystemSessionJoinRequestedEventArgs.JoinRequest is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemSessionJoinRequest%20RemoteSystemSessionJoinRequestedEventArgs.JoinRequest");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSessionJoinRequestedEventArgs", "RemoteSystemSessionJoinRequest RemoteSystemSessionJoinRequestedEventArgs.JoinRequest");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.System.RemoteSystems
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral RemoteSystemSessionJoinRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20RemoteSystemSessionJoinRequestedEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSessionJoinRequestedEventArgs", "Deferral RemoteSystemSessionJoinRequestedEventArgs.GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinRequestedEventArgs.JoinRequest.get

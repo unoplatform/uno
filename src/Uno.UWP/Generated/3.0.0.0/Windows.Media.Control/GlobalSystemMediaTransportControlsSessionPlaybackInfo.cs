@@ -19,7 +19,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackAutoRepeatMode? GlobalSystemMediaTransportControlsSessionPlaybackInfo.AutoRepeatMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackAutoRepeatMode%3F%20GlobalSystemMediaTransportControlsSessionPlaybackInfo.AutoRepeatMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "MediaPlaybackAutoRepeatMode? GlobalSystemMediaTransportControlsSessionPlaybackInfo.AutoRepeatMode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GlobalSystemMediaTransportControlsSessionPlaybackControls GlobalSystemMediaTransportControlsSessionPlaybackInfo.Controls is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GlobalSystemMediaTransportControlsSessionPlaybackControls%20GlobalSystemMediaTransportControlsSessionPlaybackInfo.Controls");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "GlobalSystemMediaTransportControlsSessionPlaybackControls GlobalSystemMediaTransportControlsSessionPlaybackInfo.Controls");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool? GlobalSystemMediaTransportControlsSessionPlaybackInfo.IsShuffleActive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%3F%20GlobalSystemMediaTransportControlsSessionPlaybackInfo.IsShuffleActive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "bool? GlobalSystemMediaTransportControlsSessionPlaybackInfo.IsShuffleActive");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%3F%20GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "double? GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackRate");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GlobalSystemMediaTransportControlsSessionPlaybackStatus GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GlobalSystemMediaTransportControlsSessionPlaybackStatus%20GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "GlobalSystemMediaTransportControlsSessionPlaybackStatus GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackStatus");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackType? GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackType%3F%20GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "MediaPlaybackType? GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackType");
 			}
 		}
 #endif

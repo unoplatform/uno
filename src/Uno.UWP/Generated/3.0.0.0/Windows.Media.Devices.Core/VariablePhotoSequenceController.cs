@@ -19,7 +19,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<FrameController> VariablePhotoSequenceController.DesiredFrameControllers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CFrameController%3E%20VariablePhotoSequenceController.DesiredFrameControllers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.VariablePhotoSequenceController", "IList<FrameController> VariablePhotoSequenceController.DesiredFrameControllers");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FrameControlCapabilities VariablePhotoSequenceController.FrameCapabilities is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FrameControlCapabilities%20VariablePhotoSequenceController.FrameCapabilities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.VariablePhotoSequenceController", "FrameControlCapabilities VariablePhotoSequenceController.FrameCapabilities");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float VariablePhotoSequenceController.MaxPhotosPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20VariablePhotoSequenceController.MaxPhotosPerSecond");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.VariablePhotoSequenceController", "float VariablePhotoSequenceController.MaxPhotosPerSecond");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float VariablePhotoSequenceController.PhotosPerSecondLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20VariablePhotoSequenceController.PhotosPerSecondLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.VariablePhotoSequenceController", "float VariablePhotoSequenceController.PhotosPerSecondLimit");
 			}
 			set
 			{
@@ -63,7 +63,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VariablePhotoSequenceController.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VariablePhotoSequenceController.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.VariablePhotoSequenceController", "bool VariablePhotoSequenceController.Supported");
 			}
 		}
 #endif
@@ -71,14 +71,14 @@ namespace Windows.Media.Devices.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.MediaRatio GetHighestConcurrentFrameRate(global::Windows.Media.MediaProperties.IMediaEncodingProperties captureProperties)
 		{
-			throw new global::System.NotImplementedException("The member MediaRatio VariablePhotoSequenceController.GetHighestConcurrentFrameRate(IMediaEncodingProperties captureProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaRatio%20VariablePhotoSequenceController.GetHighestConcurrentFrameRate%28IMediaEncodingProperties%20captureProperties%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.VariablePhotoSequenceController", "MediaRatio VariablePhotoSequenceController.GetHighestConcurrentFrameRate(IMediaEncodingProperties captureProperties)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.MediaRatio GetCurrentFrameRate()
 		{
-			throw new global::System.NotImplementedException("The member MediaRatio VariablePhotoSequenceController.GetCurrentFrameRate() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaRatio%20VariablePhotoSequenceController.GetCurrentFrameRate%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.VariablePhotoSequenceController", "MediaRatio VariablePhotoSequenceController.GetCurrentFrameRate()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.Core.VariablePhotoSequenceController.DesiredFrameControllers.get

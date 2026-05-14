@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Identity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EnterpriseKeyCredentialRegistrationManager EnterpriseKeyCredentialRegistrationManager.Current is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EnterpriseKeyCredentialRegistrationManager%20EnterpriseKeyCredentialRegistrationManager.Current");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationManager", "EnterpriseKeyCredentialRegistrationManager EnterpriseKeyCredentialRegistrationManager.Current");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Security.Authentication.Identity
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo>> GetRegistrationsAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<EnterpriseKeyCredentialRegistrationInfo>> EnterpriseKeyCredentialRegistrationManager.GetRegistrationsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CEnterpriseKeyCredentialRegistrationInfo%3E%3E%20EnterpriseKeyCredentialRegistrationManager.GetRegistrationsAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationManager", "IAsyncOperation<IReadOnlyList<EnterpriseKeyCredentialRegistrationInfo>> EnterpriseKeyCredentialRegistrationManager.GetRegistrationsAsync()");
 		}
 #endif
 	}

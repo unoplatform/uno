@@ -14,7 +14,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<HttpNameValueHeaderValue> HttpTransferCodingHeaderValue.Parameters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CHttpNameValueHeaderValue%3E%20HttpTransferCodingHeaderValue.Parameters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpTransferCodingHeaderValue", "IList<HttpNameValueHeaderValue> HttpTransferCodingHeaderValue.Parameters");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpTransferCodingHeaderValue.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpTransferCodingHeaderValue.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpTransferCodingHeaderValue", "string HttpTransferCodingHeaderValue.Value");
 			}
 		}
 #endif
@@ -40,21 +40,21 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Web.Http.Headers.HttpTransferCodingHeaderValue Parse(string input)
 		{
-			throw new global::System.NotImplementedException("The member HttpTransferCodingHeaderValue HttpTransferCodingHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpTransferCodingHeaderValue%20HttpTransferCodingHeaderValue.Parse%28string%20input%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpTransferCodingHeaderValue", "HttpTransferCodingHeaderValue HttpTransferCodingHeaderValue.Parse(string input)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpTransferCodingHeaderValue transferCodingHeaderValue)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpTransferCodingHeaderValue.TryParse(string input, out HttpTransferCodingHeaderValue transferCodingHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpTransferCodingHeaderValue.TryParse%28string%20input%2C%20out%20HttpTransferCodingHeaderValue%20transferCodingHeaderValue%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpTransferCodingHeaderValue", "bool HttpTransferCodingHeaderValue.TryParse(string input, out HttpTransferCodingHeaderValue transferCodingHeaderValue)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpTransferCodingHeaderValue.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpTransferCodingHeaderValue.ToString%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpTransferCodingHeaderValue", "string HttpTransferCodingHeaderValue.ToString()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpTransferCodingHeaderValue.Parameters.get

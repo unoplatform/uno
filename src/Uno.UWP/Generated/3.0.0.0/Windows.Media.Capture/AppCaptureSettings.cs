@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppCaptureAlternateShortcutKeys AppCaptureSettings.AlternateShortcutKeys is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppCaptureAlternateShortcutKeys%20AppCaptureSettings.AlternateShortcutKeys");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "AppCaptureAlternateShortcutKeys AppCaptureSettings.AlternateShortcutKeys");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFolder AppCaptureSettings.AppCaptureDestinationFolder is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFolder%20AppCaptureSettings.AppCaptureDestinationFolder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "StorageFolder AppCaptureSettings.AppCaptureDestinationFolder");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppCaptureSettings.AudioEncodingBitrate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppCaptureSettings.AudioEncodingBitrate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "uint AppCaptureSettings.AudioEncodingBitrate");
 			}
 			set
 			{
@@ -57,7 +57,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppCaptureSettings.CustomVideoEncodingBitrate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppCaptureSettings.CustomVideoEncodingBitrate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "uint AppCaptureSettings.CustomVideoEncodingBitrate");
 			}
 			set
 			{
@@ -71,7 +71,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppCaptureSettings.CustomVideoEncodingHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppCaptureSettings.CustomVideoEncodingHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "uint AppCaptureSettings.CustomVideoEncodingHeight");
 			}
 			set
 			{
@@ -85,7 +85,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppCaptureSettings.CustomVideoEncodingWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppCaptureSettings.CustomVideoEncodingWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "uint AppCaptureSettings.CustomVideoEncodingWidth");
 			}
 			set
 			{
@@ -99,7 +99,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppCaptureSettings.HasHardwareEncoder is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppCaptureSettings.HasHardwareEncoder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.HasHardwareEncoder");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppCaptureSettings.HistoricalBufferLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppCaptureSettings.HistoricalBufferLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "uint AppCaptureSettings.HistoricalBufferLength");
 			}
 			set
 			{
@@ -123,7 +123,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppCaptureHistoricalBufferLengthUnit AppCaptureSettings.HistoricalBufferLengthUnit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppCaptureHistoricalBufferLengthUnit%20AppCaptureSettings.HistoricalBufferLengthUnit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "AppCaptureHistoricalBufferLengthUnit AppCaptureSettings.HistoricalBufferLengthUnit");
 			}
 			set
 			{
@@ -137,7 +137,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppCaptureSettings.IsAppCaptureEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppCaptureSettings.IsAppCaptureEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsAppCaptureEnabled");
 			}
 			set
 			{
@@ -151,7 +151,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppCaptureSettings.IsAudioCaptureEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppCaptureSettings.IsAudioCaptureEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsAudioCaptureEnabled");
 			}
 			set
 			{
@@ -165,7 +165,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppCaptureSettings.IsCpuConstrained is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppCaptureSettings.IsCpuConstrained");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsCpuConstrained");
 			}
 		}
 #endif
@@ -175,7 +175,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppCaptureSettings.IsCursorImageCaptureEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppCaptureSettings.IsCursorImageCaptureEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsCursorImageCaptureEnabled");
 			}
 			set
 			{
@@ -189,7 +189,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppCaptureSettings.IsDisabledByPolicy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppCaptureSettings.IsDisabledByPolicy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsDisabledByPolicy");
 			}
 		}
 #endif
@@ -199,7 +199,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppCaptureSettings.IsEchoCancellationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppCaptureSettings.IsEchoCancellationEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsEchoCancellationEnabled");
 			}
 			set
 			{
@@ -213,7 +213,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppCaptureSettings.IsGpuConstrained is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppCaptureSettings.IsGpuConstrained");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsGpuConstrained");
 			}
 		}
 #endif
@@ -223,7 +223,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppCaptureSettings.IsHistoricalCaptureEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppCaptureSettings.IsHistoricalCaptureEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsHistoricalCaptureEnabled");
 			}
 			set
 			{
@@ -237,7 +237,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppCaptureSettings.IsHistoricalCaptureOnBatteryAllowed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppCaptureSettings.IsHistoricalCaptureOnBatteryAllowed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsHistoricalCaptureOnBatteryAllowed");
 			}
 			set
 			{
@@ -251,7 +251,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppCaptureSettings.IsHistoricalCaptureOnWirelessDisplayAllowed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppCaptureSettings.IsHistoricalCaptureOnWirelessDisplayAllowed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsHistoricalCaptureOnWirelessDisplayAllowed");
 			}
 			set
 			{
@@ -265,7 +265,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppCaptureSettings.IsMemoryConstrained is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppCaptureSettings.IsMemoryConstrained");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsMemoryConstrained");
 			}
 		}
 #endif
@@ -275,7 +275,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppCaptureSettings.IsMicrophoneCaptureEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppCaptureSettings.IsMicrophoneCaptureEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsMicrophoneCaptureEnabled");
 			}
 			set
 			{
@@ -289,7 +289,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppCaptureSettings.IsMicrophoneCaptureEnabledByDefault is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppCaptureSettings.IsMicrophoneCaptureEnabledByDefault");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "bool AppCaptureSettings.IsMicrophoneCaptureEnabledByDefault");
 			}
 			set
 			{
@@ -303,7 +303,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan AppCaptureSettings.MaximumRecordLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20AppCaptureSettings.MaximumRecordLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "TimeSpan AppCaptureSettings.MaximumRecordLength");
 			}
 			set
 			{
@@ -317,7 +317,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AppCaptureSettings.MicrophoneGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AppCaptureSettings.MicrophoneGain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "double AppCaptureSettings.MicrophoneGain");
 			}
 			set
 			{
@@ -331,7 +331,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFolder AppCaptureSettings.ScreenshotDestinationFolder is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFolder%20AppCaptureSettings.ScreenshotDestinationFolder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "StorageFolder AppCaptureSettings.ScreenshotDestinationFolder");
 			}
 			set
 			{
@@ -345,7 +345,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AppCaptureSettings.SystemAudioGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AppCaptureSettings.SystemAudioGain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "double AppCaptureSettings.SystemAudioGain");
 			}
 			set
 			{
@@ -359,7 +359,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppCaptureVideoEncodingBitrateMode AppCaptureSettings.VideoEncodingBitrateMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppCaptureVideoEncodingBitrateMode%20AppCaptureSettings.VideoEncodingBitrateMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "AppCaptureVideoEncodingBitrateMode AppCaptureSettings.VideoEncodingBitrateMode");
 			}
 			set
 			{
@@ -373,7 +373,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppCaptureVideoEncodingFrameRateMode AppCaptureSettings.VideoEncodingFrameRateMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppCaptureVideoEncodingFrameRateMode%20AppCaptureSettings.VideoEncodingFrameRateMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "AppCaptureVideoEncodingFrameRateMode AppCaptureSettings.VideoEncodingFrameRateMode");
 			}
 			set
 			{
@@ -387,7 +387,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppCaptureVideoEncodingResolutionMode AppCaptureSettings.VideoEncodingResolutionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppCaptureVideoEncodingResolutionMode%20AppCaptureSettings.VideoEncodingResolutionMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureSettings", "AppCaptureVideoEncodingResolutionMode AppCaptureSettings.VideoEncodingResolutionMode");
 			}
 			set
 			{

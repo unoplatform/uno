@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattServiceProviderAdvertisementStatus GattServiceProvider.AdvertisementStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattServiceProviderAdvertisementStatus%20GattServiceProvider.AdvertisementStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProvider", "GattServiceProviderAdvertisementStatus GattServiceProvider.AdvertisementStatus");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattLocalService GattServiceProvider.Service is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattLocalService%20GattServiceProvider.Service");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProvider", "GattLocalService GattServiceProvider.Service");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProviderResult> CreateAsync(global::System.Guid serviceUuid)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattServiceProviderResult> GattServiceProvider.CreateAsync(Guid serviceUuid) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGattServiceProviderResult%3E%20GattServiceProvider.CreateAsync%28Guid%20serviceUuid%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProvider", "IAsyncOperation<GattServiceProviderResult> GattServiceProvider.CreateAsync(Guid serviceUuid)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

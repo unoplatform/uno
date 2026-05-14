@@ -14,7 +14,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccountProviderCommandInvokedHandler WebAccountProviderCommand.Invoked is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccountProviderCommandInvokedHandler%20WebAccountProviderCommand.Invoked");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.WebAccountProviderCommand", "WebAccountProviderCommandInvokedHandler WebAccountProviderCommand.Invoked");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccountProvider WebAccountProviderCommand.WebAccountProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccountProvider%20WebAccountProviderCommand.WebAccountProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.WebAccountProviderCommand", "WebAccountProvider WebAccountProviderCommand.WebAccountProvider");
 			}
 		}
 #endif

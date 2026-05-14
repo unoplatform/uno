@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int PhoneVoicemail.MessageCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20PhoneVoicemail.MessageCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneVoicemail", "int PhoneVoicemail.MessageCount");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneVoicemail.Number is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneVoicemail.Number");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneVoicemail", "string PhoneVoicemail.Number");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneVoicemailType PhoneVoicemail.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneVoicemailType%20PhoneVoicemail.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneVoicemail", "PhoneVoicemailType PhoneVoicemail.Type");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.Calls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DialVoicemailAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction PhoneVoicemail.DialVoicemailAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20PhoneVoicemail.DialVoicemailAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneVoicemail", "IAsyncAction PhoneVoicemail.DialVoicemailAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneVoicemail.MessageCount.get

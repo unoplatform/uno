@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MediaBreak> MediaBreakSchedule.MidrollBreaks is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaBreak%3E%20MediaBreakSchedule.MidrollBreaks");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakSchedule", "IReadOnlyList<MediaBreak> MediaBreakSchedule.MidrollBreaks");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackItem MediaBreakSchedule.PlaybackItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackItem%20MediaBreakSchedule.PlaybackItem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakSchedule", "MediaPlaybackItem MediaBreakSchedule.PlaybackItem");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaBreak MediaBreakSchedule.PostrollBreak is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaBreak%20MediaBreakSchedule.PostrollBreak");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakSchedule", "MediaBreak MediaBreakSchedule.PostrollBreak");
 			}
 			set
 			{
@@ -53,7 +53,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaBreak MediaBreakSchedule.PrerollBreak is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaBreak%20MediaBreakSchedule.PrerollBreak");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakSchedule", "MediaBreak MediaBreakSchedule.PrerollBreak");
 			}
 			set
 			{
