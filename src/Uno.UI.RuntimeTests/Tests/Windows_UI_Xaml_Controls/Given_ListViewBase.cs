@@ -1585,6 +1585,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		// Flaky on Skia Android - https://github.com/unoplatform/uno/issues/9080
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)]
 #if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
 #endif
@@ -2216,6 +2218,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		// Flaky on Skia Android - https://github.com/unoplatform/uno/issues/9080
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)]
 #if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
 #endif
