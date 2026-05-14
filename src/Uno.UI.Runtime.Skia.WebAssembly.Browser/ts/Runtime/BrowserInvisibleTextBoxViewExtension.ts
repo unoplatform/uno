@@ -9,6 +9,7 @@
 		private static acceptsReturn: boolean;
 		private static isComposing: boolean;
 		private static suppressNextInput: boolean;
+		private static enterHandledByKeyDown: boolean;
 
 		private static waitingAsyncOnSelectionChange: boolean;
 		private static nextSelectionStart: number;
@@ -167,9 +168,13 @@
 				}
 
 				// Allow Enter key to propagate when the TextBox doesn't accept returns
+				// Desktop/iOS path: keydown is the reliable signal; let it bubble to document so
+				// BrowserKeyboardInputSource raises the managed KeyDown. The flag prevents the
+				// keyup branch below from dispatching a duplicate OnEnterKeyPressed.
 				// This enables focus navigation (e.g., Uno.Toolkit's AutoFocusNext) on mobile browsers
 				if ((ev.key === "Enter" || ev.keyCode === 13) && !acceptsReturn) {
 					// Don't call preventDefault() to allow the key event to propagate to document listeners
+					BrowserInvisibleTextBoxViewExtension.enterHandledByKeyDown = true;
 					return;
 				}
 
@@ -187,6 +192,22 @@
 			});
 
 			input.addEventListener("keyup", (ev: KeyboardEvent) => {
+				// Android virtual keyboards (Gboard/SwiftKey/Samsung/AOSP) report keydown
+				// with keyCode 229 ("Unidentified") for Enter, which is stopPropagation'd
+				// above so it never reaches BrowserKeyboardInputSource. They DO report keyup
+				// with key === "Enter" though - use that to raise the managed KeyDown so
+				// focus-navigation patterns (Uno.Toolkit AutoFocusNext, FocusManager) work
+				// on Android browsers. The flag guards against double-dispatch on desktop/iOS,
+				// where the keydown branch already routed Enter through the document listener.
+				if (!acceptsReturn
+					&& ev.key === "Enter"
+					&& !BrowserInvisibleTextBoxViewExtension.enterHandledByKeyDown
+					&& !ev.isComposing) {
+					ev.preventDefault();
+					BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressed();
+				}
+				BrowserInvisibleTextBoxViewExtension.enterHandledByKeyDown = false;
+
 				if (BrowserInvisibleTextBoxViewExtension.isComposing || ev.keyCode === BrowserInvisibleTextBoxViewExtension.ANDROID_IME_KEYCODE) {
 					ev.stopPropagation();
 				}
