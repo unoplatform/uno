@@ -29,7 +29,7 @@ public sealed partial class AlcContentHost : ContentControl
 
 	/// <summary>
 	/// Raised after <see cref="OnContentChanged"/> completes. Allows hosting code
-	/// (e.g. Studio Live's <c>AppBinaryLoader</c>) to observe inner-app content
+	/// (e.g. an outer-app binary loader) to observe inner-app content
 	/// transitions without subclassing.
 	/// </summary>
 	public event EventHandler<EventArgs>? ContentChanged;

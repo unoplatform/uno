@@ -148,7 +148,7 @@ public class Given_CliManager
 			var workspace = Path.Combine(temporaryDirectory, "src");
 			Directory.CreateDirectory(workspace);
 			await File.WriteAllTextAsync(Path.Combine(workspace, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.1"}}""");
-			await File.WriteAllTextAsync(Path.Combine(workspace, "StudioLive.slnx"), string.Empty);
+			await File.WriteAllTextAsync(Path.Combine(workspace, "MyApp.slnx"), string.Empty);
 
 			var services = new ServiceCollection()
 				.AddLogging(builder => builder.SetMinimumLevel(LogLevel.None))
@@ -178,7 +178,7 @@ public class Given_CliManager
 			var root = document.RootElement;
 
 			root.GetProperty("effectiveWorkspaceDirectory").GetString().Should().Be(workspace);
-			root.GetProperty("selectedSolutionPath").GetString().Should().Be(Path.Combine(workspace, "StudioLive.slnx"));
+			root.GetProperty("selectedSolutionPath").GetString().Should().Be(Path.Combine(workspace, "MyApp.slnx"));
 			root.GetProperty("resolutionKind").GetString().Should().Be("AutoDiscovered");
 			root.GetProperty("discoveredSolutions").ValueKind.Should().Be(JsonValueKind.Null);
 		}

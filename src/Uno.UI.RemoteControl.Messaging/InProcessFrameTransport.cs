@@ -129,7 +129,7 @@ internal sealed class InProcessFrameTransport : IFrameTransport
 				// Nothing to wake — the endpoint is gone, so swallowing the exception
 				// is safe. This also stops the throw from propagating up
 				// MarkRemoteClosed → CloseAsync → InProcessFrameTransport.CloseAsync,
-				// which in Studio Live's AppBinaryLoader.StopActiveApplicationAsync
+				// which in host scenarios that stop the inner app asynchronously
 				// previously left the in-process broker mid-teardown and prevented
 				// the next ALC's RemoteControlClient from establishing a transport.
 			}

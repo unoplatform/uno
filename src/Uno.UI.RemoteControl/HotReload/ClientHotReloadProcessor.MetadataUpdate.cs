@@ -370,7 +370,7 @@ partial class ClientHotReloadProcessor
 
 			FrameworkElement? rootElement = null;
 #if HAS_UNO || HAS_UNO_WINUI
-			// For secondary ALC windows (e.g. Studio Live inner app), start scanning
+			// For secondary ALC windows (e.g. an inner app loaded by a host), start scanning
 			// from the window's content directly — it resolves to the AlcContentHost
 			// subtree, scoping the update to the inner app only.
 			// For normal windows, start from the full visual tree root.

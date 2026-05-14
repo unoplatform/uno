@@ -260,7 +260,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 
 	/// <summary>
 	/// Pre-configures options for the next <see cref="Initialize(Type)"/> call.
-	/// Used by Studio Live to inject a DevServer transport and specify that
+	/// Used by host applications to inject a DevServer transport and specify that
 	/// the nested app should be the default instance in its ALC.
 	/// </summary>
 	/// <param name="options">
