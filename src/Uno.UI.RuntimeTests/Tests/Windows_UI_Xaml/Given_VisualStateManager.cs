@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Shapes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
@@ -228,6 +229,257 @@ public partial class Given_VisualStateManager
 
 		await UITestHelper.Load(contentControl, control => control.IsLoaded);
 		Assert.AreEqual("MyVisualState2", uc.VisualStateOnFirstMeasure?.Name);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22055")]
+	public async Task When_StateTrigger_Changes_State_Events_Fire_In_Order()
+	{
+		var grid = new Grid { Width = 100, Height = 100 };
+
+		var narrowTrigger = new AdaptiveTrigger { MinWindowWidth = 0 };
+		var wideTrigger = new AdaptiveTrigger { MinWindowWidth = 100000 };
+
+		var narrowState = new VisualState { Name = "NarrowState" };
+		narrowState.StateTriggers.Add(narrowTrigger);
+
+		var wideState = new VisualState { Name = "WideState" };
+		wideState.StateTriggers.Add(wideTrigger);
+
+		var group = new VisualStateGroup();
+		group.States.Add(narrowState);
+		group.States.Add(wideState);
+
+		var events = new List<string>();
+		group.CurrentStateChanging += (s, e) => events.Add($"CHANGING:{e.OldState?.Name}->{e.NewState?.Name}");
+		group.CurrentStateChanged += (s, e) => events.Add($"CHANGED:{e.OldState?.Name}->{e.NewState?.Name}");
+
+		VisualStateManager.SetVisualStateGroups(grid, new List<VisualStateGroup> { group });
+
+		await UITestHelper.Load(grid);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// NarrowState should be active initially (MinWindowWidth=0 always matches)
+		Assert.AreEqual("NarrowState", group.CurrentState?.Name, "Initial state should be NarrowState");
+
+		// Clear events from initial state setup
+		events.Clear();
+
+		// Now trigger WideState by lowering its threshold so it wins
+		wideTrigger.MinWindowWidth = 1;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual("WideState", group.CurrentState?.Name, "State should have changed to WideState");
+
+		// Verify both events fired
+		Assert.IsTrue(events.Count >= 2, $"Expected at least 2 events, got {events.Count}: {string.Join(", ", events)}");
+
+		// Verify CHANGING fires before CHANGED
+		var changingIndex = events.FindIndex(e => e.StartsWith("CHANGING:"));
+		var changedIndex = events.FindIndex(e => e.StartsWith("CHANGED:"));
+		Assert.IsTrue(changingIndex >= 0, "CurrentStateChanging should have fired");
+		Assert.IsTrue(changedIndex >= 0, "CurrentStateChanged should have fired");
+		Assert.IsTrue(changingIndex < changedIndex, "CurrentStateChanging should fire before CurrentStateChanged");
+
+		// Verify the events reference correct states
+		Assert.AreEqual("CHANGING:NarrowState->WideState", events[changingIndex]);
+		Assert.AreEqual("CHANGED:NarrowState->WideState", events[changedIndex]);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22055")]
+	public async Task When_StateTrigger_Re_Evaluation_Runs_VisualTransition_And_Applies_Setters()
+	{
+		var border = new Border
+		{
+			Width = 100,
+			Height = 100,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.CornflowerBlue),
+			Opacity = 1.0,
+		};
+
+		var narrowTrigger = new AdaptiveTrigger { MinWindowWidth = 0 };
+		var wideTrigger = new AdaptiveTrigger { MinWindowWidth = 100000 };
+
+		var narrowState = new VisualState { Name = "NarrowState" };
+		narrowState.StateTriggers.Add(narrowTrigger);
+		narrowState.Setters.Add(new Setter { Target = new TargetPropertyPath(border, new PropertyPath("Opacity")), Value = 0.5 });
+
+		var wideState = new VisualState { Name = "WideState" };
+		wideState.StateTriggers.Add(wideTrigger);
+		wideState.Setters.Add(new Setter { Target = new TargetPropertyPath(border, new PropertyPath("Opacity")), Value = 1.0 });
+
+		var transitionAnim = new DoubleAnimation
+		{
+			To = 0.2,
+			Duration = new Duration(TimeSpan.FromMilliseconds(400)),
+			EnableDependentAnimation = true,
+		};
+		Storyboard.SetTarget(transitionAnim, border);
+		Storyboard.SetTargetProperty(transitionAnim, "Opacity");
+		var transitionStoryboard = new Storyboard();
+		transitionStoryboard.Children.Add(transitionAnim);
+
+		var transition = new VisualTransition
+		{
+			From = "NarrowState",
+			To = "WideState",
+			Storyboard = transitionStoryboard,
+		};
+
+		var transitionCompleted = false;
+		transitionStoryboard.Completed += (s, e) => transitionCompleted = true;
+
+		var grid = new Grid();
+		grid.Children.Add(border);
+		var group = new VisualStateGroup();
+		group.States.Add(narrowState);
+		group.States.Add(wideState);
+		group.Transitions.Add(transition);
+		VisualStateManager.SetVisualStateGroups(grid, new List<VisualStateGroup> { group });
+
+		await UITestHelper.Load(grid);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual("NarrowState", group.CurrentState?.Name, "Should start in NarrowState");
+		Assert.IsFalse(transitionCompleted, "Transition should not run on initial evaluation");
+		Assert.AreEqual(0.5, border.Opacity, 0.01, "NarrowState setter should apply on initial evaluation");
+
+		// Trigger the transition
+		wideTrigger.MinWindowWidth = 1;
+
+		// During the transition (well before the 400ms duration completes), the animated Opacity
+		// should be heading toward 0.2 — i.e. deviating below NarrowState's setter value (0.5).
+		await TestServices.WindowHelper.WaitFor(() => border.Opacity < 0.45, timeoutMS: 1000);
+		Assert.IsTrue(
+			border.Opacity < 0.45,
+			$"Opacity should be animating toward 0.2 during the transition, but was {border.Opacity}. " +
+			"This indicates the VisualTransition storyboard is not running.");
+
+		// After the transition completes, the WideState setter should have been applied.
+		// The setter value (1.0) is distinct from both the pre-transition value (0.5)
+		// and the transition animation's target (0.2), so this assertion genuinely validates
+		// that the target state's setters run after the transition.
+		await TestServices.WindowHelper.WaitFor(() => transitionCompleted, timeoutMS: 2000);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual("WideState", group.CurrentState?.Name);
+		Assert.IsTrue(transitionCompleted, "VisualTransition storyboard should have completed");
+		Assert.AreEqual(1.0, border.Opacity, 0.01, "WideState setter should be applied after the transition");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22055")]
+	public async Task When_StateTrigger_Initial_Evaluation_Does_Not_Run_Transitions()
+	{
+		// Matches WinUI behavior: the initial trigger evaluation applies the state
+		// without running VisualTransitions (useTransitions=false).
+		var border = new Border
+		{
+			Width = 100,
+			Height = 100,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.CornflowerBlue),
+			Opacity = 1.0,
+		};
+
+		var narrowTrigger = new AdaptiveTrigger { MinWindowWidth = 0 };
+
+		var narrowState = new VisualState { Name = "NarrowState" };
+		narrowState.StateTriggers.Add(narrowTrigger);
+		narrowState.Setters.Add(new Setter { Target = new TargetPropertyPath(border, new PropertyPath("Opacity")), Value = 1.0 });
+
+		// Transition matching the initial state (From unset, To=NarrowState) with a long duration.
+		// If it runs, Opacity would animate toward 0.1 for 2 seconds.
+		var transitionAnim = new DoubleAnimation
+		{
+			To = 0.1,
+			Duration = new Duration(TimeSpan.FromSeconds(2)),
+			EnableDependentAnimation = true,
+		};
+		Storyboard.SetTarget(transitionAnim, border);
+		Storyboard.SetTargetProperty(transitionAnim, "Opacity");
+		var transitionStoryboard = new Storyboard();
+		transitionStoryboard.Children.Add(transitionAnim);
+
+		var transition = new VisualTransition
+		{
+			To = "NarrowState",
+			Storyboard = transitionStoryboard,
+		};
+
+		var transitionCompleted = false;
+		transitionStoryboard.Completed += (s, e) => transitionCompleted = true;
+
+		var grid = new Grid();
+		grid.Children.Add(border);
+		var group = new VisualStateGroup();
+		group.States.Add(narrowState);
+		group.Transitions.Add(transition);
+		VisualStateManager.SetVisualStateGroups(grid, new List<VisualStateGroup> { group });
+
+		await UITestHelper.Load(grid);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual("NarrowState", group.CurrentState?.Name);
+
+		// Pump the dispatcher for a short period and assert the property never starts
+		// animating away from the state's setter value during initial evaluation.
+		for (var i = 0; i < 5; i++)
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreEqual(1.0, border.Opacity, 0.01,
+				$"Opacity should remain the setter's value (1.0) on initial evaluation, not animating. Actual: {border.Opacity}");
+		}
+
+		// Also poll for any deviation from the setter value within a larger observation window.
+		// WaitFor throws AssertFailedException("Timed out ...") when the condition never becomes true,
+		// which is what we want here — the condition (opacity deviated) should never become true.
+		try
+		{
+			await TestServices.WindowHelper.WaitFor(() => border.Opacity < 0.99, timeoutMS: 500);
+			Assert.Fail(
+				$"Transition storyboard should not start on initial evaluation. Opacity deviated from the setter value and became {border.Opacity}.");
+		}
+		catch (AssertFailedException ex) when (ex.Message.Contains("Timed out"))
+		{
+			// Expected: opacity never deviated from the setter value within the observation window.
+		}
+
+		Assert.IsFalse(transitionCompleted,
+			"Transition storyboard should not have been started on initial evaluation.");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22055")]
+	public async Task When_StateTrigger_Changes_State_Events_Fire_On_Initial_Load()
+	{
+		// Matches WinUI: CurrentStateChanging / CurrentStateChanged fire even on initial trigger evaluation.
+		var grid = new Grid { Width = 100, Height = 100 };
+
+		var narrowTrigger = new AdaptiveTrigger { MinWindowWidth = 0 };
+
+		var narrowState = new VisualState { Name = "NarrowState" };
+		narrowState.StateTriggers.Add(narrowTrigger);
+
+		var group = new VisualStateGroup();
+		group.States.Add(narrowState);
+
+		var events = new List<string>();
+		group.CurrentStateChanging += (s, e) => events.Add($"CHANGING:{e.OldState?.Name ?? "null"}->{e.NewState?.Name ?? "null"}");
+		group.CurrentStateChanged += (s, e) => events.Add($"CHANGED:{e.OldState?.Name ?? "null"}->{e.NewState?.Name ?? "null"}");
+
+		VisualStateManager.SetVisualStateGroups(grid, new List<VisualStateGroup> { group });
+
+		await UITestHelper.Load(grid);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual("NarrowState", group.CurrentState?.Name);
+
+		var changingIndex = events.FindIndex(e => e.StartsWith("CHANGING:null->NarrowState"));
+		var changedIndex = events.FindIndex(e => e.StartsWith("CHANGED:null->NarrowState"));
+		Assert.IsTrue(changingIndex >= 0, $"CurrentStateChanging should fire on initial evaluation. Events: {string.Join(", ", events)}");
+		Assert.IsTrue(changedIndex >= 0, $"CurrentStateChanged should fire on initial evaluation. Events: {string.Join(", ", events)}");
+		Assert.IsTrue(changingIndex < changedIndex, "CurrentStateChanging should fire before CurrentStateChanged");
 	}
 
 	[TestMethod]
