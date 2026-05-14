@@ -109,9 +109,14 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				if (Content is UIElement contentElt && contentElt.Visual is { } visual)
+				if (Content is UIElement contentElt && contentElt.Visual is { } visual
+					&& visual.TryGetAnimationController(nameof(Visual.AnchorPoint)) is { } controller)
 				{
-					return visual.TryGetAnimationController(nameof(Visual.AnchorPoint)) is not null;
+					// A KeyFrameAnimation that completed naturally stays in the owning
+					// CompositionObject's animation dictionary (only StopAnimation removes it),
+					// so the controller's mere presence is not a reliable "in progress" signal.
+					// Check the remaining time instead.
+					return controller.Remaining > TimeSpan.Zero;
 				}
 				return false;
 			}

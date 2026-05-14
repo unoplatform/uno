@@ -34,18 +34,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// stable across measure passes where the running-average element size shifted (typical when
 		// a tall item enters or leaves the 100-slot estimation buffer during wheel scroll). Without
 		// this, avg fluctuations translate directly into items repositioning in IR-local space
-		// because each item's IR-local Y = algorithm Y - layout origin Y. Reset on anchor-jump
-		// (FlowLayoutAlgorithm.Uno_LastMeasureDidAnchorJump) so MakeAnchor / disconnected window
-		// rebuild re-bases the layout origin, and on back-to-top (firstRealizedItemIndex == 0) so
-		// the natural extent.MajorStart=0 is re-established at offset 0.
+		// because each item's IR-local Y = algorithm Y - layout origin Y. Released on back-to-top
+		// (firstRealizedItemIndex == 0) so the natural extent.MajorStart=0 is re-established at
+		// offset 0, and when realized items extend above the stable origin.
 		internal float Uno_LastReportedExtentMajorStart = float.NaN;
-		// Counter that opts subsequent measures out of stable-MajorStart caching so the layout
-		// cascade following a MakeAnchor (scroll-to-bottom / BringIntoView landing on a
-		// disconnected window) lets each measure track the formula-based origin until items
-		// settle. Decremented on every measure until 0; reset to a small N every time
-		// FlowLayoutAlgorithm.Uno_LastMeasureDidAnchorJump is observed. Wheel-scroll measures
-		// never trigger this so the stable-MajorStart fix continues to suppress flicker there.
-		internal int Uno_PostAnchorJumpRefreshCountdown;
 		// Uno workaround [END]
 
 		public StackLayoutState()

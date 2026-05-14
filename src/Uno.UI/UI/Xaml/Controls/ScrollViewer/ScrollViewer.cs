@@ -681,34 +681,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			ViewportArrangeSize = finalSize;
 
-			return AnchoringArrangeOverride(finalSize, size =>
-			{
-				var arranged = base.ArrangeOverride(size);
-				// The legacy in-arrange TrimOverscroll runs against STALE ExtentHeight/Width
-				// (UpdateDimensionProperties hasn't refreshed the cached values yet at this
-				// point), so over-clamping is a real risk. Two cases need it suppressed:
-				//   (1) An offset intent is armed — UpdateDimensionProperties will run the
-				//       WinUI-parity recompute against fresh extent values, so we'd otherwise
-				//       double-clamp.
-				//   (2) The SV's own viewport (ActualWidth/Height) didn't change since the last
-				//       trim — i.e. the layout pass was driven by content/realization changes,
-				//       not a SV resize. Wheel-driven cascades fall here, and clamping during
-				//       a wheel sequence is the visible "fight" the user reports.
-				if (_verticalOffsetIntent is null && _horizontalOffsetIntent is null)
-				{
-					var vpHeight = (_presenter as IFrameworkElement)?.ActualHeight ?? ActualHeight;
-					var vpWidth = (_presenter as IFrameworkElement)?.ActualWidth ?? ActualWidth;
-					var viewportChanged =
-						!NumericExtensions.AreClose(vpHeight, _lastTrimViewportHeight) ||
-						!NumericExtensions.AreClose(vpWidth, _lastTrimViewportWidth);
-					if (viewportChanged)
-					{
-						TrimOverscroll(Orientation.Horizontal);
-						TrimOverscroll(Orientation.Vertical);
-					}
-				}
-				return arranged;
-			});
+			return AnchoringArrangeOverride(finalSize, size => base.ArrangeOverride(size));
 		}
 
 		partial void TrimOverscroll(Orientation orientation);

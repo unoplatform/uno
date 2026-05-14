@@ -147,6 +147,7 @@ public class Given_ItemsRepeater_FastScroll
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __ANDROID__ || __IOS__ || __WASM__
 	[Ignore("Fails due to async native scrolling.")]
 #endif
@@ -247,6 +248,7 @@ public class Given_ItemsRepeater_FastScroll
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __ANDROID__ || __IOS__ || __WASM__
 	[Ignore("Fails due to async native scrolling.")]
 #endif
@@ -497,6 +499,7 @@ public class Given_ItemsRepeater_FastScroll
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __ANDROID__ || __IOS__ || __WASM__
 	[Ignore("Fails due to async native scrolling.")]
 #endif
