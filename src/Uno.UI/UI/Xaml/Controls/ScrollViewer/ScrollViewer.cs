@@ -51,6 +51,13 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ScrollViewer : ContentControl, IFrameworkTemplatePoolAware
 	{
+		/// <summary>
+		/// Returns true if this is the RootScrollViewer. Overridden by <see cref="RootScrollViewer"/>.
+		/// When true, suppresses pointer/keyboard/focus behaviors unless the SIP is showing.
+		/// </summary>
+		// TODO: WinUI also suppresses ShowIndicators() and skips dynamic scrollbar setting changes for RSV
+		internal virtual bool IsRootScrollViewer => false;
+
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
 		private bool m_isInConstantVelocityPan;
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
@@ -1656,6 +1663,12 @@ namespace Microsoft.UI.Xaml.Controls
 #if !__ANDROID__ && !__APPLE_UIKIT__ // ScrollContentPresenter.[Horizontal|Vertical]Offset not implemented on Android and iOS
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
+			// RootScrollViewer suppresses keyboard scrolling (matching WinUI ScrollViewer_Partial.cpp)
+			if (IsRootScrollViewer)
+			{
+				return;
+			}
+
 			base.OnKeyDown(args);
 
 			// On WASM, we could choose to scroll in the managed layer and suppress the native scrolling

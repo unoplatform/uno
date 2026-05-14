@@ -99,6 +99,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnPointerPressed(PointerRoutedEventArgs pArgs)
 		{
+			// RootScrollViewer suppresses pointer processing when SIP is not showing
+			// (matching WinUI ScrollViewer_Partial.cpp OnPointerPressed)
+			if (IsRootScrollViewer && this is RootScrollViewer rsv && !rsv.IsInputPaneShow)
+			{
+				return;
+			}
+
 			// If our templated parent is handling mouse button, we should not take
 			// focus away.  They're handling it, not us.
 			if (m_templatedParentHandlesMouseButton)

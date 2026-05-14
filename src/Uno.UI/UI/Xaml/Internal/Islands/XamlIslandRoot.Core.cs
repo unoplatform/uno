@@ -31,7 +31,11 @@ internal partial class XamlIslandRoot
 
 	private void SetPublicRootVisual(
 		UIElement? rootVisual,
+#if __SKIA__
+		RootScrollViewer? rootScrollViewer,
+#else
 		ScrollViewer? rootScrollViewer,
+#endif
 		ContentPresenter? contentPresenter) =>
 		_contentRoot.VisualTree.SetPublicRootVisual(rootVisual, rootScrollViewer, contentPresenter);
 
