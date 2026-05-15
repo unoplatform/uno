@@ -27,6 +27,14 @@ When upgrading to Uno Platform 6.4, make sure to update your IDE extension or pl
 - [Visual Studio Code extension](https://aka.platform.uno/vscode-extension-marketplace)
 - [Rider plugin](https://aka.platform.uno/rider-extension-marketplace)
 
+### .NET 10 is now the default
+
+**Uno Platform 6.4** aligns with the General Availability of **.NET 10 (LTS)**, released in November 2025, making it the stable and default target framework for new Uno Platform projects.
+
+- The project wizard and `dotnet new unoapp` now default to `net10.0`.
+- .NET 9 continues to be supported alongside .NET 10.
+- To upgrade an existing .NET 9 project to .NET 10, see our [migration guide](xref:Uno.Development.MigratingFromNet9ToNet10).
+
 ## Uno Platform 6.3
 
 **Uno Platform 6.3** introduces support for **.NET 10 RC1** and removes **.NET 8** targets.
