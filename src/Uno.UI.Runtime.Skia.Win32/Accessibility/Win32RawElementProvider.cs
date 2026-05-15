@@ -247,9 +247,9 @@ internal class Win32RawElementProvider :
 			{
 				var hr = Win32UIAutomationInterop.UiaHostProviderFromHwnd(_hwnd, out var hostProvider);
 
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Debug($"[UIA] HostRawElementProvider: hwnd=0x{_hwnd:X}, hr=0x{hr:X}, hostProvider={(hostProvider is not null ? "present" : "NULL")}");
+					this.Log().Trace($"[UIA] HostRawElementProvider: hwnd=0x{_hwnd:X}, hr=0x{hr:X}, hostProvider={(hostProvider is not null ? "present" : "NULL")}");
 				}
 
 				return hostProvider;
@@ -274,12 +274,12 @@ internal class Win32RawElementProvider :
 				_ => null,
 			};
 
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
 				var targetDesc = result is Win32RawElementProvider targetProvider
 					? targetProvider.DescribeElement()
 					: "(null)";
-				this.Log().Debug($"[UIA] Navigate({direction}) on {DescribeElement()} → {targetDesc}");
+				this.Log().Trace($"[UIA] Navigate({direction}) on {DescribeElement()} → {targetDesc}");
 			}
 
 			return result;
@@ -380,10 +380,10 @@ internal class Win32RawElementProvider :
 		{
 			var result = FindDeepestProviderAtPoint(x, y) ?? this;
 
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
 				var desc = result is Win32RawElementProvider p ? p.DescribeElement() : "self";
-				this.Log().Debug($"[UIA] ElementProviderFromPoint({x:F0}, {y:F0}) → {desc}");
+				this.Log().Trace($"[UIA] ElementProviderFromPoint({x:F0}, {y:F0}) → {desc}");
 			}
 
 			return result;
@@ -405,9 +405,9 @@ internal class Win32RawElementProvider :
 			var xamlRoot = _owner.XamlRoot;
 			if (xamlRoot is null)
 			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Debug($"[UIA] GetFocus: XamlRoot is null on {DescribeElement()}");
+					this.Log().Trace($"[UIA] GetFocus: XamlRoot is null on {DescribeElement()}");
 				}
 				return null;
 			}
@@ -483,7 +483,7 @@ internal class Win32RawElementProvider :
 			result = children.Count > 0 ? children : null;
 		}
 
-		if (this.Log().IsEnabled(LogLevel.Debug))
+		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
 			var count = result?.Count ?? 0;
 			var peerDesc = peer?.GetType().Name ?? "none";
@@ -501,7 +501,7 @@ internal class Win32RawElementProvider :
 				}
 				childNames = $" [{string.Join(", ", names)}]";
 			}
-			this.Log().Debug($"[UIA] GetAutomationChildren on {DescribeElement()} (peer={peerDesc}) → {count} children{childNames}");
+			this.Log().Trace($"[UIA] GetAutomationChildren on {DescribeElement()} (peer={peerDesc}) → {count} children{childNames}");
 		}
 
 		_cachedAutomationChildren = result;
