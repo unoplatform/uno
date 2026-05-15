@@ -14,7 +14,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong CompositionApiInformation.ApiVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20CompositionApiInformation.ApiVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionApiInformation", "ApiVersion");
 			}
 		}
 #endif

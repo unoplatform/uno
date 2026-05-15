@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Automation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ElementNotEnabledException() : base()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.ElementNotEnabledException", "ElementNotEnabledException.ElementNotEnabledException()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.ElementNotEnabledException", "ElementNotEnabledException()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.ElementNotEnabledException.ElementNotEnabledException()
@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Automation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ElementNotEnabledException(string message) : base(message)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.ElementNotEnabledException", "ElementNotEnabledException.ElementNotEnabledException(string message)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.ElementNotEnabledException", "ElementNotEnabledException(string message)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.ElementNotEnabledException.ElementNotEnabledException(string)
@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Automation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ElementNotEnabledException(string message, global::System.Exception innerException) : base(message, innerException)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.ElementNotEnabledException", "ElementNotEnabledException.ElementNotEnabledException(string message, Exception innerException)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.ElementNotEnabledException", "ElementNotEnabledException(string message, Exception innerException)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.ElementNotEnabledException.ElementNotEnabledException(string, System.Exception)

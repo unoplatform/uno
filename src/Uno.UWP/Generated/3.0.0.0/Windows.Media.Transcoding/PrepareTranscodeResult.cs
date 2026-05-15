@@ -19,7 +19,7 @@ namespace Windows.Media.Transcoding
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PrepareTranscodeResult.CanTranscode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrepareTranscodeResult.CanTranscode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.PrepareTranscodeResult", "CanTranscode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Transcoding
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TranscodeFailureReason PrepareTranscodeResult.FailureReason is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TranscodeFailureReason%20PrepareTranscodeResult.FailureReason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.PrepareTranscodeResult", "FailureReason");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Media.Transcoding
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncActionWithProgress<double> TranscodeAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncActionWithProgress<double> PrepareTranscodeResult.TranscodeAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncActionWithProgress%3Cdouble%3E%20PrepareTranscodeResult.TranscodeAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Transcoding.PrepareTranscodeResult", "TranscodeAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Transcoding.PrepareTranscodeResult.CanTranscode.get

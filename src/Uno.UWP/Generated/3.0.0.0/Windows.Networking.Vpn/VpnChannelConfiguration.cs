@@ -19,7 +19,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnChannelConfiguration.CustomField is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnChannelConfiguration.CustomField");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnChannelConfiguration", "CustomField");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<HostName> VpnChannelConfiguration.ServerHostNameList is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CHostName%3E%20VpnChannelConfiguration.ServerHostNameList");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnChannelConfiguration", "ServerHostNameList");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnChannelConfiguration.ServerServiceName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnChannelConfiguration.ServerServiceName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnChannelConfiguration", "ServerServiceName");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Uri> VpnChannelConfiguration.ServerUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CUri%3E%20VpnChannelConfiguration.ServerUris");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnChannelConfiguration", "ServerUris");
 			}
 		}
 #endif

@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Data
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public LoadMoreItemsResult(uint _Count)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Data.LoadMoreItemsResult", "LoadMoreItemsResult.LoadMoreItemsResult(uint _Count)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Data.LoadMoreItemsResult", "LoadMoreItemsResult(uint _Count)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.LoadMoreItemsResult(uint)

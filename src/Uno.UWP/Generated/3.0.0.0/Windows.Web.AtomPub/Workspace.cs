@@ -19,7 +19,7 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<SyndicationAttribute> Workspace.AttributeExtensions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CSyndicationAttribute%3E%20Workspace.AttributeExtensions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.Workspace", "AttributeExtensions");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri Workspace.BaseUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20Workspace.BaseUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.Workspace", "BaseUri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.Workspace", "Uri Workspace.BaseUri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.Workspace", "BaseUri");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ResourceCollection> Workspace.Collections is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CResourceCollection%3E%20Workspace.Collections");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.Workspace", "Collections");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ISyndicationNode> Workspace.ElementExtensions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CISyndicationNode%3E%20Workspace.ElementExtensions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.Workspace", "ElementExtensions");
 			}
 		}
 #endif
@@ -63,11 +63,11 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Workspace.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Workspace.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.Workspace", "Language");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.Workspace", "string Workspace.Language");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.Workspace", "Language");
 			}
 		}
 #endif
@@ -77,11 +77,11 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Workspace.NodeName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Workspace.NodeName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.Workspace", "NodeName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.Workspace", "string Workspace.NodeName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.Workspace", "NodeName");
 			}
 		}
 #endif
@@ -91,11 +91,11 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Workspace.NodeNamespace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Workspace.NodeNamespace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.Workspace", "NodeNamespace");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.Workspace", "string Workspace.NodeNamespace");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.Workspace", "NodeNamespace");
 			}
 		}
 #endif
@@ -105,11 +105,11 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Workspace.NodeValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Workspace.NodeValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.Workspace", "NodeValue");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.Workspace", "string Workspace.NodeValue");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.Workspace", "NodeValue");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ISyndicationText Workspace.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ISyndicationText%20Workspace.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.Workspace", "Title");
 			}
 		}
 #endif
@@ -127,7 +127,7 @@ namespace Windows.Web.AtomPub
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.XmlDocument GetXmlDocument(global::Windows.Web.Syndication.SyndicationFormat format)
 		{
-			throw new global::System.NotImplementedException("The member XmlDocument Workspace.GetXmlDocument(SyndicationFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XmlDocument%20Workspace.GetXmlDocument%28SyndicationFormat%20format%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.Workspace", "GetXmlDocument(SyndicationFormat format)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.AtomPub.Workspace.AttributeExtensions.get

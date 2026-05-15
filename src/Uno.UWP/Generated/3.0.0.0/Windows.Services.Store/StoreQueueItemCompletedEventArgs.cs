@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StoreQueueItemStatus StoreQueueItemCompletedEventArgs.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StoreQueueItemStatus%20StoreQueueItemCompletedEventArgs.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreQueueItemCompletedEventArgs", "Status");
 			}
 		}
 #endif

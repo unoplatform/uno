@@ -19,11 +19,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member OpticalImageStabilizationMode OpticalImageStabilizationControl.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=OpticalImageStabilizationMode%20OpticalImageStabilizationControl.Mode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.OpticalImageStabilizationControl", "Mode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.OpticalImageStabilizationControl", "OpticalImageStabilizationMode OpticalImageStabilizationControl.Mode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.OpticalImageStabilizationControl", "Mode");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool OpticalImageStabilizationControl.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20OpticalImageStabilizationControl.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.OpticalImageStabilizationControl", "Supported");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<OpticalImageStabilizationMode> OpticalImageStabilizationControl.SupportedModes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3COpticalImageStabilizationMode%3E%20OpticalImageStabilizationControl.SupportedModes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.OpticalImageStabilizationControl", "SupportedModes");
 			}
 		}
 #endif

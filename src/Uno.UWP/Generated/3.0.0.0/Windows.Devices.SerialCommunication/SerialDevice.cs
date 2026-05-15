@@ -19,11 +19,11 @@ namespace Windows.Devices.SerialCommunication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SerialDevice.BaudRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SerialDevice.BaudRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.SerialDevice", "BaudRate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "uint SerialDevice.BaudRate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "BaudRate");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Devices.SerialCommunication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SerialDevice.BreakSignalState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SerialDevice.BreakSignalState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.SerialDevice", "BreakSignalState");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "bool SerialDevice.BreakSignalState");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "BreakSignalState");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Devices.SerialCommunication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SerialDevice.BytesReceived is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SerialDevice.BytesReceived");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.SerialDevice", "BytesReceived");
 			}
 		}
 #endif
@@ -57,7 +57,7 @@ namespace Windows.Devices.SerialCommunication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SerialDevice.CarrierDetectState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SerialDevice.CarrierDetectState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.SerialDevice", "CarrierDetectState");
 			}
 		}
 #endif
@@ -67,7 +67,7 @@ namespace Windows.Devices.SerialCommunication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SerialDevice.ClearToSendState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SerialDevice.ClearToSendState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.SerialDevice", "ClearToSendState");
 			}
 		}
 #endif
@@ -77,11 +77,11 @@ namespace Windows.Devices.SerialCommunication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort SerialDevice.DataBits is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20SerialDevice.DataBits");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.SerialDevice", "DataBits");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "ushort SerialDevice.DataBits");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "DataBits");
 			}
 		}
 #endif
@@ -91,7 +91,7 @@ namespace Windows.Devices.SerialCommunication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SerialDevice.DataSetReadyState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SerialDevice.DataSetReadyState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.SerialDevice", "DataSetReadyState");
 			}
 		}
 #endif
@@ -101,11 +101,11 @@ namespace Windows.Devices.SerialCommunication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SerialHandshake SerialDevice.Handshake is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SerialHandshake%20SerialDevice.Handshake");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.SerialDevice", "Handshake");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "SerialHandshake SerialDevice.Handshake");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "Handshake");
 			}
 		}
 #endif
@@ -115,7 +115,7 @@ namespace Windows.Devices.SerialCommunication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IInputStream SerialDevice.InputStream is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IInputStream%20SerialDevice.InputStream");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.SerialDevice", "InputStream");
 			}
 		}
 #endif
@@ -125,11 +125,11 @@ namespace Windows.Devices.SerialCommunication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SerialDevice.IsDataTerminalReadyEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SerialDevice.IsDataTerminalReadyEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.SerialDevice", "IsDataTerminalReadyEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "bool SerialDevice.IsDataTerminalReadyEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "IsDataTerminalReadyEnabled");
 			}
 		}
 #endif
@@ -139,11 +139,11 @@ namespace Windows.Devices.SerialCommunication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SerialDevice.IsRequestToSendEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SerialDevice.IsRequestToSendEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.SerialDevice", "IsRequestToSendEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "bool SerialDevice.IsRequestToSendEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "IsRequestToSendEnabled");
 			}
 		}
 #endif
@@ -153,7 +153,7 @@ namespace Windows.Devices.SerialCommunication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IOutputStream SerialDevice.OutputStream is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IOutputStream%20SerialDevice.OutputStream");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.SerialDevice", "OutputStream");
 			}
 		}
 #endif
@@ -163,11 +163,11 @@ namespace Windows.Devices.SerialCommunication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SerialParity SerialDevice.Parity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SerialParity%20SerialDevice.Parity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.SerialDevice", "Parity");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "SerialParity SerialDevice.Parity");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "Parity");
 			}
 		}
 #endif
@@ -177,7 +177,7 @@ namespace Windows.Devices.SerialCommunication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SerialDevice.PortName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SerialDevice.PortName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.SerialDevice", "PortName");
 			}
 		}
 #endif
@@ -187,11 +187,11 @@ namespace Windows.Devices.SerialCommunication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SerialDevice.ReadTimeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SerialDevice.ReadTimeout");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.SerialDevice", "ReadTimeout");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "TimeSpan SerialDevice.ReadTimeout");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "ReadTimeout");
 			}
 		}
 #endif
@@ -201,11 +201,11 @@ namespace Windows.Devices.SerialCommunication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SerialStopBitCount SerialDevice.StopBits is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SerialStopBitCount%20SerialDevice.StopBits");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.SerialDevice", "StopBits");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "SerialStopBitCount SerialDevice.StopBits");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "StopBits");
 			}
 		}
 #endif
@@ -215,7 +215,7 @@ namespace Windows.Devices.SerialCommunication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort SerialDevice.UsbProductId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20SerialDevice.UsbProductId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.SerialDevice", "UsbProductId");
 			}
 		}
 #endif
@@ -225,7 +225,7 @@ namespace Windows.Devices.SerialCommunication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort SerialDevice.UsbVendorId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20SerialDevice.UsbVendorId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.SerialDevice", "UsbVendorId");
 			}
 		}
 #endif
@@ -235,11 +235,11 @@ namespace Windows.Devices.SerialCommunication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SerialDevice.WriteTimeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SerialDevice.WriteTimeout");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.SerialDevice", "WriteTimeout");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "TimeSpan SerialDevice.WriteTimeout");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "WriteTimeout");
 			}
 		}
 #endif
@@ -247,28 +247,28 @@ namespace Windows.Devices.SerialCommunication
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string SerialDevice.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SerialDevice.GetDeviceSelector%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.SerialDevice", "GetDeviceSelector()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector(string portName)
 		{
-			throw new global::System.NotImplementedException("The member string SerialDevice.GetDeviceSelector(string portName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SerialDevice.GetDeviceSelector%28string%20portName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.SerialDevice", "GetDeviceSelector(string portName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelectorFromUsbVidPid(ushort vendorId, ushort productId)
 		{
-			throw new global::System.NotImplementedException("The member string SerialDevice.GetDeviceSelectorFromUsbVidPid(ushort vendorId, ushort productId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SerialDevice.GetDeviceSelectorFromUsbVidPid%28ushort%20vendorId%2C%20ushort%20productId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.SerialDevice", "GetDeviceSelectorFromUsbVidPid(ushort vendorId, ushort productId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SerialCommunication.SerialDevice> FromIdAsync(string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SerialDevice> SerialDevice.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSerialDevice%3E%20SerialDevice.FromIdAsync%28string%20deviceId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SerialCommunication.SerialDevice", "FromIdAsync(string deviceId)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.ErrorReceived.add
@@ -279,7 +279,7 @@ namespace Windows.Devices.SerialCommunication
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "void SerialDevice.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.BaudRate.get
@@ -318,12 +318,12 @@ namespace Windows.Devices.SerialCommunication
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "event TypedEventHandler<SerialDevice, ErrorReceivedEventArgs> SerialDevice.ErrorReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "event ErrorReceived");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "event TypedEventHandler<SerialDevice, ErrorReceivedEventArgs> SerialDevice.ErrorReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "event ErrorReceived");
 			}
 		}
 #endif
@@ -334,12 +334,12 @@ namespace Windows.Devices.SerialCommunication
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "event TypedEventHandler<SerialDevice, PinChangedEventArgs> SerialDevice.PinChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "event PinChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "event TypedEventHandler<SerialDevice, PinChangedEventArgs> SerialDevice.PinChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "event PinChanged");
 			}
 		}
 #endif

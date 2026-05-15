@@ -14,11 +14,11 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? SystemBackdropConfiguration.HighContrastBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20SystemBackdropConfiguration.HighContrastBackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "HighContrastBackgroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "Color? SystemBackdropConfiguration.HighContrastBackgroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "HighContrastBackgroundColor");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SystemBackdropConfiguration.IsHighContrast is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemBackdropConfiguration.IsHighContrast");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "IsHighContrast");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "bool SystemBackdropConfiguration.IsHighContrast");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "IsHighContrast");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SystemBackdropConfiguration.IsInputActive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemBackdropConfiguration.IsInputActive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "IsInputActive");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "bool SystemBackdropConfiguration.IsInputActive");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "IsInputActive");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemBackdropTheme SystemBackdropConfiguration.Theme is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemBackdropTheme%20SystemBackdropConfiguration.Theme");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "Theme");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "SystemBackdropTheme SystemBackdropConfiguration.Theme");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "Theme");
 			}
 		}
 #endif
@@ -68,7 +68,7 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SystemBackdropConfiguration()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "SystemBackdropConfiguration.SystemBackdropConfiguration()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration", "SystemBackdropConfiguration()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration.SystemBackdropConfiguration()

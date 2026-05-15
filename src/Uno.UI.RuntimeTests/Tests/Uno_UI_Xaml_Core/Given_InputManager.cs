@@ -22,6 +22,7 @@ using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Toolkit.DevTools.Input;
+using MUXControlsTestApp.Utilities;
 
 #if HAS_UNO_WINUI
 using GestureRecognizer = Microsoft.UI.Input.GestureRecognizer;
@@ -1398,14 +1399,14 @@ public class Given_InputManager
 #elif !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
-	[DataRow(ManipulationModes.None)]
-	[DataRow(ManipulationModes.TranslateX)]
-	[DataRow(ManipulationModes.TranslateY)]
-	[DataRow(ManipulationModes.TranslateRailsX)]
-	[DataRow(ManipulationModes.TranslateRailsY)]
-	[DataRow(ManipulationModes.TranslateInertia)]
-	[DataRow(ManipulationModes.All)] // Does **NOT** include System
-	public async Task When_DirectManipulationDisabled(ManipulationModes mode)
+	[DataRow(ManipulationModes.None, false)]
+	[DataRow(ManipulationModes.TranslateX, true)] // Descendant claims X only -> parent's Y-axis scroll must still work.
+	[DataRow(ManipulationModes.TranslateY, false)]
+	[DataRow(ManipulationModes.TranslateRailsX, true)] // Rails-X is still an X-axis claim; doesn't conflict with Y-axis parent.
+	[DataRow(ManipulationModes.TranslateRailsY, false)]
+	[DataRow(ManipulationModes.TranslateInertia, false)]
+	[DataRow(ManipulationModes.All, false)] // Does **NOT** include System
+	public async Task When_DirectManipulationDisabled(ManipulationModes mode, bool expectsAncestorScroll)
 	{
 		ScrollViewer sv;
 		var ui = new Grid
@@ -1440,7 +1441,16 @@ public class Given_InputManager
 
 		await UITestHelper.WaitForIdle();
 
-		sv.VerticalOffset.Should().Be(0);
+		if (expectsAncestorScroll)
+		{
+			// Descendant declares a non-conflicting axis, so the ancestor ScrollViewer's
+			// vertical-scroll DM must NOT be cancelled by the descendant claim.
+			sv.VerticalOffset.Should().BeGreaterThan(0);
+		}
+		else
+		{
+			sv.VerticalOffset.Should().Be(0);
+		}
 	}
 
 	private CoreCursorType? GetCursorShape()
@@ -1521,6 +1531,61 @@ public class Given_InputManager
 		finger.Drag(from: svBounds.GetCenter(), to: svBounds.GetCenter().Offset(y: -100));
 		sv.VerticalOffset.Should().BeGreaterThan(0, because: "scrolling should still work after toggling a ToggleSwitch");
 		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	[TestMethod]
+#if __WASM__
+	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_SwipeControlInListView_Then_VerticalScrollStillWorks()
+	{
+		// Regression coverage for the SwipeControl-in-ListView vertical-scroll-dies bug.
+		// PR #23135 added an after-press redo of CancelDirectManipulations to fix pinch
+		// on a ManipulationMode=Scale Grid inside a scrollable ScrollViewer on Skia Android.
+		// That redo cancelled ALL ancestor direct manipulations regardless of axis, so a
+		// SwipeControl (TranslateX) inside a ListView caused the ListView's
+		// ScrollContentPresenter (TranslateY) DM to be cancelled and vertical scrolling
+		// would die. ConflictsWithRequester is now axis-aware: a pure-X-translation
+		// requester must not cancel a pure-Y-translation ancestor.
+
+		var listView = new ListView
+		{
+			Width = 250,
+			Height = 200,
+		};
+		for (var i = 0; i < 50; i++)
+		{
+			var leftItems = new SwipeItems();
+			leftItems.Add(new SwipeItem { Text = "Action" });
+			listView.Items.Add(new SwipeControl
+			{
+				Width = 220,
+				Height = 40,
+				Content = new TextBlock { Text = $"Item {i}" },
+				LeftItems = leftItems,
+			});
+		}
+
+		await UITestHelper.Load(listView);
+
+		var sv = listView.FindVisualChildByType<ScrollViewer>()
+			?? throw new InvalidOperationException("ListView did not contain a ScrollViewer");
+		sv.UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous;
+		sv.IsScrollInertiaEnabled = false;
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var finger = injector.GetFinger();
+
+		sv.VerticalOffset.Should().Be(0, because: "we start at the top");
+
+		var lvBounds = listView.GetAbsoluteBounds();
+		finger.Drag(from: lvBounds.GetCenter(), to: lvBounds.GetCenter().Offset(y: -100));
+
+		sv.VerticalOffset.Should().BeGreaterThan(0,
+			because: "a vertical drag on a ListView whose items are SwipeControls must still scroll vertically; " +
+					 "the SwipeControl's TranslateX direct-manipulation must not cancel the ScrollContentPresenter's TranslateY DM.");
 	}
 
 	private static void SetCursorShape(CoreCursor cursor)

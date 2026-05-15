@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MediaCaptureFailedEventArgs.Code is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MediaCaptureFailedEventArgs.Code");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureFailedEventArgs", "Code");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaCaptureFailedEventArgs.Message is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaCaptureFailedEventArgs.Message");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureFailedEventArgs", "Message");
 			}
 		}
 #endif

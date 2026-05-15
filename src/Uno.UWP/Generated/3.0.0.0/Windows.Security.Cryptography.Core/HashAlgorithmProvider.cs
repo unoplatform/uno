@@ -19,7 +19,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HashAlgorithmProvider.AlgorithmName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HashAlgorithmProvider.AlgorithmName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.HashAlgorithmProvider", "AlgorithmName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HashAlgorithmProvider.HashLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20HashAlgorithmProvider.HashLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.HashAlgorithmProvider", "HashLength");
 			}
 		}
 #endif
@@ -37,21 +37,21 @@ namespace Windows.Security.Cryptography.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Security.Cryptography.Core.HashAlgorithmProvider OpenAlgorithm(string algorithm)
 		{
-			throw new global::System.NotImplementedException("The member HashAlgorithmProvider HashAlgorithmProvider.OpenAlgorithm(string algorithm) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HashAlgorithmProvider%20HashAlgorithmProvider.OpenAlgorithm%28string%20algorithm%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.HashAlgorithmProvider", "OpenAlgorithm(string algorithm)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IBuffer HashData(global::Windows.Storage.Streams.IBuffer data)
 		{
-			throw new global::System.NotImplementedException("The member IBuffer HashAlgorithmProvider.HashData(IBuffer data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20HashAlgorithmProvider.HashData%28IBuffer%20data%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.HashAlgorithmProvider", "HashData(IBuffer data)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Cryptography.Core.CryptographicHash CreateHash()
 		{
-			throw new global::System.NotImplementedException("The member CryptographicHash HashAlgorithmProvider.CreateHash() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CryptographicHash%20HashAlgorithmProvider.CreateHash%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.HashAlgorithmProvider", "CreateHash()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Core.HashAlgorithmProvider.AlgorithmName.get

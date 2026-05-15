@@ -19,7 +19,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PeerInformation ConnectionRequestedEventArgs.PeerInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PeerInformation%20ConnectionRequestedEventArgs.PeerInformation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.ConnectionRequestedEventArgs", "PeerInformation");
 			}
 		}
 #endif

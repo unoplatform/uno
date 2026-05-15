@@ -13,7 +13,7 @@ namespace Windows.Devices.Display.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DisplayPresentationRate(global::Windows.Foundation.Numerics.Rational _VerticalSyncRate, int _VerticalSyncsPerPresentation)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPresentationRate", "DisplayPresentationRate.DisplayPresentationRate(Rational _VerticalSyncRate, int _VerticalSyncsPerPresentation)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPresentationRate", "DisplayPresentationRate(Rational _VerticalSyncRate, int _VerticalSyncsPerPresentation)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayPresentationRate.DisplayPresentationRate(Windows.Foundation.Numerics.Rational, int)

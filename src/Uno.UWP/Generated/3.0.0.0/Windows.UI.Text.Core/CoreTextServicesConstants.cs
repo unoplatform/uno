@@ -14,7 +14,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member char CoreTextServicesConstants.HiddenCharacter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=char%20CoreTextServicesConstants.HiddenCharacter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextServicesConstants", "HiddenCharacter");
 			}
 		}
 #endif

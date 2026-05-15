@@ -14,11 +14,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorageProviderItemProperty.IconResource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorageProviderItemProperty.IconResource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderItemProperty", "IconResource");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderItemProperty", "string StorageProviderItemProperty.IconResource");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderItemProperty", "IconResource");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int StorageProviderItemProperty.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20StorageProviderItemProperty.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderItemProperty", "Id");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderItemProperty", "int StorageProviderItemProperty.Id");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderItemProperty", "Id");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorageProviderItemProperty.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorageProviderItemProperty.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderItemProperty", "Value");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderItemProperty", "string StorageProviderItemProperty.Value");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderItemProperty", "Value");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Storage.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public StorageProviderItemProperty()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderItemProperty", "StorageProviderItemProperty.StorageProviderItemProperty()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderItemProperty", "StorageProviderItemProperty()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderItemProperty.StorageProviderItemProperty()

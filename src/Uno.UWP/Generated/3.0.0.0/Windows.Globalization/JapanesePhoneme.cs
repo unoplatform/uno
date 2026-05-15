@@ -19,7 +19,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string JapanesePhoneme.DisplayText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20JapanesePhoneme.DisplayText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.JapanesePhoneme", "DisplayText");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool JapanesePhoneme.IsPhraseStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20JapanesePhoneme.IsPhraseStart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.JapanesePhoneme", "IsPhraseStart");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string JapanesePhoneme.YomiText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20JapanesePhoneme.YomiText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.JapanesePhoneme", "YomiText");
 			}
 		}
 #endif

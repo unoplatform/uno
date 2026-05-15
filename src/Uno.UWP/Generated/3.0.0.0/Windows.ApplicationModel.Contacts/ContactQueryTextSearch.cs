@@ -19,11 +19,11 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactQuerySearchFields ContactQueryTextSearch.Fields is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactQuerySearchFields%20ContactQueryTextSearch.Fields");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactQueryTextSearch", "Fields");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryTextSearch", "ContactQuerySearchFields ContactQueryTextSearch.Fields");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryTextSearch", "Fields");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactQuerySearchScope ContactQueryTextSearch.SearchScope is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactQuerySearchScope%20ContactQueryTextSearch.SearchScope");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactQueryTextSearch", "SearchScope");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryTextSearch", "ContactQuerySearchScope ContactQueryTextSearch.SearchScope");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryTextSearch", "SearchScope");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactQueryTextSearch.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactQueryTextSearch.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactQueryTextSearch", "Text");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryTextSearch", "string ContactQueryTextSearch.Text");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryTextSearch", "Text");
 			}
 		}
 #endif

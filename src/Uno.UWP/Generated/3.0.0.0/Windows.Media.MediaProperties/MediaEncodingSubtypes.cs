@@ -14,7 +14,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Aac is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Aac");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Aac");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.AacAdts is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.AacAdts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "AacAdts");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Ac3 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Ac3");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Ac3");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Alac is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Alac");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Alac");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.AmrNb is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.AmrNb");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "AmrNb");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.AmrWb is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.AmrWb");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "AmrWb");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Argb32 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Argb32");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Argb32");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Asf is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Asf");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Asf");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Avi is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Avi");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Avi");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Bgra8 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Bgra8");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Bgra8");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Bmp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Bmp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Bmp");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.D16 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.D16");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "D16");
 			}
 		}
 #endif
@@ -134,7 +134,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Eac3 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Eac3");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Eac3");
 			}
 		}
 #endif
@@ -144,7 +144,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Flac is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Flac");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Flac");
 			}
 		}
 #endif
@@ -154,7 +154,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Float is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Float");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Float");
 			}
 		}
 #endif
@@ -164,7 +164,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Gif is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Gif");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Gif");
 			}
 		}
 #endif
@@ -174,7 +174,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.H263 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.H263");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "H263");
 			}
 		}
 #endif
@@ -184,7 +184,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.H264 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.H264");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "H264");
 			}
 		}
 #endif
@@ -194,7 +194,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.H264Es is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.H264Es");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "H264Es");
 			}
 		}
 #endif
@@ -204,7 +204,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Heif is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Heif");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Heif");
 			}
 		}
 #endif
@@ -214,7 +214,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Hevc is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Hevc");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Hevc");
 			}
 		}
 #endif
@@ -224,7 +224,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.HevcEs is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.HevcEs");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "HevcEs");
 			}
 		}
 #endif
@@ -234,7 +234,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Iyuv is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Iyuv");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Iyuv");
 			}
 		}
 #endif
@@ -244,7 +244,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Jpeg is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Jpeg");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Jpeg");
 			}
 		}
 #endif
@@ -254,7 +254,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.JpegXr is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.JpegXr");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "JpegXr");
 			}
 		}
 #endif
@@ -264,7 +264,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.L16 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.L16");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "L16");
 			}
 		}
 #endif
@@ -274,7 +274,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.L8 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.L8");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "L8");
 			}
 		}
 #endif
@@ -284,7 +284,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mjpg is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Mjpg");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Mjpg");
 			}
 		}
 #endif
@@ -294,7 +294,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mp3 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Mp3");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Mp3");
 			}
 		}
 #endif
@@ -304,7 +304,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mpeg is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Mpeg");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Mpeg");
 			}
 		}
 #endif
@@ -314,7 +314,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mpeg1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Mpeg1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Mpeg1");
 			}
 		}
 #endif
@@ -324,7 +324,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mpeg2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Mpeg2");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Mpeg2");
 			}
 		}
 #endif
@@ -334,7 +334,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mpeg4 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Mpeg4");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Mpeg4");
 			}
 		}
 #endif
@@ -344,7 +344,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Nv12 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Nv12");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Nv12");
 			}
 		}
 #endif
@@ -354,7 +354,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.P010 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.P010");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "P010");
 			}
 		}
 #endif
@@ -364,7 +364,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Pcm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Pcm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Pcm");
 			}
 		}
 #endif
@@ -374,7 +374,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Pgs is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Pgs");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Pgs");
 			}
 		}
 #endif
@@ -384,7 +384,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Png is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Png");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Png");
 			}
 		}
 #endif
@@ -394,7 +394,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Rgb24 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Rgb24");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Rgb24");
 			}
 		}
 #endif
@@ -404,7 +404,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Rgb32 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Rgb32");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Rgb32");
 			}
 		}
 #endif
@@ -414,7 +414,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Srt is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Srt");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Srt");
 			}
 		}
 #endif
@@ -424,7 +424,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Ssa is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Ssa");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Ssa");
 			}
 		}
 #endif
@@ -434,7 +434,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Tiff is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Tiff");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Tiff");
 			}
 		}
 #endif
@@ -444,7 +444,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.VobSub is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.VobSub");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "VobSub");
 			}
 		}
 #endif
@@ -454,7 +454,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Vp9 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Vp9");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Vp9");
 			}
 		}
 #endif
@@ -464,7 +464,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Wave is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Wave");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Wave");
 			}
 		}
 #endif
@@ -474,7 +474,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Wma8 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Wma8");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Wma8");
 			}
 		}
 #endif
@@ -484,7 +484,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Wma9 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Wma9");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Wma9");
 			}
 		}
 #endif
@@ -494,7 +494,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Wmv3 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Wmv3");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Wmv3");
 			}
 		}
 #endif
@@ -504,7 +504,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Wvc1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Wvc1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Wvc1");
 			}
 		}
 #endif
@@ -514,7 +514,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Yuy2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Yuy2");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Yuy2");
 			}
 		}
 #endif
@@ -524,7 +524,7 @@ namespace Windows.Media.MediaProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Yv12 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaEncodingSubtypes.Yv12");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Yv12");
 			}
 		}
 #endif

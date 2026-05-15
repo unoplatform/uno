@@ -19,7 +19,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BadgeNotification PushNotificationReceivedEventArgs.BadgeNotification is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BadgeNotification%20PushNotificationReceivedEventArgs.BadgeNotification");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs", "BadgeNotification");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PushNotificationReceivedEventArgs.Cancel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PushNotificationReceivedEventArgs.Cancel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs", "Cancel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs", "bool PushNotificationReceivedEventArgs.Cancel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs", "Cancel");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PushNotificationType PushNotificationReceivedEventArgs.NotificationType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PushNotificationType%20PushNotificationReceivedEventArgs.NotificationType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs", "NotificationType");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RawNotification PushNotificationReceivedEventArgs.RawNotification is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RawNotification%20PushNotificationReceivedEventArgs.RawNotification");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs", "RawNotification");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TileNotification PushNotificationReceivedEventArgs.TileNotification is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TileNotification%20PushNotificationReceivedEventArgs.TileNotification");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs", "TileNotification");
 			}
 		}
 #endif
@@ -73,7 +73,7 @@ namespace Windows.Networking.PushNotifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ToastNotification PushNotificationReceivedEventArgs.ToastNotification is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ToastNotification%20PushNotificationReceivedEventArgs.ToastNotification");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs", "ToastNotification");
 			}
 		}
 #endif

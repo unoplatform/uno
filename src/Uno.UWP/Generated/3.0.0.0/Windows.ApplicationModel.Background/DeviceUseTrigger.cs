@@ -12,7 +12,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DeviceUseTrigger()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.DeviceUseTrigger", "DeviceUseTrigger.DeviceUseTrigger()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.DeviceUseTrigger", "DeviceUseTrigger()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceUseTrigger.DeviceUseTrigger()
@@ -20,14 +20,14 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.DeviceTriggerResult> RequestAsync(string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceTriggerResult> DeviceUseTrigger.RequestAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceTriggerResult%3E%20DeviceUseTrigger.RequestAsync%28string%20deviceId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.DeviceUseTrigger", "RequestAsync(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.DeviceTriggerResult> RequestAsync(string deviceId, string arguments)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceTriggerResult> DeviceUseTrigger.RequestAsync(string deviceId, string arguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceTriggerResult%3E%20DeviceUseTrigger.RequestAsync%28string%20deviceId%2C%20string%20arguments%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.DeviceUseTrigger", "RequestAsync(string deviceId, string arguments)");
 		}
 #endif
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger

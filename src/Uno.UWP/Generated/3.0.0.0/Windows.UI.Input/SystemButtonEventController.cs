@@ -17,7 +17,7 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.SystemButtonEventController CreateForDispatcherQueue(global::Windows.System.DispatcherQueue queue)
 		{
-			throw new global::System.NotImplementedException("The member SystemButtonEventController SystemButtonEventController.CreateForDispatcherQueue(DispatcherQueue queue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemButtonEventController%20SystemButtonEventController.CreateForDispatcherQueue%28DispatcherQueue%20queue%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.SystemButtonEventController", "CreateForDispatcherQueue(DispatcherQueue queue)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.SystemButtonEventController.SystemFunctionButtonPressed.add
@@ -35,12 +35,12 @@ namespace Windows.UI.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.SystemButtonEventController", "event TypedEventHandler<SystemButtonEventController, SystemFunctionButtonEventArgs> SystemButtonEventController.SystemFunctionButtonPressed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.SystemButtonEventController", "event SystemFunctionButtonPressed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.SystemButtonEventController", "event TypedEventHandler<SystemButtonEventController, SystemFunctionButtonEventArgs> SystemButtonEventController.SystemFunctionButtonPressed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.SystemButtonEventController", "event SystemFunctionButtonPressed");
 			}
 		}
 #endif
@@ -51,12 +51,12 @@ namespace Windows.UI.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.SystemButtonEventController", "event TypedEventHandler<SystemButtonEventController, SystemFunctionButtonEventArgs> SystemButtonEventController.SystemFunctionButtonReleased");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.SystemButtonEventController", "event SystemFunctionButtonReleased");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.SystemButtonEventController", "event TypedEventHandler<SystemButtonEventController, SystemFunctionButtonEventArgs> SystemButtonEventController.SystemFunctionButtonReleased");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.SystemButtonEventController", "event SystemFunctionButtonReleased");
 			}
 		}
 #endif
@@ -67,12 +67,12 @@ namespace Windows.UI.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.SystemButtonEventController", "event TypedEventHandler<SystemButtonEventController, SystemFunctionLockChangedEventArgs> SystemButtonEventController.SystemFunctionLockChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.SystemButtonEventController", "event SystemFunctionLockChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.SystemButtonEventController", "event TypedEventHandler<SystemButtonEventController, SystemFunctionLockChangedEventArgs> SystemButtonEventController.SystemFunctionLockChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.SystemButtonEventController", "event SystemFunctionLockChanged");
 			}
 		}
 #endif
@@ -83,12 +83,12 @@ namespace Windows.UI.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.SystemButtonEventController", "event TypedEventHandler<SystemButtonEventController, SystemFunctionLockIndicatorChangedEventArgs> SystemButtonEventController.SystemFunctionLockIndicatorChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.SystemButtonEventController", "event SystemFunctionLockIndicatorChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.SystemButtonEventController", "event TypedEventHandler<SystemButtonEventController, SystemFunctionLockIndicatorChangedEventArgs> SystemButtonEventController.SystemFunctionLockIndicatorChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.SystemButtonEventController", "event SystemFunctionLockIndicatorChanged");
 			}
 		}
 #endif

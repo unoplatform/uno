@@ -14,11 +14,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnTrafficFilterAssignment.AllowInbound is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnTrafficFilterAssignment.AllowInbound");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnTrafficFilterAssignment", "AllowInbound");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnTrafficFilterAssignment", "bool VpnTrafficFilterAssignment.AllowInbound");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnTrafficFilterAssignment", "AllowInbound");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnTrafficFilterAssignment.AllowOutbound is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnTrafficFilterAssignment.AllowOutbound");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnTrafficFilterAssignment", "AllowOutbound");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnTrafficFilterAssignment", "bool VpnTrafficFilterAssignment.AllowOutbound");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnTrafficFilterAssignment", "AllowOutbound");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<VpnTrafficFilter> VpnTrafficFilterAssignment.TrafficFilterList is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVpnTrafficFilter%3E%20VpnTrafficFilterAssignment.TrafficFilterList");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnTrafficFilterAssignment", "TrafficFilterList");
 			}
 		}
 #endif
@@ -50,7 +50,7 @@ namespace Windows.Networking.Vpn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VpnTrafficFilterAssignment()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnTrafficFilterAssignment", "VpnTrafficFilterAssignment.VpnTrafficFilterAssignment()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnTrafficFilterAssignment", "VpnTrafficFilterAssignment()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnTrafficFilterAssignment.VpnTrafficFilterAssignment()

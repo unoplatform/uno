@@ -14,7 +14,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SharedModeSettings.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SharedModeSettings.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SharedModeSettings", "IsEnabled");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SharedModeSettings.ShouldAvoidLocalStorage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SharedModeSettings.ShouldAvoidLocalStorage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SharedModeSettings", "ShouldAvoidLocalStorage");
 			}
 		}
 #endif

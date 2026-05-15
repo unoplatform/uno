@@ -14,11 +14,11 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PlaceInfoCreateOptions.DisplayAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PlaceInfoCreateOptions.DisplayAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfoCreateOptions", "DisplayAddress");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.PlaceInfoCreateOptions", "string PlaceInfoCreateOptions.DisplayAddress");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.PlaceInfoCreateOptions", "DisplayAddress");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PlaceInfoCreateOptions.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PlaceInfoCreateOptions.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.PlaceInfoCreateOptions", "DisplayName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.PlaceInfoCreateOptions", "string PlaceInfoCreateOptions.DisplayName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.PlaceInfoCreateOptions", "DisplayName");
 			}
 		}
 #endif
@@ -40,7 +40,7 @@ namespace Windows.Services.Maps
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PlaceInfoCreateOptions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.PlaceInfoCreateOptions", "PlaceInfoCreateOptions.PlaceInfoCreateOptions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.PlaceInfoCreateOptions", "PlaceInfoCreateOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.Services.Maps.PlaceInfoCreateOptions.PlaceInfoCreateOptions()

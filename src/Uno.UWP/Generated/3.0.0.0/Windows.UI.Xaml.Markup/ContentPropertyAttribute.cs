@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Markup
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ContentPropertyAttribute() : base()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Markup.ContentPropertyAttribute", "ContentPropertyAttribute.ContentPropertyAttribute()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Markup.ContentPropertyAttribute", "ContentPropertyAttribute()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Xaml.Markup.ContentPropertyAttribute.ContentPropertyAttribute()

@@ -14,11 +14,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 Visual.AnchorPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20Visual.AnchorPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Visual", "AnchorPoint");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "Vector2 Visual.AnchorPoint");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "AnchorPoint");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionBackfaceVisibility Visual.BackfaceVisibility is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBackfaceVisibility%20Visual.BackfaceVisibility");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Visual", "BackfaceVisibility");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "CompositionBackfaceVisibility Visual.BackfaceVisibility");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "BackfaceVisibility");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionBorderMode Visual.BorderMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBorderMode%20Visual.BorderMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Visual", "BorderMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "CompositionBorderMode Visual.BorderMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "BorderMode");
 			}
 		}
 #endif
@@ -57,11 +57,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionClip Visual.Clip is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionClip%20Visual.Clip");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Visual", "Clip");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "CompositionClip Visual.Clip");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "Clip");
 			}
 		}
 #endif
@@ -72,11 +72,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Visual.IsHitTestVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Visual.IsHitTestVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Visual", "IsHitTestVisible");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "bool Visual.IsHitTestVisible");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "IsHitTestVisible");
 			}
 		}
 #endif
@@ -86,11 +86,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Visual.IsPixelSnappingEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Visual.IsPixelSnappingEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Visual", "IsPixelSnappingEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "bool Visual.IsPixelSnappingEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "IsPixelSnappingEnabled");
 			}
 		}
 #endif
@@ -105,11 +105,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Visual Visual.ParentForTransform is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Visual%20Visual.ParentForTransform");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Visual", "ParentForTransform");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "Visual Visual.ParentForTransform");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "ParentForTransform");
 			}
 		}
 #endif
@@ -119,11 +119,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 Visual.RelativeOffsetAdjustment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20Visual.RelativeOffsetAdjustment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Visual", "RelativeOffsetAdjustment");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "Vector3 Visual.RelativeOffsetAdjustment");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "RelativeOffsetAdjustment");
 			}
 		}
 #endif
@@ -133,11 +133,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 Visual.RelativeSizeAdjustment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20Visual.RelativeSizeAdjustment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Visual", "RelativeSizeAdjustment");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "Vector2 Visual.RelativeSizeAdjustment");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Visual", "RelativeSizeAdjustment");
 			}
 		}
 #endif

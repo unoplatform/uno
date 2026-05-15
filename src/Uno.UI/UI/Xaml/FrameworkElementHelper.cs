@@ -168,12 +168,11 @@ namespace Uno.UI
 
 			if (eager)
 			{
-				using var children = element.GetChildren().GetEnumerator();
-				while (children.MoveNext())
+				foreach (var child in element.GetChildren())
 				{
-					if (children.Current is FrameworkElement child)
+					if (child is FrameworkElement childAsFE)
 					{
-						SetUseMeasurePathDisabled(child, state, eager: true, invalidate);
+						SetUseMeasurePathDisabled(childAsFE, state, eager: true, invalidate);
 					}
 				}
 			}
@@ -201,12 +200,11 @@ namespace Uno.UI
 
 			if (eager)
 			{
-				using var children = element.GetChildren().GetEnumerator();
-				while (children.MoveNext())
+				foreach (var child in element.GetChildren())
 				{
-					if (children.Current is FrameworkElement child)
+					if (child is FrameworkElement childAsFE)
 					{
-						SetUseArrangePathDisabled(child, state, eager: true, invalidate);
+						SetUseArrangePathDisabled(childAsFE, state, eager: true, invalidate);
 					}
 				}
 			}

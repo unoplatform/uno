@@ -19,7 +19,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AllJoynAuthenticationMechanism AllJoynCredentials.AuthenticationMechanism is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AllJoynAuthenticationMechanism%20AllJoynCredentials.AuthenticationMechanism");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentials", "AuthenticationMechanism");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate AllJoynCredentials.Certificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Certificate%20AllJoynCredentials.Certificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentials", "Certificate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynCredentials", "Certificate AllJoynCredentials.Certificate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynCredentials", "Certificate");
 			}
 		}
 #endif
@@ -43,11 +43,11 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential AllJoynCredentials.PasswordCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PasswordCredential%20AllJoynCredentials.PasswordCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentials", "PasswordCredential");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynCredentials", "PasswordCredential AllJoynCredentials.PasswordCredential");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynCredentials", "PasswordCredential");
 			}
 		}
 #endif
@@ -57,11 +57,11 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan AllJoynCredentials.Timeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20AllJoynCredentials.Timeout");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentials", "Timeout");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynCredentials", "TimeSpan AllJoynCredentials.Timeout");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynCredentials", "Timeout");
 			}
 		}
 #endif

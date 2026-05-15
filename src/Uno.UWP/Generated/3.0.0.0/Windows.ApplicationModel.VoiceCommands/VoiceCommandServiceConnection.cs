@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Language VoiceCommandServiceConnection.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Language%20VoiceCommandServiceConnection.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "Language");
 			}
 		}
 #endif
@@ -27,56 +27,56 @@ namespace Windows.ApplicationModel.VoiceCommands
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection FromAppServiceTriggerDetails(global::Windows.ApplicationModel.AppService.AppServiceTriggerDetails triggerDetails)
 		{
-			throw new global::System.NotImplementedException("The member VoiceCommandServiceConnection VoiceCommandServiceConnection.FromAppServiceTriggerDetails(AppServiceTriggerDetails triggerDetails) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoiceCommandServiceConnection%20VoiceCommandServiceConnection.FromAppServiceTriggerDetails%28AppServiceTriggerDetails%20triggerDetails%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "FromAppServiceTriggerDetails(AppServiceTriggerDetails triggerDetails)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.VoiceCommands.VoiceCommand> GetVoiceCommandAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<VoiceCommand> VoiceCommandServiceConnection.GetVoiceCommandAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CVoiceCommand%3E%20VoiceCommandServiceConnection.GetVoiceCommandAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "GetVoiceCommandAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.VoiceCommands.VoiceCommandConfirmationResult> RequestConfirmationAsync(global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse response)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<VoiceCommandConfirmationResult> VoiceCommandServiceConnection.RequestConfirmationAsync(VoiceCommandResponse response) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CVoiceCommandConfirmationResult%3E%20VoiceCommandServiceConnection.RequestConfirmationAsync%28VoiceCommandResponse%20response%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "RequestConfirmationAsync(VoiceCommandResponse response)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.VoiceCommands.VoiceCommandDisambiguationResult> RequestDisambiguationAsync(global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse response)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<VoiceCommandDisambiguationResult> VoiceCommandServiceConnection.RequestDisambiguationAsync(VoiceCommandResponse response) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CVoiceCommandDisambiguationResult%3E%20VoiceCommandServiceConnection.RequestDisambiguationAsync%28VoiceCommandResponse%20response%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "RequestDisambiguationAsync(VoiceCommandResponse response)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportProgressAsync(global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse response)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction VoiceCommandServiceConnection.ReportProgressAsync(VoiceCommandResponse response) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20VoiceCommandServiceConnection.ReportProgressAsync%28VoiceCommandResponse%20response%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "ReportProgressAsync(VoiceCommandResponse response)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportSuccessAsync(global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse response)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction VoiceCommandServiceConnection.ReportSuccessAsync(VoiceCommandResponse response) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20VoiceCommandServiceConnection.ReportSuccessAsync%28VoiceCommandResponse%20response%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "ReportSuccessAsync(VoiceCommandResponse response)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ReportFailureAsync(global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse response)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction VoiceCommandServiceConnection.ReportFailureAsync(VoiceCommandResponse response) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20VoiceCommandServiceConnection.ReportFailureAsync%28VoiceCommandResponse%20response%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "ReportFailureAsync(VoiceCommandResponse response)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RequestAppLaunchAsync(global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse response)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction VoiceCommandServiceConnection.RequestAppLaunchAsync(VoiceCommandResponse response) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20VoiceCommandServiceConnection.RequestAppLaunchAsync%28VoiceCommandResponse%20response%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "RequestAppLaunchAsync(VoiceCommandResponse response)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection.VoiceCommandCompleted.add
@@ -89,12 +89,12 @@ namespace Windows.ApplicationModel.VoiceCommands
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "event TypedEventHandler<VoiceCommandServiceConnection, VoiceCommandCompletedEventArgs> VoiceCommandServiceConnection.VoiceCommandCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "event VoiceCommandCompleted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "event TypedEventHandler<VoiceCommandServiceConnection, VoiceCommandCompletedEventArgs> VoiceCommandServiceConnection.VoiceCommandCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandServiceConnection", "event VoiceCommandCompleted");
 			}
 		}
 #endif

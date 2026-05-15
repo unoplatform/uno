@@ -19,7 +19,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<HidBooleanControl> HidInputReport.ActivatedBooleanControls is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CHidBooleanControl%3E%20HidInputReport.ActivatedBooleanControls");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidInputReport", "ActivatedBooleanControls");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer HidInputReport.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20HidInputReport.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidInputReport", "Data");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort HidInputReport.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20HidInputReport.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidInputReport", "Id");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<HidBooleanControl> HidInputReport.TransitionedBooleanControls is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CHidBooleanControl%3E%20HidInputReport.TransitionedBooleanControls");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidInputReport", "TransitionedBooleanControls");
 			}
 		}
 #endif
@@ -57,28 +57,28 @@ namespace Windows.Devices.HumanInterfaceDevice
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.HumanInterfaceDevice.HidBooleanControl GetBooleanControl(ushort usagePage, ushort usageId)
 		{
-			throw new global::System.NotImplementedException("The member HidBooleanControl HidInputReport.GetBooleanControl(ushort usagePage, ushort usageId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HidBooleanControl%20HidInputReport.GetBooleanControl%28ushort%20usagePage%2C%20ushort%20usageId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidInputReport", "GetBooleanControl(ushort usagePage, ushort usageId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.HumanInterfaceDevice.HidBooleanControl GetBooleanControlByDescription(global::Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription controlDescription)
 		{
-			throw new global::System.NotImplementedException("The member HidBooleanControl HidInputReport.GetBooleanControlByDescription(HidBooleanControlDescription controlDescription) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HidBooleanControl%20HidInputReport.GetBooleanControlByDescription%28HidBooleanControlDescription%20controlDescription%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidInputReport", "GetBooleanControlByDescription(HidBooleanControlDescription controlDescription)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.HumanInterfaceDevice.HidNumericControl GetNumericControl(ushort usagePage, ushort usageId)
 		{
-			throw new global::System.NotImplementedException("The member HidNumericControl HidInputReport.GetNumericControl(ushort usagePage, ushort usageId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HidNumericControl%20HidInputReport.GetNumericControl%28ushort%20usagePage%2C%20ushort%20usageId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidInputReport", "GetNumericControl(ushort usagePage, ushort usageId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.HumanInterfaceDevice.HidNumericControl GetNumericControlByDescription(global::Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription controlDescription)
 		{
-			throw new global::System.NotImplementedException("The member HidNumericControl HidInputReport.GetNumericControlByDescription(HidNumericControlDescription controlDescription) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HidNumericControl%20HidInputReport.GetNumericControlByDescription%28HidNumericControlDescription%20controlDescription%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidInputReport", "GetNumericControlByDescription(HidNumericControlDescription controlDescription)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidInputReport.ActivatedBooleanControls.get

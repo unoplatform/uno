@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Markup
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public XamlParseException() : base()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Markup.XamlParseException", "XamlParseException.XamlParseException()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Markup.XamlParseException", "XamlParseException()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlParseException.XamlParseException()
@@ -20,7 +20,7 @@ namespace Microsoft.UI.Xaml.Markup
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public XamlParseException(string message) : base(message)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Markup.XamlParseException", "XamlParseException.XamlParseException(string message)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Markup.XamlParseException", "XamlParseException(string message)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlParseException.XamlParseException(string)
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml.Markup
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public XamlParseException(string message, global::System.Exception innerException) : base(message, innerException)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Markup.XamlParseException", "XamlParseException.XamlParseException(string message, Exception innerException)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Markup.XamlParseException", "XamlParseException(string message, Exception innerException)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlParseException.XamlParseException(string, System.Exception)

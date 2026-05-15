@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Contacts.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactRemovedEventArgs.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactRemovedEventArgs.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs", "Id");
 			}
 		}
 #endif

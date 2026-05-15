@@ -19,7 +19,7 @@ namespace Windows.Storage.Pickers.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TargetFileRequest TargetFileRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TargetFileRequest%20TargetFileRequestedEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Pickers.Provider.TargetFileRequestedEventArgs", "Request");
 			}
 		}
 #endif

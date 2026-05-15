@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioDeviceModule AudioDeviceModuleNotificationEventArgs.Module is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioDeviceModule%20AudioDeviceModuleNotificationEventArgs.Module");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModuleNotificationEventArgs", "Module");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer AudioDeviceModuleNotificationEventArgs.NotificationData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20AudioDeviceModuleNotificationEventArgs.NotificationData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModuleNotificationEventArgs", "NotificationData");
 			}
 		}
 #endif

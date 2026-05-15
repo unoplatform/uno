@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> SearchQueryLinguisticDetails.QueryTextAlternatives is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20SearchQueryLinguisticDetails.QueryTextAlternatives");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchQueryLinguisticDetails", "QueryTextAlternatives");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SearchQueryLinguisticDetails.QueryTextCompositionLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SearchQueryLinguisticDetails.QueryTextCompositionLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchQueryLinguisticDetails", "QueryTextCompositionLength");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SearchQueryLinguisticDetails.QueryTextCompositionStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SearchQueryLinguisticDetails.QueryTextCompositionStart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchQueryLinguisticDetails", "QueryTextCompositionStart");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Search
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SearchQueryLinguisticDetails(global::System.Collections.Generic.IEnumerable<string> queryTextAlternatives, uint queryTextCompositionStart, uint queryTextCompositionLength)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Search.SearchQueryLinguisticDetails", "SearchQueryLinguisticDetails.SearchQueryLinguisticDetails(IEnumerable<string> queryTextAlternatives, uint queryTextCompositionStart, uint queryTextCompositionLength)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Search.SearchQueryLinguisticDetails", "SearchQueryLinguisticDetails(IEnumerable<string> queryTextAlternatives, uint queryTextCompositionStart, uint queryTextCompositionLength)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchQueryLinguisticDetails.SearchQueryLinguisticDetails(System.Collections.Generic.IEnumerable<string>, uint, uint)

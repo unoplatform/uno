@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<EmailMessage> EmailMessageBatch.Messages is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CEmailMessage%3E%20EmailMessageBatch.Messages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMessageBatch", "Messages");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailBatchStatus EmailMessageBatch.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailBatchStatus%20EmailMessageBatch.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMessageBatch", "Status");
 			}
 		}
 #endif

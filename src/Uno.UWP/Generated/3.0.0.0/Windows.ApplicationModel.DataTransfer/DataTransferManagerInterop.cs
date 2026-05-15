@@ -12,14 +12,14 @@ namespace Windows.ApplicationModel.DataTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.DataTransfer.DataTransferManager GetForWindow(nint appWindow)
 		{
-			throw new global::System.NotImplementedException("The member DataTransferManager DataTransferManagerInterop.GetForWindow(nint appWindow) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataTransferManager%20DataTransferManagerInterop.GetForWindow%28nint%20appWindow%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.DataTransferManagerInterop", "GetForWindow(nint appWindow)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void ShowShareUIForWindow(nint appWindow)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManagerInterop", "void DataTransferManagerInterop.ShowShareUIForWindow(nint appWindow)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManagerInterop", "ShowShareUIForWindow(nint appWindow)");
 		}
 #endif
 	}

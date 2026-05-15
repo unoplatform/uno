@@ -19,7 +19,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemSupportDeviceInfo.FriendlyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemSupportDeviceInfo.FriendlyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo", "FriendlyName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemSupportDeviceInfo.OperatingSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemSupportDeviceInfo.OperatingSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo", "OperatingSystem");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemSupportDeviceInfo.SystemFirmwareVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemSupportDeviceInfo.SystemFirmwareVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo", "SystemFirmwareVersion");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemSupportDeviceInfo.SystemHardwareVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemSupportDeviceInfo.SystemHardwareVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo", "SystemHardwareVersion");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemSupportDeviceInfo.SystemManufacturer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemSupportDeviceInfo.SystemManufacturer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo", "SystemManufacturer");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemSupportDeviceInfo.SystemProductName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemSupportDeviceInfo.SystemProductName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo", "SystemProductName");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.System.Profile.SystemManufacturers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemSupportDeviceInfo.SystemSku is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemSupportDeviceInfo.SystemSku");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.SystemManufacturers.SystemSupportDeviceInfo", "SystemSku");
 			}
 		}
 #endif

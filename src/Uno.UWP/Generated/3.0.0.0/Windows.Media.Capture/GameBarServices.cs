@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastServices GameBarServices.AppBroadcastServices is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastServices%20GameBarServices.AppBroadcastServices");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.GameBarServices", "AppBroadcastServices");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppCaptureServices GameBarServices.AppCaptureServices is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppCaptureServices%20GameBarServices.AppCaptureServices");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.GameBarServices", "AppCaptureServices");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GameBarServices.SessionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GameBarServices.SessionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.GameBarServices", "SessionId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GameBarTargetCapturePolicy GameBarServices.TargetCapturePolicy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameBarTargetCapturePolicy%20GameBarServices.TargetCapturePolicy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.GameBarServices", "TargetCapturePolicy");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GameBarServicesTargetInfo GameBarServices.TargetInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameBarServicesTargetInfo%20GameBarServices.TargetInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.GameBarServices", "TargetInfo");
 			}
 		}
 #endif
@@ -67,14 +67,14 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void EnableCapture()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.GameBarServices", "void GameBarServices.EnableCapture()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.GameBarServices", "EnableCapture()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void DisableCapture()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.GameBarServices", "void GameBarServices.DisableCapture()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.GameBarServices", "DisableCapture()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.GameBarServices.CommandReceived.add
@@ -91,12 +91,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.GameBarServices", "event TypedEventHandler<GameBarServices, GameBarServicesCommandEventArgs> GameBarServices.CommandReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.GameBarServices", "event CommandReceived");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.GameBarServices", "event TypedEventHandler<GameBarServices, GameBarServicesCommandEventArgs> GameBarServices.CommandReceived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.GameBarServices", "event CommandReceived");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccount WebAccountEventArgs.Account is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccount%20WebAccountEventArgs.Account");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebAccountEventArgs", "Account");
 			}
 		}
 #endif

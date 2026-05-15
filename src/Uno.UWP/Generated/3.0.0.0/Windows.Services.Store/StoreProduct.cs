@@ -14,7 +14,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreProduct.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreProduct.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProduct", "Description");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreProduct.ExtendedJsonData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreProduct.ExtendedJsonData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProduct", "ExtendedJsonData");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StoreProduct.HasDigitalDownload is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreProduct.HasDigitalDownload");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProduct", "HasDigitalDownload");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<StoreImage> StoreProduct.Images is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CStoreImage%3E%20StoreProduct.Images");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProduct", "Images");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreProduct.InAppOfferToken is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreProduct.InAppOfferToken");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProduct", "InAppOfferToken");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StoreProduct.IsInUserCollection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreProduct.IsInUserCollection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProduct", "IsInUserCollection");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> StoreProduct.Keywords is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20StoreProduct.Keywords");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProduct", "Keywords");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreProduct.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreProduct.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProduct", "Language");
 			}
 		}
 #endif
@@ -95,7 +95,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorePrice StoreProduct.Price is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorePrice%20StoreProduct.Price");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProduct", "Price");
 			}
 		}
 #endif
@@ -105,7 +105,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreProduct.ProductKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreProduct.ProductKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProduct", "ProductKind");
 			}
 		}
 #endif
@@ -115,7 +115,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<StoreSku> StoreProduct.Skus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CStoreSku%3E%20StoreProduct.Skus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProduct", "Skus");
 			}
 		}
 #endif
@@ -126,7 +126,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreProduct.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreProduct.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProduct", "Title");
 			}
 		}
 #endif
@@ -136,7 +136,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<StoreVideo> StoreProduct.Videos is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CStoreVideo%3E%20StoreProduct.Videos");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProduct", "Videos");
 			}
 		}
 #endif
@@ -144,21 +144,21 @@ namespace Windows.Services.Store
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> GetIsAnySkuInstalledAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> StoreProduct.GetIsAnySkuInstalledAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20StoreProduct.GetIsAnySkuInstalledAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProduct", "GetIsAnySkuInstalledAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Store.StorePurchaseResult> RequestPurchaseAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorePurchaseResult> StoreProduct.RequestPurchaseAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorePurchaseResult%3E%20StoreProduct.RequestPurchaseAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProduct", "RequestPurchaseAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Store.StorePurchaseResult> RequestPurchaseAsync(global::Windows.Services.Store.StorePurchaseProperties storePurchaseProperties)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorePurchaseResult> StoreProduct.RequestPurchaseAsync(StorePurchaseProperties storePurchaseProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorePurchaseResult%3E%20StoreProduct.RequestPurchaseAsync%28StorePurchaseProperties%20storePurchaseProperties%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProduct", "RequestPurchaseAsync(StorePurchaseProperties storePurchaseProperties)");
 		}
 #endif
 		// Forced skipping of method Windows.Services.Store.StoreProduct.Description.get

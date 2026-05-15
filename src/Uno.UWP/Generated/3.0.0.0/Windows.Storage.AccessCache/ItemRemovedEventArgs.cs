@@ -19,7 +19,7 @@ namespace Windows.Storage.AccessCache
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AccessListEntry ItemRemovedEventArgs.RemovedEntry is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AccessListEntry%20ItemRemovedEventArgs.RemovedEntry");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AccessCache.ItemRemovedEventArgs", "RemovedEntry");
 			}
 		}
 #endif

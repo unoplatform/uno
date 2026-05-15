@@ -14,7 +14,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardPrintTaskOptions.Binding is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardPrintTaskOptions.Binding");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.StandardPrintTaskOptions", "Binding");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardPrintTaskOptions.Bordering is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardPrintTaskOptions.Bordering");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.StandardPrintTaskOptions", "Bordering");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardPrintTaskOptions.Collation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardPrintTaskOptions.Collation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.StandardPrintTaskOptions", "Collation");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardPrintTaskOptions.ColorMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardPrintTaskOptions.ColorMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.StandardPrintTaskOptions", "ColorMode");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardPrintTaskOptions.Copies is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardPrintTaskOptions.Copies");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.StandardPrintTaskOptions", "Copies");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardPrintTaskOptions.CustomPageRanges is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardPrintTaskOptions.CustomPageRanges");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.StandardPrintTaskOptions", "CustomPageRanges");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardPrintTaskOptions.Duplex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardPrintTaskOptions.Duplex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.StandardPrintTaskOptions", "Duplex");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardPrintTaskOptions.HolePunch is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardPrintTaskOptions.HolePunch");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.StandardPrintTaskOptions", "HolePunch");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardPrintTaskOptions.InputBin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardPrintTaskOptions.InputBin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.StandardPrintTaskOptions", "InputBin");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardPrintTaskOptions.MediaSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardPrintTaskOptions.MediaSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.StandardPrintTaskOptions", "MediaSize");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardPrintTaskOptions.MediaType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardPrintTaskOptions.MediaType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.StandardPrintTaskOptions", "MediaType");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardPrintTaskOptions.NUp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardPrintTaskOptions.NUp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.StandardPrintTaskOptions", "NUp");
 			}
 		}
 #endif
@@ -134,7 +134,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardPrintTaskOptions.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardPrintTaskOptions.Orientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.StandardPrintTaskOptions", "Orientation");
 			}
 		}
 #endif
@@ -144,7 +144,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardPrintTaskOptions.PrintQuality is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardPrintTaskOptions.PrintQuality");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.StandardPrintTaskOptions", "PrintQuality");
 			}
 		}
 #endif
@@ -154,7 +154,7 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardPrintTaskOptions.Staple is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardPrintTaskOptions.Staple");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.StandardPrintTaskOptions", "Staple");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? AppBroadcastPreview.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20AppBroadcastPreview.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreview", "ErrorCode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastPreviewState AppBroadcastPreview.PreviewState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastPreviewState%20AppBroadcastPreview.PreviewState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreview", "PreviewState");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastPreviewStreamReader AppBroadcastPreview.PreviewStreamReader is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastPreviewStreamReader%20AppBroadcastPreview.PreviewStreamReader");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreview", "PreviewStreamReader");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void StopPreview()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastPreview", "void AppBroadcastPreview.StopPreview()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastPreview", "StopPreview()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastPreview.PreviewStateChanged.add
@@ -62,12 +62,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastPreview", "event TypedEventHandler<AppBroadcastPreview, AppBroadcastPreviewStateChangedEventArgs> AppBroadcastPreview.PreviewStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastPreview", "event PreviewStateChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastPreview", "event TypedEventHandler<AppBroadcastPreview, AppBroadcastPreviewStateChangedEventArgs> AppBroadcastPreview.PreviewStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastPreview", "event PreviewStateChanged");
 			}
 		}
 #endif

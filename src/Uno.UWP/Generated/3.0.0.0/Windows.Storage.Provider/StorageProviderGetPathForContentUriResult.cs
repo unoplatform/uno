@@ -14,11 +14,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StorageProviderGetPathForContentUriResult.Path is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StorageProviderGetPathForContentUriResult.Path");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderGetPathForContentUriResult", "Path");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderGetPathForContentUriResult", "string StorageProviderGetPathForContentUriResult.Path");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderGetPathForContentUriResult", "Path");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Storage.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageProviderUriSourceStatus StorageProviderGetPathForContentUriResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageProviderUriSourceStatus%20StorageProviderGetPathForContentUriResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Provider.StorageProviderGetPathForContentUriResult", "Status");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderGetPathForContentUriResult", "StorageProviderUriSourceStatus StorageProviderGetPathForContentUriResult.Status");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderGetPathForContentUriResult", "Status");
 			}
 		}
 #endif
@@ -40,7 +40,7 @@ namespace Windows.Storage.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public StorageProviderGetPathForContentUriResult()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderGetPathForContentUriResult", "StorageProviderGetPathForContentUriResult.StorageProviderGetPathForContentUriResult()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.StorageProviderGetPathForContentUriResult", "StorageProviderGetPathForContentUriResult()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Provider.StorageProviderGetPathForContentUriResult.StorageProviderGetPathForContentUriResult()

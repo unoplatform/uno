@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer AppBroadcastStreamReader.AudioAacSequence is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20AppBroadcastStreamReader.AudioAacSequence");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamReader", "AudioAacSequence");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppBroadcastStreamReader.AudioBitrate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppBroadcastStreamReader.AudioBitrate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamReader", "AudioBitrate");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppBroadcastStreamReader.AudioChannels is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppBroadcastStreamReader.AudioChannels");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamReader", "AudioChannels");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppBroadcastStreamReader.AudioSampleRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppBroadcastStreamReader.AudioSampleRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamReader", "AudioSampleRate");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppBroadcastStreamReader.VideoBitrate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppBroadcastStreamReader.VideoBitrate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamReader", "VideoBitrate");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppBroadcastStreamReader.VideoHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppBroadcastStreamReader.VideoHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamReader", "VideoHeight");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppBroadcastStreamReader.VideoWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppBroadcastStreamReader.VideoWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamReader", "VideoWidth");
 			}
 		}
 #endif
@@ -87,14 +87,14 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Capture.AppBroadcastStreamAudioFrame TryGetNextAudioFrame()
 		{
-			throw new global::System.NotImplementedException("The member AppBroadcastStreamAudioFrame AppBroadcastStreamReader.TryGetNextAudioFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastStreamAudioFrame%20AppBroadcastStreamReader.TryGetNextAudioFrame%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamReader", "TryGetNextAudioFrame()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Capture.AppBroadcastStreamVideoFrame TryGetNextVideoFrame()
 		{
-			throw new global::System.NotImplementedException("The member AppBroadcastStreamVideoFrame AppBroadcastStreamReader.TryGetNextVideoFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastStreamVideoFrame%20AppBroadcastStreamReader.TryGetNextVideoFrame%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamReader", "TryGetNextVideoFrame()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.AppBroadcastStreamReader.AudioFrameArrived.add
@@ -115,12 +115,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastStreamReader", "event TypedEventHandler<AppBroadcastStreamReader, object> AppBroadcastStreamReader.AudioFrameArrived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastStreamReader", "event AudioFrameArrived");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastStreamReader", "event TypedEventHandler<AppBroadcastStreamReader, object> AppBroadcastStreamReader.AudioFrameArrived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastStreamReader", "event AudioFrameArrived");
 			}
 		}
 #endif
@@ -131,12 +131,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastStreamReader", "event TypedEventHandler<AppBroadcastStreamReader, object> AppBroadcastStreamReader.VideoFrameArrived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastStreamReader", "event VideoFrameArrived");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastStreamReader", "event TypedEventHandler<AppBroadcastStreamReader, object> AppBroadcastStreamReader.VideoFrameArrived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppBroadcastStreamReader", "event VideoFrameArrived");
 			}
 		}
 #endif

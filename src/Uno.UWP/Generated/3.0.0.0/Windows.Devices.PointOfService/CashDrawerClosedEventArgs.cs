@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CashDrawer CashDrawerClosedEventArgs.CashDrawer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CashDrawer%20CashDrawerClosedEventArgs.CashDrawer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.CashDrawerClosedEventArgs", "CashDrawer");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StoreQueueItemKind StoreQueueItem.InstallKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StoreQueueItemKind%20StoreQueueItem.InstallKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreQueueItem", "InstallKind");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreQueueItem.PackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreQueueItem.PackageFamilyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreQueueItem", "PackageFamilyName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreQueueItem.ProductId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreQueueItem.ProductId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreQueueItem", "ProductId");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Services.Store
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Services.Store.StoreQueueItemStatus GetCurrentStatus()
 		{
-			throw new global::System.NotImplementedException("The member StoreQueueItemStatus StoreQueueItem.GetCurrentStatus() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StoreQueueItemStatus%20StoreQueueItem.GetCurrentStatus%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreQueueItem", "GetCurrentStatus()");
 		}
 #endif
 		// Forced skipping of method Windows.Services.Store.StoreQueueItem.Completed.add
@@ -58,21 +58,21 @@ namespace Windows.Services.Store
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction CancelInstallAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StoreQueueItem.CancelInstallAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20StoreQueueItem.CancelInstallAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreQueueItem", "CancelInstallAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction PauseInstallAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StoreQueueItem.PauseInstallAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20StoreQueueItem.PauseInstallAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreQueueItem", "PauseInstallAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ResumeInstallAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StoreQueueItem.ResumeInstallAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20StoreQueueItem.ResumeInstallAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreQueueItem", "ResumeInstallAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Services.Store.StoreQueueItem.InstallKind.get
@@ -85,12 +85,12 @@ namespace Windows.Services.Store
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StoreQueueItem", "event TypedEventHandler<StoreQueueItem, StoreQueueItemCompletedEventArgs> StoreQueueItem.Completed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StoreQueueItem", "event Completed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StoreQueueItem", "event TypedEventHandler<StoreQueueItem, StoreQueueItemCompletedEventArgs> StoreQueueItem.Completed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StoreQueueItem", "event Completed");
 			}
 		}
 #endif
@@ -101,12 +101,12 @@ namespace Windows.Services.Store
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StoreQueueItem", "event TypedEventHandler<StoreQueueItem, object> StoreQueueItem.StatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StoreQueueItem", "event StatusChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StoreQueueItem", "event TypedEventHandler<StoreQueueItem, object> StoreQueueItem.StatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StoreQueueItem", "event StatusChanged");
 			}
 		}
 #endif

@@ -14,11 +14,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaCaptureInitializationSettings.AlwaysPlaySystemShutterSound is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaCaptureInitializationSettings.AlwaysPlaySystemShutterSound");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureInitializationSettings", "AlwaysPlaySystemShutterSound");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "bool MediaCaptureInitializationSettings.AlwaysPlaySystemShutterSound");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "AlwaysPlaySystemShutterSound");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaCaptureInitializationSettings.AudioDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaCaptureInitializationSettings.AudioDeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureInitializationSettings", "AudioDeviceId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "string MediaCaptureInitializationSettings.AudioDeviceId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "AudioDeviceId");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioProcessing MediaCaptureInitializationSettings.AudioProcessing is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioProcessing%20MediaCaptureInitializationSettings.AudioProcessing");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureInitializationSettings", "AudioProcessing");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "AudioProcessing MediaCaptureInitializationSettings.AudioProcessing");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "AudioProcessing");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IMediaSource MediaCaptureInitializationSettings.AudioSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IMediaSource%20MediaCaptureInitializationSettings.AudioSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureInitializationSettings", "AudioSource");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "IMediaSource MediaCaptureInitializationSettings.AudioSource");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "AudioSource");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri MediaCaptureInitializationSettings.DeviceUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20MediaCaptureInitializationSettings.DeviceUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureInitializationSettings", "DeviceUri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "Uri MediaCaptureInitializationSettings.DeviceUri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "DeviceUri");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential MediaCaptureInitializationSettings.DeviceUriPasswordCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PasswordCredential%20MediaCaptureInitializationSettings.DeviceUriPasswordCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureInitializationSettings", "DeviceUriPasswordCredential");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "PasswordCredential MediaCaptureInitializationSettings.DeviceUriPasswordCredential");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "DeviceUriPasswordCredential");
 			}
 		}
 #endif
@@ -98,11 +98,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCategory MediaCaptureInitializationSettings.MediaCategory is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaCategory%20MediaCaptureInitializationSettings.MediaCategory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureInitializationSettings", "MediaCategory");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "MediaCategory MediaCaptureInitializationSettings.MediaCategory");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "MediaCategory");
 			}
 		}
 #endif
@@ -112,11 +112,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCaptureMemoryPreference MediaCaptureInitializationSettings.MemoryPreference is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaCaptureMemoryPreference%20MediaCaptureInitializationSettings.MemoryPreference");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureInitializationSettings", "MemoryPreference");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "MediaCaptureMemoryPreference MediaCaptureInitializationSettings.MemoryPreference");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "MemoryPreference");
 			}
 		}
 #endif
@@ -126,11 +126,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhotoCaptureSource MediaCaptureInitializationSettings.PhotoCaptureSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhotoCaptureSource%20MediaCaptureInitializationSettings.PhotoCaptureSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureInitializationSettings", "PhotoCaptureSource");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "PhotoCaptureSource MediaCaptureInitializationSettings.PhotoCaptureSource");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "PhotoCaptureSource");
 			}
 		}
 #endif
@@ -140,11 +140,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCaptureVideoProfileMediaDescription MediaCaptureInitializationSettings.PhotoMediaDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaCaptureVideoProfileMediaDescription%20MediaCaptureInitializationSettings.PhotoMediaDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureInitializationSettings", "PhotoMediaDescription");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "MediaCaptureVideoProfileMediaDescription MediaCaptureInitializationSettings.PhotoMediaDescription");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "PhotoMediaDescription");
 			}
 		}
 #endif
@@ -154,11 +154,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCaptureVideoProfileMediaDescription MediaCaptureInitializationSettings.PreviewMediaDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaCaptureVideoProfileMediaDescription%20MediaCaptureInitializationSettings.PreviewMediaDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureInitializationSettings", "PreviewMediaDescription");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "MediaCaptureVideoProfileMediaDescription MediaCaptureInitializationSettings.PreviewMediaDescription");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "PreviewMediaDescription");
 			}
 		}
 #endif
@@ -168,11 +168,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCaptureVideoProfileMediaDescription MediaCaptureInitializationSettings.RecordMediaDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaCaptureVideoProfileMediaDescription%20MediaCaptureInitializationSettings.RecordMediaDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureInitializationSettings", "RecordMediaDescription");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "MediaCaptureVideoProfileMediaDescription MediaCaptureInitializationSettings.RecordMediaDescription");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "RecordMediaDescription");
 			}
 		}
 #endif
@@ -182,11 +182,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCaptureSharingMode MediaCaptureInitializationSettings.SharingMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaCaptureSharingMode%20MediaCaptureInitializationSettings.SharingMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureInitializationSettings", "SharingMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "MediaCaptureSharingMode MediaCaptureInitializationSettings.SharingMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "SharingMode");
 			}
 		}
 #endif
@@ -196,11 +196,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaFrameSourceGroup MediaCaptureInitializationSettings.SourceGroup is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaFrameSourceGroup%20MediaCaptureInitializationSettings.SourceGroup");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureInitializationSettings", "SourceGroup");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "MediaFrameSourceGroup MediaCaptureInitializationSettings.SourceGroup");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "SourceGroup");
 			}
 		}
 #endif
@@ -210,11 +210,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StreamingCaptureMode MediaCaptureInitializationSettings.StreamingCaptureMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StreamingCaptureMode%20MediaCaptureInitializationSettings.StreamingCaptureMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureInitializationSettings", "StreamingCaptureMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "StreamingCaptureMode MediaCaptureInitializationSettings.StreamingCaptureMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "StreamingCaptureMode");
 			}
 		}
 #endif
@@ -224,11 +224,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaCaptureInitializationSettings.VideoDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaCaptureInitializationSettings.VideoDeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureInitializationSettings", "VideoDeviceId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "string MediaCaptureInitializationSettings.VideoDeviceId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "VideoDeviceId");
 			}
 		}
 #endif
@@ -238,11 +238,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCaptureVideoProfile MediaCaptureInitializationSettings.VideoProfile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaCaptureVideoProfile%20MediaCaptureInitializationSettings.VideoProfile");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureInitializationSettings", "VideoProfile");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "MediaCaptureVideoProfile MediaCaptureInitializationSettings.VideoProfile");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "VideoProfile");
 			}
 		}
 #endif
@@ -252,11 +252,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IMediaSource MediaCaptureInitializationSettings.VideoSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IMediaSource%20MediaCaptureInitializationSettings.VideoSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureInitializationSettings", "VideoSource");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "IMediaSource MediaCaptureInitializationSettings.VideoSource");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "VideoSource");
 			}
 		}
 #endif
@@ -264,7 +264,7 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaCaptureInitializationSettings()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "MediaCaptureInitializationSettings.MediaCaptureInitializationSettings()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "MediaCaptureInitializationSettings()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.MediaCaptureInitializationSettings()

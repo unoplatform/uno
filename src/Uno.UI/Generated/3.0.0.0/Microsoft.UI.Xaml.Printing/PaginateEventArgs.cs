@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int PaginateEventArgs.CurrentPreviewPageNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20PaginateEventArgs.CurrentPreviewPageNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Printing.PaginateEventArgs", "CurrentPreviewPageNumber");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTaskOptions PaginateEventArgs.PrintTaskOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTaskOptions%20PaginateEventArgs.PrintTaskOptions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Printing.PaginateEventArgs", "PrintTaskOptions");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Microsoft.UI.Xaml.Printing
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaginateEventArgs()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Printing.PaginateEventArgs", "PaginateEventArgs.PaginateEventArgs()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Printing.PaginateEventArgs", "PaginateEventArgs()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Printing.PaginateEventArgs.PaginateEventArgs()
