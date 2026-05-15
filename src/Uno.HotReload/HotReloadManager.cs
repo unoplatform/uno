@@ -225,7 +225,7 @@ public sealed class HotReloadManager : IDisposable
 
 	private ImmutableArray<string> GetCompilationErrors(Solution solution, CancellationToken cancellationToken)
 	{
-		// Studio Live workspaces always have a single project — sequential iteration avoids
+		// ALC-hosted workspaces always have a single project — sequential iteration avoids
 		// Parallel.ForEach overhead (thread pool work items, partitioner, lambda closures).
 		var builder = ImmutableArray.CreateBuilder<string>();
 		foreach (var project in solution.Projects)

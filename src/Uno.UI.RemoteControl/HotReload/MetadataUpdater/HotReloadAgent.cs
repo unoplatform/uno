@@ -79,7 +79,7 @@ internal sealed class HotReloadAgent : IDisposable
 		// This would ensure that caches and updates more lower in the application stack are up to date
 		// before ones higher in the stack are recomputed.
 		//
-		// When running in a non-default ALC (e.g. Studio Live inner app), MetadataUpdateHandler
+		// When running in a non-default ALC (e.g. an inner app loaded by a host), MetadataUpdateHandler
 		// attributes live on shared assemblies (Uno.UI) in the default ALC. We must scan both
 		// ALCs to discover all handlers, deduplicating by assembly name.
 		var sortedAssemblies = TopologicalSort(GetAllRelevantAssemblies());
@@ -328,7 +328,7 @@ internal sealed class HotReloadAgent : IDisposable
 	/// <summary>
 	/// Returns assemblies from the current ALC and, if different, the default ALC.
 	/// This ensures handlers registered on shared assemblies (e.g. Uno.UI in the default ALC)
-	/// are discovered even when the agent runs in a non-default ALC (e.g. Studio Live inner app).
+	/// are discovered even when the agent runs in a non-default ALC (e.g. an inner app loaded by a host).
 	/// Assemblies are deduplicated by name — the current ALC's version takes precedence.
 	/// </summary>
 	private Assembly[] GetAllRelevantAssemblies()

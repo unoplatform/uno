@@ -308,8 +308,8 @@ public class InProcessFrameTransportTests
 	}
 
 	/// <summary>
-	/// Regression for the second-rebuild RC client death observed in Studio Live
-	/// feedback bundle <c>c23a8e063ced4134b477a29c08e11141</c>: when one peer is
+	/// Regression for the second-rebuild RC client death observed in ALC-based
+	/// hosting scenarios: when one peer is
 	/// fully <see cref="IDisposable.Dispose"/>'d (so its inner
 	/// <see cref="System.Threading.SemaphoreSlim"/> is gone) but its
 	/// <c>_isRemoteClosed</c> flag was never flipped — which is the case because
