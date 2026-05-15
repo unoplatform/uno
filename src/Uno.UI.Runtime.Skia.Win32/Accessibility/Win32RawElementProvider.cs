@@ -34,6 +34,7 @@ internal class Win32RawElementProvider :
 	private readonly nint _hwnd;
 	private readonly int _runtimeId;
 	private readonly bool _isRoot;
+	private readonly bool _isVirtualPeer;
 	private readonly Win32Accessibility _accessibility;
 	private readonly WeakReference<AutomationPeer>? _representedPeer;
 	private IList<AutomationPeer>? _cachedAutomationChildren;
@@ -47,11 +48,13 @@ internal class Win32RawElementProvider :
 		nint hwnd,
 		bool isRoot,
 		Win32Accessibility accessibility,
-		AutomationPeer? representedPeer = null)
+		AutomationPeer? representedPeer = null,
+		bool isVirtualPeer = false)
 	{
 		_owner = owner;
 		_hwnd = hwnd;
 		_isRoot = isRoot;
+		_isVirtualPeer = isVirtualPeer;
 		_accessibility = accessibility;
 		_representedPeer = representedPeer is not null ? new WeakReference<AutomationPeer>(representedPeer) : null;
 		_runtimeId = _nextRuntimeId++;
@@ -305,23 +308,40 @@ internal class Win32RawElementProvider :
 		{
 			try
 			{
-				var visual = _owner.Visual;
-				var size = visual.Size;
+				Windows.Foundation.Rect logicalRect;
 
-				// Compute the full element-to-root transform, then transform the
-				// local rect to get the axis-aligned bounding box in window coords.
-				// This correctly handles rotation, scale, and skew transforms.
-				var transform = UIElement.GetTransform(from: _owner, to: null);
-				var localRect = new Windows.Foundation.Rect(0, 0, size.X, size.Y);
-				var logicalRect = transform.Transform(localRect);
-
-				// Clip to ancestor scroll/clip regions so Narrator doesn't report
-				// bounds for content that is scrolled out of view.
-				logicalRect = ClipToAncestors(_owner, logicalRect);
-
-				if (logicalRect.Width <= 0 || logicalRect.Height <= 0)
+				if (_isVirtualPeer && RepresentedPeer is { } virtualPeer)
 				{
-					return default;
+					// Virtual peers (e.g. DataGridItemAutomationPeer) share their
+					// UIElement owner with other peers. The peer overrides
+					// GetBoundingRectangleCore to delegate to the actual visual
+					// element (e.g. the DataGridRow), so use the peer's bounds.
+					logicalRect = virtualPeer.GetBoundingRectangle();
+					if (logicalRect.Width <= 0 || logicalRect.Height <= 0)
+					{
+						return default;
+					}
+				}
+				else
+				{
+					var visual = _owner.Visual;
+					var size = visual.Size;
+
+					// Compute the full element-to-root transform, then transform the
+					// local rect to get the axis-aligned bounding box in window coords.
+					// This correctly handles rotation, scale, and skew transforms.
+					var transform = UIElement.GetTransform(from: _owner, to: null);
+					var localRect = new Windows.Foundation.Rect(0, 0, size.X, size.Y);
+					logicalRect = transform.Transform(localRect);
+
+					// Clip to ancestor scroll/clip regions so Narrator doesn't report
+					// bounds for content that is scrolled out of view.
+					logicalRect = ClipToAncestors(_owner, logicalRect);
+
+					if (logicalRect.Width <= 0 || logicalRect.Height <= 0)
+					{
+						return default;
+					}
 				}
 
 				// Convert logical pixels to physical screen coordinates
@@ -781,7 +801,10 @@ internal class Win32RawElementProvider :
 
 	/// <summary>
 	/// Compares two automation peers for identity. Uses reference equality first,
-	/// then falls back to checking if they wrap the same UIElement.
+	/// then falls back to checking if they wrap the same UIElement — but only
+	/// when both peers are the canonical (element-owned) peer. Virtual peers
+	/// (e.g., DataGridItemAutomationPeer) share the same UIElement owner and
+	/// must be compared by reference only.
 	/// </summary>
 	private static bool IsSamePeer(AutomationPeer? a, AutomationPeer? b)
 	{
@@ -795,11 +818,18 @@ internal class Win32RawElementProvider :
 			return true;
 		}
 
-		// Fall back to comparing owner UIElements
+		// Fall back to comparing owner UIElements, but only when each
+		// peer IS the canonical peer for its owner. Skip the fallback
+		// when either peer is a "virtual" peer that shares its owner
+		// with other peers (e.g. DataGridItemAutomationPeer).
 		if (a is FrameworkElementAutomationPeer feapA
-			&& b is FrameworkElementAutomationPeer feapB)
+			&& b is FrameworkElementAutomationPeer feapB
+			&& ReferenceEquals(feapA.Owner, feapB.Owner))
 		{
-			return ReferenceEquals(feapA.Owner, feapB.Owner);
+			// Verify both are canonical for their shared owner
+			var canonicalPeer = feapA.Owner.GetOrCreateAutomationPeer();
+			return canonicalPeer is not null
+				&& (ReferenceEquals(a, canonicalPeer) || ReferenceEquals(b, canonicalPeer));
 		}
 
 		return false;

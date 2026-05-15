@@ -157,6 +157,12 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 	private Win32RawElementProvider? GetOrCreateProviderForResolvedPeer(AutomationPeer resolvedPeer)
 	{
+		// Fast path: already have a provider keyed by this exact peer.
+		if (_peerProviders.TryGetValue(resolvedPeer, out var existingByPeer))
+		{
+			return existingByPeer;
+		}
+
 		if (!resolvedPeer.TryGetProviderOwner(out var element))
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
@@ -167,38 +173,59 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		}
 
 		var canonicalPeer = element.GetOrCreateAutomationPeer()?.ResolveProviderPeer(resolveEventsSource: true) ?? resolvedPeer;
-		if (!canonicalPeer.TryGetProviderOwner(out element))
+
+		if (ReferenceEquals(resolvedPeer, canonicalPeer))
 		{
+			// Normal path: peer is the canonical peer for its owner element.
+			if (!canonicalPeer.TryGetProviderOwner(out element))
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"[UIA] GetProviderForPeer: Canonical owner resolution failed for {canonicalPeer.GetType().Name}");
+				}
+				return null;
+			}
+
+			if (_providers.TryGetValue(element, out var existingByElement)
+				&& existingByElement.RepresentsPeer(canonicalPeer))
+			{
+				_peerProviders.AddOrUpdate(canonicalPeer, existingByElement);
+				return existingByElement;
+			}
+
+			if (_peerProviders.TryGetValue(canonicalPeer, out existingByPeer))
+			{
+				_providers.AddOrUpdate(element, existingByPeer);
+				return existingByPeer;
+			}
+
+			var provider = new Win32RawElementProvider(element, _hwnd, isRoot: false, this, canonicalPeer);
+			_providers.AddOrUpdate(element, provider);
+			_peerProviders.AddOrUpdate(canonicalPeer, provider);
+
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Debug($"[UIA] GetProviderForPeer: Canonical owner resolution failed for {canonicalPeer.GetType().Name}");
+				this.Log().Debug($"[UIA] Created provider for {provider.DescribeElement()} (peer={canonicalPeer.GetType().Name})");
 			}
-			return null;
-		}
 
-		if (_providers.TryGetValue(element, out var existingByElement)
-			&& existingByElement.RepresentsPeer(canonicalPeer))
+			return provider;
+		}
+		else
 		{
-			_peerProviders.AddOrUpdate(canonicalPeer, existingByElement);
-			return existingByElement;
+			// Virtual peer: shares its UIElement owner with other peers (e.g.,
+			// DataGridItemAutomationPeer whose Owner is the DataGrid, not the row).
+			// Create a provider keyed by this specific peer. Do NOT store in
+			// _providers since the element is shared with the canonical peer.
+			var provider = new Win32RawElementProvider(element, _hwnd, isRoot: false, this, resolvedPeer, isVirtualPeer: true);
+			_peerProviders.AddOrUpdate(resolvedPeer, provider);
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"[UIA] Created virtual provider for {provider.DescribeElement()} (peer={resolvedPeer.GetType().Name})");
+			}
+
+			return provider;
 		}
-
-		if (_peerProviders.TryGetValue(canonicalPeer, out var existingByPeer))
-		{
-			_providers.AddOrUpdate(element, existingByPeer);
-			return existingByPeer;
-		}
-
-		var provider = new Win32RawElementProvider(element, _hwnd, isRoot: false, this, canonicalPeer);
-		_providers.AddOrUpdate(element, provider);
-		_peerProviders.AddOrUpdate(canonicalPeer, provider);
-
-		if (this.Log().IsEnabled(LogLevel.Debug))
-		{
-			this.Log().Debug($"[UIA] Created provider for {provider.DescribeElement()} (peer={canonicalPeer.GetType().Name})");
-		}
-
-		return provider;
 	}
 
 	// ──────────────────────────────────────────────────────────────
