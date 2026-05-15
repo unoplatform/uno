@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using Uno.UI;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 #if __ANDROID__
 using Android.Views;
@@ -12,6 +13,9 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class PivotItem : ContentControl
 	{
+		protected override AutomationPeer OnCreateAutomationPeer()
+			=> new PivotItemAutomationPeer(this);
+
 		public PivotItem()
 		{
 			this.HorizontalAlignment = HorizontalAlignment.Stretch;

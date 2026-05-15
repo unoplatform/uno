@@ -935,8 +935,10 @@ internal class Win32RawElementProvider :
 	{
 		if (peer is null)
 		{
+			// The HWND root has no managed AutomationPeer; expose it to UIA as a Window so screen
+			// readers treat the Skia/Win32 host as a top-level window (matches WinUI behavior).
 			return _isRoot
-				? Win32UIAutomationInterop.UIA_PaneControlTypeId
+				? Win32UIAutomationInterop.UIA_WindowControlTypeId
 				: Win32UIAutomationInterop.UIA_CustomControlTypeId;
 		}
 

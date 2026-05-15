@@ -32,7 +32,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 	private string m_ClassName;
 	private ScrollItemAdapter m_spScrollItemAdapter;
 
-	private AutomationControlType m_ControlType;
+	private AutomationControlType m_ControlType = AutomationControlType.Custom;
 
 	// Recursion guard for GetNameCore → GetLabeledBy → GetName cycle.
 	// Prevents StackOverflowException when elements have circular LabeledBy references.
