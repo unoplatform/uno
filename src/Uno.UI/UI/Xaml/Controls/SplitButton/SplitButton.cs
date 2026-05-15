@@ -341,6 +341,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_isFlyoutOpen = true;
 			UpdateVisualStates();
 			SharedHelpers.RaiseAutomationPropertyChangedEvent(this, ExpandCollapseState.Collapsed, ExpandCollapseState.Expanded);
+			RaiseFlyoutStructureChangedEvent();
 		}
 
 		private void OnFlyoutClosed(object sender, object args)
@@ -348,6 +349,17 @@ namespace Microsoft.UI.Xaml.Controls
 			m_isFlyoutOpen = false;
 			UpdateVisualStates();
 			SharedHelpers.RaiseAutomationPropertyChangedEvent(this, ExpandCollapseState.Expanded, ExpandCollapseState.Collapsed);
+			RaiseFlyoutStructureChangedEvent();
+		}
+
+		private void RaiseFlyoutStructureChangedEvent()
+		{
+			// Invalidates the Win32 UIA bridge's cached child list so the flyout presenter
+			// appears/disappears as a child of the SplitButton peer on flyout open/close.
+			if (FrameworkElementAutomationPeer.FromElement(this) is { } peer)
+			{
+				peer.RaiseAutomationEvent(AutomationEvents.StructureChanged);
+			}
 		}
 
 		private void OnFlyoutPlacementChanged(DependencyObject sender, DependencyProperty dp)
