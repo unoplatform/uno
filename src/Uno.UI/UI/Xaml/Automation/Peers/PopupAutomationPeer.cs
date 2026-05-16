@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference PopupAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
 
+using System.Collections.Generic;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -30,6 +31,16 @@ public partial class PopupAutomationPeer : FrameworkElementAutomationPeer, IWind
 
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.Window;
+
+	protected override IList<AutomationPeer> GetChildrenCore()
+	{
+		var children = new List<AutomationPeer>();
+		if (GetPopup() is { } popup && popup.Child is { } child && child.GetOrCreateAutomationPeer() is { } childPeer)
+		{
+			children.Add(childPeer);
+		}
+		return children;
+	}
 
 	protected override string GetNameCore()
 	{

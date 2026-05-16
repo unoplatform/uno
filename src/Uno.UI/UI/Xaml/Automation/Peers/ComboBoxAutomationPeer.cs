@@ -47,40 +47,26 @@ public partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.I
 
 	protected override IList<AutomationPeer> GetChildrenCore()
 	{
-		return base.GetChildrenCore();
+		var children = base.GetChildrenCore();
 
-		//UNO TODO: Implement GetLightDismissElement on ComboBox
-		//UIElement spOwner = Owner as UIElement;
-		//ComboBox spComboBox = spOwner as ComboBox;
+		// When the dropdown is open the popup hosting the items is mounted under PopupRoot,
+		// not under the ComboBox visual subtree, so base.GetChildrenCore() never reaches it.
+		// Surface the popup's presenter peer as a child of the ComboBox so screen readers can
+		// navigate into the items list from the ComboBox node (matches WinUI's logical tree).
+		if (Owner is ComboBox comboBox && comboBox.IsDropDownOpen)
+		{
+			var popup = comboBox.GetPopup();
+			if (popup?.GetAutomationPeer() is AutomationPeer popupPeer)
+			{
+				children ??= new List<AutomationPeer>();
+				if (!children.Contains(popupPeer))
+				{
+					children.Add(popupPeer);
+				}
+			}
+		}
 
-		//if (spComboBox == null || !spComboBox.IsDropDownOpen)
-		//{
-		//	return base.GetChildrenCore();
-		//}
-
-		//IList<AutomationPeer> apChildren = new DirectUI.TrackerCollection<AutomationPeer>();
-
-		//var spLightDismissElement;
-		//spComboBox.GetLightDismissElement(out spLightDismissElement);
-
-		//if (spLightDismissElement != null)
-		//{
-		//	var ap = spLightDismissElement.GetOrCreateAutomationPeer();
-		//	apChildren.Add(ap);
-		//}
-
-		//UNO TODO: Implement GetEditableTextPart and IsEditable on ComboBox
-
-		//bool isEditable = spComboBox.IsEditable;
-		//UIElement spEditableTextElement;
-
-		//if (isEditable && spComboBox.GetEditableTextPart(out spEditableTextElement))
-		//{
-		//	IAutomationPeer ap = spEditableTextElement.GetOrCreateAutomationPeer();
-		//	apChildren.Insert(0, ap);
-		//}
-
-		//return apChildren;
+		return children;
 	}
 
 	protected override string GetClassNameCore() => nameof(ComboBox);
