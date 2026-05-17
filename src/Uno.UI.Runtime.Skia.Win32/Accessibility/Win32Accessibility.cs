@@ -28,12 +28,27 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	private readonly nint _hwnd;
 	private readonly DispatcherQueue _dispatcherQueue;
 	private readonly Win32RawElementProvider _rootProvider;
+	private readonly Win32SyntheticPaneProvider _outerPane;
+	private readonly Win32SyntheticPaneProvider _innerPane;
 	private readonly ConditionalWeakTable<UIElement, Win32RawElementProvider> _providers = new();
 	private readonly ConditionalWeakTable<AutomationPeer, Win32RawElementProvider> _peerProviders = new();
 	private readonly HashSet<Win32RawElementProvider> _pendingStructureChanges = new();
 	private bool _structureChangeFlushQueued;
 
 	internal Win32RawElementProvider? RootProvider => _rootProvider;
+
+	/// <summary>
+	/// The outer synthetic pane — represents WinAppSDK's DesktopChildSiteBridge
+	/// in the UIA tree. Sits between the HWND root and the inner pane.
+	/// </summary>
+	internal Win32SyntheticPaneProvider OuterPane => _outerPane;
+
+	/// <summary>
+	/// The inner synthetic pane — represents WinAppSDK's content-island host.
+	/// Its children resolve to the user's Xaml content (whatever the HWND
+	/// root's child-walk would have returned before the pane synthesis).
+	/// </summary>
+	internal Win32SyntheticPaneProvider InnerPane => _innerPane;
 
 	internal Win32Accessibility(nint hwnd, UIElement rootElement, DispatcherQueue dispatcherQueue)
 	{
@@ -53,6 +68,29 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		{
 			_peerProviders.AddOrUpdate(rootPeer, _rootProvider);
 		}
+
+		// Synthesize two intermediate pane providers (outer + inner) so the UIA
+		// tree matches WinAppSDK exactly: window → pane → pane → user content.
+		// The outer pane sits directly under the HWND root; the inner pane sits
+		// under the outer pane and forwards child queries to the root's normal
+		// peer-tree walk (via GetFirstChildCore / GetLastChildCore).
+		// Parents/children are resolved via delegates so the two panes can
+		// reference each other without a construction-order cycle.
+		_outerPane = new Win32SyntheticPaneProvider(
+			hwnd: _hwnd,
+			accessibility: this,
+			parentResolver: () => _rootProvider,
+			firstChildResolver: () => _innerPane,
+			lastChildResolver: () => _innerPane,
+			debugTag: "outer");
+
+		_innerPane = new Win32SyntheticPaneProvider(
+			hwnd: _hwnd,
+			accessibility: this,
+			parentResolver: () => _outerPane,
+			firstChildResolver: () => _rootProvider.GetFirstChildCore(),
+			lastChildResolver: () => _rootProvider.GetLastChildCore(),
+			debugTag: "inner");
 
 		if (this.Log().IsEnabled(LogLevel.Information))
 		{
@@ -664,6 +702,27 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
 					this.Log().Debug($"[UIA] UiaDisconnectProvider failed during dispose: {ex.Message}");
+				}
+			}
+		}
+
+		// Synthetic panes are not part of _providers (they wrap no UIElement),
+		// so they must be disconnected separately.
+		foreach (var pane in new IRawElementProviderSimple?[] { _outerPane, _innerPane })
+		{
+			if (pane is null)
+			{
+				continue;
+			}
+			try
+			{
+				_ = Win32UIAutomationInterop.UiaDisconnectProvider(pane);
+			}
+			catch (Exception ex)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"[UIA] UiaDisconnectProvider failed for synthetic pane during dispose: {ex.Message}");
 				}
 			}
 		}
