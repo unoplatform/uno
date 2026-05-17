@@ -2,7 +2,6 @@
 
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
-using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 

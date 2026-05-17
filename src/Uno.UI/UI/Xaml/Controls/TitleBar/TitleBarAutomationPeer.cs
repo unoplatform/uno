@@ -1,7 +1,5 @@
 // MUX Reference TitleBarAutomationPeer.cpp, tag winui3/release/1.8.4
 
-using Microsoft.UI.Xaml.Controls;
-
 namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
