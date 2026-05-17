@@ -54,6 +54,11 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			_peerProviders.AddOrUpdate(rootPeer, _rootProvider);
 		}
 
+		if (Win32UiaTrace.IsEnabled)
+		{
+			Win32UiaTrace.Write($"Win32Accessibility ctor: hwnd=0x{hwnd:X} rootElement={rootElement.GetType().Name} rootPeer={Win32RawElementProvider.DescribePeer(rootPeer)} → root provider {_rootProvider.DescribeElement()}");
+		}
+
 		if (this.Log().IsEnabled(LogLevel.Information))
 		{
 			this.Log().Info(
@@ -113,6 +118,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	{
 		if (_providers.TryGetValue(element, out var existing))
 		{
+			if (Win32UiaTrace.IsEnabled)
+			{
+				Win32UiaTrace.Write($"GetOrCreateProvider({element.GetType().Name}): cache HIT → {existing.DescribeElement()} runtimeId={existing.GetRuntimeIdForTrace()}");
+			}
 			return existing;
 		}
 
@@ -128,9 +137,17 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			{
 				this.Log().Trace($"[UIA] GetOrCreateProvider: No automation peer for {element.GetType().Name}");
 			}
+			if (Win32UiaTrace.IsEnabled)
+			{
+				Win32UiaTrace.Write($"GetOrCreateProvider({element.GetType().Name}): no peer → null");
+			}
 			return null;
 		}
 
+		if (Win32UiaTrace.IsEnabled)
+		{
+			Win32UiaTrace.Write($"GetOrCreateProvider({element.GetType().Name}): peer={Win32RawElementProvider.DescribePeer(peer)} → resolving");
+		}
 		return GetOrCreateProviderForResolvedPeer(peer.ResolveProviderPeer(resolveEventsSource: true));
 	}
 
@@ -139,6 +156,12 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	/// </summary>
 	internal Win32RawElementProvider? GetProviderForPeer(AutomationPeer peer, bool resolveEventsSource = false)
 	{
+		if (Win32UiaTrace.IsEnabled)
+		{
+			var resolved = peer.ResolveProviderPeer(resolveEventsSource);
+			Win32UiaTrace.Write($"GetProviderForPeer(resolveEventsSource={resolveEventsSource}): in={Win32RawElementProvider.DescribePeer(peer)} resolveProviderPeer→{Win32RawElementProvider.DescribePeer(resolved)}");
+			return GetOrCreateProviderForResolvedPeer(resolved);
+		}
 		return GetOrCreateProviderForResolvedPeer(peer.ResolveProviderPeer(resolveEventsSource));
 	}
 
@@ -146,10 +169,18 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	{
 		if (_providers.TryGetValue(element, out var provider))
 		{
+			if (Win32UiaTrace.IsEnabled)
+			{
+				Win32UiaTrace.Write($"GetProvider({element.GetType().Name}): cache HIT → {provider.DescribeElement()} runtimeId={provider.GetRuntimeIdForTrace()}");
+			}
 			return provider;
 		}
 
 		var peer = element.GetOrCreateAutomationPeer();
+		if (Win32UiaTrace.IsEnabled)
+		{
+			Win32UiaTrace.Write($"GetProvider({element.GetType().Name}): cache MISS, peer={Win32RawElementProvider.DescribePeer(peer)}");
+		}
 		return peer is null
 			? null
 			: GetOrCreateProviderForResolvedPeer(peer.ResolveProviderPeer(resolveEventsSource: true));
@@ -157,35 +188,68 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 	private Win32RawElementProvider? GetOrCreateProviderForResolvedPeer(AutomationPeer resolvedPeer)
 	{
+		if (Win32UiaTrace.IsEnabled)
+		{
+			Win32UiaTrace.Write($"  GetOrCreateProviderForResolvedPeer: in={Win32RawElementProvider.DescribePeer(resolvedPeer)}");
+		}
+
 		if (!resolvedPeer.TryGetProviderOwner(out var element))
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().Debug($"[UIA] GetProviderForPeer: Could not resolve owner for {resolvedPeer.GetType().Name}");
 			}
+			if (Win32UiaTrace.IsEnabled)
+			{
+				Win32UiaTrace.Write($"    → null (TryGetProviderOwner failed for {resolvedPeer.GetType().Name})");
+			}
 			return null;
 		}
 
-		var canonicalPeer = element.GetOrCreateAutomationPeer()?.ResolveProviderPeer(resolveEventsSource: true) ?? resolvedPeer;
+		var elementPeer = element.GetOrCreateAutomationPeer();
+		var canonicalPeer = elementPeer?.ResolveProviderPeer(resolveEventsSource: true) ?? resolvedPeer;
+		if (Win32UiaTrace.IsEnabled)
+		{
+			Win32UiaTrace.Write($"    resolvedPeer.Owner={element.GetType().Name}, elementPeer={Win32RawElementProvider.DescribePeer(elementPeer)}, canonicalPeer={Win32RawElementProvider.DescribePeer(canonicalPeer)}");
+		}
+
 		if (!canonicalPeer.TryGetProviderOwner(out element))
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().Debug($"[UIA] GetProviderForPeer: Canonical owner resolution failed for {canonicalPeer.GetType().Name}");
 			}
+			if (Win32UiaTrace.IsEnabled)
+			{
+				Win32UiaTrace.Write($"    → null (canonical TryGetProviderOwner failed)");
+			}
 			return null;
 		}
 
-		if (_providers.TryGetValue(element, out var existingByElement)
-			&& existingByElement.RepresentsPeer(canonicalPeer))
+		if (_providers.TryGetValue(element, out var existingByElement))
 		{
-			_peerProviders.AddOrUpdate(canonicalPeer, existingByElement);
-			return existingByElement;
+			if (existingByElement.RepresentsPeer(canonicalPeer))
+			{
+				_peerProviders.AddOrUpdate(canonicalPeer, existingByElement);
+				if (Win32UiaTrace.IsEnabled)
+				{
+					Win32UiaTrace.Write($"    → cache HIT by element {element.GetType().Name} (peer-match): {existingByElement.DescribeElement()} runtimeId={existingByElement.GetRuntimeIdForTrace()}");
+				}
+				return existingByElement;
+			}
+			if (Win32UiaTrace.IsEnabled)
+			{
+				Win32UiaTrace.Write($"    cache by-element MISS-due-to-peer-mismatch: existing provider {existingByElement.DescribeElement()} runtimeId={existingByElement.GetRuntimeIdForTrace()} represents a different peer than canonical {Win32RawElementProvider.DescribePeer(canonicalPeer)}");
+			}
 		}
 
 		if (_peerProviders.TryGetValue(canonicalPeer, out var existingByPeer))
 		{
 			_providers.AddOrUpdate(element, existingByPeer);
+			if (Win32UiaTrace.IsEnabled)
+			{
+				Win32UiaTrace.Write($"    → cache HIT by peer: {existingByPeer.DescribeElement()} runtimeId={existingByPeer.GetRuntimeIdForTrace()}");
+			}
 			return existingByPeer;
 		}
 
@@ -196,6 +260,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
 			this.Log().Debug($"[UIA] Created provider for {provider.DescribeElement()} (peer={canonicalPeer.GetType().Name})");
+		}
+		if (Win32UiaTrace.IsEnabled)
+		{
+			Win32UiaTrace.Write($"    → CREATED new provider {provider.DescribeElement()} runtimeId={provider.GetRuntimeIdForTrace()} for canonicalPeer={Win32RawElementProvider.DescribePeer(canonicalPeer)}");
 		}
 
 		return provider;
