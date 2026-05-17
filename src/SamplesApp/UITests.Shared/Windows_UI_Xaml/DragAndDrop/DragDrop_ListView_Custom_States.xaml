@@ -39,7 +39,6 @@
                                 <Grid.RenderTransform>
                                     <TranslateTransform x:Name="ContentPresenterTranslateTransform" />
                                 </Grid.RenderTransform>
-                                <!--  Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl  -->
                                 <toolkit:ElevatedView
                                     x:Name="ElevatedView"
                                     Margin="3"
@@ -52,7 +51,6 @@
                                         VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                         Content="{TemplateBinding Content}"
                                         ContentTemplate="{TemplateBinding ContentTemplate}"
-                                        ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
                                         ContentTransitions="{TemplateBinding ContentTransitions}" />
                                 </toolkit:ElevatedView>
                             </Grid>

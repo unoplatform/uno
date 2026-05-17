@@ -21,9 +21,11 @@ namespace Microsoft.UI.Xaml.Controls
 			return new GridViewItem() { IsGeneratedContainer = true };
 		}
 
+#if __ANDROID__ || __IOS__
 		internal override ContentControl GetGroupHeaderContainer(object groupHeader)
 		{
 			return new GridViewHeaderItem() { IsGeneratedContainer = true };
 		}
+#endif
 	}
 }

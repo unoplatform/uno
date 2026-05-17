@@ -203,7 +203,6 @@
 										  ContentTransitions="{TemplateBinding ContentTransitions}"
 										  Content="{TemplateBinding Content}"
 										  ContentTemplate="{TemplateBinding ContentTemplate}"
-										  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 										  Padding="{TemplateBinding Padding}"
 										  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
 										  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"

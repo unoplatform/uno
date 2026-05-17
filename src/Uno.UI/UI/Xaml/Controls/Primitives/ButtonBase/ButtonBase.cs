@@ -157,8 +157,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			return base.CoerceIsEnabled(baseValue, precedence);
 		}
 
+#if __ANDROID__ || __IOS__
 		private protected override void OnContentTemplateRootSet() => RegisterEvents();
-
+#endif
 
 		// Might be changed if the method does not conflict in UnoViewGroup.
 		internal override bool IsViewHit()
