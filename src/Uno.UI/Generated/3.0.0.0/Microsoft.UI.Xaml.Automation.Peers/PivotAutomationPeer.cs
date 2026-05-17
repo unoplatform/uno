@@ -8,115 +8,19 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #endif
 	public partial class PivotAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.ItemsControlAutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.ISelectionProvider, global::Microsoft.UI.Xaml.Automation.Provider.IScrollProvider
 	{
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool CanSelectMultiple
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer", "CanSelectMultiple");
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double HorizontalScrollPercent
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer", "HorizontalScrollPercent");
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double HorizontalViewSize
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer", "HorizontalViewSize");
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool HorizontallyScrollable
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer", "HorizontallyScrollable");
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsSelectionRequired
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer", "IsSelectionRequired");
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double VerticalScrollPercent
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer", "VerticalScrollPercent");
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double VerticalViewSize
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer", "VerticalViewSize");
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool VerticallyScrollable
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer", "VerticallyScrollable");
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public PivotAutomationPeer(global::Microsoft.UI.Xaml.Controls.Pivot owner) : base(owner)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer", "PivotAutomationPeer(Pivot owner)");
-		}
-#endif
+		// Skipping already declared property CanSelectMultiple
+		// Skipping already declared property HorizontalScrollPercent
+		// Skipping already declared property HorizontalViewSize
+		// Skipping already declared property HorizontallyScrollable
+		// Skipping already declared property IsSelectionRequired
+		// Skipping already declared property VerticalScrollPercent
+		// Skipping already declared property VerticalViewSize
+		// Skipping already declared property VerticallyScrollable
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer.PivotAutomationPeer(Microsoft.UI.Xaml.Controls.Pivot)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer.PivotAutomationPeer(Microsoft.UI.Xaml.Controls.Pivot)
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple[] GetSelection()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer", "GetSelection()");
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Scroll(global::Microsoft.UI.Xaml.Automation.ScrollAmount horizontalAmount, global::Microsoft.UI.Xaml.Automation.ScrollAmount verticalAmount)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer", "Scroll(ScrollAmount horizontalAmount, ScrollAmount verticalAmount)");
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void SetScrollPercent(double horizontalPercent, double verticalPercent)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer", "SetScrollPercent(double horizontalPercent, double verticalPercent)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer.GetSelection()
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer.Scroll(Microsoft.UI.Xaml.Automation.ScrollAmount, Microsoft.UI.Xaml.Automation.ScrollAmount)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer.SetScrollPercent(double, double)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer.CanSelectMultiple.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer.HorizontalScrollPercent.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer.HorizontalViewSize.get

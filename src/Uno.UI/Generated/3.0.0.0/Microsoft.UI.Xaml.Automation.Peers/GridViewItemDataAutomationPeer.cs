@@ -3,26 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class GridViewItemDataAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.SelectorItemAutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.IScrollItemProvider
 	{
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public GridViewItemDataAutomationPeer(object item, global::Microsoft.UI.Xaml.Automation.Peers.GridViewAutomationPeer parent) : base(item, parent)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.GridViewItemDataAutomationPeer", "GridViewItemDataAutomationPeer(object item, GridViewAutomationPeer parent)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.GridViewItemDataAutomationPeer.GridViewItemDataAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.GridViewAutomationPeer)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.GridViewItemDataAutomationPeer.GridViewItemDataAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.GridViewAutomationPeer)
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void ScrollIntoView()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.GridViewItemDataAutomationPeer", "ScrollIntoView()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.GridViewItemDataAutomationPeer.ScrollIntoView()
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IScrollItemProvider
 	}
 }
