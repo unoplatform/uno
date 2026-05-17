@@ -3,6 +3,7 @@
 // MUX Reference TextBoxAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
 using System;
 using System.Collections.Generic;
+using DirectUI;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 
@@ -13,6 +14,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// </summary>
 public partial class TextBoxAutomationPeer : FrameworkElementAutomationPeer, Provider.IValueProvider
 {
+	private TextAdapter m_textPattern;
+
 	public TextBoxAutomationPeer(TextBox owner) : base(owner)
 	{
 	}
@@ -27,6 +30,17 @@ public partial class TextBoxAutomationPeer : FrameworkElementAutomationPeer, Pro
 		if (patternInterface == PatternInterface.Value)
 		{
 			return this;
+		}
+
+		if (patternInterface == PatternInterface.Text
+			|| patternInterface == PatternInterface.Text2
+			|| patternInterface == PatternInterface.TextEdit)
+		{
+			if (m_textPattern is null && Owner is TextBox owner)
+			{
+				m_textPattern = new TextAdapter(owner, this);
+			}
+			return m_textPattern;
 		}
 
 		return base.GetPatternCore(patternInterface);
