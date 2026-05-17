@@ -39,5 +39,8 @@ namespace Microsoft.UI.Xaml.Controls
 					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
+
+		protected override Automation.Peers.AutomationPeer OnCreateAutomationPeer()
+			=> new Automation.Peers.RichTextBlockAutomationPeer(this);
 	}
 }

@@ -736,5 +736,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			return null;
 		}
+
+		protected override Automation.Peers.AutomationPeer OnCreateAutomationPeer()
+			=> new Automation.Peers.RadioButtonsAutomationPeer(this);
 	}
 }

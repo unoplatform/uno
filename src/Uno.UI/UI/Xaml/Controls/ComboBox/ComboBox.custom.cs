@@ -55,6 +55,8 @@ public partial class ComboBox : Selector
 
 	internal ContentPresenter? GetContentPresenterPart() => m_tpContentPresenterPart;
 
+	internal TextBox? GetEditableTextPart() => m_tpEditableTextPart;
+
 	public ComboBox()
 	{
 		ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "ComboBoxLightDismissOverlayBackground", isThemeResourceExtension: true, isHotReloadSupported: true);

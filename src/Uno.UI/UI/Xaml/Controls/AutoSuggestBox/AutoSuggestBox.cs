@@ -620,5 +620,8 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().Warn($"ProgrammaticSubmitQuery on AutoSuggestBox is not yet implemented.");
 			}
 		}
+
+		protected override Automation.Peers.AutomationPeer OnCreateAutomationPeer()
+			=> new Automation.Peers.AutoSuggestBoxAutomationPeer(this);
 	}
 }
