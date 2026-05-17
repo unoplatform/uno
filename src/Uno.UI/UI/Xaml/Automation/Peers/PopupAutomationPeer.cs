@@ -34,12 +34,19 @@ public partial class PopupAutomationPeer : FrameworkElementAutomationPeer, IWind
 
 	protected override IList<AutomationPeer> GetChildrenCore()
 	{
-		var children = new List<AutomationPeer>();
-		if (GetPopup() is { } popup && popup.Child is { } child && child.GetOrCreateAutomationPeer() is { } childPeer)
+		var popup = GetPopup();
+		if (popup is null || popup.Child is not { } child)
 		{
-			children.Add(childPeer);
+			return new List<AutomationPeer>();
 		}
-		return children;
+
+		var childPeer = child.GetOrCreateAutomationPeer();
+		if (childPeer is not null)
+		{
+			return new List<AutomationPeer> { childPeer };
+		}
+
+		return GetAutomationPeersForChildrenOfElement(child);
 	}
 
 	protected override string GetNameCore()

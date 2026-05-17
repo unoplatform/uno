@@ -47,23 +47,39 @@ public partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.I
 
 	protected override IList<AutomationPeer> GetChildrenCore()
 	{
-		var children = base.GetChildrenCore();
+		// Matches WinUI 3's ComboBoxAutomationPeer::GetChildrenCore
+		// (MUX: ComboBoxAutomationPeer_Partial.cpp).
+		// - dropdown open: return the realized item peers (ItemsControl children) so each
+		//   ComboBoxItem appears as a sibling under the ComboBox node; the items are realized
+		//   inside the popup, but ItemsPanelRoot.Children still enumerates them and each item
+		//   peer resolves to its own provider via the AutomationPeer parent chain.
+		// - dropdown closed: return an empty list. The selected item's faceplate is exposed
+		//   via ComboBoxItemAutomationPeer.GetChildrenCore (which surfaces the ContentPresenter
+		//   when IsSelected and IsDropDownOpen=false).
+		// - editable: prepend the editable TextBox peer at position 0.
+		var children = new List<AutomationPeer>();
 
-		// When the dropdown is open the popup hosting the items is mounted under PopupRoot,
-		// not under the ComboBox visual subtree, so base.GetChildrenCore() never reaches it.
-		// Surface the popup's presenter peer as a child of the ComboBox so screen readers can
-		// navigate into the items list from the ComboBox node (matches WinUI's logical tree).
-		if (Owner is ComboBox comboBox && comboBox.IsDropDownOpen)
+		if (Owner is not ComboBox comboBox)
 		{
-			var popup = comboBox.GetPopup();
-			if (popup?.GetAutomationPeer() is AutomationPeer popupPeer)
+			return children;
+		}
+
+		if (comboBox.IsDropDownOpen)
+		{
+			foreach (var itemPeer in base.GetChildrenCore())
 			{
-				children ??= new List<AutomationPeer>();
-				if (!children.Contains(popupPeer))
+				if (itemPeer is not null)
 				{
-					children.Add(popupPeer);
+					children.Add(itemPeer);
 				}
 			}
+		}
+
+		if (comboBox.IsEditable
+			&& comboBox.GetEditableTextPart() is { } editableText
+			&& editableText.GetOrCreateAutomationPeer() is { } editablePeer)
+		{
+			children.Insert(0, editablePeer);
 		}
 
 		return children;
