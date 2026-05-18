@@ -1378,6 +1378,13 @@ namespace Microsoft.UI.Xaml
 					}
 					catch (Exception e)
 					{
+						if (Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher)
+						{
+							Application.Current.RaiseUnhandledExceptionOrThrow(e, this);
+							// Reached only when an UnhandledException handler set Handled = true.
+							return args.Handled;
+						}
+
 						if (this.Log().IsEnabled(LogLevel.Error))
 						{
 							this.Log().Error($"Failed to raise '{evt.Name}': {e}");
