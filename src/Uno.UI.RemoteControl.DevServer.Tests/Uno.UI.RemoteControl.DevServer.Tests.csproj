@@ -9,6 +9,20 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<!--
+			Test fixtures under Fixtures\ are built as standalone class libraries
+			(see _BuildAndCopyAddInTestFixtures target below). Keep them out of
+			this project's default Compile / None / EmbeddedResource globs so the
+			fixture's own obj-AssemblyInfo doesn't collide with this project's
+			auto-generated assembly attributes.
+		-->
+		<Compile Remove="Fixtures\**" />
+		<None Remove="Fixtures\**" />
+		<EmbeddedResource Remove="Fixtures\**" />
+		<None Include="Fixtures\**\*.cs;Fixtures\**\*.csproj" Visible="true" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="AwesomeAssertions" />
 		<PackageReference Include="MessagePack" Version="3.1.4" /> <!-- pin transient dependency -->
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
@@ -91,5 +105,32 @@
 		<ProjectReference Include="..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" />
 	</ItemGroup>
+
+	<!--
+		Build the cross-major-version-refs add-in test fixture and stage its
+		output under $(OutDir)Fixtures\ so DevServerTests can hand its path to
+		the host via the add-ins CLI flag. See Fixtures\AddInWithCrossMajorVersionRefs.
+
+		Done via MSBuild task (not ProjectReference) so the fixture's net8.0
+		TargetFramework stays decoupled from this test project's NetCurrent
+		TFM negotiation and from its compile / AssemblyInfo graph.
+	-->
+	<Target Name="_BuildAndCopyAddInTestFixtures" BeforeTargets="Build">
+		<MSBuild Projects="Fixtures\AddInWithCrossMajorVersionRefs\AddInWithCrossMajorVersionRefs.csproj"
+		         Properties="Configuration=$(Configuration)"
+		         Targets="Build"
+		         RemoveProperties="TargetFramework">
+			<Output TaskParameter="TargetOutputs" ItemName="_AddInTestFixtureOutput" />
+		</MSBuild>
+		<ItemGroup>
+			<_AddInTestFixtureFiles Include="%(_AddInTestFixtureOutput.RootDir)%(_AddInTestFixtureOutput.Directory)%(_AddInTestFixtureOutput.Filename).dll" />
+			<_AddInTestFixtureFiles Include="%(_AddInTestFixtureOutput.RootDir)%(_AddInTestFixtureOutput.Directory)%(_AddInTestFixtureOutput.Filename).pdb" />
+			<_AddInTestFixtureFiles Include="%(_AddInTestFixtureOutput.RootDir)%(_AddInTestFixtureOutput.Directory)%(_AddInTestFixtureOutput.Filename).deps.json" />
+		</ItemGroup>
+		<Copy SourceFiles="@(_AddInTestFixtureFiles)"
+		      DestinationFolder="$(OutDir)Fixtures\AddInWithCrossMajorVersionRefs\"
+		      SkipUnchangedFiles="true"
+		      Condition="Exists('%(_AddInTestFixtureFiles.Identity)')" />
+	</Target>
 
 </Project>

@@ -100,4 +100,51 @@ public class DevServerTests
 		started.Should().BeTrue("dev server should start successfully");
 		helper.IsRunning.Should().BeFalse("dev server should not be running after stopping");
 	}
+
+	[TestMethod]
+	[Retry(2, MillisecondsDelayBetweenRetries = 1000)]
+	[Description("Regression for #23287: host must satisfy an add-in's older-major AssemblyRefs to shared-framework OOB packages (e.g. System.Text.Encodings.Web 8.0.0.0 in a net8.0 add-in) from its own newer-major loaded instance — without throwing FileNotFoundException during startup.")]
+	public async Task DevServer_ShouldStart_WithAddInThatHasCrossMajorVersionFrameworkRefs()
+	{
+		// The fixture is built as a net8.0 class library that touches
+		// JavaScriptEncoder.Default in a static cctor (see
+		// Fixtures/AddInWithCrossMajorVersionRefs). Its compiled AssemblyRef to
+		// System.Text.Encodings.Web embeds at v8.0.0.0, which won't strict-match
+		// the v9/v10 the host has loaded from its shared framework. Without the
+		// AddInLoadContext + Default.Resolving bridging in
+		// Uno.UI.RemoteControl.Host this manifests as the original client crash
+		// (KiotaJsonSerializationContext..cctor → FNF Encodings.Web 8.0.0.0).
+		var testAssemblyDir = Path.GetDirectoryName(typeof(DevServerTests).Assembly.Location)!;
+		var fixtureDll = Path.Combine(
+			testAssemblyDir,
+			"Fixtures",
+			"AddInWithCrossMajorVersionRefs",
+			"AddInWithCrossMajorVersionRefs.dll");
+
+		File.Exists(fixtureDll).Should()
+			.BeTrue("test fixture DLL must be copied to test output by the _CopyAddInTestFixtures target");
+
+		await using var helper = new DevServerTestHelper(_logger);
+
+		try
+		{
+			var started = await helper.StartAsync(CT, extraArgs: $"--addins \"{fixtureDll}\"");
+			helper.EnsureStarted();
+
+			started.Should().BeTrue("dev server should start successfully with the cross-major-version add-in loaded");
+			helper.AssertRunning();
+			helper.AssertConsoleOutputContains("Now listening on:");
+
+			// Frame the negative assertion by class-of-bug, not by today's specific
+			// stack — keeps the test relevant as host TFMs roll forward.
+			helper.ConsoleOutput
+				.Should().NotMatchRegex(
+					@"Unhandled exception[\s\S]*FileNotFoundException[\s\S]*System\.Text\.Encodings\.Web",
+					because: "host must bridge cross-major-version AssemblyRefs from add-ins via Default.Resolving instead of crashing");
+		}
+		finally
+		{
+			await helper.StopAsync(CT);
+		}
+	}
 }

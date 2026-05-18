@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<!--
+		Test fixture for Uno.UI.RemoteControl.DevServer.Tests.
+
+		Deliberately targets a .NET version OLDER than any host TFM this assembly
+		is exercised against, and pins a matching-major PackageReference to
+		System.Text.Encodings.Web so its compiled AssemblyRef embeds at the older
+		major version. That older-major AssemblyRef is what the host's
+		AddInLoadContext + AssemblyLoadContext.Default.Resolving handler in
+		Uno.UI.RemoteControl.Host must satisfy from the host's already-loaded
+		newer instance — the regression this fixture protects against
+		(https://github.com/unoplatform/uno/pull/23287).
+
+		Maintenance contract: when the host's lowest supported TFM advances past
+		net8.0, bump TargetFramework below to (newest host TFM minus one) and
+		bump the System.Text.Encodings.Web PackageReference to match.
+	-->
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+		<NoWarn>$(NoWarn);CS0168</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
+	</ItemGroup>
+
+</Project>
