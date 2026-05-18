@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -50,7 +51,7 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 			//       simple-name lookup.
 			foreach (var loaded in Default.Assemblies)
 			{
-				if (string.Equals(loaded.GetName().Name, name, System.StringComparison.OrdinalIgnoreCase))
+				if (string.Equals(loaded.GetName().Name, name, StringComparison.OrdinalIgnoreCase))
 				{
 					return loaded;
 				}
@@ -62,16 +63,22 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 			//    load it by simple name — this triggers TPA-based resolution and
 			//    succeeds for anything the host's deps.json describes. Kiota and
 			//    other genuinely add-in-private assemblies aren't in host TPA, so
-			//    this safely throws FileNotFoundException for them and we fall
-			//    through to the plugin resolvers below.
+			//    they fall through to the plugin resolvers below.
+			//
+			// We catch both FileNotFoundException AND FileLoadException /
+			// BadImageFormatException here: TPA can match an assembly by simple
+			// name but reject the load on a strong-name / version / image
+			// mismatch (exactly the cross-major scenario this class exists to
+			// paper over). If the default ALC can't satisfy this name for any
+			// of those reasons, the add-in's own deps.json may still carry a
+			// usable copy, so we keep falling through rather than bubbling up.
 			try
 			{
 				return Default.LoadFromAssemblyName(new AssemblyName(name));
 			}
-			catch (FileNotFoundException)
-			{
-				// Not in host TPA — try plugin resolvers.
-			}
+			catch (FileNotFoundException) { /* not in host TPA */ }
+			catch (FileLoadException) { /* found in TPA but rejected (e.g. strong-name / version mismatch) */ }
+			catch (BadImageFormatException) { /* found in TPA but unloadable image */ }
 		}
 
 		// 3. Plugin-private dependency — try each registered add-in's deps.json.

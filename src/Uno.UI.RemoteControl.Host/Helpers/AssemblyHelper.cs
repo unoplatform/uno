@@ -45,8 +45,14 @@ public class AssemblyHelper
 				{
 					_log.Log(LogLevel.Debug, $"Loading add-in assembly '{dll}'.");
 
-					var assemblyName = AssemblyName.GetAssemblyName(dll);
-					var assembly = loadContext!.LoadFromAssemblyName(assemblyName);
+					// Load the top-level add-in by file path so the caller's
+					// specific DLL is always what ends up in the context — going
+					// through LoadFromAssemblyName here would route through the
+					// Default.Assemblies / TPA fallback in AddInLoadContext.Load
+					// and could silently substitute a host-loaded assembly if the
+					// add-in's simple name happened to collide. Transitive deps
+					// still flow through that override as intended.
+					var assembly = loadContext!.LoadFromAssemblyPath(dll);
 
 					results.Add(new AssemblyLoadResult(dll, assembly, null));
 				}

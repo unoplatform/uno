@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Runtime.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,12 +25,27 @@ using Uno.UI.RemoteControl.Server.AppLaunch;
 using Uno.UI.RemoteControl.Server.Helpers;
 using Uno.UI.RemoteControl.Server.Telemetry;
 using Uno.UI.RemoteControl.Services;
-using System.Runtime.Loader;
 
 namespace Uno.UI.RemoteControl.Host
 {
 	partial class Program
 	{
+		/// <summary>
+		/// Shared-framework OOB assemblies that the host eager-loads from the
+		/// apphost directory during static initialization. Anything in this list
+		/// must satisfy two properties: (a) the bundled DLL exists in the host's
+		/// output directory (i.e. the SDK doesn't strip it via PackageOverride),
+		/// and (b) the host's own dependency graph or the add-ins it loads can
+		/// realistically embed a cross-major-version AssemblyRef to it. Extend
+		/// here as additional offenders are identified (e.g. another OOB package
+		/// referenced by ModelContextProtocol or by future add-in payloads).
+		/// </summary>
+		private static readonly string[] s_eagerLoadedSharedAssemblyDllNames =
+		{
+			"System.Text.Json.dll",
+			"System.Text.Encodings.Web.dll",
+		};
+
 		static Program()
 		{
 			// The host process targets a specific .NET runtime, but its NuGet
@@ -57,12 +73,40 @@ namespace Uno.UI.RemoteControl.Host
 					return null;
 				}
 
+				var requestedToken = requested.GetPublicKeyToken();
+
 				foreach (var loaded in context.Assemblies)
 				{
-					if (string.Equals(loaded.GetName().Name, simpleName, StringComparison.OrdinalIgnoreCase))
+					// Skip reflection-emitted / source-generator-emitted dynamic
+					// assemblies: their auto-generated names could coincidentally
+					// collide with a real AssemblyRef and we'd silently substitute
+					// them, producing confusing downstream TypeLoadException /
+					// MissingMethodException failures.
+					if (loaded.IsDynamic)
 					{
-						return loaded;
+						continue;
 					}
+
+					var loadedName = loaded.GetName();
+					if (!string.Equals(loadedName.Name, simpleName, StringComparison.OrdinalIgnoreCase))
+					{
+						continue;
+					}
+
+					// Only bridge between assemblies with the same strong-name
+					// identity (or both unsigned). Returning a differently-signed
+					// assembly would be a security-relevant identity swap, not a
+					// version-mismatch papered over.
+					if (requestedToken is { Length: > 0 })
+					{
+						var loadedToken = loadedName.GetPublicKeyToken();
+						if (loadedToken is null || !loadedToken.AsSpan().SequenceEqual(requestedToken))
+						{
+							continue;
+						}
+					}
+
+					return loaded;
 				}
 
 				return null;
@@ -89,21 +133,30 @@ namespace Uno.UI.RemoteControl.Host
 			var hostDir = Path.GetDirectoryName(typeof(Program).Assembly.Location);
 			if (!string.IsNullOrEmpty(hostDir))
 			{
-				foreach (var dllName in new[] { "System.Text.Json.dll", "System.Text.Encodings.Web.dll" })
+				foreach (var dllName in s_eagerLoadedSharedAssemblyDllNames)
 				{
 					var path = Path.Combine(hostDir, dllName);
-					if (File.Exists(path))
+					if (!File.Exists(path))
 					{
-						try
-						{
-							AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
-						}
-						catch
-						{
-							// Best effort: if the bundled file can't be loaded the
-							// Resolving handler simply won't have a candidate
-							// later and the original failure surfaces as normal.
-						}
+						continue;
+					}
+
+					try
+					{
+						AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
+					}
+					catch (Exception ex)
+					{
+						// Best effort: if the bundled file can't be loaded the
+						// Resolving handler simply won't have a candidate later
+						// and the original failure will surface as normal. Log a
+						// breadcrumb so a regression in this preload step doesn't
+						// silently disable the safety net — the host hasn't built
+						// its ILoggerFactory yet at this point, so write directly
+						// to stderr.
+						Console.Error.WriteLine(
+							$"Uno.UI.RemoteControl.Host: eager-load of '{dllName}' failed ({ex.GetType().Name}: {ex.Message}). " +
+							"Cross-major-version AssemblyRefs for this assembly may still throw FileNotFoundException at runtime.");
 					}
 				}
 			}
