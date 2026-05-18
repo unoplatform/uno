@@ -128,9 +128,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			=> _currentStyleTargetTypeStack.Count > 0 ? _currentStyleTargetTypeStack.Peek() : null;
 
 		/// <summary>
-		/// Context to report diagnostics to
+		/// Context to report diagnostics to and resolve generation-wide services from.
 		/// </summary>
-		private readonly GeneratorExecutionContext _generatorContext;
+		private readonly XamlSourceContext _context;
 
 		/// <summary>
 		/// The current DefaultBindMode for x:Bind bindings, as set by app code for the current Xaml subtree.
@@ -226,7 +226,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool isLazyVisualStateManagerEnabled,
 			bool enableFuzzyMatching,
 			bool disableBindableTypeProvidersGeneration,
-			GeneratorExecutionContext generatorContext,
+			XamlSourceContext context,
 			bool xamlResourcesTrimming,
 			IDictionary<INamedTypeSymbol, XamlType> xamlTypeToXamlTypeBaseMap,
 			string[] includeXamlNamespaces,
@@ -251,7 +251,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_shouldAnnotateGeneratedXaml = shouldAnnotateGeneratedXaml;
 			_isLazyVisualStateManagerEnabled = isLazyVisualStateManagerEnabled;
 			_enableFuzzyMatching = enableFuzzyMatching;
-			_generatorContext = generatorContext;
+			_context = context;
 			_xamlResourcesTrimming = xamlResourcesTrimming;
 			_xamlTypeToXamlTypeBaseMap = xamlTypeToXamlTypeBaseMap;
 			_includeXamlNamespaces = includeXamlNamespaces;
@@ -295,7 +295,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var diagnostic = Diagnostic.Create(XamlCodeGenerationDiagnostics.GenericXamlWarningRule,
 													   locations.Value[0],
 													   $"{fullClassName} does not explicitly define the {xamlDefinedBaseType} base type in code behind.");
-					_generatorContext.ReportDiagnostic(diagnostic);
+					_context.ReportDiagnostic(diagnostic);
 				}
 				else
 				{
@@ -442,7 +442,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private void BuildBaseUri(IIndentedStringBuilder writer)
 		{
-			var assembly = _isInsideMainAssembly ? "" : _generatorContext.Compilation.AssemblyName + "/";
+			var assembly = _isInsideMainAssembly ? "" : _context.Compilation.AssemblyName + "/";
 
 			// Note that the assembly name is lower-cased in order for file resolution on case-sensitive file systems to work.
 			writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
@@ -598,7 +598,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <param name="writer"></param>
 		private void ApplyFontsOverride(IIndentedStringBuilder writer)
 		{
-			if (_generatorContext.GetMSBuildPropertyValue("UnoPlatformDefaultSymbolsFontFamily") is { Length: > 0 } fontOverride)
+			if (_context.GetMSBuildPropertyValue("UnoPlatformDefaultSymbolsFontFamily") is { Length: > 0 } fontOverride)
 			{
 				writer.AppendLineInvariantIndented($"global::Uno.UI.FeatureConfiguration.Font.SymbolsFont = \"{fontOverride}\";");
 			}
@@ -651,7 +651,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void InitializeRemoteControlClient(IIndentedStringBuilder writer)
 		{
-			if (IsInsideUnoSolution(_generatorContext))
+			if (IsInsideUnoSolution(_context))
 			{
 				// Inside the Uno Solution we do not start the remote control
 				// client, as the location of the RC server is not coming from 
@@ -670,7 +670,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 		}
-		private static bool IsInsideUnoSolution(GeneratorExecutionContext context)
+		private static bool IsInsideUnoSolution(XamlSourceContext context)
 			=> context.GetMSBuildPropertyValue("_IsUnoUISolution") == "true";
 
 		private void GenerateResourceLoader(IIndentedStringBuilder writer)
@@ -2157,7 +2157,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					.Concat(additionalMatches.Select(m => m.Namespace));
 				var namespacesText = string.Join(", ", allNamespaces.Select(n => $"'{n}'"));
 
-				_generatorContext.ReportDiagnostic(
+				_context.ReportDiagnostic(
 					Diagnostic.Create(
 						XamlCodeGenerationDiagnostics.AmbiguousGlobalTypeRule,
 						Location.None,
@@ -3150,7 +3150,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildExtendedProperties(IIndentedStringBuilder outerwriter, XamlObjectDefinition objectDefinition, bool useGenericApply = false)
 		{
-			_generatorContext.CancellationToken.ThrowIfCancellationRequested();
+			_context.CancellationToken.ThrowIfCancellationRequested();
 
 			TryAnnotateWithGeneratorSource(outerwriter);
 			var objectUid = GetObjectUid(objectDefinition);
@@ -3239,7 +3239,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					foreach (var member in extendedProperties.Except(lazyProperties))
 					{
-						_generatorContext.CancellationToken.ThrowIfCancellationRequested();
+						_context.CancellationToken.ThrowIfCancellationRequested();
 
 						if (extractionTargetMembers != null)
 						{
@@ -6205,7 +6205,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildChild(IIndentedStringBuilder writer, XamlMemberDefinition? owner, XamlObjectDefinition xamlObjectDefinition, string? outerClosure = null)
 		{
-			_generatorContext.CancellationToken.ThrowIfCancellationRequested();
+			_context.CancellationToken.ThrowIfCancellationRequested();
 
 			using var scopeAutoDisposable = LogicalScope(xamlObjectDefinition);
 

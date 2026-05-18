@@ -616,7 +616,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					.Concat(additionalMatches.Select(m => m.Namespace));
 				var namespacesText = string.Join(", ", allNamespaces.Select(n => $"'{n}'"));
 
-				_generatorContext.ReportDiagnostic(
+				_context.ReportDiagnostic(
 					Diagnostic.Create(
 						XamlCodeGenerationDiagnostics.AmbiguousGlobalTypeRule,
 						Location.None,

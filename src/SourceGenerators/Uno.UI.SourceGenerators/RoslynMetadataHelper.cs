@@ -24,8 +24,13 @@ namespace Uno.Roslyn
 		public string AssemblyName => Compilation.AssemblyName!;
 
 		public RoslynMetadataHelper(GeneratorExecutionContext context)
+			: this(context.Compilation)
 		{
-			Compilation = context.Compilation;
+		}
+
+		public RoslynMetadataHelper(Compilation compilation)
+		{
+			Compilation = compilation;
 
 			_findTypeByFullName = Funcs.Create<string, ITypeSymbol?>(SourceFindTypeByFullName).AsLockedMemoized();
 			_findContentProperty = Funcs.Create<INamedTypeSymbol, IPropertySymbol?>(SourceFindContentProperty).AsLockedMemoized();

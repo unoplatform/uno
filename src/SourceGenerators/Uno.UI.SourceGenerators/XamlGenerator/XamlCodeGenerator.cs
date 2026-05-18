@@ -30,7 +30,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (PlatformHelper.IsValidPlatform(context))
 			{
-				var gen = new XamlCodeGeneration(context);
+				var sourceContext = XamlSourceContext.FromGeneratorContext(context);
+				var gen = new XamlCodeGeneration(sourceContext, isDesignTimeBuild: Helpers.DesignTimeHelper.IsDesignTime(context));
 				var generatedTrees = gen.Generate();
 
 				foreach (var tree in generatedTrees)
@@ -38,7 +39,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					context.AddSource(tree.Key, tree.Value);
 				}
 
-				DumpXamlSourceGeneratorState(context, generatedTrees);
+				DumpXamlSourceGeneratorState(sourceContext, generatedTrees);
 			}
 		}
 	}

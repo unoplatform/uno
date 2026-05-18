@@ -19,7 +19,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private Telemetry _telemetry;
 
-		private void InitTelemetry(GeneratorExecutionContext context)
+		private void InitTelemetry(XamlSourceContext context)
 		{
 			var telemetryOptOut = context.GetMSBuildPropertyValue("UnoPlatformTelemetryOptOut");
 
@@ -113,19 +113,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				try
 				{
 					// Determine if the Uno.UI solution is built
-					var isBuildingUno = _generatorContext.GetMSBuildPropertyValue("MSBuildProjectName") == "Uno.UI";
+					var isBuildingUno = _context.GetMSBuildPropertyValue("MSBuildProjectName") == "Uno.UI";
 
 					_telemetry.TrackEvent(
 						"generate-xaml",
 						new[] {
 							("IsWasm", _isWasm.ToString()),
 							("IsDebug", _isDebug.ToString()),
-							("TargetFramework",  _generatorContext.GetMSBuildPropertyValue("TargetFramework")?.ToString()),
+							("TargetFramework",  _context.GetMSBuildPropertyValue("TargetFramework")?.ToString()),
 							("UnoRuntime", BuildUnoRuntimeValue()),
 							("IsBuildingUnoSolution", isBuildingUno.ToString()),
 							("IsUiAutomationMappingEnabled", _isUiAutomationMappingEnabled.ToString()),
 							("DefaultLanguage", _defaultLanguage ?? "Unknown"),
-							("BuildingInsideVisualStudio", _generatorContext.GetMSBuildPropertyValue("BuildingInsideVisualStudio")?.ToString().ToLowerInvariant()),
+							("BuildingInsideVisualStudio", _context.GetMSBuildPropertyValue("BuildingInsideVisualStudio")?.ToString().ToLowerInvariant()),
 							("IDE", BuildIDEName()),
 						},
 						new[] { ("FileCount", (double)files.Length) }
@@ -144,11 +144,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string BuildIDEName()
 		{
-			if (bool.TryParse(_generatorContext.GetMSBuildPropertyValue("BuildingInsideVisualStudio")?.ToString(), out var insideVS) && insideVS)
+			if (bool.TryParse(_context.GetMSBuildPropertyValue("BuildingInsideVisualStudio")?.ToString(), out var insideVS) && insideVS)
 			{
 				return "vswin";
 			}
-			else if (_generatorContext.GetMSBuildPropertyValue("UnoPlatformIDE")?.ToString() is { } unoPlatformIDE)
+			else if (_context.GetMSBuildPropertyValue("UnoPlatformIDE")?.ToString() is { } unoPlatformIDE)
 			{
 				return unoPlatformIDE;
 			}
@@ -168,7 +168,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string BuildUnoRuntimeValue()
 		{
-			var constants = _generatorContext.GetMSBuildPropertyValue("DefineConstantsProperty");
+			var constants = _context.GetMSBuildPropertyValue("DefineConstantsProperty");
 
 			if (constants.Contains("__WASM__"))
 			{

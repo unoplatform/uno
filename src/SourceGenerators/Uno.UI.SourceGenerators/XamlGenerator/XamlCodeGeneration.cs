@@ -107,7 +107,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _enableImplicitXamlNamespaces;
 		private readonly string _globalXamlNamespaceUri;
 
-		private readonly GeneratorExecutionContext _generatorContext;
+		private readonly XamlSourceContext _context;
 
 		private bool IsUnoAssembly
 			=> _defaultNamespace == "Uno.UI";
@@ -167,20 +167,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		internal ImmutableArray<ITypeProvider> TypeProviders { get; }
 
 		public XamlCodeGeneration(GeneratorExecutionContext context)
+			: this(XamlSourceContext.FromGeneratorContext(context), isDesignTimeBuild: Helpers.DesignTimeHelper.IsDesignTime(context))
+		{
+		}
+
+		public XamlCodeGeneration(XamlSourceContext context, bool isDesignTimeBuild)
 		{
 			// To easily debug XAML code generation:
 			// Add <UnoUISourceGeneratorDebuggerBreak>True</UnoUISourceGeneratorDebuggerBreak> to your project
 
-			if (!Helpers.DesignTimeHelper.IsDesignTime(context)
+			if (!isDesignTimeBuild
 				&& (context.GetMSBuildPropertyValue("UnoUISourceGeneratorDebuggerBreak")?.Equals("True", StringComparison.OrdinalIgnoreCase) ?? false))
 			{
 				Debugger.Launch();
 			}
 
-			_generatorContext = context;
+			_context = context;
 			InitTelemetry(context);
 
-			_metadataHelper = new RoslynMetadataHelper(context);
+			_metadataHelper = new RoslynMetadataHelper(context.Compilation);
 
 			_configuration = context.GetMSBuildPropertyValue("Configuration")
 				?? throw new InvalidOperationException("The configuration property must be provided");
@@ -309,7 +314,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			_isWasm = context.GetMSBuildPropertyValue("DefineConstantsProperty")?.Contains("__WASM__") ?? false;
-			_isDesignTimeBuild = Helpers.DesignTimeHelper.IsDesignTime(context);
+			_isDesignTimeBuild = isDesignTimeBuild;
 
 			StringSymbol = GetSpecialTypeSymbolAsLazy(SpecialType.System_String);
 			ObjectSymbol = GetSpecialTypeSymbolAsLazy(SpecialType.System_Object);
@@ -362,13 +367,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private Lazy<INamedTypeSymbol> GetMandatorySymbolAsLazy(string fullyQualifiedName)
-			=> new(() => _generatorContext.Compilation.GetTypeByMetadataName(fullyQualifiedName) ?? throw new InvalidOperationException($"Unable to find type {fullyQualifiedName}"));
+			=> new(() => _context.Compilation.GetTypeByMetadataName(fullyQualifiedName) ?? throw new InvalidOperationException($"Unable to find type {fullyQualifiedName}"));
 
 		internal Lazy<INamedTypeSymbol?> GetOptionalSymbolAsLazy(string fullyQualifiedName)
-			=> new(() => _generatorContext.Compilation.GetTypeByMetadataName(fullyQualifiedName));
+			=> new(() => _context.Compilation.GetTypeByMetadataName(fullyQualifiedName));
 
 		private Lazy<INamedTypeSymbol> GetSpecialTypeSymbolAsLazy(SpecialType specialType)
-			=> new(() => _generatorContext.Compilation.GetSpecialType(specialType));
+			=> new(() => _context.Compilation.GetSpecialType(specialType));
 
 		private static bool IsWinUIItem(Uno.Roslyn.MSBuildItem item)
 			=> item.GetMetadataValue("XamlRuntime") is { } xamlRuntime
@@ -376,7 +381,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				: true;
 
 		private IEnumerable<Uno.Roslyn.MSBuildItem> GetWinUIItems(string name)
-			=> _generatorContext.GetMSBuildItemsWithAdditionalFiles(name).Where(IsWinUIItem);
+			=> _context.GetMSBuildItemsWithAdditionalFiles(name).Where(IsWinUIItem);
+
+		private static bool IsAndroidApplication(XamlSourceContext context)
+			=> context.GetMSBuildPropertyValue("AndroidApplication")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
 
 		/// <summary>
 		/// Get the file location as seen in the IDE, used for ResourceDictionary.Source resolution.
@@ -424,12 +432,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public List<KeyValuePair<string, SourceText>> Generate()
 		{
 			var stopwatch = Stopwatch.StartNew();
-			var ct = _generatorContext.CancellationToken;
+			var ct = _context.CancellationToken;
 			var outputFiles = new List<KeyValuePair<string, SourceText>>();
 
 			try
 			{
-				var isInsideMainAssembly = _isUnoHead || PlatformHelper.IsAndroid(_generatorContext);
+				var isInsideMainAssembly = _isUnoHead || IsAndroidApplication(_context);
 
 				var resourceDetailsCollection = BuildResourceDetails(ct);
 				TryGenerateUnoResourcesKeyAttribute(resourceDetailsCollection);
@@ -443,11 +451,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				Dictionary<string, string[]>? allXmlnsDefinitions = null;
 				if (_enableImplicitXamlNamespaces)
 				{
-					globalClrNamespaces = GlobalNamespaceResolver.GetGlobalClrNamespaces(_generatorContext.Compilation, _globalXamlNamespaceUri);
-					implicitPrefixes = GlobalNamespaceResolver.GetImplicitPrefixes(_generatorContext.Compilation);
+					globalClrNamespaces = GlobalNamespaceResolver.GetGlobalClrNamespaces(_context.Compilation, _globalXamlNamespaceUri);
+					implicitPrefixes = GlobalNamespaceResolver.GetImplicitPrefixes(_context.Compilation);
 
 					// Collect all XmlnsDefinition URI→CLR namespace mappings for type resolution
-					var allDefs = GlobalNamespaceResolver.GetAllXmlnsDefinitions(_generatorContext.Compilation);
+					var allDefs = GlobalNamespaceResolver.GetAllXmlnsDefinitions(_context.Compilation);
 					allXmlnsDefinitions = allDefs.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToArray());
 				}
 
@@ -518,7 +526,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							isLazyVisualStateManagerEnabled: _isLazyVisualStateManagerEnabled,
 							enableFuzzyMatching: _enableFuzzyMatching,
 							disableBindableTypeProvidersGeneration: _disableBindableTypeProvidersGeneration,
-							generatorContext: _generatorContext,
+							context: _context,
 							xamlResourcesTrimming: _xamlResourcesTrimming,
 							xamlTypeToXamlTypeBaseMap: xamlTypeToXamlTypeBaseMap,
 							includeXamlNamespaces: includeXamlNamespaces,
@@ -623,7 +631,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					// T013: Malformed x:Class - emit diagnostic and skip
 					var location = GetFileLocation(file.FilePath);
-					_generatorContext.ReportDiagnostic(
+					_context.ReportDiagnostic(
 						Diagnostic.Create(
 							XamlCodeGenerationDiagnostics.InvalidXClassRule,
 							location ?? Location.None,
@@ -726,7 +734,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var hasResources = resourceDetailsCollection.HasLocalResources;
 
-			_generatorContext.AddSource(
+			_context.AddSource(
 				"LocalizationResources",
 				$"""
 				// <auto-generated />
@@ -769,7 +777,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					GetExceptionFileLocation(exception),
 					exception.Message);
 
-				_generatorContext.ReportDiagnostic(diagnostic);
+				_context.ReportDiagnostic(diagnostic);
 			}
 		}
 
@@ -777,7 +785,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (exception is IXamlLocation location) // XamlParsingException or XamlGenerationException
 			{
-				var xamlFile = _generatorContext.AdditionalFiles.FirstOrDefault(f => f.Path == location.FilePath);
+				var xamlFile = _context.AdditionalFiles.FirstOrDefault(f => f.Path == location.FilePath);
 
 				if (xamlFile != null && xamlFile.GetText() is { } xamlText)
 				{
@@ -799,7 +807,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private Location? GetFileLocation(string filePath)
 		{
-			var additionalFile = _generatorContext.AdditionalFiles.FirstOrDefault(f => f.Path == filePath);
+			var additionalFile = _context.AdditionalFiles.FirstOrDefault(f => f.Path == filePath);
 			if (additionalFile is not null && additionalFile.GetText() is { } text)
 			{
 				return Location.Create(
@@ -894,7 +902,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							null,
 							message);
 
-						_generatorContext.ReportDiagnostic(diagnostic);
+						_context.ReportDiagnostic(diagnostic);
 
 						return Array.Empty<ResourceDetails>();
 					}

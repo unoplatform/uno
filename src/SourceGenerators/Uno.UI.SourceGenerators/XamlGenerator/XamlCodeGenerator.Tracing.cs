@@ -14,7 +14,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	public partial class XamlCodeGenerator : ISourceGenerator
 	{
-		private void DumpXamlSourceGeneratorState(GeneratorExecutionContext context, List<KeyValuePair<string, SourceText>> generatedSources)
+		private void DumpXamlSourceGeneratorState(XamlSourceContext context, List<KeyValuePair<string, SourceText>> generatedSources)
 		{
 			var tracingFolder = context.GetMSBuildPropertyValue("XamlSourceGeneratorTracingFolder");
 
@@ -53,7 +53,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void DumpCommandLine(string basePath) => File.WriteAllText(Path.Combine(basePath, "CommandLine.txt"), Environment.CommandLine);
 
-		private void DumpMSBuildProperties(string basePath, GeneratorExecutionContext context)
+		private void DumpMSBuildProperties(string basePath, XamlSourceContext context)
 		{
 			var projectDirectory = context.GetMSBuildPropertyValue("MSBuildProjectDirectory");
 			var projectName = context.GetMSBuildPropertyValue("MSBuildProjectName");
@@ -67,7 +67,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private void DumpMSBuildItems(string basePath, GeneratorExecutionContext context)
+		private void DumpMSBuildItems(string basePath, XamlSourceContext context)
 		{
 			var items =
 				context
