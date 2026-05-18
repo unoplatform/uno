@@ -28,7 +28,34 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 	public AddInLoadContext(IEnumerable<string> addInPaths)
 		: base(name: "AddIns", isCollectible: false)
 	{
-		_resolvers = addInPaths.Select(p => new AssemblyDependencyResolver(p)).ToArray();
+		// Construct one AssemblyDependencyResolver per add-in path, but tolerate
+		// per-path failures: AssemblyDependencyResolver's ctor throws when the
+		// path is invalid or the corresponding .deps.json is missing/corrupt. If
+		// we let that bubble out, a single bad add-in would abort loading of
+		// *all* add-ins — regressing the per-add-in failure isolation that the
+		// prior Assembly.LoadFrom loop in AssemblyHelper provided. The actual
+		// LoadFromAssemblyPath call for the offending add-in still runs in the
+		// caller's per-DLL try/catch and will surface there with a meaningful
+		// error.
+		var resolvers = new List<AssemblyDependencyResolver>();
+		foreach (var path in addInPaths)
+		{
+			try
+			{
+				resolvers.Add(new AssemblyDependencyResolver(path));
+			}
+			catch (Exception ex)
+			{
+				// No ILoggerFactory is available at AddInLoadContext construction
+				// time, so emit a stderr breadcrumb. The per-add-in load failure
+				// for this path will be logged through AssemblyHelper's existing
+				// per-DLL catch.
+				Console.Error.WriteLine(
+					$"Uno.UI.RemoteControl.Host: AssemblyDependencyResolver construction failed for '{path}' " +
+					$"({ex.GetType().Name}: {ex.Message}). Per-add-in dependency probing for this add-in will be skipped.");
+			}
+		}
+		_resolvers = [.. resolvers];
 	}
 
 	protected override Assembly? Load(AssemblyName assemblyName)
@@ -95,9 +122,30 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 			// paper over). If the default ALC can't satisfy this name for any
 			// of those reasons, the add-in's own deps.json may still carry a
 			// usable copy, so we keep falling through rather than bubbling up.
+			//
+			// We also validate the loaded assembly's PublicKeyToken against the
+			// request before returning — same identity-swap guard as step 1
+			// and the Default.Resolving handler in Program.cs. Asking by simple
+			// name alone could otherwise hand back a same-name-but-different-PKT
+			// assembly from TPA, which we'd never silently substitute elsewhere.
 			try
 			{
-				return Default.LoadFromAssemblyName(new AssemblyName(name));
+				var loaded = Default.LoadFromAssemblyName(new AssemblyName(name));
+				if (requestedToken is { Length: > 0 })
+				{
+					var loadedToken = loaded.GetName().GetPublicKeyToken();
+					if (loadedToken is null || !loadedToken.AsSpan().SequenceEqual(requestedToken))
+					{
+						// PKT mismatch — fall through to the add-in's own resolvers
+						// rather than substituting across strong-name identities.
+						loaded = null;
+					}
+				}
+
+				if (loaded is not null)
+				{
+					return loaded;
+				}
 			}
 			catch (FileNotFoundException) { /* not in host TPA */ }
 			catch (FileLoadException) { /* found in TPA but rejected (e.g. strong-name / version mismatch) */ }
