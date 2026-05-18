@@ -78,6 +78,11 @@ namespace Uno.UI.Dispatching
 					}
 					catch (global::System.Exception exception)
 					{
+						if (PropagateUnhandledExceptions)
+						{
+							throw;
+						}
+
 						this.Log().Error("Dispatcher unhandled exception", exception);
 					}
 				}
@@ -106,6 +111,11 @@ namespace Uno.UI.Dispatching
 					catch (global::System.Exception exception)
 					{
 						_trace.WriteEvent(TraceProvider.NativeDispatcher_Exception, EventOpcode.Send, new[] { exception.GetType().ToString() });
+
+						if (PropagateUnhandledExceptions)
+						{
+							throw;
+						}
 
 						this.Log().Error("Dispatcher unhandled exception", exception);
 					}
