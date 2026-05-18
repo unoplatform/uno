@@ -34,10 +34,10 @@ public class Given_FeatureConfiguration_UnhandledExceptions
 	[RunsOnUIThread]
 	public void When_SafeRaiseEvent_Throws_FlagOff_Swallowed()
 	{
-		var originalFlag = FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher;
+		var originalFlag = FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions;
 		try
 		{
-			FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher = false;
+			FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions = false;
 
 			var sut = new Border();
 			sut.Tapped += ThrowingHandler;
@@ -48,7 +48,7 @@ public class Given_FeatureConfiguration_UnhandledExceptions
 		}
 		finally
 		{
-			FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher = originalFlag;
+			FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions = originalFlag;
 		}
 	}
 
@@ -56,10 +56,10 @@ public class Given_FeatureConfiguration_UnhandledExceptions
 	[RunsOnUIThread]
 	public void When_SafeRaiseEvent_Throws_FlagOn_NoSubscriber_Propagates()
 	{
-		var originalFlag = FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher;
+		var originalFlag = FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions;
 		try
 		{
-			FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher = true;
+			FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions = true;
 
 			var sut = new Border();
 			sut.Tapped += ThrowingHandler;
@@ -69,7 +69,7 @@ public class Given_FeatureConfiguration_UnhandledExceptions
 		}
 		finally
 		{
-			FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher = originalFlag;
+			FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions = originalFlag;
 		}
 	}
 
@@ -77,7 +77,7 @@ public class Given_FeatureConfiguration_UnhandledExceptions
 	[RunsOnUIThread]
 	public void When_SafeRaiseEvent_Throws_FlagOn_Handled_DoesNotPropagate()
 	{
-		var originalFlag = FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher;
+		var originalFlag = FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions;
 		Exception observed = null;
 
 		void Handler(object s, MuxUnhandledExceptionEventArgs e)
@@ -88,7 +88,7 @@ public class Given_FeatureConfiguration_UnhandledExceptions
 
 		try
 		{
-			FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher = true;
+			FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions = true;
 			Application.Current.UnhandledException += Handler;
 
 			var sut = new Border();
@@ -101,7 +101,7 @@ public class Given_FeatureConfiguration_UnhandledExceptions
 		finally
 		{
 			Application.Current.UnhandledException -= Handler;
-			FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher = originalFlag;
+			FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions = originalFlag;
 		}
 	}
 
@@ -109,10 +109,10 @@ public class Given_FeatureConfiguration_UnhandledExceptions
 	[RunsOnUIThread]
 	public async Task When_Dispatcher_Throws_FlagOff_Swallowed()
 	{
-		var originalFlag = FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher;
+		var originalFlag = FeatureConfiguration.UnhandledExceptionHandling.PropagateDispatcherExceptions;
 		try
 		{
-			FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher = false;
+			FeatureConfiguration.UnhandledExceptionHandling.PropagateDispatcherExceptions = false;
 
 			var dispatcher = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
 			var ran = false;
@@ -129,7 +129,7 @@ public class Given_FeatureConfiguration_UnhandledExceptions
 		}
 		finally
 		{
-			FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher = originalFlag;
+			FeatureConfiguration.UnhandledExceptionHandling.PropagateDispatcherExceptions = originalFlag;
 		}
 	}
 
