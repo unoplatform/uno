@@ -19,7 +19,7 @@
 		<_IsTvOS Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">true</_IsTvOS>
 		<_IsTvOS Condition="'$(_IsTvOS)' == ''">false</_IsTvOS>
 
-		<_IsNetStdRef Condition="'$(_IsUnitTests)'!='true' AND ('$(TargetFramework)'=='net10.0' OR '$(TargetFramework)'=='net9.0')">true</_IsNetStdRef>
+		<_IsNetStdRef Condition="'$(TargetFramework)'=='net10.0' OR '$(TargetFramework)'=='net9.0'">true</_IsNetStdRef>
 		<_IsNetStdRef Condition="'$(UnoRuntimeIdentifier)'=='Skia' OR '$(UnoUIRuntimeIdentifier)'=='Skia' OR '$(UnoRuntimeIdentifier)'=='WebAssembly'">true</_IsNetStdRef>
 		<_IsNetStdRef Condition="'$(_IsNetStdRef)' == ''">false</_IsNetStdRef>
 
@@ -32,7 +32,6 @@
 
 		<!-- Skia is intentionally last as we want it to win when running Android Skia -->
 		<XamarinProjectType Condition="'$(UnoRuntimeIdentifier)'=='Skia' OR '$(UnoUIRuntimeIdentifier)'=='Skia'">skia</XamarinProjectType>
-		<XamarinProjectType Condition="'$(_IsUnitTests)'=='true'">IS_UNIT_TESTS</XamarinProjectType>
 
 		<_IsAndroidSkia Condition="$(_IsAndroid) AND '$(XamarinProjectType)'=='skia'">true</_IsAndroidSkia>
 		<_IsAndroidSkia Condition="'$(_IsAndroidSkia)' == ''">false</_IsAndroidSkia>
@@ -193,9 +192,6 @@
 		<ExcludeXamlNamespaces Condition="$(_IsWasmSkia)" Include="not_wasmskia" />
 		<IncludeXamlNamespaces Condition="!$(_IsWasmSkia)" Include="not_wasmskia" />
 		<ExcludeXamlNamespaces Condition="!$(_IsWasmSkia)" Include="wasmskia" />
-
-		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="unittests" />
-		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'!='IS_UNIT_TESTS'" Include="unittests" />
 
 		<ExcludeXamlNamespaces Include="win" />
 		<!-- NOTE: not_mux is historical, for when Uno used to support both UWP and WinUI. -->

@@ -42,9 +42,6 @@
 
 		<None Include="**\*.Xamarin.cs" Exclude="bin\**\*.Xamarin.cs;obj\**\*.Xamarin.cs" Condition="!$(IsAndroid) and !$(IsApple)" />
 		<Compile Remove="**\*.Xamarin.cs" Condition="!$(IsAndroid) and !$(IsApple)" />
-
-		<None Include="**\*.unittests.cs" Exclude="bin\**\*.unittests.cs;obj\**\*.unittests.cs" Condition="!$(_IsUnitTests)" />
-		<Compile Remove="**\*.unittests.cs" Condition="!$(_IsUnitTests)" />
 	</ItemGroup>
 
 	<!--
@@ -86,10 +83,6 @@
 
 	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Reference'">
 		<DefineConstants>$(DefineConstants);__NETSTD_REFERENCE__</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="$(_IsUnitTests)">
-		<DefineConstants>$(DefineConstants);IS_UNIT_TESTS</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsIOS)">

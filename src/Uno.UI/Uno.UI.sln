@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.002.0
@@ -8,8 +8,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Reference", "Uno.UI.Reference.csproj", "{A352E7DD-C461-409F-90E8-0C4A6132A37F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Skia", "Uno.UI.Skia.csproj", "{78007CC1-CE8F-4AF5-A252-1253E3CC6DD1}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Tests", "Uno.UI.Tests.csproj", "{6FDCD110-712E-4968-B370-B5DB8D0B0A67}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Wasm", "Uno.UI.Wasm.csproj", "{137C70CE-C922-48B9-96C1-FB8CBAD2688D}"
 EndProject
@@ -31,10 +29,6 @@ Global
 		{78007CC1-CE8F-4AF5-A252-1253E3CC6DD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78007CC1-CE8F-4AF5-A252-1253E3CC6DD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78007CC1-CE8F-4AF5-A252-1253E3CC6DD1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6FDCD110-712E-4968-B370-B5DB8D0B0A67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6FDCD110-712E-4968-B370-B5DB8D0B0A67}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6FDCD110-712E-4968-B370-B5DB8D0B0A67}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6FDCD110-712E-4968-B370-B5DB8D0B0A67}.Release|Any CPU.Build.0 = Release|Any CPU
 		{137C70CE-C922-48B9-96C1-FB8CBAD2688D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{137C70CE-C922-48B9-96C1-FB8CBAD2688D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{137C70CE-C922-48B9-96C1-FB8CBAD2688D}.Release|Any CPU.ActiveCfg = Release|Any CPU

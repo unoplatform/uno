@@ -27,9 +27,6 @@
     <Project Path="AddIns/Uno.UI.Lottie/Uno.UI.Lottie.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="AddIns/Uno.UI.Lottie/Uno.UI.Lottie.Tests.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="AddIns/Uno.UI.Lottie/Uno.UI.Lottie.Wasm.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
@@ -263,9 +260,6 @@
     <Project Path="Uno.UI.Composition/Uno.UI.Composition.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.Composition/Uno.UI.Composition.Tests.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="Uno.UI.Composition/Uno.UI.Composition.Wasm.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
@@ -294,9 +288,6 @@
     <Project Path="Uno.UI.Dispatching/Uno.UI.Dispatching.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.Dispatching/Uno.UI.Dispatching.Tests.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="Uno.UI.Dispatching/Uno.UI.Dispatching.Wasm.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
@@ -311,9 +302,6 @@
     <Project Path="Uno.UI.FluentTheme.v1/Uno.UI.FluentTheme.v1.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.FluentTheme.v1/Uno.UI.FluentTheme.v1.Tests.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="Uno.UI.FluentTheme.v1/Uno.UI.FluentTheme.v1.Wasm.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
@@ -326,9 +314,6 @@
     <Project Path="Uno.UI.FluentTheme.v2/Uno.UI.FluentTheme.v2.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.FluentTheme.v2/Uno.UI.FluentTheme.v2.Tests.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="Uno.UI.FluentTheme.v2/Uno.UI.FluentTheme.v2.Wasm.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
@@ -339,9 +324,6 @@
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.UI.FluentTheme/Uno.UI.FluentTheme.Skia.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.FluentTheme/Uno.UI.FluentTheme.Tests.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.UI.FluentTheme/Uno.UI.FluentTheme.Wasm.csproj">
@@ -362,9 +344,6 @@
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.Foundation/Uno.Foundation.Skia.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.Foundation/Uno.Foundation.Tests.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.Foundation/Uno.Foundation.Wasm.csproj">
@@ -474,18 +453,12 @@
     <Project Path="Uno.UI.Tests.ViewLibraryProps/Uno.UI.Tests.ViewLibraryProps.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UWP/Uno.Tests.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
   </Folder>
   <Folder Name="/Uno.UI/Toolkit/">
     <Project Path="Uno.UI.Toolkit/Uno.UI.Toolkit.netcoremobile.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.UI.Toolkit/Uno.UI.Toolkit.Reference.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.Toolkit/Uno.UI.Toolkit.Tests.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.UI.Toolkit/Uno.UI.Toolkit.Wasm.csproj">
@@ -521,9 +494,6 @@
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.UI/Uno.UI.Skia.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI/Uno.UI.Tests.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.UI/Uno.UI.Wasm.csproj">
