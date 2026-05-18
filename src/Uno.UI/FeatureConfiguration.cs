@@ -1167,5 +1167,50 @@ namespace Uno.UI
 #endif
 		}
 
+		public static class UnhandledExceptionHandling
+		{
+			/// <summary>
+			/// When <c>true</c>, exceptions thrown during pointer-input event raising surface
+			/// through <see cref="Application.UnhandledException"/>; if the app does not mark
+			/// <c>Handled = true</c>, the exception propagates (matching WinUI's fail-fast
+			/// behavior on unhandled errors). When <c>false</c> (default), the legacy behavior
+			/// is preserved: such exceptions are caught and logged.
+			/// </summary>
+			/// <remarks>
+			/// Recommended for development to surface latent crashes that today look like input
+			/// no-ops. This default may change in a future Uno Platform release.
+			/// </remarks>
+			public static bool PropagateInputExceptions { get; set; }
+
+			/// <summary>
+			/// When <c>true</c>, exceptions thrown by dispatcher work items propagate to the
+			/// platform message pump (matching WinUI's <c>DispatcherQueue</c>, which fail-fasts
+			/// on unhandled errors). When <c>false</c> (default), the dispatcher catches and
+			/// logs the exception.
+			/// </summary>
+			/// <remarks>
+			/// Recommended for development to surface latent crashes that today silently break
+			/// scheduled work. This default may change in a future Uno Platform release.
+			/// </remarks>
+			public static bool PropagateDispatcherExceptions
+			{
+				get => global::Uno.UI.Dispatching.NativeDispatcher.PropagateUnhandledExceptions;
+				set => global::Uno.UI.Dispatching.NativeDispatcher.PropagateUnhandledExceptions = value;
+			}
+		}
+
+		public static class ResourceResolution
+		{
+			/// <summary>
+			/// When <c>true</c>, an unresolved <c>{StaticResource}</c> or <c>{ThemeResource}</c>
+			/// lookup throws <see cref="global::Microsoft.UI.Xaml.Markup.XamlParseException"/> at
+			/// the point of failure (matching WinUI's <c>AG_E_PARSER_FAILED_RESOURCE_FIND</c>
+			/// behavior). When <c>false</c> (default), the failure is only logged as a warning.
+			/// </summary>
+			/// <remarks>
+			/// Recommended for development and CI to catch typos in resource keys.
+			/// </remarks>
+			public static bool ThrowOnUnresolvedResource { get; set; }
+		}
 	}
 }

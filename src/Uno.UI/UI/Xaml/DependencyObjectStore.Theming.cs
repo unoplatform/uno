@@ -436,6 +436,7 @@ public partial class DependencyObjectStore
 		}
 
 		// Phase 2: Update remaining resource bindings (StaticResourceLoading, HotReload) via tree walk
+		List<string>? unresolvedKeys = null;
 		if (_resourceBindings?.HasBindings == true)
 		{
 			dictionariesInScope ??= GetResourceDictionaries(includeAppResources: false, resourceContextProvider, containingDictionary).ToArray();
@@ -443,8 +444,19 @@ public partial class DependencyObjectStore
 			var bindings = _resourceBindings.GetAllBindings();
 			foreach (var binding in bindings)
 			{
-				InnerUpdateResourceBindings(updateReason, dictionariesInScope, binding.Property, binding.Binding);
+				var resolved = InnerUpdateResourceBindings(updateReason, dictionariesInScope, binding.Property, binding.Binding);
+				if (resolved == false && Uno.UI.FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource)
+				{
+					unresolvedKeys ??= new List<string>();
+					unresolvedKeys.Add($"'{binding.Binding.ResourceKey.Key}' (property '{binding.Property.Name}')");
+				}
 			}
+		}
+
+		if (unresolvedKeys is not null)
+		{
+			throw new global::Microsoft.UI.Xaml.Markup.XamlParseException(
+				$"Could not resolve resource bindings on '{_originalObjectType.Name}': {string.Join(", ", unresolvedKeys)}.");
 		}
 
 		// Phase 3: Propagate to non-FE DOs (brushes, animations, etc.)
@@ -457,12 +469,17 @@ public partial class DependencyObjectStore
 	/// can be significantly slower than other methods as a result on WebAssembly.
 	/// See https://github.com/dotnet/runtime/issues/56309
 	/// </remarks>
+	/// <summary>
+	/// Returns <c>true</c> if the resource was resolved, <c>false</c> if the binding update
+	/// completed without finding the resource, or <c>null</c> if the inner call threw (e.g.
+	/// the target was disposed mid-update) and the caller should ignore this binding.
+	/// </summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private void InnerUpdateResourceBindings(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
+	private bool? InnerUpdateResourceBindings(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
 	{
 		try
 		{
-			InnerUpdateResourceBindingsUnsafe(updateReason, dictionariesInScope, property, binding);
+			return InnerUpdateResourceBindingsUnsafe(updateReason, dictionariesInScope, property, binding);
 		}
 		catch (Exception e)
 		{
@@ -470,6 +487,7 @@ public partial class DependencyObjectStore
 			{
 				this.Log().Warn($"Failed to update binding, target may have been disposed", e);
 			}
+			return null;
 		}
 	}
 
@@ -478,13 +496,19 @@ public partial class DependencyObjectStore
 	/// can be significantly slower than other methods as a result on WebAssembly.
 	/// See https://github.com/dotnet/runtime/issues/56309
 	/// </remarks>
+	/// <summary>
+	/// Returns <c>true</c> when the resource was successfully resolved (either from the
+	/// in-scope dictionaries or from a top-level lookup), <c>false</c> when the lookup
+	/// missed across all sources.
+	/// </summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private void InnerUpdateResourceBindingsUnsafe(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
+	private bool InnerUpdateResourceBindingsUnsafe(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
 	{
 		if ((binding.UpdateReason & updateReason) == ResourceUpdateReason.None)
 		{
-			// If the reason for the update doesn't match the reason(s) that the binding was created for, don't update it
-			return;
+			// If the reason for the update doesn't match the reason(s) that the binding was created for, don't update it.
+			// Treated as "resolved" for ThrowOnUnresolvedResource purposes — we did not look here.
+			return true;
 		}
 
 		// Note: we intentionally do NOT skip theme resource bindings here even though
@@ -535,8 +559,13 @@ public partial class DependencyObjectStore
 				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value))
 				{
 					SetResourceBindingValue(property, binding, value);
+					return true;
 				}
+
+				return false;
 			}
+
+			return true;
 		}
 		finally
 		{
