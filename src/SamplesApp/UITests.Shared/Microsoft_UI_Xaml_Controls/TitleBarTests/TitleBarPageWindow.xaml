@@ -1,0 +1,139 @@
+﻿<Window
+    x:Class="MUXControlsTestApp.TitleBarPageWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MUXControlsTestApp"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Window.SystemBackdrop>
+        <MicaBackdrop />
+    </Window.SystemBackdrop>
+
+    <Grid x:Name="TitleBarPageWindowGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TitleBar x:Name="WindowingTitleBar"
+                Title="Windowing TitleBar"
+                BackRequested="WindowingTitleBar_BackRequested"
+                PaneToggleRequested="WindowingTitleBar_PaneToggleRequested">
+            <TitleBar.IconSource>
+                <SymbolIconSource Symbol="Home" />
+            </TitleBar.IconSource>
+        </TitleBar>
+
+
+        <StackPanel Grid.Row="1"
+                    Orientation="Vertical"
+                    Background="{ThemeResource LayerFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    Spacing="8"
+                    Padding="46,20">
+            <Grid Margin="0,0,0,24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="TitleBar OutputDebugString Levels:"
+                           VerticalAlignment="Center"
+                           Margin="2" />
+                <ComboBox x:Name="cmbTitleBarOutputDebugStringLevel"
+                          Margin="2"
+                          Width="120"
+                          HorizontalAlignment="Left"
+                          SelectedIndex="0"
+                          Grid.Column="1"
+                          SelectionChanged="CmbTitleBarOutputDebugStringLevel_SelectionChanged">
+                    <ComboBoxItem>None</ComboBoxItem>
+                    <ComboBoxItem>Info</ComboBoxItem>
+                    <ComboBoxItem>Verbose</ComboBoxItem>
+                </ComboBox>
+            </Grid>
+
+            <ToggleButton x:Name="EnableRTLToggleButton"
+                          IsChecked="False"
+                          Checked="EnableRTLToggleButton_Checked"
+                          Unchecked="EnableRTLToggleButton_Unchecked"
+                          Content="Enable RTL" />
+
+            <CheckBox x:Name="IsBackButtonVisibleCheckBox"
+                    Content="Back Button Visible"
+                    Checked="IsBackButtonVisibleCheckBox_CheckedChanged"
+                    Unchecked="IsBackButtonVisibleCheckBox_CheckedChanged" />
+
+            <CheckBox x:Name="IsBackButtonEnabledCheckBox"
+                    IsChecked="True"
+                    Content="Back Button Enabled"
+                    Checked="IsBackButtonEnabledCheckBox_CheckedChanged"
+                    Unchecked="IsBackButtonEnabledCheckBox_CheckedChanged" />
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Back Requested:" />
+                <TextBlock x:Name="BackRequestedCountTextBox"
+                        Margin="8,0,0,0"
+                        Foreground="Red" />
+            </StackPanel>
+
+            <CheckBox x:Name="IsPaneToggleButtonVisibleCheckbox"
+                    Content="PaneToggleButton Visible"
+                    Checked="IsPaneToggleButtonVisibleCheckbox_CheckedChanged"
+                    Unchecked="IsPaneToggleButtonVisibleCheckbox_CheckedChanged" />
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="PaneToggleButton Requested:" />
+                <TextBlock x:Name="PaneToggleButtonRequestedCountTextBox"
+                        Margin="8,0,0,0"
+                        Foreground="Red" />
+            </StackPanel>
+
+            <CheckBox x:Name="SetIconCheckBox"
+                    IsChecked="True"
+                    Content="Set Icon"
+                    Checked="SetIconCheckBox_CheckedChanged"
+                    Unchecked="SetIconCheckBox_CheckedChanged" />
+
+            <StackPanel Orientation="Horizontal"
+                        Spacing="8">
+                <TextBox x:Name="TitleTextBox"
+                        PlaceholderText="Title Text"
+                        HorizontalAlignment="Left"
+                        Width="120" />
+                <Button x:Name="TitleButton"
+                        Content="Set Title"
+                        Click="TitleButton_Click" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+                        Spacing="8">
+                <TextBox x:Name="SubtitleTextBox"
+                        PlaceholderText="Subtitle Text"
+                        HorizontalAlignment="Left"
+                        Width="120" />
+                <Button x:Name="SetSubtitleButton"
+                        Content="Set Subtitle"
+                        Click="SetSubtitleButton_Click" />
+            </StackPanel>
+
+            <CheckBox x:Name="LeftHeaderCheckBox"
+                    Content="LeftHeader"
+                    Checked="LeftHeaderCheckBox_CheckedChanged"
+                    Unchecked="LeftHeaderCheckBox_CheckedChanged" />
+
+            <CheckBox x:Name="CustomContentCheckBox"
+                    Content="CustomContent"
+                    Checked="CustomContentCheckBox_CheckedChanged"
+                    Unchecked="CustomContentCheckBox_CheckedChanged" />
+
+            <CheckBox x:Name="RightHeaderCheckBox"
+                    Content="RightHeader"
+                    Checked="RightHeaderCheckBox_CheckedChanged"
+                    Unchecked="RightHeaderCheckBox_CheckedChanged" />
+
+        </StackPanel>
+    </Grid>
+</Window>
