@@ -424,7 +424,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return link;
 		}
 
-		public List<KeyValuePair<string, SourceText>> Generate()
+		public List<KeyValuePair<string, SourceText>> Generate(XamlFileDefinition[]? preparsedFiles = null)
 		{
 			var stopwatch = Stopwatch.StartNew();
 			var ct = _context.CancellationToken;
@@ -453,12 +453,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					allXmlnsDefinitions = allDefs.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToArray());
 				}
 
-				// Parse XAML files
-				var xamlParser = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, excludeXamlNamespaces, includeXamlNamespaces, _metadataHelper, _enableImplicitXamlNamespaces, implicitPrefixes);
-				var xamlFiles = xamlParser
-					.ParseFiles(_xamlSources, _projectDirectory, ct)
-					.OrderBy(file => file.UniqueID)
-					.ToArray();
+				XamlFileDefinition[] xamlFiles;
+				if (preparsedFiles is not null)
+				{
+					// Pre-parsed files come from the incremental pipeline's per-file parsing node,
+					// which is Roslyn-cached when the XAML content + parser settings are unchanged.
+					xamlFiles = preparsedFiles
+						.OrderBy(file => file.UniqueID)
+						.ToArray();
+				}
+				else
+				{
+					// Legacy path: parse synchronously here. Used when XamlCodeGeneration is invoked
+					// outside the incremental pipeline (e.g. metadata-update tests).
+					var xamlParser = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, excludeXamlNamespaces, includeXamlNamespaces, _metadataHelper, _enableImplicitXamlNamespaces, implicitPrefixes);
+					xamlFiles = xamlParser
+						.ParseFiles(_xamlSources, _projectDirectory, ct)
+						.OrderBy(file => file.UniqueID)
+						.ToArray();
+				}
 
 				// Build a map of XamlType (from the top-level control) per class symbol
 				var xamlTypeToXamlTypeBaseMap = new ConcurrentDictionary<INamedTypeSymbol, XamlRedirection.XamlType>(SymbolEqualityComparer.Default);

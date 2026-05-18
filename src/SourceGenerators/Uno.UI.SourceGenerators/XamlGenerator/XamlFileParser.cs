@@ -39,7 +39,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Usages of this field should be careful, since we avoid xaml parse caching if we use it.
 		/// If the usage affects the parse result, you need to disable caching for the file.
 		/// </summary>
-		private readonly RoslynMetadataHelper _metadataHelper;
+		/// <remarks>
+		/// May be null when parsing through the compilation-free fast path
+		/// (<see cref="ParseSingle(XamlSourceFile, XamlParserSettings, CancellationToken)"/>);
+		/// in that mode the caller has already proven the file does not exercise the
+		/// <c>?IsTypePresent</c>/<c>?IsTypeNotPresent</c> conditionals that need the metadata helper.
+		/// </remarks>
+		private readonly RoslynMetadataHelper? _metadataHelper;
 
 		private readonly bool _enableImplicitNamespaces;
 		private readonly (string Prefix, string Uri)[] _implicitPrefixes;
@@ -52,7 +58,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			string includeXamlNamespacesProperty,
 			string[] excludeXamlNamespaces,
 			string[] includeXamlNamespaces,
-			RoslynMetadataHelper roslynMetadataHelper,
+			RoslynMetadataHelper? roslynMetadataHelper,
 			bool enableImplicitNamespaces = false,
 			(string Prefix, string Uri)[]? implicitPrefixes = null)
 		{
@@ -66,6 +72,113 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_enableImplicitNamespaces = enableImplicitNamespaces;
 			_implicitPrefixes = implicitPrefixes ?? Array.Empty<(string, string)>();
 			_implicitPrefixesKey = string.Join("|", _implicitPrefixes.Select(p => p.Prefix + ":" + p.Uri));
+		}
+
+		/// <summary>
+		/// Parses a single XAML file given a pipeline-friendly source descriptor and
+		/// settings record. Used by the incremental generator's per-file parsing node.
+		/// The compilation-free fast path (with <paramref name="metadataHelper"/> = null) is
+		/// only valid when the caller has classified the file as not requiring
+		/// <c>?IsTypePresent</c>/<c>?IsTypeNotPresent</c> resolution.
+		/// </summary>
+		public static XamlFileDefinition? ParseSingle(
+			XamlSourceFile sourceFile,
+			XamlParserSettings settings,
+			RoslynMetadataHelper? metadataHelper,
+			CancellationToken ct)
+		{
+			var parser = new XamlFileParser(
+				excludeXamlNamespacesProperty: settings.ExcludeXamlNamespacesProperty,
+				includeXamlNamespacesProperty: settings.IncludeXamlNamespacesProperty,
+				excludeXamlNamespaces: settings.ExcludeXamlNamespaces.Array.ToArray(),
+				includeXamlNamespaces: settings.IncludeXamlNamespaces.Array.ToArray(),
+				roslynMetadataHelper: metadataHelper,
+				enableImplicitNamespaces: settings.EnableImplicitNamespaces,
+				implicitPrefixes: settings.ImplicitPrefixes.Array.ToArray());
+
+			return parser.ParseFromText(sourceFile, ct);
+		}
+
+		private XamlFileDefinition? ParseFromText(XamlSourceFile sourceFile, CancellationToken ct)
+		{
+			try
+			{
+				var sourceText = Microsoft.CodeAnalysis.Text.SourceText.From(sourceFile.Content);
+				var sourceLink = sourceFile.SourceLink.Replace('\\', '/');
+
+				var cachedFileKey = new CachedFileKey(
+					_includeXamlNamespacesProperty,
+					_excludeXamlNamespacesProperty,
+					sourceFile.FilePath,
+					sourceLink,
+					sourceFile.Checksum,
+					_enableImplicitNamespaces,
+					_implicitPrefixesKey);
+
+				if (_cachedFiles.TryGetValue(cachedFileKey, out var cached))
+				{
+					_cachedFiles[cachedFileKey] = cached.WithUpdatedLastTimeUsed();
+					ScavengeCache();
+					return cached.XamlFileDefinition;
+				}
+
+				ScavengeCache();
+
+				var context = new XamlSchemaContext([]);
+				var settings = new XamlXmlReaderSettings { ProvideLineInfo = true };
+
+				var document = RewriteForXBind(sourceText);
+
+				using var reader = new XamlXmlReader(document, context, settings, IsIncluded);
+				if (!reader.Read())
+				{
+					return null;
+				}
+
+				ct.ThrowIfCancellationRequested();
+
+				var xamlFileDefinition = new XamlFileDefinition(sourceFile.FilePath, sourceLink, sourceFile.TargetFilePath, sourceFile.Content, sourceFile.Checksum);
+				var parserCtx = new XamlFileParserContext(sourceFile.FilePath);
+				try
+				{
+					VisitRoot(reader, ref xamlFileDefinition, ref parserCtx, ct);
+				}
+				catch (OperationCanceledException)
+				{
+					throw;
+				}
+				catch (__uno::Uno.Xaml.XamlParseException e)
+				{
+					parserCtx.ReportError(e.Message, e.LineNumber, e.LinePosition, null);
+				}
+				catch (XmlException e)
+				{
+					parserCtx.ReportError(e.Message, e.LineNumber, e.LinePosition, null);
+				}
+				catch (Exception error)
+				{
+					parserCtx.ReportError(
+						$"Unable to process {reader.NodeType} node at Line {reader.LineNumber}, position {reader.LinePosition}",
+						reader.LineNumber,
+						reader.LinePosition,
+						error);
+				}
+
+				xamlFileDefinition = xamlFileDefinition with
+				{
+					ParsingErrors = parserCtx.GetErrors()
+				};
+				if (!reader.DisableCaching)
+				{
+					_cachedFiles[cachedFileKey] = new CachedFile(DateTimeOffset.Now, xamlFileDefinition);
+				}
+
+				return xamlFileDefinition;
+			}
+			catch (Exception e) when (e is not OperationCanceledException)
+			{
+				throw new XamlParsingException("Failed to parse file", e, 1, 1, sourceFile.FilePath);
+			}
 		}
 
 		public ParallelQuery<XamlFileDefinition> ParseFiles(IEnumerable<XamlSource> xamlSourceFiles, string projectDirectory, CancellationToken ct)
@@ -437,6 +550,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (elements.Length < 2)
 					{
 						throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {namespaceUri}");
+					}
+					if (_metadataHelper is null)
+					{
+						// This branch resolves a compilation-bound type-presence check, so reaching it
+						// without a metadata helper means the file was misrouted onto the compilation-free
+						// parsing path. Fail loudly rather than silently returning a different result.
+						throw new InvalidOperationException(
+							$"XAML file uses '?{methodName}' but was parsed without a metadata helper. " +
+							"The pipeline classifier (XamlSourceFile.RequiresCompilationDuringParse) failed to detect this usage.");
 					}
 					var expectedType = elements[1];
 					var isIncluded2 = methodName == nameof(ApiInformation.IsTypePresent) ?
