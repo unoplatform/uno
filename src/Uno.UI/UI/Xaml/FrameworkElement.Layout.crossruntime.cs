@@ -72,6 +72,12 @@ namespace Microsoft.UI.Xaml
 					{
 						InvokeLoading();
 					}
+					catch (global::Microsoft.UI.Xaml.Markup.XamlParseException)
+					{
+						// XAML parse failures opted into by ThrowOnUnresolvedResource are intentional
+						// and must propagate, independently of HandleLoadUnloadExceptions.
+						throw;
+					}
 					catch (Exception error)
 					{
 						_log.Error("OnElementLoading failed in FrameworkElement", error);
