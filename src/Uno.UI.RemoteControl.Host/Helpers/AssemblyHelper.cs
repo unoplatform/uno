@@ -27,13 +27,28 @@ public class AssemblyHelper
 
 		try
 		{
-			foreach (var dll in dllFiles.Distinct(StringComparer.OrdinalIgnoreCase))
+			// All add-ins share a single AssemblyLoadContext backed by per-add-in
+			// AssemblyDependencyResolver instances. This isolates add-in dependency
+			// trees (e.g. Kiota's net8.0 binaries that hard-reference
+			// System.Text.Encodings.Web 8.0.0.0) from the host's framework
+			// assemblies while letting Microsoft.*/System.* and shared contract types
+			// resolve against the host's already-loaded versions. Add-ins still see
+			// each other's types (matching the prior Assembly.LoadFrom behaviour).
+			var distinctDlls = dllFiles.Distinct(StringComparer.OrdinalIgnoreCase).ToImmutableList();
+			var loadContext = distinctDlls.Count > 0
+				? new AddInLoadContext(distinctDlls)
+				: null;
+
+			foreach (var dll in distinctDlls)
 			{
 				try
 				{
 					_log.Log(LogLevel.Debug, $"Loading add-in assembly '{dll}'.");
 
-					results.Add(new AssemblyLoadResult(dll, Assembly.LoadFrom(dll), null));
+					var assemblyName = AssemblyName.GetAssemblyName(dll);
+					var assembly = loadContext!.LoadFromAssemblyName(assemblyName);
+
+					results.Add(new AssemblyLoadResult(dll, assembly, null));
 				}
 				catch (Exception err)
 				{
