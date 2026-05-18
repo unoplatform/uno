@@ -16,6 +16,8 @@
     <!--<AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>-->
     <!--<OptimizeImplicitlyTriggeredBuild>true</OptimizeImplicitlyTriggeredBuild>-->
     <!--<UnoNugetOverrideVersion>6.4.0-dev.354</UnoNugetOverrideVersion>-->
+    <!--<EnableTrimAnalyzer>false</EnableTrimAnalyzer>-->
+    <!--<EnableAotAnalyzer>false</EnableAotAnalyzer>-->
 
     <!-- 
         
@@ -67,10 +69,24 @@
         See for more details: https://github.com/dotnet/project-system/blob/main/docs/build-acceleration.md#build-acceleration
     
       ### OptimizeImplicitlyTriggeredBuild ###
-    
-        Uncomment this line if you're iterating quickly in your builds. This 
+
+        Uncomment this line if you're iterating quickly in your builds. This
         will disable most of the C# analyzers, and you'll need to comment that property
         before making your pull request.
+
+      ### EnableTrimAnalyzer / EnableAotAnalyzer ###
+
+        Uncomment these lines to skip the ILLink trim/AOT analyzer (IL2026..IL4001) during
+        local development builds. Several Uno.* projects set IsAotCompatible=true so the
+        analyzer can flag AOT-incompatible patterns. On a SamplesApp.Skia.Generic
+        rebuild after a single Uno.UI .cs change this analyzer alone accounted for
+        roughly 525 seconds of CPU per project (the DynamicallyAccessedMembersAnalyzer
+        rule set runs across every reflection-touching member), turning into about
+        9 seconds of wall-clock savings (~11 percent of a 1m17s incremental build)
+        once disabled.
+
+        Keep these commented when preparing a pull request or publishing for AOT so
+        the analyzer can flag incompatible code paths. CI runs them unconditionally.
 
     -->
 
