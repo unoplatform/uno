@@ -102,6 +102,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "FlyoutLightDismissOverlayBackground", isThemeResourceExtension: true, isHotReloadSupported: true);
 
 				var child = CreatePresenter();
+
+				if (child is FlyoutPresenter flyoutPresenter)
+				{
+					flyoutPresenter.SetOwnerFlyout(this);
+				}
+
 				_popup = new Popup()
 				{
 					Child = child,

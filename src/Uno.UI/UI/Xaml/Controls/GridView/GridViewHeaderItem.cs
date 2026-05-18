@@ -10,5 +10,8 @@ namespace Microsoft.UI.Xaml.Controls
 			DefaultStyleKey = typeof(GridViewHeaderItem);
 		}
 #endif
+
+		protected override Automation.Peers.AutomationPeer OnCreateAutomationPeer()
+			=> new Automation.Peers.GridViewHeaderItemAutomationPeer(this);
 	}
 }

@@ -3,74 +3,20 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class PivotItemDataAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.IScrollItemProvider, global::Microsoft.UI.Xaml.Automation.Provider.ISelectionItemProvider, global::Microsoft.UI.Xaml.Automation.Provider.IVirtualizedItemProvider
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsSelected
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer", "IsSelected");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple SelectionContainer
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer", "SelectionContainer");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public PivotItemDataAutomationPeer(object item, global::Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer parent) : base(item, parent)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer", "PivotItemDataAutomationPeer(object item, PivotAutomationPeer parent)");
-		}
-#endif
+		// Skipping already declared property IsSelected
+		// Skipping already declared property SelectionContainer
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer.PivotItemDataAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer.PivotItemDataAutomationPeer(object, Microsoft.UI.Xaml.Automation.Peers.PivotAutomationPeer)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void ScrollIntoView()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer", "ScrollIntoView()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void AddToSelection()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer", "AddToSelection()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void RemoveFromSelection()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer", "RemoveFromSelection()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Select()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer", "Select()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Realize()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer", "Realize()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer.ScrollIntoView()
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer.AddToSelection()
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer.RemoveFromSelection()
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer.Select()
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer.Realize()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer.IsSelected.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PivotItemDataAutomationPeer.SelectionContainer.get
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IScrollItemProvider
