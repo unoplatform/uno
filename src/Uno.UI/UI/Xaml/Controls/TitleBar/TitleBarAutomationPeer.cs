@@ -1,4 +1,8 @@
-﻿using Microsoft.UI.Xaml.Automation.Peers;
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference TitleBarAutomationPeer.h, commit 5f9e85113
+
+using Microsoft.UI.Xaml.Automation.Peers;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -7,30 +11,4 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class TitleBarAutomationPeer : FrameworkElementAutomationPeer
 {
-	/// <summary>
-	/// Initializes a new instance of the TitleBarAutomationPeer class.
-	/// </summary>
-	/// <param name="owner"></param>
-	public TitleBarAutomationPeer(TitleBar owner) : base(owner)
-	{
-	}
-
-	protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.TitleBar;
-
-	protected override string GetClassNameCore() => nameof(TitleBar);
-
-	protected override string GetNameCore()
-	{
-		var name = base.GetNameCore();
-
-		if (string.IsNullOrEmpty(name))
-		{
-			if (Owner is TitleBar titleBar)
-			{
-				name = titleBar.Title;
-			}
-		}
-
-		return name;
-	}
 }
