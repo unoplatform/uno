@@ -593,6 +593,15 @@ namespace SamplesApp
 			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
 			Uno.UI.FeatureConfiguration.DependencyProperty.ValidatePropertyOwnerOnReadWrite = true;
 
+			// Surface latent crashes that would otherwise be silently swallowed during Uno
+			// Platform development. Apps are still free to flip these off, but for SamplesApp
+			// (and the runtime-tests host) we want all errors to be visible.
+			// Note: ThrowOnUnresolvedResource is not enabled here yet because SamplesApp
+			// currently references resources that fail to resolve at startup. Once those are
+			// fixed it can move to default-on.
+			Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions = true;
+			Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.PropagateDispatcherExceptions = true;
+
 			Uno.UI.FeatureConfiguration.Font.DefaultTextFontFamily = "ms-appx:///Uno.Fonts.OpenSans/Fonts/OpenSans.ttf";
 #endif
 #if __ANDROID__
