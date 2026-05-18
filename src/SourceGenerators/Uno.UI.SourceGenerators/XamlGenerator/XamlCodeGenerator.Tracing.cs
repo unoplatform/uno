@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -12,9 +12,11 @@ using Uno.Roslyn;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
-	public partial class XamlCodeGenerator : ISourceGenerator
+	public partial class XamlCodeGenerator
 	{
-		private void DumpXamlSourceGeneratorState(XamlSourceContext context, List<KeyValuePair<string, SourceText>> generatedSources)
+		private static long _instanceId;
+
+		private static void DumpXamlSourceGeneratorState(XamlSourceContext context, List<KeyValuePair<string, SourceText>> generatedSources)
 		{
 			var tracingFolder = context.GetMSBuildPropertyValue("XamlSourceGeneratorTracingFolder");
 
@@ -40,9 +42,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private static long _instanceId;
-
-		private string MakeRunId()
+		private static string MakeRunId()
 		{
 			var instanceId = Interlocked.Increment(ref _instanceId);
 
@@ -51,9 +51,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return $"{DateTime.Now:yyyyMMdd_HHmmss_fff}-{process.Id}-{process.ProcessName}-{instanceId}";
 		}
 
-		private void DumpCommandLine(string basePath) => File.WriteAllText(Path.Combine(basePath, "CommandLine.txt"), Environment.CommandLine);
+		private static void DumpCommandLine(string basePath) => File.WriteAllText(Path.Combine(basePath, "CommandLine.txt"), Environment.CommandLine);
 
-		private void DumpMSBuildProperties(string basePath, XamlSourceContext context)
+		private static void DumpMSBuildProperties(string basePath, XamlSourceContext context)
 		{
 			var projectDirectory = context.GetMSBuildPropertyValue("MSBuildProjectDirectory");
 			var projectName = context.GetMSBuildPropertyValue("MSBuildProjectName");
@@ -67,7 +67,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private void DumpMSBuildItems(string basePath, XamlSourceContext context)
+		private static void DumpMSBuildItems(string basePath, XamlSourceContext context)
 		{
 			var items =
 				context
@@ -80,7 +80,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			File.WriteAllLines(Path.Combine(basePath, "MSBuildItems.txt"), items);
 		}
 
-		private void DumpGeneratedSourceFiles(string sourcesPath, List<KeyValuePair<string, SourceText>> generatedSources)
+		private static void DumpGeneratedSourceFiles(string sourcesPath, List<KeyValuePair<string, SourceText>> generatedSources)
 		{
 			foreach (var sourceFile in generatedSources)
 			{

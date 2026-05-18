@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -41,13 +42,26 @@ namespace Uno.Roslyn
 	/// </summary>
 	public class MSBuildItem
 	{
-		private readonly GeneratorExecutionContext Context;
+		private readonly GeneratorExecutionContext? _context;
+		private readonly Func<string, string>? _metadataLookup;
 		private static MSBuildItemIdentityComparer? _identityComparer;
 
 		internal MSBuildItem(AdditionalText file, GeneratorExecutionContext context)
 		{
 			File = file;
-			Context = context;
+			_context = context;
+		}
+
+		/// <summary>
+		/// Creates an MSBuildItem backed by a metadata lookup delegate.
+		/// Used by the incremental generator pipeline, where metadata is resolved
+		/// against an <see cref="Microsoft.CodeAnalysis.Diagnostics.AnalyzerConfigOptionsProvider"/>
+		/// instead of a <see cref="GeneratorExecutionContext"/>.
+		/// </summary>
+		public MSBuildItem(AdditionalText file, Func<string, string> metadataLookup)
+		{
+			File = file;
+			_metadataLookup = metadataLookup;
 		}
 
 		/// <summary>
@@ -64,7 +78,13 @@ namespace Uno.Roslyn
 		/// <returns>The metadata value</returns>
 		public string GetMetadataValue(string name)
 		{
-			Context.TryGetOptionValue(File, "build_metadata.AdditionalFiles." + name, out var metadataValue);
+			if (_metadataLookup is not null)
+			{
+				var value = _metadataLookup(name);
+				return string.IsNullOrEmpty(value) ? "" : value;
+			}
+
+			_context!.Value.TryGetOptionValue(File, "build_metadata.AdditionalFiles." + name, out var metadataValue);
 
 			return string.IsNullOrEmpty(metadataValue) ? "" : metadataValue!;
 		}

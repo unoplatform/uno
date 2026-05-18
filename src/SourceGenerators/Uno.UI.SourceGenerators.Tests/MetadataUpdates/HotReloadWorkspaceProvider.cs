@@ -216,7 +216,7 @@ internal class HotReloadWorkspace
 		var unoReferences = UnoAssemblyHelper.LoadAssemblies();
 		var references = Enumerable.Concat(unoReferences, frameworkReferences);
 
-		var generatorReference = new MyGeneratorReference([new XamlGenerator.XamlCodeGenerator()]);
+		var generatorReference = new MyGeneratorReference([new XamlGenerator.XamlCodeGenerator().AsSourceGenerator()]);
 
 		FillProjectsFromFiles();
 

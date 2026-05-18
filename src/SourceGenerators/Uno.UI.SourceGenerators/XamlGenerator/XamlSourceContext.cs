@@ -2,8 +2,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 using System.Threading;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Uno.Roslyn;
 
@@ -77,6 +80,53 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				additionalFiles: () => context.AdditionalFiles,
 				reportDiagnostic: context.ReportDiagnostic,
 				addSource: (hint, text) => context.AddSource(hint, text));
+		}
+
+		/// <summary>
+		/// Builds a <see cref="XamlSourceContext"/> backed by an <see cref="IIncrementalGenerator"/>
+		/// pipeline. MSBuild properties and per-file metadata are looked up against the
+		/// <see cref="AnalyzerConfigOptionsProvider"/>; <see cref="ReportDiagnostic"/> and
+		/// <see cref="AddSource"/> are routed onto a <see cref="SourceProductionContext"/>.
+		/// </summary>
+		public static XamlSourceContext FromIncrementalInputs(
+			Compilation compilation,
+			CancellationToken cancellationToken,
+			ImmutableArray<AdditionalText> additionalFiles,
+			AnalyzerConfigOptionsProvider optionsProvider,
+			Action<Diagnostic> reportDiagnostic,
+			Action<string, SourceText> addSource)
+		{
+			string LookupProperty(string name)
+			{
+				optionsProvider.GlobalOptions.TryGetValue("build_property." + name, out var value);
+				return value ?? "";
+			}
+
+			IEnumerable<MSBuildItem> LookupItems(string sourceItemGroup)
+			{
+				foreach (var file in additionalFiles)
+				{
+					var options = optionsProvider.GetOptions(file);
+					if (options.TryGetValue("build_metadata.AdditionalFiles.SourceItemGroup", out var group)
+						&& group == sourceItemGroup)
+					{
+						yield return new MSBuildItem(file, name =>
+						{
+							optionsProvider.GetOptions(file).TryGetValue("build_metadata.AdditionalFiles." + name, out var v);
+							return v ?? "";
+						});
+					}
+				}
+			}
+
+			return new XamlSourceContext(
+				compilation: compilation,
+				cancellationToken: cancellationToken,
+				propertyLookup: LookupProperty,
+				itemsLookup: LookupItems,
+				additionalFiles: () => additionalFiles,
+				reportDiagnostic: reportDiagnostic,
+				addSource: addSource);
 		}
 	}
 }
