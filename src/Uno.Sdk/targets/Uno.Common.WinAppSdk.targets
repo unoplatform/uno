@@ -81,11 +81,11 @@
 		This ItemGroup is the WinAppSDK-side equivalent: it includes the platform folder content
 		that the cross-platform Uno.DefaultItems globs would have picked up on other TFMs.
 	-->
-	<ItemGroup Condition=" '$(EnableDefaultUnoWindowsItems)' != 'false'
+	<ItemGroup Condition=" '$(EnableDefaultUnoItems)' == 'true'
 	                       AND '$(WindowsProjectFolder)' != ''
 	                       AND Exists('$(WindowsProjectFolder)') ">
 		<Content Include="$(WindowsProjectFolder)**\*.*"
-		         Exclude="$(WindowsProjectFolder)**\*.cs;$(WindowsProjectFolder)**\*.xaml;$(WindowsProjectFolder)**\*.resw;$(WindowsProjectFolder)**\*.appxmanifest;$(WindowsProjectFolder)app.manifest;$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);@(Content)"
+		         Exclude="$(WindowsProjectFolder)**\*.cs;$(WindowsProjectFolder)**\*.xaml;$(WindowsProjectFolder)**\*.resw;$(WindowsProjectFolder)**\*.appxmanifest;$(WindowsProjectFolder)app.manifest;$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);@(Content);@(Page);@(ApplicationDefinition);@(EmbeddedResource);@(None);@(UnoImage);@(UnoIcon);@(UnoSplashScreen);@(UnoAsset)"
 		         CopyToOutputDirectory="PreserveNewest"
 		         IsDefaultItem="true" />
 	</ItemGroup>
