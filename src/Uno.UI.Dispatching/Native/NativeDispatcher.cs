@@ -44,6 +44,13 @@ namespace Uno.UI.Dispatching
 
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
+		/// <summary>
+		/// When <c>true</c>, the dispatcher does not catch exceptions thrown by work items —
+		/// they propagate to the platform message pump (matching WinUI behavior).
+		/// Wired from <c>FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher</c>.
+		/// </summary>
+		internal static bool PropagateUnhandledExceptions { get; set; }
+
 		private NativeDispatcher()
 		{
 			Debug.Assert(
@@ -134,6 +141,15 @@ namespace Uno.UI.Dispatching
 		{
 			if (action != null)
 			{
+				if (PropagateUnhandledExceptions)
+				{
+					using (dispatcher.SynchronizationContext.Apply())
+					{
+						action();
+					}
+					return;
+				}
+
 				try
 				{
 					using (dispatcher.SynchronizationContext.Apply())
