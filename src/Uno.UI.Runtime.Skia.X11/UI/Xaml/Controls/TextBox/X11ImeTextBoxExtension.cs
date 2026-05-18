@@ -234,11 +234,11 @@ internal sealed class X11ImeTextBoxExtension : IImeTextBoxExtension
 	}
 
 	/// <summary>
-	/// Computes and sends the cursor location from the given TextBox to the D-Bus IME.
-	/// Called during <see cref="StartImeSession"/> to ensure the candidate window
-	/// is positioned correctly before the first keystroke.
+	/// Computes and sends the caret location to the active IME so its candidate window
+	/// tracks the caret. For the D-Bus path, applies it immediately. For the XIM fallback,
+	/// stores it for the event thread to flush via <see cref="FlushPendingSpotLocation"/>.
 	/// </summary>
-	private void UpdateSpotLocationFromTextBox(TextBox textBox)
+	internal void UpdateSpotLocationFromTextBox(TextBox textBox)
 	{
 		var textBoxView = textBox.TextBoxView;
 		if (textBoxView?.DisplayBlock?.ParsedText is null || textBox.XamlRoot is null)
@@ -249,29 +249,45 @@ internal sealed class X11ImeTextBoxExtension : IImeTextBoxExtension
 		var index = textBox.IsBackwardSelection ? textBox.SelectionStart : textBox.SelectionStart + textBox.SelectionLength;
 		var rect = textBoxView.DisplayBlock.ParsedText.GetRectForIndex(index);
 		var transform = textBoxView.DisplayBlock.TransformToVisual(null);
-		var point = transform.TransformPoint(new Windows.Foundation.Point(rect.Left, rect.Top + rect.Height));
+		var topLeft = transform.TransformPoint(new Windows.Foundation.Point(rect.Left, rect.Top));
 		var scale = textBox.XamlRoot.RasterizationScale;
 
-		UpdateSpotLocation((int)(point.X * scale), (int)(point.Y * scale));
-	}
+		var x = (int)(topLeft.X * scale);
+		var y = (int)(topLeft.Y * scale);
+		var height = (int)(rect.Height * scale);
 
-	/// <summary>
-	/// Stores the desired spot location. When D-Bus IME is active, updates the cursor
-	/// location directly. For XIM fallback, the actual XSetICValues call is deferred
-	/// to the event thread via <see cref="FlushPendingSpotLocation"/>.
-	/// </summary>
-	internal void UpdateSpotLocation(int x, int y)
-	{
 		if (_dbusIme?.IsEnabled == true)
 		{
-			// D-Bus IME: update cursor location directly (thread-safe D-Bus call)
-			_dbusIme.SetCursorLocation(x, y, 1, 20);
+			// IBus/Fcitx SetCursorLocation expects coordinates in absolute root-window
+			// (screen) pixels, while the values above are window-local. Translate through
+			// the X server so the popup lines up with the actual content area (not the WM
+			// decoration frame).
+			var screenX = x;
+			var screenY = y;
+			if (_currentDisplay != IntPtr.Zero && _currentWindow != IntPtr.Zero)
+			{
+				using (X11Helper.XLock(_currentDisplay))
+				{
+					var root = XLib.XDefaultRootWindow(_currentDisplay);
+					_ = XLib.XTranslateCoordinates(
+						_currentDisplay, _currentWindow, root,
+						x, y,
+						out screenX, out screenY,
+						out _);
+				}
+			}
+
+			// IBus/Fcitx treat (x, y, w, h) as the caret rect and place the candidate
+			// popup at (x, y + h). Passing the caret top + line height anchors the popup
+			// at the line's bottom — flush below the text the user is composing.
+			_dbusIme.SetCursorLocation(screenX, screenY, 1, Math.Max(1, height));
 			return;
 		}
 
 		// XIM fallback: defer to event thread. Clamp to short range for XPoint struct.
+		// XIM XNSpotLocation is the bottom-left of the preedit, so add the height.
 		_pendingSpotX = (short)Math.Clamp(x, short.MinValue, short.MaxValue);
-		_pendingSpotY = (short)Math.Clamp(y, short.MinValue, short.MaxValue);
+		_pendingSpotY = (short)Math.Clamp(y + height, short.MinValue, short.MaxValue);
 		_spotLocationPending = true;
 	}
 
