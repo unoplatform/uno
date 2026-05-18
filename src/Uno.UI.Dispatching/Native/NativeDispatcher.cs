@@ -47,7 +47,7 @@ namespace Uno.UI.Dispatching
 		/// <summary>
 		/// When <c>true</c>, the dispatcher does not catch exceptions thrown by work items —
 		/// they propagate to the platform message pump (matching WinUI behavior).
-		/// Wired from <c>FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher</c>.
+		/// Wired from <c>FeatureConfiguration.UnhandledExceptionHandling.PropagateDispatcherExceptions</c>.
 		/// </summary>
 		internal static bool PropagateUnhandledExceptions { get; set; }
 

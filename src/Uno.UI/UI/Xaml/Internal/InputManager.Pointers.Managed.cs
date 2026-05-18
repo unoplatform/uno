@@ -191,7 +191,7 @@ internal partial class InputManager
 				}
 			}
 
-			if (FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher)
+			if (FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions)
 			{
 				Application.Current.RaiseUnhandledExceptionOrThrow(error, this);
 			}

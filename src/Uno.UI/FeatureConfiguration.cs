@@ -1169,27 +1169,33 @@ namespace Uno.UI
 
 		public static class UnhandledExceptionHandling
 		{
-			private static bool _shouldPropagateFromInputAndDispatcher;
-
 			/// <summary>
-			/// When <c>true</c>, exceptions thrown by pointer-input event raising or by dispatcher
-			/// work items will surface through <see cref="Application.UnhandledException"/>; if the
-			/// app does not mark <c>Handled = true</c>, the exception propagates (matching WinUI's
-			/// fail-fast behavior on unhandled errors). When <c>false</c> (default), the legacy
-			/// behavior is preserved: such exceptions are caught and logged.
+			/// When <c>true</c>, exceptions thrown during pointer-input event raising surface
+			/// through <see cref="Application.UnhandledException"/>; if the app does not mark
+			/// <c>Handled = true</c>, the exception propagates (matching WinUI's fail-fast
+			/// behavior on unhandled errors). When <c>false</c> (default), the legacy behavior
+			/// is preserved: such exceptions are caught and logged.
 			/// </summary>
 			/// <remarks>
 			/// Recommended for development to surface latent crashes that today look like input
 			/// no-ops. This default may change in a future Uno Platform release.
 			/// </remarks>
-			public static bool ShouldPropagateFromInputAndDispatcher
+			public static bool PropagateInputExceptions { get; set; }
+
+			/// <summary>
+			/// When <c>true</c>, exceptions thrown by dispatcher work items propagate to the
+			/// platform message pump (matching WinUI's <c>DispatcherQueue</c>, which fail-fasts
+			/// on unhandled errors). When <c>false</c> (default), the dispatcher catches and
+			/// logs the exception.
+			/// </summary>
+			/// <remarks>
+			/// Recommended for development to surface latent crashes that today silently break
+			/// scheduled work. This default may change in a future Uno Platform release.
+			/// </remarks>
+			public static bool PropagateDispatcherExceptions
 			{
-				get => _shouldPropagateFromInputAndDispatcher;
-				set
-				{
-					_shouldPropagateFromInputAndDispatcher = value;
-					global::Uno.UI.Dispatching.NativeDispatcher.PropagateUnhandledExceptions = value;
-				}
+				get => global::Uno.UI.Dispatching.NativeDispatcher.PropagateUnhandledExceptions;
+				set => global::Uno.UI.Dispatching.NativeDispatcher.PropagateUnhandledExceptions = value;
 			}
 		}
 

@@ -1378,7 +1378,7 @@ namespace Microsoft.UI.Xaml
 					}
 					catch (Exception e)
 					{
-						if (Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher)
+						if (Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions)
 						{
 							Application.Current.RaiseUnhandledExceptionOrThrow(e, this);
 							// Reached only when an UnhandledException handler set Handled = true.

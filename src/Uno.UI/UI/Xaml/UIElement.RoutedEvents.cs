@@ -612,15 +612,9 @@ namespace Microsoft.UI.Xaml
 			{
 				return RaiseEvent(routedEvent, args, ctx);
 			}
-			catch (global::Microsoft.UI.Xaml.Markup.XamlParseException)
-			{
-				// XAML parse failures opted into by ThrowOnUnresolvedResource are intentional
-				// and must propagate, independently of the input-exception flag.
-				throw;
-			}
 			catch (Exception e)
 			{
-				if (Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher)
+				if (Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions)
 				{
 					Application.Current.RaiseUnhandledExceptionOrThrow(e, this);
 					// Reached only when an UnhandledException handler set Handled = true.
@@ -643,13 +637,9 @@ namespace Microsoft.UI.Xaml
 				RaiseTunnelingEvent(routedEvent, args);
 				return true;
 			}
-			catch (global::Microsoft.UI.Xaml.Markup.XamlParseException)
-			{
-				throw;
-			}
 			catch (Exception e)
 			{
-				if (Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher)
+				if (Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions)
 				{
 					Application.Current.RaiseUnhandledExceptionOrThrow(e, this);
 					// Reached only when an UnhandledException handler set Handled = true.
