@@ -18,7 +18,7 @@ dotnet tool restore
 dotnet xstyler -d src/SamplesApp -r
 
 # Format a single file
-dotnet xstyler -f src/SamplesApp/UITests.Shared/MyFile.xaml
+dotnet xstyler -f src/SamplesApp/SamplesApp.Samples/MyFile.xaml
 
 # Check without modifying (CI mode)
 dotnet xstyler -d src/SamplesApp -r -p

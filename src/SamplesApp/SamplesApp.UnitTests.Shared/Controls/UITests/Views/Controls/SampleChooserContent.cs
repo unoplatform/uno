@@ -30,7 +30,7 @@ namespace SampleControl.Entities
 		public string SourceFilePath { get; set; }
 
 		public string GitHubSourceUrl => SourceFilePath is { Length: > 0 }
-			? $"https://github.com/unoplatform/uno/blob/master/src/SamplesApp/UITests.Shared/{SourceFilePath}"
+			? $"https://github.com/unoplatform/uno/blob/master/src/SamplesApp/SamplesApp.Samples/{SourceFilePath}"
 			: null;
 
 		bool _isFavorite;

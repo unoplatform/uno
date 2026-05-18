@@ -64,7 +64,7 @@
 		</Compile>
 	</ItemGroup>
 
-	<Import Project="..\SourceGeneratorHelpers\SourceGeneratorHelpers.projitems" Label="Shared" />
+	<Import Project="..\SourceGeneratorHelpers\SourceGeneratorHelpers.props" />
 
 	<ItemGroup>
 		<None Include="Content\Uno.UI.SourceGenerators.props" />
