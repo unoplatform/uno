@@ -1,6 +1,8 @@
-﻿using System;
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference TitleBar.cpp, commit 5f9e85113
+
 using System.Collections.Generic;
-using System.Text;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Automation;
@@ -16,6 +18,10 @@ partial class TitleBar
 {
 	public TitleBar()
 	{
+		//TITLEBAR_TRACE_INFO(nullptr, TRACE_MSG_METH, METH_NAME, this);
+
+		//__RP_Marker_ClassById(RuntimeProfiler::ProfId_TitleBar);
+
 		SetValue(TemplateSettingsProperty, new TitleBarTemplateSettings());
 
 		this.SetDefaultStyleKey();
@@ -28,26 +34,30 @@ partial class TitleBar
 			OnFlowDirectionChanged);
 	}
 
-	//TitleBar::~TitleBar()
-	//{
-	//	TITLEBAR_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
-
-	//	m_sizeChangedRevoker.revoke();
-	//	m_flowDirectionChangedRevoker.revoke();
-
-	//	if (m_inputActivationChangedToken.value)
-	//	{
-	//		m_inputActivationListener.InputActivationChanged(m_inputActivationChangedToken);
-	//		m_inputActivationChangedToken.value = 0;
-	//	}
-	//}
+	// TODO Uno: Original C++ destructor cleanup. Uno does not support cleanup via finalizers.
+	// Move this logic into Loaded/Unloaded event handlers or other lifecycle methods to avoid leaks.
+	//
+	// TitleBar::~TitleBar()
+	// {
+	//     TITLEBAR_TRACE_INFO(nullptr, TRACE_MSG_METH, METH_NAME, this);
+	//
+	//     m_sizeChangedRevoker.revoke();
+	//     m_flowDirectionChangedRevoker.revoke();
+	//
+	//     if (m_inputActivationChangedToken.value)
+	//     {
+	//         m_inputActivationListener.InputActivationChanged(m_inputActivationChangedToken);
+	//         m_inputActivationChangedToken.value = 0;
+	//     }
+	// }
 
 	protected override AutomationPeer OnCreateAutomationPeer() =>
 		new TitleBarAutomationPeer(this);
 
-
 	protected override void OnApplyTemplate()
 	{
+		//TITLEBAR_TRACE_INFO(*this, TRACE_MSG_METH, METH_NAME, this);
+
 		base.OnApplyTemplate();
 
 		m_leftPaddingColumn = GetTemplateChild<ColumnDefinition>(s_leftPaddingColumnName);
@@ -122,11 +132,17 @@ partial class TitleBar
 		UpdateIconRegion();
 	}
 
-	private void GoToState(string stateName, bool useTransitions) =>
+	private void GoToState(string stateName, bool useTransitions)
+	{
+		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH_STR_INT, METH_NAME, this, stateName.data(), useTransitions);
+
 		VisualStateManager.GoToState(this, stateName, useTransitions);
+	}
 
 	private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 	{
+		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
 		if (Content != null)
 		{
 			var contentArea = m_contentArea;
@@ -134,7 +150,7 @@ partial class TitleBar
 
 			if (contentArea is not null && contentAreaGrid is not null)
 			{
-				if (m_compactModeThresholdWidth != 0 && contentArea.DesiredSize.Width >= contentAreaGrid.ActualWidth)
+				if (m_compactModeThresholdWidth == 0.0 && contentArea.DesiredSize.Width >= contentAreaGrid.ActualWidth)
 				{
 					m_compactModeThresholdWidth = args.NewSize.Width;
 					m_isCompact = true;
@@ -155,12 +171,18 @@ partial class TitleBar
 		UpdateIconRegion();
 	}
 
-	private void OnFlowDirectionChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args) =>
+	private void OnFlowDirectionChanged(DependencyObject sender, DependencyProperty args)
+	{
+		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
 		UpdatePadding();
+	}
 
 	private void OnInputActivationChanged(InputActivationListener sender, InputActivationListenerActivationChangedEventArgs args)
 	{
 		bool isDeactivated = sender.State == InputActivationState.Deactivated;
+
+		//TITLEBAR_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR_INT, METH_NAME, this, L"isDeactivated:", isDeactivated);
 
 		if (IsBackButtonVisible && IsBackButtonEnabled)
 		{
@@ -211,17 +233,31 @@ partial class TitleBar
 		UpdateIconRegion();
 	}
 
-	private void OnWindowRectChanged(InputNonClientPointerSource sender, WindowRectChangedEventArgs args) =>
+	private void OnWindowRectChanged(InputNonClientPointerSource sender, WindowRectChangedEventArgs args)
+	{
+		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
 		UpdateIconRegion();
+	}
 
-	private void OnBackButtonClick(object sender, RoutedEventArgs args) =>
+	private void OnBackButtonClick(object sender, RoutedEventArgs args)
+	{
+		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
 		BackRequested?.Invoke(this, null);
+	}
 
-	private void OnPaneToggleButtonClick(object sender, RoutedEventArgs args) =>
+	private void OnPaneToggleButtonClick(object sender, RoutedEventArgs args)
+	{
+		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
 		PaneToggleRequested?.Invoke(this, null);
+	}
 
 	private void UpdateIcon()
 	{
+		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
 		var templateSettings = TemplateSettings;
 		if (IconSource is { } source)
 		{
@@ -273,11 +309,17 @@ partial class TitleBar
 		UpdateIconRegion();
 	}
 
-	private void OnIconLayoutUpdated(object sender, object args) =>
+	private void OnIconLayoutUpdated(object sender, object args)
+	{
+		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
 		UpdateIconRegion();
+	}
 
 	private void UpdateBackButton()
 	{
+		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
 		if (IsBackButtonVisible)
 		{
 			if (m_backButton is null)
@@ -298,6 +340,8 @@ partial class TitleBar
 
 	private void UpdatePaneToggleButton()
 	{
+		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
 		if (IsPaneToggleButtonVisible)
 		{
 			if (m_paneToggleButton is null)
@@ -318,6 +362,8 @@ partial class TitleBar
 
 	private void UpdateHeight()
 	{
+		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
 		GoToState((Content == null && LeftHeader == null && RightHeader == null) ?
 			s_compactHeightVisualStateName : s_expandedHeightVisualStateName,
 			false);
@@ -325,6 +371,8 @@ partial class TitleBar
 
 	private void UpdatePadding()
 	{
+		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
 		var appWindowId = GetAppWindowId();
 
 		if (appWindowId.Value != 0)
@@ -333,26 +381,31 @@ partial class TitleBar
 
 			// TODO 50724421: Bind to appTitleBar Left and Right inset changed event.
 			if (appWindow.TitleBar is { } appTitleBar)
-
 			{
 				if (m_leftPaddingColumn is { } leftColumn)
-
 				{
 					var leftColumnInset =
 						FlowDirection == FlowDirection.LeftToRight ?
 						appTitleBar.LeftInset :
 						appTitleBar.RightInset;
 
+					//TITLEBAR_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR_INT, METH_NAME, this,
+					//    L"LeftColumn width:",
+					//    leftColumnInset);
+
 					leftColumn.Width = GridLengthHelper.FromPixels(leftColumnInset);
 				}
 
 				if (m_rightPaddingColumn is { } rightColumn)
-
 				{
 					var rightColumnInset =
 						FlowDirection == FlowDirection.LeftToRight ?
 						appTitleBar.RightInset :
 						appTitleBar.LeftInset;
+
+					//TITLEBAR_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR_INT, METH_NAME, this,
+					//    L"RightColumn width:",
+					//    rightColumnInset);
 
 					rightColumn.Width = GridLengthHelper.FromPixels(rightColumnInset);
 				}
@@ -363,6 +416,8 @@ partial class TitleBar
 	private void UpdateTitle()
 	{
 		var titleText = Title;
+
+		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH_STR, METH_NAME, this, titleText.c_str());
 
 		if (string.IsNullOrEmpty(titleText))
 		{
@@ -378,6 +433,8 @@ partial class TitleBar
 	{
 		var subTitleText = Subtitle;
 
+		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH_STR, METH_NAME, this, subTitleText.c_str());
+
 		if (string.IsNullOrEmpty(subTitleText))
 		{
 			GoToState(s_subtitleTextCollapsedVisualStateName, false);
@@ -390,6 +447,8 @@ partial class TitleBar
 
 	private void UpdateLeftHeader()
 	{
+		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
 		if (LeftHeader == null)
 		{
 			GoToState(s_leftHeaderCollapsedVisualStateName, false);
@@ -409,6 +468,8 @@ partial class TitleBar
 
 	private void UpdateContent()
 	{
+		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
 		if (Content == null)
 		{
 			GoToState(s_contentCollapsedVisualStateName, false);
@@ -430,6 +491,8 @@ partial class TitleBar
 
 	private void UpdateRightHeader()
 	{
+		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
 		if (RightHeader == null)
 		{
 			GoToState(s_rightHeaderCollapsedVisualStateName, false);
@@ -455,8 +518,8 @@ partial class TitleBar
 		var bounds = transformBounds.TransformBounds(new Rect(
 			0.0f,
 			0.0f,
-			width,
-			height));
+			(float)width,
+			(float)height));
 
 		var scale = XamlRoot.RasterizationScale;
 		var returnRect = new RectInt32(
@@ -465,16 +528,21 @@ partial class TitleBar
 			(int)(bounds.Width * scale),
 			(int)(bounds.Height * scale));
 
+		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH_STR_STR,
+		//    METH_NAME, this,
+		//    element.Name().c_str(),
+		//    TypeLogging::RectInt32ToString(returnRect).c_str());
+
 		return returnRect;
 	}
 
 	// Once TitleBar control is set as the Window titlebar in developer codebehind, the entire region's input is marked as non-client
-	// and becomes non interactable. We need to punch out a hole for each interactable region in TitleBar. 
+	// and becomes non interactable. We need to punch out a hole for each interactable region in TitleBar.
 	private void UpdateDragRegion()
 	{
 		if (GetInputNonClientPointerSource() is { } nonClientPointerSource)
 		{
-			if (m_interactableElementsList.Count > 0)
+			if (m_interactableElementsList.Count != 0)
 			{
 				List<RectInt32> passthroughRects = new();
 
@@ -489,11 +557,15 @@ partial class TitleBar
 					}
 				}
 
+				//TITLEBAR_TRACE_VERBOSE_DBG(*this, L"%s[0x%p](SetRegionRects - Size: %d)\n", METH_NAME, this, passthroughRects.size());
+
 				// Set list of rects as passthrough regions for the non-client area.
 				nonClientPointerSource.SetRegionRects(NonClientRegionKind.Passthrough, passthroughRects.ToArray());
 			}
 			else
 			{
+				//TITLEBAR_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR, METH_NAME, this, L"Clear Passthrough RegionRects");
+
 				// There is no interactable areas. Clear previous passthrough rects.
 				nonClientPointerSource.ClearRegionRects(NonClientRegionKind.Passthrough);
 			}
@@ -504,10 +576,9 @@ partial class TitleBar
 	{
 		if (GetInputNonClientPointerSource() is { } nonClientPointerSource)
 		{
-			if (IconSource is not null)
+			if (IconSource != null)
 			{
 				if (m_iconViewbox is { } iconViewbox)
-
 				{
 					List<RectInt32> iconRects = new();
 
@@ -518,11 +589,15 @@ partial class TitleBar
 						iconRects.Add(iconRect);
 					}
 
+					//TITLEBAR_TRACE_VERBOSE_DBG(*this, L"%s[0x%p](Set Icon RegionRects)\n", METH_NAME, this);
+
 					nonClientPointerSource.SetRegionRects(NonClientRegionKind.Icon, iconRects.ToArray());
 				}
 			}
 			else
 			{
+				//TITLEBAR_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR, METH_NAME, this, L"Clear Icon RegionRects");
+
 				nonClientPointerSource.ClearRegionRects(NonClientRegionKind.Icon);
 			}
 		}
@@ -536,6 +611,8 @@ partial class TitleBar
 		{
 			if (m_backButton is { } backButton)
 			{
+				//TITLEBAR_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR, METH_NAME, this, L"Append backButton to m_interactableElementsList");
+
 				m_interactableElementsList.Add(backButton);
 			}
 		}
@@ -544,6 +621,8 @@ partial class TitleBar
 		{
 			if (m_paneToggleButton is { } paneToggleButton)
 			{
+				//TITLEBAR_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR, METH_NAME, this, L"Append paneToggleButton to m_interactableElementsList");
+
 				m_interactableElementsList.Add(paneToggleButton);
 			}
 		}
@@ -552,6 +631,8 @@ partial class TitleBar
 		{
 			if (m_leftHeaderArea is { } leftHeaderArea)
 			{
+				//TITLEBAR_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR, METH_NAME, this, L"Append headerArea to m_interactableElementsList");
+
 				m_interactableElementsList.Add(leftHeaderArea);
 			}
 		}
@@ -560,6 +641,8 @@ partial class TitleBar
 		{
 			if (m_contentArea is { } contentArea)
 			{
+				//TITLEBAR_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR, METH_NAME, this, L"Append contentArea to m_interactableElementsList");
+
 				m_interactableElementsList.Add(contentArea);
 			}
 		}
@@ -568,13 +651,21 @@ partial class TitleBar
 		{
 			if (m_rightHeaderArea is { } rightHeaderArea)
 			{
+				//TITLEBAR_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR, METH_NAME, this, L"Append footerArea to m_interactableElementsList");
+
 				m_interactableElementsList.Add(rightHeaderArea);
 			}
 		}
+
+		//TITLEBAR_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR_INT, METH_NAME, this,
+		//    L"m_interactableElementsList Size:",
+		//    m_interactableElementsList.size());
 	}
 
 	private void UpdateLeftHeaderSpacing()
 	{
+		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
 		GoToState(
 			IsBackButtonVisible == IsPaneToggleButtonVisible ?
 			s_defaultSpacingVisualStateName : s_negativeInsetVisualStateName,
@@ -583,6 +674,8 @@ partial class TitleBar
 
 	private void LoadBackButton()
 	{
+		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
 		m_backButton = GetTemplateChild<Button>(s_backButtonPartName);
 
 		if (m_backButton is { } backButton)
@@ -607,6 +700,8 @@ partial class TitleBar
 
 	private void LoadPaneToggleButton()
 	{
+		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
 		m_paneToggleButton = GetTemplateChild<Button>(s_paneToggleButtonPartName);
 
 		if (m_paneToggleButton is { } paneToggleButton)

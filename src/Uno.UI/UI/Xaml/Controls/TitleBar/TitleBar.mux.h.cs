@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference TitleBar.h, commit 5f9e85113
+
+using System.Collections.Generic;
 using Microsoft.UI.Input;
 using Uno.Disposables;
 
@@ -34,7 +38,7 @@ partial class TitleBar
 
 	private const string s_leftPaddingColumnName = "LeftPaddingColumn";
 	private const string s_rightPaddingColumnName = "RightPaddingColumn";
-	//private const string s_layoutRootPartName = "PART_LayoutRoot";
+	private const string s_layoutRootPartName = "PART_LayoutRoot";
 	private const string s_backButtonPartName = "PART_BackButton";
 	private const string s_paneToggleButtonPartName = "PART_PaneToggleButton";
 	private const string s_iconViewboxPartName = "PART_Icon";
