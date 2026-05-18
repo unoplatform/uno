@@ -98,6 +98,19 @@
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Server\Uno.UI.RemoteControl.Server.csproj" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Server.Processors\Uno.UI.RemoteControl.Server.Processors.csproj" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\Uno.UI.RemoteControl.TestProcessor\Uno.UI.RemoteControl.TestProcessor.csproj" ReferenceOutputAssembly="false" />
+
+		<!--
+			Add-in test fixture, intentionally net8.0 and referenced only so CI
+			restore picks it up. The fixture's compile graph stays decoupled
+			from this project (Fixtures\** is removed from default globs above)
+			and the actual build + output staging is driven by the
+			_BuildAndCopyAddInTestFixtures target below, not by this reference.
+		-->
+		<ProjectReference Include="Fixtures\AddInWithCrossMajorVersionRefs\AddInWithCrossMajorVersionRefs.csproj"
+		                  ReferenceOutputAssembly="false"
+		                  SkipGetTargetFrameworkProperties="true"
+		                  UndefineProperties="TargetFramework"
+		                  Private="false" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -122,15 +135,24 @@
 		         RemoveProperties="TargetFramework">
 			<Output TaskParameter="TargetOutputs" ItemName="_AddInTestFixtureOutput" />
 		</MSBuild>
+
+		<!--
+			Stage the *entire* fixture bin contents (not just the main DLL / PDB
+			/ deps.json) so the per-add-in AssemblyDependencyResolver branch in
+			AddInLoadContext.Load has a real graph to consult. EnableDynamicLoading
+			on the fixture also drops private NuGet payloads next to its main
+			DLL (e.g. Microsoft.Extensions.DependencyInjection.Abstractions.dll
+			v8.0.0.0); those need to ship to the test bin too, otherwise the
+			deps.json paths the resolver returns don't actually exist on disk
+			and step 3 of AddInLoadContext.Load can't serve add-in-private
+			assemblies.
+		-->
 		<ItemGroup>
-			<_AddInTestFixtureFiles Include="%(_AddInTestFixtureOutput.RootDir)%(_AddInTestFixtureOutput.Directory)%(_AddInTestFixtureOutput.Filename).dll" />
-			<_AddInTestFixtureFiles Include="%(_AddInTestFixtureOutput.RootDir)%(_AddInTestFixtureOutput.Directory)%(_AddInTestFixtureOutput.Filename).pdb" />
-			<_AddInTestFixtureFiles Include="%(_AddInTestFixtureOutput.RootDir)%(_AddInTestFixtureOutput.Directory)%(_AddInTestFixtureOutput.Filename).deps.json" />
+			<_AddInTestFixtureBinFiles Include="%(_AddInTestFixtureOutput.RootDir)%(_AddInTestFixtureOutput.Directory)**\*" />
 		</ItemGroup>
-		<Copy SourceFiles="@(_AddInTestFixtureFiles)"
-		      DestinationFolder="$(OutDir)Fixtures\AddInWithCrossMajorVersionRefs\"
-		      SkipUnchangedFiles="true"
-		      Condition="Exists('%(_AddInTestFixtureFiles.Identity)')" />
+		<Copy SourceFiles="@(_AddInTestFixtureBinFiles)"
+		      DestinationFolder="$(OutDir)Fixtures\AddInWithCrossMajorVersionRefs\%(RecursiveDir)"
+		      SkipUnchangedFiles="true" />
 	</Target>
 
 </Project>

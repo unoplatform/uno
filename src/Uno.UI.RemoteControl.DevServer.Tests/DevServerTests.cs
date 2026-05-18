@@ -103,17 +103,29 @@ public class DevServerTests
 
 	[TestMethod]
 	[Retry(2, MillisecondsDelayBetweenRetries = 1000)]
-	[Description("Regression for #23287: host must satisfy an add-in's older-major AssemblyRefs to shared-framework OOB packages (e.g. System.Text.Encodings.Web 8.0.0.0 in a net8.0 add-in) from its own newer-major loaded instance — without throwing FileNotFoundException during startup.")]
+	[Description("Regression for #23287: the host's add-in load pipeline must boot cleanly when an add-in carries older-major AssemblyRefs to shared-framework OOB packages (e.g. System.Text.Encodings.Web 8.0.0.0 in a net8.0 add-in) AND is activated through the [ServiceCollectionExtension] attribute scan that the host runs at startup.")]
 	public async Task DevServer_ShouldStart_WithAddInThatHasCrossMajorVersionFrameworkRefs()
 	{
 		// The fixture is built as a net8.0 class library that touches
-		// JavaScriptEncoder.Default in a static cctor (see
-		// Fixtures/AddInWithCrossMajorVersionRefs). Its compiled AssemblyRef to
-		// System.Text.Encodings.Web embeds at v8.0.0.0, which won't strict-match
-		// the v9/v10 the host has loaded from its shared framework. Without the
-		// AddInLoadContext + Default.Resolving bridging in
-		// Uno.UI.RemoteControl.Host this manifests as the original client crash
-		// (KiotaJsonSerializationContext..cctor → FNF Encodings.Web 8.0.0.0).
+		// JavaScriptEncoder.Default and IServiceCollection in a
+		// [ServiceCollectionExtension]-registered ctor (see
+		// Fixtures/AddInWithCrossMajorVersionRefs). The host's
+		// AddFromServiceExtensionAttributes invokes that ctor through
+		// Activator.CreateInstance, so the fixture's compiled v8.0.0.0
+		// AssemblyRefs are actually resolved — exercising the AddInLoadContext
+		// load path and the AssemblyLoadContext.Default.Resolving handler in
+		// Uno.UI.RemoteControl.Host rather than sitting dormant in metadata.
+		//
+		// This is a positive-outcome regression test: depending on the .NET
+		// runtime version, the binder may also successfully lax-bind these refs
+		// even without the host's fix, so a "must throw FileNotFoundException
+		// without the fix" assertion isn't deterministic across runtimes. The
+		// failure modes this catches are the ones that WOULD remain regardless
+		// of runtime laxness: a fatal crash in add-in load, the ctor never being
+		// invoked at all (broken attribute scan), or the host failing to reach
+		// the listening state. The end-to-end repro in
+		// D:\Dev\Uno-Pocs\DevServerLicensingRepro\ covers the real Kiota /
+		// Uno.Settings.DevServer path on a runtime that does still strict-bind.
 		var testAssemblyDir = Path.GetDirectoryName(typeof(DevServerTests).Assembly.Location)!;
 		var fixtureDll = Path.Combine(
 			testAssemblyDir,
@@ -122,7 +134,7 @@ public class DevServerTests
 			"AddInWithCrossMajorVersionRefs.dll");
 
 		File.Exists(fixtureDll).Should()
-			.BeTrue("test fixture DLL must be copied to test output by the _CopyAddInTestFixtures target");
+			.BeTrue("test fixture DLL must be copied to test output by the _BuildAndCopyAddInTestFixtures target");
 
 		await using var helper = new DevServerTestHelper(_logger);
 
@@ -134,13 +146,16 @@ public class DevServerTests
 			started.Should().BeTrue("dev server should start successfully with the cross-major-version add-in loaded");
 			helper.AssertRunning();
 			helper.AssertConsoleOutputContains("Now listening on:");
+			helper.AssertConsoleOutputContains("Loading add-in assembly");
 
-			// Frame the negative assertion by class-of-bug, not by today's specific
-			// stack — keeps the test relevant as host TFMs roll forward.
-			helper.ConsoleOutput
-				.Should().NotMatchRegex(
-					@"Unhandled exception[\s\S]*FileNotFoundException[\s\S]*System\.Text\.Encodings\.Web",
-					because: "host must bridge cross-major-version AssemblyRefs from add-ins via Default.Resolving instead of crashing");
+			// Runtime-stable assertion: a fatal CLR "Unhandled exception" banner
+			// terminates the process before "Now listening on:" is reached, so
+			// rather than substring-matching on the phrase (which could match a
+			// non-fatal logger message containing the literal text) we just
+			// confirm the host process is still alive and has actually reached
+			// the listening state. If the add-in load pipeline regresses in a
+			// way that crashes startup, this combination of asserts fails.
+			helper.IsRunning.Should().BeTrue("host process must still be alive after the listening-state log");
 		}
 		finally
 		{

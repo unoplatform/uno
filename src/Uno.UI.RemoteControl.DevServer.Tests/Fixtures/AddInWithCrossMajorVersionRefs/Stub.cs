@@ -1,27 +1,62 @@
+using System;
 using System.Text.Encodings.Web;
+using Microsoft.Extensions.DependencyInjection;
+using Uno.Utils.DependencyInjection;
 
-namespace Uno.UI.RemoteControl.DevServer.Tests.Fixtures.AddInWithCrossMajorVersionRefs;
+// The host's Uno.Utils.DependencyInjection.ServiceCollectionServiceExtensions
+// scans add-in assemblies for [ServiceCollectionExtension] by full type name
+// and calls Activator.CreateInstance(extension.Type, args: [services]) on
+// each registered type. Declaring this attribute makes the host actually
+// instantiate ServicesRegistration during startup, so the v8.0.0.0
+// AssemblyRefs compiled into this assembly (System.Text.Encodings.Web,
+// Microsoft.Extensions.DependencyInjection.Abstractions) actually get
+// resolved at runtime — exercising the AddInLoadContext load path and the
+// AssemblyLoadContext.Default.Resolving handler in Uno.UI.RemoteControl.Host
+// rather than sitting dormant in metadata.
+[assembly: ServiceCollectionExtension(typeof(ServicesRegistration))]
+
+namespace Uno.Utils.DependencyInjection;
 
 /// <summary>
-/// Stub type for the DevServer add-in load regression test fixture.
-/// Its static cctor touches <see cref="JavaScriptEncoder.Default"/> so that the
-/// compiled assembly carries an <c>AssemblyRef</c> to
-/// <c>System.Text.Encodings.Web</c> at the version matching this project's
-/// <c>TargetFramework</c> (net8.0 → v8.0.0.0). When the host loads this DLL as
-/// an add-in, that AssemblyRef must be satisfied by the host's already-loaded
-/// newer-major instance — exercising the bridging in
-/// <c>Uno.UI.RemoteControl.Host.Helpers.AddInLoadContext</c> and the
-/// <c>AssemblyLoadContext.Default.Resolving</c> handler.
+/// Activated by the host during add-in registration via the
+/// <c>[ServiceCollectionExtension]</c> attribute above. The ctor's
+/// <see cref="IServiceCollection"/> parameter and the
+/// <see cref="JavaScriptEncoder.Default"/> touch both go through this
+/// assembly's older-major <c>AssemblyRef</c>s, so the host's bridging in
+/// <c>AddInLoadContext</c> must hand back its already-loaded newer-major
+/// instances rather than letting the strict TPA binder throw
+/// <see cref="System.IO.FileNotFoundException"/>.
+/// <para>
+/// Note: depending on the .NET runtime version, the binder may also
+/// successfully lax-bind these refs even without the host's fix — the
+/// surrounding test asserts the *positive* outcome (host stays up and the
+/// add-in's ctor runs) rather than trying to deterministically reproduce
+/// the original strict-bind FNF, which depends on runtime-version-specific
+/// behaviour.
+/// </para>
 /// </summary>
-public static class Stub
+public sealed class ServicesRegistration
 {
-	static Stub()
+	public ServicesRegistration(IServiceCollection services)
 	{
-		// Force the runtime to resolve System.Text.Encodings.Web during type
-		// initialization, mirroring how Microsoft.Kiota.Serialization.Json's
-		// KiotaJsonSerializationContext..cctor triggers the original crash.
+		ArgumentNullException.ThrowIfNull(services);
+
+		// Force the runtime to resolve System.Text.Encodings.Web from this
+		// assembly's compiled v8.0.0.0 AssemblyRef — mirrors how Kiota's
+		// KiotaJsonSerializationContext..cctor triggers the original crash on
+		// hosts that strict-match the TPA version.
 		_ = JavaScriptEncoder.Default;
 	}
+}
 
-	public static string GetEncoderName() => JavaScriptEncoder.Default.GetType().FullName!;
+// The host's ServiceCollectionExtensionAttribute lives in the same
+// Uno.Utils.DependencyInjection namespace inside Uno.UI.RemoteControl.Host and
+// is matched by full type name through CustomAttributesData. Add-ins declare
+// their own copy under the same namespace+name so they don't have to take a
+// direct dependency on the host assembly. (Same convention as the
+// Uno.Settings.DevServer / Uno.UI.App.Mcp.Server add-ins ship today.)
+[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
+internal sealed class ServiceCollectionExtensionAttribute(Type type) : Attribute
+{
+	public Type Type { get; } = type;
 }

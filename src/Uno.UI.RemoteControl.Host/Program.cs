@@ -32,13 +32,14 @@ namespace Uno.UI.RemoteControl.Host
 	{
 		/// <summary>
 		/// Shared-framework OOB assemblies that the host eager-loads from the
-		/// apphost directory during static initialization. Anything in this list
-		/// must satisfy two properties: (a) the bundled DLL exists in the host's
-		/// output directory (i.e. the SDK doesn't strip it via PackageOverride),
-		/// and (b) the host's own dependency graph or the add-ins it loads can
-		/// realistically embed a cross-major-version AssemblyRef to it. Extend
-		/// here as additional offenders are identified (e.g. another OOB package
-		/// referenced by ModelContextProtocol or by future add-in payloads).
+		/// apphost directory from <see cref="ConfigureAssemblyResolution"/>.
+		/// Anything in this list must satisfy two properties: (a) the bundled
+		/// DLL exists in the host's output directory (i.e. the SDK doesn't strip
+		/// it via PackageOverride), and (b) the host's own dependency graph or
+		/// the add-ins it loads can realistically embed a cross-major-version
+		/// AssemblyRef to it. Extend here as additional offenders are identified
+		/// (e.g. another OOB package referenced by ModelContextProtocol or by
+		/// future add-in payloads).
 		/// </summary>
 		private static readonly string[] s_eagerLoadedSharedAssemblyDllNames =
 		{
@@ -46,7 +47,15 @@ namespace Uno.UI.RemoteControl.Host
 			"System.Text.Encodings.Web.dll",
 		};
 
-		static Program()
+		/// <summary>
+		/// Install the cross-major-version assembly-resolution safety net used
+		/// by both the host process and the add-ins it loads. Called from the
+		/// top of <see cref="Main"/> rather than from a static constructor so
+		/// any failure surfaces as a normal exception (logged via stderr below)
+		/// instead of being wrapped in <see cref="TypeInitializationException"/>
+		/// the first time <see cref="Program"/> is touched.
+		/// </summary>
+		private static void ConfigureAssemblyResolution()
 		{
 			// The host process targets a specific .NET runtime, but its NuGet
 			// dependency graph (e.g. ModelContextProtocol 1.1.0) and the add-ins
@@ -164,6 +173,12 @@ namespace Uno.UI.RemoteControl.Host
 
 		static async Task Main(string[] args)
 		{
+			// Must run before anything else in Main so the Resolving handler and
+			// the eager-loaded shared-framework OOB instances are in place before
+			// ASP.NET Core / Kestrel / add-in load triggers the first
+			// cross-major-version AssemblyRef lookup.
+			ConfigureAssemblyResolution();
+
 			var startTime = Stopwatch.GetTimestamp();
 
 			ITelemetry? telemetry = null;

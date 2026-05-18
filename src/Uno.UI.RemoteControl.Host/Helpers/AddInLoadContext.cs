@@ -49,12 +49,35 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 			//       the host has v9 or v10 loaded; returning the host's instance
 			//       directly satisfies the v8 ref within this ALC's lax
 			//       simple-name lookup.
+			// Skip IsDynamic candidates (reflection-emit / source-generator
+			// assemblies could have an auto-generated name that coincidentally
+			// matches a real AssemblyRef) and require PublicKeyToken
+			// compatibility — same identity-swap guard as the
+			// AssemblyLoadContext.Default.Resolving handler in Program.cs.
+			var requestedToken = assemblyName.GetPublicKeyToken();
 			foreach (var loaded in Default.Assemblies)
 			{
-				if (string.Equals(loaded.GetName().Name, name, StringComparison.OrdinalIgnoreCase))
+				if (loaded.IsDynamic)
 				{
-					return loaded;
+					continue;
 				}
+
+				var loadedName = loaded.GetName();
+				if (!string.Equals(loadedName.Name, name, StringComparison.OrdinalIgnoreCase))
+				{
+					continue;
+				}
+
+				if (requestedToken is { Length: > 0 })
+				{
+					var loadedToken = loadedName.GetPublicKeyToken();
+					if (loadedToken is null || !loadedToken.AsSpan().SequenceEqual(requestedToken))
+					{
+						continue;
+					}
+				}
+
+				return loaded;
 			}
 
 			// 2. The assembly isn't loaded yet in the default ALC, but the host's
