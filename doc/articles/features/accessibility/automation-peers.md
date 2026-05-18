@@ -22,7 +22,7 @@ On WASM, the ARIA role is derived from the `AutomationControlType` reported by t
 | `TextBox` | `TextBoxAutomationPeer` | `textbox` |
 | `PasswordBox` | `PasswordBoxAutomationPeer` | `textbox` (password) |
 | `ComboBox` | `ComboBoxAutomationPeer` | `combobox` |
-| `ToggleSwitch` | `ToggleSwitchAutomationPeer` | `button` (with `aria-pressed`) |
+| `ToggleSwitch` | `ToggleSwitchAutomationPeer` | `switch` (with `aria-checked`) |
 | `ToggleButton` | `ToggleButtonAutomationPeer` | `button` (with `aria-pressed`) |
 | `ListView` | `ListViewAutomationPeer` | `listbox` |
 | `ListViewItem` | `ListViewItemAutomationPeer` | `option` |
@@ -67,7 +67,9 @@ Each platform applies its own pruning strategy. For example, WASM prunes structu
 
 ## See also
 
-- [Accessibility overview](index.md)
-- [AutomationProperties reference](automation-properties.md)
-- [Role override](role-override.md)
+- [Accessibility overview](xref:Uno.Features.Accessibility)
+- [AutomationProperties reference](xref:Uno.Features.Accessibility.AutomationProperties)
+- [Role override](xref:Uno.Features.Accessibility.RoleOverride)
+- [Testing with screen readers](xref:Uno.Features.Accessibility.TestingWithScreenReaders)
+- [WASM Skia accessibility guide](xref:Uno.Features.Accessibility.WasmSkiaAccessibility)
 - [Custom automation peers (Microsoft Learn)](https://learn.microsoft.com/windows/apps/design/accessibility/custom-automation-peers)

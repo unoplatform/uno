@@ -11,7 +11,7 @@ This guide covers Uno-specific steps for verifying accessibility in your applica
 
 ## Enabling the accessibility layer (WASM)
 
-On WASM Skia targets, the accessibility layer activates when the user first presses the `Tab` key. An **"Enable accessibility"** button appears — activate it (click or press `Space`) before the full semantic tree becomes available.
+On WASM Skia targets, the accessibility layer activates when the user first presses the `Tab` key. A visually hidden **"Enable accessibility"** element becomes reachable via Tab or screen reader — activate it (click, `Enter`, or `Space`) before the full semantic tree becomes available.
 
 To activate manually from browser DevTools:
 
@@ -62,6 +62,9 @@ Inspect using browser DevTools:
 
 ## See also
 
-- [Accessibility overview](index.md)
-- [AutomationProperties reference](automation-properties.md)
+- [Accessibility overview](xref:Uno.Features.Accessibility)
+- [AutomationProperties reference](xref:Uno.Features.Accessibility.AutomationProperties)
+- [Custom automation peers](xref:Uno.Features.Accessibility.AutomationPeers)
+- [Role override](xref:Uno.Features.Accessibility.RoleOverride)
+- [WASM Skia accessibility guide](xref:Uno.Features.Accessibility.WasmSkiaAccessibility)
 - [Accessibility testing (Microsoft Learn)](https://learn.microsoft.com/windows/apps/design/accessibility/accessibility-testing)

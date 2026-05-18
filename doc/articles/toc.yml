@@ -603,6 +603,8 @@
             href: features/accessibility/role-override.md
           - name: Testing with screen readers
             href: features/accessibility/testing-with-screen-readers.md
+          - name: WASM accessibility with Skia
+            href: features/accessibility/wasm-skia-accessibility.md
         - name: Animations
           href: features/working-with-animations.md
         - name: Assets and image display
