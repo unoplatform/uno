@@ -23,11 +23,6 @@ namespace Uno.Roslyn
 
 		public string AssemblyName => Compilation.AssemblyName!;
 
-		public RoslynMetadataHelper(GeneratorExecutionContext context)
-			: this(context.Compilation)
-		{
-		}
-
 		public RoslynMetadataHelper(Compilation compilation)
 		{
 			Compilation = compilation;

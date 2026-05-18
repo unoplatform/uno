@@ -67,22 +67,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			=> _addSource(hintName, SourceText.From(source, System.Text.Encoding.UTF8));
 
 		/// <summary>
-		/// Builds a <see cref="XamlSourceContext"/> backed by the legacy
-		/// <see cref="GeneratorExecutionContext"/> execution path.
-		/// </summary>
-		public static XamlSourceContext FromGeneratorContext(GeneratorExecutionContext context)
-		{
-			return new XamlSourceContext(
-				compilation: context.Compilation,
-				cancellationToken: context.CancellationToken,
-				propertyLookup: name => context.GetMSBuildPropertyValue(name),
-				itemsLookup: name => context.GetMSBuildItemsWithAdditionalFiles(name),
-				additionalFiles: () => context.AdditionalFiles,
-				reportDiagnostic: context.ReportDiagnostic,
-				addSource: (hint, text) => context.AddSource(hint, text));
-		}
-
-		/// <summary>
 		/// Builds a <see cref="XamlSourceContext"/> backed by an <see cref="IIncrementalGenerator"/>
 		/// pipeline. MSBuild properties and per-file metadata are looked up against the
 		/// <see cref="AnalyzerConfigOptionsProvider"/>; <see cref="ReportDiagnostic"/> and

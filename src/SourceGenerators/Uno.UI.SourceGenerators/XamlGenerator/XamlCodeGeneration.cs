@@ -166,11 +166,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		internal ImmutableArray<ITypeProvider> TypeProviders { get; }
 
-		public XamlCodeGeneration(GeneratorExecutionContext context)
-			: this(XamlSourceContext.FromGeneratorContext(context), isDesignTimeBuild: Helpers.DesignTimeHelper.IsDesignTime(context))
-		{
-		}
-
 		public XamlCodeGeneration(XamlSourceContext context, bool isDesignTimeBuild)
 		{
 			// To easily debug XAML code generation:
