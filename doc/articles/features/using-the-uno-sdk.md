@@ -319,7 +319,7 @@ As discussed above setting `EnableDefaultUnoItems` to false will disable these i
 
 ## Platform-Specific Folders
 
-In addition to the per-file suffixes described above, the Uno.Sdk recognizes a set of well-known subfolders under `Platforms/` that scope their contents to a single target. Files in these folders are automatically included only when the matching TFM is being built and excluded from every other TFM (the SDK removes them from `Compile`, `Page`, `Content`, `EmbeddedResource`, and `Manifest` for inactive platforms).
+In addition to the per-file suffixes described above, the Uno.Sdk recognizes a set of well-known sub-folders under `Platforms/` that scope their contents to a single target. Files in these folders are automatically included only when the matching TFM is being built and excluded from every other TFM (the SDK removes them from `Compile`, `Page`, `Content`, `EmbeddedResource`, and `Manifest` for inactive platforms).
 
 | Folder | TFM it applies to | Typical contents |
 |---|---|---|
