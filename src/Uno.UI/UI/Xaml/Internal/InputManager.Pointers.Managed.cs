@@ -8,6 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
@@ -182,7 +183,18 @@ internal partial class InputManager
 				PointerCapture.ClearForFatalError();
 				_reRouted = null;
 			}
-			catch { }
+			catch (Exception recoveryError)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Failed to recover from fatal pointer error in '{evt}'", recoveryError);
+				}
+			}
+
+			if (FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher)
+			{
+				Application.Current.RaiseUnhandledExceptionOrThrow(error, this);
+			}
 		}
 
 		#region Current event dispatching transaction
