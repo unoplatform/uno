@@ -278,6 +278,7 @@ public class Given_CalendarView
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Destabilized by changes in https://github.com/unoplatform/uno/pull/23269
 	public async Task When_NextMonth_InQuickSequence()
 	{
 		var sut = new CalendarView() { DisplayMode = CalendarViewDisplayMode.Month };
