@@ -1,4 +1,4 @@
-﻿using Microsoft.CodeAnalysis.Testing;
+using Microsoft.CodeAnalysis.Testing;
 using Uno.UI.SourceGenerators.Tests.Verifiers;
 using Verify = Uno.UI.SourceGenerators.Tests.Verifiers.XamlSourceGeneratorVerifier;
 
@@ -478,6 +478,247 @@ public partial class Given_Parser
 		test.ExpectedDiagnostics.AddRange(
 		[
 		]);
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_DuplicateProperty_AttributeAndImplicitContent()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					<ContentControl Content="Hello">
+						<TextBlock Text="World" />
+					</ContentControl>
+				</Page>
+
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		test.ExpectedDiagnostics.Add(
+			DiagnosticResult.CompilerError("XLS0501").WithSpan("C:/Project/0/MainPage.xaml", 5, 4, 5, 4).WithArguments("The property 'Content' is set more than once"));
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_DuplicateProperty_AttributeAndPropertyElement()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					<ContentControl Content="Hello">
+						<ContentControl.Content>
+							<TextBlock Text="World" />
+						</ContentControl.Content>
+					</ContentControl>
+				</Page>
+
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		test.ExpectedDiagnostics.Add(
+			DiagnosticResult.CompilerError("XLS0501").WithSpan("C:/Project/0/MainPage.xaml", 5, 27, 5, 27).WithArguments("The property 'Content' is set more than once"));
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_DuplicateProperty_TwoPropertyElements()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					<ContentControl>
+						<ContentControl.Content>
+							<TextBlock Text="One" />
+						</ContentControl.Content>
+						<ContentControl.Content>
+							<TextBlock Text="Two" />
+						</ContentControl.Content>
+					</ContentControl>
+				</Page>
+
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		test.ExpectedDiagnostics.Add(
+			DiagnosticResult.CompilerError("XLS0501").WithSpan("C:/Project/0/MainPage.xaml", 8, 27, 8, 27).WithArguments("The property 'Content' is set more than once"));
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_DuplicateProperty_NonContentProperty_AttributeAndPropertyElement()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					<TextBlock Text="Hello">
+						<TextBlock.Text>World</TextBlock.Text>
+					</TextBlock>
+				</Page>
+
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		test.ExpectedDiagnostics.Add(
+			DiagnosticResult.CompilerError("XLS0501").WithSpan("C:/Project/0/MainPage.xaml", 5, 19, 5, 19).WithArguments("The property 'Text' is set more than once"));
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_TextBlock_TextAttribute_AndLiteralContent_NoDuplicate()
+	{
+		// WinUI maps the [ContentProperty] of TextBlock to Inlines: the Text="..." attribute and the
+		// literal text content target two different XamlProperties (Text vs Inlines) so the parser
+		// does NOT raise a duplicate-property error. WinUI accepts this and renders the concatenated
+		// content (e.g., <TextBlock Text="Hi"> dsaf</TextBlock> renders as "Hidsaf").
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					<TextBlock Text="Hi">Something</TextBlock>
+				</Page>
+
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_TextBlock_TextAttribute_AndNestedRuns_NoDuplicate()
+	{
+		// Same as above with explicit Run children — Inlines collection vs Text property, no duplicate.
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					<TextBlock Text="Hi">
+						<Run Text="A" />
+						<Run Text="B" />
+					</TextBlock>
+				</Page>
+
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_DuplicateProperty_DatePickerHeaderAttributeAndImplicitContent()
+	{
+		// DatePicker has [ContentProperty(Name = nameof(Header))], so Header attribute and implicit
+		// child content target the same property — must throw "set more than once".
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					<DatePicker Header="Test">
+						Test
+					</DatePicker>
+				</Page>
+
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		test.ExpectedDiagnostics.Add(
+			DiagnosticResult.CompilerError("XLS0501").WithSpan("C:/Project/0/MainPage.xaml", 4, 28, 4, 28).WithArguments("The property 'Header' is set more than once"));
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_DatePickerHeaderAttribute_AndOnlyWhitespaceContent_NoDuplicate()
+	{
+		// Whitespace-only content between an opening and closing tag is not a real property
+		// assignment and must NOT trigger the duplicate detector.
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					<DatePicker Header="Test">
+
+					</DatePicker>
+				</Page>
+
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_DuplicateProperty_NonContentProperty_TwoPropertyElements()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					<TextBlock>
+						<TextBlock.Text>One</TextBlock.Text>
+						<TextBlock.Text>Two</TextBlock.Text>
+					</TextBlock>
+				</Page>
+
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		test.ExpectedDiagnostics.Add(
+			DiagnosticResult.CompilerError("XLS0501").WithSpan("C:/Project/0/MainPage.xaml", 6, 19, 6, 19).WithArguments("The property 'Text' is set more than once"));
 
 		await test.RunAsync();
 	}

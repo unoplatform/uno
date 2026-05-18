@@ -180,6 +180,142 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		}
 
 		[TestMethod]
+		public void When_DuplicateProperty_AttributeAndImplicitContent()
+		{
+			var ex = Assert.ThrowsExactly<XamlParseException>(() => XamlHelper.LoadXaml<ContentControl>("""
+				<ContentControl Content="Hello">
+					<TextBlock Text="World" />
+				</ContentControl>
+			"""), "Setting Content via attribute and implicit child content should throw");
+
+			StringAssert.Contains(ex.Message, "'Content' is set more than once");
+		}
+
+		[TestMethod]
+		public void When_DuplicateProperty_AttributeAndPropertyElement()
+		{
+			var ex = Assert.ThrowsExactly<XamlParseException>(() => XamlHelper.LoadXaml<ContentControl>("""
+				<ContentControl Content="Hello">
+					<ContentControl.Content>
+						<TextBlock Text="World" />
+					</ContentControl.Content>
+				</ContentControl>
+			"""), "Setting Content via attribute and property element should throw");
+
+			StringAssert.Contains(ex.Message, "'Content' is set more than once");
+		}
+
+		[TestMethod]
+		public void When_DuplicateProperty_TwoPropertyElements()
+		{
+			var ex = Assert.ThrowsExactly<XamlParseException>(() => XamlHelper.LoadXaml<ContentControl>("""
+				<ContentControl>
+					<ContentControl.Content>
+						<TextBlock Text="One" />
+					</ContentControl.Content>
+					<ContentControl.Content>
+						<TextBlock Text="Two" />
+					</ContentControl.Content>
+				</ContentControl>
+			"""), "Setting Content via two property elements should throw");
+
+			StringAssert.Contains(ex.Message, "'Content' is set more than once");
+		}
+
+		[TestMethod]
+		public void When_TextBlock_TextAttribute_AndLiteralContent_NoDuplicate()
+		{
+			// WinUI maps the [ContentProperty] of TextBlock to Inlines: the Text="..." attribute and the
+			// literal text content target two different XamlProperties (Text vs Inlines) so the parser
+			// does NOT raise a duplicate-property error. WinUI concatenates by adding both as Runs to
+			// the Inlines collection so the resulting Text property reads as "HiSomething".
+			var sut = XamlHelper.LoadXaml<TextBlock>("""
+				<TextBlock Text="Hi">Something</TextBlock>
+			""");
+
+			Assert.IsNotNull(sut);
+			Assert.AreEqual("HiSomething", sut.Text);
+		}
+
+		[TestMethod]
+		public void When_TextBlock_TextAttribute_AndLiteralContent_FromSourceGenerator()
+		{
+			// Same as When_TextBlock_TextAttribute_AndLiteralContent_NoDuplicate, but exercises the
+			// XAML source-generator path (compiled XAML page) instead of the runtime XamlReader.
+			var page = new TextBlockTextAndContentPage();
+			Assert.IsNotNull(page.TestTextBlock);
+			Assert.AreEqual("HiSomething", page.TestTextBlock.Text);
+		}
+
+		[TestMethod]
+		public void When_TextBlock_TextAttribute_AndNestedRuns_NoDuplicate()
+		{
+			// Same as above with explicit Run children — Inlines collection vs Text property, no duplicate.
+			var sut = XamlHelper.LoadXaml<TextBlock>("""
+				<TextBlock Text="Hi">
+					<Run Text="A" />
+					<Run Text="B" />
+				</TextBlock>
+			""");
+
+			Assert.IsNotNull(sut);
+		}
+
+		[TestMethod]
+		public void When_DuplicateProperty_DatePickerHeaderAttributeAndImplicitContent()
+		{
+			// DatePicker has [ContentProperty(Name = nameof(Header))], so Header attribute and implicit
+			// child content target the same property — must throw "set more than once".
+			var ex = Assert.ThrowsExactly<XamlParseException>(() => XamlHelper.LoadXaml<DatePicker>("""
+				<DatePicker Header="Test">
+					Test
+				</DatePicker>
+			"""), "Setting Header via attribute and implicit content should throw");
+
+			StringAssert.Contains(ex.Message, "'Header' is set more than once");
+		}
+
+		[TestMethod]
+		public void When_DatePickerHeaderAttribute_AndOnlyWhitespaceContent_NoDuplicate()
+		{
+			// Whitespace-only content between an opening and closing tag is not a real property
+			// assignment and must NOT trigger the duplicate detector.
+			var sut = XamlHelper.LoadXaml<DatePicker>("""
+				<DatePicker Header="Test">
+
+				</DatePicker>
+			""");
+
+			Assert.IsNotNull(sut);
+			Assert.AreEqual("Test", sut.Header);
+		}
+
+		[TestMethod]
+		public void When_DuplicateProperty_NonContentProperty_AttributeAndPropertyElement()
+		{
+			var ex = Assert.ThrowsExactly<XamlParseException>(() => XamlHelper.LoadXaml<TextBlock>("""
+				<TextBlock Text="Hello">
+					<TextBlock.Text>World</TextBlock.Text>
+				</TextBlock>
+			"""), "Setting Text via attribute and property element should throw");
+
+			StringAssert.Contains(ex.Message, "'Text' is set more than once");
+		}
+
+		[TestMethod]
+		public void When_DuplicateProperty_NonContentProperty_TwoPropertyElements()
+		{
+			var ex = Assert.ThrowsExactly<XamlParseException>(() => XamlHelper.LoadXaml<TextBlock>("""
+				<TextBlock>
+					<TextBlock.Text>One</TextBlock.Text>
+					<TextBlock.Text>Two</TextBlock.Text>
+				</TextBlock>
+			"""), "Setting Text via two property elements should throw");
+
+			StringAssert.Contains(ex.Message, "'Text' is set more than once");
+		}
+
+		[TestMethod]
 		public void When_FrameworkElement_Resources_Nest_ResDictAndRes()
 		{
 			Assert.ThrowsExactly<XamlParseException>(() => XamlHelper.LoadXaml<Border>("""
