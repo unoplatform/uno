@@ -11,6 +11,16 @@ namespace Microsoft.UI.Input
 		// Skipping already declared property HasFocus
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool ShouldShowKeyboardCues
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputFocusController", "ShouldShowKeyboardCues");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Input.InputFocusController GetForIsland(global::Microsoft.UI.Content.ContentIsland island)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputFocusController", "GetForIsland(ContentIsland island)");
@@ -31,6 +41,7 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.InputFocusController.NavigateFocusRequested.add
 		// Forced skipping of method Microsoft.UI.Input.InputFocusController.NavigateFocusRequested.remove
 		// Forced skipping of method Microsoft.UI.Input.InputFocusController.HasFocus.get
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.ShouldShowKeyboardCues.get
 		// Skipping already declared event Microsoft.UI.Input.InputFocusController.GotFocus
 		// Skipping already declared event Microsoft.UI.Input.InputFocusController.LostFocus
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
