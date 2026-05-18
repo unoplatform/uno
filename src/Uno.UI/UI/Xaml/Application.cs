@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Web;
@@ -350,6 +351,21 @@ namespace Microsoft.UI.Xaml
 		}
 
 		internal void RaiseRecoverableUnhandledException(Exception e) => UnhandledException?.Invoke(this, new UnhandledExceptionEventArgs(e, false));
+
+		/// <summary>
+		/// Raises <see cref="UnhandledException"/> for the given exception. If no handler marks
+		/// the event as handled, the exception is re-thrown preserving the original stack trace
+		/// (matching WinUI's behavior of fail-fasting on unhandled errors from input or dispatcher).
+		/// </summary>
+		internal void RaiseUnhandledException(Exception e)
+		{
+			var args = new UnhandledExceptionEventArgs(e, fatal: true);
+			UnhandledException?.Invoke(this, args);
+			if (!args.Handled)
+			{
+				ExceptionDispatchInfo.Capture(e).Throw();
+			}
+		}
 
 		private ApplicationTheme GetSystemTheme() =>
 			SystemThemeHelper.SystemTheme == SystemTheme.Light ?
