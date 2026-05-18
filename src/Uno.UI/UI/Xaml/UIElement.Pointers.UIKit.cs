@@ -204,7 +204,7 @@ namespace Microsoft.UI.Xaml
 			}
 			catch (Exception e)
 			{
-				if (Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher)
+				if (Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions)
 				{
 					Application.Current.RaiseUnhandledExceptionOrThrow(e, this);
 				}
@@ -261,7 +261,7 @@ namespace Microsoft.UI.Xaml
 			}
 			catch (Exception e)
 			{
-				if (Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher)
+				if (Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions)
 				{
 					Application.Current.RaiseUnhandledExceptionOrThrow(e, this);
 				}
@@ -359,7 +359,7 @@ namespace Microsoft.UI.Xaml
 			}
 			catch (Exception e)
 			{
-				if (Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher)
+				if (Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions)
 				{
 					Application.Current.RaiseUnhandledExceptionOrThrow(e, this);
 				}
@@ -420,7 +420,7 @@ namespace Microsoft.UI.Xaml
 			}
 			catch (Exception e)
 			{
-				if (Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.ShouldPropagateFromInputAndDispatcher)
+				if (Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions)
 				{
 					Application.Current.RaiseUnhandledExceptionOrThrow(e, this);
 				}
