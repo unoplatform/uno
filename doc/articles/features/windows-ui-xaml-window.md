@@ -41,6 +41,8 @@ window.Activate();
 
 All Uno Platform desktop targets support displaying secondary windows. Attempt to create a second window on Android and iOS will result in a `InvalidOperation` exception. Support for multi-windowing in mobile targets is actively investigated.
 
+If you need to check for this at runtime before creating a secondary window, use `Window.SupportsMultipleWindows`.
+
 ## Making the window full screen
 
 `AppWindow` provides various ways to manipulate the display of a window including the ability to make it run in full-screen mode. Use the `SetPresenter` method to switch to this mode:

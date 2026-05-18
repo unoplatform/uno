@@ -41,12 +41,7 @@ public class Given_Window
 
 #if HAS_UNO_WINUI || WINAPPSDK
 
-	private bool SupportsMultipleWindows() =>
-#if HAS_UNO
-		NativeWindowFactory.SupportsMultipleWindows;
-#else
-		true;
-#endif
+	private static bool SupportsMultipleWindows() => Window.SupportsMultipleWindows;
 
 	private void AssertSupportsMultipleWindows()
 	{
@@ -70,6 +65,29 @@ public class Given_Window
 		if (!CoreApplication.IsFullFledgedApp)
 		{
 			Assert.Inconclusive("This test can only be run in a full-fledged app");
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20694")]
+	public void When_Checking_MultiWindow_Capability()
+	{
+		AssertIsFullFledgedApp();
+
+		Action act = () =>
+		{
+			var window = new Window(WindowType.DesktopXamlSource);
+			window.Close();
+		};
+
+		if (Window.SupportsMultipleWindows)
+		{
+			act.Should().NotThrow();
+		}
+		else
+		{
+			act.Should().Throw<InvalidOperationException>();
 		}
 	}
 
