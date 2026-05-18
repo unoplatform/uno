@@ -863,6 +863,12 @@ public partial class DependencyObjectStore
 		{
 			InnerUpdateResourceBindingsUnsafe(updateReason, dictionariesInScope, property, binding);
 		}
+		catch (global::Microsoft.UI.Xaml.Markup.XamlParseException)
+		{
+			// Resource-resolution failures opted into by ThrowOnUnresolvedResource must
+			// propagate; they are intentional and indicate a real bug in the user XAML.
+			throw;
+		}
 		catch (Exception e)
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))
@@ -952,6 +958,11 @@ public partial class DependencyObjectStore
 						themeRef?.SetTargetDictionary(providingDict);
 						themeRef?.SetLastResolvedValue(value);
 					}
+				}
+				else if (Uno.UI.FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource)
+				{
+					throw new global::Microsoft.UI.Xaml.Markup.XamlParseException(
+						$"Could not resolve resource '{binding.ResourceKey.Key}' for property '{property.Name}' on '{_originalObjectType.Name}'.");
 				}
 			}
 		}
