@@ -578,6 +578,9 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial void uno_accessibility_update_label(nint handle, string? label);
 
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_accessibility_update_identifier(nint handle, string? identifier);
+
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_accessibility_update_frame(nint handle, float width, float height, float x, float y);
 
