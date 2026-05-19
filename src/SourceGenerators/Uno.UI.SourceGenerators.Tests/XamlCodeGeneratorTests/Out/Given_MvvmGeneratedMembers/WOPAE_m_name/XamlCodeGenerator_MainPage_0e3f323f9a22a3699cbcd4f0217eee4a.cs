@@ -73,7 +73,7 @@ namespace TestRepro
 								{
 									Mode = BindingMode.OneTime,
 								}
-									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ViewModel.Name.ToUpper()*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.ViewModel.Name.ToUpper())) : (false, default), null ))
+									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ViewModel.Name.ToUpper()*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.ViewModel.Name.ToUpper())) : (false, default), null))
 							);
 							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
 							__p1.CreationComplete();
@@ -97,7 +97,7 @@ namespace TestRepro
 								{
 									Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
 								}
-									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ViewModel.Name.ToUpper()*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.ViewModel.Name.ToUpper())) : (false, default), null , new [] {"ViewModel.Name"}))
+									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ViewModel.Name.ToUpper()*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.ViewModel.Name.ToUpper())) : (false, default), null, new [] {"ViewModel.Name"}))
 							);
 							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
 							__p1.CreationComplete();
@@ -121,7 +121,7 @@ namespace TestRepro
 								{
 									Mode = global::Microsoft.UI.Xaml.Data.BindingMode.TwoWay,
 								}
-									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ViewModel.Name.ToUpper()*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.ViewModel.Name.ToUpper())) : (false, default), (___tctx, __value) => ViewModel.MyBindBack((string)__value) , new [] {"ViewModel.Name"}))
+									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ViewModel.Name.ToUpper()*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.ViewModel.Name.ToUpper())) : (false, default), (___tctx, __value) => ViewModel.MyBindBack((string)__value), typeof(string), new [] {"ViewModel.Name"}))
 							);
 							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
 							__p1.CreationComplete();
