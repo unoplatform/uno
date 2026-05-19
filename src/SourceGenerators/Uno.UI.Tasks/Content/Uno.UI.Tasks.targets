@@ -167,6 +167,8 @@
 	<Target Name="UnoAssetsGeneration"
 				BeforeTargets="_GetLibraryImports;_CheckForContent;_CollectBundleResources;_CompileAppManifest;_ComputeAndroidResourcePaths"
 				DependsOnTargets="ResolveProjectReferences;GetCopyToOutputDirectoryItems;_UnoLangSetup"
+				Inputs="@(ContentWithTargetPath);@(_SourceItemsToCopyToOutputDirectory)"
+				Outputs="$(IntermediateOutputPath)UnoAssets.stamp"
 				Condition="
 				'$(BuildingInsideUnoSourceGenerator)' == ''
 				and ('$(IsUnoHead)'=='true'
@@ -214,6 +216,12 @@
 			<!-- Ensure files are tracked properly for incremental build and clean targets -->
 			<FileWrites Condition="'%(RetargetedAssets.AssetType)' =='image'" Include="@(RetargetedAssets)" />
 			<FileWrites Condition="'%(RetargetedAssets.AssetType)' =='generic'" Include="@(RetargetedAssets)" />
+		</ItemGroup>
+
+		<!-- Update the stamp file to mark assets as up-to-date for incremental builds -->
+		<Touch Files="$(IntermediateOutputPath)UnoAssets.stamp" AlwaysCreate="true" />
+		<ItemGroup>
+			<FileWrites Include="$(IntermediateOutputPath)UnoAssets.stamp" />
 		</ItemGroup>
 	</Target>
 
