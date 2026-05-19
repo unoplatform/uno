@@ -226,17 +226,6 @@ public class DevServerTests
 		// AssemblyRefs are actually resolved — exercising the AddInLoadContext
 		// load path and the AssemblyLoadContext.Default.Resolving handler in
 		// Uno.UI.RemoteControl.Host rather than sitting dormant in metadata.
-		//
-		// This is a positive-outcome regression test: depending on the .NET
-		// runtime version, the binder may also successfully lax-bind these refs
-		// even without the host's fix, so a "must throw FileNotFoundException
-		// without the fix" assertion isn't deterministic across runtimes. The
-		// failure modes this catches are the ones that WOULD remain regardless
-		// of runtime laxness: a fatal crash in add-in load, the ctor never being
-		// invoked at all (broken attribute scan), or the host failing to reach
-		// the listening state. The end-to-end repro in
-		// D:\Dev\Uno-Pocs\DevServerLicensingRepro\ covers the real Kiota /
-		// Uno.Settings.DevServer path on a runtime that does still strict-bind.
 		var testAssemblyDir = Path.GetDirectoryName(typeof(DevServerTests).Assembly.Location)!;
 		var fixtureDll = Path.Combine(
 			testAssemblyDir,
@@ -247,30 +236,57 @@ public class DevServerTests
 		File.Exists(fixtureDll).Should()
 			.BeTrue("test fixture DLL must be copied to test output by the _BuildAndCopyAddInTestFixtures target");
 
-		await using var helper = new DevServerTestHelper(_logger);
-
+		var versionSentinel = Path.Combine(
+			Path.GetTempPath(), $"encodingsweb-version-{Guid.NewGuid():N}.txt");
 		try
 		{
-			var started = await helper.StartAsync(CT, extraArgs: $"--addins \"{fixtureDll}\"");
-			helper.EnsureStarted();
+			await using var helper = new DevServerTestHelper(
+				_logger,
+				environmentVariables: new Dictionary<string, string>
+				{
+					["UNO_DEVSERVER_TEST_ENCODINGSWEB_VERSION_PATH"] = versionSentinel,
+				});
 
-			started.Should().BeTrue("dev server should start successfully with the cross-major-version add-in loaded");
-			helper.AssertRunning();
-			helper.AssertConsoleOutputContains("Now listening on:");
-			helper.AssertConsoleOutputContains("Loading add-in assembly");
+			try
+			{
+				var started = await helper.StartAsync(CT, extraArgs: $"--addins \"{fixtureDll}\"");
+				helper.EnsureStarted();
 
-			// Runtime-stable assertion: a fatal CLR "Unhandled exception" banner
-			// terminates the process before "Now listening on:" is reached, so
-			// rather than substring-matching on the phrase (which could match a
-			// non-fatal logger message containing the literal text) we just
-			// confirm the host process is still alive and has actually reached
-			// the listening state. If the add-in load pipeline regresses in a
-			// way that crashes startup, this combination of asserts fails.
-			helper.IsRunning.Should().BeTrue("host process must still be alive after the listening-state log");
+				started.Should().BeTrue("dev server should start successfully with the cross-major-version add-in loaded");
+				helper.AssertRunning();
+				helper.AssertConsoleOutputContains("Now listening on:");
+
+				// Strong assertion: the fixture writes the actual version of
+				// System.Text.Encodings.Web that was resolved at runtime. If the
+				// bridge is working, the host's loaded version (major >= 9) is
+				// returned even though the fixture compiled against v8.0.0.0.
+				// Without the fix a strict-binding runtime would throw and the
+				// sentinel would never be written (ctor never called).
+				File.Exists(versionSentinel).Should().BeTrue(
+					"the fixture's ctor must have been invoked and the " +
+					"System.Text.Encodings.Web version must have been written");
+
+				var versionText = File.ReadAllText(versionSentinel).Trim();
+				Version.TryParse(versionText, out var resolvedVersion).Should().BeTrue(
+					"sentinel must contain a valid version string, got: '{0}'", versionText);
+				resolvedVersion!.Major.Should().BeGreaterThanOrEqualTo(9,
+					"the bridge must return the host's loaded version (>= 9), not the " +
+					"fixture's compiled v8.0.0.0 reference");
+
+				helper.IsRunning.Should().BeTrue(
+					"host process must still be alive after the listening-state log");
+			}
+			finally
+			{
+				await helper.StopAsync(CT);
+			}
 		}
 		finally
 		{
-			await helper.StopAsync(CT);
+			if (File.Exists(versionSentinel))
+			{
+				File.Delete(versionSentinel);
+			}
 		}
 	}
 }

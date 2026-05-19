@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.IO;
 using System.Text.Encodings.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Uno.Utils.DependencyInjection;
@@ -46,6 +47,19 @@ public sealed class ServicesRegistration
 		// KiotaJsonSerializationContext..cctor triggers the original crash on
 		// hosts that strict-match the TPA version.
 		_ = JavaScriptEncoder.Default;
+
+		// Write the *actual* version of System.Text.Encodings.Web that was
+		// resolved so the test can assert a strong positive: the bridge must
+		// have handed back the host's loaded version (major >= 9), not some
+		// downgraded v8 copy.
+		var versionSentinel = Environment.GetEnvironmentVariable(
+			"UNO_DEVSERVER_TEST_ENCODINGSWEB_VERSION_PATH");
+		if (!string.IsNullOrEmpty(versionSentinel))
+		{
+			File.WriteAllText(
+				versionSentinel,
+				typeof(JavaScriptEncoder).Assembly.GetName().Version!.ToString());
+		}
 	}
 }
 
