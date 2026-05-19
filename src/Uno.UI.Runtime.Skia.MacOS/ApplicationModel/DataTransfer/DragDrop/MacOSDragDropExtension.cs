@@ -1,5 +1,6 @@
 #nullable enable
 
+using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -25,7 +26,7 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 internal partial class MacOSDragDropExtension : IDragDropExtension
 {
 	private static readonly long _fakePointerId = Pointer.CreateUniqueIdForUnknownPointer();
-	private static readonly Dictionary<nint, MacOSDragDropExtension> _extensions = new();
+	private static readonly ConcurrentDictionary<nint, MacOSDragDropExtension> _extensions = new();
 	private static int _callbacksRegistered;
 
 	private readonly DragDropManager _manager;
@@ -47,6 +48,14 @@ internal partial class MacOSDragDropExtension : IDragDropExtension
 		_windowHandle = _host.NativeWindowHandle;
 
 		_extensions[_windowHandle] = this;
+		_host.Closed += OnHostClosed;
+	}
+
+	private void OnHostClosed(object? sender, EventArgs e)
+	{
+		_host.Closed -= OnHostClosed;
+		_extensions.TryRemove(_windowHandle, out _);
+		_pendingDragCompletion = null;
 	}
 
 	public static unsafe void Register()
