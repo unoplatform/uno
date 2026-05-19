@@ -634,6 +634,8 @@ public class Given_BindingExpression
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/7174")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21402")]
 	public async Task When_XBind_TwoWay_Enum_Converter_ConvertBack_Receives_Correct_TargetType()
 	{
 		var root = new When_XBind_TwoWay_Enum_Converter();
