@@ -535,6 +535,18 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 	{
 		var attributes = AriaMapper.GetAriaAttributes(peer);
 
+		var automationId = owner is not null
+			? AutomationProperties.GetAutomationId(owner)
+			: null;
+		if (string.IsNullOrEmpty(automationId))
+		{
+			automationId = peer.GetAutomationId();
+		}
+		if (!string.IsNullOrEmpty(automationId))
+		{
+			NativeUno.uno_accessibility_update_identifier(handle, automationId);
+		}
+
 		if (!string.IsNullOrEmpty(attributes.Description))
 		{
 			NativeUno.uno_accessibility_update_help(handle, attributes.Description);
