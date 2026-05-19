@@ -136,4 +136,21 @@ public class Given_DateTimeFormatter
 			Assert.AreEqual(expected, formattedTime, $"Mismatch for template: {template}");
 		}
 	}
+
+	// Reproduction for https://github.com/unoplatform/uno/issues/12423
+	// On iOS, when the device's preferred languages list combines a language
+	// with a region that isn't a real culture (e.g. preferred language "it"
+	// with region "US" can surface as "it-US"), CalendarDatePicker fails to
+	// construct because DateTimeFormatter eagerly calls `new CultureInfo(...)`
+	// on each language string and throws CultureNotFoundException. This is
+	// exercised cross-platform via the (language-list) constructor overload.
+	[TestMethod]
+	public void When_Languages_Contains_Unsupported_Culture_Should_Not_Throw_12423()
+	{
+		var formatter = new DateTimeFormatter("longdate", new[] { "it-US", "en-US" });
+
+		Assert.IsNotNull(formatter);
+		var formatted = formatter.Format(new DateTimeOffset(2024, 1, 15, 0, 0, 0, TimeSpan.Zero));
+		Assert.IsFalse(string.IsNullOrEmpty(formatted), "Formatter should produce a non-empty string even when the preferred language is unsupported.");
+	}
 }
