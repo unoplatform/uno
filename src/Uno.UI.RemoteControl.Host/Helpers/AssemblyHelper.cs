@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
+using Uno.UI.RemoteControl.Host.Helpers;
 using Uno.UI.RemoteControl.Server.Telemetry;
 
 namespace Uno.UI.RemoteControl.Helpers;
@@ -16,6 +17,19 @@ public class AssemblyHelper
 {
 	private static readonly ILogger _log = typeof(AssemblyHelper).Log();
 
+	/// <summary>
+	/// Loads the supplied add-in DLLs.
+	/// </summary>
+	/// <remarks>
+	/// As of the host add-in isolation work, all add-ins are loaded into a
+	/// shared <see cref="AddInLoadContext"/> backed by per-add-in
+	/// <see cref="System.Runtime.Loader.AssemblyDependencyResolver"/> instances.
+	/// This isolates add-in dependency trees (e.g. transitive packages whose
+	/// versions diverge from what the host loaded) while preserving Type
+	/// identity for framework / contract assemblies the host has already
+	/// loaded. Add-ins remain visible to each other inside the shared context,
+	/// matching the prior <see cref="Assembly.LoadFrom(string)"/> behaviour.
+	/// </remarks>
 	public static IImmutableList<AssemblyLoadResult> Load(IImmutableList<string> dllFiles, ITelemetry? telemetry = null, bool throwIfLoadFailed = false)
 	{
 		var startTime = Stopwatch.GetTimestamp();
@@ -34,8 +48,8 @@ public class AssemblyHelper
 			// assemblies while letting Microsoft.*/System.* and shared contract types
 			// resolve against the host's already-loaded versions. Add-ins still see
 			// each other's types (matching the prior Assembly.LoadFrom behaviour).
-			var distinctDlls = dllFiles.Distinct(StringComparer.OrdinalIgnoreCase).ToImmutableList();
-			var loadContext = distinctDlls.Count > 0
+			var distinctDlls = dllFiles.Distinct(StringComparer.OrdinalIgnoreCase).ToImmutableArray();
+			var loadContext = distinctDlls.Length > 0
 				? new AddInLoadContext(distinctDlls)
 				: null;
 
