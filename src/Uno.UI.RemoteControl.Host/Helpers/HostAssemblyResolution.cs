@@ -14,6 +14,15 @@ namespace Uno.UI.RemoteControl.Host.Helpers;
 internal static class HostAssemblyResolution
 {
 	/// <summary>
+	/// <see langword="true"/> when <c>UNO_DEVSERVER_DISABLE_ADDIN_ALC=1</c> is set.
+	/// Evaluated once at first access; re-read each call so that tests that set the
+	/// variable before calling can observe the correct value without process restart.
+	/// </summary>
+	internal static bool IsKillSwitchActive =>
+		Environment.GetEnvironmentVariable("UNO_DEVSERVER_DISABLE_ADDIN_ALC") == "1";
+
+
+	/// <summary>
 	/// 0 = handler not subscribed, 1 = handler subscribed.  Written once via
 	/// <see cref="System.Threading.Interlocked.CompareExchange(ref int, int, int)"/>
 	/// so <see cref="Install"/> can subscribe the <c>Resolving</c> handler exactly
@@ -33,6 +42,7 @@ internal static class HostAssemblyResolution
 	[
 		[0xb0, 0x3f, 0x5f, 0x7f, 0x11, 0xd5, 0x0a, 0x3a], // Microsoft (b03f5f7f11d50a3a)
 		[0xcc, 0x7b, 0x13, 0xff, 0xcd, 0x2d, 0xdd, 0x51], // corefx / dotnet (cc7b13ffcd2ddd51)
+		[0xad, 0xb9, 0x79, 0x38, 0x29, 0xdd, 0xae, 0x60], // Microsoft.Extensions.* NuGet (adb9793829ddae60)
 	];
 
 	/// <summary>

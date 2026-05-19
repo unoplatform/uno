@@ -41,49 +41,74 @@ public class AssemblyHelper
 
 		try
 		{
-			// All add-ins share a single AssemblyLoadContext backed by per-add-in
-			// AssemblyDependencyResolver instances. This isolates add-in dependency
-			// trees (e.g. Kiota's net8.0 binaries that hard-reference
-			// System.Text.Encodings.Web 8.0.0.0) from the host's framework
-			// assemblies while letting Microsoft.*/System.* and shared contract types
-			// resolve against the host's already-loaded versions. Add-ins still see
-			// each other's types (matching the prior Assembly.LoadFrom behaviour).
 			var distinctDlls = dllFiles.Distinct(StringComparer.OrdinalIgnoreCase).ToImmutableArray();
-			var loadContext = distinctDlls.Length > 0
-				? new AddInLoadContext(distinctDlls)
-				: null;
 
-			if (loadContext is null)
+			if (distinctDlls.Length == 0)
 			{
 				return ImmutableList<AssemblyLoadResult>.Empty;
 			}
 
-			foreach (var dll in distinctDlls)
+			// Kill switch: revert to the legacy Assembly.LoadFrom behaviour so operators
+			// can bisect regressions introduced by the add-in isolation work without
+			// needing a redeployment. Both the ALC creation and the HostAssemblyResolution
+			// handler are skipped — the process returns to the pre-isolation state.
+			if (HostAssemblyResolution.IsKillSwitchActive)
 			{
-				try
+				foreach (var dll in distinctDlls)
 				{
-					_log.LogDebug("Loading add-in assembly {Dll}.", dll);
-
-					// Load the top-level add-in by file path so the caller's
-					// specific DLL is always what ends up in the context — going
-					// through LoadFromAssemblyName here would route through the
-					// Default.Assemblies / TPA fallback in AddInLoadContext.Load
-					// and could silently substitute a host-loaded assembly if the
-					// add-in's simple name happened to collide. Transitive deps
-					// still flow through that override as intended.
-					var assembly = loadContext.LoadFromAssemblyPath(dll);
-
-					results.Add(new AssemblyLoadResult(dll, assembly, null));
-				}
-				catch (Exception err)
-				{
-					failedCount++;
-					_log.LogError(err, "Failed to load assembly {Dll}.", dll);
-					results.Add(new AssemblyLoadResult(dll, null, err));
-
-					if (throwIfLoadFailed)
+					try
 					{
-						throw;
+						_log.LogDebug("Loading add-in assembly {Dll} (kill switch active — legacy Assembly.LoadFrom).", dll);
+						var assembly = Assembly.LoadFrom(dll);
+						results.Add(new AssemblyLoadResult(dll, assembly, null));
+					}
+					catch (Exception err)
+					{
+						failedCount++;
+						_log.LogError(err, "Failed to load assembly {Dll}.", dll);
+						results.Add(new AssemblyLoadResult(dll, null, err));
+						if (throwIfLoadFailed) throw;
+					}
+				}
+			}
+			else
+			{
+				// All add-ins share a single AssemblyLoadContext backed by per-add-in
+				// AssemblyDependencyResolver instances. This isolates add-in dependency
+				// trees (e.g. Kiota's net8.0 binaries that hard-reference
+				// System.Text.Encodings.Web 8.0.0.0) from the host's framework
+				// assemblies while letting Microsoft.*/System.* and shared contract types
+				// resolve against the host's already-loaded versions. Add-ins still see
+				// each other's types (matching the prior Assembly.LoadFrom behaviour).
+				var loadContext = new AddInLoadContext(distinctDlls);
+
+				foreach (var dll in distinctDlls)
+				{
+					try
+					{
+						_log.LogDebug("Loading add-in assembly {Dll}.", dll);
+
+						// Load the top-level add-in by file path so the caller's
+						// specific DLL is always what ends up in the context — going
+						// through LoadFromAssemblyName here would route through the
+						// Default.Assemblies / TPA fallback in AddInLoadContext.Load
+						// and could silently substitute a host-loaded assembly if the
+						// add-in's simple name happened to collide. Transitive deps
+						// still flow through that override as intended.
+						var assembly = loadContext.LoadFromAssemblyPath(dll);
+
+						results.Add(new AssemblyLoadResult(dll, assembly, null));
+					}
+					catch (Exception err)
+					{
+						failedCount++;
+						_log.LogError(err, "Failed to load assembly {Dll}.", dll);
+						results.Add(new AssemblyLoadResult(dll, null, err));
+
+						if (throwIfLoadFailed)
+						{
+							throw;
+						}
 					}
 				}
 			}
