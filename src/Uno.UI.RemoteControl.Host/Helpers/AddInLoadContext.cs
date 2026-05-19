@@ -132,11 +132,33 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 					var requestedToken = assemblyName.GetPublicKeyToken();
 					if (requestedToken is { Length: > 0 })
 					{
+						// Signed request: loaded assembly must carry the same PKT.
 						var loadedToken = loaded.GetName().GetPublicKeyToken();
 						if (loadedToken is null || !loadedToken.AsSpan().SequenceEqual(requestedToken))
 						{
-							// PKT mismatch — fall through to the add-in's own resolvers
-							// rather than substituting across strong-name identities.
+							loaded = null;
+						}
+					}
+					else
+					{
+						// Unsigned request: refuse a strong-named loaded assembly to match
+						// the symmetric PKT policy enforced by TryBridgeBySimpleName.
+						var loadedToken = loaded.GetName().GetPublicKeyToken();
+						if (loadedToken is { Length: > 0 })
+						{
+							loaded = null;
+						}
+					}
+
+					// Version guard: mirrors TryBridgeBySimpleName — refuse to serve a
+					// version lower than what the add-in requested.
+					if (loaded is not null)
+					{
+						var requestedVersion = assemblyName.Version;
+						var loadedVersion = loaded.GetName().Version;
+						if (requestedVersion is not null && loadedVersion is not null
+							&& loadedVersion < requestedVersion)
+						{
 							loaded = null;
 						}
 					}

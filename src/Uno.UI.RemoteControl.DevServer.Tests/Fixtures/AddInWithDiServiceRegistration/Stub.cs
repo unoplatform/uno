@@ -39,7 +39,7 @@ public sealed class ServicesRegistration
 	}
 }
 
-// Marker interface — defined in AddInLoadContext.
+// Marker interface — defined here in the fixture, not in AddInLoadContext.
 public interface ITestToken { }
 
 public sealed class TestToken1 : ITestToken { }

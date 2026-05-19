@@ -15,8 +15,8 @@ internal static class HostAssemblyResolution
 {
 	/// <summary>
 	/// <see langword="true"/> when <c>UNO_DEVSERVER_DISABLE_ADDIN_ALC=1</c> is set.
-	/// Evaluated once at first access; re-read each call so that tests that set the
-	/// variable before calling can observe the correct value without process restart.
+	/// Re-read on every access so that tests that set the variable before calling
+	/// can observe the updated value without a process restart.
 	/// </summary>
 	internal static bool IsKillSwitchActive =>
 		Environment.GetEnvironmentVariable("UNO_DEVSERVER_DISABLE_ADDIN_ALC") == "1";
