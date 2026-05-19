@@ -34,27 +34,89 @@ public class Given_HostAssemblyResolution
 	}
 
 	[TestMethod]
-	[Description("After Install(), System.Text.Encodings.Web must be resolvable from AssemblyLoadContext.Default (either eager-loaded by Install or available via TPA).")]
-	public void Install_EagerLoads_SystemTextEncodingsWeb()
+	[Description("EagerLoadFromDirectory must actually load an assembly from the supplied directory that was not previously present in Default.Assemblies (non-vacuous).")]
+	public void EagerLoadFromDirectory_LoadsAssemblyNotPreviouslyInDefault()
 	{
-		HostAssemblyResolution.Install();
+		var sourceDir = System.IO.Path.GetDirectoryName(typeof(HostAssemblyResolution).Assembly.Location)!;
 
-		// Trigger TPA resolution so the assembly is guaranteed to be in Default.Assemblies.
-		// In the host process Install() pre-loads it from the host directory; in the test
-		// process the DLL is not copied to the output dir, so we ask Default explicitly.
-		// Either way the invariant is: the assembly must be resolvable from Default ALC.
-		var asm = AssemblyLoadContext.Default.LoadFromAssemblyName(
-			new AssemblyName("System.Text.Encodings.Web"));
+		// Build the set of simple names currently in Default.Assemblies so we
+		// can pick a candidate that is NOT already loaded — otherwise the
+		// eager-load would be a no-op for our test target.
+		var alreadyLoaded = new System.Collections.Generic.HashSet<string>(StringComparer.OrdinalIgnoreCase);
+		foreach (var asm in AssemblyLoadContext.Default.Assemblies)
+		{
+			if (!asm.IsDynamic && asm.GetName().Name is { } n)
+			{
+				alreadyLoaded.Add(n);
+			}
+		}
 
-		asm.Should().NotBeNull("System.Text.Encodings.Web must be resolvable from Default ALC after Install()");
+		string? pickedFile = null;
+		foreach (var pattern in new[] { "System.*.dll", "Microsoft.Extensions.*.dll" })
+		{
+			foreach (var path in System.IO.Directory.EnumerateFiles(sourceDir, pattern))
+			{
+				var simple = System.IO.Path.GetFileNameWithoutExtension(path);
+				if (!alreadyLoaded.Contains(simple))
+				{
+					pickedFile = path;
+					break;
+				}
+			}
 
-		var loaded = AssemblyLoadContext.Default.Assemblies
-			.Any(a => !a.IsDynamic &&
-					  string.Equals(a.GetName().Name, "System.Text.Encodings.Web",
-									StringComparison.OrdinalIgnoreCase));
+			if (pickedFile is not null)
+			{
+				break;
+			}
+		}
 
-		loaded.Should().BeTrue(
-			"System.Text.Encodings.Web must appear in Default.Assemblies once resolved");
+		if (pickedFile is null)
+		{
+			Assert.Inconclusive(
+				"Could not find any System.*.dll or Microsoft.Extensions.*.dll under the test " +
+				"directory that is not already loaded in AssemblyLoadContext.Default. " +
+				"EagerLoadFromDirectory cannot be exercised on this runtime.");
+			return;
+		}
+
+		// Stage the picked file into an isolated temp directory so the helper
+		// has only one candidate to consider (keeps the assertion focused).
+		var tempDir = System.IO.Path.Combine(
+			System.IO.Path.GetTempPath(),
+			"uno-eager-load-test-" + Guid.NewGuid().ToString("N"));
+		System.IO.Directory.CreateDirectory(tempDir);
+		try
+		{
+			var stagedPath = System.IO.Path.Combine(tempDir, System.IO.Path.GetFileName(pickedFile));
+			System.IO.File.Copy(pickedFile, stagedPath);
+
+			var pickedSimpleName = System.IO.Path.GetFileNameWithoutExtension(pickedFile);
+
+			var loadedCount = HostAssemblyResolution.EagerLoadFromDirectory(tempDir);
+
+			loadedCount.Should().BeGreaterThan(0,
+				"the staged candidate '{0}' was not in Default.Assemblies and must be eager-loaded",
+				pickedSimpleName);
+
+			var nowPresent = AssemblyLoadContext.Default.Assemblies.Any(a =>
+				!a.IsDynamic &&
+				string.Equals(a.GetName().Name, pickedSimpleName, StringComparison.OrdinalIgnoreCase));
+
+			nowPresent.Should().BeTrue(
+				"'{0}' must appear in Default.Assemblies after EagerLoadFromDirectory",
+				pickedSimpleName);
+		}
+		finally
+		{
+			try
+			{
+				System.IO.Directory.Delete(tempDir, recursive: true);
+			}
+			catch
+			{
+				/* best-effort cleanup */
+			}
+		}
 	}
 
 	// ------------------------------------------------------------------ helpers
@@ -69,7 +131,12 @@ public class Given_HostAssemblyResolution
 
 		if (field is null)
 		{
-			// Fallback: we cannot introspect — return 0 to avoid a false failure.
+			// We cannot introspect the Resolving delegate on this runtime.
+			// Refuse to silently return 0 — that would let a regression in
+			// Install()'s idempotency slip through unnoticed.
+			Assert.Inconclusive(
+				"Cannot reflect the Resolving handler field on AssemblyLoadContext " +
+				"on this runtime; idempotency assertion is not verifiable here.");
 			return 0;
 		}
 

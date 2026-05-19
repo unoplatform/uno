@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
-using Uno.UI.RemoteControl.Host.Helpers;
+using System.Threading;
 
-namespace Uno.UI.RemoteControl.Helpers;
+namespace Uno.UI.RemoteControl.Host.Helpers;
 
 /// <summary>
 /// Isolated <see cref="AssemblyLoadContext"/> shared by all DevServer add-ins.
@@ -24,6 +24,18 @@ namespace Uno.UI.RemoteControl.Helpers;
 /// </summary>
 internal sealed class AddInLoadContext : AssemblyLoadContext
 {
+	/// <summary>
+	/// Per-async-flow re-entrancy guard for step 2 (delegating to
+	/// <see cref="AssemblyLoadContext.Default"/>). If the host's
+	/// <c>Default.Resolving</c> handler ends up routing a probe back into this
+	/// context — directly or indirectly — we must not recurse into
+	/// <see cref="AssemblyLoadContext.LoadFromAssemblyName"/> on
+	/// <see cref="Default"/> again, otherwise we risk a StackOverflowException
+	/// or an opaque "already loading" failure. Skipping step 2 in that case
+	/// lets the call fall through to the add-in's private resolvers.
+	/// </summary>
+	private static readonly AsyncLocal<bool> s_inDefaultLoad = new();
+
 	private readonly AssemblyDependencyResolver[] _resolvers;
 
 	public AddInLoadContext(IEnumerable<string> addInPaths)
@@ -53,7 +65,7 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 				// per-DLL catch.
 				Console.Error.WriteLine(
 					$"Uno.UI.RemoteControl.Host: AssemblyDependencyResolver construction failed for '{path}' " +
-					$"({ex.GetType().Name}: {ex.Message}). Per-add-in dependency probing for this add-in will be skipped.");
+					$"({ex}). Per-add-in dependency probing for this add-in will be skipped.");
 			}
 		}
 		_resolvers = [.. resolvers];
@@ -104,29 +116,44 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 			// and the Default.Resolving handler in Program.cs. Asking by simple
 			// name alone could otherwise hand back a same-name-but-different-PKT
 			// assembly from TPA, which we'd never silently substitute elsewhere.
-			try
+			// Guard against re-entrancy: if Default's Resolving handler (or a
+			// downstream load) cycles back into this method, skip step 2 and
+			// fall through to the add-in's private resolvers.
+			if (!s_inDefaultLoad.Value)
 			{
-				var loaded = Default.LoadFromAssemblyName(new AssemblyName(name) { CultureInfo = assemblyName.CultureInfo });
-				var requestedToken = assemblyName.GetPublicKeyToken();
-				if (requestedToken is { Length: > 0 })
+				s_inDefaultLoad.Value = true;
+				try
 				{
-					var loadedToken = loaded.GetName().GetPublicKeyToken();
-					if (loadedToken is null || !loadedToken.AsSpan().SequenceEqual(requestedToken))
+					// We request by simple name + culture only — versionless / PKT-less
+					// — so the host's TPA can pick whichever copy it shipped (intent: let
+					// TPA resolution pick the host's version). The strong-name identity
+					// is validated explicitly below before we hand the assembly back.
+					var loaded = Default.LoadFromAssemblyName(new AssemblyName(name) { CultureInfo = assemblyName.CultureInfo });
+					var requestedToken = assemblyName.GetPublicKeyToken();
+					if (requestedToken is { Length: > 0 })
 					{
-						// PKT mismatch — fall through to the add-in's own resolvers
-						// rather than substituting across strong-name identities.
-						loaded = null;
+						var loadedToken = loaded.GetName().GetPublicKeyToken();
+						if (loadedToken is null || !loadedToken.AsSpan().SequenceEqual(requestedToken))
+						{
+							// PKT mismatch — fall through to the add-in's own resolvers
+							// rather than substituting across strong-name identities.
+							loaded = null;
+						}
+					}
+
+					if (loaded is not null)
+					{
+						return loaded;
 					}
 				}
-
-				if (loaded is not null)
+				catch (Exception ex) when (ex is FileNotFoundException or FileLoadException or BadImageFormatException)
 				{
-					return loaded;
+					/* not in host TPA, or found but rejected (strong-name / version / image mismatch) */
 				}
-			}
-			catch (Exception ex) when (ex is FileNotFoundException or FileLoadException or BadImageFormatException)
-			{
-				/* not in host TPA, or found but rejected (strong-name / version / image mismatch) */
+				finally
+				{
+					s_inDefaultLoad.Value = false;
+				}
 			}
 		}
 

@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 using System.Runtime.Loader;
-using Uno.UI.RemoteControl.Helpers;
+using Uno.UI.RemoteControl.Host.Helpers;
 
 namespace Uno.UI.RemoteControl.DevServer.Tests;
 
@@ -59,30 +59,66 @@ public class Given_AddInLoadContext
 	// ------------------------------------------------------------------ IsDynamic guard
 
 	[TestMethod]
-	[Description("Dynamic (reflection-emit) assemblies must not be returned by the bridge, even if their auto-generated name coincidentally matches an AssemblyRef.")]
-	public void Load_SkipsDynamicAssemblies_WhenBridging()
+	[Description("Even when a dynamic assembly is created with the same simple name as a real assembly in the same process, the bridge must return the static assembly and never the dynamic one.")]
+	public void TryBridgeBySimpleName_SkipsDynamicAssemblies_WhenCandidateIsDynamic()
 	{
-		// Create a dynamic assembly whose simple name matches a real one.
-		var dynamicName = "System.Text.Json";
-		var dynamicAsm = System.Reflection.Emit.AssemblyBuilder.DefineDynamicAssembly(
-			new AssemblyName(dynamicName),
+		var staticAsm = typeof(System.Text.Json.JsonDocument).Assembly;
+
+		// Create a dynamic assembly inside the Default ALC with the same simple
+		// name as the static target. AssemblyBuilder.DefineDynamicAssembly with
+		// AssemblyBuilderAccess.Run registers the dynamic assembly with the
+		// currently-executing ALC (Default for test code). The IsDynamic guard
+		// in TryBridgeBySimpleName must skip it so that the static assembly is
+		// returned, not the dynamic one.
+		_ = System.Reflection.Emit.AssemblyBuilder.DefineDynamicAssembly(
+			new AssemblyName(staticAsm.GetName().Name!),
 			System.Reflection.Emit.AssemblyBuilderAccess.Run);
 
-		dynamicAsm.IsDynamic.Should().BeTrue("sanity check on our test setup");
+		var requested = new AssemblyName("System.Text.Json");
+		requested.SetPublicKeyToken(staticAsm.GetName().GetPublicKeyToken());
 
-		// The actual System.Text.Json must be in Default.Assemblies.
-		var hostAssembly = typeof(System.Text.Json.JsonDocument).Assembly;
+		var result = HostAssemblyResolution.TryBridgeBySimpleName(AssemblyLoadContext.Default, requested);
 
-		var ctx = new AddInLoadContext(Array.Empty<string>());
-
-		// The bridge must return the real assembly, not the dynamic one, despite the name match.
-		// (The dynamic assembly isn't in Default.Assemblies unless we loaded it, but Load
-		// iterates Default.Assemblies and the IsDynamic guard must skip it if it were there.)
-		var loaded = ctx.LoadFromAssemblyName(new AssemblyName("System.Text.Json"));
-
-		loaded.Should().BeSameAs(hostAssembly, "dynamic assemblies must never be returned by the bridge");
-		loaded!.IsDynamic.Should().BeFalse("returned assembly must not be a dynamic assembly");
+		result.Should().NotBeNull("the static assembly is present in Default.Assemblies");
+		result!.IsDynamic.Should().BeFalse(
+			"the bridge must never return a dynamic assembly even when one with a matching simple name exists");
+		result.Should().BeSameAs(staticAsm,
+			"the bridge must return the static assembly when a same-named dynamic one is present");
 	}
+
+	// ------------------------------------------------------------------ step 1 bridges without engaging Default.Resolving
+
+	[TestMethod]
+	[Description("Step 1 must satisfy a host-loaded AssemblyRef directly from Default.Assemblies without delegating to AssemblyLoadContext.Default.Resolving (proving the bridge short-circuits before the fallback).")]
+	public void Load_Step1_BridgesHostAssembly_WithoutGoingThroughDefaultResolving()
+	{
+		// Force the assembly into Default.Assemblies (well-known host assembly).
+		var hostAssembly = typeof(Microsoft.Extensions.DependencyInjection.IServiceCollection).Assembly;
+
+		var resolvingCount = 0;
+		ResolveEventHandlerNoop counter = (ctx, req) =>
+		{
+			Interlocked.Increment(ref resolvingCount);
+			return null;
+		};
+		AssemblyLoadContext.Default.Resolving += counter.Invoke;
+		try
+		{
+			var ctx = new AddInLoadContext(Array.Empty<string>());
+			var loaded = ctx.LoadFromAssemblyName(new AssemblyName("Microsoft.Extensions.DependencyInjection.Abstractions"));
+
+			loaded.Should().BeSameAs(hostAssembly,
+				"step 1 must bridge to the host's already-loaded instance");
+			resolvingCount.Should().Be(0,
+				"step 1 must satisfy the request without triggering Default.Resolving");
+		}
+		finally
+		{
+			AssemblyLoadContext.Default.Resolving -= counter.Invoke;
+		}
+	}
+
+	private delegate Assembly? ResolveEventHandlerNoop(AssemblyLoadContext context, AssemblyName name);
 
 	// ------------------------------------------------------------------ null / miss
 

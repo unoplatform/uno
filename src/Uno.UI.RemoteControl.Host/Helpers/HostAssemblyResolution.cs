@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
@@ -14,12 +14,26 @@ namespace Uno.UI.RemoteControl.Host.Helpers;
 internal static class HostAssemblyResolution
 {
 	/// <summary>
-	/// 0 = not installed, 1 = installed.  Written once via
+	/// 0 = handler not subscribed, 1 = handler subscribed.  Written once via
 	/// <see cref="System.Threading.Interlocked.CompareExchange(ref int, int, int)"/>
-	/// so <see cref="Install"/> is safe to call from multiple threads or from
-	/// test fixtures that share the process-wide <see cref="AssemblyLoadContext.Default"/>.
+	/// so <see cref="Install"/> can subscribe the <c>Resolving</c> handler exactly
+	/// once even when called from multiple threads or from test fixtures that
+	/// share the process-wide <see cref="AssemblyLoadContext.Default"/>.
 	/// </summary>
-	private static int s_installed;
+	private static int s_handlerInstalled;
+
+	/// <summary>
+	/// Trusted public key tokens accepted by <see cref="EagerLoadFromDirectory"/>.
+	/// Eager-loading an assembly whose PKT does not match one of these emits a
+	/// stderr warning (the assembly is still loaded — there is no .NET API to
+	/// unload it — but the <see cref="TryBridgeBySimpleName"/> guards prevent
+	/// returning a non-Microsoft assembly for a signed Microsoft request).
+	/// </summary>
+	private static readonly byte[][] s_trustedPkts =
+	[
+		[0xb0, 0x3f, 0x5f, 0x7f, 0x11, 0xd5, 0x0a, 0x3a], // Microsoft (b03f5f7f11d50a3a)
+		[0xcc, 0x7b, 0x13, 0xff, 0xcd, 0x2d, 0xdd, 0x51], // corefx / dotnet (cc7b13ffcd2ddd51)
+	];
 
 	/// <summary>
 	/// Installs the cross-major-version assembly-resolution safety net on
@@ -29,6 +43,13 @@ internal static class HostAssemblyResolution
 	/// <remarks>
 	/// Idempotent: calling this method more than once (e.g. from unit tests that
 	/// share the same process) registers the <c>Resolving</c> handler exactly once.
+	/// The eager-load pass is also safe to repeat because it filters out
+	/// already-loaded assemblies by simple name.
+	/// <para>
+	/// The kill switch <c>UNO_DEVSERVER_DISABLE_ADDIN_ALC=1</c> short-circuits
+	/// this method entirely, leaving <see cref="AssemblyLoadContext.Default"/>
+	/// untouched.
+	/// </para>
 	/// </remarks>
 	/// <param name="hostDir">
 	/// Optional override for the directory from which DLLs are eager-loaded.
@@ -36,15 +57,23 @@ internal static class HostAssemblyResolution
 	/// </param>
 	internal static void Install(string? hostDir = null)
 	{
-		// CAS from 0 → 1: if the exchange returns anything other than 0 another
-		// caller already ran Install(), so bail out immediately (lock-free).
-		if (System.Threading.Interlocked.CompareExchange(ref s_installed, 1, 0) != 0)
+		// Operator-facing kill switch: disables both the Resolving handler and
+		// the eager-load pass. Useful to bisect production issues that may have
+		// been introduced by the add-in isolation work.
+		if (Environment.GetEnvironmentVariable("UNO_DEVSERVER_DISABLE_ADDIN_ALC") == "1")
 		{
 			return;
 		}
 
-		AssemblyLoadContext.Default.Resolving += static (ctx, req) =>
-			TryBridgeBySimpleName(ctx, req);
+		// Subscribe the Resolving handler exactly once (lock-free CAS). The
+		// flag protects ONLY the subscription; the eager-load pass is gated
+		// independently by the per-simple-name dedup inside the loop so it
+		// remains safe to run on repeated Install() calls.
+		if (System.Threading.Interlocked.CompareExchange(ref s_handlerInstalled, 1, 0) == 0)
+		{
+			AssemblyLoadContext.Default.Resolving += static (ctx, req) =>
+				TryBridgeBySimpleName(ctx, req);
+		}
 
 		var resolvedHostDir = hostDir
 			?? System.IO.Path.GetDirectoryName(typeof(HostAssemblyResolution).Assembly.Location)
@@ -53,6 +82,43 @@ internal static class HostAssemblyResolution
 		if (string.IsNullOrEmpty(resolvedHostDir))
 		{
 			return;
+		}
+
+		// Best-effort eager-load: IO / reflection errors must never crash the
+		// host startup path. The handler subscribed above remains the primary
+		// safety net even when this fails.
+		try
+		{
+			EagerLoadFromDirectory(resolvedHostDir);
+		}
+		catch (Exception ex)
+		{
+			Console.Error.WriteLine(
+				$"Uno.UI.RemoteControl.Host: eager-load from '{resolvedHostDir}' failed " +
+				$"({ex.GetType().Name}: {ex.Message}).");
+		}
+	}
+
+	/// <summary>
+	/// Eager-loads <c>System.*.dll</c> and <c>Microsoft.Extensions.*.dll</c>
+	/// from <paramref name="hostDir"/> into <see cref="AssemblyLoadContext.Default"/>.
+	/// </summary>
+	/// <remarks>
+	/// Idempotent: assemblies already present in <see cref="AssemblyLoadContext.Default"/>
+	/// (by simple name) are skipped, and individual load failures are
+	/// swallowed with a stderr breadcrumb. After a successful load the assembly's
+	/// public key token is validated against <see cref="s_trustedPkts"/>; a
+	/// mismatch only emits a warning because .NET provides no API to unload
+	/// from <see cref="AssemblyLoadContext.Default"/>. The <see cref="TryBridgeBySimpleName"/>
+	/// PKT guard prevents such an assembly from being substituted for a signed
+	/// Microsoft request later.
+	/// </remarks>
+	/// <returns>The number of assemblies successfully eager-loaded by this call.</returns>
+	internal static int EagerLoadFromDirectory(string hostDir)
+	{
+		if (string.IsNullOrEmpty(hostDir) || !System.IO.Directory.Exists(hostDir))
+		{
+			return 0;
 		}
 
 		// Build a set of simple names already loaded so we can skip duplicates.
@@ -67,8 +133,11 @@ internal static class HostAssemblyResolution
 
 		// Discover System.* and Microsoft.Extensions.* DLLs in the host directory.
 		var candidates =
-			System.IO.Directory.EnumerateFiles(resolvedHostDir, "System.*.dll")
-			.Concat(System.IO.Directory.EnumerateFiles(resolvedHostDir, "Microsoft.Extensions.*.dll"));
+			System.IO.Directory.EnumerateFiles(hostDir, "System.*.dll")
+			.Concat(System.IO.Directory.EnumerateFiles(hostDir, "Microsoft.Extensions.*.dll"));
+
+		var loaded = 0;
+		var failed = 0;
 
 		foreach (var path in candidates)
 		{
@@ -80,10 +149,28 @@ internal static class HostAssemblyResolution
 
 			try
 			{
-				AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
+				var asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
+
+				// DLL-planting defence: if a file matching our System.* /
+				// Microsoft.Extensions.* glob is signed with a non-trusted PKT
+				// (or unsigned), warn loudly. We cannot unload it, but
+				// TryBridgeBySimpleName's PKT symmetry guard means a signed
+				// Microsoft request will still refuse to bridge to this
+				// assembly.
+				var pkt = asm.GetName().GetPublicKeyToken();
+				if (!IsTrustedPkt(pkt))
+				{
+					Console.Error.WriteLine(
+						$"Uno.UI.RemoteControl.Host: eager-loaded '{simpleName}' from '{path}' has an " +
+						$"untrusted public key token. Cross-boundary type identity for this assembly " +
+						"will be refused by the bridge.");
+				}
+
+				loaded++;
 			}
 			catch (Exception ex)
 			{
+				failed++;
 				Console.Error.WriteLine(
 					$"Uno.UI.RemoteControl.Host: eager-load of '{simpleName}' failed " +
 					$"({ex.GetType().Name}: {ex.Message}). " +
@@ -91,7 +178,20 @@ internal static class HostAssemblyResolution
 					"FileNotFoundException at runtime.");
 			}
 		}
+
+		if (loaded + failed > 0)
+		{
+			Console.Error.WriteLine(
+				$"Uno.UI.RemoteControl.Host: eager-loaded {loaded} assemblies from '{hostDir}' " +
+				$"({failed} failures).");
+		}
+
+		return loaded;
 	}
+
+	private static bool IsTrustedPkt(byte[]? pkt) =>
+		pkt is { Length: > 0 } &&
+		s_trustedPkts.Any(t => t.AsSpan().SequenceEqual(pkt));
 
 
 	/// <summary>
