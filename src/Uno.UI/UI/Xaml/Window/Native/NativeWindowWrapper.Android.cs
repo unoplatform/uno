@@ -345,7 +345,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 		public bool OnPreDraw()
 		{
-			if (_windowWrapper._contentViewAttachedToWindow)
+			if (_windowWrapper._contentViewAttachedToWindow
+				&& MUX.ApplicationActivity.Instance?.FirstFrameRendered == true)
 			{
 				_windowWrapper.RemovePreDrawListener();
 				return true;

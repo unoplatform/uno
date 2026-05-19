@@ -44,10 +44,18 @@ namespace Uno.UI.Runtime.Skia {
 			BrowserRenderer.invalidate(this);
 		}
 
+		// Schedules a callback to run on the next requestAnimationFrame.
+		// Used to align FrameTick (layout + render) to vsync.
+		static scheduleOnAnimationFrame(callback: () => void) {
+			window.requestAnimationFrame(() => callback());
+		}
+
 		static invalidate(instance: BrowserRenderer) {
-			window.requestAnimationFrame(() => {
-				instance.requestRender();
-			});
+			// Render synchronously — FrameTick already runs inside a RAF callback
+			// (via ScheduleFrameCallback → scheduleOnAnimationFrame), so the draw
+			// happens within the same animation frame. Using another RAF here would
+			// defer the draw to the next vsync, halving the effective frame rate.
+			instance.requestRender();
 		}
 	}
 }

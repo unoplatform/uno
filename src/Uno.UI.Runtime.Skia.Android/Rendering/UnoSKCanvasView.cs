@@ -16,7 +16,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Foundation.Logging;
-using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
 using Windows.Graphics.Display;
 
@@ -216,6 +215,17 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 			// else : we already drew directly on the OpenGL-backed canvas
 
 			_context!.Flush();
+
+			if (!ApplicationActivity.Instance.FirstFrameRendered)
+			{
+				ApplicationActivity.Instance.FirstFrameRendered = true;
+				// Post invalidation to trigger OnPreDraw re-evaluation so the splash can dismiss
+				ApplicationActivity.RelativeLayout?.Post(() =>
+					ApplicationActivity.RelativeLayout?.Invalidate());
+			}
+
+			// Render throttle is disabled on Android (Choreographer provides pacing),
+			// so OnFramePresented is not needed here. See AndroidSkiaXamlRootHost.
 		}
 
 		void IRenderer.OnSurfaceChanged(IGL10? gl, int width, int height)

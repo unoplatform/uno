@@ -128,14 +128,15 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		// only start listening to events after we're done setting everything up
 		InitializeX11EventsThread();
-		_framePacer = CreateFramePacer();
-		_renderThread = InitRenderThread();
+		InitializeRenderThread();
 
 		var windowBackgroundDisposable = _window.RegisterBackgroundChangedEvent((_, _) => UpdateRendererBackground());
 		UpdateRendererBackground();
 
 		Closed.ContinueWith(_ =>
 		{
+			_renderThread?.Dispose();
+			_renderThread = null;
 			using (X11Helper.XLock(RootX11Window.Display))
 			{
 				XamlRootMap.Unregister(xamlRoot);
@@ -143,8 +144,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
 				winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
 				windowBackgroundDisposable.Dispose();
-				_framePacer.Dispose();
-				_renderRequested.Dispose();
 				_renderer?.Dispose();
 			}
 		});
@@ -322,23 +321,20 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	{
 		lock (_x11WindowToXamlRootHostMutex)
 		{
-			if (!_x11WindowToXamlRootHost.Remove(x11window, out var host))
+			if (_x11WindowToXamlRootHost.Remove(x11window, out var host))
+			{
+				using (X11Helper.XLock(x11window.Display))
+				{
+					host._closed.SetResult();
+				}
+			}
+			else
 			{
 				if (typeof(X11XamlRootHost).Log().IsEnabled(LogLevel.Error))
 				{
 					typeof(X11XamlRootHost).Log().Error($"{nameof(Close)} could not find X11Window {x11window}");
 				}
-				return;
 			}
-
-			// The rendering thread needs to be stopped before we destroy the window,
-			// otherwise we might end up in a situation where the render thread is
-			// trying to render on a destroyed window.
-			host._renderLoopRunning = false;
-			host._renderRequested.Set(); // wake up the render loop so it can see that it needs to exit
-			host._renderThread.Join();
-
-			host._closed.SetResult();
 		}
 	}
 
@@ -380,26 +376,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		IntPtr rootXWindow = XLib.XRootWindow(display, screen);
 		_x11Window = CreateSoftwareRenderWindow(display, screen, size, rootXWindow);
 		var topWindowDisplay = XLib.XOpenDisplay(IntPtr.Zero);
-		if (FeatureConfiguration.Rendering.UseVulkanOnX11)
-		{
-			try
-			{
-				_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-				_renderer = X11VulkanRenderer.Create(this, TopX11Window);
-			}
-			catch (Exception e)
-			{
-				this.Log().Info($"Vulkan rendering not available: {e.Message}. Falling back to OpenGL.");
-				if (_x11TopWindow is not null)
-				{
-					_ = XLib.XDestroyWindow(_x11TopWindow.Value.Display, _x11TopWindow.Value.Window);
-					_x11TopWindow = null;
-				}
-				_renderer = null;
-			}
-		}
-
-		if (_renderer is null && (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? true))
+		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? true)
 		{
 			try
 			{
@@ -449,13 +426,10 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				}
 			}
 		}
-		if (_renderer is null)
+		else
 		{
 			this.Log().Info($"Forcing software rendering.");
-			if (_x11TopWindow is null)
-			{
-				_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-			}
+			_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
 			_renderer = new X11SoftwareRenderer(this, TopX11Window);
 		}
 
