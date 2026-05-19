@@ -236,6 +236,167 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11926")]
+		public async Task When_ListView_ItemTemplate_DataContext_Preserved_After_ContentTemplate_Change()
+		{
+			var expectedItems = new[] { "Apple", "Banana", "Cherry" };
+			var viewModel = new ListViewDataContextViewModel { Items = expectedItems };
+
+			ListView capturedListView = null;
+
+			var listViewTemplate = new DataTemplate(() =>
+			{
+				var lv = new ListView();
+				capturedListView = lv;
+				lv.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Path = new PropertyPath("Items") });
+				lv.ItemTemplate = new DataTemplate(() =>
+				{
+					var border = new Border();
+					border.SetBinding(FrameworkElement.DataContextProperty, new Binding());
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+					border.Child = tb;
+					return border;
+				});
+				return lv;
+			});
+
+			var itemsControlTemplate = new DataTemplate(() =>
+			{
+				var ic = new ItemsControl();
+				ic.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Path = new PropertyPath("Items") });
+				ic.ItemTemplate = new DataTemplate(() =>
+				{
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+					return tb;
+				});
+				return ic;
+			});
+
+			var contentControl = new ContentControl
+			{
+				HorizontalAlignment = HorizontalAlignment.Stretch,
+				HorizontalContentAlignment = HorizontalAlignment.Stretch,
+				ContentTemplate = listViewTemplate,
+			};
+			contentControl.SetBinding(ContentControl.ContentProperty, new Binding());
+
+			var grid = new Grid { DataContext = viewModel };
+			grid.Children.Add(contentControl);
+
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForLoaded(grid);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(capturedListView, "ListView should have been created by template");
+			await WindowHelper.WaitFor(() => capturedListView.Items.Count == 3, message: "ListView should have 3 items initially");
+
+			// Switch to ItemsControl template
+			contentControl.ContentTemplate = itemsControlTemplate;
+			await WindowHelper.WaitForIdle();
+
+			// Switch back to ListView template — captures a fresh ListView reference
+			capturedListView = null;
+			contentControl.ContentTemplate = listViewTemplate;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(capturedListView, "ListView should have been recreated by template");
+			await WindowHelper.WaitFor(() => capturedListView.Items.Count == 3, message: "ListView should still have 3 items after template switch");
+
+			// Each container's DataContext should still be the original string item, not the ViewModel
+			for (int i = 0; i < expectedItems.Length; i++)
+			{
+				var index = i;
+				var container = await WindowHelper.WaitForNonNull(
+					() => capturedListView.ContainerFromIndex(index) as ListViewItem,
+					message: $"Container {index} should exist after template switch");
+				Assert.AreEqual(
+					expectedItems[index],
+					container.DataContext,
+					$"Item[{index}] DataContext was altered. Expected '{expectedItems[index]}' but got: {container.DataContext?.GetType().Name}: '{container.DataContext}'");
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11926")]
+		public async Task When_ItemsControl_Items_Order_Preserved_After_ContentTemplate_Toggle()
+		{
+			var expectedItems = new[] { "First", "Second", "Third" };
+			var viewModel = new ListViewDataContextViewModel { Items = expectedItems };
+
+			ItemsControl capturedItemsControl = null;
+
+			var listViewTemplate = new DataTemplate(() =>
+			{
+				var lv = new ListView();
+				lv.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Path = new PropertyPath("Items") });
+				lv.ItemTemplate = new DataTemplate(() =>
+				{
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+					return tb;
+				});
+				return lv;
+			});
+
+			var itemsControlTemplate = new DataTemplate(() =>
+			{
+				var ic = new ItemsControl();
+				capturedItemsControl = ic;
+				ic.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Path = new PropertyPath("Items") });
+				ic.ItemTemplate = new DataTemplate(() =>
+				{
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+					return tb;
+				});
+				return ic;
+			});
+
+			var contentControl = new ContentControl
+			{
+				HorizontalAlignment = HorizontalAlignment.Stretch,
+				HorizontalContentAlignment = HorizontalAlignment.Stretch,
+				ContentTemplate = listViewTemplate,
+			};
+			contentControl.SetBinding(ContentControl.ContentProperty, new Binding());
+
+			var grid = new Grid { DataContext = viewModel };
+			grid.Children.Add(contentControl);
+
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForLoaded(grid);
+			await WindowHelper.WaitForIdle();
+
+			// Switch to ItemsControl template
+			capturedItemsControl = null;
+			contentControl.ContentTemplate = itemsControlTemplate;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(capturedItemsControl, "ItemsControl should have been created");
+			await WindowHelper.WaitFor(() => capturedItemsControl.Items.Count == 3, message: "ItemsControl should have 3 items");
+
+			// Toggle back and forth (2x as described in the issue)
+			contentControl.ContentTemplate = listViewTemplate;
+			await WindowHelper.WaitForIdle();
+
+			capturedItemsControl = null;
+			contentControl.ContentTemplate = itemsControlTemplate;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(capturedItemsControl, "ItemsControl should have been recreated after double toggle");
+			await WindowHelper.WaitFor(() => capturedItemsControl.Items.Count == 3, message: "ItemsControl should have 3 items after double toggle");
+
+			// Items should be in original order: First, Second, Third
+			Assert.AreEqual(expectedItems[0], capturedItemsControl.Items[0], "First item order must be preserved");
+			Assert.AreEqual(expectedItems[1], capturedItemsControl.Items[1], "Second item order must be preserved");
+			Assert.AreEqual(expectedItems[2], capturedItemsControl.Items[2], "Third item order must be preserved");
+		}
+
 		private class SignInViewModel
 		{
 			public string UserName { get; set; } = "Steve";
@@ -260,6 +421,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public IEnumerable<Item> Items => _items;
 
 			public int SelectedIndex { get; set; } = 1;
+		}
+
+		private class ListViewDataContextViewModel
+		{
+			public string[] Items { get; set; }
 		}
 	}
 }
