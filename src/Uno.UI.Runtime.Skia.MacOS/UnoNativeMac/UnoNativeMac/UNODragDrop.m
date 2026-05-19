@@ -104,13 +104,25 @@ static void fill_drag_drop_data(struct DragDropData* data, NSView* view, id<NSDr
     }
 
     NSString *html = [pb stringForType:NSPasteboardTypeHTML];
-    if (html) data->htmlContent = strdup(html.UTF8String);
+    if (html) {
+        const char* c = html.UTF8String;
+        if (c) data->htmlContent = strdup(c);
+    }
     NSString *rtf = [pb stringForType:NSPasteboardTypeRTF];
-    if (rtf) data->rtfContent = strdup(rtf.UTF8String);
+    if (rtf) {
+        const char* c = rtf.UTF8String;
+        if (c) data->rtfContent = strdup(c);
+    }
     NSString *text = [pb stringForType:NSPasteboardTypeString];
-    if (text) data->textContent = strdup(text.UTF8String);
+    if (text) {
+        const char* c = text.UTF8String;
+        if (c) data->textContent = strdup(c);
+    }
     NSString *url = [pb stringForType:NSPasteboardTypeURL];
-    if (url) data->uri = strdup(url.UTF8String);
+    if (url) {
+        const char* c = url.UTF8String;
+        if (c) data->uri = strdup(c);
+    }
 
     // image drops: prefer a file path if a file URL was provided (avoids loading into memory)
     if (data->fileCount == 0) {
