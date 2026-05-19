@@ -81,6 +81,21 @@ internal unsafe struct NativeDragDropData
 	public byte* BitmapPath;
 }
 
+// keep in sync with UNODragDrop.h (struct DragSourceData)
+[StructLayout(LayoutKind.Sequential)]
+internal unsafe struct NativeDragSourceData
+{
+	public uint AllowedOperations; // bit flags matching DataPackageOperation
+	public byte* TextContent;
+	public byte* HtmlContent;
+	public byte* RtfContent;
+	public byte* Uri;
+	public byte** FileUrls;
+	public uint FileCount;
+	public byte* BitmapData;
+	public uint BitmapSize;
+}
+
 [CustomMarshaller(typeof(NativeClipboardData), MarshalMode.Default, typeof(ClipboardDataMarshaller))]
 internal static unsafe class ClipboardDataMarshaller
 {
@@ -372,6 +387,14 @@ internal static partial class NativeUno
 		delegate* unmanaged[Cdecl]<nint, NativeDragDropData*, uint> updated,
 		delegate* unmanaged[Cdecl]<nint, NativeDragDropData*, uint> exited,
 		delegate* unmanaged[Cdecl]<nint, NativeDragDropData*, uint> performed);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_drag_drop_set_session_ended_callback(
+		delegate* unmanaged[Cdecl]<nint, uint, void> endedCallback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static unsafe partial bool uno_drag_start(nint window, NativeDragSourceData* data);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_window_register_for_drag_drop(nint window);
