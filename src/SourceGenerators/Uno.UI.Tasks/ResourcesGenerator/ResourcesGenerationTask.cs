@@ -44,6 +44,13 @@ public class ResourcesGenerationTask_v0 : Task
 	[Output]
 	public ITaskItem[] GeneratedFiles { get; set; }
 
+	/// <summary>
+	/// Set to <see langword="true"/> when at least one output file was written during this execution.
+	/// MSBuild targets can use this to decide whether to update a stamp file.
+	/// </summary>
+	[Output]
+	public bool OutputsChanged { get; private set; }
+
 	public override bool Execute()
 	{
 		Log.LogMessage($"Generating resources for platform : {TargetPlatform}");
@@ -153,6 +160,7 @@ public class ResourcesGenerationTask_v0 : Task
 			TraceLog($"Writing resources to {actualTargetPath} ({qualifiedResourceMapName})");
 
 			UnoPRIResourcesWriter.Write(qualifiedResourceMapName, language, resources, actualTargetPath, comment);
+			OutputsChanged = true;
 		}
 		else
 		{
@@ -183,6 +191,7 @@ public class ResourcesGenerationTask_v0 : Task
 			TraceLog($"Writing resources to {actualTargetPath}");
 
 			iOSResourcesWriter.Write(resources, actualTargetPath, comment);
+			OutputsChanged = true;
 		}
 		else
 		{
@@ -236,6 +245,7 @@ public class ResourcesGenerationTask_v0 : Task
 			TraceLog($"Writing resources to {actualTargetPath}");
 
 			AndroidResourcesWriter.Write(resources, actualTargetPath, comment);
+			OutputsChanged = true;
 		}
 		else
 		{
