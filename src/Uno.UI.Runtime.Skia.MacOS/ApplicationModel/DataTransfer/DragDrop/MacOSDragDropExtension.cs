@@ -3,6 +3,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Text;
 
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop;
@@ -10,6 +11,7 @@ using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.System;
+using Windows.UI.Core;
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
@@ -31,6 +33,9 @@ internal partial class MacOSDragDropExtension : IDragDropExtension
 	private readonly MacOSWindowHost _host;
 	private readonly nint _windowHandle;
 
+	// A single outbound session per window at a time — AppKit only supports one drag session per view.
+	private Action<DataPackageOperation>? _pendingDragCompletion;
+
 	public MacOSDragDropExtension(DragDropManager manager)
 	{
 		_manager = manager ?? throw new ArgumentNullException(nameof(manager));
@@ -51,18 +56,203 @@ internal partial class MacOSDragDropExtension : IDragDropExtension
 		if (Interlocked.Exchange(ref _callbacksRegistered, 1) == 0)
 		{
 			NativeUno.uno_drag_drop_set_callbacks(&OnDragEntered, &OnDragUpdated, &OnDragExited, &OnDragPerformed);
+			NativeUno.uno_drag_drop_set_session_ended_callback(&OnDragSessionEnded);
 		}
 	}
 
 	public void StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> onCompleted)
 	{
-		// Outbound drags initiated from Uno content are not yet implemented for the macOS Skia head,
-		// matching the current behavior of the Win32 and X11 Skia heads.
-		if (this.Log().IsEnabled(LogLevel.Warning))
+		// AppKit's beginDraggingSession must run on the main thread and be called from
+		// a mouse-event context, which is the case when DragOperation hands us control.
+		_ = CoreDispatcher.Main.RunAsync(
+			CoreDispatcherPriority.High,
+			async () =>
+			{
+				try
+				{
+					await StartNativeDragCoreAsync(info, onCompleted);
+				}
+				catch (Exception e)
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error("Failed to start native drag on macOS Skia.", e);
+					}
+					CompleteWith(onCompleted, DataPackageOperation.None);
+				}
+			});
+	}
+
+	private async Task StartNativeDragCoreAsync(CoreDragInfo info, Action<DataPackageOperation> onCompleted)
+	{
+		var view = info.Data;
+
+		string? text = view.Contains(StandardDataFormats.Text) ? await view.GetTextAsync() : null;
+		string? html = view.Contains(StandardDataFormats.Html) ? await view.GetHtmlFormatAsync() : null;
+		string? rtf = view.Contains(StandardDataFormats.Rtf) ? await view.GetRtfAsync() : null;
+
+		var uri = DataPackage.CombineUri(
+			view.Contains(StandardDataFormats.WebLink) ? (await view.GetWebLinkAsync()).ToString() : null,
+			view.Contains(StandardDataFormats.ApplicationLink) ? (await view.GetApplicationLinkAsync()).ToString() : null,
+			view.Contains(StandardDataFormats.Uri) ? (await view.GetUriAsync()).ToString() : null);
+
+		byte[]? bitmapBytes = null;
+		if (view.Contains(StandardDataFormats.Bitmap))
 		{
-			this.Log().Warn($"{nameof(StartNativeDrag)} is not implemented on macOS Skia.");
+			try
+			{
+				var streamRef = await view.GetBitmapAsync();
+				await using var stream = (await streamRef.OpenReadAsync()).AsStream();
+				using var ms = new MemoryStream();
+				await stream.CopyToAsync(ms);
+				bitmapBytes = ms.ToArray();
+			}
+			catch (Exception e) when (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn("Failed to read bitmap from drag DataPackage.", e);
+			}
 		}
-		onCompleted(DataPackageOperation.None);
+
+		string[] filePaths = Array.Empty<string>();
+		if (view.Contains(StandardDataFormats.StorageItems))
+		{
+			try
+			{
+				var items = await view.GetStorageItemsAsync();
+				var paths = new List<string>(items.Count);
+				foreach (var item in items)
+				{
+					if (!string.IsNullOrEmpty(item.Path))
+					{
+						paths.Add(item.Path);
+					}
+				}
+				filePaths = paths.ToArray();
+			}
+			catch (Exception e) when (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn("Failed to read StorageItems from drag DataPackage.", e);
+			}
+		}
+
+		// Replace any previous unanswered completion — AppKit would have already
+		// ended the prior session before a new one could start here.
+		_pendingDragCompletion = onCompleted;
+
+		var started = StartNativeDragUnsafe(info.AllowedOperations, text, html, rtf, string.IsNullOrEmpty(uri) ? null : uri, filePaths, bitmapBytes);
+		if (!started)
+		{
+			_pendingDragCompletion = null;
+			CompleteWith(onCompleted, DataPackageOperation.None);
+		}
+	}
+
+	private unsafe bool StartNativeDragUnsafe(DataPackageOperation allowed, string? text, string? html, string? rtf, string? uri, string[] filePaths, byte[]? bitmapBytes)
+	{
+		byte* textPtr = null, htmlPtr = null, rtfPtr = null, uriPtr = null, bitmapPtr = null;
+		byte** fileUrlsPtr = null;
+		var allocatedFileUrls = 0;
+		try
+		{
+			textPtr = Utf8Alloc(text);
+			htmlPtr = Utf8Alloc(html);
+			rtfPtr = Utf8Alloc(rtf);
+			uriPtr = Utf8Alloc(uri);
+
+			if (bitmapBytes is { Length: > 0 })
+			{
+				bitmapPtr = (byte*)NativeMemory.Alloc((nuint)bitmapBytes.Length);
+				fixed (byte* src = bitmapBytes)
+				{
+					NativeMemory.Copy(src, bitmapPtr, (nuint)bitmapBytes.Length);
+				}
+			}
+
+			if (filePaths.Length > 0)
+			{
+				fileUrlsPtr = (byte**)NativeMemory.Alloc((nuint)(filePaths.Length * sizeof(nint)));
+				for (var i = 0; i < filePaths.Length; i++)
+				{
+					fileUrlsPtr[i] = Utf8Alloc(filePaths[i])!;
+					allocatedFileUrls++;
+				}
+			}
+
+			var data = new NativeDragSourceData
+			{
+				AllowedOperations = (uint)allowed,
+				TextContent = textPtr,
+				HtmlContent = htmlPtr,
+				RtfContent = rtfPtr,
+				Uri = uriPtr,
+				FileUrls = fileUrlsPtr,
+				FileCount = (uint)filePaths.Length,
+				BitmapData = bitmapPtr,
+				BitmapSize = bitmapBytes is null ? 0u : (uint)bitmapBytes.Length,
+			};
+
+			return NativeUno.uno_drag_start(_windowHandle, &data);
+		}
+		finally
+		{
+			if (textPtr != null) NativeMemory.Free(textPtr);
+			if (htmlPtr != null) NativeMemory.Free(htmlPtr);
+			if (rtfPtr != null) NativeMemory.Free(rtfPtr);
+			if (uriPtr != null) NativeMemory.Free(uriPtr);
+			if (bitmapPtr != null) NativeMemory.Free(bitmapPtr);
+			if (fileUrlsPtr != null)
+			{
+				for (var i = 0; i < allocatedFileUrls; i++)
+				{
+					if (fileUrlsPtr[i] != null)
+					{
+						NativeMemory.Free(fileUrlsPtr[i]);
+					}
+				}
+				NativeMemory.Free(fileUrlsPtr);
+			}
+		}
+	}
+
+	private static unsafe byte* Utf8Alloc(string? s)
+	{
+		if (string.IsNullOrEmpty(s))
+		{
+			return null;
+		}
+		var byteCount = Encoding.UTF8.GetByteCount(s);
+		var buffer = (byte*)NativeMemory.Alloc((nuint)(byteCount + 1));
+		fixed (char* chars = s)
+		{
+			Encoding.UTF8.GetBytes(chars, s.Length, buffer, byteCount);
+		}
+		buffer[byteCount] = 0;
+		return buffer;
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnDragSessionEnded(nint windowHandle, uint operation)
+	{
+		try
+		{
+			var extension = Get(windowHandle);
+			var completion = extension?._pendingDragCompletion;
+			if (extension is not null)
+			{
+				extension._pendingDragCompletion = null;
+			}
+			completion?.Invoke((DataPackageOperation)operation);
+		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	private static void CompleteWith(Action<DataPackageOperation> onCompleted, DataPackageOperation op)
+	{
+		try { onCompleted(op); }
+		catch (Exception e) { Application.Current.RaiseRecoverableUnhandledException(e); }
 	}
 
 	private static MacOSDragDropExtension? Get(nint handle)

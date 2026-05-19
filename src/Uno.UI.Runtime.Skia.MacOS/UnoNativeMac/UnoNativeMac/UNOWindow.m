@@ -291,6 +291,16 @@ NSWindow* uno_app_get_main_window(void)
     return uno_drag_drop_handle_performed(self, sender);
 }
 
+#pragma mark - NSDraggingSource
+
+- (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
+    return uno_drag_source_operation_mask(self, context);
+}
+
+- (void)draggingSession:(NSDraggingSession *)session endedAtPoint:(NSPoint)screenPoint operation:(NSDragOperation)operation {
+    uno_drag_source_session_ended(self, operation);
+}
+
 @end
 
 NSWindow* uno_window_create(double width, double height)

@@ -188,7 +188,7 @@ The table and sections below describe supported functionality and limitations fo
 | Android               | No                                               | No                                              |
 | iOS                   | No                                               | No                                              |
 | Wasm                  | No                                               | Yes (Text, Link, Image, File, Html, Rtf)        |
-| macOS                 | Yes (Text, Link, Image, Html, Rtf)               | Yes (Text, Link, Image, File, Html, Rtf)        |
+| Skia macOS            | Yes (Text, Link, Bitmap, File, Html, Rtf)        | Yes (Text, Link, File, Html, Rtf)               |
 | Skia Desktop (Windows) | Yes (Text, Link, Image, File, Html, Rtf)         | Yes (Text, Link, Image, File, Html, Rtf)        |
 | Skia Linux            | No                                               | No                                              |
 
@@ -201,10 +201,11 @@ The table and sections below describe supported functionality and limitations fo
    Any attempt to read it before the `Drop` will result into a timeout exception after a hard coded delay of 10 seconds.
 2. When dragging some uris from external app to uno, only the first uri will be accessible through the **WebLink** standard format ID.
 
-#### macOS Limitations
+#### Skia macOS Limitations
 
-1. Dragging a File (StorageItem) from an Uno Platform App to an external destination is not currently supported.
-2. When receiving a drop within an Uno Platform App from an external source, key modifiers are not supported
+1. Outbound drag operations do not render a custom drag image from `DragUI.Content`; macOS uses the dragged payload (file icon, bitmap, or a default placeholder) instead.
+2. Image content is not extracted from external drop sources into the `DataPackage`.
+3. Only the `Shift` and `Control` key modifiers are reported during a drop from an external source; `Alt` / `Windows` modifiers are ignored.
 
 #### Skia Limitations
 
