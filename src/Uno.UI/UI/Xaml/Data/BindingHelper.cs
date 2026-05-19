@@ -29,7 +29,7 @@ namespace Uno.UI.Xaml
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Binding SetBindingXBindProvider(Binding binding, object compiledSource, Func<object, (bool, object)> xBindSelector, Action<object, object>? xBindBack, Type? sourceType, string[]? propertyPaths = null)
+		public static Binding SetBindingXBindProvider(Binding binding, object compiledSource, Func<object, (bool, object)> xBindSelector, Action<object, object>? xBindBack, Type? sourceType, string[]? propertyPaths)
 		{
 			binding.SetBindingXBindProvider(compiledSource, xBindSelector, xBindBack, sourceType, propertyPaths);
 			return binding;

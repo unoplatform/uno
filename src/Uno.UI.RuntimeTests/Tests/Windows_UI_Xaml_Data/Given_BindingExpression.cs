@@ -1,8 +1,9 @@
-using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Combinatorial.MSTest;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.Disposables;
@@ -659,4 +660,69 @@ public class Given_BindingExpression
 		Assert.AreEqual(XBindTestEnum.World, root.EnumValue,
 			"Backward conversion should correctly parse the string to the enum value");
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/7174")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21402")]
+	public async Task When_XamlReader_Binding_TwoWay_Enum_Converter_ConvertBack_Receives_Correct_TargetType()
+	{
+		// Regression guard for the {Binding} workaround documented in #21402:
+		// XamlReader-loaded XAML with TwoWay {Binding} + Converter on an enum
+		// source property must propagate the enum type to ConvertBack via the
+		// binding path. This is the path the issue's workaround relies on.
+		var xaml = """
+			<Page xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				  xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data">
+				<Page.Resources>
+					<local:XBindEnumToStringConverter x:Key="EnumConverter" />
+				</Page.Resources>
+				<TextBox x:Name="tbEnum"
+						 Text="{Binding EnumValue, Mode=TwoWay, Converter={StaticResource EnumConverter}}" />
+			</Page>
+			""";
+
+		var page = (Page)XamlReader.Load(xaml);
+		var vm = new XamlReaderEnumBindingTestViewModel();
+		page.DataContext = vm;
+
+		TestServices.WindowHelper.WindowContent = page;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var tbEnum = (TextBox)page.FindName("tbEnum");
+		var converter = (XBindEnumToStringConverter)page.Resources["EnumConverter"];
+
+		Assert.AreEqual("Hello", tbEnum.Text, "Forward conversion should produce enum name string");
+
+		tbEnum.Text = "World";
+		await TestServices.WindowHelper.WaitForIdle();
+		tbEnum.GetBindingExpression(TextBox.TextProperty).UpdateSource();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(typeof(XBindTestEnum), converter.LastConvertBackTargetType,
+			"ConvertBack should receive the enum type as targetType for plain {Binding}");
+		Assert.AreEqual(XBindTestEnum.World, vm.EnumValue,
+			"Backward conversion should correctly parse the string to the enum value");
+	}
+}
+
+public sealed class XamlReaderEnumBindingTestViewModel : INotifyPropertyChanged
+{
+	private XBindTestEnum _enumValue = XBindTestEnum.Hello;
+
+	public XBindTestEnum EnumValue
+	{
+		get => _enumValue;
+		set
+		{
+			if (_enumValue != value)
+			{
+				_enumValue = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EnumValue)));
+			}
+		}
+	}
+
+	public event PropertyChangedEventHandler PropertyChanged;
 }
