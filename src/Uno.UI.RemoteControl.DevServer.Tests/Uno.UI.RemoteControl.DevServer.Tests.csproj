@@ -76,6 +76,9 @@
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\HealthReportFactory.cs" Link="Mcp\HealthReportFactory.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\McpJsonUtilities.cs" Link="Mcp\McpJsonUtilities.cs" />
 
+		<!-- Link add-in load-context helpers for unit testing -->
+		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\AddInLoadContext.cs" Link="Helpers\AddInLoadContext.cs" />
+
 		<!-- Link ConfigurationExtensions for add-in value parsing tests -->
 		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\ConfigurationExtensions.cs" Link="Helpers\ConfigurationExtensions.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.Host\IDEChannel\IIdeChannelManager.cs" Link="IDEChannel\IIdeChannelManager.cs" />
@@ -100,13 +103,17 @@
 		<ProjectReference Include="..\Uno.UI.RemoteControl.TestProcessor\Uno.UI.RemoteControl.TestProcessor.csproj" ReferenceOutputAssembly="false" />
 
 		<!--
-			Add-in test fixture, intentionally net8.0 and referenced only so CI
-			restore picks it up. The fixture's compile graph stays decoupled
-			from this project (Fixtures\** is removed from default globs above)
-			and the actual build + output staging is driven by the
-			_BuildAndCopyAddInTestFixtures target below, not by this reference.
+			Add-in test fixtures. Referenced only so CI restore picks them up; the
+			actual build + output staging is driven by _BuildAndCopyAddInTestFixtures
+			below. Fixtures\** is removed from default globs above so their compile
+			graphs stay decoupled from this project.
 		-->
 		<ProjectReference Include="Fixtures\AddInWithCrossMajorVersionRefs\AddInWithCrossMajorVersionRefs.csproj"
+		                  ReferenceOutputAssembly="false"
+		                  SkipGetTargetFrameworkProperties="true"
+		                  UndefineProperties="TargetFramework"
+		                  Private="false" />
+		<ProjectReference Include="Fixtures\AddInWithDiServiceRegistration\AddInWithDiServiceRegistration.csproj"
 		                  ReferenceOutputAssembly="false"
 		                  SkipGetTargetFrameworkProperties="true"
 		                  UndefineProperties="TargetFramework"
@@ -120,39 +127,47 @@
 	</ItemGroup>
 
 	<!--
-		Build the cross-major-version-refs add-in test fixture and stage its
-		output under $(OutDir)Fixtures\ so DevServerTests can hand its path to
-		the host via the add-ins CLI flag. See Fixtures\AddInWithCrossMajorVersionRefs.
+		Build all add-in test fixtures and stage their output under $(OutDir)Fixtures\
+		so DevServerTests can hand paths to the host via the addins CLI flag.
 
-		Done via MSBuild task (not ProjectReference) so the fixture's net8.0
-		TargetFramework stays decoupled from this test project's NetCurrent
-		TFM negotiation and from its compile / AssemblyInfo graph.
+		Done via MSBuild task (not ProjectReference) so each fixture's TargetFramework
+		stays decoupled from this test project's NetCurrent TFM negotiation and from
+		its compile / AssemblyInfo graph.
+
+		Each fixture's full bin directory is staged (not just the main DLL) so
+		AssemblyDependencyResolver inside AddInLoadContext has a real dep graph to
+		consult (EnableDynamicLoading drops private NuGet payloads next to the DLL).
 	-->
 	<Target Name="_BuildAndCopyAddInTestFixtures" BeforeTargets="Build">
+
+		<!-- AddInWithCrossMajorVersionRefs: net8.0 fixture with v8 AssemblyRefs -->
 		<MSBuild Projects="Fixtures\AddInWithCrossMajorVersionRefs\AddInWithCrossMajorVersionRefs.csproj"
 		         Properties="Configuration=$(Configuration)"
 		         Targets="Build"
 		         RemoveProperties="TargetFramework">
-			<Output TaskParameter="TargetOutputs" ItemName="_AddInTestFixtureOutput" />
+			<Output TaskParameter="TargetOutputs" ItemName="_CrossMajorFixtureOutput" />
 		</MSBuild>
-
-		<!--
-			Stage the *entire* fixture bin contents (not just the main DLL / PDB
-			/ deps.json) so the per-add-in AssemblyDependencyResolver branch in
-			AddInLoadContext.Load has a real graph to consult. EnableDynamicLoading
-			on the fixture also drops private NuGet payloads next to its main
-			DLL (e.g. Microsoft.Extensions.DependencyInjection.Abstractions.dll
-			v8.0.0.0); those need to ship to the test bin too, otherwise the
-			deps.json paths the resolver returns don't actually exist on disk
-			and step 3 of AddInLoadContext.Load can't serve add-in-private
-			assemblies.
-		-->
 		<ItemGroup>
-			<_AddInTestFixtureBinFiles Include="%(_AddInTestFixtureOutput.RootDir)%(_AddInTestFixtureOutput.Directory)**\*" />
+			<_CrossMajorFixtureBinFiles Include="%(_CrossMajorFixtureOutput.RootDir)%(_CrossMajorFixtureOutput.Directory)**\*" />
 		</ItemGroup>
-		<Copy SourceFiles="@(_AddInTestFixtureBinFiles)"
+		<Copy SourceFiles="@(_CrossMajorFixtureBinFiles)"
 		      DestinationFolder="$(OutDir)Fixtures\AddInWithCrossMajorVersionRefs\%(RecursiveDir)"
 		      SkipUnchangedFiles="true" />
+
+		<!-- AddInWithDiServiceRegistration: net9.0 fixture for DI cross-ALC validation -->
+		<MSBuild Projects="Fixtures\AddInWithDiServiceRegistration\AddInWithDiServiceRegistration.csproj"
+		         Properties="Configuration=$(Configuration)"
+		         Targets="Build"
+		         RemoveProperties="TargetFramework">
+			<Output TaskParameter="TargetOutputs" ItemName="_DiFixtureOutput" />
+		</MSBuild>
+		<ItemGroup>
+			<_DiFixtureBinFiles Include="%(_DiFixtureOutput.RootDir)%(_DiFixtureOutput.Directory)**\*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(_DiFixtureBinFiles)"
+		      DestinationFolder="$(OutDir)Fixtures\AddInWithDiServiceRegistration\%(RecursiveDir)"
+		      SkipUnchangedFiles="true" />
+
 	</Target>
 
 </Project>

@@ -1,4 +1,4 @@
-using Uno.UI.RemoteControl.DevServer.Tests.Helpers;
+﻿using Uno.UI.RemoteControl.DevServer.Tests.Helpers;
 
 namespace Uno.UI.RemoteControl.DevServer.Tests;
 
@@ -100,6 +100,117 @@ public class DevServerTests
 		started.Should().BeTrue("dev server should start successfully");
 		helper.IsRunning.Should().BeFalse("dev server should not be running after stopping");
 	}
+
+	// ------------------------------------------------------------------ DI cross-ALC baseline
+
+	[TestMethod]
+	[Retry(2, MillisecondsDelayBetweenRetries = 1000)]
+	[Description("Baseline: an add-in loaded into AddInLoadContext must be able to register services via [ServiceCollectionExtension], proving IServiceCollection bridges to the host's instance.")]
+	public async Task DevServer_ShouldInvokeServiceRegistrationCtor_WhenAddInDeclaresServiceCollectionExtension()
+	{
+		var testAssemblyDir = Path.GetDirectoryName(typeof(DevServerTests).Assembly.Location)!;
+		var fixtureDll = Path.Combine(
+			testAssemblyDir, "Fixtures", "AddInWithDiServiceRegistration", "AddInWithDiServiceRegistration.dll");
+
+		File.Exists(fixtureDll).Should()
+			.BeTrue("DI service-registration fixture must be staged by _BuildAndCopyAddInTestFixtures");
+
+		var ctorSentinel = Path.Combine(Path.GetTempPath(), $"di-ctor-{Guid.NewGuid():N}.txt");
+		try
+		{
+			await using var helper = new DevServerTestHelper(
+				_logger,
+				environmentVariables: new Dictionary<string, string>
+				{
+					["UNO_DEVSERVER_TEST_DI_CTOR_SENTINEL"] = ctorSentinel,
+				});
+
+			try
+			{
+				var started = await helper.StartAsync(CT, extraArgs: $"--addins \"{fixtureDll}\"");
+				helper.EnsureStarted();
+
+				started.Should().BeTrue("dev server should start with the DI fixture add-in loaded");
+				helper.AssertRunning();
+
+				// The fixture's ServicesRegistration.ctor writes this sentinel when called.
+				// If IServiceCollection didn't bridge to the host's instance, Activator.CreateInstance
+				// would throw ArgumentException and the host would log the error without invoking the ctor.
+				File.Exists(ctorSentinel).Should().BeTrue(
+					"ServicesRegistration.ctor must have been invoked, proving IServiceCollection Type-identity across the ALC boundary");
+			}
+			finally
+			{
+				await helper.StopAsync(CT);
+			}
+		}
+		finally
+		{
+			if (File.Exists(ctorSentinel))
+			{
+				File.Delete(ctorSentinel);
+			}
+		}
+	}
+
+	[TestMethod]
+	[Retry(2, MillisecondsDelayBetweenRetries = 1000)]
+	[Description("Baseline: an add-in's IHostedService must be started by ASP.NET Core's host, and the hosted service must be able to resolve add-in-defined types from the shared IServiceProvider.")]
+	public async Task DevServer_ShouldStartHostedService_WhenAddInRegistersIHostedService()
+	{
+		var testAssemblyDir = Path.GetDirectoryName(typeof(DevServerTests).Assembly.Location)!;
+		var fixtureDll = Path.Combine(
+			testAssemblyDir, "Fixtures", "AddInWithDiServiceRegistration", "AddInWithDiServiceRegistration.dll");
+
+		File.Exists(fixtureDll).Should()
+			.BeTrue("DI service-registration fixture must be staged by _BuildAndCopyAddInTestFixtures");
+
+		var hostedSentinel = Path.Combine(Path.GetTempPath(), $"di-hosted-{Guid.NewGuid():N}.txt");
+		try
+		{
+			await using var helper = new DevServerTestHelper(
+				_logger,
+				environmentVariables: new Dictionary<string, string>
+				{
+					["UNO_DEVSERVER_TEST_DI_HOSTED_SENTINEL"] = hostedSentinel,
+				});
+
+			try
+			{
+				var started = await helper.StartAsync(CT, extraArgs: $"--addins \"{fixtureDll}\"");
+				helper.EnsureStarted();
+
+				started.Should().BeTrue("dev server should start with the DI fixture add-in loaded");
+				helper.AssertRunning();
+
+				// The fixture's TestHostedService.StartAsync writes the count of ITestToken
+				// registrations to this sentinel.  Proving:
+				//   (a) IHostedService bridged correctly (service was picked up and started by ASP.NET Core)
+				//   (b) IServiceProvider bridged correctly (service received the host's provider)
+				//   (c) ServiceDescriptors survive the ALC boundary (GetServices<ITestToken> finds 2)
+				File.Exists(hostedSentinel).Should().BeTrue(
+					"TestHostedService.StartAsync must have been invoked, proving IHostedService and IServiceProvider Type-identity across the ALC boundary");
+
+				var countText = File.ReadAllText(hostedSentinel).Trim();
+				int.TryParse(countText, out var tokenCount).Should().BeTrue("sentinel must contain a numeric token count");
+				tokenCount.Should().Be(2,
+					"ServicesRegistration.ctor registered exactly 2 ITestToken implementations; GetServices must find both");
+			}
+			finally
+			{
+				await helper.StopAsync(CT);
+			}
+		}
+		finally
+		{
+			if (File.Exists(hostedSentinel))
+			{
+				File.Delete(hostedSentinel);
+			}
+		}
+	}
+
+	// ------------------------------------------------------------------ cross-major version regression (#23287)
 
 	[TestMethod]
 	[Retry(2, MillisecondsDelayBetweenRetries = 1000)]
