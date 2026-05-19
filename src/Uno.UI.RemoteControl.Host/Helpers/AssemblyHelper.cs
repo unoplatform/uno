@@ -43,7 +43,7 @@ public class AssemblyHelper
 			{
 				try
 				{
-					_log.Log(LogLevel.Debug, $"Loading add-in assembly '{dll}'.");
+					_log.LogDebug("Loading add-in assembly {Dll}.", dll);
 
 					// Load the top-level add-in by file path so the caller's
 					// specific DLL is always what ends up in the context — going
@@ -59,7 +59,7 @@ public class AssemblyHelper
 				catch (Exception err)
 				{
 					failedCount++;
-					_log.Log(LogLevel.Error, $"Failed to load assembly '{dll}'.", err);
+					_log.LogError(err, "Failed to load assembly {Dll}.", dll);
 					results.Add(new AssemblyLoadResult(dll, null, err));
 
 					if (throwIfLoadFailed)
