@@ -63,13 +63,15 @@ namespace Uno.UI.Tests.BinderTests
 				Converter = myTestConverter
 			};
 
-			// This simulates old x:Bind code generation without source type
+			// This simulates old x:Bind code generation without source type.
+			// Using `propertyPaths: null` to bind unambiguously to the 5-arg overload
+			// (the new overload that adds `sourceType` is the 6-arg one).
 			BindingHelper.SetBindingXBindProvider(
 				binding,
 				enumSource, // compiled source
 				ctx => (true, enumSource.Value), // getter
 				(ctx, value) => enumSource.Value = (TestEnum)Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(TestEnum), value), // setter
-				null // property paths - no sourceType provided
+				propertyPaths: null
 			);
 
 			SUT.SetBinding(MyControl.MyPropertyProperty, binding);
