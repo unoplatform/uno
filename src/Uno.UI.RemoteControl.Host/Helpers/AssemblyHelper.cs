@@ -34,8 +34,6 @@ public class AssemblyHelper
 	{
 		var startTime = Stopwatch.GetTimestamp();
 
-		telemetry?.TrackEvent("addin-loading-start", default(Dictionary<string, string>), null);
-
 		var results = ImmutableList.CreateBuilder<AssemblyLoadResult>();
 		var failedCount = 0;
 
@@ -47,6 +45,8 @@ public class AssemblyHelper
 			{
 				return ImmutableList<AssemblyLoadResult>.Empty;
 			}
+
+			telemetry?.TrackEvent("addin-loading-start", default(Dictionary<string, string>), null);
 
 			// Kill switch: revert to the legacy Assembly.LoadFrom behaviour so operators
 			// can bisect regressions introduced by the add-in isolation work without

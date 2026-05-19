@@ -31,12 +31,6 @@ namespace Uno.UI.RemoteControl.Host
 	{
 		static async Task Main(string[] args)
 		{
-			// Must run before anything else in Main so the Resolving handler and
-			// the eager-loaded shared-framework OOB instances are in place before
-			// ASP.NET Core / Kestrel / add-in load triggers the first
-			// cross-major-version AssemblyRef lookup.
-			HostAssemblyResolution.Install();
-
 			var startTime = Stopwatch.GetTimestamp();
 
 			ITelemetry? telemetry = null;
@@ -46,6 +40,12 @@ namespace Uno.UI.RemoteControl.Host
 
 			try
 			{
+				// Must run before anything else so the Resolving handler and
+				// the eager-loaded shared-framework OOB instances are in place before
+				// ASP.NET Core / Kestrel / add-in load triggers the first
+				// cross-major-version AssemblyRef lookup.
+				HostAssemblyResolution.Install();
+
 				var switchMappings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
 				{
 					["-c"] = "command",

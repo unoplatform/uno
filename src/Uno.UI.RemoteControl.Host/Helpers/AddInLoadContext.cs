@@ -128,7 +128,7 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 					// — so the host's TPA can pick whichever copy it shipped (intent: let
 					// TPA resolution pick the host's version). The strong-name identity
 					// is validated explicitly below before we hand the assembly back.
-					var loaded = Default.LoadFromAssemblyName(new AssemblyName(name) { CultureInfo = assemblyName.CultureInfo });
+					Assembly? loaded = Default.LoadFromAssemblyName(new AssemblyName(name) { CultureInfo = assemblyName.CultureInfo });
 					var requestedToken = assemblyName.GetPublicKeyToken();
 					if (requestedToken is { Length: > 0 })
 					{
