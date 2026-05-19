@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>$(NetPrevious)</TargetFramework>
+		<OutputType>Exe</OutputType>
+		<RollForward>Major</RollForward>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+		<NoWarn>$(NoWarn);CS1591;NU1903;NU1902</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Appium.WebDriver" Version="5.2.0" />
+		<PackageReference Include="AwesomeAssertions" />
+		<PackageReference Include="NunitXml.TestLogger" />
+		<PackageReference Include="NUnit" />
+		<PackageReference Include="NUnit3TestAdapter" />
+	</ItemGroup>
+
+</Project>
