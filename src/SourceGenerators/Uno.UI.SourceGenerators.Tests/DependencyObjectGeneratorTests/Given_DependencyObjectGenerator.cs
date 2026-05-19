@@ -11,7 +11,7 @@ using Uno.UI.SourceGenerators.Tests.Verifiers;
 
 namespace Uno.UI.SourceGenerators.Tests.DependencyObjectGeneratorTests;
 
-using Verify = CSharpSourceGeneratorVerifier<DependencyObjectGenerator>;
+using Verify = CSharpIncrementalSourceGeneratorVerifier<DependencyObjectGenerator>;
 
 [TestClass]
 public class Given_DependencyObjectGenerator
