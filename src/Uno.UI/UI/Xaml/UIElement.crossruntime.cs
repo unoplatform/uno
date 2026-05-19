@@ -64,6 +64,10 @@ namespace Microsoft.UI.Xaml
 				contextFlyout.SetVisualTree(visualTree);
 			}
 
+			// Re-propagate DataContext to mentored children (e.g., ContextFlyout).
+			// Their DataContext may have been cleared during a previous unload cycle.
+			((IDependencyObjectStoreProvider)this).Store.RepropagateMentoredChildrenDataContext();
+
 			OnFwEltLoaded();
 			UpdateHitTest();
 		}
@@ -76,6 +80,11 @@ namespace Microsoft.UI.Xaml
 		internal void OnElementUnloaded()
 		{
 			IsLoaded = false;
+
+			// Clear inherited DataContext on mentored children (e.g., ContextFlyout)
+			// to break the reference chain FlyoutBase → DataContext → ViewModel.
+			// This prevents memory leaks when shared flyouts outlive their placement targets.
+			((IDependencyObjectStoreProvider)this).Store.ClearMentoredChildrenDataContext();
 
 			OnFwEltUnloaded();
 			UpdateHitTest();
