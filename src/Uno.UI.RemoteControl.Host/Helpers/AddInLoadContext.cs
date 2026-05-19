@@ -106,7 +106,7 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 			// assembly from TPA, which we'd never silently substitute elsewhere.
 			try
 			{
-				var loaded = Default.LoadFromAssemblyName(new AssemblyName(name));
+				var loaded = Default.LoadFromAssemblyName(new AssemblyName(name) { CultureInfo = assemblyName.CultureInfo });
 				var requestedToken = assemblyName.GetPublicKeyToken();
 				if (requestedToken is { Length: > 0 })
 				{
@@ -124,9 +124,10 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 					return loaded;
 				}
 			}
-			catch (FileNotFoundException) { /* not in host TPA */ }
-			catch (FileLoadException) { /* found in TPA but rejected (e.g. strong-name / version mismatch) */ }
-			catch (BadImageFormatException) { /* found in TPA but unloadable image */ }
+			catch (Exception ex) when (ex is FileNotFoundException or FileLoadException or BadImageFormatException)
+			{
+				/* not in host TPA, or found but rejected (strong-name / version / image mismatch) */
+			}
 		}
 
 		// 3. Plugin-private dependency — try each registered add-in's deps.json.

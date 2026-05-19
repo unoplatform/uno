@@ -45,7 +45,8 @@ internal static class HostAssemblyResolution
 			TryBridgeBySimpleName(ctx, req);
 
 		var resolvedHostDir = hostDir
-			?? System.IO.Path.GetDirectoryName(typeof(HostAssemblyResolution).Assembly.Location);
+			?? System.IO.Path.GetDirectoryName(typeof(HostAssemblyResolution).Assembly.Location)
+			?? AppContext.BaseDirectory;
 
 		if (string.IsNullOrEmpty(resolvedHostDir))
 		{

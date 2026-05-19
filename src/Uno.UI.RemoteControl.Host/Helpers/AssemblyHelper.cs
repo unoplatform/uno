@@ -39,6 +39,11 @@ public class AssemblyHelper
 				? new AddInLoadContext(distinctDlls)
 				: null;
 
+			if (loadContext is null)
+			{
+				return ImmutableList<AssemblyLoadResult>.Empty;
+			}
+
 			foreach (var dll in distinctDlls)
 			{
 				try
@@ -52,7 +57,7 @@ public class AssemblyHelper
 					// and could silently substitute a host-loaded assembly if the
 					// add-in's simple name happened to collide. Transitive deps
 					// still flow through that override as intended.
-					var assembly = loadContext!.LoadFromAssemblyPath(dll);
+					var assembly = loadContext.LoadFromAssemblyPath(dll);
 
 					results.Add(new AssemblyLoadResult(dll, assembly, null));
 				}
