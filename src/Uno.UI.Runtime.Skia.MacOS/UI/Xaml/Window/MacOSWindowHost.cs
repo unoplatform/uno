@@ -208,6 +208,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 	SkiaAccessibilityBase? IAccessibilityOwner.Accessibility => _accessibility;
 
+	internal nint NativeWindowHandle => _nativeWindow.Handle;
+
 	internal void InitializeAccessibility()
 	{
 		if (_accessibility is not null || _nativeWindow.Handle == nint.Zero)

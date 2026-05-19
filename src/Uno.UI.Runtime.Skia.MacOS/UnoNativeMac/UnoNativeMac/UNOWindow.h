@@ -372,7 +372,7 @@ ime_set_marked_text_callback_fn_ptr uno_get_ime_set_marked_text_callback(void);
 ime_unmark_text_callback_fn_ptr uno_get_ime_unmark_text_callback(void);
 ime_get_caret_rect_callback_fn_ptr uno_get_ime_get_caret_rect_callback(void);
 
-@interface UNOMetalFlippedView : MTKView <NSTextInputClient>
+@interface UNOMetalFlippedView : MTKView <NSTextInputClient, NSDraggingDestination>
 
 @property(getter=isFlipped, readonly) BOOL flipped;
 
@@ -380,6 +380,11 @@ ime_get_caret_rect_callback_fn_ptr uno_get_ime_get_caret_rect_callback(void);
 
 @property (nonatomic) BOOL imeActive;
 @property (nonatomic, readonly) BOOL keyEventHandledByIME;
+
+- (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender;
+- (NSDragOperation)draggingUpdated:(id<NSDraggingInfo>)sender;
+- (void)draggingExited:(nullable id<NSDraggingInfo>)sender;
+- (BOOL)performDragOperation:(id<NSDraggingInfo>)sender;
 
 @end
 

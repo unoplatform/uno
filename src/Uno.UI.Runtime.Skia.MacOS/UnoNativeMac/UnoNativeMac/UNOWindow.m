@@ -7,6 +7,7 @@
 #import "UNOApplication.h"
 #import "UNOSoftView.h"
 #import "UNOAccessibility.h"
+#import "UNODragDrop.h"
 
 static NSWindow *main_window;
 static NSMutableSet<NSWindow*> *windows;
@@ -272,6 +273,24 @@ NSWindow* uno_app_get_main_window(void)
     [super doCommandBySelector:selector];
 }
 
+#pragma mark - NSDraggingDestination
+
+- (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender {
+    return uno_drag_drop_handle_entered(self, sender);
+}
+
+- (NSDragOperation)draggingUpdated:(id<NSDraggingInfo>)sender {
+    return uno_drag_drop_handle_updated(self, sender);
+}
+
+- (void)draggingExited:(nullable id<NSDraggingInfo>)sender {
+    uno_drag_drop_handle_exited(self, sender);
+}
+
+- (BOOL)performDragOperation:(id<NSDraggingInfo>)sender {
+    return uno_drag_drop_handle_performed(self, sender);
+}
+
 @end
 
 NSWindow* uno_window_create(double width, double height)
@@ -316,6 +335,8 @@ NSWindow* uno_window_create(double width, double height)
     [center addObserver:windowDidChangeScreen selector:@selector(applicationDidChangeScreenParametersNotification:) name:NSApplicationDidChangeScreenParametersNotification object:window];
     
     [windows addObject:window];
+
+    uno_window_register_for_drag_drop(window);
 
     // do not show the window until activate has been called
     [window makeKeyWindow];
