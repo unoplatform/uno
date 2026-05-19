@@ -23,7 +23,11 @@ public class Given_AddInLoadContext
 		var hostAssembly = typeof(System.Text.Json.JsonDocument).Assembly;
 
 		var ctx = new AddInLoadContext(Array.Empty<string>());
-		var loaded = ctx.LoadFromAssemblyName(new AssemblyName("System.Text.Json"));
+		// PKT must be set so the symmetric PKT guard in step 1 accepts the bridge;
+		// an unsigned request would be refused for a strong-named loaded assembly.
+		var requested = new AssemblyName("System.Text.Json");
+		requested.SetPublicKeyToken(hostAssembly.GetName().GetPublicKeyToken());
+		var loaded = ctx.LoadFromAssemblyName(requested);
 
 		loaded.Should().BeSameAs(hostAssembly,
 			"System.Text.Json must bridge to the host's already-loaded instance");
@@ -36,7 +40,10 @@ public class Given_AddInLoadContext
 		var hostAssembly = typeof(ILogger).Assembly;
 
 		var ctx = new AddInLoadContext(Array.Empty<string>());
-		var loaded = ctx.LoadFromAssemblyName(new AssemblyName("Microsoft.Extensions.Logging.Abstractions"));
+		// PKT must be set so the symmetric PKT guard in step 1 accepts the bridge.
+		var requested = new AssemblyName("Microsoft.Extensions.Logging.Abstractions");
+		requested.SetPublicKeyToken(hostAssembly.GetName().GetPublicKeyToken());
+		var loaded = ctx.LoadFromAssemblyName(requested);
 
 		loaded.Should().BeSameAs(hostAssembly,
 			"ILogger assembly must bridge to the host's instance for log sinks to work across the boundary");
@@ -50,7 +57,10 @@ public class Given_AddInLoadContext
 		var hostAssembly = typeof(System.Text.Encodings.Web.JavaScriptEncoder).Assembly;
 
 		var ctx = new AddInLoadContext(Array.Empty<string>());
-		var loaded = ctx.LoadFromAssemblyName(new AssemblyName("System.Text.Encodings.Web"));
+		// PKT must be set so the symmetric PKT guard in step 1 accepts the bridge.
+		var requested = new AssemblyName("System.Text.Encodings.Web");
+		requested.SetPublicKeyToken(hostAssembly.GetName().GetPublicKeyToken());
+		var loaded = ctx.LoadFromAssemblyName(requested);
 
 		loaded.Should().BeSameAs(hostAssembly,
 			"System.Text.Encodings.Web must bridge to the host's instance regardless of which major version the add-in compiled against");
@@ -89,36 +99,33 @@ public class Given_AddInLoadContext
 	// ------------------------------------------------------------------ step 1 bridges without engaging Default.Resolving
 
 	[TestMethod]
-	[Description("Step 1 must satisfy a host-loaded AssemblyRef directly from Default.Assemblies without delegating to AssemblyLoadContext.Default.Resolving (proving the bridge short-circuits before the fallback).")]
+	[Description("Step 1 must bridge an assembly that is in Default.Assemblies but is NOT in TPA, proving step-1 is the active code path. " +
+		"If step-1 is absent, step-2 (TPA lookup) throws FileNotFoundException for non-framework assemblies, making the test genuinely non-vacuous.")]
 	public void Load_Step1_BridgesHostAssembly_WithoutGoingThroughDefaultResolving()
 	{
-		// Force the assembly into Default.Assemblies (well-known host assembly).
-		var hostAssembly = typeof(Microsoft.Extensions.DependencyInjection.IServiceCollection).Assembly;
+		// The test assembly is loaded into Default.Assemblies by the test runner, but it
+		// is NOT a TPA assembly — Default.LoadFromAssemblyName("...DevServer.Tests") will
+		// throw FileNotFoundException because TPA has no entry for it. Step-2 therefore
+		// cannot satisfy this request; only step-1 can. Removing the step-1 bridge in
+		// AddInLoadContext.Load causes ctx.LoadFromAssemblyName to throw here, turning
+		// this into a genuine red test.
+		//
+		// The test assembly is also unsigned (no PKT), which matches the unsigned-to-unsigned
+		// path of TryBridgeBySimpleName's PKT symmetry guard — step-1 correctly bridges
+		// unsigned requests to unsigned loaded assemblies.
+		var hostAssembly = typeof(Given_AddInLoadContext).Assembly;
+		AssemblyLoadContext.Default.Assemblies.Should().Contain(hostAssembly,
+			"the test assembly must be in Default.Assemblies for this test to be valid");
 
-		var resolvingCount = 0;
-		ResolveEventHandlerNoop counter = (ctx, req) =>
-		{
-			Interlocked.Increment(ref resolvingCount);
-			return null;
-		};
-		AssemblyLoadContext.Default.Resolving += counter.Invoke;
-		try
-		{
-			var ctx = new AddInLoadContext(Array.Empty<string>());
-			var loaded = ctx.LoadFromAssemblyName(new AssemblyName("Microsoft.Extensions.DependencyInjection.Abstractions"));
+		var requested = new AssemblyName(hostAssembly.GetName().Name!);
 
-			loaded.Should().BeSameAs(hostAssembly,
-				"step 1 must bridge to the host's already-loaded instance");
-			resolvingCount.Should().Be(0,
-				"step 1 must satisfy the request without triggering Default.Resolving");
-		}
-		finally
-		{
-			AssemblyLoadContext.Default.Resolving -= counter.Invoke;
-		}
+		var ctx = new AddInLoadContext(Array.Empty<string>());
+		var loaded = ctx.LoadFromAssemblyName(requested);
+
+		loaded.Should().BeSameAs(hostAssembly,
+			"step 1 must bridge to the host's already-loaded test assembly; " +
+			"without step-1, step-2 TPA lookup throws FileNotFoundException and this assertion is never reached");
 	}
-
-	private delegate Assembly? ResolveEventHandlerNoop(AssemblyLoadContext context, AssemblyName name);
 
 	// ------------------------------------------------------------------ null / miss
 
