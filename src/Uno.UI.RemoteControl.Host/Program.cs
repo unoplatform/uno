@@ -76,50 +76,7 @@ namespace Uno.UI.RemoteControl.Host
 			// only fires on FAILURE) and matches the lax-binding semantics
 			// developers used to get from binding redirects.
 			AssemblyLoadContext.Default.Resolving += static (context, requested) =>
-			{
-				if (requested.Name is not { } simpleName)
-				{
-					return null;
-				}
-
-				var requestedToken = requested.GetPublicKeyToken();
-
-				foreach (var loaded in context.Assemblies)
-				{
-					// Skip reflection-emitted / source-generator-emitted dynamic
-					// assemblies: their auto-generated names could coincidentally
-					// collide with a real AssemblyRef and we'd silently substitute
-					// them, producing confusing downstream TypeLoadException /
-					// MissingMethodException failures.
-					if (loaded.IsDynamic)
-					{
-						continue;
-					}
-
-					var loadedName = loaded.GetName();
-					if (!string.Equals(loadedName.Name, simpleName, StringComparison.OrdinalIgnoreCase))
-					{
-						continue;
-					}
-
-					// Only bridge between assemblies with the same strong-name
-					// identity (or both unsigned). Returning a differently-signed
-					// assembly would be a security-relevant identity swap, not a
-					// version-mismatch papered over.
-					if (requestedToken is { Length: > 0 })
-					{
-						var loadedToken = loadedName.GetPublicKeyToken();
-						if (loadedToken is null || !loadedToken.AsSpan().SequenceEqual(requestedToken))
-						{
-							continue;
-						}
-					}
-
-					return loaded;
-				}
-
-				return null;
-			};
+				HostAssemblyResolution.TryBridgeBySimpleName(context, requested);
 
 			// Eager-load shared-framework OOB assemblies most prone to
 			// cross-major-version requests *by file path* from the apphost

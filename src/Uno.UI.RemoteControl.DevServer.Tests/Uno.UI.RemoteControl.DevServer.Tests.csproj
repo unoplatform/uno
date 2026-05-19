@@ -1,4 +1,4 @@
-<Project Sdk="MSTest.Sdk/4.0.2">
+﻿<Project Sdk="MSTest.Sdk/4.0.2">
 
 	<PropertyGroup>
 		<TargetFramework>$(NetCurrent)</TargetFramework>
@@ -78,6 +78,7 @@
 
 		<!-- Link add-in load-context helpers for unit testing -->
 		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\AddInLoadContext.cs" Link="Helpers\AddInLoadContext.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\HostAssemblyResolution.cs" Link="Helpers\HostAssemblyResolution.cs" />
 
 		<!-- Link ConfigurationExtensions for add-in value parsing tests -->
 		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\ConfigurationExtensions.cs" Link="Helpers\ConfigurationExtensions.cs" />
