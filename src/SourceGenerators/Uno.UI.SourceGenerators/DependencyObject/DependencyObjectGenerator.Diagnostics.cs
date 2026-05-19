@@ -1,7 +1,5 @@
 ﻿#nullable enable
 
-using System;
-using System.Globalization;
 using Microsoft.CodeAnalysis;
 
 namespace Uno.UI.SourceGenerators.DependencyObject;
@@ -19,9 +17,4 @@ public partial class DependencyObjectGenerator
 		isEnabledByDefault: true,
 		helpLinkUri: "https://github.com/unoplatform/uno/issues/6758#issuecomment-898544729",
 		customTags: WellKnownDiagnosticTags.NotConfigurable);
-
-	private static void ReportDiagnostic(GeneratorExecutionContext context, Diagnostic diagnostic)
-	{
-		context.ReportDiagnostic(diagnostic);
-	}
 }
