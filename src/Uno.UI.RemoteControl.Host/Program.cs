@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
-using System.Runtime.Loader;
 using System.Runtime.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,111 +29,13 @@ namespace Uno.UI.RemoteControl.Host
 {
 	partial class Program
 	{
-		/// <summary>
-		/// Shared-framework OOB assemblies that the host eager-loads from the
-		/// apphost directory from <see cref="ConfigureAssemblyResolution"/>.
-		/// Anything in this list must satisfy two properties: (a) the bundled
-		/// DLL exists in the host's output directory (i.e. the SDK doesn't strip
-		/// it via PackageOverride), and (b) the host's own dependency graph or
-		/// the add-ins it loads can realistically embed a cross-major-version
-		/// AssemblyRef to it. Extend here as additional offenders are identified
-		/// (e.g. another OOB package referenced by ModelContextProtocol or by
-		/// future add-in payloads).
-		/// </summary>
-		private static readonly string[] s_eagerLoadedSharedAssemblyDllNames =
-		{
-			"System.Text.Json.dll",
-			"System.Text.Encodings.Web.dll",
-		};
-
-		/// <summary>
-		/// Install the cross-major-version assembly-resolution safety net used
-		/// by both the host process and the add-ins it loads. Called from the
-		/// top of <see cref="Main"/> rather than from a static constructor so
-		/// any failure surfaces as a normal exception (logged via stderr below)
-		/// instead of being wrapped in <see cref="TypeInitializationException"/>
-		/// the first time <see cref="Program"/> is touched.
-		/// </summary>
-		private static void ConfigureAssemblyResolution()
-		{
-			// The host process targets a specific .NET runtime, but its NuGet
-			// dependency graph (e.g. ModelContextProtocol 1.1.0) and the add-ins
-			// it loads (e.g. Microsoft.Kiota.* net8.0 binaries) can reference
-			// versions of shared framework OOB assemblies (System.Text.*,
-			// Microsoft.Extensions.*) that don't match what the runtime
-			// actually has loaded — typically a cross-major-version gap such as
-			// System.Text.Encodings.Web v8.0.0.0 (Kiota net8.0) or v10.0.0.0
-			// (compiled against net10 reference assemblies) against the host's
-			// v9.0.0.0 from Microsoft.NETCore.App 9.x.
-			//
-			// .NET Core/5+ removed app.config binding redirects, so the runtime
-			// fails such requests with FileNotFoundException by default. We
-			// reinstate the equivalent behaviour by handling the default ALC's
-			// Resolving event: when a request can't be satisfied by normal
-			// probing, fall back to any already-loaded assembly with the same
-			// simple name. This is invisible for well-behaved deps (Resolving
-			// only fires on FAILURE) and matches the lax-binding semantics
-			// developers used to get from binding redirects.
-			AssemblyLoadContext.Default.Resolving += static (context, requested) =>
-				HostAssemblyResolution.TryBridgeBySimpleName(context, requested);
-
-			// Eager-load shared-framework OOB assemblies most prone to
-			// cross-major-version requests *by file path* from the apphost
-			// directory. The Resolving handler above can only return assemblies
-			// already in the load context, so we have to populate it before any
-			// versioned request fires.
-			//
-			// Loading by AssemblyName instead would hit .NET 9's "platform
-			// assembly" override for System.Text.Encodings.Web — the framework's
-			// v9 instance is forced into TPA even when the host's deps.json (and
-			// bundled DLL) is v10 — and a simple-name load then fails outright.
-			// `typeof(...).Assembly` is also unsafe here: with this project
-			// built by the .NET 10 SDK, typeof emits a v10 AssemblyRef which
-			// would itself trigger the very FileNotFoundException we want to
-			// prevent. Loading the apphost-dir file directly avoids both traps
-			// and gives the Resolving handler a candidate to satisfy later
-			// versioned requests from add-ins (Kiota net8.0 → v8.0.0.0) and
-			// from the host's own deps (ModelContextProtocol 1.1.0 → v10.0.0.0)
-			// without forcing every add-in to ship its own copy.
-			var hostDir = Path.GetDirectoryName(typeof(Program).Assembly.Location);
-			if (!string.IsNullOrEmpty(hostDir))
-			{
-				foreach (var dllName in s_eagerLoadedSharedAssemblyDllNames)
-				{
-					var path = Path.Combine(hostDir, dllName);
-					if (!File.Exists(path))
-					{
-						continue;
-					}
-
-					try
-					{
-						AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
-					}
-					catch (Exception ex)
-					{
-						// Best effort: if the bundled file can't be loaded the
-						// Resolving handler simply won't have a candidate later
-						// and the original failure will surface as normal. Log a
-						// breadcrumb so a regression in this preload step doesn't
-						// silently disable the safety net — the host hasn't built
-						// its ILoggerFactory yet at this point, so write directly
-						// to stderr.
-						Console.Error.WriteLine(
-							$"Uno.UI.RemoteControl.Host: eager-load of '{dllName}' failed ({ex.GetType().Name}: {ex.Message}). " +
-							"Cross-major-version AssemblyRefs for this assembly may still throw FileNotFoundException at runtime.");
-					}
-				}
-			}
-		}
-
 		static async Task Main(string[] args)
 		{
 			// Must run before anything else in Main so the Resolving handler and
 			// the eager-loaded shared-framework OOB instances are in place before
 			// ASP.NET Core / Kestrel / add-in load triggers the first
 			// cross-major-version AssemblyRef lookup.
-			ConfigureAssemblyResolution();
+			HostAssemblyResolution.Install();
 
 			var startTime = Stopwatch.GetTimestamp();
 

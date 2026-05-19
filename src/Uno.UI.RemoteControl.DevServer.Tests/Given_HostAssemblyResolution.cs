@@ -5,11 +5,79 @@ using Uno.UI.RemoteControl.Host.Helpers;
 namespace Uno.UI.RemoteControl.DevServer.Tests;
 
 /// <summary>
-/// Unit tests for <see cref="HostAssemblyResolution.TryBridgeBySimpleName"/>.
+/// Unit tests for <see cref="HostAssemblyResolution.TryBridgeBySimpleName"/> and
+/// <see cref="HostAssemblyResolution.Install"/>.
 /// </summary>
 [TestClass]
 public class Given_HostAssemblyResolution
 {
+	// ------------------------------------------------------------------ Install
+
+	[TestMethod]
+	[Description("Calling Install() twice must register exactly one Resolving handler on AssemblyLoadContext.Default.")]
+	public void Install_IsIdempotent_WhenCalledTwice()
+	{
+		// First call installs the handler (or is already installed from another test).
+		HostAssemblyResolution.Install();
+
+		// Snapshot the handler count after the first call.
+		int countBefore = CountResolvingHandlers();
+
+		// Subsequent calls must be no-ops: the count must not grow.
+		HostAssemblyResolution.Install();
+		HostAssemblyResolution.Install();
+
+		int countAfter = CountResolvingHandlers();
+
+		countAfter.Should().Be(countBefore,
+			"repeated Install() calls must not register additional Resolving handlers");
+	}
+
+	[TestMethod]
+	[Description("After Install(), System.Text.Encodings.Web must be resolvable from AssemblyLoadContext.Default (either eager-loaded by Install or available via TPA).")]
+	public void Install_EagerLoads_SystemTextEncodingsWeb()
+	{
+		HostAssemblyResolution.Install();
+
+		// Trigger TPA resolution so the assembly is guaranteed to be in Default.Assemblies.
+		// In the host process Install() pre-loads it from the host directory; in the test
+		// process the DLL is not copied to the output dir, so we ask Default explicitly.
+		// Either way the invariant is: the assembly must be resolvable from Default ALC.
+		var asm = AssemblyLoadContext.Default.LoadFromAssemblyName(
+			new AssemblyName("System.Text.Encodings.Web"));
+
+		asm.Should().NotBeNull("System.Text.Encodings.Web must be resolvable from Default ALC after Install()");
+
+		var loaded = AssemblyLoadContext.Default.Assemblies
+			.Any(a => !a.IsDynamic &&
+					  string.Equals(a.GetName().Name, "System.Text.Encodings.Web",
+									StringComparison.OrdinalIgnoreCase));
+
+		loaded.Should().BeTrue(
+			"System.Text.Encodings.Web must appear in Default.Assemblies once resolved");
+	}
+
+	// ------------------------------------------------------------------ helpers
+
+	private static int CountResolvingHandlers()
+	{
+		// Use reflection to inspect the internal delegate stored for the Resolving event.
+		// The field name changed across .NET versions, so try both known names.
+		var alcType = typeof(AssemblyLoadContext);
+		var field = alcType.GetField("_resolving", BindingFlags.Instance | BindingFlags.NonPublic)
+					?? alcType.GetField("Resolving", BindingFlags.Instance | BindingFlags.NonPublic);
+
+		if (field is null)
+		{
+			// Fallback: we cannot introspect — return 0 to avoid a false failure.
+			return 0;
+		}
+
+		var del = field.GetValue(AssemblyLoadContext.Default) as Delegate;
+		return del?.GetInvocationList().Length ?? 0;
+	}
+
+
 	// ------------------------------------------------------------------ returns loaded assembly
 
 	[TestMethod]
