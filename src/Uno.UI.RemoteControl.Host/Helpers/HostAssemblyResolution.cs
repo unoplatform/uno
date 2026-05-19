@@ -51,16 +51,40 @@ internal static class HostAssemblyResolution
 				continue;
 			}
 
-			// Only bridge assemblies with the same strong-name identity (or
-			// both unsigned). Returning a differently-signed assembly would be
-			// a security-relevant identity swap, not a version-mismatch workaround.
+			// Enforce symmetric PKT policy:
+			//   - Unsigned request → only bridge to an unsigned loaded assembly.
+			//     Returning a strong-named assembly for an unsigned reference
+			//     could silently substitute a different assembly whose name
+			//     coincidentally matches.
+			//   - Signed request → loaded assembly must carry the same PKT.
+			//     Returning a differently-signed assembly would be a
+			//     security-relevant identity swap.
+			var loadedToken = loadedName.GetPublicKeyToken();
 			if (requestedToken is { Length: > 0 })
 			{
-				var loadedToken = loadedName.GetPublicKeyToken();
 				if (loadedToken is null || !loadedToken.AsSpan().SequenceEqual(requestedToken))
 				{
 					continue;
 				}
+			}
+			else
+			{
+				// Request is unsigned: skip any strong-named loaded assembly.
+				if (loadedToken is { Length: > 0 })
+				{
+					continue;
+				}
+			}
+
+			// Version guard: refuse to bridge when the loaded version is strictly
+			// lower than what was requested. That would be a silent downgrade —
+			// the caller asked for vN but gets v(N-1).
+			var requestedVersion = requested.Version;
+			var loadedVersion = loadedName.Version;
+			if (requestedVersion is not null && loadedVersion is not null
+				&& loadedVersion < requestedVersion)
+			{
+				continue;
 			}
 
 			return loaded;
