@@ -199,7 +199,7 @@ Windows runner when the DevServer is exercised end-to-end.
 
 | # | Scenario | Steps | Acceptance criteria |
 |---|----------|-------|---------------------|
-| K1 | First run — rule absent | Run `uno-devserver start --httpPort 12345 --solution <path>` | UAC prompt appears; after accepting, `Get-NetFirewallRule -DisplayName "Uno DevServer (.NET Host)"` returns the rule with Profile = Private. |
+| K1 | First run — rule absent | Run `uno-devserver start --httpPort 12345 --solution <path>` | UAC prompt appears; after accepting, `Get-NetFirewallRule -DisplayName "Uno DevServer (.NET Host)"` returns the rule with Profile = Private, Domain. |
 | K2 | Subsequent run — rule present | Run `uno-devserver start` again | No UAC prompt; startup proceeds normally at normal speed. |
 | K3 | Physical Android device | Deploy app to a physical device on the same Wi-Fi network | Hot Reload connection is established (DevServer indicator shows Connected). |
 | K4 | UAC declined | Remove the rule, run `uno-devserver start`, decline UAC | Warning is logged with the manual `New-NetFirewallRule` command; DevServer starts normally. |
@@ -213,4 +213,4 @@ Windows runner when the DevServer is exercised end-to-end.
 - Modifying `EntryPoint.cs` (the backward-compat VS-only path that spawns `dotnet + dll` directly — intentionally left unchanged)
 - Port-based firewall rules (program-based rules are more precise and match the existing SDK rule pattern)
 - Automatic rule cleanup on NuGet package uninstall
-- **Group Policy–managed environments:** when an organization's GPO blocks `netsh` or periodically reverts user-created firewall rules, the automatic fix will fail gracefully (warning logged, manual command shown). The correct resolution in this case is for the IT administrator to deploy the rule via GPO for `dotnet.exe` (inbound Allow, Private and Domain profiles). This is documented in the public troubleshooting guide.
+- **Group Policy–managed environments:** when an organization's GPO blocks `netsh` or periodically reverts user-created firewall rules, the automatic fix will fail gracefully (warning logged, manual command shown). The correct resolution in this case is for the IT administrator to deploy the rule via GPO for `Uno.UI.RemoteControl.Host.exe` (inbound Allow, Private and Domain profiles). This is documented in the public troubleshooting guide.

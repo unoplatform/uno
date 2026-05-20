@@ -36,15 +36,19 @@ internal static class WindowsFirewallHelper
 	}
 
 	/// <summary>
-	/// Checks whether the DevServer inbound Allow rule already exists for
-	/// <paramref name="hostExePath"/>, and adds one via an elevated <c>netsh</c>
-	/// call if not.  Gracefully degrades (warning + manual instructions) if UAC
-	/// is declined or the <c>netsh</c> call fails.
+	/// Checks whether the DevServer inbound Allow rule already exists (by display
+	/// name <c>"Uno DevServer (.NET Host)"</c>), and adds one targeting
+	/// <paramref name="hostExePath"/> via an elevated <c>netsh</c> call if not.
+	/// The check is idempotent: if a rule with that display name already exists
+	/// (even one pointing at an older <c>Host.exe</c> path after a package upgrade),
+	/// no UAC prompt is shown.  Gracefully degrades (warning + manual instructions)
+	/// if UAC is declined or the <c>netsh</c> call fails.
 	/// Set <c>UNO_DEVSERVER_SKIP_FIREWALL_CHECK=1</c> to bypass entirely.
 	/// </summary>
 	/// <param name="hostExePath">
 	/// Absolute path to <c>Uno.UI.RemoteControl.Host.exe</c> — the executable
-	/// that opens the inbound DevServer port.
+	/// that opens the inbound DevServer port.  Used only when adding a new rule;
+	/// the existence check is by display name, not by program path.
 	/// </param>
 	public static async Task EnsureFirewallRuleAsync(string hostExePath, ILogger logger, CancellationToken ct)
 	{
