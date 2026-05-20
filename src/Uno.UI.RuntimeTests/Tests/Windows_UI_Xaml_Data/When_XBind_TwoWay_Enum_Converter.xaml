@@ -14,5 +14,6 @@
 	<StackPanel>
 		<TextBox x:Name="tbEnum" x:FieldModifier="public"
 			Text="{x:Bind EnumValue, Mode=TwoWay, Converter={StaticResource EnumConverter}}" />
+		<Button x:Name="dummyButton" x:FieldModifier="public" Content="Dummy" />
 	</StackPanel>
 </Page>
