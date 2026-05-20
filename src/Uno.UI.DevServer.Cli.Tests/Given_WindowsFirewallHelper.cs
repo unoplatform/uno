@@ -44,7 +44,7 @@ public class Given_WindowsFirewallHelper
 			WindowsFirewallHelper.IsOptedOut.Should().BeFalse());
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow("false")]
 	[DataRow("")]
 	[DataRow("yes")]
