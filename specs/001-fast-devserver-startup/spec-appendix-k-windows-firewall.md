@@ -106,9 +106,11 @@ NuGet package version.  It remains valid across SDK and package upgrades.
    is not permitted.
 
 2. Resolve dotnet.exe path
-   a. Environment.ProcessPath   (CLI itself runs under dotnet.exe — most reliable)
-   b. %DOTNET_ROOT%\dotnet.exe  (fallback)
-   c. Scan PATH                 (last resort)
+   a. DOTNET_HOST_PATH env var  (set by the .NET muxer — most authoritative)
+   b. Environment.ProcessPath   (CLI itself runs under dotnet.exe — reliable fallback)
+   c. %DOTNET_ROOT%\dotnet.exe  (last resort)
+   PATH scanning is intentionally omitted — user-writable PATH entries could allow
+   an untrusted dotnet.exe to be whitelisted via the UAC-elevated netsh call.
    If no path resolved → log debug, return (skip check).
 
 3. Check for existing rule by name (language-agnostic exit-code check)
@@ -141,7 +143,7 @@ NuGet package version.  It remains valid across SDK and package upgrades.
 
 ### 2.5 Startup impact
 
-- **Happy path (rule exists):** one `netsh show` call, output parsing — < 100 ms.
+- **Happy path (rule exists):** one `netsh show` call (exit-code check, no output parsing) — < 100 ms.
 - **First run (rule absent):** UAC prompt + one `netsh add` call — one-time per machine.
 - **No solution or non-Windows:** the entire block is skipped.
 
