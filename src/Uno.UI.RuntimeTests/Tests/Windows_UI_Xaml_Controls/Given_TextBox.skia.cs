@@ -418,6 +418,76 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Tab_Moves_Focus_TextBox_Does_Not_Insert_Tab()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var textBox = new TextBox();
+			var button = new Button
+			{
+				Content = "Next"
+			};
+			var stackPanel = new StackPanel
+			{
+				Children =
+				{
+					textBox,
+					button,
+				}
+			};
+
+			WindowHelper.WindowContent = stackPanel;
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(textBox);
+
+			textBox.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(textBox, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+
+			await KeyboardHelper.Tab();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(string.Empty, textBox.Text);
+			Assert.AreEqual(button, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+		}
+
+		[TestMethod]
+		public async Task When_Tab_Moves_Focus_PasswordBox_Does_Not_Insert_Tab()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var passwordBox = new PasswordBox();
+			var button = new Button
+			{
+				Content = "Next"
+			};
+			var stackPanel = new StackPanel
+			{
+				Children =
+				{
+					passwordBox,
+					button,
+				}
+			};
+
+			WindowHelper.WindowContent = stackPanel;
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(passwordBox);
+
+			passwordBox.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(passwordBox, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+
+			await KeyboardHelper.Tab();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(string.Empty, passwordBox.Password);
+			Assert.AreEqual(button, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+		}
+
+		[TestMethod]
 		public async Task When_Trailing_Space_Overflows_ScrollViewer_Viewport()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();

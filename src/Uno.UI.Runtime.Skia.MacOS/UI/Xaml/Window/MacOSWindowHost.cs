@@ -373,13 +373,31 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	public event TypedEventHandler<object, KeyEventArgs>? KeyDown;
 	public event TypedEventHandler<object, KeyEventArgs>? KeyUp;
 
+	// Only printable text input should flow through UnicodeKey. Control characters
+	// like Tab are handled as keys for focus/navigation and must not be inserted.
+	private static char? FilterTextInputCharacter(ushort unicode)
+	{
+		if (unicode == 0)
+		{
+			return null;
+		}
+
+		var character = (char)unicode;
+		if (char.IsControl(character) && character is not '\r' and not '\n')
+		{
+			return null;
+		}
+
+		return character;
+	}
+
 	private static KeyEventArgs CreateArgs(VirtualKey key, VirtualKeyModifiers mods, uint scanCode, ushort unicode)
 	{
 		var status = new CorePhysicalKeyStatus
 		{
 			ScanCode = scanCode,
 		};
-		return new KeyEventArgs("keyboard", key, mods, status, unicode == 0 ? null : (char)unicode);
+		return new KeyEventArgs("keyboard", key, mods, status, FilterTextInputCharacter(unicode));
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
