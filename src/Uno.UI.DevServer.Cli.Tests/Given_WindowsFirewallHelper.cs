@@ -44,6 +44,51 @@ public class Given_WindowsFirewallHelper
 			WindowsFirewallHelper.IsOptedOut.Should().BeFalse());
 	}
 
+	[DataTestMethod]
+	[DataRow("false")]
+	[DataRow("")]
+	[DataRow("yes")]
+	[Description("Values other than '1' or 'true' (case-insensitive) must not opt out; covers edge cases a refactor could accidentally break.")]
+	public void IsOptedOut_WhenSetToNonOptOutValue_ReturnsFalse(string value)
+	{
+		WithEnv("UNO_DEVSERVER_SKIP_FIREWALL_CHECK", value, () =>
+			WindowsFirewallHelper.IsOptedOut.Should().BeFalse());
+	}
+
+	// -------------------------------------------------------------------------
+	// hostExePath validation
+	// -------------------------------------------------------------------------
+
+	[TestMethod]
+	[Description("EnsureFirewallRuleAsync must return without error when hostExePath is not fully qualified.")]
+	public async Task EnsureFirewallRuleAsync_WhenPathNotFullyQualified_ReturnsWithoutError()
+	{
+		var act = async () => await WindowsFirewallHelper.EnsureFirewallRuleAsync(
+			@"relative\Uno.UI.RemoteControl.Host.exe", NullLogger.Instance, CancellationToken.None);
+
+		await act.Should().NotThrowAsync();
+	}
+
+	[TestMethod]
+	[Description("EnsureFirewallRuleAsync must return without error when hostExePath contains a quote character (injection guard).")]
+	public async Task EnsureFirewallRuleAsync_WhenPathContainsQuote_ReturnsWithoutError()
+	{
+		var act = async () => await WindowsFirewallHelper.EnsureFirewallRuleAsync(
+			@"C:\legit\" + "\"" + @"\Uno.UI.RemoteControl.Host.exe", NullLogger.Instance, CancellationToken.None);
+
+		await act.Should().NotThrowAsync();
+	}
+
+	[TestMethod]
+	[Description("EnsureFirewallRuleAsync must return without error when hostExePath does not exist on disk.")]
+	public async Task EnsureFirewallRuleAsync_WhenPathDoesNotExist_ReturnsWithoutError()
+	{
+		var act = async () => await WindowsFirewallHelper.EnsureFirewallRuleAsync(
+			@"C:\does\not\exist\Uno.UI.RemoteControl.Host.exe", NullLogger.Instance, CancellationToken.None);
+
+		await act.Should().NotThrowAsync();
+	}
+
 	[TestMethod]
 	[Description("EnsureFirewallRuleAsync must return immediately without error when opted-out, regardless of OS state.")]
 	public async Task EnsureFirewallRuleAsync_WhenOptedOut_ReturnsWithoutError()

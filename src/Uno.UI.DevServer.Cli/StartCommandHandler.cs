@@ -297,7 +297,10 @@ internal sealed class StartCommandHandler
 		// See spec-appendix-k-windows-firewall.md.
 		if (OperatingSystem.IsWindows() && hostPath.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
 		{
-			await WindowsFirewallHelper.EnsureFirewallRuleAsync(hostPath, _logger, CancellationToken.None);
+			// Canonicalize before passing to the firewall helper so that path traversal
+			// sequences (e.g. C:\legit\..\evil.exe) are resolved before validation.
+			var canonicalHostPath = Path.GetFullPath(hostPath);
+			await WindowsFirewallHelper.EnsureFirewallRuleAsync(canonicalHostPath, _logger, CancellationToken.None);
 		}
 
 		// Allocate port if needed

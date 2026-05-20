@@ -77,9 +77,11 @@ created for the current version of `Uno.UI.RemoteControl.Host.exe`.
 > changes, but the existing rule (pointing at the previous version's path) is found
 > by name and no new rule is added automatically.  To cover the upgraded exe, delete
 > the old rule and restart the Dev Server:
+>
 > ```powershell
 > Remove-NetFirewallRule -DisplayName "Uno DevServer (.NET Host)"
 > ```
+>
 > The UAC prompt will appear on the next start and a new rule will be created for
 > the current version.
 

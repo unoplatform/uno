@@ -54,9 +54,22 @@ internal static class WindowsFirewallHelper
 			return;
 		}
 
+		// Validate before interpolating into an elevated netsh command.
+		// A path with a quote character could break argument delimitation and inject
+		// arbitrary netsh sub-commands executed as Administrator via runas.
+		if (!Path.IsPathFullyQualified(hostExePath)
+			|| hostExePath.Contains('"')
+			|| !File.Exists(hostExePath))
+		{
+			logger.LogWarning(
+				"WindowsFirewall: hostExePath '{Path}' is not a valid fully-qualified existing path; skipping firewall check.",
+				hostExePath);
+			return;
+		}
+
 		if (await RuleExistsAsync(logger, ct))
 		{
-			logger.LogInformation("WindowsFirewall: inbound rule '{RuleName}' already exists — no action needed.", RuleDisplayName);
+			logger.LogDebug("WindowsFirewall: inbound rule '{RuleName}' already exists — no action needed.", RuleDisplayName);
 			return;
 		}
 
@@ -159,10 +172,14 @@ internal static class WindowsFirewallHelper
 		{
 			throw;
 		}
+		catch (OperationCanceledException)
+		{
+			// Inner 60 s timeout elapsed — UAC was not interacted with in time.
+			LogManualInstructions(hostExePath, logger, "firewall check timed out after 60 s");
+		}
 		catch (Exception ex)
 		{
-			// UAC declined → Win32Exception; local timeout → OperationCanceledException
-			// on the inner cts (not ct).  Either way, log and continue.
+			// UAC declined → Win32Exception; other netsh failures.
 			LogManualInstructions(hostExePath, logger, ex.Message);
 		}
 	}
