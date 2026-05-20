@@ -19,7 +19,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HolographicCamera.CanOverrideViewport is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HolographicCamera.CanOverrideViewport");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCamera", "CanOverrideViewport");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HolographicDisplay HolographicCamera.Display is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicDisplay%20HolographicCamera.Display");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCamera", "Display");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HolographicCamera.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20HolographicCamera.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCamera", "Id");
 			}
 		}
 #endif
@@ -49,11 +49,11 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HolographicCamera.IsHardwareContentProtectionEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HolographicCamera.IsHardwareContentProtectionEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCamera", "IsHardwareContentProtectionEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicCamera", "bool HolographicCamera.IsHardwareContentProtectionEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicCamera", "IsHardwareContentProtectionEnabled");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HolographicCamera.IsHardwareContentProtectionSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HolographicCamera.IsHardwareContentProtectionSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCamera", "IsHardwareContentProtectionSupported");
 			}
 		}
 #endif
@@ -73,11 +73,11 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HolographicCamera.IsPrimaryLayerEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HolographicCamera.IsPrimaryLayerEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCamera", "IsPrimaryLayerEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicCamera", "bool HolographicCamera.IsPrimaryLayerEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicCamera", "IsPrimaryLayerEnabled");
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HolographicCamera.IsStereo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HolographicCamera.IsStereo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCamera", "IsStereo");
 			}
 		}
 #endif
@@ -97,7 +97,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HolographicCameraViewportParameters HolographicCamera.LeftViewportParameters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicCameraViewportParameters%20HolographicCamera.LeftViewportParameters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCamera", "LeftViewportParameters");
 			}
 		}
 #endif
@@ -107,7 +107,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HolographicCamera.MaxQuadLayerCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20HolographicCamera.MaxQuadLayerCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCamera", "MaxQuadLayerCount");
 			}
 		}
 #endif
@@ -117,7 +117,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<HolographicQuadLayer> HolographicCamera.QuadLayers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CHolographicQuadLayer%3E%20HolographicCamera.QuadLayers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCamera", "QuadLayers");
 			}
 		}
 #endif
@@ -127,7 +127,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size HolographicCamera.RenderTargetSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20HolographicCamera.RenderTargetSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCamera", "RenderTargetSize");
 			}
 		}
 #endif
@@ -137,7 +137,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HolographicCameraViewportParameters HolographicCamera.RightViewportParameters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicCameraViewportParameters%20HolographicCamera.RightViewportParameters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCamera", "RightViewportParameters");
 			}
 		}
 #endif
@@ -147,7 +147,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HolographicViewConfiguration HolographicCamera.ViewConfiguration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicViewConfiguration%20HolographicCamera.ViewConfiguration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCamera", "ViewConfiguration");
 			}
 		}
 #endif
@@ -157,11 +157,11 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double HolographicCamera.ViewportScaleFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20HolographicCamera.ViewportScaleFactor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCamera", "ViewportScaleFactor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicCamera", "double HolographicCamera.ViewportScaleFactor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicCamera", "ViewportScaleFactor");
 			}
 		}
 #endif
@@ -169,14 +169,14 @@ namespace Windows.Graphics.Holographic
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetNearPlaneDistance(double value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicCamera", "void HolographicCamera.SetNearPlaneDistance(double value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicCamera", "SetNearPlaneDistance(double value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetFarPlaneDistance(double value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicCamera", "void HolographicCamera.SetFarPlaneDistance(double value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicCamera", "SetFarPlaneDistance(double value)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicCamera.CanOverrideViewport.get

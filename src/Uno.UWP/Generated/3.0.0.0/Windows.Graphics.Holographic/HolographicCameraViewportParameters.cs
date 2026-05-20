@@ -19,7 +19,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2[] HolographicCameraViewportParameters.HiddenAreaMesh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%5B%5D%20HolographicCameraViewportParameters.HiddenAreaMesh");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCameraViewportParameters", "HiddenAreaMesh");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2[] HolographicCameraViewportParameters.VisibleAreaMesh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%5B%5D%20HolographicCameraViewportParameters.VisibleAreaMesh");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCameraViewportParameters", "VisibleAreaMesh");
 			}
 		}
 #endif

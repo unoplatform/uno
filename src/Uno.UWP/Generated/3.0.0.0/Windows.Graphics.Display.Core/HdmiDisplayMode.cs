@@ -19,7 +19,7 @@ namespace Windows.Graphics.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort HdmiDisplayMode.BitsPerPixel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20HdmiDisplayMode.BitsPerPixel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayMode", "BitsPerPixel");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HdmiDisplayColorSpace HdmiDisplayMode.ColorSpace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HdmiDisplayColorSpace%20HdmiDisplayMode.ColorSpace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayMode", "ColorSpace");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HdmiDisplayMode.Is2086MetadataSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HdmiDisplayMode.Is2086MetadataSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayMode", "Is2086MetadataSupported");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Graphics.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HdmiDisplayMode.IsDolbyVisionLowLatencySupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HdmiDisplayMode.IsDolbyVisionLowLatencySupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayMode", "IsDolbyVisionLowLatencySupported");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Graphics.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HdmiDisplayMode.IsSdrLuminanceSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HdmiDisplayMode.IsSdrLuminanceSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayMode", "IsSdrLuminanceSupported");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Graphics.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HdmiDisplayMode.IsSmpte2084Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HdmiDisplayMode.IsSmpte2084Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayMode", "IsSmpte2084Supported");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Graphics.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HdmiDisplayPixelEncoding HdmiDisplayMode.PixelEncoding is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HdmiDisplayPixelEncoding%20HdmiDisplayMode.PixelEncoding");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayMode", "PixelEncoding");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Graphics.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double HdmiDisplayMode.RefreshRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20HdmiDisplayMode.RefreshRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayMode", "RefreshRate");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Graphics.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HdmiDisplayMode.ResolutionHeightInRawPixels is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20HdmiDisplayMode.ResolutionHeightInRawPixels");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayMode", "ResolutionHeightInRawPixels");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Graphics.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HdmiDisplayMode.ResolutionWidthInRawPixels is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20HdmiDisplayMode.ResolutionWidthInRawPixels");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayMode", "ResolutionWidthInRawPixels");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Graphics.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HdmiDisplayMode.StereoEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HdmiDisplayMode.StereoEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayMode", "StereoEnabled");
 			}
 		}
 #endif
@@ -127,7 +127,7 @@ namespace Windows.Graphics.Display.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsEqual(global::Windows.Graphics.Display.Core.HdmiDisplayMode mode)
 		{
-			throw new global::System.NotImplementedException("The member bool HdmiDisplayMode.IsEqual(HdmiDisplayMode mode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HdmiDisplayMode.IsEqual%28HdmiDisplayMode%20mode%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.Core.HdmiDisplayMode", "IsEqual(HdmiDisplayMode mode)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.BitsPerPixel.get

@@ -13,7 +13,7 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WhiteBalanceGain(double _R, double _G, double _B)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.WhiteBalanceGain", "WhiteBalanceGain.WhiteBalanceGain(double _R, double _G, double _B)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.WhiteBalanceGain", "WhiteBalanceGain(double _R, double _G, double _B)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.WhiteBalanceGain.WhiteBalanceGain(double, double, double)

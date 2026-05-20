@@ -19,11 +19,11 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ScheduledToastNotificationShowingEventArgs.Cancel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ScheduledToastNotificationShowingEventArgs.Cancel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs", "Cancel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs", "bool ScheduledToastNotificationShowingEventArgs.Cancel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs", "Cancel");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ScheduledToastNotification ScheduledToastNotificationShowingEventArgs.ScheduledToastNotification is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ScheduledToastNotification%20ScheduledToastNotificationShowingEventArgs.ScheduledToastNotification");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs", "ScheduledToastNotification");
 			}
 		}
 #endif
@@ -41,7 +41,7 @@ namespace Windows.UI.Notifications
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral ScheduledToastNotificationShowingEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20ScheduledToastNotificationShowingEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotificationShowingEventArgs.Cancel.get

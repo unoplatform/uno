@@ -19,7 +19,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PlayReadyLicense.ChainDepth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PlayReadyLicense.ChainDepth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicense", "ChainDepth");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyLicense.DomainAccountID is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyLicense.DomainAccountID");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicense", "DomainAccountID");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? PlayReadyLicense.ExpirationDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20PlayReadyLicense.ExpirationDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicense", "ExpirationDate");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PlayReadyLicense.ExpireAfterFirstPlay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PlayReadyLicense.ExpireAfterFirstPlay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicense", "ExpireAfterFirstPlay");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PlayReadyLicense.ExpiresInRealTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PlayReadyLicense.ExpiresInRealTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicense", "ExpiresInRealTime");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PlayReadyLicense.FullyEvaluated is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PlayReadyLicense.FullyEvaluated");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicense", "FullyEvaluated");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PlayReadyLicense.InMemoryOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PlayReadyLicense.InMemoryOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicense", "InMemoryOnly");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyLicense.SecureStopId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyLicense.SecureStopId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicense", "SecureStopId");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PlayReadyLicense.SecurityLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PlayReadyLicense.SecurityLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicense", "SecurityLevel");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PlayReadyLicense.UsableForPlay is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PlayReadyLicense.UsableForPlay");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicense", "UsableForPlay");
 			}
 		}
 #endif
@@ -117,7 +117,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Guid GetKIDAtChainDepth(uint chainDepth)
 		{
-			throw new global::System.NotImplementedException("The member Guid PlayReadyLicense.GetKIDAtChainDepth(uint chainDepth) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyLicense.GetKIDAtChainDepth%28uint%20chainDepth%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicense", "GetKIDAtChainDepth(uint chainDepth)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicense.ChainDepth.get

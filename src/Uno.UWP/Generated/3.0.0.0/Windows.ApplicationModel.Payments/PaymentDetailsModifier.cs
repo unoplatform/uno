@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PaymentItem> PaymentDetailsModifier.AdditionalDisplayItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPaymentItem%3E%20PaymentDetailsModifier.AdditionalDisplayItems");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentDetailsModifier", "AdditionalDisplayItems");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentDetailsModifier.JsonData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentDetailsModifier.JsonData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentDetailsModifier", "JsonData");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> PaymentDetailsModifier.SupportedMethodIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20PaymentDetailsModifier.SupportedMethodIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentDetailsModifier", "SupportedMethodIds");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentItem PaymentDetailsModifier.Total is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentItem%20PaymentDetailsModifier.Total");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentDetailsModifier", "Total");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.ApplicationModel.Payments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaymentDetailsModifier(global::System.Collections.Generic.IEnumerable<string> supportedMethodIds, global::Windows.ApplicationModel.Payments.PaymentItem total)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentDetailsModifier", "PaymentDetailsModifier.PaymentDetailsModifier(IEnumerable<string> supportedMethodIds, PaymentItem total)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentDetailsModifier", "PaymentDetailsModifier(IEnumerable<string> supportedMethodIds, PaymentItem total)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetailsModifier.PaymentDetailsModifier(System.Collections.Generic.IEnumerable<string>, Windows.ApplicationModel.Payments.PaymentItem)
@@ -60,7 +60,7 @@ namespace Windows.ApplicationModel.Payments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaymentDetailsModifier(global::System.Collections.Generic.IEnumerable<string> supportedMethodIds, global::Windows.ApplicationModel.Payments.PaymentItem total, global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Payments.PaymentItem> additionalDisplayItems)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentDetailsModifier", "PaymentDetailsModifier.PaymentDetailsModifier(IEnumerable<string> supportedMethodIds, PaymentItem total, IEnumerable<PaymentItem> additionalDisplayItems)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentDetailsModifier", "PaymentDetailsModifier(IEnumerable<string> supportedMethodIds, PaymentItem total, IEnumerable<PaymentItem> additionalDisplayItems)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetailsModifier.PaymentDetailsModifier(System.Collections.Generic.IEnumerable<string>, Windows.ApplicationModel.Payments.PaymentItem, System.Collections.Generic.IEnumerable<Windows.ApplicationModel.Payments.PaymentItem>)
@@ -68,7 +68,7 @@ namespace Windows.ApplicationModel.Payments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaymentDetailsModifier(global::System.Collections.Generic.IEnumerable<string> supportedMethodIds, global::Windows.ApplicationModel.Payments.PaymentItem total, global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Payments.PaymentItem> additionalDisplayItems, string jsonData)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentDetailsModifier", "PaymentDetailsModifier.PaymentDetailsModifier(IEnumerable<string> supportedMethodIds, PaymentItem total, IEnumerable<PaymentItem> additionalDisplayItems, string jsonData)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentDetailsModifier", "PaymentDetailsModifier(IEnumerable<string> supportedMethodIds, PaymentItem total, IEnumerable<PaymentItem> additionalDisplayItems, string jsonData)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetailsModifier.PaymentDetailsModifier(System.Collections.Generic.IEnumerable<string>, Windows.ApplicationModel.Payments.PaymentItem, System.Collections.Generic.IEnumerable<Windows.ApplicationModel.Payments.PaymentItem>, string)

@@ -19,11 +19,11 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintCustomItemDetails.ItemDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintCustomItemDetails.ItemDisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails", "ItemDisplayName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails", "string PrintCustomItemDetails.ItemDisplayName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails", "ItemDisplayName");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintCustomItemDetails.ItemId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintCustomItemDetails.ItemId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails", "ItemId");
 			}
 		}
 #endif

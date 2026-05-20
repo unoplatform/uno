@@ -30,6 +30,14 @@ namespace Microsoft.UI.Xaml.Controls
 		internal int Uno_LastKnownRealizedElementsCount;
 		internal int Uno_LastKnownItemsCount;
 		internal Size Uno_LastKnownDesiredSize;
+		// Snapshot of the previous GetExtent result, used to keep extent.MajorStart (layout origin)
+		// stable across measure passes where the running-average element size shifted (typical when
+		// a tall item enters or leaves the 100-slot estimation buffer during wheel scroll). Without
+		// this, avg fluctuations translate directly into items repositioning in IR-local space
+		// because each item's IR-local Y = algorithm Y - layout origin Y. Released on back-to-top
+		// (firstRealizedItemIndex == 0) so the natural extent.MajorStart=0 is re-established at
+		// offset 0, and when realized items extend above the stable origin.
+		internal float Uno_LastReportedExtentMajorStart = float.NaN;
 		// Uno workaround [END]
 
 		public StackLayoutState()

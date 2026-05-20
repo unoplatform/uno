@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AdvancedPhotoControl VideoDeviceController.AdvancedPhotoControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AdvancedPhotoControl%20VideoDeviceController.AdvancedPhotoControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "AdvancedPhotoControl");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.BacklightCompensation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaDeviceControl%20VideoDeviceController.BacklightCompensation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "BacklightCompensation");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Brightness is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaDeviceControl%20VideoDeviceController.Brightness");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "Brightness");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Contrast is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaDeviceControl%20VideoDeviceController.Contrast");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "Contrast");
 			}
 		}
 #endif
@@ -59,11 +59,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCaptureOptimization VideoDeviceController.DesiredOptimization is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaCaptureOptimization%20VideoDeviceController.DesiredOptimization");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "DesiredOptimization");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.VideoDeviceController", "MediaCaptureOptimization VideoDeviceController.DesiredOptimization");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.VideoDeviceController", "DesiredOptimization");
 			}
 		}
 #endif
@@ -73,7 +73,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Exposure is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaDeviceControl%20VideoDeviceController.Exposure");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "Exposure");
 			}
 		}
 #endif
@@ -83,7 +83,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExposureCompensationControl VideoDeviceController.ExposureCompensationControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ExposureCompensationControl%20VideoDeviceController.ExposureCompensationControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "ExposureCompensationControl");
 			}
 		}
 #endif
@@ -93,7 +93,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExposureControl VideoDeviceController.ExposureControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ExposureControl%20VideoDeviceController.ExposureControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "ExposureControl");
 			}
 		}
 #endif
@@ -103,7 +103,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExposurePriorityVideoControl VideoDeviceController.ExposurePriorityVideoControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ExposurePriorityVideoControl%20VideoDeviceController.ExposurePriorityVideoControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "ExposurePriorityVideoControl");
 			}
 		}
 #endif
@@ -113,7 +113,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FlashControl VideoDeviceController.FlashControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FlashControl%20VideoDeviceController.FlashControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "FlashControl");
 			}
 		}
 #endif
@@ -123,7 +123,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Focus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaDeviceControl%20VideoDeviceController.Focus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "Focus");
 			}
 		}
 #endif
@@ -133,7 +133,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FocusControl VideoDeviceController.FocusControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FocusControl%20VideoDeviceController.FocusControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "FocusControl");
 			}
 		}
 #endif
@@ -143,7 +143,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HdrVideoControl VideoDeviceController.HdrVideoControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HdrVideoControl%20VideoDeviceController.HdrVideoControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "HdrVideoControl");
 			}
 		}
 #endif
@@ -153,7 +153,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Hue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaDeviceControl%20VideoDeviceController.Hue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "Hue");
 			}
 		}
 #endif
@@ -163,7 +163,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoDeviceController.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoDeviceController.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "Id");
 			}
 		}
 #endif
@@ -173,7 +173,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InfraredTorchControl VideoDeviceController.InfraredTorchControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InfraredTorchControl%20VideoDeviceController.InfraredTorchControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "InfraredTorchControl");
 			}
 		}
 #endif
@@ -183,7 +183,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IsoSpeedControl VideoDeviceController.IsoSpeedControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IsoSpeedControl%20VideoDeviceController.IsoSpeedControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "IsoSpeedControl");
 			}
 		}
 #endif
@@ -193,7 +193,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LowLagPhotoControl VideoDeviceController.LowLagPhoto is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LowLagPhotoControl%20VideoDeviceController.LowLagPhoto");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "LowLagPhoto");
 			}
 		}
 #endif
@@ -203,7 +203,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LowLagPhotoSequenceControl VideoDeviceController.LowLagPhotoSequence is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LowLagPhotoSequenceControl%20VideoDeviceController.LowLagPhotoSequence");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "LowLagPhotoSequence");
 			}
 		}
 #endif
@@ -213,7 +213,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member OpticalImageStabilizationControl VideoDeviceController.OpticalImageStabilizationControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=OpticalImageStabilizationControl%20VideoDeviceController.OpticalImageStabilizationControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "OpticalImageStabilizationControl");
 			}
 		}
 #endif
@@ -223,7 +223,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Pan is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaDeviceControl%20VideoDeviceController.Pan");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "Pan");
 			}
 		}
 #endif
@@ -233,7 +233,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PanelBasedOptimizationControl VideoDeviceController.PanelBasedOptimizationControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PanelBasedOptimizationControl%20VideoDeviceController.PanelBasedOptimizationControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "PanelBasedOptimizationControl");
 			}
 		}
 #endif
@@ -243,7 +243,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhotoConfirmationControl VideoDeviceController.PhotoConfirmationControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhotoConfirmationControl%20VideoDeviceController.PhotoConfirmationControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "PhotoConfirmationControl");
 			}
 		}
 #endif
@@ -253,11 +253,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CaptureUse VideoDeviceController.PrimaryUse is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CaptureUse%20VideoDeviceController.PrimaryUse");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "PrimaryUse");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.VideoDeviceController", "CaptureUse VideoDeviceController.PrimaryUse");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.VideoDeviceController", "PrimaryUse");
 			}
 		}
 #endif
@@ -267,7 +267,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RegionsOfInterestControl VideoDeviceController.RegionsOfInterestControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RegionsOfInterestControl%20VideoDeviceController.RegionsOfInterestControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "RegionsOfInterestControl");
 			}
 		}
 #endif
@@ -277,7 +277,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Roll is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaDeviceControl%20VideoDeviceController.Roll");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "Roll");
 			}
 		}
 #endif
@@ -287,7 +287,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneModeControl VideoDeviceController.SceneModeControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneModeControl%20VideoDeviceController.SceneModeControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "SceneModeControl");
 			}
 		}
 #endif
@@ -297,7 +297,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Tilt is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaDeviceControl%20VideoDeviceController.Tilt");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "Tilt");
 			}
 		}
 #endif
@@ -307,7 +307,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TorchControl VideoDeviceController.TorchControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TorchControl%20VideoDeviceController.TorchControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "TorchControl");
 			}
 		}
 #endif
@@ -317,7 +317,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VariablePhotoSequenceController VideoDeviceController.VariablePhotoSequenceController is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VariablePhotoSequenceController%20VideoDeviceController.VariablePhotoSequenceController");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "VariablePhotoSequenceController");
 			}
 		}
 #endif
@@ -327,7 +327,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoTemporalDenoisingControl VideoDeviceController.VideoTemporalDenoisingControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoTemporalDenoisingControl%20VideoDeviceController.VideoTemporalDenoisingControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "VideoTemporalDenoisingControl");
 			}
 		}
 #endif
@@ -337,7 +337,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.WhiteBalance is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaDeviceControl%20VideoDeviceController.WhiteBalance");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "WhiteBalance");
 			}
 		}
 #endif
@@ -347,7 +347,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WhiteBalanceControl VideoDeviceController.WhiteBalanceControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WhiteBalanceControl%20VideoDeviceController.WhiteBalanceControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "WhiteBalanceControl");
 			}
 		}
 #endif
@@ -357,7 +357,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Zoom is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaDeviceControl%20VideoDeviceController.Zoom");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "Zoom");
 			}
 		}
 #endif
@@ -367,7 +367,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ZoomControl VideoDeviceController.ZoomControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ZoomControl%20VideoDeviceController.ZoomControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "ZoomControl");
 			}
 		}
 #endif
@@ -375,77 +375,77 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetPowerlineFrequency(global::Windows.Media.Capture.PowerlineFrequency value)
 		{
-			throw new global::System.NotImplementedException("The member bool VideoDeviceController.TrySetPowerlineFrequency(PowerlineFrequency value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VideoDeviceController.TrySetPowerlineFrequency%28PowerlineFrequency%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "TrySetPowerlineFrequency(PowerlineFrequency value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryGetPowerlineFrequency(out global::Windows.Media.Capture.PowerlineFrequency value)
 		{
-			throw new global::System.NotImplementedException("The member bool VideoDeviceController.TryGetPowerlineFrequency(out PowerlineFrequency value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VideoDeviceController.TryGetPowerlineFrequency%28out%20PowerlineFrequency%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "TryGetPowerlineFrequency(out PowerlineFrequency value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.MediaProperties.IMediaEncodingProperties> GetAvailableMediaStreamProperties(global::Windows.Media.Capture.MediaStreamType mediaStreamType)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<IMediaEncodingProperties> VideoDeviceController.GetAvailableMediaStreamProperties(MediaStreamType mediaStreamType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CIMediaEncodingProperties%3E%20VideoDeviceController.GetAvailableMediaStreamProperties%28MediaStreamType%20mediaStreamType%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "GetAvailableMediaStreamProperties(MediaStreamType mediaStreamType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.IMediaEncodingProperties GetMediaStreamProperties(global::Windows.Media.Capture.MediaStreamType mediaStreamType)
 		{
-			throw new global::System.NotImplementedException("The member IMediaEncodingProperties VideoDeviceController.GetMediaStreamProperties(MediaStreamType mediaStreamType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IMediaEncodingProperties%20VideoDeviceController.GetMediaStreamProperties%28MediaStreamType%20mediaStreamType%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "GetMediaStreamProperties(MediaStreamType mediaStreamType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetMediaStreamPropertiesAsync(global::Windows.Media.Capture.MediaStreamType mediaStreamType, global::Windows.Media.MediaProperties.IMediaEncodingProperties mediaEncodingProperties)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType mediaStreamType, IMediaEncodingProperties mediaEncodingProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20VideoDeviceController.SetMediaStreamPropertiesAsync%28MediaStreamType%20mediaStreamType%2C%20IMediaEncodingProperties%20mediaEncodingProperties%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "SetMediaStreamPropertiesAsync(MediaStreamType mediaStreamType, IMediaEncodingProperties mediaEncodingProperties)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetDeviceProperty(string propertyId, object propertyValue)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.VideoDeviceController", "void VideoDeviceController.SetDeviceProperty(string propertyId, object propertyValue)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.VideoDeviceController", "SetDeviceProperty(string propertyId, object propertyValue)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public object GetDeviceProperty(string propertyId)
 		{
-			throw new global::System.NotImplementedException("The member object VideoDeviceController.GetDeviceProperty(string propertyId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20VideoDeviceController.GetDeviceProperty%28string%20propertyId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "GetDeviceProperty(string propertyId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Devices.VideoDeviceControllerGetDevicePropertyResult GetDevicePropertyById(string propertyId, uint? maxPropertyValueSize)
 		{
-			throw new global::System.NotImplementedException("The member VideoDeviceControllerGetDevicePropertyResult VideoDeviceController.GetDevicePropertyById(string propertyId, uint? maxPropertyValueSize) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoDeviceControllerGetDevicePropertyResult%20VideoDeviceController.GetDevicePropertyById%28string%20propertyId%2C%20uint%3F%20maxPropertyValueSize%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "GetDevicePropertyById(string propertyId, uint? maxPropertyValueSize)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Devices.VideoDeviceControllerSetDevicePropertyStatus SetDevicePropertyById(string propertyId, object propertyValue)
 		{
-			throw new global::System.NotImplementedException("The member VideoDeviceControllerSetDevicePropertyStatus VideoDeviceController.SetDevicePropertyById(string propertyId, object propertyValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoDeviceControllerSetDevicePropertyStatus%20VideoDeviceController.SetDevicePropertyById%28string%20propertyId%2C%20object%20propertyValue%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "SetDevicePropertyById(string propertyId, object propertyValue)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Devices.VideoDeviceControllerGetDevicePropertyResult GetDevicePropertyByExtendedId(byte[] extendedPropertyId, uint? maxPropertyValueSize)
 		{
-			throw new global::System.NotImplementedException("The member VideoDeviceControllerGetDevicePropertyResult VideoDeviceController.GetDevicePropertyByExtendedId(byte[] extendedPropertyId, uint? maxPropertyValueSize) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoDeviceControllerGetDevicePropertyResult%20VideoDeviceController.GetDevicePropertyByExtendedId%28byte%5B%5D%20extendedPropertyId%2C%20uint%3F%20maxPropertyValueSize%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "GetDevicePropertyByExtendedId(byte[] extendedPropertyId, uint? maxPropertyValueSize)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Devices.VideoDeviceControllerSetDevicePropertyStatus SetDevicePropertyByExtendedId(byte[] extendedPropertyId, byte[] propertyValue)
 		{
-			throw new global::System.NotImplementedException("The member VideoDeviceControllerSetDevicePropertyStatus VideoDeviceController.SetDevicePropertyByExtendedId(byte[] extendedPropertyId, byte[] propertyValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoDeviceControllerSetDevicePropertyStatus%20VideoDeviceController.SetDevicePropertyByExtendedId%28byte%5B%5D%20extendedPropertyId%2C%20byte%5B%5D%20propertyValue%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "SetDevicePropertyByExtendedId(byte[] extendedPropertyId, byte[] propertyValue)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.AdvancedPhotoControl.get

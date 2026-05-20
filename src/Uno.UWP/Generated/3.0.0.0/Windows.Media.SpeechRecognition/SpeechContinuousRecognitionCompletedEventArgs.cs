@@ -19,7 +19,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionResultStatus SpeechContinuousRecognitionCompletedEventArgs.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognitionResultStatus%20SpeechContinuousRecognitionCompletedEventArgs.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechContinuousRecognitionCompletedEventArgs", "Status");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Devices.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? BatteryReport.ChargeRateInMilliwatts is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20BatteryReport.ChargeRateInMilliwatts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.BatteryReport", "ChargeRateInMilliwatts");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? BatteryReport.DesignCapacityInMilliwattHours is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20BatteryReport.DesignCapacityInMilliwattHours");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.BatteryReport", "DesignCapacityInMilliwattHours");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? BatteryReport.FullChargeCapacityInMilliwattHours is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20BatteryReport.FullChargeCapacityInMilliwattHours");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.BatteryReport", "FullChargeCapacityInMilliwattHours");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? BatteryReport.RemainingCapacityInMilliwattHours is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20BatteryReport.RemainingCapacityInMilliwattHours");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.BatteryReport", "RemainingCapacityInMilliwattHours");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BatteryStatus BatteryReport.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BatteryStatus%20BatteryReport.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Power.BatteryReport", "Status");
 			}
 		}
 #endif

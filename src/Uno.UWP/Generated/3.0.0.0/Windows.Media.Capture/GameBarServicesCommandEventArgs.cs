@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GameBarCommand GameBarServicesCommandEventArgs.Command is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameBarCommand%20GameBarServicesCommandEventArgs.Command");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.GameBarServicesCommandEventArgs", "Command");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GameBarCommandOrigin GameBarServicesCommandEventArgs.Origin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameBarCommandOrigin%20GameBarServicesCommandEventArgs.Origin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.GameBarServicesCommandEventArgs", "Origin");
 			}
 		}
 #endif

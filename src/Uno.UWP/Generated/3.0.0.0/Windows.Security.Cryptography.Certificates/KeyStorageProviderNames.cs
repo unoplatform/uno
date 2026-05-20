@@ -14,7 +14,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyStorageProviderNames.PassportKeyStorageProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KeyStorageProviderNames.PassportKeyStorageProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyStorageProviderNames", "PassportKeyStorageProvider");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyStorageProviderNames.PlatformKeyStorageProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KeyStorageProviderNames.PlatformKeyStorageProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyStorageProviderNames", "PlatformKeyStorageProvider");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyStorageProviderNames.SmartcardKeyStorageProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KeyStorageProviderNames.SmartcardKeyStorageProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyStorageProviderNames", "SmartcardKeyStorageProvider");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyStorageProviderNames.SoftwareKeyStorageProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KeyStorageProviderNames.SoftwareKeyStorageProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.KeyStorageProviderNames", "SoftwareKeyStorageProvider");
 			}
 		}
 #endif

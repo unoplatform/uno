@@ -12,21 +12,21 @@ namespace Windows.System.Threading
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction RunAsync(global::Windows.System.Threading.WorkItemHandler handler)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ThreadPool.RunAsync(WorkItemHandler handler) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ThreadPool.RunAsync%28WorkItemHandler%20handler%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Threading.ThreadPool", "RunAsync(WorkItemHandler handler)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction RunAsync(global::Windows.System.Threading.WorkItemHandler handler, global::Windows.System.Threading.WorkItemPriority priority)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ThreadPool.RunAsync(WorkItemHandler handler, WorkItemPriority priority) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ThreadPool.RunAsync%28WorkItemHandler%20handler%2C%20WorkItemPriority%20priority%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Threading.ThreadPool", "RunAsync(WorkItemHandler handler, WorkItemPriority priority)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction RunAsync(global::Windows.System.Threading.WorkItemHandler handler, global::Windows.System.Threading.WorkItemPriority priority, global::Windows.System.Threading.WorkItemOptions options)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ThreadPool.RunAsync(WorkItemHandler handler, WorkItemPriority priority, WorkItemOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ThreadPool.RunAsync%28WorkItemHandler%20handler%2C%20WorkItemPriority%20priority%2C%20WorkItemOptions%20options%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Threading.ThreadPool", "RunAsync(WorkItemHandler handler, WorkItemPriority priority, WorkItemOptions options)");
 		}
 #endif
 	}

@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2ProcessKind CoreWebView2ProcessInfo.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ProcessKind%20CoreWebView2ProcessInfo.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ProcessInfo", "Kind");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CoreWebView2ProcessInfo.ProcessId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2ProcessInfo.ProcessId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ProcessInfo", "ProcessId");
 			}
 		}
 #endif

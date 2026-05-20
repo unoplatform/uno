@@ -13,7 +13,7 @@ namespace Windows.Graphics.Holographic
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HolographicAdapterId(uint _LowPart, int _HighPart)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicAdapterId", "HolographicAdapterId.HolographicAdapterId(uint _LowPart, int _HighPart)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicAdapterId", "HolographicAdapterId(uint _LowPart, int _HighPart)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicAdapterId.HolographicAdapterId(uint, int)

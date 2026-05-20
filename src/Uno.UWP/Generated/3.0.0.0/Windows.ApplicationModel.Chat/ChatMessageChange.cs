@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ChatMessageChangeType ChatMessageChange.ChangeType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChatMessageChangeType%20ChatMessageChange.ChangeType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageChange", "ChangeType");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ChatMessage ChatMessageChange.Message is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChatMessage%20ChatMessageChange.Message");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageChange", "Message");
 			}
 		}
 #endif

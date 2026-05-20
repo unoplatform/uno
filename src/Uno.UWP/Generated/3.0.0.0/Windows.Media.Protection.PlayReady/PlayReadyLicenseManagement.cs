@@ -12,7 +12,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncAction DeleteLicenses(global::Windows.Media.Protection.PlayReady.PlayReadyContentHeader contentHeader)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction PlayReadyLicenseManagement.DeleteLicenses(PlayReadyContentHeader contentHeader) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20PlayReadyLicenseManagement.DeleteLicenses%28PlayReadyContentHeader%20contentHeader%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyLicenseManagement", "DeleteLicenses(PlayReadyContentHeader contentHeader)");
 		}
 #endif
 	}

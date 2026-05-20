@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception StoreCanAcquireLicenseResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20StoreCanAcquireLicenseResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreCanAcquireLicenseResult", "ExtendedError");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreCanAcquireLicenseResult.LicensableSku is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreCanAcquireLicenseResult.LicensableSku");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreCanAcquireLicenseResult", "LicensableSku");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StoreCanLicenseStatus StoreCanAcquireLicenseResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StoreCanLicenseStatus%20StoreCanAcquireLicenseResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreCanAcquireLicenseResult", "Status");
 			}
 		}
 #endif

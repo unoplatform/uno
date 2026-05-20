@@ -19,7 +19,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ShuffleEnabledChangeRequestedEventArgs.RequestedShuffleEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ShuffleEnabledChangeRequestedEventArgs.RequestedShuffleEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.ShuffleEnabledChangeRequestedEventArgs", "RequestedShuffleEnabled");
 			}
 		}
 #endif

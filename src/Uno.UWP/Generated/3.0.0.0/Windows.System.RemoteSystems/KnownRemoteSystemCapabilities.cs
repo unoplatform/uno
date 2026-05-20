@@ -14,7 +14,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRemoteSystemCapabilities.AppService is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRemoteSystemCapabilities.AppService");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.KnownRemoteSystemCapabilities", "AppService");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRemoteSystemCapabilities.LaunchUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRemoteSystemCapabilities.LaunchUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.KnownRemoteSystemCapabilities", "LaunchUri");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRemoteSystemCapabilities.RemoteSession is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRemoteSystemCapabilities.RemoteSession");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.KnownRemoteSystemCapabilities", "RemoteSession");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRemoteSystemCapabilities.SpatialEntity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRemoteSystemCapabilities.SpatialEntity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.KnownRemoteSystemCapabilities", "SpatialEntity");
 			}
 		}
 #endif

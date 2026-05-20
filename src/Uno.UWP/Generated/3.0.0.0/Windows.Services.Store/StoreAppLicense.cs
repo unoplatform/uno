@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, StoreLicense> StoreAppLicense.AddOnLicenses is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20StoreLicense%3E%20StoreAppLicense.AddOnLicenses");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAppLicense", "AddOnLicenses");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset StoreAppLicense.ExpirationDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20StoreAppLicense.ExpirationDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAppLicense", "ExpirationDate");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreAppLicense.ExtendedJsonData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreAppLicense.ExtendedJsonData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAppLicense", "ExtendedJsonData");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StoreAppLicense.IsActive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreAppLicense.IsActive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAppLicense", "IsActive");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StoreAppLicense.IsDiscLicense is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreAppLicense.IsDiscLicense");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAppLicense", "IsDiscLicense");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StoreAppLicense.IsTrial is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreAppLicense.IsTrial");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAppLicense", "IsTrial");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StoreAppLicense.IsTrialOwnedByThisUser is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreAppLicense.IsTrialOwnedByThisUser");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAppLicense", "IsTrialOwnedByThisUser");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreAppLicense.SkuStoreId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreAppLicense.SkuStoreId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAppLicense", "SkuStoreId");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan StoreAppLicense.TrialTimeRemaining is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20StoreAppLicense.TrialTimeRemaining");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAppLicense", "TrialTimeRemaining");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreAppLicense.TrialUniqueId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreAppLicense.TrialUniqueId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAppLicense", "TrialUniqueId");
 			}
 		}
 #endif

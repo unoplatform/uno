@@ -19,7 +19,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Quaternion SpatialLocation.AbsoluteAngularAcceleration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Quaternion%20SpatialLocation.AbsoluteAngularAcceleration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "AbsoluteAngularAcceleration");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SpatialLocation.AbsoluteAngularAccelerationAxisAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpatialLocation.AbsoluteAngularAccelerationAxisAngle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "AbsoluteAngularAccelerationAxisAngle");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Quaternion SpatialLocation.AbsoluteAngularVelocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Quaternion%20SpatialLocation.AbsoluteAngularVelocity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "AbsoluteAngularVelocity");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SpatialLocation.AbsoluteAngularVelocityAxisAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpatialLocation.AbsoluteAngularVelocityAxisAngle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "AbsoluteAngularVelocityAxisAngle");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SpatialLocation.AbsoluteLinearAcceleration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpatialLocation.AbsoluteLinearAcceleration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "AbsoluteLinearAcceleration");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SpatialLocation.AbsoluteLinearVelocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpatialLocation.AbsoluteLinearVelocity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "AbsoluteLinearVelocity");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Quaternion SpatialLocation.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Quaternion%20SpatialLocation.Orientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "Orientation");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SpatialLocation.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpatialLocation.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocation", "Position");
 			}
 		}
 #endif

@@ -83,7 +83,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 #if !WINAPPSDK
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.NativeWasm)]
 		public void When_Path_FillRule_F0_Is_EvenOdd()
 		{
 			var geometry = (StreamGeometry)XamlBindingHelper.ConvertValue(typeof(Geometry), "F0 M 0,0 L 10,0 10,10 0,10 Z");
@@ -91,7 +91,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.NativeWasm)]
 		public void When_Path_FillRule_F1_Is_Nonzero()
 		{
 			var geometry = (StreamGeometry)XamlBindingHelper.ConvertValue(typeof(Geometry), "F1 M 0,0 L 10,0 10,10 0,10 Z");

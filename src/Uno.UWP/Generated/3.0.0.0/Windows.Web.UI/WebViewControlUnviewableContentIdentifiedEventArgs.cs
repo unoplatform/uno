@@ -19,7 +19,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebViewControlUnviewableContentIdentifiedEventArgs.MediaType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebViewControlUnviewableContentIdentifiedEventArgs.MediaType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlUnviewableContentIdentifiedEventArgs", "MediaType");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri WebViewControlUnviewableContentIdentifiedEventArgs.Referrer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20WebViewControlUnviewableContentIdentifiedEventArgs.Referrer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlUnviewableContentIdentifiedEventArgs", "Referrer");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri WebViewControlUnviewableContentIdentifiedEventArgs.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20WebViewControlUnviewableContentIdentifiedEventArgs.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlUnviewableContentIdentifiedEventArgs", "Uri");
 			}
 		}
 #endif

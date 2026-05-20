@@ -19,7 +19,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceInformation DeviceDisconnectButtonClickedEventArgs.Device is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceInformation%20DeviceDisconnectButtonClickedEventArgs.Device");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceDisconnectButtonClickedEventArgs", "Device");
 			}
 		}
 #endif

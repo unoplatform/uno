@@ -3,18 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class TitleBarAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public TitleBarAutomationPeer(global::Microsoft.UI.Xaml.Controls.TitleBar owner) : base(owner)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer", "TitleBarAutomationPeer.TitleBarAutomationPeer(TitleBar owner)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer.TitleBarAutomationPeer(Microsoft.UI.Xaml.Controls.TitleBar)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBarAutomationPeer.TitleBarAutomationPeer(Microsoft.UI.Xaml.Controls.TitleBar)
 	}
 }

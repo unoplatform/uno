@@ -19,7 +19,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreTextSelectionRequest CoreTextSelectionRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreTextSelectionRequest%20CoreTextSelectionRequestedEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextSelectionRequestedEventArgs", "Request");
 			}
 		}
 #endif

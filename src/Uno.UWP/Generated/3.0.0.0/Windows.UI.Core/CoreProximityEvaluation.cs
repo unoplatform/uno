@@ -13,7 +13,7 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CoreProximityEvaluation(int _Score, global::Windows.Foundation.Point _AdjustedPoint)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreProximityEvaluation", "CoreProximityEvaluation.CoreProximityEvaluation(int _Score, Point _AdjustedPoint)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreProximityEvaluation", "CoreProximityEvaluation(int _Score, Point _AdjustedPoint)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.CoreProximityEvaluation.CoreProximityEvaluation(int, Windows.Foundation.Point)

@@ -19,7 +19,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WiFiDirectServiceProvisioningInfo.IsGroupFormationNeeded is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WiFiDirectServiceProvisioningInfo.IsGroupFormationNeeded");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceProvisioningInfo", "IsGroupFormationNeeded");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WiFiDirectServiceConfigurationMethod WiFiDirectServiceProvisioningInfo.SelectedConfigurationMethod is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WiFiDirectServiceConfigurationMethod%20WiFiDirectServiceProvisioningInfo.SelectedConfigurationMethod");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceProvisioningInfo", "SelectedConfigurationMethod");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ToastHistoryChangedType ToastNotificationHistoryChangedTriggerDetail.ChangeType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ToastHistoryChangedType%20ToastNotificationHistoryChangedTriggerDetail.ChangeType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail", "ChangeType");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ToastNotificationHistoryChangedTriggerDetail.CollectionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ToastNotificationHistoryChangedTriggerDetail.CollectionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ToastNotificationHistoryChangedTriggerDetail", "CollectionId");
 			}
 		}
 #endif

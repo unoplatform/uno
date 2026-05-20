@@ -14,11 +14,11 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CredentialPickerOptions.AlwaysDisplayDialog is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CredentialPickerOptions.AlwaysDisplayDialog");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerOptions", "AlwaysDisplayDialog");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.UI.CredentialPickerOptions", "bool CredentialPickerOptions.AlwaysDisplayDialog");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.UI.CredentialPickerOptions", "AlwaysDisplayDialog");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AuthenticationProtocol CredentialPickerOptions.AuthenticationProtocol is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AuthenticationProtocol%20CredentialPickerOptions.AuthenticationProtocol");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerOptions", "AuthenticationProtocol");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.UI.CredentialPickerOptions", "AuthenticationProtocol CredentialPickerOptions.AuthenticationProtocol");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.UI.CredentialPickerOptions", "AuthenticationProtocol");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CredentialPickerOptions.CallerSavesCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CredentialPickerOptions.CallerSavesCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerOptions", "CallerSavesCredential");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.UI.CredentialPickerOptions", "bool CredentialPickerOptions.CallerSavesCredential");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.UI.CredentialPickerOptions", "CallerSavesCredential");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CredentialPickerOptions.Caption is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CredentialPickerOptions.Caption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerOptions", "Caption");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.UI.CredentialPickerOptions", "string CredentialPickerOptions.Caption");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.UI.CredentialPickerOptions", "Caption");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CredentialSaveOption CredentialPickerOptions.CredentialSaveOption is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CredentialSaveOption%20CredentialPickerOptions.CredentialSaveOption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerOptions", "CredentialSaveOption");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.UI.CredentialPickerOptions", "CredentialSaveOption CredentialPickerOptions.CredentialSaveOption");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.UI.CredentialPickerOptions", "CredentialSaveOption");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CredentialPickerOptions.CustomAuthenticationProtocol is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CredentialPickerOptions.CustomAuthenticationProtocol");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerOptions", "CustomAuthenticationProtocol");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.UI.CredentialPickerOptions", "string CredentialPickerOptions.CustomAuthenticationProtocol");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.UI.CredentialPickerOptions", "CustomAuthenticationProtocol");
 			}
 		}
 #endif
@@ -98,11 +98,11 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CredentialPickerOptions.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CredentialPickerOptions.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerOptions", "ErrorCode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.UI.CredentialPickerOptions", "uint CredentialPickerOptions.ErrorCode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.UI.CredentialPickerOptions", "ErrorCode");
 			}
 		}
 #endif
@@ -112,11 +112,11 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CredentialPickerOptions.Message is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CredentialPickerOptions.Message");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerOptions", "Message");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.UI.CredentialPickerOptions", "string CredentialPickerOptions.Message");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.UI.CredentialPickerOptions", "Message");
 			}
 		}
 #endif
@@ -126,11 +126,11 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer CredentialPickerOptions.PreviousCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20CredentialPickerOptions.PreviousCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerOptions", "PreviousCredential");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.UI.CredentialPickerOptions", "IBuffer CredentialPickerOptions.PreviousCredential");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.UI.CredentialPickerOptions", "PreviousCredential");
 			}
 		}
 #endif
@@ -140,11 +140,11 @@ namespace Windows.Security.Credentials.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CredentialPickerOptions.TargetName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CredentialPickerOptions.TargetName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.UI.CredentialPickerOptions", "TargetName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.UI.CredentialPickerOptions", "string CredentialPickerOptions.TargetName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.UI.CredentialPickerOptions", "TargetName");
 			}
 		}
 #endif
@@ -152,7 +152,7 @@ namespace Windows.Security.Credentials.UI
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CredentialPickerOptions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.UI.CredentialPickerOptions", "CredentialPickerOptions.CredentialPickerOptions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.UI.CredentialPickerOptions", "CredentialPickerOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Credentials.UI.CredentialPickerOptions.CredentialPickerOptions()

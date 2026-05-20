@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagneticStripeReaderAuthenticationLevel MagneticStripeReaderCapabilities.AuthenticationLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MagneticStripeReaderAuthenticationLevel%20MagneticStripeReaderCapabilities.AuthenticationLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderCapabilities", "AuthenticationLevel");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MagneticStripeReaderCapabilities.CardAuthentication is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MagneticStripeReaderCapabilities.CardAuthentication");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderCapabilities", "CardAuthentication");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MagneticStripeReaderCapabilities.IsIsoSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MagneticStripeReaderCapabilities.IsIsoSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderCapabilities", "IsIsoSupported");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MagneticStripeReaderCapabilities.IsJisOneSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MagneticStripeReaderCapabilities.IsJisOneSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderCapabilities", "IsJisOneSupported");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MagneticStripeReaderCapabilities.IsJisTwoSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MagneticStripeReaderCapabilities.IsJisTwoSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderCapabilities", "IsJisTwoSupported");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MagneticStripeReaderCapabilities.IsStatisticsReportingSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MagneticStripeReaderCapabilities.IsStatisticsReportingSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderCapabilities", "IsStatisticsReportingSupported");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MagneticStripeReaderCapabilities.IsStatisticsUpdatingSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MagneticStripeReaderCapabilities.IsStatisticsUpdatingSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderCapabilities", "IsStatisticsUpdatingSupported");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MagneticStripeReaderCapabilities.IsTrackDataMaskingSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MagneticStripeReaderCapabilities.IsTrackDataMaskingSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderCapabilities", "IsTrackDataMaskingSupported");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MagneticStripeReaderCapabilities.IsTransmitSentinelsSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MagneticStripeReaderCapabilities.IsTransmitSentinelsSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderCapabilities", "IsTransmitSentinelsSupported");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UnifiedPosPowerReportingType MagneticStripeReaderCapabilities.PowerReportingType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UnifiedPosPowerReportingType%20MagneticStripeReaderCapabilities.PowerReportingType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderCapabilities", "PowerReportingType");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderCapabilities.SupportedEncryptionAlgorithms is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MagneticStripeReaderCapabilities.SupportedEncryptionAlgorithms");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderCapabilities", "SupportedEncryptionAlgorithms");
 			}
 		}
 #endif

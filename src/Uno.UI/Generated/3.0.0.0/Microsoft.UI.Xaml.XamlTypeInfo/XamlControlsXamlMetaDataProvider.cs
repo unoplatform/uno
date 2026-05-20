@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.XamlTypeInfo
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public XamlControlsXamlMetaDataProvider()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider", "XamlControlsXamlMetaDataProvider.XamlControlsXamlMetaDataProvider()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider", "XamlControlsXamlMetaDataProvider()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider.XamlControlsXamlMetaDataProvider()
@@ -20,28 +20,28 @@ namespace Microsoft.UI.Xaml.XamlTypeInfo
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void Initialize()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider", "void XamlControlsXamlMetaDataProvider.Initialize()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider", "Initialize()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Markup.IXamlType GetXamlType(global::System.Type type)
 		{
-			throw new global::System.NotImplementedException("The member IXamlType XamlControlsXamlMetaDataProvider.GetXamlType(Type type) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IXamlType%20XamlControlsXamlMetaDataProvider.GetXamlType%28Type%20type%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider", "GetXamlType(Type type)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Markup.IXamlType GetXamlType(string fullName)
 		{
-			throw new global::System.NotImplementedException("The member IXamlType XamlControlsXamlMetaDataProvider.GetXamlType(string fullName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IXamlType%20XamlControlsXamlMetaDataProvider.GetXamlType%28string%20fullName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider", "GetXamlType(string fullName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Markup.XmlnsDefinition[] GetXmlnsDefinitions()
 		{
-			throw new global::System.NotImplementedException("The member XmlnsDefinition[] XamlControlsXamlMetaDataProvider.GetXmlnsDefinitions() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XmlnsDefinition%5B%5D%20XamlControlsXamlMetaDataProvider.GetXmlnsDefinitions%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider", "GetXmlnsDefinitions()");
 		}
 #endif
 		// Processing: Microsoft.UI.Xaml.Markup.IXamlMetadataProvider

@@ -19,7 +19,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ICollection<string> SceneMeshMaterialAttributeMap.Keys is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICollection%3Cstring%3E%20SceneMeshMaterialAttributeMap.Keys");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap", "Keys");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ICollection<SceneAttributeSemantic> SceneMeshMaterialAttributeMap.Values is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICollection%3CSceneAttributeSemantic%3E%20SceneMeshMaterialAttributeMap.Values");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap", "Values");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int SceneMeshMaterialAttributeMap.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SceneMeshMaterialAttributeMap.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap", "Count");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SceneMeshMaterialAttributeMap.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SceneMeshMaterialAttributeMap.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap", "IsReadOnly");
 			}
 		}
 #endif
@@ -59,11 +59,11 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneAttributeSemantic SceneMeshMaterialAttributeMap.this[string key] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneAttributeSemantic%20SceneMeshMaterialAttributeMap.this%5Bstring%20key%5D");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap", "this[string key]");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap", "SceneAttributeSemantic SceneMeshMaterialAttributeMap.this[string key]");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap", "this[string key]");
 			}
 		}
 #endif
@@ -77,56 +77,56 @@ namespace Windows.UI.Composition.Scenes
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Add(string key, global::Windows.UI.Composition.Scenes.SceneAttributeSemantic value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap", "void SceneMeshMaterialAttributeMap.Add(string key, SceneAttributeSemantic value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap", "Add(string key, SceneAttributeSemantic value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ContainsKey(string key)
 		{
-			throw new global::System.NotImplementedException("The member bool SceneMeshMaterialAttributeMap.ContainsKey(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SceneMeshMaterialAttributeMap.ContainsKey%28string%20key%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap", "ContainsKey(string key)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Remove(string key)
 		{
-			throw new global::System.NotImplementedException("The member bool SceneMeshMaterialAttributeMap.Remove(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SceneMeshMaterialAttributeMap.Remove%28string%20key%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap", "Remove(string key)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TryGetValue(string key, out global::Windows.UI.Composition.Scenes.SceneAttributeSemantic value)
 		{
-			throw new global::System.NotImplementedException("The member bool SceneMeshMaterialAttributeMap.TryGetValue(string key, out SceneAttributeSemantic value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SceneMeshMaterialAttributeMap.TryGetValue%28string%20key%2C%20out%20SceneAttributeSemantic%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap", "TryGetValue(string key, out SceneAttributeSemantic value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Add(global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.Scenes.SceneAttributeSemantic> item)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap", "void SceneMeshMaterialAttributeMap.Add(KeyValuePair<string, SceneAttributeSemantic> item)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap", "Add(KeyValuePair<string, SceneAttributeSemantic> item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Clear()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap", "void SceneMeshMaterialAttributeMap.Clear()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap", "Clear()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Contains(global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.Scenes.SceneAttributeSemantic> item)
 		{
-			throw new global::System.NotImplementedException("The member bool SceneMeshMaterialAttributeMap.Contains(KeyValuePair<string, SceneAttributeSemantic> item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SceneMeshMaterialAttributeMap.Contains%28KeyValuePair%3Cstring%2C%20SceneAttributeSemantic%3E%20item%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap", "Contains(KeyValuePair<string, SceneAttributeSemantic> item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.Scenes.SceneAttributeSemantic>[] array, int arrayIndex)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap", "void SceneMeshMaterialAttributeMap.CopyTo(KeyValuePair<string, SceneAttributeSemantic>[] array, int arrayIndex)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap", "CopyTo(KeyValuePair<string, SceneAttributeSemantic>[] array, int arrayIndex)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.UI.Composition.Scenes.SceneAttributeSemantic>>.Remove(System.Collections.Generic.KeyValuePair<string, Windows.UI.Composition.Scenes.SceneAttributeSemantic>)
@@ -134,7 +134,7 @@ namespace Windows.UI.Composition.Scenes
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.Scenes.SceneAttributeSemantic>> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<KeyValuePair<string, SceneAttributeSemantic>> SceneMeshMaterialAttributeMap.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CKeyValuePair%3Cstring%2C%20SceneAttributeSemantic%3E%3E%20SceneMeshMaterialAttributeMap.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap", "GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.System.Collections.IEnumerable.GetEnumerator()

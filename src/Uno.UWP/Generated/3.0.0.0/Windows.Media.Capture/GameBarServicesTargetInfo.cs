@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GameBarServicesTargetInfo.AppId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GameBarServicesTargetInfo.AppId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.GameBarServicesTargetInfo", "AppId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GameBarServicesDisplayMode GameBarServicesTargetInfo.DisplayMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameBarServicesDisplayMode%20GameBarServicesTargetInfo.DisplayMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.GameBarServicesTargetInfo", "DisplayMode");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GameBarServicesTargetInfo.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GameBarServicesTargetInfo.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.GameBarServicesTargetInfo", "DisplayName");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GameBarServicesTargetInfo.TitleId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GameBarServicesTargetInfo.TitleId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.GameBarServicesTargetInfo", "TitleId");
 			}
 		}
 #endif

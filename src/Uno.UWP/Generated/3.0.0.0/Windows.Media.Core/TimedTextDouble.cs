@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public TimedTextDouble(double _Value, global::Windows.Media.Core.TimedTextUnit _Unit)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextDouble", "TimedTextDouble.TimedTextDouble(double _Value, TimedTextUnit _Unit)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextDouble", "TimedTextDouble(double _Value, TimedTextUnit _Unit)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedTextDouble.TimedTextDouble(double, Windows.Media.Core.TimedTextUnit)

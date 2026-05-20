@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MobileBroadbandNetworkRegistrationStateChange.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MobileBroadbandNetworkRegistrationStateChange.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandNetworkRegistrationStateChange", "DeviceId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MobileBroadbandNetwork MobileBroadbandNetworkRegistrationStateChange.Network is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandNetwork%20MobileBroadbandNetworkRegistrationStateChange.Network");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandNetworkRegistrationStateChange", "Network");
 			}
 		}
 #endif

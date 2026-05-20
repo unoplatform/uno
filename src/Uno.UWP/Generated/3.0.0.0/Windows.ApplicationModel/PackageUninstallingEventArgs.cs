@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PackageUninstallingEventArgs.ActivityId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PackageUninstallingEventArgs.ActivityId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageUninstallingEventArgs", "ActivityId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception PackageUninstallingEventArgs.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20PackageUninstallingEventArgs.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageUninstallingEventArgs", "ErrorCode");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PackageUninstallingEventArgs.IsComplete is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PackageUninstallingEventArgs.IsComplete");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageUninstallingEventArgs", "IsComplete");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Package PackageUninstallingEventArgs.Package is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Package%20PackageUninstallingEventArgs.Package");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageUninstallingEventArgs", "Package");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double PackageUninstallingEventArgs.Progress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20PackageUninstallingEventArgs.Progress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageUninstallingEventArgs", "Progress");
 			}
 		}
 #endif

@@ -19,11 +19,11 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IResourceManager ResourceManagerRequestedEventArgs.CustomResourceManager is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IResourceManager%20ResourceManagerRequestedEventArgs.CustomResourceManager");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs", "CustomResourceManager");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs", "IResourceManager ResourceManagerRequestedEventArgs.CustomResourceManager");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs", "CustomResourceManager");
 			}
 		}
 #endif

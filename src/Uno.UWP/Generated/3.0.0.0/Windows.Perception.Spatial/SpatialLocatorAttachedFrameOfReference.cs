@@ -19,11 +19,11 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Quaternion SpatialLocatorAttachedFrameOfReference.RelativeOrientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Quaternion%20SpatialLocatorAttachedFrameOfReference.RelativeOrientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "RelativeOrientation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "Quaternion SpatialLocatorAttachedFrameOfReference.RelativeOrientation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "RelativeOrientation");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SpatialLocatorAttachedFrameOfReference.RelativePosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20SpatialLocatorAttachedFrameOfReference.RelativePosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "RelativePosition");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "Vector3 SpatialLocatorAttachedFrameOfReference.RelativePosition");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "RelativePosition");
 			}
 		}
 #endif
@@ -45,21 +45,21 @@ namespace Windows.Perception.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AdjustHeading(double headingOffsetInRadians)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "void SpatialLocatorAttachedFrameOfReference.AdjustHeading(double headingOffsetInRadians)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "AdjustHeading(double headingOffsetInRadians)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Perception.Spatial.SpatialCoordinateSystem GetStationaryCoordinateSystemAtTimestamp(global::Windows.Perception.PerceptionTimestamp timestamp)
 		{
-			throw new global::System.NotImplementedException("The member SpatialCoordinateSystem SpatialLocatorAttachedFrameOfReference.GetStationaryCoordinateSystemAtTimestamp(PerceptionTimestamp timestamp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialCoordinateSystem%20SpatialLocatorAttachedFrameOfReference.GetStationaryCoordinateSystemAtTimestamp%28PerceptionTimestamp%20timestamp%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "GetStationaryCoordinateSystemAtTimestamp(PerceptionTimestamp timestamp)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public double? TryGetRelativeHeadingAtTimestamp(global::Windows.Perception.PerceptionTimestamp timestamp)
 		{
-			throw new global::System.NotImplementedException("The member double? SpatialLocatorAttachedFrameOfReference.TryGetRelativeHeadingAtTimestamp(PerceptionTimestamp timestamp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%3F%20SpatialLocatorAttachedFrameOfReference.TryGetRelativeHeadingAtTimestamp%28PerceptionTimestamp%20timestamp%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference", "TryGetRelativeHeadingAtTimestamp(PerceptionTimestamp timestamp)");
 		}
 #endif
 		// Forced skipping of method Windows.Perception.Spatial.SpatialLocatorAttachedFrameOfReference.RelativeOrientation.get

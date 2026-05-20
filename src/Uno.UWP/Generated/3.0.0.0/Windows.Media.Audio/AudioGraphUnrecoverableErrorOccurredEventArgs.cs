@@ -19,7 +19,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioGraphUnrecoverableError AudioGraphUnrecoverableErrorOccurredEventArgs.Error is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioGraphUnrecoverableError%20AudioGraphUnrecoverableErrorOccurredEventArgs.Error");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioGraphUnrecoverableErrorOccurredEventArgs", "Error");
 			}
 		}
 #endif

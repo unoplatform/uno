@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? MediaStreamSourceStartingRequest.StartPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20MediaStreamSourceStartingRequest.StartPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSourceStartingRequest", "StartPosition");
 			}
 		}
 #endif
@@ -27,14 +27,14 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Core.MediaStreamSourceStartingRequestDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member MediaStreamSourceStartingRequestDeferral MediaStreamSourceStartingRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaStreamSourceStartingRequestDeferral%20MediaStreamSourceStartingRequest.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSourceStartingRequest", "GetDeferral()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetActualStartPosition(global::System.TimeSpan position)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSourceStartingRequest", "void MediaStreamSourceStartingRequest.SetActualStartPosition(TimeSpan position)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSourceStartingRequest", "SetActualStartPosition(TimeSpan position)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.MediaStreamSourceStartingRequest.StartPosition.get

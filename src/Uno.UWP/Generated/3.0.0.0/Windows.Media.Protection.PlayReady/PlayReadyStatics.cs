@@ -14,7 +14,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.DomainJoinServiceRequestType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyStatics.DomainJoinServiceRequestType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "DomainJoinServiceRequestType");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.DomainLeaveServiceRequestType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyStatics.DomainLeaveServiceRequestType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "DomainLeaveServiceRequestType");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? PlayReadyStatics.HardwareDRMDisabledAtTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20PlayReadyStatics.HardwareDRMDisabledAtTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "HardwareDRMDisabledAtTime");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? PlayReadyStatics.HardwareDRMDisabledUntilTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20PlayReadyStatics.HardwareDRMDisabledUntilTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "HardwareDRMDisabledUntilTime");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.IndividualizationServiceRequestType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyStatics.IndividualizationServiceRequestType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "IndividualizationServiceRequestType");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PlayReadyStatics.InputTrustAuthorityToCreate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PlayReadyStatics.InputTrustAuthorityToCreate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "InputTrustAuthorityToCreate");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.LicenseAcquirerServiceRequestType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyStatics.LicenseAcquirerServiceRequestType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "LicenseAcquirerServiceRequestType");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.MediaProtectionSystemId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyStatics.MediaProtectionSystemId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "MediaProtectionSystemId");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.MeteringReportServiceRequestType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyStatics.MeteringReportServiceRequestType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "MeteringReportServiceRequestType");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PlayReadyStatics.PlayReadyCertificateSecurityLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PlayReadyStatics.PlayReadyCertificateSecurityLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "PlayReadyCertificateSecurityLevel");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PlayReadyStatics.PlayReadySecurityVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PlayReadyStatics.PlayReadySecurityVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "PlayReadySecurityVersion");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.ProtectionSystemId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyStatics.ProtectionSystemId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "ProtectionSystemId");
 			}
 		}
 #endif
@@ -134,7 +134,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.RevocationServiceRequestType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyStatics.RevocationServiceRequestType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "RevocationServiceRequestType");
 			}
 		}
 #endif
@@ -144,7 +144,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyStatics.SecureStopServiceRequestType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyStatics.SecureStopServiceRequestType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "SecureStopServiceRequestType");
 			}
 		}
 #endif
@@ -152,14 +152,14 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool CheckSupportedHardware(global::Windows.Media.Protection.PlayReady.PlayReadyHardwareDRMFeatures hwdrmFeature)
 		{
-			throw new global::System.NotImplementedException("The member bool PlayReadyStatics.CheckSupportedHardware(PlayReadyHardwareDRMFeatures hwdrmFeature) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PlayReadyStatics.CheckSupportedHardware%28PlayReadyHardwareDRMFeatures%20hwdrmFeature%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyStatics", "CheckSupportedHardware(PlayReadyHardwareDRMFeatures hwdrmFeature)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void ResetHardwareDRMDisabled()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyStatics", "void PlayReadyStatics.ResetHardwareDRMDisabled()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyStatics", "ResetHardwareDRMDisabled()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyStatics.DomainJoinServiceRequestType.get

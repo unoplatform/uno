@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VoipPhoneCallState CallStateChangeEventArgs.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoipPhoneCallState%20CallStateChangeEventArgs.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.CallStateChangeEventArgs", "State");
 			}
 		}
 #endif

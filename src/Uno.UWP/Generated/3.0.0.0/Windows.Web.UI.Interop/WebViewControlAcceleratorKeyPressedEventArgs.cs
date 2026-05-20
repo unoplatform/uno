@@ -19,7 +19,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreAcceleratorKeyEventType WebViewControlAcceleratorKeyPressedEventArgs.EventType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreAcceleratorKeyEventType%20WebViewControlAcceleratorKeyPressedEventArgs.EventType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs", "EventType");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebViewControlAcceleratorKeyPressedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WebViewControlAcceleratorKeyPressedEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs", "bool WebViewControlAcceleratorKeyPressedEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs", "Handled");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CorePhysicalKeyStatus WebViewControlAcceleratorKeyPressedEventArgs.KeyStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CorePhysicalKeyStatus%20WebViewControlAcceleratorKeyPressedEventArgs.KeyStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs", "KeyStatus");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebViewControlAcceleratorKeyRoutingStage WebViewControlAcceleratorKeyPressedEventArgs.RoutingStage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebViewControlAcceleratorKeyRoutingStage%20WebViewControlAcceleratorKeyPressedEventArgs.RoutingStage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs", "RoutingStage");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKey WebViewControlAcceleratorKeyPressedEventArgs.VirtualKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKey%20WebViewControlAcceleratorKeyPressedEventArgs.VirtualKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.Interop.WebViewControlAcceleratorKeyPressedEventArgs", "VirtualKey");
 			}
 		}
 #endif

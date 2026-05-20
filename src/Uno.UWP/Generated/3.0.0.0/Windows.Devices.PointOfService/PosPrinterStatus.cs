@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PosPrinterStatus.ExtendedStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PosPrinterStatus.ExtendedStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterStatus", "ExtendedStatus");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PosPrinterStatusKind PosPrinterStatus.StatusKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PosPrinterStatusKind%20PosPrinterStatus.StatusKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterStatus", "StatusKind");
 			}
 		}
 #endif

@@ -1013,12 +1013,26 @@ namespace Microsoft.UI.Xaml
 
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
-			if (AutomationProperties.GetName(this) is string name && !string.IsNullOrEmpty(name))
+			// Match WinUI: a FrameworkElement that sets AutomationProperties.Name or LabeledBy is force-promoted
+			// into the UIA tree using a NamedContainerAutomationPeer (which reports AutomationControlType.Group).
+			// See microsoft-ui-xaml/src/dxaml/xcp/core/core/elements/framework.cpp OnPropertyChanged for
+			// AutomationProperties_Name / AutomationProperties_LabeledBy.
+			if (HasAutomationName())
 			{
-				return new FrameworkElementAutomationPeer(this);
+				return new NamedContainerAutomationPeer(this);
 			}
 
 			return null;
+		}
+
+		private bool HasAutomationName()
+		{
+			if (AutomationProperties.GetName(this) is string name && !string.IsNullOrEmpty(name))
+			{
+				return true;
+			}
+
+			return AutomationProperties.GetLabeledBy(this) is not null;
 		}
 
 		public virtual string GetAccessibilityInnerText()

@@ -14,7 +14,7 @@ namespace Windows.System.Profile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EducationSettings.IsEducationEnvironment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EducationSettings.IsEducationEnvironment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.EducationSettings", "IsEducationEnvironment");
 			}
 		}
 #endif

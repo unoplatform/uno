@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> MobileBroadbandAccount.AvailableNetworkAccountIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20MobileBroadbandAccount.AvailableNetworkAccountIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandAccount", "AvailableNetworkAccountIds");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri MobileBroadbandAccount.AccountExperienceUrl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20MobileBroadbandAccount.AccountExperienceUrl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandAccount", "AccountExperienceUrl");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MobileBroadbandDeviceInformation MobileBroadbandAccount.CurrentDeviceInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandDeviceInformation%20MobileBroadbandAccount.CurrentDeviceInformation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandAccount", "CurrentDeviceInformation");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MobileBroadbandNetwork MobileBroadbandAccount.CurrentNetwork is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandNetwork%20MobileBroadbandAccount.CurrentNetwork");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandAccount", "CurrentNetwork");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MobileBroadbandAccount.NetworkAccountId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MobileBroadbandAccount.NetworkAccountId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandAccount", "NetworkAccountId");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid MobileBroadbandAccount.ServiceProviderGuid is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20MobileBroadbandAccount.ServiceProviderGuid");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandAccount", "ServiceProviderGuid");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MobileBroadbandAccount.ServiceProviderName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MobileBroadbandAccount.ServiceProviderName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandAccount", "ServiceProviderName");
 			}
 		}
 #endif
@@ -87,7 +87,7 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Networking.NetworkOperators.MobileBroadbandAccount CreateFromNetworkAccountId(string networkAccountId)
 		{
-			throw new global::System.NotImplementedException("The member MobileBroadbandAccount MobileBroadbandAccount.CreateFromNetworkAccountId(string networkAccountId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandAccount%20MobileBroadbandAccount.CreateFromNetworkAccountId%28string%20networkAccountId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandAccount", "CreateFromNetworkAccountId(string networkAccountId)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.AvailableNetworkAccountIds.get
@@ -95,7 +95,7 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Connectivity.ConnectionProfile> GetConnectionProfiles()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<ConnectionProfile> MobileBroadbandAccount.GetConnectionProfiles() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CConnectionProfile%3E%20MobileBroadbandAccount.GetConnectionProfiles%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandAccount", "GetConnectionProfiles()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.AccountExperienceUrl.get

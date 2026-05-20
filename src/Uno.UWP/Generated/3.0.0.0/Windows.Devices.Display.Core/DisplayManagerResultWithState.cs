@@ -19,7 +19,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayManagerResult DisplayManagerResultWithState.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayManagerResult%20DisplayManagerResultWithState.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayManagerResultWithState", "ErrorCode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception DisplayManagerResultWithState.ExtendedErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20DisplayManagerResultWithState.ExtendedErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayManagerResultWithState", "ExtendedErrorCode");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayState DisplayManagerResultWithState.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayState%20DisplayManagerResultWithState.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayManagerResultWithState", "State");
 			}
 		}
 #endif

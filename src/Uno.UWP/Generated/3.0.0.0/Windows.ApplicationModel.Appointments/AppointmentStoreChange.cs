@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Appointment AppointmentStoreChange.Appointment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Appointment%20AppointmentStoreChange.Appointment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentStoreChange", "Appointment");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppointmentCalendar AppointmentStoreChange.AppointmentCalendar is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentCalendar%20AppointmentStoreChange.AppointmentCalendar");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentStoreChange", "AppointmentCalendar");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppointmentStoreChangeType AppointmentStoreChange.ChangeType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentStoreChangeType%20AppointmentStoreChange.ChangeType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentStoreChange", "ChangeType");
 			}
 		}
 #endif

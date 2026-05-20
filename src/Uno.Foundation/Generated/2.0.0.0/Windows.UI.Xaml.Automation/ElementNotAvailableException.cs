@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Automation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ElementNotAvailableException() : base()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.ElementNotAvailableException", "ElementNotAvailableException.ElementNotAvailableException()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.ElementNotAvailableException", "ElementNotAvailableException()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.ElementNotAvailableException.ElementNotAvailableException()
@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Automation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ElementNotAvailableException(string message) : base(message)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.ElementNotAvailableException", "ElementNotAvailableException.ElementNotAvailableException(string message)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.ElementNotAvailableException", "ElementNotAvailableException(string message)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.ElementNotAvailableException.ElementNotAvailableException(string)
@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Automation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ElementNotAvailableException(string message, global::System.Exception innerException) : base(message, innerException)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.ElementNotAvailableException", "ElementNotAvailableException.ElementNotAvailableException(string message, Exception innerException)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.ElementNotAvailableException", "ElementNotAvailableException(string message, Exception innerException)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.ElementNotAvailableException.ElementNotAvailableException(string, System.Exception)

@@ -13,7 +13,7 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CrossSlideThresholds(float _SelectionStart, float _SpeedBumpStart, float _SpeedBumpEnd, float _RearrangeStart)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.CrossSlideThresholds", "CrossSlideThresholds.CrossSlideThresholds(float _SelectionStart, float _SpeedBumpStart, float _SpeedBumpEnd, float _RearrangeStart)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.CrossSlideThresholds", "CrossSlideThresholds(float _SelectionStart, float _SpeedBumpStart, float _SpeedBumpEnd, float _RearrangeStart)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.CrossSlideThresholds.CrossSlideThresholds(float, float, float, float)

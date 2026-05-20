@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.Email
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Email.EmailMailboxChangedDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member EmailMailboxChangedDeferral EmailMailboxChangedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxChangedDeferral%20EmailMailboxChangedEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxChangedEventArgs", "GetDeferral()");
 		}
 #endif
 	}

@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialInteractionSourceKind SpatialRecognitionStartedEventArgs.InteractionSourceKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialInteractionSourceKind%20SpatialRecognitionStartedEventArgs.InteractionSourceKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialRecognitionStartedEventArgs", "InteractionSourceKind");
 			}
 		}
 #endif
@@ -27,14 +27,14 @@ namespace Windows.UI.Input.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.Spatial.SpatialPointerPose TryGetPointerPose(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
 		{
-			throw new global::System.NotImplementedException("The member SpatialPointerPose SpatialRecognitionStartedEventArgs.TryGetPointerPose(SpatialCoordinateSystem coordinateSystem) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialPointerPose%20SpatialRecognitionStartedEventArgs.TryGetPointerPose%28SpatialCoordinateSystem%20coordinateSystem%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialRecognitionStartedEventArgs", "TryGetPointerPose(SpatialCoordinateSystem coordinateSystem)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsGesturePossible(global::Windows.UI.Input.Spatial.SpatialGestureSettings gesture)
 		{
-			throw new global::System.NotImplementedException("The member bool SpatialRecognitionStartedEventArgs.IsGesturePossible(SpatialGestureSettings gesture) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialRecognitionStartedEventArgs.IsGesturePossible%28SpatialGestureSettings%20gesture%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialRecognitionStartedEventArgs", "IsGesturePossible(SpatialGestureSettings gesture)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialRecognitionStartedEventArgs.InteractionSourceKind.get

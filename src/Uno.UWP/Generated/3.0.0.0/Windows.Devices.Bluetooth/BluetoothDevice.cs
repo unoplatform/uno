@@ -14,7 +14,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong BluetoothDevice.BluetoothAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20BluetoothDevice.BluetoothAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDevice", "BluetoothAddress");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothDeviceId BluetoothDevice.BluetoothDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothDeviceId%20BluetoothDevice.BluetoothDeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDevice", "BluetoothDeviceId");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothClassOfDevice BluetoothDevice.ClassOfDevice is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothClassOfDevice%20BluetoothDevice.ClassOfDevice");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDevice", "ClassOfDevice");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothConnectionStatus BluetoothDevice.ConnectionStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothConnectionStatus%20BluetoothDevice.ConnectionStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDevice", "ConnectionStatus");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceAccessInformation BluetoothDevice.DeviceAccessInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccessInformation%20BluetoothDevice.DeviceAccessInformation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDevice", "DeviceAccessInformation");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string BluetoothDevice.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20BluetoothDevice.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDevice", "DeviceId");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceInformation BluetoothDevice.DeviceInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceInformation%20BluetoothDevice.DeviceInformation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDevice", "DeviceInformation");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName BluetoothDevice.HostName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20BluetoothDevice.HostName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDevice", "HostName");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string BluetoothDevice.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20BluetoothDevice.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDevice", "Name");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<RfcommDeviceService> BluetoothDevice.RfcommServices is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CRfcommDeviceService%3E%20BluetoothDevice.RfcommServices");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDevice", "RfcommServices");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<IBuffer> BluetoothDevice.SdpRecords is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CIBuffer%3E%20BluetoothDevice.SdpRecords");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDevice", "SdpRecords");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothDevice.WasSecureConnectionUsedForPairing is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothDevice.WasSecureConnectionUsedForPairing");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDevice", "WasSecureConnectionUsedForPairing");
 			}
 		}
 #endif
@@ -132,21 +132,21 @@ namespace Windows.Devices.Bluetooth
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.BluetoothDevice> FromIdAsync(string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<BluetoothDevice> BluetoothDevice.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBluetoothDevice%3E%20BluetoothDevice.FromIdAsync%28string%20deviceId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDevice", "FromIdAsync(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.BluetoothDevice> FromHostNameAsync(global::Windows.Networking.HostName hostName)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<BluetoothDevice> BluetoothDevice.FromHostNameAsync(HostName hostName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBluetoothDevice%3E%20BluetoothDevice.FromHostNameAsync%28HostName%20hostName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDevice", "FromHostNameAsync(HostName hostName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.BluetoothDevice> FromBluetoothAddressAsync(ulong address)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<BluetoothDevice> BluetoothDevice.FromBluetoothAddressAsync(ulong address) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBluetoothDevice%3E%20BluetoothDevice.FromBluetoothAddressAsync%28ulong%20address%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDevice", "FromBluetoothAddressAsync(ulong address)");
 		}
 #endif
 		// Skipping already declared method Windows.Devices.Bluetooth.BluetoothDevice.GetDeviceSelector()
@@ -158,7 +158,7 @@ namespace Windows.Devices.Bluetooth
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelectorFromClassOfDevice(global::Windows.Devices.Bluetooth.BluetoothClassOfDevice classOfDevice)
 		{
-			throw new global::System.NotImplementedException("The member string BluetoothDevice.GetDeviceSelectorFromClassOfDevice(BluetoothClassOfDevice classOfDevice) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20BluetoothDevice.GetDeviceSelectorFromClassOfDevice%28BluetoothClassOfDevice%20classOfDevice%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDevice", "GetDeviceSelectorFromClassOfDevice(BluetoothClassOfDevice classOfDevice)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.ConnectionStatusChanged.add
@@ -171,42 +171,42 @@ namespace Windows.Devices.Bluetooth
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothDevice", "void BluetoothDevice.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothDevice", "Dispose()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceAccessStatus> RequestAccessAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceAccessStatus> BluetoothDevice.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceAccessStatus%3E%20BluetoothDevice.RequestAccessAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDevice", "RequestAccessAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult> GetRfcommServicesAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<RfcommDeviceServicesResult> BluetoothDevice.GetRfcommServicesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CRfcommDeviceServicesResult%3E%20BluetoothDevice.GetRfcommServicesAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDevice", "GetRfcommServicesAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult> GetRfcommServicesAsync(global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<RfcommDeviceServicesResult> BluetoothDevice.GetRfcommServicesAsync(BluetoothCacheMode cacheMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CRfcommDeviceServicesResult%3E%20BluetoothDevice.GetRfcommServicesAsync%28BluetoothCacheMode%20cacheMode%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDevice", "GetRfcommServicesAsync(BluetoothCacheMode cacheMode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult> GetRfcommServicesForIdAsync(global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId serviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<RfcommDeviceServicesResult> BluetoothDevice.GetRfcommServicesForIdAsync(RfcommServiceId serviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CRfcommDeviceServicesResult%3E%20BluetoothDevice.GetRfcommServicesForIdAsync%28RfcommServiceId%20serviceId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDevice", "GetRfcommServicesForIdAsync(RfcommServiceId serviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult> GetRfcommServicesForIdAsync(global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId serviceId, global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<RfcommDeviceServicesResult> BluetoothDevice.GetRfcommServicesForIdAsync(RfcommServiceId serviceId, BluetoothCacheMode cacheMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CRfcommDeviceServicesResult%3E%20BluetoothDevice.GetRfcommServicesForIdAsync%28RfcommServiceId%20serviceId%2C%20BluetoothCacheMode%20cacheMode%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDevice", "GetRfcommServicesForIdAsync(RfcommServiceId serviceId, BluetoothCacheMode cacheMode)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.BluetoothAddress.get
@@ -228,12 +228,12 @@ namespace Windows.Devices.Bluetooth
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothDevice", "event TypedEventHandler<BluetoothDevice, object> BluetoothDevice.ConnectionStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothDevice", "event ConnectionStatusChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothDevice", "event TypedEventHandler<BluetoothDevice, object> BluetoothDevice.ConnectionStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothDevice", "event ConnectionStatusChanged");
 			}
 		}
 #endif
@@ -244,12 +244,12 @@ namespace Windows.Devices.Bluetooth
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothDevice", "event TypedEventHandler<BluetoothDevice, object> BluetoothDevice.NameChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothDevice", "event NameChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothDevice", "event TypedEventHandler<BluetoothDevice, object> BluetoothDevice.NameChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothDevice", "event NameChanged");
 			}
 		}
 #endif
@@ -260,12 +260,12 @@ namespace Windows.Devices.Bluetooth
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothDevice", "event TypedEventHandler<BluetoothDevice, object> BluetoothDevice.SdpRecordsChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothDevice", "event SdpRecordsChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothDevice", "event TypedEventHandler<BluetoothDevice, object> BluetoothDevice.SdpRecordsChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothDevice", "event SdpRecordsChanged");
 			}
 		}
 #endif

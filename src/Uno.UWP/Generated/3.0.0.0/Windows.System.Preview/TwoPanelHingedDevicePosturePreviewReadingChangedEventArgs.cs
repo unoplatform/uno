@@ -19,7 +19,7 @@ namespace Windows.System.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TwoPanelHingedDevicePosturePreviewReading TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs.Reading is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TwoPanelHingedDevicePosturePreviewReading%20TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs.Reading");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs", "Reading");
 			}
 		}
 #endif

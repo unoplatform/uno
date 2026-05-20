@@ -40,7 +40,7 @@ namespace Windows.Storage.Streams
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IOutputStream DetachStream()
 		{
-			throw new global::System.NotImplementedException("The member IOutputStream DataWriter.DetachStream() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IOutputStream%20DataWriter.DetachStream%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.DataWriter", "DetachStream()");
 		}
 #endif
 		// Skipping already declared method Windows.Storage.Streams.DataWriter.Dispose()

@@ -14,11 +14,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardPinCharacterPolicyOption SmartCardPinPolicy.Digits is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardPinCharacterPolicyOption%20SmartCardPinPolicy.Digits");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardPinPolicy", "Digits");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardPinPolicy", "SmartCardPinCharacterPolicyOption SmartCardPinPolicy.Digits");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardPinPolicy", "Digits");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardPinCharacterPolicyOption SmartCardPinPolicy.LowercaseLetters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardPinCharacterPolicyOption%20SmartCardPinPolicy.LowercaseLetters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardPinPolicy", "LowercaseLetters");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardPinPolicy", "SmartCardPinCharacterPolicyOption SmartCardPinPolicy.LowercaseLetters");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardPinPolicy", "LowercaseLetters");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SmartCardPinPolicy.MaxLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SmartCardPinPolicy.MaxLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardPinPolicy", "MaxLength");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardPinPolicy", "uint SmartCardPinPolicy.MaxLength");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardPinPolicy", "MaxLength");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SmartCardPinPolicy.MinLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SmartCardPinPolicy.MinLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardPinPolicy", "MinLength");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardPinPolicy", "uint SmartCardPinPolicy.MinLength");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardPinPolicy", "MinLength");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardPinCharacterPolicyOption SmartCardPinPolicy.SpecialCharacters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardPinCharacterPolicyOption%20SmartCardPinPolicy.SpecialCharacters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardPinPolicy", "SpecialCharacters");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardPinPolicy", "SmartCardPinCharacterPolicyOption SmartCardPinPolicy.SpecialCharacters");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardPinPolicy", "SpecialCharacters");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardPinCharacterPolicyOption SmartCardPinPolicy.UppercaseLetters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardPinCharacterPolicyOption%20SmartCardPinPolicy.UppercaseLetters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardPinPolicy", "UppercaseLetters");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardPinPolicy", "SmartCardPinCharacterPolicyOption SmartCardPinPolicy.UppercaseLetters");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardPinPolicy", "UppercaseLetters");
 			}
 		}
 #endif
@@ -96,7 +96,7 @@ namespace Windows.Devices.SmartCards
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SmartCardPinPolicy()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardPinPolicy", "SmartCardPinPolicy.SmartCardPinPolicy()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardPinPolicy", "SmartCardPinPolicy()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardPinPolicy.SmartCardPinPolicy()

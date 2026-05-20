@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneCallHistoryEntryQueryDesiredMedia PhoneCallHistoryEntryQueryOptions.DesiredMedia is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneCallHistoryEntryQueryDesiredMedia%20PhoneCallHistoryEntryQueryOptions.DesiredMedia");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions", "DesiredMedia");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions", "PhoneCallHistoryEntryQueryDesiredMedia PhoneCallHistoryEntryQueryOptions.DesiredMedia");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions", "DesiredMedia");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> PhoneCallHistoryEntryQueryOptions.SourceIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20PhoneCallHistoryEntryQueryOptions.SourceIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions", "SourceIds");
 			}
 		}
 #endif
@@ -36,7 +36,7 @@ namespace Windows.ApplicationModel.Calls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PhoneCallHistoryEntryQueryOptions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions", "PhoneCallHistoryEntryQueryOptions.PhoneCallHistoryEntryQueryOptions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions", "PhoneCallHistoryEntryQueryOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallHistoryEntryQueryOptions.PhoneCallHistoryEntryQueryOptions()
