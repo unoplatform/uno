@@ -149,7 +149,7 @@ NuGet package version.  It remains valid across SDK and package upgrades.
 
 | ID | Requirement |
 |----|-------------|
-| FR-FW1 | On Windows, `StartCommandHandler` must ensure a Private-profile inbound Allow rule exists for `dotnet.exe` before spawning the host. |
+| FR-FW1 | On Windows, `StartCommandHandler` must ensure a Private+Domain inbound Allow rule exists for `dotnet.exe` before spawning the host. |
 | FR-FW2 | The check must be idempotent — if the rule already exists no elevation is requested. |
 | FR-FW3 | If the rule is absent, the CLI must prompt for UAC elevation via an elevated `netsh` invocation. |
 | FR-FW4 | If UAC is declined or `netsh` fails, the CLI must log a warning with the manual PowerShell command and continue startup normally (no crash, no exception propagation). |
@@ -170,13 +170,23 @@ NuGet package version.  It remains valid across SDK and package upgrades.
 
 ### Automated tests
 
-- `ParseHasPrivateRule` unit tests (pure function, no process spawning):
-  - Rule exists with `Profiles: Private` → returns `true`
-  - Rule exists with `Profiles: Private,Public` → returns `true`
-  - Rule exists with `Profiles: Any` → returns `true`
-  - Rule exists with `Profiles: Public` only → returns `false`
-  - Rule present for a different program → returns `false`
-  - Empty output → returns `false`
+`ParseHasRequiredRule` unit tests in `Given_WindowsFirewallHelper.cs` (pure function,
+no process spawning):
+
+| Scenario | Expected |
+|----------|----------|
+| `Profiles: Public` only | `false` — Public already covered by SDK rule |
+| `Profiles: Private` | `true` |
+| `Profiles: Domain` | `true` |
+| `Profiles: Private,Domain` | `true` |
+| `Profiles: Any` | `true` |
+| `Profiles: Public`, `LocalIP: Any`, `RemoteIP: Any` | `false` — "Any" in other fields must not match |
+| Rule for a different program | `false` |
+| `Enabled: No` | `false` — disabled rule must not satisfy the check |
+| `Action: Block` | `false` |
+| Empty output | `false` |
+| Multiple rules (Public-only + Private,Domain) | `true` |
+| Path comparison case-insensitive | `true` |
 
 ### Manual QA
 
