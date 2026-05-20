@@ -288,6 +288,15 @@ internal sealed class StartCommandHandler
 			}
 		}
 
+		// Ensure dotnet.exe has a Private-profile inbound firewall rule on Windows so
+		// remote clients (physical Android/iOS devices, WSL, VMs) on Private Wi-Fi
+		// networks can reach the DevServer.  The check is idempotent and fast; the UAC
+		// prompt appears at most once per machine.  See spec-appendix-k-windows-firewall.md.
+		if (OperatingSystem.IsWindows())
+		{
+			await WindowsFirewallHelper.EnsurePrivateRuleAsync(_logger, CancellationToken.None);
+		}
+
 		// Allocate port if needed
 		var effectivePort = parsed.HttpPort;
 		if (effectivePort == 0)
