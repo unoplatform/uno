@@ -5,16 +5,16 @@ using Microsoft.Extensions.Logging;
 namespace Uno.UI.DevServer.Cli.Helpers;
 
 /// <summary>
-/// Ensures the Windows Firewall has an inbound Allow rule for <c>dotnet.exe</c>
-/// on the <em>Private</em> and <em>Domain</em> network profiles.
+/// Ensures the Windows Firewall has an inbound Allow rule for
+/// <c>Uno.UI.RemoteControl.Host.exe</c> on the <em>Private</em> and
+/// <em>Domain</em> network profiles.
 ///
-/// Why this is needed: the .NET SDK installer creates a rule for <c>dotnet.exe</c>
-/// that covers the <em>Public</em> profile only.  Wi-Fi home/office networks are
-/// classified as <em>Private</em> and corporate Active Directory networks as
-/// <em>Domain</em>, so physical Android/iOS devices and remote clients on those
-/// networks are silently blocked.  <c>CreateNoWindow = true</c> on the host process
-/// prevents the Windows Firewall dialog from ever appearing, so no rule is created
-/// automatically.
+/// Why this is needed: the DevServer CLI spawns the host with
+/// <c>CreateNoWindow = true</c>, which suppresses the Windows Firewall
+/// interactive dialog that would normally prompt the user to allow inbound
+/// connections for a new executable.  Without that dialog, no Private or Domain
+/// rule is ever created, so physical Android/iOS devices and remote clients on
+/// those networks are silently blocked.
 /// </summary>
 [SupportedOSPlatform("windows")]
 internal static class WindowsFirewallHelper
@@ -36,23 +36,21 @@ internal static class WindowsFirewallHelper
 	}
 
 	/// <summary>
-	/// Checks whether the DevServer inbound Allow rule already exists, and adds one
-	/// via an elevated <c>netsh</c> call if not.  Gracefully degrades (warning +
-	/// manual instructions) if UAC is declined or the <c>netsh</c> call fails.
+	/// Checks whether the DevServer inbound Allow rule already exists for
+	/// <paramref name="hostExePath"/>, and adds one via an elevated <c>netsh</c>
+	/// call if not.  Gracefully degrades (warning + manual instructions) if UAC
+	/// is declined or the <c>netsh</c> call fails.
 	/// Set <c>UNO_DEVSERVER_SKIP_FIREWALL_CHECK=1</c> to bypass entirely.
 	/// </summary>
-	public static async Task EnsureFirewallRuleAsync(ILogger logger, CancellationToken ct)
+	/// <param name="hostExePath">
+	/// Absolute path to <c>Uno.UI.RemoteControl.Host.exe</c> — the executable
+	/// that opens the inbound DevServer port.
+	/// </param>
+	public static async Task EnsureFirewallRuleAsync(string hostExePath, ILogger logger, CancellationToken ct)
 	{
 		if (IsOptedOut)
 		{
 			logger.LogDebug("WindowsFirewall: check skipped (UNO_DEVSERVER_SKIP_FIREWALL_CHECK is set).");
-			return;
-		}
-
-		var dotnetPath = ResolveDotnetPath();
-		if (dotnetPath is null)
-		{
-			logger.LogDebug("WindowsFirewall: could not resolve dotnet.exe path — skipping firewall check.");
 			return;
 		}
 
@@ -67,7 +65,7 @@ internal static class WindowsFirewallHelper
 			"A UAC prompt will appear to add one — this happens once per machine.",
 			RuleDisplayName);
 
-		await AddFirewallRuleAsync(dotnetPath, logger, ct);
+		await AddFirewallRuleAsync(hostExePath, logger, ct);
 	}
 
 	// -------------------------------------------------------------------------
@@ -120,48 +118,11 @@ internal static class WindowsFirewallHelper
 		}
 	}
 
-	private static string? ResolveDotnetPath()
-	{
-		// DOTNET_HOST_PATH is set by the .NET muxer and points to the exact dotnet.exe
-		// that launched the current process — the most authoritative source.
-		var hostPath = Environment.GetEnvironmentVariable("DOTNET_HOST_PATH");
-		if (!string.IsNullOrWhiteSpace(hostPath)
-			&& hostPath.EndsWith("dotnet.exe", StringComparison.OrdinalIgnoreCase)
-			&& File.Exists(hostPath))
-		{
-			return hostPath;
-		}
-
-		// Fallback: the CLI itself runs inside dotnet.exe, so ProcessPath is reliable.
-		var processPath = Environment.ProcessPath;
-		if (processPath is not null
-			&& processPath.EndsWith("dotnet.exe", StringComparison.OrdinalIgnoreCase)
-			&& File.Exists(processPath))
-		{
-			return processPath;
-		}
-
-		// Last fallback: DOTNET_ROOT set by the SDK installer.
-		// PATH scanning is intentionally omitted — user-writable PATH entries could
-		// cause us to whitelist an untrusted dotnet.exe via the UAC-elevated netsh call.
-		var dotnetRoot = Environment.GetEnvironmentVariable("DOTNET_ROOT");
-		if (!string.IsNullOrWhiteSpace(dotnetRoot))
-		{
-			var candidate = Path.Combine(dotnetRoot, "dotnet.exe");
-			if (File.Exists(candidate))
-			{
-				return candidate;
-			}
-		}
-
-		return null;
-	}
-
-	private static async Task AddFirewallRuleAsync(string dotnetPath, ILogger logger, CancellationToken ct)
+	private static async Task AddFirewallRuleAsync(string hostExePath, ILogger logger, CancellationToken ct)
 	{
 		// netsh advfirewall requires admin rights — launch elevated via runas.
 		var arguments =
-			$"""advfirewall firewall add rule name="{RuleDisplayName}" dir=in action=allow program="{dotnetPath}" enable=yes profile={RuleProfiles}""";
+			$"""advfirewall firewall add rule name="{RuleDisplayName}" dir=in action=allow program="{hostExePath}" enable=yes profile={RuleProfiles}""";
 
 		try
 		{
@@ -184,11 +145,12 @@ internal static class WindowsFirewallHelper
 			if (proc.ExitCode == 0)
 			{
 				logger.LogInformation(
-					"WindowsFirewall: Private+Domain inbound rule added for dotnet.exe.");
+					"WindowsFirewall: Private+Domain inbound rule added for '{HostExe}'.",
+					hostExePath);
 			}
 			else
 			{
-				LogManualInstructions(dotnetPath, logger,
+				LogManualInstructions(hostExePath, logger,
 					$"netsh exited with code {proc.ExitCode}.");
 			}
 		}
@@ -200,11 +162,11 @@ internal static class WindowsFirewallHelper
 		{
 			// UAC declined → Win32Exception; local timeout → OperationCanceledException
 			// on the inner cts (not ct).  Either way, log and continue.
-			LogManualInstructions(dotnetPath, logger, ex.Message);
+			LogManualInstructions(hostExePath, logger, ex.Message);
 		}
 	}
 
-	private static void LogManualInstructions(string dotnetPath, ILogger logger, string reason)
+	private static void LogManualInstructions(string hostExePath, ILogger logger, string reason)
 	{
 		logger.LogWarning(
 			"""
@@ -217,11 +179,11 @@ internal static class WindowsFirewallHelper
 			  New-NetFirewallRule `
 			    -DisplayName "{RuleName}" `
 			    -Direction Inbound -Action Allow `
-			    -Program "{DotnetPath}" `
+			    -Program "{HostExePath}" `
 			    -Profile @("Private", "Domain")
 			""",
 			reason,
 			RuleDisplayName,
-			dotnetPath);
+			hostExePath);
 	}
 }

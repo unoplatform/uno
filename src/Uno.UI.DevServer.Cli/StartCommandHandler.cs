@@ -288,13 +288,14 @@ internal sealed class StartCommandHandler
 			}
 		}
 
-		// Ensure dotnet.exe has Private+Domain inbound firewall rules on Windows so
-		// remote clients (physical Android/iOS devices, WSL, VMs, corporate networks)
-		// can reach the DevServer.  The check is idempotent and fast; the UAC prompt
-		// appears at most once per machine.  See spec-appendix-k-windows-firewall.md.
-		if (OperatingSystem.IsWindows())
+		// Ensure Uno.UI.RemoteControl.Host.exe has a Private+Domain inbound Allow rule
+		// on Windows.  CreateNoWindow=true on the host process suppresses the Windows
+		// Firewall dialog, so the rule is never created automatically.  This check is
+		// idempotent and fast; the UAC prompt appears at most once per machine.
+		// See spec-appendix-k-windows-firewall.md.
+		if (OperatingSystem.IsWindows() && hostPath.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
 		{
-			await WindowsFirewallHelper.EnsureFirewallRuleAsync(_logger, CancellationToken.None);
+			await WindowsFirewallHelper.EnsureFirewallRuleAsync(hostPath, _logger, CancellationToken.None);
 		}
 
 		// Allocate port if needed

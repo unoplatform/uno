@@ -21,15 +21,20 @@ or more profiles.
 
 ### 1.2 How the regression was introduced
 
-| Era | How the host was launched | Firewall rule created |
-|-----|--------------------------|----------------------|
-| Before 6.7 | `Uno.UI.RemoteControl.Host.exe` directly | Windows dialog → user clicked *Allow* → Private + Public rule for that exe |
-| 6.7+ (current) | `dotnet.exe Uno.UI.RemoteControl.Host.dll` | Reuses the existing `dotnet.exe` SDK rule — **Public only** (Private and Domain not covered) |
+The DevServer CLI has always launched `Uno.UI.RemoteControl.Host.exe` directly on
+Windows (not `dotnet.exe <dll>`).  The real change that introduced the regression
+is `CreateNoWindow = true` on the spawned process.
 
-The .NET SDK installer creates an inbound Allow rule for `dotnet.exe` that covers
-the **Public** profile only.  When the DevServer host process is launched as
-`dotnet.exe <host.dll>` with `CreateNoWindow = true`, the Windows Firewall
-interactive dialog never appears — so no new Private rule is ever created.
+| Era | How the host was launched | `CreateNoWindow` | Firewall dialog shown |
+|-----|--------------------------|------------------|-----------------------|
+| Before DevServer CLI | `Uno.UI.RemoteControl.Host.exe` from IDE | `false` (visible window) | ✅ Yes — user clicked *Allow* → Private + Public rule |
+| DevServer CLI (current) | `Uno.UI.RemoteControl.Host.exe` via CLI | `true` (hidden) | ❌ No — dialog never appears |
+
+`CreateNoWindow = true` tells Windows not to create a console window for the child
+process.  As a side effect, it also suppresses the Windows Firewall interactive dialog
+that would normally prompt the user to allow inbound connections for a new executable.
+Without that dialog, **no Private or Domain rule is ever created** for
+`Uno.UI.RemoteControl.Host.exe`, even though the exe itself is unchanged.
 
 Result: physical Android/iOS devices on a Private Wi-Fi network are silently blocked
 by the firewall before any TCP connection reaches the DevServer.
@@ -78,17 +83,18 @@ The operation is **idempotent** — the UAC prompt appears at most once per mach
 Name:      Uno DevServer (.NET Host)
 Direction: Inbound
 Action:    Allow
-Program:   <dotnet.exe path>
+Program:   <Uno.UI.RemoteControl.Host.exe path>
 Profile:   Private, Domain
 ```
 
+The rule targets `Uno.UI.RemoteControl.Host.exe` — the actual executable that opens
+the inbound port — not `dotnet.exe`.  This is the minimum-privilege approach: only
+the specific DevServer process is whitelisted, not every .NET process on the machine.
+
 The rule covers **Private** (home/office Wi-Fi) and **Domain** (corporate
 Active Directory networks where the developer has local admin rights).
-**Public** is intentionally omitted — the .NET SDK installer already creates a
-Public rule for `dotnet.exe`, so it is already covered.
-
-The rule targets `dotnet.exe` (a stable SDK path), not a specific DevServer DLL or
-NuGet package version.  It remains valid across SDK and package upgrades.
+**Public** is intentionally omitted — Windows already allows inbound connections
+for known executables on Public when the user accepted the dialog in earlier versions.
 
 ### 2.3 Files changed
 
@@ -105,39 +111,31 @@ NuGet package version.  It remains valid across SDK and package upgrades.
    Useful for CI runners, GPO-managed machines, or any environment where elevation
    is not permitted.
 
-2. Resolve dotnet.exe path
-   a. DOTNET_HOST_PATH env var  (set by the .NET muxer — most authoritative)
-   b. Environment.ProcessPath   (CLI itself runs under dotnet.exe — reliable fallback)
-   c. %DOTNET_ROOT%\dotnet.exe  (last resort)
-   PATH scanning is intentionally omitted — user-writable PATH entries could allow
-   an untrusted dotnet.exe to be whitelisted via the UAC-elevated netsh call.
-   If no path resolved → log debug, return (skip check).
-
-3. Check for existing rule by name (language-agnostic exit-code check)
+2. Check for existing rule by name (language-agnostic exit-code check)
    Run: netsh advfirewall firewall show rule name="Uno DevServer (.NET Host)" dir=in
    Timeout: 10 s.
    Exit 0  → rule found → return (no UAC, no log noise).
    Non-0   → rule absent → continue.
    (No output parsing — avoids any dependency on localized netsh field labels.)
 
-4. Add the rule (rule absent)
+3. Add the rule (rule absent)
    Log informational: "A UAC prompt will appear — this happens once per machine."
    Run elevated: netsh advfirewall firewall add rule
                    name="Uno DevServer (.NET Host)"
                    dir=in action=allow
-                   program="<dotnet.exe path>"
+                   program="<Uno.UI.RemoteControl.Host.exe path>"
                    enable=yes profile=private,domain
      via Process.Start { Verb="runas", UseShellExecute=true }
    Timeout: 60 s (allows time for UAC interaction).
    Exit 0  → log success.
    Non-0 or exception → log warning + manual PowerShell command, return.
 
-5. Graceful degradation (UAC declined or netsh failed)
+4. Graceful degradation (UAC declined or netsh failed)
    DevServer continues to start normally.
-   Warning logged with manual workaround:
+   Warning logged with manual workaround (host exe path shown explicitly):
      New-NetFirewallRule -DisplayName "Uno DevServer (.NET Host)" `
        -Direction Inbound -Action Allow `
-       -Program (Get-Command dotnet).Source `
+       -Program "<Uno.UI.RemoteControl.Host.exe path>" `
        -Profile @("Private", "Domain")
 ```
 

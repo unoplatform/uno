@@ -41,7 +41,7 @@ builds and poses no runtime risk to end users.
 | Direction | **Inbound** to the developer's workstation |
 | Port | Dynamic (allocated at startup, typically in the 49152–65535 range) |
 | Binding | All network interfaces (`0.0.0.0`) |
-| Process | `dotnet.exe` (the .NET SDK runtime) |
+| Process | `Uno.UI.RemoteControl.Host.exe` (launched by the Dev Server CLI) |
 | Lifetime | Active only while the app is running in the IDE — stops when the debug session ends |
 
 Physical devices (Android, iOS) connect back to the workstation over the local
@@ -53,11 +53,13 @@ network using the IP address embedded in the app at build time.
 
 ### Why the default configuration blocks physical devices
 
-The .NET SDK installer creates an inbound Allow rule for `dotnet.exe` that covers
-the **Public** firewall profile only.  Corporate workstations joined to Active
-Directory are assigned the **Domain** profile, and home or office Wi-Fi networks are
-assigned the **Private** profile.  Neither is covered by the SDK's default rule,
-so physical devices on the same network segment are silently blocked.
+The Dev Server CLI spawns `Uno.UI.RemoteControl.Host.exe` with `CreateNoWindow = true`
+so that no console window appears on the developer's desktop.  As a side effect,
+this flag also suppresses the Windows Firewall interactive dialog that would normally
+prompt the user to allow inbound connections the first time a new executable listens
+on a port.  Without that dialog, **no Private or Domain rule is ever created**
+for the host executable, and physical devices on those network profiles are silently
+blocked.
 
 Android emulators (AVD) are unaffected because they communicate through the ADB
 bridge, which bypasses the Windows network stack.
@@ -78,11 +80,17 @@ Run the following command in an **elevated PowerShell** session on the developer
 machine:
 
 ```powershell
+# Find the Uno DevServer host executable in the NuGet cache
+$hostExe = Get-ChildItem "$env:USERPROFILE\.nuget\packages\uno.winui.devserver" `
+  -Recurse -Filter "Uno.UI.RemoteControl.Host.exe" |
+  Sort-Object LastWriteTime -Descending |
+  Select-Object -First 1 -ExpandProperty FullName
+
 New-NetFirewallRule `
   -DisplayName "Uno DevServer (.NET Host)" `
   -Direction Inbound `
   -Action Allow `
-  -Program (Get-Command dotnet).Source `
+  -Program $hostExe `
   -Profile @("Private", "Domain") `
   -Description "Allows the Uno Platform Dev Server to accept Hot Reload connections from physical Android/iOS devices and other local network clients."
 ```
@@ -111,16 +119,20 @@ To deploy the rule organization-wide via **Group Policy**:
    `Computer Configuration > Policies > Windows Settings > Security Settings > Windows Defender Firewall with Advanced Security > Inbound Rules`
 3. Create a new rule:
    - **Rule type:** Program
-   - **Program path:** `%ProgramFiles%\dotnet\dotnet.exe`
-     *(adjust if your organization installs .NET to a non-default location)*
+   - **Program path:** path to `Uno.UI.RemoteControl.Host.exe` in the NuGet cache,
+     e.g. `%USERPROFILE%\.nuget\packages\uno.winui.devserver\*\tools\rc\host\net*\Uno.UI.RemoteControl.Host.exe`
+     *(use a wildcard or deploy a login script that resolves the latest installed version)*
    - **Action:** Allow the connection
-   - **Profile:** ✅ Domain &nbsp; ✅ Private &nbsp; ☐ Public *(Public is already covered by the SDK installer)*
+   - **Profile:** ✅ Domain &nbsp; ✅ Private &nbsp; ☐ Public
    - **Name:** `Uno DevServer (.NET Host)`
 
 > [!NOTE]
-> If developers install .NET to a non-standard location (e.g., `%LOCALAPPDATA%\Programs\dotnet`),
-> the program path in the rule must match.  You can use a wildcard path or deploy
-> a script that reads `(Get-Command dotnet).Source` on each machine.
+> The host executable path includes the NuGet package version and the .NET TFM, so it
+> changes when developers update the Uno Platform NuGet packages.  The automatic fix
+> applied by the CLI at startup handles this transparently (it adds a new rule each
+> time the path changes).  For GPO-managed machines where the CLI cannot elevate, you
+> will need to update the rule after each significant Uno Platform version upgrade, or
+> use a login script to detect and update the path automatically.
 
 ### Verifying connectivity from the device
 

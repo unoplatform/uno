@@ -52,7 +52,7 @@ public class Given_WindowsFirewallHelper
 		{
 			// NullLogger means no side effects to assert on; the test verifies it doesn't throw.
 			var act = async () => await WindowsFirewallHelper.EnsureFirewallRuleAsync(
-				NullLogger.Instance, CancellationToken.None);
+				@"C:\fake\Uno.UI.RemoteControl.Host.exe", NullLogger.Instance, CancellationToken.None);
 
 			await act.Should().NotThrowAsync();
 		});
