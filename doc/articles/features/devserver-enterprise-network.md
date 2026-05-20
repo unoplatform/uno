@@ -85,7 +85,7 @@ Windows Firewall does not support wildcard characters in program paths, so the r
 must target the **exact path** of the installed `Uno.UI.RemoteControl.Host.exe`.
 The path includes the NuGet package version and the .NET TFM, for example:
 
-```
+```text
 %USERPROFILE%\.nuget\packages\uno.winui.devserver\6.6.0\tools\rc\host\net9.0\Uno.UI.RemoteControl.Host.exe
 ```
 
