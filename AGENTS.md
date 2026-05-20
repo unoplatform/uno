@@ -73,7 +73,7 @@ cd src
 cp crosstargeting_override.props.sample crosstargeting_override.props
 ```
 
-**2. Edit `crosstargeting_override.props`:**
+**2. Edit `crosstargeting_override.props`** (recommended fast-iteration config):
 ```xml
 <Project>
   <PropertyGroup>
@@ -82,9 +82,26 @@ cp crosstargeting_override.props.sample crosstargeting_override.props
     <!-- <UnoTargetFrameworkOverride>net10.0-android</UnoTargetFrameworkOverride>  Android -->
     <!-- <UnoTargetFrameworkOverride>net10.0-ios</UnoTargetFrameworkOverride>      iOS -->
     <!-- <UnoTargetFrameworkOverride>net10.0-windows10.0.19041.0</UnoTargetFrameworkOverride> Windows -->
+
+    <!-- Disables analyzers + code-style enforcement for local builds. No effect on CI. -->
+    <UnoFastDevBuild>true</UnoFastDevBuild>
   </PropertyGroup>
 </Project>
 ```
+
+Or pass the same flags per-build instead of committing them:
+
+```bash
+dotnet build … -p:UnoTargetFrameworkOverride=net10.0 -p:UnoFastDevBuild=true
+```
+
+**Why these flags:**
+- `UnoTargetFrameworkOverride` — restricts cross-targeted projects to a single TFM, skipping the redundant net9.0 outputs while you iterate on net10.0 (or vice versa).
+- `UnoFastDevBuild` — disables `RunAnalyzersDuringBuild`, `EnforceCodeStyleInBuild`, and the `Microsoft.CodeAnalysis.NetAnalyzers` package for local builds. **Guarded by `ContinuousIntegrationBuild`, so CI is never affected** — analyzer-strict checks still run on every PR. Set persistently via the `UNO_FAST_DEV_BUILD=true` environment variable if you'd rather not edit the file.
+
+Combined impact on `SamplesApp.Skia.Generic` (Windows, 32-core, warm NuGet cache): clean build ~3:23 → ~1:59, incremental rebuild after a Uno.UI edit ~2:23 → ~0:58. The `/runtime-tests` skill passes both flags by default (use `strict` to opt out for CI-equivalent coverage).
+
+**Do not commit `crosstargeting_override.props`** — it is per-developer config and is intentionally `.gitignore`d.
 
 **3. Use matching solution filter:**
 
