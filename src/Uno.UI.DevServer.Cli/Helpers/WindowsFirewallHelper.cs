@@ -20,21 +20,33 @@ namespace Uno.UI.DevServer.Cli.Helpers;
 internal static class WindowsFirewallHelper
 {
 	private const string RuleDisplayName = "Uno DevServer (.NET Host)";
-
-	// Profiles covered by the .NET SDK installer rule for dotnet.exe: Public only.
-	// We add Private + Domain so that physical devices on home/office Wi-Fi (Private)
-	// and developers working on corporate networks as local admins (Domain) can reach
-	// the DevServer.  Public is already handled by the SDK rule.
 	private const string RuleProfiles = "private,domain";
 
+	// Set UNO_DEVSERVER_SKIP_FIREWALL_CHECK=1 to disable the check entirely.
+	// Useful for CI runners, GPO-managed machines, or any environment where
+	// elevation is not permitted or desired.
+	internal static bool IsOptedOut =>
+		string.Equals(
+			Environment.GetEnvironmentVariable("UNO_DEVSERVER_SKIP_FIREWALL_CHECK"),
+			"1", StringComparison.Ordinal) ||
+		string.Equals(
+			Environment.GetEnvironmentVariable("UNO_DEVSERVER_SKIP_FIREWALL_CHECK"),
+			"true", StringComparison.OrdinalIgnoreCase);
+
 	/// <summary>
-	/// Checks whether a Private+Domain inbound Allow rule already exists for the
-	/// current <c>dotnet.exe</c>, and adds one via an elevated <c>netsh</c> call if
-	/// not.  Gracefully degrades (warning + manual instructions) if UAC is declined
-	/// or if the <c>netsh</c> invocation fails.
+	/// Checks whether the DevServer inbound Allow rule already exists, and adds one
+	/// via an elevated <c>netsh</c> call if not.  Gracefully degrades (warning +
+	/// manual instructions) if UAC is declined or the <c>netsh</c> call fails.
+	/// Set <c>UNO_DEVSERVER_SKIP_FIREWALL_CHECK=1</c> to bypass entirely.
 	/// </summary>
 	public static async Task EnsureFirewallRuleAsync(ILogger logger, CancellationToken ct)
 	{
+		if (IsOptedOut)
+		{
+			logger.LogDebug("WindowsFirewall: check skipped (UNO_DEVSERVER_SKIP_FIREWALL_CHECK is set).");
+			return;
+		}
+
 		var dotnetPath = ResolveDotnetPath();
 		if (dotnetPath is null)
 		{
@@ -42,15 +54,16 @@ internal static class WindowsFirewallHelper
 			return;
 		}
 
-		if (await HasRequiredRuleAsync(dotnetPath, ct))
+		if (await RuleExistsAsync(ct))
 		{
-			logger.LogDebug("WindowsFirewall: Private+Domain inbound rule already exists for {Path}.", dotnetPath);
+			logger.LogDebug("WindowsFirewall: inbound rule '{RuleName}' already exists.", RuleDisplayName);
 			return;
 		}
 
 		logger.LogInformation(
-			"WindowsFirewall: no Private/Domain inbound rule found for dotnet.exe. " +
-			"A UAC prompt will appear to add one — this happens once per machine.");
+			"WindowsFirewall: inbound rule '{RuleName}' not found. " +
+			"A UAC prompt will appear to add one — this happens once per machine.",
+			RuleDisplayName);
 
 		await AddFirewallRuleAsync(dotnetPath, logger, ct);
 	}
@@ -58,6 +71,52 @@ internal static class WindowsFirewallHelper
 	// -------------------------------------------------------------------------
 	// Private helpers
 	// -------------------------------------------------------------------------
+
+	/// <summary>
+	/// Checks whether the Uno DevServer named rule exists by exit code.
+	/// No output parsing — avoids any dependency on localized netsh field labels.
+	/// </summary>
+	private static async Task<bool> RuleExistsAsync(CancellationToken ct)
+	{
+		try
+		{
+			using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+			cts.CancelAfter(TimeSpan.FromSeconds(10));
+
+			using var proc = new Process
+			{
+				StartInfo = new ProcessStartInfo(
+					"netsh",
+					$"""advfirewall firewall show rule name="{RuleDisplayName}" dir=in""")
+				{
+					UseShellExecute = false,
+					RedirectStandardOutput = true,
+					RedirectStandardError = true,
+					CreateNoWindow = true,
+				}
+			};
+
+			proc.Start();
+
+			// Drain both streams to avoid deadlock; we only care about exit code.
+			var drainOut = proc.StandardOutput.ReadToEndAsync(cts.Token);
+			var drainErr = proc.StandardError.ReadToEndAsync(cts.Token);
+			await Task.WhenAll(drainOut, drainErr);
+			await proc.WaitForExitAsync(cts.Token);
+
+			// Exit 0 = rule found, non-0 = not found (language-agnostic).
+			return proc.ExitCode == 0;
+		}
+		catch (OperationCanceledException) when (ct.IsCancellationRequested)
+		{
+			throw;
+		}
+		catch (Exception)
+		{
+			// netsh unavailable or timed out — assume no rule, attempt to add.
+			return false;
+		}
+	}
 
 	private static string? ResolveDotnetPath()
 	{
@@ -95,133 +154,29 @@ internal static class WindowsFirewallHelper
 		return null;
 	}
 
-	private static async Task<bool> HasRequiredRuleAsync(string dotnetPath, CancellationToken ct)
-	{
-		try
-		{
-			using var proc = new Process
-			{
-				StartInfo = new ProcessStartInfo("netsh",
-					"advfirewall firewall show rule name=all dir=in verbose")
-				{
-					UseShellExecute = false,
-					RedirectStandardOutput = true,
-					CreateNoWindow = true,
-				}
-			};
-
-			proc.Start();
-			var output = await proc.StandardOutput.ReadToEndAsync(ct);
-			await proc.WaitForExitAsync(ct);
-
-			return ParseHasRequiredRule(output, dotnetPath);
-		}
-		catch (Exception)
-		{
-			// If netsh itself fails, assume no rule exists so we attempt to add one.
-			return false;
-		}
-	}
-
-	/// <summary>
-	/// Parses <c>netsh ... show rule --verbose</c> output and returns <c>true</c> when
-	/// at least one enabled inbound Allow rule references <paramref name="dotnetPath"/>
-	/// and covers the Private or Domain profile (or Any, which covers all profiles).
-	///
-	/// netsh emits rules as blank-line-separated blocks, e.g.:
-	/// <code>
-	/// Rule Name:                            Some Rule
-	/// Program:                              C:\Program Files\dotnet\dotnet.exe
-	/// Profiles:                             Public
-	/// Action:                               Allow
-	/// Enabled:                              Yes
-	/// LocalIP:                              Any
-	/// RemoteIP:                             Any
-	/// </code>
-	/// Fields like "LocalIP: Any" / "RemoteIP: Any" must not be mistaken for a
-	/// profile of "Any" — this method parses the <c>Profiles:</c> field specifically.
-	/// </summary>
-	internal static bool ParseHasRequiredRule(string netshOutput, string dotnetPath)
-	{
-		// Normalise path separators so the comparison is robust.
-		var normalPath = dotnetPath.Replace('/', '\\').TrimEnd('\\');
-
-		// netsh --verbose emits rules as blocks separated by blank lines.
-		var blocks = netshOutput.Split("\r\n\r\n", StringSplitOptions.RemoveEmptyEntries);
-		foreach (var block in blocks)
-		{
-			if (!block.Contains(normalPath, StringComparison.OrdinalIgnoreCase))
-			{
-				continue;
-			}
-
-			// Parse individual field lines rather than searching the whole block, so
-			// that values like "LocalIP: Any" / "RemoteIP: Any" don't produce false
-			// positives when checking whether the Profiles field contains "Any".
-			var profiles = GetFieldValue(block, "Profiles");
-			var action = GetFieldValue(block, "Action");
-			var enabled = GetFieldValue(block, "Enabled");
-
-			// Profile must cover Private, Domain, or Any (= all three profiles).
-			var coversRequired =
-				profiles.Contains("Private", StringComparison.OrdinalIgnoreCase) ||
-				profiles.Contains("Domain", StringComparison.OrdinalIgnoreCase) ||
-				profiles.Equals("Any", StringComparison.OrdinalIgnoreCase);
-
-			var isAllow = action.Equals("Allow", StringComparison.OrdinalIgnoreCase);
-
-			// "Enabled: No" means the rule exists but is disabled — treat as absent.
-			var isEnabled = !enabled.Equals("No", StringComparison.OrdinalIgnoreCase);
-
-			if (coversRequired && isAllow && isEnabled)
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/// <summary>
-	/// Extracts the value of a named field from a netsh rule block.
-	/// Lines have the form "FieldName:&lt;whitespace&gt;Value".
-	/// Returns an empty string when the field is not present.
-	/// </summary>
-	private static string GetFieldValue(string block, string fieldName)
-	{
-		var prefix = fieldName + ":";
-		foreach (var line in block.Split('\n'))
-		{
-			var trimmed = line.TrimStart();
-			if (trimmed.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
-			{
-				return trimmed[prefix.Length..].Trim();
-			}
-		}
-
-		return string.Empty;
-	}
-
 	private static async Task AddFirewallRuleAsync(string dotnetPath, ILogger logger, CancellationToken ct)
 	{
-		// netsh advfirewall requires admin rights → launch elevated via runas.
+		// netsh advfirewall requires admin rights — launch elevated via runas.
 		var arguments =
 			$"""advfirewall firewall add rule name="{RuleDisplayName}" dir=in action=allow program="{dotnetPath}" enable=yes profile={RuleProfiles}""";
 
 		try
 		{
+			// Allow up to 60 s for UAC interaction + netsh execution.
+			using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+			cts.CancelAfter(TimeSpan.FromSeconds(60));
+
 			using var proc = new Process
 			{
 				StartInfo = new ProcessStartInfo("netsh", arguments)
 				{
 					UseShellExecute = true,
 					Verb = "runas",   // triggers UAC prompt
-					CreateNoWindow = true,
 				}
 			};
 
 			proc.Start();
-			await proc.WaitForExitAsync(ct);
+			await proc.WaitForExitAsync(cts.Token);
 
 			if (proc.ExitCode == 0)
 			{
@@ -234,10 +189,14 @@ internal static class WindowsFirewallHelper
 					$"netsh exited with code {proc.ExitCode}.");
 			}
 		}
-		catch (Exception ex) when (!ct.IsCancellationRequested)
+		catch (OperationCanceledException) when (ct.IsCancellationRequested)
 		{
-			// UAC declined → Win32Exception; dialog dismissed → OperationCanceledException.
-			// Either way, log and continue — the DevServer still starts.
+			throw;
+		}
+		catch (Exception ex)
+		{
+			// UAC declined → Win32Exception; local timeout → OperationCanceledException
+			// on the inner cts (not ct).  Either way, log and continue.
 			LogManualInstructions(dotnetPath, logger, ex.Message);
 		}
 	}
