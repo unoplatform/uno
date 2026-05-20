@@ -290,8 +290,10 @@ internal sealed class StartCommandHandler
 
 		// Ensure Uno.UI.RemoteControl.Host.exe has a Private+Domain inbound Allow rule
 		// on Windows.  CreateNoWindow=true on the host process suppresses the Windows
-		// Firewall dialog, so the rule is never created automatically.  This check is
-		// idempotent and fast; the UAC prompt appears at most once per machine.
+		// Firewall dialog, so the rule is never created automatically.  The check is
+		// by rule display name (idempotent); the UAC prompt appears once per display-name
+		// lifetime.  After a package upgrade the old rule is found and no new prompt
+		// appears — the user must delete the old rule to re-trigger it.
 		// See spec-appendix-k-windows-firewall.md.
 		if (OperatingSystem.IsWindows() && hostPath.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
 		{

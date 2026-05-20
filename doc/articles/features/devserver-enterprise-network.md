@@ -72,9 +72,16 @@ prompt** will appear asking for administrator elevation.  Once approved, the rul
 created for the current version of `Uno.UI.RemoteControl.Host.exe`.
 
 > [!NOTE]
-> When developers update the Uno Platform NuGet packages, the path to
-> `Uno.UI.RemoteControl.Host.exe` changes (it includes the package version).
-> A new UAC prompt will appear the first time the Dev Server starts after an upgrade.
+> The CLI identifies the firewall rule by its display name.  When developers update
+> the Uno Platform NuGet packages, the path to `Uno.UI.RemoteControl.Host.exe`
+> changes, but the existing rule (pointing at the previous version's path) is found
+> by name and no new rule is added automatically.  To cover the upgraded exe, delete
+> the old rule and restart the Dev Server:
+> ```powershell
+> Remove-NetFirewallRule -DisplayName "Uno DevServer (.NET Host)"
+> ```
+> The UAC prompt will appear on the next start and a new rule will be created for
+> the current version.
 
 If the developer is not a local administrator or the UAC prompt was dismissed, the
 rule must be added by IT as described below.
@@ -150,8 +157,9 @@ To deploy the rule organization-wide via **Group Policy**:
 > [!NOTE]
 > The host executable path includes the NuGet package version and the .NET TFM, so it
 > changes when developers update the Uno Platform NuGet packages.  The automatic fix
-> applied by the CLI at startup covers the developer's own machine (it prompts for UAC
-> when a new version is installed).  For GPO-managed machines where the CLI cannot
+> applied by the CLI at startup covers the developer's own machine on first run; after
+> a package upgrade the developer must delete the old rule and restart to re-trigger it
+> (see the note in the Automatic fix section above).  For GPO-managed machines where the CLI cannot
 > elevate, you will need to update the rule after each significant Uno Platform version
 > upgrade, or use a login script to detect and update the path automatically.
 

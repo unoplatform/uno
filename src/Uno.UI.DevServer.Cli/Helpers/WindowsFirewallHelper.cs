@@ -54,9 +54,9 @@ internal static class WindowsFirewallHelper
 			return;
 		}
 
-		if (await RuleExistsAsync(ct))
+		if (await RuleExistsAsync(logger, ct))
 		{
-			logger.LogDebug("WindowsFirewall: inbound rule '{RuleName}' already exists.", RuleDisplayName);
+			logger.LogInformation("WindowsFirewall: inbound rule '{RuleName}' already exists — no action needed.", RuleDisplayName);
 			return;
 		}
 
@@ -76,7 +76,7 @@ internal static class WindowsFirewallHelper
 	/// Checks whether the Uno DevServer named rule exists by exit code.
 	/// No output parsing — avoids any dependency on localized netsh field labels.
 	/// </summary>
-	private static async Task<bool> RuleExistsAsync(CancellationToken ct)
+	private static async Task<bool> RuleExistsAsync(ILogger logger, CancellationToken ct)
 	{
 		try
 		{
@@ -111,9 +111,10 @@ internal static class WindowsFirewallHelper
 		{
 			throw;
 		}
-		catch (Exception)
+		catch (Exception ex)
 		{
 			// netsh unavailable or timed out — assume no rule, attempt to add.
+			logger.LogDebug("WindowsFirewall: could not check for existing rule ({Reason}); will attempt to add.", ex.Message);
 			return false;
 		}
 	}

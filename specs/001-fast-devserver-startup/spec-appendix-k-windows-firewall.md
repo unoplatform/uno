@@ -1,4 +1,4 @@
-# Appendix K: Windows Firewall — Private Network Support
+﻿# Appendix K: Windows Firewall — Private Network Support
 
 > **Parent**: [Main Spec](spec.md)
 > **Related**: [Manual QA](spec-appendix-h-manual-qa.md)
@@ -68,14 +68,16 @@ The DevServer CLI (`uno-devserver start`) is the single launch point for all IDE
 correct and only location for the fix.
 
 Before spawning the DevServer host, `StartCommandHandler.RunAsync()` calls
-`WindowsFirewallHelper.EnsureFirewallRuleAsync()`.  This helper:
+`WindowsFirewallHelper.EnsureFirewallRuleAsync(hostExePath, ...)`.  This helper:
 
-1. Resolves the path of the running `dotnet.exe`.
-2. Checks whether a Private-profile inbound Allow rule already exists for that path.
-3. If not, launches an elevated `netsh` process (UAC prompt) to add one.
-4. Logs the outcome clearly; gracefully degrades if UAC is declined.
+1. Checks whether a rule named `"Uno DevServer (.NET Host)"` already exists (by display name, exit-code only).
+2. If not, launches an elevated `netsh` process (UAC prompt) to add one for `hostExePath`.
+3. Logs the outcome clearly; gracefully degrades if UAC is declined.
 
-The operation is **idempotent** — the UAC prompt appears at most once per machine.
+The check is **idempotent by rule name** — the UAC prompt appears at most once per display-name lifetime.
+Note: if the Uno package is upgraded, the existing rule (pointing at the previous `Host.exe` path) is
+found by name and the new path is not automatically added.  The user must delete the old rule to trigger
+a new prompt (see the IT admin guide).
 
 ### 2.2 The firewall rule
 
