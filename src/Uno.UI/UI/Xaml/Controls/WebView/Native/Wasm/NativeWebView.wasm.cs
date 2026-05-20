@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Web.WebView2.Core;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
 using Windows.Storage;
 using Windows.Storage.Helpers;
@@ -20,8 +21,91 @@ using ElementId = System.IntPtr;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-internal partial class NativeWebView : ICleanableNativeWebView
+internal partial class NativeWebView : ICleanableNativeWebView, Uno.UI.Xaml.Controls.ISupportsUserAgent, Uno.UI.Xaml.Controls.ISupportsScriptEnabled, Uno.UI.Xaml.Controls.ISupportsZoomControl, Uno.UI.Xaml.Controls.ISupportsDocumentCreatedScripts, Uno.UI.Xaml.Controls.ISupportsCookieManager, Uno.UI.Xaml.Controls.ISupportsPrint
 {
+	Task<System.IO.Stream> Uno.UI.Xaml.Controls.ISupportsPrint.PrintToPdfStreamAsync(CoreWebView2PrintSettings? settings, CancellationToken ct)
+		=> throw new NotSupportedException(
+			"CoreWebView2.PrintToPdfStreamAsync is not supported on the WebAssembly browser host: " +
+			"the parent document cannot rasterize sandboxed iframe content to a PDF.");
+
+	async Task<CoreWebView2PrintStatus> Uno.UI.Xaml.Controls.ISupportsPrint.ShowPrintUIAsync(CoreWebView2PrintDialogKind dialogKind, CancellationToken ct)
+	{
+		// Fire the iframe's window.print() which delegates to the browser's print stack.
+		await ExecuteScriptAsync("try { (frames[0] || window).print(); } catch (e) { window.print(); }", ct);
+		return CoreWebView2PrintStatus.Succeeded;
+	}
+
+	private const string WasmCookiesNotSupported =
+		"CoreWebView2.CookieManager is not supported on the WebAssembly browser host: " +
+		"a sandboxed iframe cannot enumerate or mutate its document.cookie store from the parent.";
+
+	Task<System.Collections.Generic.IReadOnlyList<CoreWebView2Cookie>> Uno.UI.Xaml.Controls.ISupportsCookieManager.GetCookiesAsync(string uri, CancellationToken ct)
+		=> throw new NotSupportedException(WasmCookiesNotSupported);
+
+	void Uno.UI.Xaml.Controls.ISupportsCookieManager.AddOrUpdateCookie(CoreWebView2Cookie cookie) => throw new NotSupportedException(WasmCookiesNotSupported);
+
+	void Uno.UI.Xaml.Controls.ISupportsCookieManager.DeleteCookie(CoreWebView2Cookie cookie) => throw new NotSupportedException(WasmCookiesNotSupported);
+
+	void Uno.UI.Xaml.Controls.ISupportsCookieManager.DeleteCookies(string name, string uri) => throw new NotSupportedException(WasmCookiesNotSupported);
+
+	void Uno.UI.Xaml.Controls.ISupportsCookieManager.DeleteCookiesWithDomainAndPath(string name, string domain, string path) => throw new NotSupportedException(WasmCookiesNotSupported);
+
+	void Uno.UI.Xaml.Controls.ISupportsCookieManager.DeleteAllCookies() => throw new NotSupportedException(WasmCookiesNotSupported);
+
+	Task<string> Uno.UI.Xaml.Controls.ISupportsDocumentCreatedScripts.AddScriptToExecuteOnDocumentCreatedAsync(string javaScript, CancellationToken ct)
+		=> throw new NotSupportedException(
+			"AddScriptToExecuteOnDocumentCreatedAsync is not supported on the WebAssembly browser host: " +
+			"the page runs in a sandboxed iframe whose document-start lifecycle the host cannot intercept.");
+
+	void Uno.UI.Xaml.Controls.ISupportsDocumentCreatedScripts.RemoveScriptToExecuteOnDocumentCreated(string id) { }
+
+	private string? _requestedUserAgent;
+	private bool _requestedIsScriptEnabled = true;
+	private bool _requestedIsZoomControlEnabled = true;
+
+	string? Uno.UI.Xaml.Controls.ISupportsUserAgent.UserAgent
+	{
+		get => _requestedUserAgent;
+		set
+		{
+			_requestedUserAgent = value;
+			if (typeof(NativeWebView).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
+			{
+				typeof(NativeWebView).Log().Warn(
+					"Setting CoreWebView2Settings.UserAgent has no effect on the WebAssembly browser host: " +
+					"a sandboxed iframe cannot override the user agent string of its parent document.");
+			}
+		}
+	}
+
+	bool Uno.UI.Xaml.Controls.ISupportsScriptEnabled.IsScriptEnabled
+	{
+		get => _requestedIsScriptEnabled;
+		set
+		{
+			_requestedIsScriptEnabled = value;
+			if (!value && typeof(NativeWebView).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
+			{
+				typeof(NativeWebView).Log().Warn(
+					"Disabling JavaScript via CoreWebView2Settings.IsScriptEnabled is not supported on the WebAssembly browser host.");
+			}
+		}
+	}
+
+	bool Uno.UI.Xaml.Controls.ISupportsZoomControl.IsZoomControlEnabled
+	{
+		get => _requestedIsZoomControlEnabled;
+		set
+		{
+			_requestedIsZoomControlEnabled = value;
+			if (typeof(NativeWebView).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
+			{
+				typeof(NativeWebView).Log().Warn(
+					"CoreWebView2Settings.IsZoomControlEnabled is not honored on the WebAssembly browser host.");
+			}
+		}
+	}
+
 	private readonly CoreWebView2 _coreWebView;
 	private readonly ElementId _elementId;
 	private static readonly ConcurrentDictionary<ElementId, NativeWebView> _elementIdToNativeWebView = new();
