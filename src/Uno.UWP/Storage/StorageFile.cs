@@ -216,6 +216,22 @@ namespace Windows.Storage
 				_ => throw new ArgumentOutOfRangeException(nameof(accessMode))
 			};
 
+		/// <summary>
+		/// Maps FileAccessMode to the appropriate FileMode for file operations.
+		/// </summary>
+		/// <param name="accessMode">The access mode requested for the file.</param>
+		/// <returns>
+		/// FileMode.Open for Read access (requires file to exist),
+		/// FileMode.OpenOrCreate for ReadWrite access (creates file if it doesn't exist).
+		/// </returns>
+		private static FileMode ToFileMode(FileAccessMode accessMode)
+			=> accessMode switch
+			{
+				FileAccessMode.Read => FileMode.Open,
+				FileAccessMode.ReadWrite => FileMode.OpenOrCreate,
+				_ => throw new ArgumentOutOfRangeException(nameof(accessMode))
+			};
+
 		private static FileShare ToFileShare(StorageOpenOptions options)
 			=> options switch
 			{
