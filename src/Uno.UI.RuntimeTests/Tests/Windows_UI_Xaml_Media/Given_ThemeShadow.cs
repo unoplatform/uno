@@ -70,21 +70,30 @@ public class Given_ThemeShadow
 		WindowHelper.WindowContent = border;
 		await WindowHelper.WaitForLoaded(border);
 		await WindowHelper.WaitForIdle();
-
-		// Changing Translation.Z mutates the ShadowState (offsets and sigmas
-		// recompute), which must invalidate any cached image. Without
-		// invalidation we'd render last frame's shadow at the new offset.
-		border.Translation = new Vector3(0, 0, 48);
+		// A second idle wait gives the renderer a chance to commit a paint pass
+		// after layout settled, so the cache has a chance to be populated.
 		await WindowHelper.WaitForIdle();
 
-		// Re-rendering after the change should not throw; the cache may rebuild
-		// to a new entry, but the old entry must not leak. The strongest
-		// observable assertion is that the visual still renders and the cache
-		// either points at a fresh image or is null.
-		var afterChange = s_shadowOnlyImageField.GetValue(border.Visual);
-		Assert.IsTrue(
-			afterChange is null || afterChange is SkiaSharp.SKImage,
-			"After ShadowState change, cache must be null or hold a freshly built SKImage.");
+		var cacheBeforeChange = s_shadowOnlyImageField.GetValue(border.Visual);
+		if (cacheBeforeChange is null)
+		{
+			Assert.Inconclusive(
+				"Shadow cache was not populated by the initial render — test environment did not produce a render pass.");
+		}
+
+		// Changing Translation.Z mutates ShadowState (offsets and sigmas
+		// recompute). The cache key includes the ShadowState reference and
+		// blur margin, so the next render must rebuild — the SKImage instance
+		// must change (or be released entirely).
+		border.Translation = new Vector3(0, 0, 48);
+		await WindowHelper.WaitForIdle();
+		await WindowHelper.WaitForIdle();
+
+		var cacheAfterChange = s_shadowOnlyImageField.GetValue(border.Visual);
+		Assert.AreNotSame(
+			cacheBeforeChange,
+			cacheAfterChange,
+			"Cache must rebuild (different SKImage instance) after ShadowState change.");
 	}
 
 	[TestMethod]
@@ -136,23 +145,26 @@ public class Given_ThemeShadow
 		WindowHelper.WindowContent = border;
 		await WindowHelper.WaitForLoaded(border);
 		await WindowHelper.WaitForIdle();
+		await WindowHelper.WaitForIdle();
 
 		var cacheAfterFirstRender = s_shadowOnlyImageField.GetValue(border.Visual);
+		if (cacheAfterFirstRender is null)
+		{
+			Assert.Inconclusive(
+				"Shadow cache was not populated by the initial render — test environment did not produce a render pass.");
+		}
 
 		// Resize by 12 px in each axis — well within the 128px bucket stride.
 		border.Width = 112;
 		border.Height = 62;
 		await WindowHelper.WaitForIdle();
+		await WindowHelper.WaitForIdle();
 
 		var cacheAfterResize = s_shadowOnlyImageField.GetValue(border.Visual);
-
-		if (cacheAfterFirstRender is not null)
-		{
-			Assert.AreSame(
-				cacheAfterFirstRender,
-				cacheAfterResize,
-				"Resize within the same bucket stride must reuse the cached SKImage.");
-		}
+		Assert.AreSame(
+			cacheAfterFirstRender,
+			cacheAfterResize,
+			"Resize within the same bucket stride must reuse the cached SKImage instance.");
 	}
 }
 #endif

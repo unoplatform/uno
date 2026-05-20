@@ -54,6 +54,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private int _shadowOnlyImageBlurMargin;
 	private Vector2 _shadowOnlyImageSize;        // Cached content size (bucketed up to ShadowCacheGrowStride).
 	private ShadowState? _shadowOnlyImageStateKey;
+	// Session opacity baked into the cached image — invalidate if it changes.
+	private float _shadowOnlyImageOpacity;
 
 	// Coarse stride applied to the cached content size so that small drag/scroll-
 	// induced size changes don't force a rebuild. With a 128 px stride a Visual
@@ -615,10 +617,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		var actualW = Math.Max(1, (int)Math.Ceiling(Size.X));
 		var actualH = Math.Max(1, (int)Math.Ceiling(Size.Y));
 
-		// 9-slice needs at least 2*blurMargin in each axis (corners) plus a
-		// small middle stretch region to be well-defined.
-		var minCachedContentW = 2 * blurMargin + 8;
-		var minCachedContentH = 2 * blurMargin + 8;
+		// 9-slice only needs cachedContentW/H >= 1 so the inner stretch region
+		// is non-empty — the blur margin is added separately when computing
+		// imgW/imgH below. The previous floor of `2*blurMargin + 8` double-
+		// counted the margin and inflated cache memory for small visuals.
+		const int minCachedContentW = 1;
+		const int minCachedContentH = 1;
 
 		var cachedContentW = (int)_shadowOnlyImageSize.X;
 		var cachedContentH = (int)_shadowOnlyImageSize.Y;
@@ -628,7 +632,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			&& ReferenceEquals(_shadowOnlyImageStateKey, shadowState)
 			&& _shadowOnlyImageBlurMargin == blurMargin
 			&& cachedContentW >= actualW
-			&& cachedContentH >= actualH;
+			&& cachedContentH >= actualH
+			&& _shadowOnlyImageOpacity == session.Opacity;
 
 		if (!cacheValid)
 		{
@@ -689,6 +694,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			_shadowOnlyImageBlurMargin = blurMargin;
 			_shadowOnlyImageSize = new Vector2(cacheW, cacheH);
 			_shadowOnlyImageStateKey = shadowState;
+			_shadowOnlyImageOpacity = session.Opacity;
 			cachedContentW = cacheW;
 			cachedContentH = cacheH;
 
