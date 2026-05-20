@@ -10,13 +10,21 @@ NS_ASSUME_NONNULL_BEGIN
 
 @import AppKit;
 
-@interface UNOSoftView : NSView <NSTextInputClient>
+@interface UNOSoftView : NSView <NSTextInputClient, NSDraggingDestination, NSDraggingSource>
 
 - (void)drawRect:(NSRect)dirtyRect;
 - (void)setFrameSize:(NSSize)newSize;
 
 @property (nonatomic) BOOL imeActive;
 @property (nonatomic, readonly) BOOL keyEventHandledByIME;
+
+- (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender;
+- (NSDragOperation)draggingUpdated:(id<NSDraggingInfo>)sender;
+- (void)draggingExited:(nullable id<NSDraggingInfo>)sender;
+- (BOOL)performDragOperation:(id<NSDraggingInfo>)sender;
+
+- (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context;
+- (void)draggingSession:(NSDraggingSession *)session endedAtPoint:(NSPoint)screenPoint operation:(NSDragOperation)operation;
 
 @end
 

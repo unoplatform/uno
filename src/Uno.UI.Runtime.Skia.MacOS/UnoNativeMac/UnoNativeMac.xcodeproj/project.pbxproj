@@ -23,6 +23,7 @@
 		D1A065222A84688000101BE6 /* UNOApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = D1A065212A84688000101BE6 /* UNOApplication.m */; };
 		D1A065252A8AC23800101BE6 /* UNOWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = D1A065242A8AC23800101BE6 /* UNOWindow.m */; };
 		D1CC768B2AB9D464002A44F0 /* UNOClipboard.m in Sources */ = {isa = PBXBuildFile; fileRef = D1CC768A2AB9D464002A44F0 /* UNOClipboard.m */; };
+		D1DD0A012F10000100000001 /* UNODragDrop.m in Sources */ = {isa = PBXBuildFile; fileRef = D1DD0A002F10000100000002 /* UNODragDrop.m */; };
 		D1CC768D2ABA1337002A44F0 /* UNOPickers.m in Sources */ = {isa = PBXBuildFile; fileRef = D1CC768C2ABA1337002A44F0 /* UNOPickers.m */; };
 		D1F248A92A67288B008A609E /* UnoNativeMac.h in Headers */ = {isa = PBXBuildFile; fileRef = D1F248A82A67288B008A609E /* UnoNativeMac.h */; };
 		D1FE7A2B2B75C8C300ACFC76 /* UNOSoftView.m in Sources */ = {isa = PBXBuildFile; fileRef = D1FE7A2A2B75C8BB00ACFC76 /* UNOSoftView.m */; };
@@ -50,6 +51,8 @@
 		D1A065232A8AC15C00101BE6 /* UNOWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNOWindow.h; sourceTree = "<group>"; };
 		D1A065242A8AC23800101BE6 /* UNOWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNOWindow.m; sourceTree = "<group>"; };
 		D1CC76892AB9D408002A44F0 /* UNOClipboard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNOClipboard.h; sourceTree = "<group>"; };
+		D1DD09FF2F10000100000001 /* UNODragDrop.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNODragDrop.h; sourceTree = "<group>"; };
+		D1DD0A002F10000100000002 /* UNODragDrop.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNODragDrop.m; sourceTree = "<group>"; };
 		D1CC768A2AB9D464002A44F0 /* UNOClipboard.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNOClipboard.m; sourceTree = "<group>"; };
 		D1CC768C2ABA1337002A44F0 /* UNOPickers.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNOPickers.m; sourceTree = "<group>"; };
 		D1CC768E2ABA1368002A44F0 /* UNOPickers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNOPickers.h; sourceTree = "<group>"; };
@@ -113,6 +116,8 @@
 				D1A065212A84688000101BE6 /* UNOApplication.m */,
 				D1CC76892AB9D408002A44F0 /* UNOClipboard.h */,
 				D1CC768A2AB9D464002A44F0 /* UNOClipboard.m */,
+				D1DD09FF2F10000100000001 /* UNODragDrop.h */,
+				D1DD0A002F10000100000002 /* UNODragDrop.m */,
 				D116C63C2AC793C0004B975F /* UNOCursor.h */,
 				D116C63D2AC79876004B975F /* UNOCursor.m */,
 				D1A0651C2A70664A00101BE6 /* UNOMetalViewDelegate.h */,
@@ -210,6 +215,7 @@
 				D1A065252A8AC23800101BE6 /* UNOWindow.m in Sources */,
 				43BC95FA2E618F0900902390 /* MouseButtons.m in Sources */,
 				D1CC768B2AB9D464002A44F0 /* UNOClipboard.m in Sources */,
+				D1DD0A012F10000100000001 /* UNODragDrop.m in Sources */,
 				D11A816B2D09F06700B3C0A5 /* UNOMediaPlayer.m in Sources */,
 				D116C63E2AC79876004B975F /* UNOCursor.m in Sources */,
 				D11A81662CF523B900B3C0A5 /* UNOWebView.m in Sources */,

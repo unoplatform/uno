@@ -5,6 +5,7 @@
 #import "UNOSoftView.h"
 #import "UNOWindow.h"
 #import "UnoNativeMac.h"
+#import "UNODragDrop.h"
 
 @implementation UNOSoftView {
     NSMutableAttributedString *_markedText;
@@ -238,6 +239,34 @@
 - (void)doCommandBySelector:(SEL)selector {
     // Let the system handle unrecognized commands (e.g., moveLeft:, deleteBackward:)
     [super doCommandBySelector:selector];
+}
+
+#pragma mark - NSDraggingDestination
+
+- (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender {
+    return uno_drag_drop_handle_entered(self, sender);
+}
+
+- (NSDragOperation)draggingUpdated:(id<NSDraggingInfo>)sender {
+    return uno_drag_drop_handle_updated(self, sender);
+}
+
+- (void)draggingExited:(nullable id<NSDraggingInfo>)sender {
+    uno_drag_drop_handle_exited(self, sender);
+}
+
+- (BOOL)performDragOperation:(id<NSDraggingInfo>)sender {
+    return uno_drag_drop_handle_performed(self, sender);
+}
+
+#pragma mark - NSDraggingSource
+
+- (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
+    return uno_drag_source_operation_mask(self, context);
+}
+
+- (void)draggingSession:(NSDraggingSession *)session endedAtPoint:(NSPoint)screenPoint operation:(NSDragOperation)operation {
+    uno_drag_source_session_ended(self, operation);
 }
 
 @end
