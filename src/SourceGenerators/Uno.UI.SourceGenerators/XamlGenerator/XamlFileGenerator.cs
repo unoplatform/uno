@@ -2049,6 +2049,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private INamedTypeSymbol? GetMarkupExtensionType(XamlType? xamlType)
+			// When resolving the concrete markup extension type to instantiate, prefer the "Extension"-suffixed
+			// type, following the XAML markup extension naming convention (e.g. {local:Foo} resolves FooExtension).
+			=> GetMarkupExtensionType(xamlType, preferExtensionSuffix: true);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private INamedTypeSymbol? GetMarkupExtensionType(XamlType? xamlType, bool preferExtensionSuffix)
 		{
 			if (xamlType == null)
 			{
@@ -2064,8 +2070,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// In this case, we go through this code path as it's much more efficient than FindType.
 				var baseTypeString = $"{ns}.{xamlType.Name}";
 
-				// Try finding the type with "Extension" suffix first, then without
-				return FindMarkupExtensionType(baseTypeString + "Extension") ?? FindMarkupExtensionType(baseTypeString);
+				return ResolveMarkupExtensionType(baseTypeString, preferExtensionSuffix);
 			}
 
 			// When implicit XAML namespaces are enabled, mirror the element-type resolution
@@ -2080,7 +2085,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (_globalClrNamespaces.Length > 0
 					&& (trimmedNamespace == XamlConstants.PresentationXamlXmlNamespace || string.IsNullOrEmpty(trimmedNamespace)))
 				{
-					if (FindMarkupExtensionTypeInNamespacesWithAmbiguityCheck(xamlType.Name, _globalClrNamespaces) is INamedTypeSymbol globalResult)
+					if (FindMarkupExtensionTypeInNamespacesWithAmbiguityCheck(xamlType.Name, _globalClrNamespaces, preferExtensionSuffix) is INamedTypeSymbol globalResult)
 					{
 						return globalResult;
 					}
@@ -2091,7 +2096,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (_allXmlnsDefinitions != null
 					&& !_knownNamespaces.ContainsKey(trimmedNamespace)
 					&& _allXmlnsDefinitions.TryGetValue(trimmedNamespace, out var xmlnsDefNamespaces)
-					&& FindMarkupExtensionTypeInNamespaces(xamlType.Name, xmlnsDefNamespaces) is INamedTypeSymbol xmlnsDefResult)
+					&& FindMarkupExtensionTypeInNamespaces(xamlType.Name, xmlnsDefNamespaces, preferExtensionSuffix) is INamedTypeSymbol xmlnsDefResult)
 				{
 					return xmlnsDefResult;
 				}
@@ -2102,30 +2107,57 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return null;
 		}
 
+		/// <summary>
+		/// Resolves a markup extension type from its fully qualified base name (i.e. the name without the
+		/// "Extension" suffix).
+		/// </summary>
+		/// <param name="preferExtensionSuffix">
+		/// When <see langword="true"/>, the markup extension is being resolved for a curly-brace usage (or for the
+		/// concrete type to instantiate), so the "Extension"-suffixed type wins per the XAML markup extension naming
+		/// convention. When <see langword="false"/>, the exact name is resolved first and the "Extension"-suffixed
+		/// name is only used as a fallback when the exact name does not resolve to any type. This prevents an unrelated
+		/// type (e.g. an element <c>FluentIcon</c>) from being misidentified as a markup extension simply because a
+		/// sibling <c>FluentIconExtension</c> exists in the same namespace. See
+		/// https://github.com/unoplatform/uno/issues/21992.
+		/// </param>
+		private INamedTypeSymbol? ResolveMarkupExtensionType(string baseTypeString, bool preferExtensionSuffix)
+		{
+			if (preferExtensionSuffix)
+			{
+				// Try finding the type with "Extension" suffix first, then without
+				return FindMarkupExtensionType(baseTypeString + "Extension") ?? FindMarkupExtensionType(baseTypeString);
+			}
+
+			// Exact name first: a type that resolves but is not a markup extension blocks the "Extension" fallback.
+			if (_metadataHelper.FindTypeByFullName(baseTypeString) is INamedTypeSymbol exactType)
+			{
+				return exactType.Is(Generation.MarkupExtensionSymbol.Value) ? exactType : null;
+			}
+
+			return baseTypeString.EndsWith("Extension", StringComparison.Ordinal)
+				? null
+				: FindMarkupExtensionType(baseTypeString + "Extension");
+		}
+
 		private INamedTypeSymbol? FindMarkupExtensionType(string fullTypeName)
 		{
 			return _metadataHelper.FindTypeByFullName(fullTypeName) is INamedTypeSymbol type && type.Is(Generation.MarkupExtensionSymbol.Value) ? type : null;
 		}
 
-		private INamedTypeSymbol? FindMarkupExtensionTypeInNamespaces(string name, string[] namespaces)
+		private INamedTypeSymbol? FindMarkupExtensionTypeInNamespaces(string name, string[] namespaces, bool preferExtensionSuffix)
 		{
 			foreach (var @namespace in namespaces)
 			{
-				if (FindMarkupExtensionType($"{@namespace}.{name}Extension") is INamedTypeSymbol withSuffix)
+				if (ResolveMarkupExtensionType($"{@namespace}.{name}", preferExtensionSuffix) is INamedTypeSymbol match)
 				{
-					return withSuffix;
-				}
-
-				if (FindMarkupExtensionType($"{@namespace}.{name}") is INamedTypeSymbol withoutSuffix)
-				{
-					return withoutSuffix;
+					return match;
 				}
 			}
 
 			return null;
 		}
 
-		private INamedTypeSymbol? FindMarkupExtensionTypeInNamespacesWithAmbiguityCheck(string name, string[] namespaces)
+		private INamedTypeSymbol? FindMarkupExtensionTypeInNamespacesWithAmbiguityCheck(string name, string[] namespaces, bool preferExtensionSuffix)
 		{
 			INamedTypeSymbol? firstMatch = null;
 			string? firstNamespace = null;
@@ -2133,8 +2165,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			foreach (var @namespace in namespaces)
 			{
-				var match = FindMarkupExtensionType($"{@namespace}.{name}Extension")
-					?? FindMarkupExtensionType($"{@namespace}.{name}");
+				var match = ResolveMarkupExtensionType($"{@namespace}.{name}", preferExtensionSuffix);
 
 				if (match is not null)
 				{
@@ -2170,8 +2201,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private bool IsCustomMarkupExtensionType(XamlType? xamlType) =>
-			// Determine if the type is a custom markup extension
-			GetMarkupExtensionType(xamlType) != null;
+			// Determine if the type is a custom markup extension.
+			// Unlike GetMarkupExtensionType (which resolves the concrete type to instantiate and therefore prefers the
+			// "Extension"-suffixed type per the XAML naming convention), this membership test resolves the exact name
+			// first so an object element whose type is not a markup extension is not misclassified just because a
+			// sibling "<Name>Extension" markup extension exists in the same namespace.
+			// See https://github.com/unoplatform/uno/issues/21992.
+			GetMarkupExtensionType(xamlType, preferExtensionSuffix: false) != null;
 
 		private bool IsXamlTypeConverter(INamedTypeSymbol? symbol)
 		{
