@@ -26,9 +26,15 @@ namespace Windows.UI.Input
 		// Note: this is also responsible to handle "Drag manipulations"
 		internal partial class Manipulation
 		{
-			internal static readonly Thresholds StartTouch = new() { TranslateX = 15, TranslateY = 15, Rotate = 5, Expansion = 15 };
-			internal static readonly Thresholds StartPen = new() { TranslateX = 15, TranslateY = 15, Rotate = 5, Expansion = 15 };
-			internal static readonly Thresholds StartMouse = new() { TranslateX = 1, TranslateY = 1, Rotate = .1, Expansion = 1 };
+			// Start thresholds: the minimum movement required for a tap/press to be promoted to a manipulation.
+			// - Touch / Pen: 10 px, close to Windows touch-slop guidance (~2.7 mm at typical DPI).
+			//   WinUI's InteractionContext threshold is not publicly documented; 10 px is a conservative
+			//   value within the range typically observed on Windows / iOS / Android.
+			// - Mouse: 4 px, matching the Win32 system drag threshold (GetSystemMetrics(SM_CXDRAG),
+			//   default 4 px). Avoids tiny pointer wiggle during a click being mistaken for a drag.
+			internal static readonly Thresholds StartTouch = new() { TranslateX = 10, TranslateY = 10, Rotate = 5, Expansion = 10 };
+			internal static readonly Thresholds StartPen = new() { TranslateX = 10, TranslateY = 10, Rotate = 5, Expansion = 10 };
+			internal static readonly Thresholds StartMouse = new() { TranslateX = 4, TranslateY = 4, Rotate = 1, Expansion = 4 };
 
 			internal static readonly Thresholds DeltaTouch = new() { TranslateX = 2, TranslateY = 2, Rotate = .1, Expansion = 1 };
 			internal static readonly Thresholds DeltaPen = new() { TranslateX = 2, TranslateY = 2, Rotate = .1, Expansion = 1 };
@@ -373,22 +379,21 @@ namespace Windows.UI.Input
 						_status = ManipulationStatus.Started;
 						_contacts.onStart = _contacts.current;
 
-						// Note: We first start with an empty delta, then invoke Update.
-						//		 This is required to patch a common issue in applications that are using only the
-						//		 ManipulationUpdated.Delta property to track the pointer (like the WCT GridSplitter).
-						//		 UWP seems to do that only for Touch and Pen (i.e. the Delta is not empty on start with a mouse),
-						//		 but there is no side effect to use the same behavior for all pointer types.
+						// Note: ManipulationStarted reports an empty delta (UWP behavior for touch / pen).
 						_recognizer.ManipulationStarted?.Invoke(
 							_recognizer,
 							new ManipulationStartedEventArgs(_currents.Identifiers, _origins.State.Center, ManipulationDelta.Empty, _contacts.onStart));
 
 						ApplyRailing(ref changeSet);
 
+						// Absorb the threshold-crossing translation into the commit history WITHOUT firing
+						// ManipulationUpdated. This way the next pointer move produces a delta computed from
+						// the recognition point (cumulative tracking from the press point is preserved, but
+						// the threshold pixels are NOT recovered in the first reported delta).
+						// This matches WinUI and native iOS: scrolling/panning starts at the finger position
+						// at the moment the gesture is recognized, with no visible jump of the
+						// threshold (~15 px for touch) pixels at the start of the manipulation (see #20473).
 						CommitChanges(changeSet);
-						Debug.Assert(changeSet.Delta == changeSet.Cumulative);
-						_recognizer.ManipulationUpdated?.Invoke(
-							_recognizer,
-							new ManipulationUpdatedEventArgs(this, _currents.Identifiers, changeSet.Position, changeSet.Delta, changeSet.Cumulative, ManipulationVelocities.Empty, isInertial: false, _contacts.onStart, _contacts.current));
 						break;
 
 					case ManipulationStatus.Started when pointerRemoved && InertiaProcessor.TryStart(this, ref _inertia, changeSet):
