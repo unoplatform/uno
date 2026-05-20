@@ -75,7 +75,7 @@ internal static class WindowsFirewallHelper
 
 		logger.LogInformation(
 			"WindowsFirewall: inbound rule '{RuleName}' not found. " +
-			"A UAC prompt will appear to add one — this happens once per machine.",
+			"A UAC prompt will appear to add one — this prompt re-appears if the rule is removed (e.g. after a package upgrade).",
 			RuleDisplayName);
 
 		await AddFirewallRuleAsync(hostExePath, logger, ct);
