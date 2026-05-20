@@ -62,6 +62,21 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 		RequestRender();
 	}
 
+	void IUnoSkiaRenderView.OnPause()
+	{
+		// GLSurfaceView contract: must be forwarded from the hosting Activity's OnPause
+		// so the GL render thread is parked correctly while the activity is not visible.
+		base.OnPause();
+	}
+
+	void IUnoSkiaRenderView.OnResume()
+	{
+		// GLSurfaceView contract: must be forwarded from the hosting Activity's OnResume
+		// so the GL render thread restarts.
+		base.OnResume();
+		RequestRender();
+	}
+
 	public override bool OnCheckIsTextEditor()
 		// Required for the InputConnection to be created
 		=> true;
