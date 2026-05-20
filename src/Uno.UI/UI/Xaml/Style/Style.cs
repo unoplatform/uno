@@ -48,22 +48,6 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			// [ALC-DIAG] Trace which keys are being removed
-			var dictCount = dictionary.Count;
-			var removeCount = keysToRemove.Count;
-			global::System.Console.WriteLine("[ALC-DIAG] Style.RemoveNonDefaultAlcEntries: dictCount=" + dictCount + " removing=" + removeCount);
-			foreach (var k in keysToRemove)
-			{
-				try
-				{
-					var kAlc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(k.Assembly);
-					var kAlcName = kAlc != null ? kAlc.Name : "<null>";
-					var hash = global::System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(k);
-					global::System.Console.WriteLine("[ALC-DIAG]   removing type=" + k.FullName + " asm=" + k.Assembly.GetName().Name + " alc='" + kAlcName + "' hash=" + hash);
-				}
-				catch { }
-			}
-
 			foreach (var key in keysToRemove)
 			{
 				dictionary.Remove(key);
@@ -326,20 +310,6 @@ namespace Microsoft.UI.Xaml
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void RegisterDefaultStyleForType(Type type, IXamlResourceDictionaryProvider dictionaryProvider, bool isNative)
 		{
-			// [ALC-DIAG] Trace style registration with ALC info to diagnose multi-ALC style misses
-			try
-			{
-				var typeAlc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(type.Assembly);
-				var typeAlcName = typeAlc != null ? typeAlc.Name : "<null>";
-				var providerType = dictionaryProvider?.GetType();
-				global::System.Runtime.Loader.AssemblyLoadContext? providerAlc = providerType != null ? global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(providerType.Assembly) : null;
-				var providerAlcName = providerAlc != null ? providerAlc.Name : "<null>";
-				var providerTypeName = providerType != null ? providerType.FullName : "<null>";
-				var hash = global::System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(type);
-				global::System.Console.WriteLine("[ALC-DIAG] Style.Register native=" + isNative + " type=" + type.FullName + " typeAsm=" + type.Assembly.GetName().Name + " typeAlc='" + typeAlcName + "' providerType=" + providerTypeName + " providerAlc='" + providerAlcName + "' typeHash=" + hash);
-			}
-			catch { }
-
 			if (isNative)
 			{
 				_nativeLookup[type] = ProvideStyle;
@@ -351,7 +321,7 @@ namespace Microsoft.UI.Xaml
 
 			Style ProvideStyle()
 			{
-				var styleSource = dictionaryProvider!.GetResourceDictionary();
+				var styleSource = dictionaryProvider.GetResourceDictionary();
 				if (styleSource.TryGetValue(type, out var style, shouldCheckSystem: false))
 				{
 					return (Style)style;
@@ -391,33 +361,6 @@ namespace Microsoft.UI.Xaml
 					lookup.Remove(type); // The lookup won't be used again now that the style itself is cached
 				}
 			}
-
-			// [ALC-DIAG] Trace style lookup with ALC info to diagnose multi-ALC style misses
-			try
-			{
-				var typeAlc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(type.Assembly);
-				var typeAlcName = typeAlc != null ? typeAlc.Name : "<null>";
-				var instanceType = instance != null ? instance.GetType() : null;
-				global::System.Runtime.Loader.AssemblyLoadContext? instanceAlc = instanceType != null ? global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(instanceType.Assembly) : null;
-				var instanceAlcName = instanceAlc != null ? instanceAlc.Name : "<null>";
-				var instanceTypeName = instanceType != null ? instanceType.FullName : "<null>";
-				var sameType = instanceType != null && object.ReferenceEquals(instanceType, type);
-				var hash = global::System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(type);
-				var found = style != null;
-				global::System.Console.WriteLine("[ALC-DIAG] Style.Lookup useUWP=" + useUWPDefaultStyles + " found=" + found + " type=" + type.FullName + " typeAsm=" + type.Assembly.GetName().Name + " typeAlc='" + typeAlcName + "' typeHash=" + hash + " instanceType=" + instanceTypeName + " instanceAlc='" + instanceAlcName + "' sameType=" + sameType + " cacheCount=" + styleCache.Count + " lookupCount=" + lookup.Count);
-
-				// [ALC-DIAG] On failed lookup of a non-Default-ALC type, dump stack to find the caller
-				if (!found && typeAlc != null && typeAlc != global::System.Runtime.Loader.AssemblyLoadContext.Default)
-				{
-					try
-					{
-						var st = new global::System.Diagnostics.StackTrace(1, false);
-						global::System.Console.WriteLine("[ALC-DIAG-STACK] " + st.ToString());
-					}
-					catch { }
-				}
-			}
-			catch { }
 
 			if (style is null && instance is Control { DefaultStyleResourceUri: { } defaultStyleResourceUri })
 			{

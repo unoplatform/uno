@@ -478,23 +478,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		public void ShowAt(DependencyObject placementTarget, FlyoutShowOptions showOptions)
 		{
-			// [ALC-DIAG] Trace ShowAt entry — placement target, XamlRoot, ALC of caller types
-			try
-			{
-				var ptType = placementTarget?.GetType();
-				var ptAlc = ptType is not null ? global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(ptType.Assembly) : null;
-				var thisAlc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(GetType().Assembly);
-				var ptAlcName = ptAlc != null ? ptAlc.Name : "<null>";
-				var thisAlcName = thisAlc != null ? thisAlc.Name : "<null>";
-				var ptFe = placementTarget as FrameworkElement;
-				var ptXamlRoot = ptFe?.XamlRoot;
-				var xrSize = ptXamlRoot?.Size;
-				var xrSizeStr = xrSize.HasValue ? (xrSize.Value.Width + "x" + xrSize.Value.Height) : "<null>";
-				var ptBounds = ptFe is not null ? (ptFe.ActualWidth + "x" + ptFe.ActualHeight) : "<null>";
-				global::System.Console.WriteLine("[ALC-DIAG] FlyoutBase.ShowAt this=" + GetType().FullName + " thisAlc='" + thisAlcName + "' ptType=" + (ptType?.FullName ?? "<null>") + " ptAlc='" + ptAlcName + "' ptBounds=" + ptBounds + " xamlRootSize=" + xrSizeStr + " currentIsOpen=" + IsOpen);
-			}
-			catch { }
-
 			FrameworkElement visualRoot;
 			// Show at the target element, if target is null use the frame as target
 			if (placementTarget is not null)
@@ -508,19 +491,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			EnsureAssociatedXamlRoot(placementTarget);
 			ShowAtCore(visualRoot, showOptions);
-
-			// [ALC-DIAG] Trace ShowAt exit — Popup state after open
-			try
-			{
-				var popupIsOpen = _popup?.IsOpen ?? false;
-				var popupChild = _popup?.Child;
-				var popupChildType = popupChild?.GetType().FullName ?? "<null>";
-				var popupChildFe = popupChild as FrameworkElement;
-				var childSize = popupChildFe is not null ? (popupChildFe.ActualWidth + "x" + popupChildFe.ActualHeight) : "<null>";
-				var popupOffset = _popup is not null ? (_popup.HorizontalOffset + "," + _popup.VerticalOffset) : "<null>";
-				global::System.Console.WriteLine("[ALC-DIAG] FlyoutBase.ShowAt-EXIT popupIsOpen=" + popupIsOpen + " popupChildType=" + popupChildType + " childActualSize=" + childSize + " popupOffset=" + popupOffset + " flyoutIsOpen=" + IsOpen);
-			}
-			catch { }
 		}
 
 		private void EnsureAssociatedXamlRoot(DependencyObject placementTarget)
