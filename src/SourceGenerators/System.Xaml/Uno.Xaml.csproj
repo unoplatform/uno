@@ -12,6 +12,7 @@
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 
 		<NoWarn>$(NoWarn);IDE0051</NoWarn>
+		<NoWarn>$(NoWarn);IL2026;IL2067;IL2072;IL2075;IL2080;IL2087</NoWarn>
 		<DebugType>portable</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>

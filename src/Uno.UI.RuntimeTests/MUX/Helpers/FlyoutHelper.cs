@@ -15,6 +15,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 {
 	internal static class FlyoutHelper
 	{
+		private const DynamicallyAccessedMemberTypes EventRequirements = DynamicallyAccessedMemberTypes.PublicEvents | DynamicallyAccessedMemberTypes.NonPublicEvents;
 		public static FrameworkElement GetOpenFlyoutPresenter()
 		{
 			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
@@ -27,9 +28,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 			return child as FrameworkElement;
 		}
 
-		public static async Task HideFlyout<
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicEvents | DynamicallyAccessedMemberTypes.NonPublicEvents)] T
-		>(T flyoutControl)
+		public static async Task HideFlyout<[DynamicallyAccessedMembers(EventRequirements)] T>(T flyoutControl)
 			where T : FlyoutBase
 		{
 #if WINAPPSDK
@@ -49,9 +48,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 #endif
 		}
 
-		internal static async Task OpenFlyout<
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicEvents | DynamicallyAccessedMemberTypes.NonPublicEvents)] T
-		>(T flyoutControl, FrameworkElement target, FlyoutOpenMethod openMethod)
+		internal static async Task OpenFlyout<[DynamicallyAccessedMembers(EventRequirements)] T>(T flyoutControl, FrameworkElement target, FlyoutOpenMethod openMethod)
 			where T : FlyoutBase
 		{
 #if WINAPPSDK

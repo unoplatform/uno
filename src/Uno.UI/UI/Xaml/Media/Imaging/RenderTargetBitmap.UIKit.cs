@@ -57,10 +57,10 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			{
 				var scale = element.XamlRoot?.VisualTree.RootScale.GetEffectiveRasterizationScale() ?? (float)(DisplayInformation.GetForCurrentView()?.RawPixelsPerViewPixel ?? 1.0);
 				UIGraphics.BeginImageContextWithOptions(size, false, scale);
-				var ctx = UIGraphics.GetCurrentContext();
+				var ctx = UIGraphics.GetCurrentContext() ?? throw new InvalidOperationException("Failed to get graphics context");
 				ctx.SetFillColor(Colors.Transparent); // This is only for pixels not used, but the bitmap as the same size of the element. We keep it only for safety!
 				element.Layer.RenderInContext(ctx);
-				uiImage = UIGraphics.GetImageFromCurrentImageContext();
+				uiImage = UIGraphics.GetImageFromCurrentImageContext() ?? throw new InvalidOperationException("Failed to get image from current context");
 			}
 			finally
 			{
@@ -70,7 +70,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			if (scaledSize.HasValue)
 			{
 				using var unscaled = uiImage;
-				uiImage = unscaled.Scale(scaledSize.Value);
+				uiImage = unscaled.Scale(scaledSize.Value) ?? throw new InvalidOperationException("Failed to scale image");
 			}
 
 			using (uiImage)

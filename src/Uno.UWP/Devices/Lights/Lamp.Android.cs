@@ -112,6 +112,7 @@ namespace Windows.Devices.Lights
 			var isOn = _isEnabled && _brightness > 0;
 			lock (_lock)
 			{
+#pragma warning disable IDE0055
 #if ANDROID33_0_OR_GREATER
 				if ((int)Build.VERSION.SdkInt >= (int)BuildVersionCodes.Tiramisu)
 				{
@@ -162,6 +163,7 @@ namespace Windows.Devices.Lights
 #pragma warning restore CS0618 // Type or member is obsolete
 				}
 			}
+#pragma warning restore IDE0055
 		}
 
 

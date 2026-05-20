@@ -1,13 +1,14 @@
 parameters:
   defaultDotNetSdkVersion: "$(DotNetSdkVersion)"
+  globalJsonSubdir: "net11"
   haveCheckout: true
 
 steps:
   - bash: |
       rm global.json
       # The file is named _global.json to avoid being picked up by the UseDotnet@2 task
-      cp build/ci/net10/_global.json global.json
-    displayName: "Using .NET 10 global.json"
+      cp build/ci/${{ parameters.globalJsonSubdir }}/_global.json global.json
+    displayName: "Using .NET global.json from build/ci/${{ parameters.globalJsonSubdir }}"
     condition: ${{ eq(parameters.haveCheckout, true) }}
 
   - pwsh: |

@@ -128,7 +128,7 @@
 			"type": "bool"
 		},
 		"UnoDisable_RemoveTransitiveWPFDependency": {
-			"description": "Disables removing the transitive dependency to WPF which has a requirement to have net9.0-windows and not net9.0.",
+			"description": "Disables removing the transitive dependency to WPF which has a requirement to have net10.0-windows and not net10.0.",
 			"type": "bool"
 		},
 		"UnoDisable_RemoveRuntimeFrameworkInRuntimeConfigurationFiles": {

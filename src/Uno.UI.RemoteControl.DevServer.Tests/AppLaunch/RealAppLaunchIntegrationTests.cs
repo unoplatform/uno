@@ -10,7 +10,7 @@ namespace Uno.UI.RemoteControl.DevServer.Tests.AppLaunch;
 [TestClass]
 public class RealAppLaunchIntegrationTests : TelemetryTestBase
 {
-	private const string? _targetFramework = "net10.0";
+	private const string? _targetFramework = "net11.0";
 
 	[ClassInitialize]
 	public static void ClassInitialize(TestContext context) => GlobalClassInitialize<RealAppLaunchIntegrationTests>(context);
@@ -134,7 +134,7 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 
 		// Build the project with devserver configuration so the generators create the right ServerEndpointAttribute
 		// Using MSBuild properties directly to override any .csproj.user or Directory.Build.props values
-		// Explicitly targeting the detected framework (net10.0 on CI, net9.0 locally)
+		// Explicitly targeting the detected framework (net11.0 on CI, net10.0 locally)
 		var buildInfo = new ProcessStartInfo
 		{
 			FileName = "dotnet",

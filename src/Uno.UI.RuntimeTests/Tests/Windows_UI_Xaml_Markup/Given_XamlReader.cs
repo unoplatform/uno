@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Uno.UI.Extensions;
 using Uno.UI.Helpers;
@@ -1279,11 +1280,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 						DebugMarkupAttachable.SetValue(fe, serviceProvider);
 					}
 
-					return pvtp.Type.IsValueType ? Activator.CreateInstance(pvtp.Type) : null;
+					return pvtp.Type.IsValueType ? CreateInstance(pvtp.Type) : null;
 				}
 
 				return DependencyProperty.UnsetValue;
 			}
+
+			[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "TODO;")]
+			[UnconditionalSuppressMessage("Trimming", "IL2082", Justification = "TODO;")]
+			static object CreateInstance(Type type) => Activator.CreateInstance(type);
 		}
 	}
 }
