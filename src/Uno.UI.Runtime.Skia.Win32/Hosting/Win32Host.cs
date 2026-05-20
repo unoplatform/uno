@@ -14,6 +14,7 @@ using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.GdiPlus;
 using Windows.Win32.UI.HiDpi;
+using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -63,6 +64,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		ApiExtensibility.Register<ApplicationView>(typeof(IApplicationViewExtension), o => new Win32ApplicationViewExtension(o));
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), _ => Win32SystemThemeHelperExtension.Instance);
 		ApiExtensibility.Register(typeof(ITextScaleFactorExtension), _ => Win32TextScaleFactorExtension.Instance);
+		ApiExtensibility.Register(typeof(IGestureRecognizerExtension), _ => Win32GestureRecognizerExtension.Instance);
 
 		ApiExtensibility.Register<DisplayInformation>(typeof(IDisplayInformationExtension), displayInformation =>
 		{
