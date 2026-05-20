@@ -1,4 +1,4 @@
----
+﻿---
 uid: Uno.Features.HotReload
 ---
 
@@ -402,15 +402,19 @@ Here's a summary of the Hot Reload connection statuses and their corresponding i
 - If Hot Reload cannot connect to the Dev Server, run `uno-devserver disco` to verify your environment. Ensure **devServerHostPath** and **devServerPackageVersion** are resolved and match your Uno SDK version. See [Diagnostics (disco)](xref:Uno.Features.DevServerDisco) for a full reference.
 
 - **Physical Android or iOS device cannot connect (Windows):** if Hot Reload works on the emulator but not on a physical device connected via Wi-Fi, the Windows Firewall may be blocking inbound connections.
-  Starting with Uno SDK 6.7, the Dev Server CLI automatically adds the required firewall rule the first time it starts — you will see a UAC prompt to approve it. If the prompt was dismissed or the rule is missing, add it manually in an elevated PowerShell:
+  Starting with Uno SDK 6.6, the Dev Server CLI automatically adds the required firewall rule the first time it starts — you will see a UAC prompt to approve it. If the prompt was dismissed or the rule is missing, add it manually in an elevated PowerShell:
 
   ```powershell
+  # Replace <version> and <tfm> with the values from your NuGet cache
+  $hostExe = "$env:USERPROFILE\.nuget\packages\uno.winui.devserver\<version>\tools\rc\host\net<tfm>\Uno.UI.RemoteControl.Host.exe"
   New-NetFirewallRule `
     -DisplayName "Uno DevServer (.NET Host)" `
     -Direction Inbound -Action Allow `
-    -Program (Get-Command dotnet).Source `
+    -Program $hostExe `
     -Profile @("Private", "Domain")
   ```
+
+  To list the versions installed on your machine: `Get-ChildItem "$env:USERPROFILE\.nuget\packages\uno.winui.devserver" -Directory`
 
   For Group Policy deployment, fixed-port configurations, proxy environments, or other constrained corporate setups, see the [Dev Server Enterprise Network Configuration Guide](xref:Uno.Features.DevServer.EnterpriseNetwork).
 

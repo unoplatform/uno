@@ -64,9 +64,9 @@ blocked.
 Android emulators (AVD) are unaffected because they communicate through the ADB
 bridge, which bypasses the Windows network stack.
 
-### Automatic fix (Uno SDK 6.7+)
+### Automatic fix (Uno SDK 6.6+)
 
-Starting with Uno SDK 6.7, the Dev Server CLI automatically attempts to add the
+Starting with Uno SDK 6.6, the Dev Server CLI automatically attempts to add the
 required firewall rule the first time it starts.  A **UAC (User Account Control)
 prompt** will appear asking for administrator elevation.  Once approved, the rule is
 created for the current version of `Uno.UI.RemoteControl.Host.exe`.
@@ -86,7 +86,7 @@ must target the **exact path** of the installed `Uno.UI.RemoteControl.Host.exe`.
 The path includes the NuGet package version and the .NET TFM, for example:
 
 ```
-%USERPROFILE%\.nuget\packages\uno.winui.devserver\6.7.0\tools\rc\host\net9.0\Uno.UI.RemoteControl.Host.exe
+%USERPROFILE%\.nuget\packages\uno.winui.devserver\6.6.0\tools\rc\host\net9.0\Uno.UI.RemoteControl.Host.exe
 ```
 
 To list the versions currently installed on the developer's machine:
@@ -139,9 +139,10 @@ To deploy the rule organization-wide via **Group Policy**:
    `Computer Configuration > Policies > Windows Settings > Security Settings > Windows Defender Firewall with Advanced Security > Inbound Rules`
 3. Create a new rule:
    - **Rule type:** Program
-   - **Program path:** path to `Uno.UI.RemoteControl.Host.exe` in the NuGet cache,
-     e.g. `%USERPROFILE%\.nuget\packages\uno.winui.devserver\*\tools\rc\host\net*\Uno.UI.RemoteControl.Host.exe`
-     *(use a wildcard or deploy a login script that resolves the latest installed version)*
+   - **Program path:** exact path to `Uno.UI.RemoteControl.Host.exe` in the NuGet cache
+     (Windows Firewall does not support wildcards in program paths).
+     Deploy a login script that resolves the installed version, for example:
+     `%USERPROFILE%\.nuget\packages\uno.winui.devserver\6.6.0\tools\rc\host\net9.0\Uno.UI.RemoteControl.Host.exe`
    - **Action:** Allow the connection
    - **Profile:** ✅ Domain &nbsp; ✅ Private &nbsp; ☐ Public
    - **Name:** `Uno DevServer (.NET Host)`
@@ -149,10 +150,10 @@ To deploy the rule organization-wide via **Group Policy**:
 > [!NOTE]
 > The host executable path includes the NuGet package version and the .NET TFM, so it
 > changes when developers update the Uno Platform NuGet packages.  The automatic fix
-> applied by the CLI at startup handles this transparently (it adds a new rule each
-> time the path changes).  For GPO-managed machines where the CLI cannot elevate, you
-> will need to update the rule after each significant Uno Platform version upgrade, or
-> use a login script to detect and update the path automatically.
+> applied by the CLI at startup covers the developer's own machine (it prompts for UAC
+> when a new version is installed).  For GPO-managed machines where the CLI cannot
+> elevate, you will need to update the rule after each significant Uno Platform version
+> upgrade, or use a login script to detect and update the path automatically.
 
 ### Verifying connectivity from the device
 
