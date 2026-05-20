@@ -15,6 +15,9 @@ internal partial class Win32WindowWrapper
 {
 	private class GlRenderer : IRenderer
 	{
+		[UnmanagedFunctionPointer(CallingConvention.Winapi)]
+		private delegate int WglSwapIntervalEXT(int interval);
+
 		private readonly HWND _hwnd;
 		private readonly HDC _hdc;
 		private HGLRC _glContext; // recreated when window is extended into titlebar
@@ -105,6 +108,21 @@ internal partial class Win32WindowWrapper
 						: $"OpenGL Version: {Marshal.PtrToStringUTF8((IntPtr)version)}");
 			}
 
+			// Enable VSync so SwapBuffers blocks until the next display refresh.
+			// Without this, some GPU drivers default to swap interval 0,
+			// causing SwapBuffers to return immediately and the render loop
+			// to spin at hundreds of fps.
+			var wglSwapIntervalAddr = PInvoke.wglGetProcAddress("wglSwapIntervalEXT");
+			if (wglSwapIntervalAddr != IntPtr.Zero)
+			{
+				var wglSwapInterval = Marshal.GetDelegateForFunctionPointer<WglSwapIntervalEXT>(wglSwapIntervalAddr);
+				if (wglSwapInterval(1) == 0)
+				{
+					typeof(GlRenderer).LogWarn()?.Warn(
+						"Failed to enable VSync via wglSwapIntervalEXT; the render loop may run unthrottled on this driver.");
+				}
+			}
+
 			var grGlInterface = GRGlInterface.Create();
 
 			if (grGlInterface is null)
@@ -119,6 +137,14 @@ internal partial class Win32WindowWrapper
 				typeof(GlRenderer).LogError()?.Error("OpenGL is not supported in this system (failed to create GRContext)");
 				ReleaseGlContext(hwnd, hdc, glContext, grGlInterface, null, null);
 				return null;
+			}
+
+			// Detach the GL context from the calling thread before returning, so a downstream
+			// render thread can make it current. WglCurrentContextDisposable above doesn't
+			// restore to "no context" when there was none before, so we detach explicitly.
+			if (!PInvoke.wglMakeCurrent(default, HGLRC.Null))
+			{
+				typeof(GlRenderer).LogError()?.Error($"{nameof(PInvoke.wglMakeCurrent)} (detach) failed: {Win32Helper.GetErrorMessage()}");
 			}
 
 			return new GlRenderer(hwnd, hdc, glContext, grGlInterface, grContext);
@@ -190,5 +216,9 @@ internal partial class Win32WindowWrapper
 			using var makeCurrentDisposable = new Win32Helper.WglCurrentContextDisposable(_hdc, _glContext);
 			_grContext = GRContext.CreateGl(_grGlInterface);
 		}
+
+		// VSync via wglSwapInterval(1) already paces SwapBuffers at the screen
+		// refresh rate, so no retargeting is needed here.
+		void IRenderer.UpdateRefreshRate(double fps) { }
 	}
 }

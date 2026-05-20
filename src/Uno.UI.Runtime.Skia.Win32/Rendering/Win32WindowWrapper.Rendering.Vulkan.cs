@@ -152,5 +152,8 @@ internal partial class Win32WindowWrapper
 			_deviceLock = null;
 			_vulkanContext.Dispose();
 		}
+
+		// Vulkan presents through its own VSync-aware swapchain, so no retargeting is needed here.
+		public void UpdateRefreshRate(double fps) { }
 	}
 }
