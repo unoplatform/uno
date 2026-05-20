@@ -255,9 +255,15 @@ partial class Application
 	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "ALC cleanup reflection")]
 	internal static void CleanupNonDefaultAlcCaches()
 	{
+		// [ALC-DIAG] Probe whether the host's HD_FlyoutToolBarPresenterStyle is reachable
+		// BEFORE we touch any caches. This lets us correlate teardown steps with the
+		// disappearance of the host-Default-ALC-owned Style.
+		ProbeHostStyleResource("BEFORE CleanupNonDefaultAlcCaches");
+
 		// Remove Application instances registered for non-default ALCs from the CWT.
 		// Without this, the CWT keeps the inner app's Application subclass alive.
 		ClearNonDefaultAlcApplications();
+		ProbeHostStyleResource("after ClearNonDefaultAlcApplications");
 
 		// Type-keyed caches
 		DependencyProperty.ClearCachesForNonDefaultAlc();
@@ -267,24 +273,29 @@ partial class Application
 		Uno.UI.DataBinding.BindingPropertyHelper.ClearCachesForNonDefaultAlc();
 		Uno.UI.Xaml.UIElementGeneratedProxy.ClearCachesForNonDefaultAlc();
 		ApiInformation.ClearCachesForNonDefaultAlc();
+		ProbeHostStyleResource("after Type-keyed caches");
 
 		// FrameworkElementHelper — remove CWT entries for ALC DependencyObjects
 		FrameworkElementHelper.ClearNonDefaultAlcEntries();
+		ProbeHostStyleResource("after FrameworkElementHelper");
 
 		// ResourceResolver — remove Func delegates whose Target is from a non-default ALC
 		ResourceResolver.ClearNonDefaultAlcRegistrations();
+		ProbeHostStyleResource("after ResourceResolver.ClearNonDefaultAlcRegistrations");
 
 		// ResourceDictionary — invalidate _keyNotFoundCache on the host Application.
 		// The cache accumulates ResourceKey entries with TypeKey referencing ALC types.
 		// These entries pin RuntimeType → LoaderAllocator → ALC.
 		// Clearing is cheap — entries are re-cached on demand.
 		_current?.Resources.InvalidateNotFoundCache(propagate: false);
+		ProbeHostStyleResource("after InvalidateNotFoundCache");
 
 		// SystemThemeHelper — unsubscribe event handlers from non-default ALCs
 		Uno.Helpers.Theming.SystemThemeHelper.ClearNonDefaultAlcHandlers();
 
 		// DiagnosticViewRegistry — remove views registered by ALC-loaded types
 		Uno.Diagnostics.UI.DiagnosticViewRegistry.ClearNonDefaultAlcRegistrations();
+		ProbeHostStyleResource("END CleanupNonDefaultAlcCaches");
 
 		// Diagnostic: deep scan is expensive — only run when trace logging is enabled
 		if (typeof(Application).Log().IsEnabled(LogLevel.Trace))
@@ -297,6 +308,110 @@ partial class Application
 			{
 				typeof(Application).Log().Trace($"[ALC-SCAN] Error during deep scan: {ex.GetType().Name}: {ex.Message}");
 			}
+		}
+	}
+
+	// [ALC-DIAG] Walk a Style's BasedOn chain and Template setter value, reporting each
+	// participating type's owning ALC. Used to detect cross-ALC contamination of a Style
+	// that nominally has Default-ALC TargetType but whose Template or BasedOn was emitted
+	// from a non-default ALC.
+	private static void WalkStyle(string label, string key, Style style, int depth)
+	{
+		if (style is null || depth > 5)
+		{
+			return;
+		}
+
+		try
+		{
+			var indent = new string(' ', depth * 2);
+			var targetType = style.TargetType;
+			var targetAlc = targetType is not null ? global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(targetType.Assembly) : null;
+			var targetAlcName = targetAlc != null ? targetAlc.Name : "<null>";
+			var setterCount = style.Setters?.Count ?? -1;
+			var styleHash = global::System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(style);
+			global::System.Console.WriteLine("[ALC-DIAG-PROBE]" + indent + " " + label + " key='" + key + "' depth=" + depth + " styleHash=" + styleHash + " targetType=" + (targetType?.FullName ?? "<null>") + " targetAlc='" + targetAlcName + "' setters=" + setterCount);
+
+			// Walk Setters; for Template setters, report the ControlTemplate's owning assembly's ALC
+			if (style.Setters is not null)
+			{
+				foreach (var s in style.Setters)
+				{
+					try
+					{
+						if (s is Setter setter)
+						{
+							var prop = setter.Property?.Name ?? "<null>";
+							var val = setter.Value;
+							if (val is FrameworkTemplate ft)
+							{
+								// Report the ALC of the template's declaring type (the generated __Flyout_xxx class)
+								var ftType = ft.GetType();
+								var ftAsm = ftType.Assembly.GetName().Name;
+								var ftAlc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(ftType.Assembly);
+								var ftAlcName = ftAlc != null ? ftAlc.Name : "<null>";
+								var ftHash = global::System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(ft);
+								global::System.Console.WriteLine("[ALC-DIAG-PROBE]" + indent + "   setter prop=" + prop + " value=Template type=" + ftType.FullName + " asm=" + ftAsm + " alc='" + ftAlcName + "' templateHash=" + ftHash);
+							}
+							else if (val is not null)
+							{
+								var vt = val.GetType();
+								var vAlc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(vt.Assembly);
+								var vAlcName = vAlc != null ? vAlc.Name : "<null>";
+								global::System.Console.WriteLine("[ALC-DIAG-PROBE]" + indent + "   setter prop=" + prop + " valueType=" + vt.FullName + " alc='" + vAlcName + "'");
+							}
+						}
+					}
+					catch { }
+				}
+			}
+
+			// Recurse into BasedOn — that's where the actual Template likely lives for HD_FlyoutToolBarPresenterStyle
+			if (style.BasedOn is not null)
+			{
+				WalkStyle(label, key + ".BasedOn", style.BasedOn, depth + 1);
+			}
+		}
+		catch (global::System.Exception ex)
+		{
+			global::System.Console.WriteLine("[ALC-DIAG-PROBE] WalkStyle exception at depth " + depth + ": " + ex.GetType().Name + ": " + ex.Message);
+		}
+	}
+
+	// [ALC-DIAG] Probe whether HD_FlyoutToolBarPresenterStyle is currently reachable from
+	// Application.Current.Resources, and which ALC its TargetType lives in. Used to bisect
+	// where in the teardown sequence the host-Default-ALC-owned Style gets clobbered.
+	private static void ProbeHostStyleResource(string label)
+	{
+		try
+		{
+			const string Key = "HD_FlyoutToolBarPresenterStyle";
+			var resources = _current?.Resources;
+			if (resources is null)
+			{
+				global::System.Console.WriteLine("[ALC-DIAG-PROBE] " + label + ": Application.Current.Resources is null");
+				return;
+			}
+
+			var found = resources.TryGetValue(Key, out var value, shouldCheckSystem: false);
+			if (!found)
+			{
+				global::System.Console.WriteLine("[ALC-DIAG-PROBE] " + label + ": key '" + Key + "' NOT FOUND in Application.Current.Resources");
+				return;
+			}
+
+			if (value is Style style)
+			{
+				WalkStyle(label, Key, style, depth: 0);
+			}
+			else
+			{
+				global::System.Console.WriteLine("[ALC-DIAG-PROBE] " + label + ": key '" + Key + "' value type=" + (value?.GetType().FullName ?? "<null>"));
+			}
+		}
+		catch (global::System.Exception ex)
+		{
+			global::System.Console.WriteLine("[ALC-DIAG-PROBE] " + label + ": exception " + ex.GetType().Name + ": " + ex.Message);
 		}
 	}
 

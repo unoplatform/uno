@@ -206,6 +206,19 @@ namespace Microsoft.UI.Xaml
 		{
 			var keyToRemove = new ResourceKey(key);
 
+			// [ALC-DIAG] Log removals of suspicious keys (HD_* / FlyoutPresenter / shared styles)
+			try
+			{
+				var ks = key?.ToString() ?? "<null>";
+				if (ks.StartsWith("HD_", StringComparison.Ordinal) || ks.Contains("Flyout", StringComparison.OrdinalIgnoreCase))
+				{
+					var st = new global::System.Diagnostics.StackTrace(1, false).ToString();
+					global::System.Console.WriteLine("[ALC-DIAG] ResourceDictionary.Remove key=" + ks + " dictHash=" + global::System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(this));
+					global::System.Console.WriteLine("[ALC-DIAG-STACK] " + st);
+				}
+			}
+			catch { }
+
 			// MUX: CResourceDictionary::RemoveKey invalidates the theme walk cache for this key.
 			ThemeWalkResourceCache.Instance.RemoveCacheEntry(keyToRemove);
 #if __SKIA__ || __WASM__ || __ANDROID__
@@ -239,6 +252,19 @@ namespace Microsoft.UI.Xaml
 
 		public void Clear()
 		{
+			// [ALC-DIAG] Log clears, especially if dictionary contained shared resources
+			try
+			{
+				var hasFlyout = _values.Keys.Any(k => k.ToString()?.Contains("Flyout", StringComparison.OrdinalIgnoreCase) ?? false);
+				if (hasFlyout || _values.Count > 5)
+				{
+					var st = new global::System.Diagnostics.StackTrace(1, false).ToString();
+					global::System.Console.WriteLine("[ALC-DIAG] ResourceDictionary.Clear count=" + _values.Count + " hasFlyoutKey=" + hasFlyout + " dictHash=" + global::System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(this));
+					global::System.Console.WriteLine("[ALC-DIAG-STACK] " + st);
+				}
+			}
+			catch { }
+
 			_values.Clear();
 			ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
 		}
