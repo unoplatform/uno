@@ -190,20 +190,7 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsScriptEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2Settings.IsScriptEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2Settings.IsScriptEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Settings", "bool CoreWebView2Settings.IsScriptEnabled");
-			}
-		}
-#endif
+		// Skipping already declared property IsScriptEnabled
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsStatusBarEnabled
@@ -233,34 +220,8 @@ namespace Microsoft.Web.WebView2.Core
 		}
 #endif
 		// Skipping already declared property IsWebMessageEnabled
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsZoomControlEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2Settings.IsZoomControlEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2Settings.IsZoomControlEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Settings", "bool CoreWebView2Settings.IsZoomControlEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string UserAgent
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2Settings.UserAgent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2Settings.UserAgent");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Settings", "string CoreWebView2Settings.UserAgent");
-			}
-		}
-#endif
+		// Skipping already declared property IsZoomControlEnabled
+		// Skipping already declared property UserAgent
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.AreBrowserAcceleratorKeysEnabled.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.AreBrowserAcceleratorKeysEnabled.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.AreDefaultContextMenusEnabled.get

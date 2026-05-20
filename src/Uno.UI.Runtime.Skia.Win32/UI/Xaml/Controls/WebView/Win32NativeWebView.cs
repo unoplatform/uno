@@ -47,8 +47,114 @@ internal class Win32NativeWebViewProvider(CoreWebView2 owner) : INativeWebViewPr
 	}
 }
 
-internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping, ISupportsWebResourceRequested
+internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping, ISupportsWebResourceRequested, ISupportsUserAgent, ISupportsScriptEnabled, ISupportsZoomControl, ISupportsPostWebMessage, ISupportsDocumentCreatedScripts, ISupportsCookieManager, ISupportsPrint
 {
+	async Task<Stream> ISupportsPrint.PrintToPdfStreamAsync(CoreWebView2PrintSettings? settings, CancellationToken ct)
+	{
+		NativeWebView.CoreWebView2PrintSettings? nativeSettings = null;
+		if (settings is not null)
+		{
+			nativeSettings = _nativeWebView.Environment.CreatePrintSettings();
+			nativeSettings.Orientation = (NativeWebView.CoreWebView2PrintOrientation)(int)settings.Orientation;
+			nativeSettings.ScaleFactor = settings.ScaleFactor;
+			nativeSettings.MarginTop = settings.MarginTop;
+			nativeSettings.MarginBottom = settings.MarginBottom;
+			nativeSettings.MarginLeft = settings.MarginLeft;
+			nativeSettings.MarginRight = settings.MarginRight;
+			nativeSettings.ShouldPrintBackgrounds = settings.ShouldPrintBackgrounds;
+			nativeSettings.PageWidth = settings.PageWidth;
+			nativeSettings.PageHeight = settings.PageHeight;
+		}
+
+		var stream = await _nativeWebView.PrintToPdfStreamAsync(nativeSettings);
+		return stream;
+	}
+
+	async Task<CoreWebView2PrintStatus> ISupportsPrint.ShowPrintUIAsync(CoreWebView2PrintDialogKind dialogKind, CancellationToken ct)
+	{
+		_nativeWebView.ShowPrintUI((NativeWebView.CoreWebView2PrintDialogKind)(int)dialogKind);
+		await Task.Yield();
+		return CoreWebView2PrintStatus.Succeeded;
+	}
+
+	async Task<IReadOnlyList<CoreWebView2Cookie>> ISupportsCookieManager.GetCookiesAsync(string uri, CancellationToken ct)
+	{
+		var nativeCookies = await _nativeWebView.CookieManager.GetCookiesAsync(uri);
+		var result = new List<CoreWebView2Cookie>(nativeCookies.Count);
+		foreach (var c in nativeCookies)
+		{
+			var cookie = new CoreWebView2Cookie(c.Name, c.Value, c.Domain, c.Path)
+			{
+				Expires = c.Expires == DateTime.MinValue ? -1d : (c.Expires - DateTime.UnixEpoch).TotalSeconds,
+				IsHttpOnly = c.IsHttpOnly,
+				IsSecure = c.IsSecure,
+				SameSite = (CoreWebView2CookieSameSiteKind)(int)c.SameSite,
+			};
+			result.Add(cookie);
+		}
+		return result;
+	}
+
+	void ISupportsCookieManager.AddOrUpdateCookie(CoreWebView2Cookie cookie)
+	{
+		var native = _nativeWebView.CookieManager.CreateCookie(cookie.Name, cookie.Value, cookie.Domain, cookie.Path);
+		if (cookie.Expires > 0)
+		{
+			native.Expires = DateTime.UnixEpoch.AddSeconds(cookie.Expires);
+		}
+		native.IsHttpOnly = cookie.IsHttpOnly;
+		native.IsSecure = cookie.IsSecure;
+		native.SameSite = (NativeWebView.CoreWebView2CookieSameSiteKind)(int)cookie.SameSite;
+		_nativeWebView.CookieManager.AddOrUpdateCookie(native);
+	}
+
+	void ISupportsCookieManager.DeleteCookie(CoreWebView2Cookie cookie)
+	{
+		var native = _nativeWebView.CookieManager.CreateCookie(cookie.Name, cookie.Value, cookie.Domain, cookie.Path);
+		_nativeWebView.CookieManager.DeleteCookie(native);
+	}
+
+	void ISupportsCookieManager.DeleteCookies(string name, string? uri) => _nativeWebView.CookieManager.DeleteCookies(name, uri);
+
+	void ISupportsCookieManager.DeleteCookiesWithDomainAndPath(string name, string domain, string path)
+		=> _nativeWebView.CookieManager.DeleteCookiesWithDomainAndPath(name, domain, path);
+
+	void ISupportsCookieManager.DeleteAllCookies() => _nativeWebView.CookieManager.DeleteAllCookies();
+
+	void ISupportsPostWebMessage.PostWebMessageAsJson(string json) => _nativeWebView.PostWebMessageAsJson(json);
+
+	void ISupportsPostWebMessage.PostWebMessageAsString(string message) => _nativeWebView.PostWebMessageAsString(message);
+
+	async Task<string> ISupportsDocumentCreatedScripts.AddScriptToExecuteOnDocumentCreatedAsync(string javaScript, CancellationToken ct)
+		=> await _nativeWebView.AddScriptToExecuteOnDocumentCreatedAsync(javaScript);
+
+	void ISupportsDocumentCreatedScripts.RemoveScriptToExecuteOnDocumentCreated(string id)
+		=> _nativeWebView.RemoveScriptToExecuteOnDocumentCreated(id);
+
+	public string? UserAgent
+	{
+		get => _nativeWebView?.Settings.UserAgent;
+		set
+		{
+			if (_nativeWebView is { } nv && value is not null)
+			{
+				nv.Settings.UserAgent = value;
+			}
+		}
+	}
+
+	bool ISupportsScriptEnabled.IsScriptEnabled
+	{
+		get => _nativeWebView?.Settings.IsScriptEnabled ?? true;
+		set { if (_nativeWebView is { } nv) nv.Settings.IsScriptEnabled = value; }
+	}
+
+	bool ISupportsZoomControl.IsZoomControlEnabled
+	{
+		get => _nativeWebView?.Settings.IsZoomControlEnabled ?? true;
+		set { if (_nativeWebView is { } nv) nv.Settings.IsZoomControlEnabled = value; }
+	}
+
 	private const string WindowClassName = "UnoPlatformWebViewWindow";
 	private const uint SC_MASK = 0xFFF0; // Mask to extract system command from wParam
 
@@ -152,9 +258,60 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		// ReSharper disable once AsyncVoidLambda
 		NativeDispatcher.Main.EnqueueAsync(async () =>
 		{
-			var userDataFolder = Path.Combine(ApplicationData.Current.LocalFolder.Path, "WebView2");
-			var env = await NativeWebView.CoreWebView2Environment.CreateAsync(userDataFolder: userDataFolder);
-			var controller = await env.CreateCoreWebView2ControllerAsync(_hwnd);
+			var customEnv = _coreWebView.CustomEnvironment;
+			var customOptions = customEnv?.Options;
+			var customControllerOptions = _coreWebView.CustomControllerOptions;
+
+			NativeWebView.CoreWebView2EnvironmentOptions? nativeEnvOptions = null;
+			if (customOptions is not null)
+			{
+				nativeEnvOptions = new NativeWebView.CoreWebView2EnvironmentOptions();
+				if (!string.IsNullOrEmpty(customOptions.AdditionalBrowserArguments))
+				{
+					nativeEnvOptions.AdditionalBrowserArguments = customOptions.AdditionalBrowserArguments;
+				}
+				if (!string.IsNullOrEmpty(customOptions.Language))
+				{
+					nativeEnvOptions.Language = customOptions.Language;
+				}
+				if (!string.IsNullOrEmpty(customOptions.TargetCompatibleBrowserVersion))
+				{
+					nativeEnvOptions.TargetCompatibleBrowserVersion = customOptions.TargetCompatibleBrowserVersion;
+				}
+				nativeEnvOptions.AllowSingleSignOnUsingOSPrimaryAccount = customOptions.AllowSingleSignOnUsingOSPrimaryAccount;
+				nativeEnvOptions.ExclusiveUserDataFolderAccess = customOptions.ExclusiveUserDataFolderAccess;
+				nativeEnvOptions.IsCustomCrashReportingEnabled = customOptions.IsCustomCrashReportingEnabled;
+			}
+
+			var browserFolder = customEnv?.BrowserExecutableFolder;
+			var userDataFolder = !string.IsNullOrEmpty(customEnv?.UserDataFolder)
+				? customEnv!.UserDataFolder
+				: Path.Combine(ApplicationData.Current.LocalFolder.Path, "WebView2");
+			var env = await NativeWebView.CoreWebView2Environment.CreateAsync(browserFolder, userDataFolder, nativeEnvOptions);
+			if (customEnv is not null)
+			{
+				customEnv.BrowserVersionString = env.BrowserVersionString;
+			}
+
+			NativeWebView.CoreWebView2Controller controller;
+			if (customControllerOptions is not null)
+			{
+				var nativeCtrlOptions = env.CreateCoreWebView2ControllerOptions();
+				nativeCtrlOptions.IsInPrivateModeEnabled = customControllerOptions.IsInPrivateModeEnabled;
+				if (!string.IsNullOrEmpty(customControllerOptions.ProfileName))
+				{
+					nativeCtrlOptions.ProfileName = customControllerOptions.ProfileName;
+				}
+				if (!string.IsNullOrEmpty(customControllerOptions.ScriptLocale))
+				{
+					nativeCtrlOptions.ScriptLocale = customControllerOptions.ScriptLocale;
+				}
+				controller = await env.CreateCoreWebView2ControllerAsync(_hwnd, nativeCtrlOptions);
+			}
+			else
+			{
+				controller = await env.CreateCoreWebView2ControllerAsync(_hwnd);
+			}
 
 			// Hide until NavigationCompleted to suppress the initial black frame.
 			controller.IsVisible = false;
@@ -198,6 +355,10 @@ internal partial class Win32NativeWebView : INativeWebView, ISupportsVirtualHost
 		_nativeWebView.HistoryChanged += EventHandlerBuilder<object>(static (@this, o, a) => @this.CoreWebView2_HistoryChanged(o, a));
 		_nativeWebView.DocumentTitleChanged += EventHandlerBuilder<object>(static (@this, o, a) => @this.OnNativeTitleChanged(o, a));
 		_nativeWebView.WebResourceRequested += NativeWebView2_WebResourceRequested;
+		_nativeWebView.ContentLoading += EventHandlerBuilder<NativeWebView.CoreWebView2ContentLoadingEventArgs>(static (@this, _, e) =>
+			@this._coreWebView.RaiseContentLoading(new CoreWebView2ContentLoadingEventArgs(e.IsErrorPage, e.NavigationId)));
+		_nativeWebView.DOMContentLoaded += EventHandlerBuilder<NativeWebView.CoreWebView2DOMContentLoadedEventArgs>(static (@this, _, e) =>
+			@this._coreWebView.RaiseDOMContentLoaded(new CoreWebView2DOMContentLoadedEventArgs(e.NavigationId)));
 		UpdateDocumentTitle();
 
 		presenter.Content = new Win32NativeWindow(_hwnd);

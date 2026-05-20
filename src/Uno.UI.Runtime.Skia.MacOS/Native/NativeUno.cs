@@ -465,6 +465,56 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_webview_set_scrolling_enabled(nint webview, [MarshalAs(UnmanagedType.I1)] bool enabled);
 
+	// Settings.UserAgent — returned string is heap-allocated by strdup; managed side calls Marshal.PtrToStringUTF8 + frees via free().
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial nint uno_webview_get_user_agent(nint webview);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_webview_set_user_agent(nint webview, string? user_agent);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_webview_get_javascript_enabled(nint webview);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_webview_set_javascript_enabled(nint webview, [MarshalAs(UnmanagedType.I1)] bool enabled);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_webview_post_web_message(nint webview, string payload, [MarshalAs(UnmanagedType.I1)] bool is_json);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial nint uno_webview_add_user_script(nint webview, string script);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_webview_remove_user_script(nint webview, string id);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial int uno_webview_show_print_ui(nint webview);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_webview_pdf_callback(delegate* unmanaged[Cdecl]<nint, byte*, nint, sbyte*, void> callback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_webview_print_to_pdf(nint webview, nint handle);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_webview_cookies_callback(delegate* unmanaged[Cdecl]<nint, sbyte*, sbyte*, void> callback);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_webview_get_cookies(nint webview, nint handle, string? uri);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_webview_set_cookie(nint webview, string cookie_json);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_webview_delete_cookies(nint webview, string name, string? domain, string? path);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_webview_delete_all_cookies(nint webview);
+
+	[LibraryImport("libc")]
+	internal static partial void free(nint ptr);
+
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_mediaplayer_set_callbacks(
 		delegate* unmanaged[Cdecl]<IntPtr, double, void> periodicPositionUpdate,

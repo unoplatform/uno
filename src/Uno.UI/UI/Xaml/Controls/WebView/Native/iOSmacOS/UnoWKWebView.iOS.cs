@@ -25,6 +25,8 @@ using MessageUI;
 
 #if __APPLE_UIKIT__
 using UIKit;
+#else
+using AppKit;
 #endif
 
 #pragma warning disable CA1422 // TODO Uno: Deprecated APIs in iOS 17
@@ -36,8 +38,245 @@ internal
 #else
 public
 #endif
-	partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageHandler
+	partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageHandler, ISupportsUserAgent, ISupportsScriptEnabled, ISupportsZoomControl, ISupportsDocumentCreatedScripts, ISupportsCookieManager, ISupportsPrint
 {
+	async Task<Stream> ISupportsPrint.PrintToPdfStreamAsync(CoreWebView2PrintSettings? settings, CancellationToken ct)
+	{
+		// WKWebView.CreatePdf is available on iOS 14+, Mac Catalyst 14+, and macOS 11+.
+		var config = new WKPdfConfiguration();
+		var tcs = new TaskCompletionSource<NSData>();
+		CreatePdf(config, (data, error) =>
+		{
+			if (error != null)
+			{
+				tcs.TrySetException(new InvalidOperationException(error.LocalizedDescription));
+			}
+			else
+			{
+				tcs.TrySetResult(data);
+			}
+		});
+		using var reg = ct.Register(() => tcs.TrySetCanceled());
+		var nsdata = await tcs.Task;
+		return new MemoryStream(nsdata.ToArray(), writable: false);
+	}
+
+	Task<CoreWebView2PrintStatus> ISupportsPrint.ShowPrintUIAsync(CoreWebView2PrintDialogKind dialogKind, CancellationToken ct)
+	{
+#if __APPLE_UIKIT__
+		var print = UIPrintInteractionController.SharedPrintController;
+		var info = UIPrintInfo.PrintInfo;
+		info.OutputType = UIPrintInfoOutputType.General;
+		info.JobName = Title ?? "WebView";
+		print.PrintInfo = info;
+		print.PrintFormatter = ViewPrintFormatter;
+		var tcs = new TaskCompletionSource<CoreWebView2PrintStatus>();
+		print.Present(true, (_, completed, error) =>
+		{
+			if (error != null)
+			{
+				tcs.TrySetResult(CoreWebView2PrintStatus.OtherError);
+			}
+			else
+			{
+				tcs.TrySetResult(completed ? CoreWebView2PrintStatus.Succeeded : CoreWebView2PrintStatus.OtherError);
+			}
+		});
+		using var reg = ct.Register(() => tcs.TrySetCanceled());
+		return tcs.Task;
+#else
+		// macOS 11+: WKWebView exposes printOperation(with:) returning an NSPrintOperation.
+		// NSPrintOperation.RunOperation() runs the system print dialog synchronously.
+		var info = NSPrintInfo.SharedPrintInfo;
+		var op = GetPrintOperation(info);
+		if (op is null)
+		{
+			return Task.FromResult(CoreWebView2PrintStatus.OtherError);
+		}
+		var ok = op.RunOperation();
+		return Task.FromResult(ok ? CoreWebView2PrintStatus.Succeeded : CoreWebView2PrintStatus.OtherError);
+#endif
+	}
+
+	async Task<IReadOnlyList<CoreWebView2Cookie>> ISupportsCookieManager.GetCookiesAsync(string uri, CancellationToken ct)
+	{
+		var store = Configuration.WebsiteDataStore.HttpCookieStore;
+		var tcs = new TaskCompletionSource<NSHttpCookie[]>();
+		store.GetAllCookies(cookies => tcs.TrySetResult(cookies));
+		using var reg = ct.Register(() => tcs.TrySetCanceled());
+		var all = await tcs.Task;
+
+		string? host = null;
+		try { host = new Uri(uri).Host; } catch { }
+
+		var result = new List<CoreWebView2Cookie>();
+		foreach (var nc in all)
+		{
+			if (host is not null && !string.Equals(nc.Domain.TrimStart('.'), host, StringComparison.OrdinalIgnoreCase)
+				&& !host.EndsWith("." + nc.Domain.TrimStart('.'), StringComparison.OrdinalIgnoreCase))
+			{
+				continue;
+			}
+			var cookie = new CoreWebView2Cookie(nc.Name, nc.Value, nc.Domain, nc.Path)
+			{
+				IsHttpOnly = nc.IsHttpOnly,
+				IsSecure = nc.IsSecure,
+				Expires = nc.ExpiresDate is { } e ? (e.SecondsSinceReferenceDate + 978307200d) : -1d,
+			};
+			result.Add(cookie);
+		}
+		return result;
+	}
+
+	void ISupportsCookieManager.AddOrUpdateCookie(CoreWebView2Cookie cookie)
+	{
+		var props = new NSMutableDictionary();
+		props[NSHttpCookie.KeyName] = new NSString(cookie.Name);
+		props[NSHttpCookie.KeyValue] = new NSString(cookie.Value ?? string.Empty);
+		props[NSHttpCookie.KeyDomain] = new NSString(string.IsNullOrEmpty(cookie.Domain) ? "localhost" : cookie.Domain);
+		props[NSHttpCookie.KeyPath] = new NSString(string.IsNullOrEmpty(cookie.Path) ? "/" : cookie.Path);
+		if (cookie.IsSecure)
+		{
+			props[NSHttpCookie.KeySecure] = new NSString("TRUE");
+		}
+		if (cookie.Expires > 0)
+		{
+			var date = NSDate.FromTimeIntervalSinceReferenceDate(cookie.Expires - 978307200d);
+			props[NSHttpCookie.KeyExpires] = date;
+		}
+
+		var ns = new NSHttpCookie(props);
+		Configuration.WebsiteDataStore.HttpCookieStore.SetCookie(ns, null);
+	}
+
+	void ISupportsCookieManager.DeleteCookie(CoreWebView2Cookie cookie)
+	{
+		var store = Configuration.WebsiteDataStore.HttpCookieStore;
+		store.GetAllCookies(all =>
+		{
+			foreach (var nc in all)
+			{
+				if (string.Equals(nc.Name, cookie.Name, StringComparison.Ordinal)
+					&& string.Equals(nc.Domain, cookie.Domain, StringComparison.OrdinalIgnoreCase)
+					&& string.Equals(nc.Path, cookie.Path, StringComparison.Ordinal))
+				{
+					store.DeleteCookie(nc, null);
+				}
+			}
+		});
+	}
+
+	void ISupportsCookieManager.DeleteCookies(string name, string uri)
+	{
+		string? host = null;
+		try { host = uri is null ? null : new Uri(uri).Host; } catch { }
+		var store = Configuration.WebsiteDataStore.HttpCookieStore;
+		store.GetAllCookies(all =>
+		{
+			foreach (var nc in all)
+			{
+				if (!string.Equals(nc.Name, name, StringComparison.Ordinal))
+				{
+					continue;
+				}
+				if (host is null || string.Equals(nc.Domain.TrimStart('.'), host, StringComparison.OrdinalIgnoreCase))
+				{
+					store.DeleteCookie(nc, null);
+				}
+			}
+		});
+	}
+
+	void ISupportsCookieManager.DeleteCookiesWithDomainAndPath(string name, string domain, string path)
+	{
+		var store = Configuration.WebsiteDataStore.HttpCookieStore;
+		store.GetAllCookies(all =>
+		{
+			foreach (var nc in all)
+			{
+				if (string.Equals(nc.Name, name, StringComparison.Ordinal)
+					&& string.Equals(nc.Domain.TrimStart('.'), domain.TrimStart('.'), StringComparison.OrdinalIgnoreCase)
+					&& string.Equals(nc.Path, path, StringComparison.Ordinal))
+				{
+					store.DeleteCookie(nc, null);
+				}
+			}
+		});
+	}
+
+	void ISupportsCookieManager.DeleteAllCookies()
+	{
+		var store = Configuration.WebsiteDataStore.HttpCookieStore;
+		store.GetAllCookies(all =>
+		{
+			foreach (var nc in all)
+			{
+				store.DeleteCookie(nc, null);
+			}
+		});
+	}
+
+	private readonly Dictionary<string, string> _documentCreatedScripts = new();
+
+	Task<string> ISupportsDocumentCreatedScripts.AddScriptToExecuteOnDocumentCreatedAsync(string javaScript, CancellationToken ct)
+	{
+		var id = Guid.NewGuid().ToString();
+		_documentCreatedScripts[id] = javaScript;
+		var userScript = new WKUserScript(new NSString(javaScript), WKUserScriptInjectionTime.AtDocumentStart, isForMainFrameOnly: false);
+		Configuration.UserContentController.AddUserScript(userScript);
+		return Task.FromResult(id);
+	}
+
+	void ISupportsDocumentCreatedScripts.RemoveScriptToExecuteOnDocumentCreated(string id)
+	{
+		if (!_documentCreatedScripts.Remove(id))
+		{
+			return;
+		}
+
+		var controller = Configuration.UserContentController;
+		controller.RemoveAllUserScripts();
+		foreach (var remaining in _documentCreatedScripts.Values)
+		{
+			controller.AddUserScript(new WKUserScript(new NSString(remaining), WKUserScriptInjectionTime.AtDocumentStart, isForMainFrameOnly: false));
+		}
+	}
+
+	string? ISupportsUserAgent.UserAgent
+	{
+		get => CustomUserAgent;
+		set => CustomUserAgent = value;
+	}
+
+	bool ISupportsScriptEnabled.IsScriptEnabled
+	{
+		get => Configuration?.DefaultWebpagePreferences?.AllowsContentJavaScript ?? true;
+		set
+		{
+			if (Configuration?.DefaultWebpagePreferences is { } prefs)
+			{
+				prefs.AllowsContentJavaScript = value;
+			}
+		}
+	}
+
+	bool ISupportsZoomControl.IsZoomControlEnabled
+	{
+#if __APPLE_UIKIT__
+		get => ScrollView?.PinchGestureRecognizer?.Enabled ?? true;
+		set
+		{
+			if (ScrollView?.PinchGestureRecognizer is { } pinch)
+			{
+				pinch.Enabled = value;
+			}
+		}
+#else
+		get => true;
+		set { /* macOS: no first-class pinch toggle on WKWebView */ }
+#endif
+	}
+
 	private string? _previousTitle;
 	private CoreWebView2? _coreWebView;
 	private bool _isCancelling;

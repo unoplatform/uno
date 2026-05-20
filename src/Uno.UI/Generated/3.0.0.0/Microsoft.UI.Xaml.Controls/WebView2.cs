@@ -65,20 +65,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.NavigationStarting.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.WebMessageReceived.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.WebMessageReceived.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncAction EnsureCoreWebView2Async(global::Microsoft.Web.WebView2.Core.CoreWebView2Environment environment)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction WebView2.EnsureCoreWebView2Async(CoreWebView2Environment environment) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebView2.EnsureCoreWebView2Async%28CoreWebView2Environment%20environment%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncAction EnsureCoreWebView2Async(global::Microsoft.Web.WebView2.Core.CoreWebView2Environment environment, global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions controllerOptions)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction WebView2.EnsureCoreWebView2Async(CoreWebView2Environment environment, CoreWebView2ControllerOptions controllerOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebView2.EnsureCoreWebView2Async%28CoreWebView2Environment%20environment%2C%20CoreWebView2ControllerOptions%20controllerOptions%29");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.WebView2.EnsureCoreWebView2Async(CoreWebView2Environment)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.WebView2.EnsureCoreWebView2Async(CoreWebView2Environment, CoreWebView2ControllerOptions)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.CanGoBack.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.CanGoBack.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.CanGoForward.get

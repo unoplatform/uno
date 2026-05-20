@@ -297,6 +297,313 @@ void uno_webview_set_scrolling_enabled(UNOWebView* webview, bool enabled)
     webview.scrollingEnabled = enabled;
 }
 
+#pragma mark - CoreWebView2Settings.UserAgent
+
+const char* uno_webview_get_user_agent(WKWebView *webview)
+{
+    NSString *ua = webview.customUserAgent;
+    if (ua == nil || ua.length == 0) {
+        return NULL;
+    }
+    return strdup(ua.UTF8String);
+}
+
+void uno_webview_set_user_agent(WKWebView *webview, const char* user_agent)
+{
+    webview.customUserAgent = user_agent ? [NSString stringWithUTF8String:user_agent] : nil;
+}
+
+#pragma mark - CoreWebView2Settings.IsScriptEnabled
+
+bool uno_webview_get_javascript_enabled(WKWebView *webview)
+{
+    if (@available(macOS 11, *)) {
+        return webview.configuration.defaultWebpagePreferences.allowsContentJavaScript;
+    }
+    return webview.configuration.preferences.javaScriptEnabled;
+}
+
+void uno_webview_set_javascript_enabled(WKWebView *webview, bool enabled)
+{
+    if (@available(macOS 11, *)) {
+        webview.configuration.defaultWebpagePreferences.allowsContentJavaScript = enabled ? YES : NO;
+    } else {
+        webview.configuration.preferences.javaScriptEnabled = enabled ? YES : NO;
+    }
+}
+
+#pragma mark - PostWebMessage*
+
+// Dispatch a chrome.webview message-event into the page. We install a tiny polyfill on first use
+// (matches the WinUI3 contract: pages subscribe via window.chrome.webview.addEventListener('message', h)).
+void uno_webview_post_web_message(WKWebView *webview, const char* payload, bool is_json)
+{
+    if (payload == NULL) {
+        return;
+    }
+    NSString *data;
+    if (is_json) {
+        data = [NSString stringWithUTF8String:payload];
+    } else {
+        NSData *bytes = [[NSString stringWithUTF8String:payload] dataUsingEncoding:NSUTF8StringEncoding];
+        NSError *e = nil;
+        NSData *encoded = [NSJSONSerialization dataWithJSONObject:[[NSString alloc] initWithData:bytes encoding:NSUTF8StringEncoding] options:NSJSONWritingFragmentsAllowed error:&e];
+        if (e || encoded == nil) {
+            // Fallback: rough escape that quotes the string. Real escaping happens in the polyfill on the page side.
+            NSString *escaped = [[NSString stringWithUTF8String:payload] stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
+            escaped = [escaped stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
+            data = [NSString stringWithFormat:@"\"%@\"", escaped];
+        } else {
+            data = [[NSString alloc] initWithData:encoded encoding:NSUTF8StringEncoding];
+        }
+    }
+
+    NSString *script = [NSString stringWithFormat:
+        @"(function(){"
+        @"window.chrome=window.chrome||{};"
+        @"window.chrome.webview=window.chrome.webview||{};"
+        @"if(!window.chrome.webview.__unoListeners){"
+            @"window.chrome.webview.__unoListeners=[];"
+            @"var oa=window.chrome.webview.addEventListener;"
+            @"window.chrome.webview.addEventListener=function(t,h){"
+                @"if(t==='message'){window.chrome.webview.__unoListeners.push(h);}"
+                @"else if(typeof oa==='function'){oa.call(window.chrome.webview,t,h);}"
+            @"};"
+        @"}"
+        @"var d=%@;var ev={data:d};"
+        @"window.chrome.webview.__unoListeners.forEach(function(h){try{h(ev);}catch(e){}});"
+        @"})();",
+        data];
+    [webview evaluateJavaScript:script completionHandler:nil];
+}
+
+#pragma mark - AddScript/RemoveScript
+
+static NSMutableDictionary<NSValue*, NSMutableDictionary<NSString*, WKUserScript*>*>* _scriptRegistry = nil;
+
+static NSMutableDictionary<NSString*, WKUserScript*>* uno_webview_script_dict(WKWebView *webview)
+{
+    if (_scriptRegistry == nil) {
+        _scriptRegistry = [NSMutableDictionary dictionary];
+    }
+    NSValue *key = [NSValue valueWithNonretainedObject:webview];
+    NSMutableDictionary *dict = _scriptRegistry[key];
+    if (dict == nil) {
+        dict = [NSMutableDictionary dictionary];
+        _scriptRegistry[key] = dict;
+    }
+    return dict;
+}
+
+const char* uno_webview_add_user_script(WKWebView *webview, const char* script)
+{
+    NSString *source = [NSString stringWithUTF8String:script];
+    WKUserScript *us = [[WKUserScript alloc] initWithSource:source
+                                              injectionTime:WKUserScriptInjectionTimeAtDocumentStart
+                                           forMainFrameOnly:NO];
+    [webview.configuration.userContentController addUserScript:us];
+
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    uno_webview_script_dict(webview)[uuid] = us;
+    return strdup(uuid.UTF8String);
+}
+
+void uno_webview_remove_user_script(WKWebView *webview, const char* id)
+{
+    NSString *uuid = [NSString stringWithUTF8String:id];
+    NSMutableDictionary *dict = uno_webview_script_dict(webview);
+    if (dict[uuid] == nil) {
+        return;
+    }
+    [dict removeObjectForKey:uuid];
+
+    // WKUserContentController has no "remove single script" API; rebuild from the remaining set.
+    [webview.configuration.userContentController removeAllUserScripts];
+    for (WKUserScript *remaining in dict.allValues) {
+        [webview.configuration.userContentController addUserScript:remaining];
+    }
+}
+
+#pragma mark - Print
+
+int uno_webview_show_print_ui(WKWebView *webview)
+{
+    if (@available(macOS 11, *)) {
+        NSPrintInfo *info = [NSPrintInfo sharedPrintInfo];
+        NSPrintOperation *op = [webview printOperationWithPrintInfo:info];
+        if (op == nil) {
+            return 2;
+        }
+        BOOL ok = [op runOperation];
+        return ok ? 0 : 1;
+    }
+    return 2;
+}
+
+static uno_webview_pdf_fn_ptr pdf_callback;
+
+void uno_set_webview_pdf_callback(uno_webview_pdf_fn_ptr fn_ptr)
+{
+    pdf_callback = fn_ptr;
+}
+
+void uno_webview_print_to_pdf(WKWebView *webview, NSInteger handle)
+{
+    if (@available(macOS 11, *)) {
+        WKPDFConfiguration *config = [[WKPDFConfiguration alloc] init];
+        [webview createPDFWithConfiguration:config completionHandler:^(NSData * _Nullable data, NSError * _Nullable error) {
+            if (pdf_callback == NULL) {
+                return;
+            }
+            if (error != nil || data == nil) {
+                const char *e = error ? error.description.UTF8String : "PDF generation returned no data";
+                pdf_callback(handle, NULL, 0, e);
+            } else {
+                pdf_callback(handle, (const uint8_t*)data.bytes, (NSInteger)data.length, NULL);
+            }
+        }];
+    } else if (pdf_callback != NULL) {
+        pdf_callback(handle, NULL, 0, "createPDF requires macOS 11+");
+    }
+}
+
+#pragma mark - Cookies
+
+static uno_webview_cookies_fn_ptr cookies_callback;
+
+void uno_set_webview_cookies_callback(uno_webview_cookies_fn_ptr fn_ptr)
+{
+    cookies_callback = fn_ptr;
+}
+
+static NSString* uno_webview_cookies_to_json(NSArray<NSHTTPCookie*> *cookies, NSString* _Nullable hostFilter)
+{
+    NSMutableArray *list = [NSMutableArray array];
+    for (NSHTTPCookie *c in cookies) {
+        if (hostFilter != nil) {
+            NSString *domain = [c.domain hasPrefix:@"."] ? [c.domain substringFromIndex:1] : c.domain;
+            if (![[domain lowercaseString] isEqualToString:[hostFilter lowercaseString]] &&
+                ![[hostFilter lowercaseString] hasSuffix:[@"." stringByAppendingString:[domain lowercaseString]]]) {
+                continue;
+            }
+        }
+        NSMutableDictionary *d = [NSMutableDictionary dictionary];
+        d[@"name"] = c.name ?: @"";
+        d[@"value"] = c.value ?: @"";
+        d[@"domain"] = c.domain ?: @"";
+        d[@"path"] = c.path ?: @"/";
+        d[@"isSecure"] = @(c.isSecure);
+        d[@"isHttpOnly"] = @(c.isHTTPOnly);
+        if (c.expiresDate != nil) {
+            d[@"expires"] = @([c.expiresDate timeIntervalSince1970]);
+        } else {
+            d[@"expires"] = @(-1);
+        }
+        [list addObject:d];
+    }
+    NSError *err = nil;
+    NSData *data = [NSJSONSerialization dataWithJSONObject:list options:0 error:&err];
+    if (err) {
+        return @"[]";
+    }
+    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+}
+
+void uno_webview_get_cookies(WKWebView *webview, NSInteger handle, const char* uri)
+{
+    NSString *hostFilter = nil;
+    if (uri != NULL) {
+        NSURL *url = [NSURL URLWithString:[NSString stringWithUTF8String:uri]];
+        hostFilter = url.host;
+    }
+    WKHTTPCookieStore *store = webview.configuration.websiteDataStore.httpCookieStore;
+    [store getAllCookies:^(NSArray<NSHTTPCookie *> *cookies) {
+        if (cookies_callback == NULL) {
+            return;
+        }
+        @try {
+            NSString *json = uno_webview_cookies_to_json(cookies, hostFilter);
+            cookies_callback(handle, json.UTF8String, NULL);
+        } @catch (NSException *ex) {
+            cookies_callback(handle, NULL, ex.reason.UTF8String);
+        }
+    }];
+}
+
+static NSHTTPCookie* uno_webview_cookie_from_json(NSString *json)
+{
+    NSData *data = [json dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *err = nil;
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&err];
+    if (err || dict == nil) {
+        return nil;
+    }
+    NSMutableDictionary *props = [NSMutableDictionary dictionary];
+    props[NSHTTPCookieName] = dict[@"name"] ?: @"";
+    props[NSHTTPCookieValue] = dict[@"value"] ?: @"";
+    NSString *domain = dict[@"domain"];
+    props[NSHTTPCookieDomain] = (domain && domain.length > 0) ? domain : @"localhost";
+    NSString *path = dict[@"path"];
+    props[NSHTTPCookiePath] = (path && path.length > 0) ? path : @"/";
+    if ([dict[@"isSecure"] boolValue]) {
+        props[NSHTTPCookieSecure] = @"TRUE";
+    }
+    NSNumber *expires = dict[@"expires"];
+    if (expires != nil && expires.doubleValue > 0) {
+        props[NSHTTPCookieExpires] = [NSDate dateWithTimeIntervalSince1970:expires.doubleValue];
+    }
+    return [NSHTTPCookie cookieWithProperties:props];
+}
+
+void uno_webview_set_cookie(WKWebView *webview, const char* cookie_json)
+{
+    if (cookie_json == NULL) {
+        return;
+    }
+    NSHTTPCookie *cookie = uno_webview_cookie_from_json([NSString stringWithUTF8String:cookie_json]);
+    if (cookie == nil) {
+        return;
+    }
+    [webview.configuration.websiteDataStore.httpCookieStore setCookie:cookie completionHandler:nil];
+}
+
+void uno_webview_delete_cookies(WKWebView *webview, const char* name, const char* domain, const char* path)
+{
+    NSString *nameStr = [NSString stringWithUTF8String:name];
+    NSString *domainStr = domain ? [NSString stringWithUTF8String:domain] : nil;
+    NSString *pathStr = path ? [NSString stringWithUTF8String:path] : nil;
+
+    WKHTTPCookieStore *store = webview.configuration.websiteDataStore.httpCookieStore;
+    [store getAllCookies:^(NSArray<NSHTTPCookie *> *cookies) {
+        for (NSHTTPCookie *c in cookies) {
+            if (![c.name isEqualToString:nameStr]) {
+                continue;
+            }
+            if (domainStr != nil) {
+                NSString *cd = [c.domain hasPrefix:@"."] ? [c.domain substringFromIndex:1] : c.domain;
+                NSString *want = [domainStr hasPrefix:@"."] ? [domainStr substringFromIndex:1] : domainStr;
+                if (![[cd lowercaseString] isEqualToString:[want lowercaseString]]) {
+                    continue;
+                }
+            }
+            if (pathStr != nil && ![c.path isEqualToString:pathStr]) {
+                continue;
+            }
+            [store deleteCookie:c completionHandler:nil];
+        }
+    }];
+}
+
+void uno_webview_delete_all_cookies(WKWebView *webview)
+{
+    WKHTTPCookieStore *store = webview.configuration.websiteDataStore.httpCookieStore;
+    [store getAllCookies:^(NSArray<NSHTTPCookie *> *cookies) {
+        for (NSHTTPCookie *c in cookies) {
+            [store deleteCookie:c completionHandler:nil];
+        }
+    }];
+}
+
 @implementation UNOWebView : WKWebView
 
 - (nullable instancetype)initWithCoder:(NSCoder *)coder {

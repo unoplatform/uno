@@ -16,8 +16,151 @@ using Microsoft.Web.WebView2.Core;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal partial class NativeWebViewWrapper : INativeWebView
+internal partial class NativeWebViewWrapper : INativeWebView, ISupportsUserAgent, ISupportsScriptEnabled, ISupportsZoomControl, ISupportsDocumentCreatedScripts, ISupportsCookieManager, ISupportsPrint
 {
+	Task<System.IO.Stream> ISupportsPrint.PrintToPdfStreamAsync(CoreWebView2PrintSettings settings, CancellationToken ct)
+		=> throw new NotSupportedException(
+			"CoreWebView2.PrintToPdfStreamAsync is not currently supported on Android. " +
+			"As a workaround, call WebView.CreatePrintDocumentAdapter() and feed it to PrintManager directly.");
+
+	Task<CoreWebView2PrintStatus> ISupportsPrint.ShowPrintUIAsync(CoreWebView2PrintDialogKind dialogKind, CancellationToken ct)
+	{
+		var context = _webView.Context;
+		if (context.GetSystemService(Context.PrintService) is not Android.Print.PrintManager printManager)
+		{
+			return Task.FromResult(CoreWebView2PrintStatus.OtherError);
+		}
+
+		var adapter = _webView.CreatePrintDocumentAdapter(_documentTitle ?? "WebView");
+		var attributes = new Android.Print.PrintAttributes.Builder().Build();
+		printManager.Print(_documentTitle ?? "WebView", adapter, attributes);
+		return Task.FromResult(CoreWebView2PrintStatus.Succeeded);
+	}
+
+	Task<IReadOnlyList<CoreWebView2Cookie>> ISupportsCookieManager.GetCookiesAsync(string uri, CancellationToken ct)
+	{
+		var cookieString = Android.Webkit.CookieManager.Instance.GetCookie(uri) ?? string.Empty;
+		var domain = string.Empty;
+		try
+		{
+			domain = new Uri(uri).Host;
+		}
+		catch { }
+
+		var list = new List<CoreWebView2Cookie>();
+		if (!string.IsNullOrEmpty(cookieString))
+		{
+			foreach (var part in cookieString.Split(';'))
+			{
+				var trimmed = part.Trim();
+				var eq = trimmed.IndexOf('=');
+				if (eq <= 0)
+				{
+					continue;
+				}
+				var name = trimmed.Substring(0, eq);
+				var value = trimmed.Substring(eq + 1);
+				list.Add(new CoreWebView2Cookie(name, value, domain, "/"));
+			}
+		}
+		return Task.FromResult<IReadOnlyList<CoreWebView2Cookie>>(list);
+	}
+
+	void ISupportsCookieManager.AddOrUpdateCookie(CoreWebView2Cookie cookie)
+	{
+		var manager = Android.Webkit.CookieManager.Instance;
+		var sb = new System.Text.StringBuilder();
+		sb.Append(cookie.Name).Append('=').Append(cookie.Value);
+		if (!string.IsNullOrEmpty(cookie.Path))
+		{
+			sb.Append("; Path=").Append(cookie.Path);
+		}
+		if (!string.IsNullOrEmpty(cookie.Domain))
+		{
+			sb.Append("; Domain=").Append(cookie.Domain);
+		}
+		if (cookie.IsSecure)
+		{
+			sb.Append("; Secure");
+		}
+		if (cookie.IsHttpOnly)
+		{
+			sb.Append("; HttpOnly");
+		}
+
+		var url = (cookie.IsSecure ? "https://" : "http://") + (string.IsNullOrEmpty(cookie.Domain) ? "localhost" : cookie.Domain.TrimStart('.'));
+		manager.SetCookie(url, sb.ToString());
+		manager.Flush();
+	}
+
+	void ISupportsCookieManager.DeleteCookie(CoreWebView2Cookie cookie)
+	{
+		var manager = Android.Webkit.CookieManager.Instance;
+		var url = (cookie.IsSecure ? "https://" : "http://") + (string.IsNullOrEmpty(cookie.Domain) ? "localhost" : cookie.Domain.TrimStart('.'));
+		// Expire immediately.
+		manager.SetCookie(url, cookie.Name + "=; Max-Age=0; Path=" + (string.IsNullOrEmpty(cookie.Path) ? "/" : cookie.Path));
+		manager.Flush();
+	}
+
+	void ISupportsCookieManager.DeleteCookies(string name, string uri)
+	{
+		var manager = Android.Webkit.CookieManager.Instance;
+		var url = string.IsNullOrEmpty(uri) ? "http://localhost" : uri;
+		manager.SetCookie(url, name + "=; Max-Age=0; Path=/");
+		manager.Flush();
+	}
+
+	void ISupportsCookieManager.DeleteCookiesWithDomainAndPath(string name, string domain, string path)
+	{
+		var manager = Android.Webkit.CookieManager.Instance;
+		var url = "http://" + domain.TrimStart('.');
+		manager.SetCookie(url, name + "=; Max-Age=0; Path=" + (string.IsNullOrEmpty(path) ? "/" : path) + "; Domain=" + domain);
+		manager.Flush();
+	}
+
+	void ISupportsCookieManager.DeleteAllCookies()
+	{
+		Android.Webkit.CookieManager.Instance.RemoveAllCookies(null);
+		Android.Webkit.CookieManager.Instance.Flush();
+	}
+
+	private readonly System.Collections.Generic.Dictionary<string, string> _documentCreatedScripts = new();
+
+	Task<string> ISupportsDocumentCreatedScripts.AddScriptToExecuteOnDocumentCreatedAsync(string javaScript, CancellationToken ct)
+	{
+		var id = Guid.NewGuid().ToString();
+		_documentCreatedScripts[id] = javaScript;
+		return Task.FromResult(id);
+	}
+
+	void ISupportsDocumentCreatedScripts.RemoveScriptToExecuteOnDocumentCreated(string id) => _documentCreatedScripts.Remove(id);
+
+	internal void InjectDocumentCreatedScripts()
+	{
+		foreach (var script in _documentCreatedScripts.Values)
+		{
+			_webView.EvaluateJavascript(script, null);
+		}
+	}
+
+	public string UserAgent
+	{
+		get => _webView.Settings.UserAgentString;
+		set => _webView.Settings.UserAgentString = value;
+	}
+
+	bool ISupportsScriptEnabled.IsScriptEnabled
+	{
+		get => _webView.Settings.JavaScriptEnabled;
+		set => _webView.Settings.JavaScriptEnabled = value;
+	}
+
+	bool ISupportsZoomControl.IsZoomControlEnabled
+	{
+		get => _webView.Settings.BuiltInZoomControls;
+		set => _webView.Settings.BuiltInZoomControls = value;
+	}
+
 	private readonly Uri AndroidAssetBaseUri = new Uri("file:///android_asset/");
 
 	private readonly WebView _webView;

@@ -1,0 +1,52 @@
+﻿<Page
+    x:Class="UITests.Microsoft_UI_Xaml_Controls.WebView2Tests.WebView2_Print"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.WebView2Tests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Grid Padding="12" RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Grid.Row="0"
+            FontSize="18"
+            FontWeight="SemiBold"
+            Text="CoreWebView2.PrintToPdfStreamAsync / ShowPrintUIAsync" />
+
+        <TextBlock
+            Grid.Row="1"
+            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+            Text="PrintToPdfStream captures the page as PDF (Win32/iOS/X11). ShowPrintUI opens the platform print dialog. Android falls back to PrintManager; WebAssembly invokes window.print()."
+            TextWrapping="Wrap" />
+
+        <StackPanel
+            Grid.Row="2"
+            Orientation="Horizontal"
+            Spacing="6">
+            <Button Click="OnPrintPdfClick" Content="Print to PDF (save)" />
+            <Button Click="OnShowPrintClick" Content="Show Print UI" />
+        </StackPanel>
+
+        <TextBlock
+            x:Name="StatusText"
+            Grid.Row="3"
+            FontFamily="Consolas, Courier New, monospace"
+            TextWrapping="Wrap" />
+
+        <controls:WebView2
+            x:Name="WebView"
+            Grid.Row="4"
+            Source="https://platform.uno" />
+    </Grid>
+</Page>

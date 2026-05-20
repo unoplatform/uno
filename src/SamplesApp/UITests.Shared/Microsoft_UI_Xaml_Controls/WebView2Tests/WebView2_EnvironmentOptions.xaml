@@ -1,0 +1,87 @@
+﻿<Page
+    x:Class="UITests.Microsoft_UI_Xaml_Controls.WebView2Tests.WebView2_EnvironmentOptions"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.WebView2Tests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Grid Padding="12" RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Grid.Row="0"
+            FontSize="18"
+            FontWeight="SemiBold"
+            Text="CoreWebView2Environment / ControllerOptions" />
+
+        <TextBlock
+            Grid.Row="1"
+            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+            Text="Builds a custom environment and controller options, then initializes the WebView2 with them. Windows-only flags (InPrivate, profile, SSO) are honored by the native WebView2 runtime; other platforms accept the options but may ignore Windows-specific ones."
+            TextWrapping="Wrap" />
+
+        <Grid Grid.Row="2" ColumnSpacing="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBox
+                x:Name="LanguageInput"
+                Grid.Column="0"
+                PlaceholderText="Language (BCP47)"
+                Text="en-US" />
+            <TextBox
+                x:Name="UserDataInput"
+                Grid.Column="1"
+                PlaceholderText="User data folder (optional)" />
+        </Grid>
+
+        <Grid Grid.Row="3" ColumnSpacing="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBox
+                x:Name="ArgsInput"
+                Grid.Column="0"
+                PlaceholderText="Additional browser args" />
+            <TextBox
+                x:Name="ProfileInput"
+                Grid.Column="1"
+                PlaceholderText="Profile name" />
+        </Grid>
+
+        <StackPanel
+            Grid.Row="4"
+            Orientation="Horizontal"
+            Spacing="12">
+            <CheckBox x:Name="InPrivateToggle" Content="InPrivate mode" />
+            <CheckBox x:Name="SsoToggle" Content="Single Sign-On (Windows)" />
+        </StackPanel>
+
+        <StackPanel
+            Grid.Row="5"
+            Orientation="Horizontal"
+            Spacing="6">
+            <Button Click="OnApplyClick" Content="Apply (recreates env)" />
+            <TextBlock
+                x:Name="StatusText"
+                VerticalAlignment="Center"
+                FontFamily="Consolas, Courier New, monospace" />
+        </StackPanel>
+
+        <controls:WebView2 x:Name="WebView" Grid.Row="6" />
+    </Grid>
+</Page>

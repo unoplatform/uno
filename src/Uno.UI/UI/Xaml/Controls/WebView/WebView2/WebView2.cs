@@ -77,6 +77,27 @@ public partial class WebView2 : Control, IWebView
 			await CoreWebView2.EnsureNativeWebViewAsync();
 		});
 
+	/// <summary>
+	/// Initializes CoreWebView2 with a custom environment.
+	/// </summary>
+	public IAsyncAction EnsureCoreWebView2Async(CoreWebView2Environment environment) =>
+		EnsureCoreWebView2Async(environment, controllerOptions: null);
+
+	/// <summary>
+	/// Initializes CoreWebView2 with a custom environment and controller options.
+	/// </summary>
+	public IAsyncAction EnsureCoreWebView2Async(CoreWebView2Environment environment, CoreWebView2ControllerOptions? controllerOptions) =>
+		AsyncAction.FromTask(async ct =>
+		{
+			CoreWebView2.SetCustomEnvironment(environment, controllerOptions);
+			if (!_coreWebView2Initialized)
+			{
+				EnsureCoreWebView2();
+			}
+
+			await CoreWebView2.EnsureNativeWebViewAsync();
+		});
+
 	public IAsyncOperation<string?> ExecuteScriptAsync(string javascriptCode) =>
 		CoreWebView2.ExecuteScriptAsync(javascriptCode);
 

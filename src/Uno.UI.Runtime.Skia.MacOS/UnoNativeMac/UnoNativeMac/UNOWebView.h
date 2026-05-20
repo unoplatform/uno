@@ -66,6 +66,39 @@ void uno_webview_stop(WKWebView *webview);
 void uno_webview_execute_script(WKWebView *webview, NSInteger handle, const char *javascript);
 void uno_webview_invoke_script(WKWebView *webview, NSInteger handle, const char *javascript);
 
+// Settings.UserAgent
+const char* _Nullable uno_webview_get_user_agent(WKWebView *webview);
+void uno_webview_set_user_agent(WKWebView *webview, const char* _Nullable user_agent);
+
+// Settings.IsScriptEnabled
+bool uno_webview_get_javascript_enabled(WKWebView *webview);
+void uno_webview_set_javascript_enabled(WKWebView *webview, bool enabled);
+
+// PostWebMessageAsString / PostWebMessageAsJson
+void uno_webview_post_web_message(WKWebView *webview, const char* payload, bool is_json);
+
+// AddScriptToExecuteOnDocumentCreatedAsync / RemoveScriptToExecuteOnDocumentCreated
+// Returns a heap-allocated id string (caller frees via free()).
+const char* uno_webview_add_user_script(WKWebView *webview, const char* script);
+void uno_webview_remove_user_script(WKWebView *webview, const char* id);
+
+// ShowPrintUIAsync → returns 0 (succeeded), 1 (user-cancelled), 2 (other error)
+int uno_webview_show_print_ui(WKWebView *webview);
+
+// PrintToPdfStreamAsync (returns NSData bytes via out params; caller frees buffer with free())
+typedef void (*uno_webview_pdf_fn_ptr)(NSInteger /* handle */, const uint8_t* _Nullable /* bytes */, NSInteger /* length */, const char* _Nullable /* error */);
+void uno_set_webview_pdf_callback(uno_webview_pdf_fn_ptr fn_ptr);
+void uno_webview_print_to_pdf(WKWebView *webview, NSInteger handle);
+
+// Cookies — JSON-encoded payload exchange to keep marshalling simple.
+typedef void (*uno_webview_cookies_fn_ptr)(NSInteger /* handle */, const char* _Nullable /* json */, const char* _Nullable /* error */);
+void uno_set_webview_cookies_callback(uno_webview_cookies_fn_ptr fn_ptr);
+void uno_webview_get_cookies(WKWebView *webview, NSInteger handle, const char* _Nullable uri);
+// cookie_json: { name, value, domain, path, isSecure, isHttpOnly, expires } where expires is unix seconds (-1 for session)
+void uno_webview_set_cookie(WKWebView *webview, const char* cookie_json);
+void uno_webview_delete_cookies(WKWebView *webview, const char* name, const char* _Nullable domain, const char* _Nullable path);
+void uno_webview_delete_all_cookies(WKWebView *webview);
+
 // https://learn.microsoft.com/en-us/dotnet/api/microsoft.web.webview2.core.corewebview2weberrorstatus
 typedef NS_ENUM(uint32, CoreWebView2WebErrorStatus) {
     CoreWebView2WebErrorStatusUnknown = 0,
