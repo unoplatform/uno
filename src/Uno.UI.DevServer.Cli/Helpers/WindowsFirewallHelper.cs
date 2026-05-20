@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Runtime.Versioning;
 using Microsoft.Extensions.Logging;
 
@@ -25,13 +25,15 @@ internal static class WindowsFirewallHelper
 	// Set UNO_DEVSERVER_SKIP_FIREWALL_CHECK=1 to disable the check entirely.
 	// Useful for CI runners, GPO-managed machines, or any environment where
 	// elevation is not permitted or desired.
-	internal static bool IsOptedOut =>
-		string.Equals(
-			Environment.GetEnvironmentVariable("UNO_DEVSERVER_SKIP_FIREWALL_CHECK"),
-			"1", StringComparison.Ordinal) ||
-		string.Equals(
-			Environment.GetEnvironmentVariable("UNO_DEVSERVER_SKIP_FIREWALL_CHECK"),
-			"true", StringComparison.OrdinalIgnoreCase);
+	internal static bool IsOptedOut
+	{
+		get
+		{
+			var value = Environment.GetEnvironmentVariable("UNO_DEVSERVER_SKIP_FIREWALL_CHECK");
+			return string.Equals(value, "1", StringComparison.Ordinal)
+				|| string.Equals(value, "true", StringComparison.OrdinalIgnoreCase);
+		}
+	}
 
 	/// <summary>
 	/// Checks whether the DevServer inbound Allow rule already exists, and adds one
@@ -120,7 +122,17 @@ internal static class WindowsFirewallHelper
 
 	private static string? ResolveDotnetPath()
 	{
-		// The CLI itself runs inside dotnet.exe — its path is the most reliable source.
+		// DOTNET_HOST_PATH is set by the .NET muxer and points to the exact dotnet.exe
+		// that launched the current process — the most authoritative source.
+		var hostPath = Environment.GetEnvironmentVariable("DOTNET_HOST_PATH");
+		if (!string.IsNullOrWhiteSpace(hostPath)
+			&& hostPath.EndsWith("dotnet.exe", StringComparison.OrdinalIgnoreCase)
+			&& File.Exists(hostPath))
+		{
+			return hostPath;
+		}
+
+		// Fallback: the CLI itself runs inside dotnet.exe, so ProcessPath is reliable.
 		var processPath = Environment.ProcessPath;
 		if (processPath is not null
 			&& processPath.EndsWith("dotnet.exe", StringComparison.OrdinalIgnoreCase)
@@ -129,22 +141,13 @@ internal static class WindowsFirewallHelper
 			return processPath;
 		}
 
-		// Fallback: DOTNET_ROOT environment variable.
+		// Last fallback: DOTNET_ROOT set by the SDK installer.
+		// PATH scanning is intentionally omitted — user-writable PATH entries could
+		// cause us to whitelist an untrusted dotnet.exe via the UAC-elevated netsh call.
 		var dotnetRoot = Environment.GetEnvironmentVariable("DOTNET_ROOT");
 		if (!string.IsNullOrWhiteSpace(dotnetRoot))
 		{
 			var candidate = Path.Combine(dotnetRoot, "dotnet.exe");
-			if (File.Exists(candidate))
-			{
-				return candidate;
-			}
-		}
-
-		// Last resort: scan PATH.
-		var pathVar = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
-		foreach (var dir in pathVar.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries))
-		{
-			var candidate = Path.Combine(dir.Trim(), "dotnet.exe");
 			if (File.Exists(candidate))
 			{
 				return candidate;

@@ -1,10 +1,11 @@
-using AwesomeAssertions;
+﻿using AwesomeAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using Uno.UI.DevServer.Cli.Helpers;
 
 namespace Uno.UI.DevServer.Cli.Tests;
 
 [TestClass]
+[DoNotParallelize] // Tests mutate the process-wide environment; must not run concurrently.
 public class Given_WindowsFirewallHelper
 {
 	// -------------------------------------------------------------------------
