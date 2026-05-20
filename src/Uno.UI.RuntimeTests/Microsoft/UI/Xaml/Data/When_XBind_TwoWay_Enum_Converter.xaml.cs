@@ -28,9 +28,14 @@ public class XBindEnumToStringConverter : IValueConverter
 	{
 		LastConvertBackTargetType = targetType;
 
-		if (value is string s && targetType != null && targetType.IsEnum)
+		if (value is string s)
 		{
-			return Enum.Parse(targetType, s);
+			// Prefer the supplied targetType when it carries the enum type. That is the case for
+			// x:Bind on every platform, and for classic {Binding} on Uno. Native WinUI's classic
+			// {Binding} is late-bound and passes Object here, so fall back to the known enum type -
+			// a real converter is authored for a specific enum, so this mirrors real-world usage.
+			var enumType = targetType is { IsEnum: true } ? targetType : typeof(XBindTestEnum);
+			return Enum.Parse(enumType, s);
 		}
 
 		return value;
