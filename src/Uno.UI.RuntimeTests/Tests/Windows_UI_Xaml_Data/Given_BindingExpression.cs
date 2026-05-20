@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Combinatorial.MSTest;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
@@ -640,23 +641,24 @@ public class Given_BindingExpression
 	public async Task When_XBind_TwoWay_Enum_Converter_ConvertBack_Receives_Correct_TargetType()
 	{
 		var root = new When_XBind_TwoWay_Enum_Converter();
-		TestServices.WindowHelper.WindowContent = root;
-		await TestServices.WindowHelper.WaitForIdle();
+		await UITestHelper.Load(root);
 
 		// Verify initial forward conversion: enum -> string
 		Assert.AreEqual("Hello", root.tbEnum.Text, "Forward conversion should produce enum name string");
 
-		// Modify the TextBox to trigger ConvertBack. TextBox's x:Bind path on TextProperty
-		// waits for LostFocus by design (see TextBox.OnTextChanged), so explicitly call
-		// UpdateSource to push the new value through ConvertBack deterministically.
+		// x:Bind TwoWay on TextBox.Text commits the source on LostFocus, and compiled x:Bind
+		// bindings are not exposed via GetBindingExpression on WinUI (it returns null there).
+		// Drive ConvertBack through a real focus change instead, which behaves identically on
+		// Uno and native WinUI (same pattern as Given_TextBox.When_TwoWay_Text_Binding).
+		root.tbEnum.Focus(FocusState.Programmatic);
 		root.tbEnum.Text = "World";
-		await TestServices.WindowHelper.WaitForIdle();
-		root.tbEnum.GetBindingExpression(TextBox.TextProperty).UpdateSource();
+		root.dummyButton.Focus(FocusState.Programmatic);
 		await TestServices.WindowHelper.WaitForIdle();
 
-		// Assert: converter received typeof(XBindTestEnum), not null
+		// ConvertBack must receive the enum source type as targetType (issues #7174 / #21402).
+		// On WinUI the x:Bind compiler passes PathStep.ValueType; on Uno the fix passes XBindSourceType.
 		Assert.AreEqual(typeof(XBindTestEnum), root.Converter.LastConvertBackTargetType,
-			"ConvertBack should receive the enum type as targetType via XBindSourceType");
+			"ConvertBack should receive the enum type as targetType");
 		Assert.AreEqual(XBindTestEnum.World, root.EnumValue,
 			"Backward conversion should correctly parse the string to the enum value");
 	}
@@ -665,12 +667,13 @@ public class Given_BindingExpression
 	[RunsOnUIThread]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/7174")]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21402")]
-	public async Task When_XamlReader_Binding_TwoWay_Enum_Converter_ConvertBack_Receives_Correct_TargetType()
+	public async Task When_XamlReader_Binding_TwoWay_Enum_Converter_RoundTrips()
 	{
-		// Regression guard for the {Binding} workaround documented in #21402:
-		// XamlReader-loaded XAML with TwoWay {Binding} + Converter on an enum
-		// source property must propagate the enum type to ConvertBack via the
-		// binding path. This is the path the issue's workaround relies on.
+		// Regression guard for the {Binding} workaround documented in #21402: XamlReader-loaded
+		// XAML with a TwoWay {Binding} + Converter on an enum source must round-trip correctly.
+		// ConvertBack's targetType differs by platform here - native WinUI's classic {Binding} is
+		// late-bound and passes Object, while Uno passes the reflected enum type - so this test
+		// asserts the functional outcome (the workaround's guarantee), not the targetType.
 		var xaml = """
 			<Page xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 				  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -691,22 +694,26 @@ public class Given_BindingExpression
 		await TestServices.WindowHelper.WaitForIdle();
 
 		var tbEnum = (TextBox)page.FindName("tbEnum");
-		var converter = (XBindEnumToStringConverter)page.Resources["EnumConverter"];
 
 		Assert.AreEqual("Hello", tbEnum.Text, "Forward conversion should produce enum name string");
 
+		// Classic {Binding} exposes a BindingExpression on both Uno and WinUI, so push the new
+		// value through ConvertBack deterministically via UpdateSource.
 		tbEnum.Text = "World";
 		await TestServices.WindowHelper.WaitForIdle();
 		tbEnum.GetBindingExpression(TextBox.TextProperty).UpdateSource();
 		await TestServices.WindowHelper.WaitForIdle();
 
-		Assert.AreEqual(typeof(XBindTestEnum), converter.LastConvertBackTargetType,
-			"ConvertBack should receive the enum type as targetType for plain {Binding}");
 		Assert.AreEqual(XBindTestEnum.World, vm.EnumValue,
 			"Backward conversion should correctly parse the string to the enum value");
 	}
 }
 
+// Plain INotifyPropertyChanged view-model, representative of the {Binding} workaround for the
+// x:Bind enum issues. Note the platform difference exercised by the test below: native WinUI's
+// classic {Binding} is late-bound and reports ConvertBack's targetType as Object, whereas Uno
+// resolves the reflected enum type. The converter copes with both, so the test asserts the
+// functional round-trip (the workaround's actual guarantee).
 public sealed class XamlReaderEnumBindingTestViewModel : INotifyPropertyChanged
 {
 	private XBindTestEnum _enumValue = XBindTestEnum.Hello;
