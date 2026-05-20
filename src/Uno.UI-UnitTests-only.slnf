@@ -23,6 +23,7 @@
       "Uno.UI.DevServer.Cli.Tests\\Uno.UI.DevServer.Cli.Tests.csproj",
       "Uno.UI.RemoteControl.DevServer.Tests\\Uno.UI.RemoteControl.DevServer.Tests.csproj",
       "Uno.UI.RemoteControl.DevServer.Tests\\Fixtures\\AddInWithCrossMajorVersionRefs\\AddInWithCrossMajorVersionRefs.csproj",
+      "Uno.UI.RemoteControl.DevServer.Tests\\Fixtures\\AddInWithDiServiceRegistration\\AddInWithDiServiceRegistration.csproj",
       "Uno.UI.Tests.ViewLibraryProps\\Uno.UI.Tests.ViewLibraryProps.csproj",
       "Uno.UI.Tests.ViewLibrary\\Uno.UI.Tests.ViewLibrary.csproj",
       "Uno.UI.Tests\\Uno.UI.Unit.Tests.csproj",
