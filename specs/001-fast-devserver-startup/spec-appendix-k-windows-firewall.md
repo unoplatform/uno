@@ -63,7 +63,7 @@ The DevServer CLI (`uno-devserver start`) is the single launch point for all IDE
 correct and only location for the fix.
 
 Before spawning the DevServer host, `StartCommandHandler.RunAsync()` calls
-`WindowsFirewallHelper.EnsurePrivateRuleAsync()`.  This helper:
+`WindowsFirewallHelper.EnsureFirewallRuleAsync()`.  This helper:
 
 1. Resolves the path of the running `dotnet.exe`.
 2. Checks whether a Private-profile inbound Allow rule already exists for that path.
@@ -94,40 +94,44 @@ NuGet package version.  It remains valid across SDK and package upgrades.
 
 | File | Change |
 |------|--------|
-| `src/Uno.UI.DevServer.Cli/StartCommandHandler.cs` | Call `WindowsFirewallHelper.EnsurePrivateRuleAsync()` before host spawn on Windows |
+| `src/Uno.UI.DevServer.Cli/StartCommandHandler.cs` | Call `WindowsFirewallHelper.EnsureFirewallRuleAsync()` before host spawn on Windows |
 | `src/Uno.UI.DevServer.Cli/Helpers/WindowsFirewallHelper.cs` | New file — Windows-only helper (`[SupportedOSPlatform("windows")]`) |
 
 ### 2.4 `WindowsFirewallHelper` algorithm
 
 ```
-1. Resolve dotnet.exe path
+1. Opt-out check
+   If UNO_DEVSERVER_SKIP_FIREWALL_CHECK=1 (or "true", case-insensitive) → log debug, return.
+   Useful for CI runners, GPO-managed machines, or any environment where elevation
+   is not permitted.
+
+2. Resolve dotnet.exe path
    a. Environment.ProcessPath   (CLI itself runs under dotnet.exe — most reliable)
    b. %DOTNET_ROOT%\dotnet.exe  (fallback)
    c. Scan PATH                 (last resort)
    If no path resolved → log debug, return (skip check).
 
-2. Check for existing Private rule
-   Run: netsh advfirewall firewall show rule name=all dir=in verbose
-   Parse output into rule blocks (blank-line-separated).
-   A rule satisfies the check if:
-     - its Program line contains dotnet.exe path (case-insensitive)
-     - its Profiles line contains "Private" or "Any"
-     - its Action is "Allow"
-   If satisfied → return (no UAC, no log noise).
+3. Check for existing rule by name (language-agnostic exit-code check)
+   Run: netsh advfirewall firewall show rule name="Uno DevServer (.NET Host)" dir=in
+   Timeout: 10 s.
+   Exit 0  → rule found → return (no UAC, no log noise).
+   Non-0   → rule absent → continue.
+   (No output parsing — avoids any dependency on localized netsh field labels.)
 
-3. Add the rule (rule absent)
-   Log: "Adding Windows Firewall rule — a UAC prompt will appear."
+4. Add the rule (rule absent)
+   Log informational: "A UAC prompt will appear — this happens once per machine."
    Run elevated: netsh advfirewall firewall add rule
                    name="Uno DevServer (.NET Host)"
                    dir=in action=allow
                    program="<dotnet.exe path>"
                    enable=yes profile=private,domain
      via Process.Start { Verb="runas", UseShellExecute=true }
+   Timeout: 60 s (allows time for UAC interaction).
    Exit 0  → log success.
    Non-0 or exception → log warning + manual PowerShell command, return.
 
-4. Graceful degradation (UAC declined or netsh failed)
-   DevServer continues to start.
+5. Graceful degradation (UAC declined or netsh failed)
+   DevServer continues to start normally.
    Warning logged with manual workaround:
      New-NetFirewallRule -DisplayName "Uno DevServer (.NET Host)" `
        -Direction Inbound -Action Allow `
@@ -170,23 +174,19 @@ NuGet package version.  It remains valid across SDK and package upgrades.
 
 ### Automated tests
 
-`ParseHasRequiredRule` unit tests in `Given_WindowsFirewallHelper.cs` (pure function,
-no process spawning):
+`Given_WindowsFirewallHelper.cs` — pure-logic tests (no process spawning):
 
-| Scenario | Expected |
-|----------|----------|
-| `Profiles: Public` only | `false` — Public already covered by SDK rule |
-| `Profiles: Private` | `true` |
-| `Profiles: Domain` | `true` |
-| `Profiles: Private,Domain` | `true` |
-| `Profiles: Any` | `true` |
-| `Profiles: Public`, `LocalIP: Any`, `RemoteIP: Any` | `false` — "Any" in other fields must not match |
-| Rule for a different program | `false` |
-| `Enabled: No` | `false` — disabled rule must not satisfy the check |
-| `Action: Block` | `false` |
-| Empty output | `false` |
-| Multiple rules (Public-only + Private,Domain) | `true` |
-| Path comparison case-insensitive | `true` |
+| Test | Scenario | Expected |
+|------|----------|----------|
+| `IsOptedOut_WhenSetToOne_ReturnsTrue` | `UNO_DEVSERVER_SKIP_FIREWALL_CHECK=1` | `true` |
+| `IsOptedOut_WhenSetToTrueCaseInsensitive_ReturnsTrue` | `UNO_DEVSERVER_SKIP_FIREWALL_CHECK=TRUE` | `true` |
+| `IsOptedOut_WhenSetToZero_ReturnsFalse` | `UNO_DEVSERVER_SKIP_FIREWALL_CHECK=0` | `false` |
+| `IsOptedOut_WhenAbsent_ReturnsFalse` | env var not set | `false` |
+| `EnsureFirewallRuleAsync_WhenOptedOut_ReturnsWithoutError` | `SKIP=1`, no netsh available | completes without throwing |
+
+The netsh calls themselves (`RuleExistsAsync`, `AddFirewallRuleAsync`) interact with
+the OS process layer and are validated through manual QA (see below) and the CI
+Windows runner when the DevServer is exercised end-to-end.
 
 ### Manual QA
 
