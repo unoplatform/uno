@@ -1167,54 +1167,5 @@ public class Given_AlcContentHost
 		return assemblyPath;
 	}
 
-	/// <summary>
-	/// Custom AssemblyLoadContext for testing ALC scenarios.
-	/// Loads all assemblies from the secondary app directory except Uno assemblies,
-	/// which are shared with the default ALC.
-	/// </summary>
-	private class TestAssemblyLoadContext : System.Runtime.Loader.AssemblyLoadContext
-	{
-		private readonly string _basePath;
-
-		public TestAssemblyLoadContext(string basePath) : base(name: "TestALC", isCollectible: true)
-		{
-			_basePath = basePath;
-		}
-
-		protected override Assembly? Load(AssemblyName assemblyName)
-		{
-			this.Log().Debug($"Searching assembly: {assemblyName}");
-
-			var name = assemblyName.Name;
-
-			// Let Uno assemblies be loaded from the default ALC (shared)
-			if (name != null && (
-				name.StartsWith("Uno.", StringComparison.OrdinalIgnoreCase) ||
-				name.Equals("Uno", StringComparison.OrdinalIgnoreCase) ||
-				name.StartsWith("Microsoft.UI.", StringComparison.OrdinalIgnoreCase) ||
-				name.StartsWith("Windows.", StringComparison.OrdinalIgnoreCase) ||
-				name.StartsWith("Microsoft.Extensions.", StringComparison.OrdinalIgnoreCase) ||
-				name.StartsWith("SkiaSharp", StringComparison.OrdinalIgnoreCase) ||
-				name.StartsWith("HarfBuzzSharp", StringComparison.OrdinalIgnoreCase))
-			)
-			{
-				this.Log().Debug($"Assembly skipped: {assemblyName}");
-				return null; // Use default ALC
-			}
-
-			// Try to load from the secondary app's directory
-			var assemblyPath = Path.Combine(_basePath, name + ".dll");
-			if (File.Exists(assemblyPath))
-			{
-				this.Log().Debug($"Loading assembly from: {assemblyPath}");
-				return LoadFromAssemblyPath(assemblyPath);
-			}
-
-			this.Log().Debug($"Assembly not found: {assemblyName}");
-
-			// Fall back to default resolution
-			return null;
-		}
-	}
 }
 #endif
