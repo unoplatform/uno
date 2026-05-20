@@ -401,6 +401,19 @@ Here's a summary of the Hot Reload connection statuses and their corresponding i
 
 - If Hot Reload cannot connect to the Dev Server, run `uno-devserver disco` to verify your environment. Ensure **devServerHostPath** and **devServerPackageVersion** are resolved and match your Uno SDK version. See [Diagnostics (disco)](xref:Uno.Features.DevServerDisco) for a full reference.
 
+- **Physical Android or iOS device cannot connect (Windows):** if Hot Reload works on the emulator but not on a physical device connected via Wi-Fi, the Windows Firewall may be blocking inbound connections.
+  Starting with Uno SDK 6.7, the Dev Server CLI automatically adds the required firewall rule the first time it starts — you will see a UAC prompt to approve it. If the prompt was dismissed or the rule is missing, add it manually in an elevated PowerShell:
+
+  ```powershell
+  New-NetFirewallRule `
+    -DisplayName "Uno DevServer (.NET Host)" `
+    -Direction Inbound -Action Allow `
+    -Program (Get-Command dotnet).Source `
+    -Profile @("Private", "Domain")
+  ```
+
+  For Group Policy deployment, fixed-port configurations, proxy environments, or other constrained corporate setups, see the [Dev Server Enterprise Network Configuration Guide](xref:Uno.Features.DevServer.EnterpriseNetwork).
+
 - Observe the application logs, you should see diagnostics messages in the app when a XAML file is reloaded.
 - WinAppSDK on Windows-specific issues
   - Grid Succinct syntax [is not supported](https://github.com/microsoft/microsoft-ui-xaml/issues/7043#issuecomment-1120061686)
