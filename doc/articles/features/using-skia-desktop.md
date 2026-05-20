@@ -120,6 +120,7 @@ The X11 support uses DBus for various interactions with the system, such as file
 ## .NET Native AOT support
 
 Building an Uno Platform Skia Desktop app with .NET (7+) Native AOT requires Uno Platform 4.7 (or later).
+[Uno Platform 6.6 improves support for .NET Native AOT](native-aot.md).
 
 To build an app with this feature enabled:
 
@@ -131,7 +132,7 @@ To build an app with this feature enabled:
    </PropertyGroup>
    ```
 
-1. Add the following items in your `.csproj`:
+1. When using Uno Platform before Uno Platform 6.6, add the following items in your `.csproj`:
 
    ```xml
    <ItemGroup>
