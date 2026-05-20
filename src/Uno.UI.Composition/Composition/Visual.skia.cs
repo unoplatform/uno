@@ -46,6 +46,93 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private IntPtr _childrenPicture;
 	private int _framesSinceSubtreeNotChanged;
 
+	// Cached blurred shadow output. When a Visual has a ShadowState we render
+	// the subtree picture once through the shadow image filter and snapshot
+	// the result here; subsequent renders draw the cached image (via 9-slice to
+	// fit the current Visual size) instead of running the blur each frame.
+	private SKImage? _shadowOnlyImage;
+	private int _shadowOnlyImageBlurMargin;
+	private Vector2 _shadowOnlyImageSize;        // Cached content size (bucketed up to ShadowCacheGrowStride).
+	private ShadowState? _shadowOnlyImageStateKey;
+	// Session opacity baked into the cached image — invalidate if it changes.
+	private float _shadowOnlyImageOpacity;
+
+	// Coarse stride applied to the cached content size so that small drag/scroll-
+	// induced size changes don't force a rebuild. With a 128 px stride a Visual
+	// that grows 410→450→500→550→600 px hits buckets {512, 640} = 2 rebuilds,
+	// instead of one per pixel.
+	private const int ShadowCacheGrowStride = 128;
+
+	// Refuse cache allocations beyond this dimension in either axis; fall back
+	// to the unbatched per-frame path. Protects against pathological Visual
+	// sizes producing multi-megabyte surfaces.
+	private const int MaxShadowCacheDim = 4096;
+
+	// Bounded pool of reusable SKSurfaces keyed by exact (width, height). Avoids
+	// per-build pixel-buffer allocations when the same cache size is rebuilt.
+	private readonly struct PooledShadowSurface
+	{
+		public PooledShadowSurface(SKSurface surface, int width, int height)
+		{
+			Surface = surface;
+			Width = width;
+			Height = height;
+		}
+		public SKSurface Surface { get; }
+		public int Width { get; }
+		public int Height { get; }
+	}
+	private static readonly List<PooledShadowSurface> s_shadowSurfacePool = new();
+	private const int MaxPooledShadowSurfaces = 24;
+
+	private static SKSurface? RentShadowSurface(int width, int height)
+	{
+		lock (s_shadowSurfacePool)
+		{
+			for (var i = 0; i < s_shadowSurfacePool.Count; i++)
+			{
+				var entry = s_shadowSurfacePool[i];
+				if (entry.Width == width && entry.Height == height)
+				{
+					s_shadowSurfacePool.RemoveAt(i);
+					return entry.Surface;
+				}
+			}
+		}
+
+		try
+		{
+			return SKSurface.Create(new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Premul));
+		}
+		catch
+		{
+			return null;
+		}
+	}
+
+	private static void ReturnShadowSurface(SKSurface surface, int width, int height)
+	{
+		lock (s_shadowSurfacePool)
+		{
+			if (s_shadowSurfacePool.Count < MaxPooledShadowSurfaces)
+			{
+				s_shadowSurfacePool.Add(new PooledShadowSurface(surface, width, height));
+				return;
+			}
+		}
+		surface.Dispose();
+	}
+
+	internal void DisposeShadowCache()
+	{
+		if (_shadowOnlyImage is not null)
+		{
+			_shadowOnlyImage.Dispose();
+			_shadowOnlyImage = null;
+			_shadowOnlyImageStateKey = null;
+		}
+	}
+
 	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty | VisualFlags.ChildrenSKPictureInvalid;
 
 	private const int SK_MaxS32FitsInFloat = 2147483520;
@@ -380,155 +467,337 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 			else
 			{
-				var recorder = new SKPictureRecorder();
-				var recordingCanvas = recorder.BeginRecording(InfiniteClipRect);
-				// child.Render will reapply the total transform matrix, so we need to invert ours.
-				Matrix4x4.Invert(TotalMatrix, out var rootTransform);
-				_factory.CreateInstance(this, recordingCanvas, ref rootTransform, session.Opacity, out var childSession);
-				using (childSession)
-				{
-					PaintStep(this, childSession);
-					PostPaintingClipStep(this, recordingCanvas);
-					RenderChildrenStep(this, childSession, applyChildOptimization);
-				}
-
-				unsafe
-				{
-					var childrenPicture = UnoSkiaApi.sk_picture_recorder_end_recording(recorder.Handle);
-
-					UnoSkiaApi.sk_canvas_draw_picture(canvas.Handle, childrenPicture, null, ShadowState.ShadowOnlyPaint.Handle);
-					UnoSkiaApi.sk_canvas_draw_picture(canvas.Handle, childrenPicture, null, IntPtr.Zero);
-
-					UnoSkiaApi.sk_refcnt_safe_unref(childrenPicture);
-				}
+				RenderWithShadowCache(in session, canvas, applyChildOptimization);
 			}
 		}
+	}
 
-		static void PaintStep(Visual visual, in PaintingSession session)
-		{
-			// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
-			// be specific to that visual and should not affect the rendering of any other visual.
+	private static void PaintStep(Visual visual, in PaintingSession session)
+	{
+		// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
+		// be specific to that visual and should not affect the rendering of any other visual.
 #if DEBUG
-			var saveCount = session.Canvas.SaveCount;
+		var saveCount = session.Canvas.SaveCount;
 #endif
-			if (visual.RequiresRepaintOnEveryFrame)
+		if (visual.RequiresRepaintOnEveryFrame)
+		{
+			// why bother with a recorder when it's going to get repainted next frame? just paint directly
+			visual.Paint(session);
+		}
+		else
+		{
+			if ((visual._flags & VisualFlags.PaintDirty) != 0)
 			{
-				// why bother with a recorder when it's going to get repainted next frame? just paint directly
-				visual.Paint(session);
-			}
-			else
-			{
-				if ((visual._flags & VisualFlags.PaintDirty) != 0)
-				{
-					visual._flags &= ~VisualFlags.PaintDirty;
+				visual._flags &= ~VisualFlags.PaintDirty;
 
-					var recordingCanvas = _recorder.BeginRecording(InfiniteClipRect);
-					_factory.CreateInstance(visual, recordingCanvas, ref session.RootTransform, session.Opacity, out var recorderSession);
-					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
-					visual.Paint(in recorderSession);
+				var recordingCanvas = _recorder.BeginRecording(InfiniteClipRect);
+				_factory.CreateInstance(visual, recordingCanvas, ref session.RootTransform, session.Opacity, out var recorderSession);
+				// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
+				visual.Paint(in recorderSession);
 
-					var picture = UnoSkiaApi.sk_picture_recorder_end_recording(_recorder.Handle);
-
-					if (visual._picture != IntPtr.Zero)
-					{
-						UnoSkiaApi.sk_refcnt_safe_unref(visual._picture);
-					}
-
-					visual._picture = picture;
-				}
+				var picture = UnoSkiaApi.sk_picture_recorder_end_recording(_recorder.Handle);
 
 				if (visual._picture != IntPtr.Zero)
 				{
-					unsafe
-					{
-						UnoSkiaApi.sk_canvas_draw_picture(session.Canvas.Handle, visual._picture, null, IntPtr.Zero);
-					}
+					UnoSkiaApi.sk_refcnt_safe_unref(visual._picture);
 				}
-			}
-#if DEBUG
-			Debug.Assert(saveCount == session.Canvas.SaveCount);
-#endif
-		}
 
-		static void PostPaintingClipStep(Visual visual, SKCanvas canvas)
-		{
-#if DEBUG
-			canvas.Save();
-			if (visual.GetPostPaintingClipping() is { } postClip)
-			{
-				canvas.ClipPath(postClip, antialias: true);
+				visual._picture = picture;
 			}
 
-			var nonOptimizedClip = (canvas.DeviceClipBounds, canvas.IsClipRect);
-			canvas.Restore();
-#endif
-			visual.ApplyPostPaintingClipping(canvas);
-#if DEBUG
-			Debug.Assert(nonOptimizedClip.IsClipRect == canvas.IsClipRect && nonOptimizedClip.DeviceClipBounds == canvas.DeviceClipBounds);
-#endif
-		}
-
-		static void RenderChildrenStep(Visual visual, PaintingSession session, bool applyChildOptimization)
-		{
-			if (visual._childrenPicture != IntPtr.Zero)
+			if (visual._picture != IntPtr.Zero)
 			{
 				unsafe
 				{
-					UnoSkiaApi.sk_canvas_draw_picture(session.Canvas.Handle, visual._childrenPicture, null, IntPtr.Zero);
+					UnoSkiaApi.sk_canvas_draw_picture(session.Canvas.Handle, visual._picture, null, IntPtr.Zero);
 				}
 			}
-			else if (!visual._enablePictureCollapsingOptimization
-					 || visual._framesSinceSubtreeNotChanged < visual._pictureCollapsingOptimizationFrameThreshold
-					 || !applyChildOptimization
-					 || visual.GetSubTreeVisualCount() < visual._pictureCollapsingOptimizationVisualCountThreshold)
+		}
+#if DEBUG
+		Debug.Assert(saveCount == session.Canvas.SaveCount);
+#endif
+	}
+
+	private static void PostPaintingClipStep(Visual visual, SKCanvas canvas)
+	{
+#if DEBUG
+		canvas.Save();
+		if (visual.GetPostPaintingClipping() is { } postClip)
+		{
+			canvas.ClipPath(postClip, antialias: true);
+		}
+
+		var nonOptimizedClip = (canvas.DeviceClipBounds, canvas.IsClipRect);
+		canvas.Restore();
+#endif
+		visual.ApplyPostPaintingClipping(canvas);
+#if DEBUG
+		Debug.Assert(nonOptimizedClip.IsClipRect == canvas.IsClipRect && nonOptimizedClip.DeviceClipBounds == canvas.DeviceClipBounds);
+#endif
+	}
+
+	private static void RenderChildrenStep(Visual visual, PaintingSession session, bool applyChildOptimization)
+	{
+		if (visual._childrenPicture != IntPtr.Zero)
+		{
+			unsafe
+			{
+				UnoSkiaApi.sk_canvas_draw_picture(session.Canvas.Handle, visual._childrenPicture, null, IntPtr.Zero);
+			}
+		}
+		else if (!visual._enablePictureCollapsingOptimization
+				 || visual._framesSinceSubtreeNotChanged < visual._pictureCollapsingOptimizationFrameThreshold
+				 || !applyChildOptimization
+				 || visual.GetSubTreeVisualCount() < visual._pictureCollapsingOptimizationVisualCountThreshold)
+		{
+			foreach (var child in visual.GetChildrenInRenderOrder())
+			{
+				child.Render(in session, applyChildOptimization);
+			}
+		}
+		else
+		{
+			var recorder = new SKPictureRecorder();
+			var recordingCanvas = recorder.BeginRecording(InfiniteClipRect);
+			// child.Render will reapply the total transform matrix, so we need to invert ours.
+			Matrix4x4.Invert(visual.TotalMatrix, out var rootTransform);
+			_factory.CreateInstance(visual, recordingCanvas, ref rootTransform, session.Opacity, out var childSession);
+			using (childSession)
 			{
 				foreach (var child in visual.GetChildrenInRenderOrder())
 				{
-					child.Render(in session, applyChildOptimization);
+					child.Render(in childSession, applyChildOptimization: false);
 				}
+			}
+
+			var picture = IntPtr.Zero;
+
+			unsafe
+			{
+				picture = UnoSkiaApi.sk_picture_recorder_end_recording(recorder.Handle);
+				UnoSkiaApi.sk_canvas_draw_picture(session.Canvas.Handle, picture, null, IntPtr.Zero);
+			}
+
+			// The visual can be set on a ChildrenSKPictureInvalid path after the render has started.
+			// In such case, we should not cache this picture. Not only it is outdated, it will also lead to a corrupted state,
+			// where subtree rendering is skipped with the cached picture,
+			// and its descendant can't invalidate the cached picture since they area already on a ChildrenSKPictureInvalid path.
+			if ((visual._flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
+			{
+				if (visual._childrenPicture != IntPtr.Zero)
+				{
+					UnoSkiaApi.sk_refcnt_safe_unref(visual._childrenPicture);
+				}
+
+				visual._childrenPicture = picture;
 			}
 			else
 			{
-				var recorder = new SKPictureRecorder();
-				var recordingCanvas = recorder.BeginRecording(InfiniteClipRect);
-				// child.Render will reapply the total transform matrix, so we need to invert ours.
-				Matrix4x4.Invert(visual.TotalMatrix, out var rootTransform);
-				_factory.CreateInstance(visual, recordingCanvas, ref rootTransform, session.Opacity, out var childSession);
-				using (childSession)
-				{
-					foreach (var child in visual.GetChildrenInRenderOrder())
-					{
-						child.Render(in childSession, applyChildOptimization: false);
-					}
-				}
-
-				var picture = IntPtr.Zero;
-
-				unsafe
-				{
-					picture = UnoSkiaApi.sk_picture_recorder_end_recording(recorder.Handle);
-					UnoSkiaApi.sk_canvas_draw_picture(session.Canvas.Handle, picture, null, IntPtr.Zero);
-				}
-
-				// The visual can be set on a ChildrenSKPictureInvalid path after the render has started.
-				// In such case, we should not cache this picture. Not only it is outdated, it will also lead to a corrupted state,
-				// where subtree rendering is skipped with the cached picture,
-				// and its descendant can't invalidate the cached picture since they area already on a ChildrenSKPictureInvalid path.
-				if ((visual._flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
-				{
-					if (visual._childrenPicture != IntPtr.Zero)
-					{
-						UnoSkiaApi.sk_refcnt_safe_unref(visual._childrenPicture);
-					}
-
-					visual._childrenPicture = picture;
-				}
-				else
-				{
-					UnoSkiaApi.sk_refcnt_safe_unref(picture);
-				}
+				UnoSkiaApi.sk_refcnt_safe_unref(picture);
 			}
 		}
+	}
+
+	// Cached-shadow render path. Renders the subtree picture once through the
+	// blur image filter into a pooled SKSurface, snapshots the result as an
+	// SKImage (keyed on the ShadowState reference and the bucketed Visual
+	// size), and reuses that image on subsequent renders. Size changes within
+	// the cached dimensions are handled via 9-slice scaling instead of
+	// rebuilding; growth past the cached size rebuilds at the next stride
+	// bucket. Mirrors WinUI's own SpriteVisual+NineGrid optimization for
+	// ThemeShadow.
+	private void RenderWithShadowCache(in PaintingSession session, SKCanvas canvas, bool applyChildOptimization)
+	{
+		var shadowState = ShadowState!;
+		var sigma = Math.Max(shadowState.SigmaX, shadowState.SigmaY);
+		var blurMargin = (int)Math.Ceiling(sigma * 3
+			+ Math.Max(Math.Abs(shadowState.Dx), Math.Abs(shadowState.Dy))
+			+ 4);
+
+		var actualW = Math.Max(1, (int)Math.Ceiling(Size.X));
+		var actualH = Math.Max(1, (int)Math.Ceiling(Size.Y));
+
+		// 9-slice only needs cachedContentW/H >= 1 so the inner stretch region
+		// is non-empty — the blur margin is added separately when computing
+		// imgW/imgH below. The previous floor of `2*blurMargin + 8` double-
+		// counted the margin and inflated cache memory for small visuals.
+		const int minCachedContentW = 1;
+		const int minCachedContentH = 1;
+
+		var cachedContentW = (int)_shadowOnlyImageSize.X;
+		var cachedContentH = (int)_shadowOnlyImageSize.Y;
+
+		var cacheValid =
+			_shadowOnlyImage is not null
+			&& ReferenceEquals(_shadowOnlyImageStateKey, shadowState)
+			&& _shadowOnlyImageBlurMargin == blurMargin
+			&& cachedContentW >= actualW
+			&& cachedContentH >= actualH
+			&& _shadowOnlyImageOpacity == session.Opacity;
+
+		if (!cacheValid)
+		{
+			DisposeShadowCache();
+
+			static int RoundUpToStride(int v) => ((v + ShadowCacheGrowStride - 1) / ShadowCacheGrowStride) * ShadowCacheGrowStride;
+
+			var cacheW = Math.Max(RoundUpToStride(actualW), minCachedContentW);
+			var cacheH = Math.Max(RoundUpToStride(actualH), minCachedContentH);
+			var imgW = cacheW + 2 * blurMargin;
+			var imgH = cacheH + 2 * blurMargin;
+
+			if (imgW > MaxShadowCacheDim || imgH > MaxShadowCacheDim)
+			{
+				// Too large to cache reasonably; fall back to per-frame blur draw.
+				RenderShadowUncached(in session, canvas, applyChildOptimization);
+				return;
+			}
+
+			using var recorder = new SKPictureRecorder();
+			var recordingCanvas = recorder.BeginRecording(InfiniteClipRect);
+			// child.Render will reapply the total transform matrix, so we need
+			// to invert ours.
+			Matrix4x4.Invert(TotalMatrix, out var rootTransform);
+			_factory.CreateInstance(this, recordingCanvas, ref rootTransform, session.Opacity, out var childSession);
+			using (childSession)
+			{
+				PaintStep(this, childSession);
+				PostPaintingClipStep(this, recordingCanvas);
+				RenderChildrenStep(this, childSession, applyChildOptimization);
+			}
+			using var picture = recorder.EndRecording();
+
+			var surface = RentShadowSurface(imgW, imgH);
+			if (surface is null)
+			{
+				// Surface allocation failed; fall back to per-frame blur draw on
+				// the just-recorded picture.
+				canvas.DrawPicture(picture, shadowState.ShadowOnlyPaint);
+				canvas.DrawPicture(picture);
+				return;
+			}
+
+			var surfaceCanvas = surface.Canvas;
+			surfaceCanvas.ResetMatrix();
+			surfaceCanvas.Clear(SKColors.Transparent);
+			surfaceCanvas.Translate(blurMargin, blurMargin);
+			// Single blur image-filter pass per cache entry — the work we are
+			// trying to avoid running every frame in the prior implementation.
+			surfaceCanvas.DrawPicture(picture, shadowState.ShadowOnlyPaint);
+
+			_shadowOnlyImage = surface.Snapshot();
+			// Skia's snapshot is copy-on-write; the next time the surface is
+			// drawn into, the image's pixels are detached, so it's safe to
+			// return the surface to the pool now.
+			ReturnShadowSurface(surface, imgW, imgH);
+
+			_shadowOnlyImageBlurMargin = blurMargin;
+			_shadowOnlyImageSize = new Vector2(cacheW, cacheH);
+			_shadowOnlyImageStateKey = shadowState;
+			_shadowOnlyImageOpacity = session.Opacity;
+			cachedContentW = cacheW;
+			cachedContentH = cacheH;
+
+			// Freshly built — draw cached shadow + the just-recorded content
+			// picture (avoids re-rendering the subtree for the content layer).
+			DrawShadowNineSlice(canvas, _shadowOnlyImage, blurMargin, cachedContentW, cachedContentH, actualW, actualH);
+			canvas.DrawPicture(picture);
+		}
+		else
+		{
+			DrawShadowNineSlice(canvas, _shadowOnlyImage!, _shadowOnlyImageBlurMargin, cachedContentW, cachedContentH, actualW, actualH);
+
+			// Render content directly on the outer canvas (no recording wrapper).
+			PaintStep(this, session);
+			PostPaintingClipStep(this, canvas);
+			RenderChildrenStep(this, session, applyChildOptimization);
+		}
+	}
+
+	// Pre-cache fallback: record subtree and apply the blur image filter at
+	// draw time. Used when the cached image bounds would exceed
+	// MaxShadowCacheDim (rare).
+	private void RenderShadowUncached(in PaintingSession session, SKCanvas canvas, bool applyChildOptimization)
+	{
+		using var recorder = new SKPictureRecorder();
+		var recordingCanvas = recorder.BeginRecording(InfiniteClipRect);
+		Matrix4x4.Invert(TotalMatrix, out var rootTransform);
+		_factory.CreateInstance(this, recordingCanvas, ref rootTransform, session.Opacity, out var childSession);
+		using (childSession)
+		{
+			PaintStep(this, childSession);
+			PostPaintingClipStep(this, recordingCanvas);
+			RenderChildrenStep(this, childSession, applyChildOptimization);
+		}
+		using var picture = recorder.EndRecording();
+
+		canvas.DrawPicture(picture, ShadowState!.ShadowOnlyPaint);
+		canvas.DrawPicture(picture);
+	}
+
+	// Draws the cached blurred shadow image into the outer canvas using
+	// 9-slice scaling: the four corner regions stay 1:1 (preserving blur
+	// shape), the four edges stretch along one axis, and the middle
+	// stretches both ways. The cached image is sized
+	// (cachedContentW + 2*blurMargin) × (cachedContentH + 2*blurMargin),
+	// laid out so the visual's local origin maps to pixel
+	// (blurMargin, blurMargin).
+	private static void DrawShadowNineSlice(
+		SKCanvas canvas,
+		SKImage image,
+		int blurMargin,
+		int cachedContentW,
+		int cachedContentH,
+		int actualW,
+		int actualH)
+	{
+		var srcLeft = 0;
+		var srcInnerLeft = blurMargin;
+		var srcInnerRight = blurMargin + cachedContentW;
+		var srcRight = (2 * blurMargin) + cachedContentW;
+
+		var srcTop = 0;
+		var srcInnerTop = blurMargin;
+		var srcInnerBottom = blurMargin + cachedContentH;
+		var srcBottom = (2 * blurMargin) + cachedContentH;
+
+		var dstLeft = -blurMargin;
+		var dstInnerLeft = 0;
+		var dstInnerRight = actualW;
+		var dstRight = actualW + blurMargin;
+
+		var dstTop = -blurMargin;
+		var dstInnerTop = 0;
+		var dstInnerBottom = actualH;
+		var dstBottom = actualH + blurMargin;
+
+		DrawShadowPatch(canvas, image, srcLeft, srcTop, srcInnerLeft, srcInnerTop, dstLeft, dstTop, dstInnerLeft, dstInnerTop);
+		DrawShadowPatch(canvas, image, srcInnerLeft, srcTop, srcInnerRight, srcInnerTop, dstInnerLeft, dstTop, dstInnerRight, dstInnerTop);
+		DrawShadowPatch(canvas, image, srcInnerRight, srcTop, srcRight, srcInnerTop, dstInnerRight, dstTop, dstRight, dstInnerTop);
+
+		DrawShadowPatch(canvas, image, srcLeft, srcInnerTop, srcInnerLeft, srcInnerBottom, dstLeft, dstInnerTop, dstInnerLeft, dstInnerBottom);
+		DrawShadowPatch(canvas, image, srcInnerLeft, srcInnerTop, srcInnerRight, srcInnerBottom, dstInnerLeft, dstInnerTop, dstInnerRight, dstInnerBottom);
+		DrawShadowPatch(canvas, image, srcInnerRight, srcInnerTop, srcRight, srcInnerBottom, dstInnerRight, dstInnerTop, dstRight, dstInnerBottom);
+
+		DrawShadowPatch(canvas, image, srcLeft, srcInnerBottom, srcInnerLeft, srcBottom, dstLeft, dstInnerBottom, dstInnerLeft, dstBottom);
+		DrawShadowPatch(canvas, image, srcInnerLeft, srcInnerBottom, srcInnerRight, srcBottom, dstInnerLeft, dstInnerBottom, dstInnerRight, dstBottom);
+		DrawShadowPatch(canvas, image, srcInnerRight, srcInnerBottom, srcRight, srcBottom, dstInnerRight, dstInnerBottom, dstRight, dstBottom);
+	}
+
+	private static void DrawShadowPatch(
+		SKCanvas canvas,
+		SKImage image,
+		int sl, int st, int sr, int sb,
+		int dl, int dt, int dr, int db)
+	{
+		if (sl >= sr || st >= sb || dl >= dr || dt >= db)
+		{
+			// Zero/negative-area patch (e.g. visual smaller than 2*blurMargin); skip.
+			return;
+		}
+		var src = new SKRect(sl, st, sr, sb);
+		var dst = new SKRect(dl, dt, dr, db);
+		canvas.DrawImage(image, src, dst);
 	}
 
 	internal void GetNativeViewPathAndZOrder(SKPath clipFromParent, SKPath clipPath, List<Visual> nativeVisualsInZOrder)
