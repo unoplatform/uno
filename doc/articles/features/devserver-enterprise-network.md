@@ -1,4 +1,4 @@
----
+﻿---
 uid: Uno.Features.DevServer.EnterpriseNetwork
 ---
 
@@ -69,22 +69,38 @@ bridge, which bypasses the Windows network stack.
 Starting with Uno SDK 6.7, the Dev Server CLI automatically attempts to add the
 required firewall rule the first time it starts.  A **UAC (User Account Control)
 prompt** will appear asking for administrator elevation.  Once approved, the rule is
-permanent and no further prompts appear.
+created for the current version of `Uno.UI.RemoteControl.Host.exe`.
+
+> [!NOTE]
+> When developers update the Uno Platform NuGet packages, the path to
+> `Uno.UI.RemoteControl.Host.exe` changes (it includes the package version).
+> A new UAC prompt will appear the first time the Dev Server starts after an upgrade.
 
 If the developer is not a local administrator or the UAC prompt was dismissed, the
 rule must be added by IT as described below.
 
 ### Manual rule (single workstation)
 
-Run the following command in an **elevated PowerShell** session on the developer's
-machine:
+Windows Firewall does not support wildcard characters in program paths, so the rule
+must target the **exact path** of the installed `Uno.UI.RemoteControl.Host.exe`.
+The path includes the NuGet package version and the .NET TFM, for example:
+
+```
+%USERPROFILE%\.nuget\packages\uno.winui.devserver\6.7.0\tools\rc\host\net9.0\Uno.UI.RemoteControl.Host.exe
+```
+
+To list the versions currently installed on the developer's machine:
 
 ```powershell
-# Find the Uno DevServer host executable in the NuGet cache
-$hostExe = Get-ChildItem "$env:USERPROFILE\.nuget\packages\uno.winui.devserver" `
-  -Recurse -Filter "Uno.UI.RemoteControl.Host.exe" |
-  Sort-Object LastWriteTime -Descending |
-  Select-Object -First 1 -ExpandProperty FullName
+Get-ChildItem "$env:USERPROFILE\.nuget\packages\uno.winui.devserver" -Directory |
+  Select-Object -ExpandProperty Name
+```
+
+For each installed version, run the following command in an **elevated PowerShell**
+session, substituting the exact path:
+
+```powershell
+$hostExe = "$env:USERPROFILE\.nuget\packages\uno.winui.devserver\<version>\tools\rc\host\net<tfm>\Uno.UI.RemoteControl.Host.exe"
 
 New-NetFirewallRule `
   -DisplayName "Uno DevServer (.NET Host)" `
@@ -94,6 +110,10 @@ New-NetFirewallRule `
   -Profile @("Private", "Domain") `
   -Description "Allows the Uno Platform Dev Server to accept Hot Reload connections from physical Android/iOS devices and other local network clients."
 ```
+
+> [!NOTE]
+> The rule must be updated each time developers upgrade the Uno Platform NuGet
+> packages, because the path changes with the new version.
 
 To verify the rule was created:
 
@@ -149,35 +169,6 @@ If the indicator still shows a connection failure after the rule is in place, ch
   or VLAN separation between them).
 - No **additional firewall, proxy, or network appliance** is blocking traffic between
   the device IP and the workstation IP on the allocated port.
-
----
-
-## Port range considerations
-
-The Dev Server allocates a port dynamically in the ephemeral range
-(49152–65535).  If your network policy requires explicit port rules rather than
-program-based rules, you can restrict the allowed range using the
-`UnoRemoteControlPort` MSBuild property in the developer's `.csproj`:
-
-```xml
-<PropertyGroup>
-  <!-- Fix the Dev Server port to simplify firewall rules -->
-  <UnoRemoteControlPort>57512</UnoRemoteControlPort>
-</PropertyGroup>
-```
-
-With a fixed port, the firewall rule can target that specific port instead of a
-program path:
-
-```powershell
-New-NetFirewallRule `
-  -DisplayName "Uno DevServer (fixed port)" `
-  -Direction Inbound `
-  -Action Allow `
-  -Protocol TCP `
-  -LocalPort 57512 `
-  -Profile @("Private", "Domain")
-```
 
 ---
 

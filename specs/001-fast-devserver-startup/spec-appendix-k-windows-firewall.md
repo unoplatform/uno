@@ -153,11 +153,11 @@ for known executables on Public when the user accepted the dialog in earlier ver
 
 | ID | Requirement |
 |----|-------------|
-| FR-FW1 | On Windows, `StartCommandHandler` must ensure a Private+Domain inbound Allow rule exists for `dotnet.exe` before spawning the host. |
+| FR-FW1 | On Windows, `StartCommandHandler` must ensure a Private+Domain inbound Allow rule exists for `Uno.UI.RemoteControl.Host.exe` before spawning the host. |
 | FR-FW2 | The check must be idempotent — if the rule already exists no elevation is requested. |
 | FR-FW3 | If the rule is absent, the CLI must prompt for UAC elevation via an elevated `netsh` invocation. |
 | FR-FW4 | If UAC is declined or `netsh` fails, the CLI must log a warning with the manual PowerShell command and continue startup normally (no crash, no exception propagation). |
-| FR-FW5 | The rule must target the exact `dotnet.exe` path the CLI is running under. |
+| FR-FW5 | The rule must target the exact `Uno.UI.RemoteControl.Host.exe` path passed by the caller (`hostExePath`). |
 | FR-FW6 | The rule display name must be `"Uno DevServer (.NET Host)"` so it is recognizable in the Windows Firewall UI. |
 
 ### Non-functional
