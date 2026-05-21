@@ -30,8 +30,8 @@ public class Given_ElementRefHandle_Threading
 	{
 		var registry = new ElementRefHandleRegistry();
 
-		Assert.ThrowsException<InvalidOperationException>(
-			() => Task.Run(() => registry.GetOrCreate(new Grid())).GetAwaiter().GetResult());
+		Action act = () => Task.Run(() => registry.GetOrCreate(new Grid())).GetAwaiter().GetResult();
+		act.Should().Throw<InvalidOperationException>().WithMessage("*non-UI thread*");
 	}
 
 	[TestMethod]
@@ -39,8 +39,8 @@ public class Given_ElementRefHandle_Threading
 	{
 		var registry = new ElementRefHandleRegistry();
 
-		Assert.ThrowsException<InvalidOperationException>(
-			() => Task.Run(() => registry.TryResolve("1", out _)).GetAwaiter().GetResult());
+		Action act = () => Task.Run(() => registry.TryResolve("1", out _)).GetAwaiter().GetResult();
+		act.Should().Throw<InvalidOperationException>().WithMessage("*non-UI thread*");
 	}
 }
 #endif
