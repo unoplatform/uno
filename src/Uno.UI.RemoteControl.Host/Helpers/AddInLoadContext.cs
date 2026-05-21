@@ -179,18 +179,38 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 				{
 					// We request by simple name + culture only so the host's TPA
 					// can pick whichever copy it shipped, regardless of the add-in's
-					// compiled-against version. The only post-hoc check is the
-					// version-downgrade guard below.
+					// compiled-against version. PKT and version are validated
+					// explicitly below before the assembly is handed back.
 					Assembly? loaded = Default.LoadFromAssemblyName(new AssemblyName(name) { CultureInfo = assemblyName.CultureInfo });
+
+					var loadedName = loaded.GetName();
+
+					// Asymmetric PKT match — mirrors TryBridgeBySimpleName. When the
+					// add-in's AssemblyRef specifies a PublicKeyToken (typical for
+					// signed framework assemblies such as System.Text.Json), refuse a
+					// TPA candidate whose PKT differs or is absent. Unsigned requests
+					// skip the check so cross-add-in contract loading still works.
+					var requestedPkt = assemblyName.GetPublicKeyToken();
+					if (requestedPkt is { Length: > 0 })
+					{
+						var loadedPkt = loadedName.GetPublicKeyToken();
+						if (loadedPkt is null || !loadedPkt.AsSpan().SequenceEqual(requestedPkt))
+						{
+							loaded = null;
+						}
+					}
 
 					// Version guard: mirrors TryBridgeBySimpleName — refuse to serve a
 					// version lower than what the add-in requested.
-					var requestedVersion = assemblyName.Version;
-					var loadedVersion = loaded.GetName().Version;
-					if (requestedVersion is not null && loadedVersion is not null
-						&& loadedVersion < requestedVersion)
+					if (loaded is not null)
 					{
-						loaded = null;
+						var requestedVersion = assemblyName.Version;
+						var loadedVersion = loadedName.Version;
+						if (requestedVersion is not null && loadedVersion is not null
+							&& loadedVersion < requestedVersion)
+						{
+							loaded = null;
+						}
 					}
 
 					if (loaded is not null)
@@ -276,7 +296,11 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 		try
 		{
 			var loaded = LoadFromAssemblyPath(candidatePath);
-			Console.Error.WriteLine(
+
+			// Successful probe is purely informational — keep it off stderr so
+			// IDE output panels (Visual Studio, Rider) do not flag it as an
+			// error during normal startup.
+			Console.Out.WriteLine(
 				$"Uno.UI.RemoteControl.Host: file-system probe loaded '{name}' from '{candidatePath}'.");
 			return loaded;
 		}

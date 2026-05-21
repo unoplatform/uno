@@ -186,17 +186,14 @@ internal static class HostAssemblyResolution
 	/// already-loaded assembly from <paramref name="context"/> whose simple
 	/// name matches. Dynamic (reflection-emit) assemblies are skipped so
 	/// runtime-generated names that coincidentally collide with a real
-	/// <c>AssemblyRef</c> do not silently substitute the wrong type; and a
+	/// <c>AssemblyRef</c> do not silently substitute the wrong type; a
 	/// loaded assembly whose <see cref="System.Version"/> is strictly lower
-	/// than the requested version is rejected to prevent silent downgrades.
+	/// than the requested version is rejected to prevent silent downgrades;
+	/// and when the request carries a <see cref="AssemblyName.GetPublicKeyToken"/>
+	/// the loaded assembly's token must match — an identity check, not an
+	/// allow-list. Unsigned requests skip the PKT check (covers the
+	/// cross-add-in contract scenario where neither side is strong-named).
 	/// </summary>
-	/// <remarks>
-	/// No public-key-token comparison is performed: the host's add-in
-	/// scenario is unsigned-only on both sides (neither add-in DLLs nor
-	/// the contract assemblies they ship carry a strong name), so a PKT
-	/// check would never trigger in practice. Adding one back means
-	/// re-introducing a guard for a scenario the host never sees.
-	/// </remarks>
 	/// <returns>
 	/// The matching <see cref="Assembly"/> instance, or <c>null</c> when no
 	/// compatible candidate exists in <paramref name="context"/>.
@@ -210,6 +207,8 @@ internal static class HostAssemblyResolution
 		{
 			return null;
 		}
+
+		var requestedPkt = requested.GetPublicKeyToken();
 
 		foreach (var loaded in context.Assemblies)
 		{
@@ -226,6 +225,24 @@ internal static class HostAssemblyResolution
 			if (!string.Equals(loadedName.Name, simpleName, StringComparison.OrdinalIgnoreCase))
 			{
 				continue;
+			}
+
+			// Asymmetric PKT match: when the request specifies an identity (a
+			// non-empty PublicKeyToken — Kiota's net8 AssemblyRef to
+			// System.Text.Encodings.Web, etc.), refuse a loaded candidate whose
+			// token differs or is absent. When the request is unsigned (no PKT
+			// — Uno.Licensing.Sdk.Contracts and other cross-add-in unsigned
+			// contracts), skip the PKT check entirely. This is identity
+			// validation, not an allow-list: signed callers get the assembly
+			// they asked for, unsigned callers get whatever simple-name match
+			// is loaded.
+			if (requestedPkt is { Length: > 0 })
+			{
+				var loadedPkt = loadedName.GetPublicKeyToken();
+				if (loadedPkt is null || !loadedPkt.AsSpan().SequenceEqual(requestedPkt))
+				{
+					continue;
+				}
 			}
 
 			// Version guard: refuse to bridge when the loaded version is strictly

@@ -19,41 +19,53 @@ public class Given_AddInLoadContext
 	// ------------------------------------------------------------------ step 1: bridge via Default.Assemblies
 
 	[TestMethod]
-	[Description("Step 1 must return the host's System.Text.Json instance so JsonDocument/JsonElement types are identical between host and add-in.")]
+	[Description("Step 1 must return the host's System.Text.Json instance so JsonDocument/JsonElement types are identical between host and add-in. Request carries the real PKT to mirror how compiled add-in AssemblyRefs reach the bridge.")]
 	public void Load_ResolvesFrameworkOobAssembly_ToHostInstance()
 	{
 		// Force the assembly into Default.Assemblies (reference a type from it first).
 		var hostAssembly = typeof(System.Text.Json.JsonDocument).Assembly;
 
+		// Real AssemblyRefs to strong-named framework assemblies include the PKT.
+		// Setting it here keeps the test representative and exercises the PKT
+		// match in TryBridgeBySimpleName.
+		var requested = new AssemblyName("System.Text.Json");
+		requested.SetPublicKeyToken(hostAssembly.GetName().GetPublicKeyToken());
+
 		var ctx = new AddInLoadContext(Array.Empty<string>());
-		var loaded = ctx.LoadFromAssemblyName(new AssemblyName("System.Text.Json"));
+		var loaded = ctx.LoadFromAssemblyName(requested);
 
 		loaded.Should().BeSameAs(hostAssembly,
 			"System.Text.Json must bridge to the host's already-loaded instance");
 	}
 
 	[TestMethod]
-	[Description("Step 1 must return the host's Logging.Abstractions so ILogger contracts are identical between host and add-in.")]
+	[Description("Step 1 must return the host's Logging.Abstractions so ILogger contracts are identical between host and add-in. Request carries the real PKT to mirror how compiled add-in AssemblyRefs reach the bridge.")]
 	public void Load_ResolvesLoggingAbstractions_ToHostInstance()
 	{
 		var hostAssembly = typeof(ILogger).Assembly;
 
+		var requested = new AssemblyName("Microsoft.Extensions.Logging.Abstractions");
+		requested.SetPublicKeyToken(hostAssembly.GetName().GetPublicKeyToken());
+
 		var ctx = new AddInLoadContext(Array.Empty<string>());
-		var loaded = ctx.LoadFromAssemblyName(new AssemblyName("Microsoft.Extensions.Logging.Abstractions"));
+		var loaded = ctx.LoadFromAssemblyName(requested);
 
 		loaded.Should().BeSameAs(hostAssembly,
 			"ILogger assembly must bridge to the host's instance for log sinks to work across the boundary");
 	}
 
 	[TestMethod]
-	[Description("Step 1 must return the host's System.Text.Encodings.Web — the assembly whose version mismatch triggered the original crash (PR #23287).")]
+	[Description("Step 1 must return the host's System.Text.Encodings.Web — the assembly whose version mismatch triggered the original crash (PR #23287). Request carries the real PKT to mirror how Kiota's net8 AssemblyRef reaches the bridge.")]
 	public void Load_ResolvesEncodingsWeb_ToHostInstance()
 	{
 		// Touching JavaScriptEncoder forces the assembly into Default.Assemblies.
 		var hostAssembly = typeof(System.Text.Encodings.Web.JavaScriptEncoder).Assembly;
 
+		var requested = new AssemblyName("System.Text.Encodings.Web");
+		requested.SetPublicKeyToken(hostAssembly.GetName().GetPublicKeyToken());
+
 		var ctx = new AddInLoadContext(Array.Empty<string>());
-		var loaded = ctx.LoadFromAssemblyName(new AssemblyName("System.Text.Encodings.Web"));
+		var loaded = ctx.LoadFromAssemblyName(requested);
 
 		loaded.Should().BeSameAs(hostAssembly,
 			"System.Text.Encodings.Web must bridge to the host's instance regardless of which major version the add-in compiled against");

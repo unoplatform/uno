@@ -160,12 +160,14 @@ public class Given_HostAssemblyResolution
 	// ------------------------------------------------------------------ returns loaded assembly
 
 	[TestMethod]
-	[Description("When the default ALC has an assembly with the requested simple name, TryBridgeBySimpleName must return that exact instance regardless of PKT (add-ins are unsigned in practice).")]
-	public void TryBridgeBySimpleName_ReturnsLoadedAssembly_WhenSimpleNameMatches()
+	[Description("When the default ALC has an assembly with the requested simple name and the request carries no PKT, TryBridgeBySimpleName must return that instance — the unsigned-request path used by cross-add-in contract assemblies.")]
+	public void TryBridgeBySimpleName_ReturnsLoadedAssembly_WhenUnsignedRequestMatchesByName()
 	{
 		// Force the assembly into Default.Assemblies.
 		var hostAssembly = typeof(System.Text.Json.JsonDocument).Assembly;
 
+		// Unsigned request: no PKT set. This matches how an unsigned add-in
+		// contract assembly arrives at the bridge.
 		var requested = new AssemblyName("System.Text.Json");
 
 		var result = HostAssemblyResolution.TryBridgeBySimpleName(
@@ -173,6 +175,46 @@ public class Given_HostAssemblyResolution
 
 		result.Should().BeSameAs(hostAssembly,
 			"System.Text.Json is loaded in the default ALC and the simple name matches");
+	}
+
+	[TestMethod]
+	[Description("When the requested AssemblyName carries a PublicKeyToken, TryBridgeBySimpleName must require the loaded assembly's PKT to match — otherwise a same-named assembly with a different (or absent) PKT could silently substitute the wrong identity.")]
+	public void TryBridgeBySimpleName_RefusesBridge_WhenSignedRequestPktDoesNotMatchLoaded()
+	{
+		// Force the strong-named host assembly into Default.Assemblies.
+		var hostAssembly = typeof(System.Text.Json.JsonDocument).Assembly;
+		var realPkt = hostAssembly.GetName().GetPublicKeyToken()!;
+		realPkt.Length.Should().BeGreaterThan(0, "the bridged framework assembly is expected to be strong-named");
+
+		// Build a fake PKT distinct from the real one (flip the last byte).
+		var fakePkt = (byte[])realPkt.Clone();
+		fakePkt[^1] = (byte)(fakePkt[^1] ^ 0xFF);
+
+		var requested = new AssemblyName("System.Text.Json");
+		requested.SetPublicKeyToken(fakePkt);
+
+		var result = HostAssemblyResolution.TryBridgeBySimpleName(
+			AssemblyLoadContext.Default, requested);
+
+		result.Should().BeNull(
+			"the loaded assembly's PKT differs from the signed request's PKT — bridging would be an identity swap");
+	}
+
+	[TestMethod]
+	[Description("When the requested AssemblyName carries a PublicKeyToken matching the loaded assembly's PKT, TryBridgeBySimpleName must return the loaded instance — the normal signed-framework bridge path (e.g. Kiota → System.Text.Encodings.Web).")]
+	public void TryBridgeBySimpleName_Bridges_WhenSignedRequestPktMatchesLoaded()
+	{
+		var hostAssembly = typeof(System.Text.Json.JsonDocument).Assembly;
+		var realPkt = hostAssembly.GetName().GetPublicKeyToken()!;
+
+		var requested = new AssemblyName("System.Text.Json");
+		requested.SetPublicKeyToken(realPkt);
+
+		var result = HostAssemblyResolution.TryBridgeBySimpleName(
+			AssemblyLoadContext.Default, requested);
+
+		result.Should().BeSameAs(hostAssembly,
+			"the signed request's PKT matches the loaded assembly — bridge must serve it");
 	}
 
 	// ------------------------------------------------------------------ returns null on miss
