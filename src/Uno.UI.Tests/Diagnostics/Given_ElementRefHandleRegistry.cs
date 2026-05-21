@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -237,7 +238,7 @@ public class Given_ElementRefHandleRegistry
 	private sealed class FakeRegistry : IElementRefHandleRegistry
 	{
 		public string GetOrCreate(Microsoft.UI.Xaml.DependencyObject element) => "fake";
-		public bool TryResolve(string handle, out Microsoft.UI.Xaml.DependencyObject? element)
+		public bool TryResolve(string handle, [NotNullWhen(true)] out Microsoft.UI.Xaml.DependencyObject? element)
 		{
 			element = null;
 			return false;
