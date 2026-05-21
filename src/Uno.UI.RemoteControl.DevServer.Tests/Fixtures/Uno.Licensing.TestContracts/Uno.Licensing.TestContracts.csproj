@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<!--
+		Test contracts fixture for Uno.UI.RemoteControl.DevServer.Tests.
+
+		Mimics Uno.Licensing.Sdk.Contracts: an unsigned assembly whose simple name matches
+		the "Uno.Licensing.*.dll" glob in HostAssemblyResolution.AddInSharedAssemblyPatterns.
+
+		It is intentionally NOT produced with EnableDynamicLoading=true and is only physically
+		present in the *provider* add-in's output directory — not in the consumer's — so that
+		the regression test for cross-add-in type sharing can verify that EagerLoadFromDirectory
+		(called by AssemblyHelper before building AddInLoadContext) loads the DLL into Default
+		ALC and allows both add-ins to share a single ILicensingTestContract type identity.
+	-->
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+		<!-- No EnableDynamicLoading — no deps.json; the only way to resolve this assembly
+		     at runtime is through Default ALC (via the eager-load fix). -->
+	</PropertyGroup>
+
+</Project>

@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<!--
+		Test fixture: the "consumer" side of the cross-add-in type-sharing regression test.
+
+		This add-in does NOT have Uno.Licensing.TestContracts.dll in its output directory
+		(Private=false on the project reference). It does NOT use EnableDynamicLoading=true
+		so no .deps.json is generated, meaning AssemblyDependencyResolver step 3 cannot
+		resolve Uno.Licensing.TestContracts for this add-in.
+
+		Without the fix, the ILicensingTestContract parameter in ConsumerHostedService cannot
+		be resolved: type identity is broken because the DLL was never loaded into Default ALC
+		and the consumer's resolver has no deps.json entry for it.
+
+		With the fix, AssemblyHelper pre-loads Uno.Licensing.TestContracts.dll from the
+		provider's directory into Default ALC (matching the Uno.Licensing.*.dll glob).
+		AddInLoadContext.Load step 1 (TryBridgeBySimpleName) then serves the same type
+		instance to both add-ins, so DI resolves ILicensingTestContract successfully.
+	-->
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+		<!-- Intentionally no EnableDynamicLoading — no .deps.json produced. -->
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Private=false: compile-time reference only; DLL is NOT copied to this add-in's
+		     output directory. This simulates the real scenario where Uno.Licensing.Sdk.Contracts
+		     is a transitive compile-time ref but not a runtime asset in the consuming add-in. -->
+		<ProjectReference Include="..\Uno.Licensing.TestContracts\Uno.Licensing.TestContracts.csproj"
+		                  Private="false" />
+	</ItemGroup>
+
+</Project>

@@ -119,6 +119,21 @@
 		                  SkipGetTargetFrameworkProperties="true"
 		                  UndefineProperties="TargetFramework"
 		                  Private="false" />
+		<ProjectReference Include="Fixtures\Uno.Licensing.TestContracts\Uno.Licensing.TestContracts.csproj"
+		                  ReferenceOutputAssembly="false"
+		                  SkipGetTargetFrameworkProperties="true"
+		                  UndefineProperties="TargetFramework"
+		                  Private="false" />
+		<ProjectReference Include="Fixtures\AddInWithSharedContractProvider\AddInWithSharedContractProvider.csproj"
+		                  ReferenceOutputAssembly="false"
+		                  SkipGetTargetFrameworkProperties="true"
+		                  UndefineProperties="TargetFramework"
+		                  Private="false" />
+		<ProjectReference Include="Fixtures\AddInWithSharedContractConsumer\AddInWithSharedContractConsumer.csproj"
+		                  ReferenceOutputAssembly="false"
+		                  SkipGetTargetFrameworkProperties="true"
+		                  UndefineProperties="TargetFramework"
+		                  Private="false" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -167,6 +182,62 @@
 		</ItemGroup>
 		<Copy SourceFiles="@(_DiFixtureBinFiles)"
 		      DestinationFolder="$(OutDir)Fixtures\AddInWithDiServiceRegistration\%(RecursiveDir)"
+		      SkipUnchangedFiles="true" />
+
+		<!--
+			Cross-add-in shared type regression fixtures (#23287 / #23304):
+			Provider ships Uno.Licensing.TestContracts.dll in its directory;
+			Consumer does NOT (Private=false on the ProjectReference).
+			The test verifies that AssemblyHelper pre-loads Uno.Licensing.*.dll from
+			the provider directory into Default ALC before creating AddInLoadContext,
+			allowing both add-ins to share a single ILicensingTestContract type identity.
+		-->
+
+		<!-- Build provider (EnableDynamicLoading=false so Uno.Licensing.TestContracts is NOT in deps.json) -->
+		<MSBuild Projects="Fixtures\AddInWithSharedContractProvider\AddInWithSharedContractProvider.csproj"
+		         Properties="Configuration=$(Configuration)"
+		         Targets="Build"
+		         RemoveProperties="TargetFramework">
+			<Output TaskParameter="TargetOutputs" ItemName="_SharedProviderOutput" />
+		</MSBuild>
+		<ItemGroup>
+			<_SharedProviderBinFiles Include="%(_SharedProviderOutput.RootDir)%(_SharedProviderOutput.Directory)**\*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(_SharedProviderBinFiles)"
+		      DestinationFolder="$(OutDir)Fixtures\AddInWithSharedContractProvider\%(RecursiveDir)"
+		      SkipUnchangedFiles="true" />
+
+		<!--
+			Explicitly stage Uno.Licensing.TestContracts.dll into the provider's fixture
+			directory. Without EnableDynamicLoading=true the ProjectReference does not copy
+			the DLL to the provider's bin, so we copy it manually here. The DLL matches the
+			"Uno.Licensing.*.dll" glob and must be physically present in the provider's
+			directory so EagerLoadFromDirectory can find and load it into Default ALC.
+			It is intentionally absent from the provider's deps.json so that step 3
+			(AssemblyDependencyResolver) cannot resolve it — the only path is the fix.
+		-->
+		<MSBuild Projects="Fixtures\Uno.Licensing.TestContracts\Uno.Licensing.TestContracts.csproj"
+		         Properties="Configuration=$(Configuration)"
+		         Targets="Build"
+		         RemoveProperties="TargetFramework">
+			<Output TaskParameter="TargetOutputs" ItemName="_ContractsOutput" />
+		</MSBuild>
+		<Copy SourceFiles="%(_ContractsOutput.FullPath)"
+		      DestinationFolder="$(OutDir)Fixtures\AddInWithSharedContractProvider\"
+		      SkipUnchangedFiles="true" />
+
+		<!-- Build consumer (does NOT include Uno.Licensing.TestContracts.dll — Private=false) -->
+		<MSBuild Projects="Fixtures\AddInWithSharedContractConsumer\AddInWithSharedContractConsumer.csproj"
+		         Properties="Configuration=$(Configuration)"
+		         Targets="Build"
+		         RemoveProperties="TargetFramework">
+			<Output TaskParameter="TargetOutputs" ItemName="_SharedConsumerOutput" />
+		</MSBuild>
+		<ItemGroup>
+			<_SharedConsumerBinFiles Include="%(_SharedConsumerOutput.RootDir)%(_SharedConsumerOutput.Directory)**\*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(_SharedConsumerBinFiles)"
+		      DestinationFolder="$(OutDir)Fixtures\AddInWithSharedContractConsumer\%(RecursiveDir)"
 		      SkipUnchangedFiles="true" />
 
 	</Target>

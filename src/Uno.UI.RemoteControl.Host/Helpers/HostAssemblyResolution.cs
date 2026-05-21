@@ -31,19 +31,6 @@ internal static class HostAssemblyResolution
 	/// </summary>
 	private static int s_handlerInstalled;
 
-	/// <summary>
-	/// Trusted public key tokens accepted by <see cref="EagerLoadFromDirectory"/>.
-	/// Eager-loading an assembly whose PKT does not match one of these emits a
-	/// stderr warning (the assembly is still loaded — there is no .NET API to
-	/// unload it — but the <see cref="TryBridgeBySimpleName"/> guards prevent
-	/// returning a non-Microsoft assembly for a signed Microsoft request).
-	/// </summary>
-	private static readonly byte[][] s_trustedPkts =
-	[
-		[0xb0, 0x3f, 0x5f, 0x7f, 0x11, 0xd5, 0x0a, 0x3a], // Microsoft (b03f5f7f11d50a3a)
-		[0xcc, 0x7b, 0x13, 0xff, 0xcd, 0x2d, 0xdd, 0x51], // corefx / dotnet (cc7b13ffcd2ddd51)
-		[0xad, 0xb9, 0x79, 0x38, 0x29, 0xdd, 0xae, 0x60], // Microsoft.Extensions.* NuGet (adb9793829ddae60)
-	];
 
 	/// <summary>
 	/// Installs the cross-major-version assembly-resolution safety net on
@@ -110,26 +97,52 @@ internal static class HostAssemblyResolution
 	}
 
 	/// <summary>
-	/// Eager-loads <c>System.*.dll</c> and <c>Microsoft.Extensions.*.dll</c>
-	/// from <paramref name="hostDir"/> into <see cref="AssemblyLoadContext.Default"/>.
+	/// Default file-name globs used by <see cref="EagerLoadFromDirectory"/> when
+	/// no explicit <c>patterns</c> are supplied: the OOB shared-framework assemblies
+	/// most prone to cross-major-version AssemblyRef mismatches.
+	/// </summary>
+	internal static readonly string[] DefaultEagerLoadPatterns =
+	[
+		"System.*.dll",
+		"Microsoft.Extensions.*.dll",
+	];
+
+	/// <summary>
+	/// File-name globs used when pre-loading shared Uno Platform contract
+	/// assemblies from add-in directories so that all add-ins share a single
+	/// <see cref="System.Type"/> identity for licensing and other cross-add-in
+	/// types (fixes <see cref="System.IO.FileNotFoundException"/> for
+	/// <c>Uno.Licensing.Sdk.Contracts</c> when a consuming add-in cannot resolve
+	/// it through its own <c>AssemblyDependencyResolver</c>).
+	/// </summary>
+	internal static readonly string[] AddInSharedAssemblyPatterns =
+	[
+		"Uno.Licensing.*.dll",
+	];
+
+	/// <summary>
+	/// Eager-loads DLLs matching <paramref name="patterns"/> from
+	/// <paramref name="dir"/> into <see cref="AssemblyLoadContext.Default"/>.
+	/// When <paramref name="patterns"/> is <see langword="null"/> or empty the
+	/// <see cref="DefaultEagerLoadPatterns"/> are used.
 	/// </summary>
 	/// <remarks>
 	/// Idempotent: assemblies already present in <see cref="AssemblyLoadContext.Default"/>
-	/// (by simple name) are skipped, and individual load failures are
-	/// swallowed with a stderr breadcrumb. After a successful load the assembly's
-	/// public key token is validated against <see cref="s_trustedPkts"/>; a
-	/// mismatch only emits a warning because .NET provides no API to unload
-	/// from <see cref="AssemblyLoadContext.Default"/>. The <see cref="TryBridgeBySimpleName"/>
-	/// PKT guard prevents such an assembly from being substituted for a signed
-	/// Microsoft request later.
+	/// (by simple name) are skipped, and individual load failures are swallowed
+	/// with a stderr breadcrumb. Once loaded, <see cref="TryBridgeBySimpleName"/>
+	/// can return these assemblies to any <c>AddInLoadContext</c> that requests
+	/// them by name, preserving a single <see cref="System.Type"/> identity
+	/// across the host/add-in boundary.
 	/// </remarks>
 	/// <returns>The number of assemblies successfully eager-loaded by this call.</returns>
-	internal static int EagerLoadFromDirectory(string hostDir)
+	internal static int EagerLoadFromDirectory(string dir, string[]? patterns = null)
 	{
-		if (string.IsNullOrEmpty(hostDir) || !System.IO.Directory.Exists(hostDir))
+		if (string.IsNullOrEmpty(dir) || !System.IO.Directory.Exists(dir))
 		{
 			return 0;
 		}
+
+		var effectivePatterns = patterns is { Length: > 0 } ? patterns : DefaultEagerLoadPatterns;
 
 		// Build a set of simple names already loaded so we can skip duplicates.
 		var alreadyLoaded = new System.Collections.Generic.HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -141,10 +154,9 @@ internal static class HostAssemblyResolution
 			}
 		}
 
-		// Discover System.* and Microsoft.Extensions.* DLLs in the host directory.
-		var candidates =
-			System.IO.Directory.EnumerateFiles(hostDir, "System.*.dll")
-			.Concat(System.IO.Directory.EnumerateFiles(hostDir, "Microsoft.Extensions.*.dll"));
+		// Discover DLLs matching the requested glob patterns.
+		var candidates = effectivePatterns
+			.SelectMany(p => System.IO.Directory.EnumerateFiles(dir, p));
 
 		var loaded = 0;
 		var failed = 0;
@@ -159,23 +171,7 @@ internal static class HostAssemblyResolution
 
 			try
 			{
-				var asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
-
-				// DLL-planting defence: if a file matching our System.* /
-				// Microsoft.Extensions.* glob is signed with a non-trusted PKT
-				// (or unsigned), warn loudly. We cannot unload it, but
-				// TryBridgeBySimpleName's PKT symmetry guard means a signed
-				// Microsoft request will still refuse to bridge to this
-				// assembly.
-				var pkt = asm.GetName().GetPublicKeyToken();
-				if (!IsTrustedPkt(pkt))
-				{
-					Console.Error.WriteLine(
-						$"Uno.UI.RemoteControl.Host: eager-loaded '{simpleName}' from '{path}' has an " +
-						$"untrusted public key token. Cross-boundary type identity for this assembly " +
-						"will be refused by the bridge.");
-				}
-
+				AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
 				loaded++;
 			}
 			catch (Exception ex)
@@ -192,17 +188,12 @@ internal static class HostAssemblyResolution
 		if (loaded + failed > 0)
 		{
 			Console.Error.WriteLine(
-				$"Uno.UI.RemoteControl.Host: eager-loaded {loaded} assemblies from '{hostDir}' " +
+				$"Uno.UI.RemoteControl.Host: eager-loaded {loaded} assemblies from '{dir}' " +
 				$"({failed} failures).");
 		}
 
 		return loaded;
 	}
-
-	private static bool IsTrustedPkt(byte[]? pkt) =>
-		pkt is { Length: > 0 } &&
-		s_trustedPkts.Any(t => t.AsSpan().SequenceEqual(pkt));
-
 
 	/// <summary>
 	/// Attempts to satisfy <paramref name="requested"/> by returning an

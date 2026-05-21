@@ -119,6 +119,127 @@ public class Given_HostAssemblyResolution
 		}
 	}
 
+	// ------------------------------------------------------------------ pattern constants
+
+	[TestMethod]
+	[Description("DefaultEagerLoadPatterns must include the System.* and Microsoft.Extensions.* globs that the host has always eager-loaded.")]
+	public void DefaultEagerLoadPatterns_ContainsExpectedSystemAndExtensionsGlobs()
+	{
+		HostAssemblyResolution.DefaultEagerLoadPatterns.Should().Contain("System.*.dll",
+			"System.* assemblies must be eager-loaded to bridge cross-major OOB package refs");
+		HostAssemblyResolution.DefaultEagerLoadPatterns.Should().Contain("Microsoft.Extensions.*.dll",
+			"Microsoft.Extensions.* assemblies must be eager-loaded to bridge Logging/Configuration refs");
+	}
+
+	[TestMethod]
+	[Description("AddInSharedAssemblyPatterns must include Uno.Licensing.*.dll so that Uno.Licensing.Sdk.Contracts is pre-loaded into Default ALC and shared across add-ins.")]
+	public void AddInSharedAssemblyPatterns_ContainsUnoLicensingPattern()
+	{
+		HostAssemblyResolution.AddInSharedAssemblyPatterns.Should().Contain("Uno.Licensing.*.dll",
+			"pre-loading Uno.Licensing.*.dll from add-in directories is the fix for cross-add-in ILicensingService type-identity failures");
+	}
+
+	// ------------------------------------------------------------------ custom patterns filtering
+
+	[TestMethod]
+	[Description("When a custom patterns array is supplied, EagerLoadFromDirectory must enumerate only files matching those patterns and must NOT load files matching the default System.*/Microsoft.Extensions.* patterns.")]
+	public void EagerLoadFromDirectory_WithCustomPattern_SkipsFilesNotMatchingCustomPattern()
+	{
+		var sourceDir = System.IO.Path.GetDirectoryName(typeof(HostAssemblyResolution).Assembly.Location)!;
+
+		// Find any System.*.dll in the source dir to stage in our isolated temp dir.
+		var systemDll = System.IO.Directory
+			.EnumerateFiles(sourceDir, "System.*.dll")
+			.FirstOrDefault();
+
+		if (systemDll is null)
+		{
+			Assert.Inconclusive("No System.*.dll found in test output directory; cannot stage the test candidate.");
+			return;
+		}
+
+		var tempDir = System.IO.Path.Combine(
+			System.IO.Path.GetTempPath(),
+			"uno-custom-pattern-test-" + Guid.NewGuid().ToString("N"));
+		System.IO.Directory.CreateDirectory(tempDir);
+		try
+		{
+			System.IO.File.Copy(systemDll, System.IO.Path.Combine(tempDir, System.IO.Path.GetFileName(systemDll)));
+
+			// Call with a custom pattern that matches NOTHING in the temp dir.
+			var count = HostAssemblyResolution.EagerLoadFromDirectory(
+				tempDir,
+				["Uno.Licensing.*.dll"]);
+
+			count.Should().Be(0,
+				"a System.*.dll staged in the temp dir must not be loaded when the pattern is 'Uno.Licensing.*.dll'");
+		}
+		finally
+		{
+			try { System.IO.Directory.Delete(tempDir, recursive: true); } catch { /* best-effort */ }
+		}
+	}
+
+	[TestMethod]
+	[Description("When patterns is null, EagerLoadFromDirectory must fall back to DefaultEagerLoadPatterns and behave identically to the zero-argument overload.")]
+	public void EagerLoadFromDirectory_WithNullPatterns_FallsBackToDefaultPatterns()
+	{
+		var sourceDir = System.IO.Path.GetDirectoryName(typeof(HostAssemblyResolution).Assembly.Location)!;
+
+		// Build the set already loaded so we can find an unloaded candidate.
+		var alreadyLoaded = new System.Collections.Generic.HashSet<string>(StringComparer.OrdinalIgnoreCase);
+		foreach (var asm in System.Runtime.Loader.AssemblyLoadContext.Default.Assemblies)
+		{
+			if (!asm.IsDynamic && asm.GetName().Name is { } n)
+			{
+				alreadyLoaded.Add(n);
+			}
+		}
+
+		string? pickedFile = null;
+		foreach (var pattern in new[] { "System.*.dll", "Microsoft.Extensions.*.dll" })
+		{
+			foreach (var path in System.IO.Directory.EnumerateFiles(sourceDir, pattern))
+			{
+				if (!alreadyLoaded.Contains(System.IO.Path.GetFileNameWithoutExtension(path)))
+				{
+					pickedFile = path;
+					break;
+				}
+			}
+
+			if (pickedFile is not null) break;
+		}
+
+		if (pickedFile is null)
+		{
+			Assert.Inconclusive(
+				"No unloaded System.* or Microsoft.Extensions.* DLL found; " +
+				"null-pattern fallback cannot be exercised on this runtime.");
+			return;
+		}
+
+		var tempDir = System.IO.Path.Combine(
+			System.IO.Path.GetTempPath(),
+			"uno-null-pattern-test-" + Guid.NewGuid().ToString("N"));
+		System.IO.Directory.CreateDirectory(tempDir);
+		try
+		{
+			System.IO.File.Copy(pickedFile, System.IO.Path.Combine(tempDir, System.IO.Path.GetFileName(pickedFile)));
+
+			// null patterns → should use DefaultEagerLoadPatterns (System.* matches).
+			var count = HostAssemblyResolution.EagerLoadFromDirectory(tempDir, null);
+
+			count.Should().BeGreaterThan(0,
+				"passing null for patterns must fall back to DefaultEagerLoadPatterns, which includes System.*.dll; " +
+				"the staged '{0}' must be loaded", System.IO.Path.GetFileName(pickedFile));
+		}
+		finally
+		{
+			try { System.IO.Directory.Delete(tempDir, recursive: true); } catch { /* best-effort */ }
+		}
+	}
+
 	// ------------------------------------------------------------------ helpers
 
 	private static int CountResolvingHandlers()

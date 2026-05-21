@@ -80,6 +80,33 @@ public class AssemblyHelper
 				// assemblies while letting Microsoft.*/System.* and shared contract types
 				// resolve against the host's already-loaded versions. Add-ins still see
 				// each other's types (matching the prior Assembly.LoadFrom behaviour).
+
+				// Pre-load shared Uno Platform contract assemblies from each add-in
+				// directory into Default ALC so that TryBridgeBySimpleName (step 1 of
+				// AddInLoadContext.Load) can serve them to all add-ins with a single
+				// Type identity. Without this, assemblies such as Uno.Licensing.Sdk.Contracts
+				// that are not in the host's own TPA, and not always reachable via every
+				// add-in's AssemblyDependencyResolver (e.g. when a consuming add-in was
+				// published without EnableDynamicLoading or without a transitive deps.json
+				// entry), throw FileNotFoundException when .NET inspects the add-in
+				// processor's constructor signature through reflection.
+				foreach (var dll in distinctDlls)
+				{
+					var addInDir = System.IO.Path.GetDirectoryName(dll);
+					if (!string.IsNullOrEmpty(addInDir))
+					{
+						try
+						{
+							HostAssemblyResolution.EagerLoadFromDirectory(addInDir, HostAssemblyResolution.AddInSharedAssemblyPatterns);
+						}
+						catch (Exception ex)
+						{
+							_log.LogDebug("Eager-load of shared add-in assemblies from '{Dir}' failed ({Type}: {Message}).",
+								addInDir, ex.GetType().Name, ex.Message);
+						}
+					}
+				}
+
 				var loadContext = new AddInLoadContext(distinctDlls);
 
 				foreach (var dll in distinctDlls)

@@ -210,6 +210,85 @@ public class DevServerTests
 		}
 	}
 
+	// ------------------------------------------------------------------ cross-add-in type sharing regression (#23304)
+
+	[TestMethod]
+	[Retry(2, MillisecondsDelayBetweenRetries = 1000)]
+	[Description("Regression for #23304: when two add-ins share a contract assembly (e.g. Uno.Licensing.Sdk.Contracts) " +
+		"that is physically present only in the provider's directory and absent from the consumer's .deps.json, " +
+		"the host must pre-load the assembly into Default ALC (via AddInSharedAssemblyPatterns glob) so that both " +
+		"add-ins get a single ILicensingTestContract Type identity and DI resolution succeeds.")]
+	public async Task DevServer_ShouldResolveSharedContractAcrossAddIns_WhenContractOnlyInProviderDirectory()
+	{
+		var testAssemblyDir = Path.GetDirectoryName(typeof(DevServerTests).Assembly.Location)!;
+		var providerDll = Path.Combine(
+			testAssemblyDir, "Fixtures", "AddInWithSharedContractProvider", "AddInWithSharedContractProvider.dll");
+		var consumerDll = Path.Combine(
+			testAssemblyDir, "Fixtures", "AddInWithSharedContractConsumer", "AddInWithSharedContractConsumer.dll");
+
+		File.Exists(providerDll).Should()
+			.BeTrue("provider fixture must be staged by _BuildAndCopyAddInTestFixtures");
+		File.Exists(consumerDll).Should()
+			.BeTrue("consumer fixture must be staged by _BuildAndCopyAddInTestFixtures");
+
+		// The contracts DLL must be in the provider's directory (the fix loads it from there).
+		var contractsDll = Path.Combine(
+			testAssemblyDir, "Fixtures", "AddInWithSharedContractProvider", "Uno.Licensing.TestContracts.dll");
+		File.Exists(contractsDll).Should()
+			.BeTrue("Uno.Licensing.TestContracts.dll must be in the provider's fixture directory (Private=true on the ProjectReference)");
+
+		// The contracts DLL must NOT be in the consumer's directory (simulates the real scenario).
+		var consumerContractsDll = Path.Combine(
+			testAssemblyDir, "Fixtures", "AddInWithSharedContractConsumer", "Uno.Licensing.TestContracts.dll");
+		File.Exists(consumerContractsDll).Should()
+			.BeFalse("Uno.Licensing.TestContracts.dll must NOT be in the consumer's fixture directory (Private=false on the ProjectReference)");
+
+		var sentinel = Path.Combine(Path.GetTempPath(), $"shared-contract-{Guid.NewGuid():N}.txt");
+		try
+		{
+			await using var helper = new DevServerTestHelper(
+				_logger,
+				environmentVariables: new Dictionary<string, string>
+				{
+					["UNO_DEVSERVER_TEST_SHARED_CONTRACT_SENTINEL"] = sentinel,
+				});
+
+			try
+			{
+				var started = await helper.StartAsync(
+					CT,
+					extraArgs: $"--addins \"{providerDll}\" \"{consumerDll}\"");
+				helper.EnsureStarted();
+
+				started.Should().BeTrue("dev server should start with both cross-add-in fixtures loaded");
+				helper.AssertRunning();
+
+				// If the fix works: EagerLoadFromDirectory finds Uno.Licensing.TestContracts.dll in
+				// the provider's dir (matches Uno.Licensing.*.dll), loads it into Default ALC, and
+				// both add-ins bridge to the same Type. The consumer's IHostedService receives the
+				// ILicensingTestContract instance registered by the provider and writes this sentinel.
+				//
+				// Without the fix: FileNotFoundException or InvalidOperationException during add-in
+				// activation prevents the sentinel from being written.
+				File.Exists(sentinel).Should().BeTrue(
+					"ConsumerHostedService.StartAsync must have been invoked with ILicensingTestContract " +
+					"resolved from DI, proving cross-add-in type sharing works when the contract DLL is " +
+					"only in the provider's directory");
+			}
+			finally
+			{
+				await helper.StopAsync(CT);
+			}
+		}
+		finally
+		{
+			if (File.Exists(sentinel))
+			{
+				File.Delete(sentinel);
+			}
+		}
+	}
+
 	// ------------------------------------------------------------------ cross-major version regression (#23287)
 
 	[TestMethod]
