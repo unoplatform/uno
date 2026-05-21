@@ -15,6 +15,11 @@ using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Xaml;
 using Private.Infrastructure;
 
+// Disambiguate `AssemblyLoadContext` (System.Runtime.Loader type) from this file's
+// containing namespace `Uno.UI.RuntimeTests.Tests.AssemblyLoadContext`, otherwise the
+// compiler resolves bare `AssemblyLoadContext` to the namespace and emits CS0118.
+using AssemblyLoadContext = System.Runtime.Loader.AssemblyLoadContext;
+
 namespace Uno.UI.RuntimeTests.Tests.AssemblyLoadContext;
 
 /// <summary>
