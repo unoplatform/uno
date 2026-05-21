@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -312,7 +313,10 @@ public class Given_ResourceResolver_AlcRegistration
 			BindingFlags.NonPublic | BindingFlags.Static);
 		Assert.IsNotNull(field, "ResourceResolver._registeredDictionariesByUriByAlc must be present.");
 
-		var alcDict = (Dictionary<global::System.Runtime.Loader.AssemblyLoadContext, Dictionary<string, Func<ResourceDictionary>>>)field!.GetValue(null)!;
+		// Field type is ConditionalWeakTable<AssemblyLoadContext, Dictionary<string, Func<ResourceDictionary>>>
+		// so the ALC entries can be collected when the ALC is unloaded. Plain Dictionary cast fails
+		// with InvalidCastException — must use TryGetValue on the CWT instance.
+		var alcDict = (ConditionalWeakTable<global::System.Runtime.Loader.AssemblyLoadContext, Dictionary<string, Func<ResourceDictionary>>>)field!.GetValue(null)!;
 		Assert.IsTrue(alcDict.TryGetValue(alc, out var registry),
 			"The provided ALC has no entry in _registeredDictionariesByUriByAlc. " +
 			"This usually means no SG-emitted code ran in that ALC, or all its registrations " +
