@@ -1,4 +1,7 @@
-#if HAS_UNO
+// The threading check itself is platform-agnostic, but this test cannot be expressed
+// on WASM: the runtime is single-threaded, so Task.Run executes synchronously on the
+// UI thread — there is no way to call from a non-UI thread to trigger the check.
+#if HAS_UNO && !__WASM__
 using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;

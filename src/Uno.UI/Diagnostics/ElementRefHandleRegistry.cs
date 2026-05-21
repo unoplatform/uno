@@ -1,13 +1,11 @@
 #nullable enable
 
 using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
-using Uno.UI.DataBinding;
 using Uno.UI.Dispatching;
 
 namespace Uno.UI.Diagnostics;
@@ -32,7 +30,7 @@ internal sealed class ElementRefHandleRegistry : IElementRefHandleRegistry
 	}
 
 	private readonly ConditionalWeakTable<DependencyObject, RefEntry> _table = new();
-	private readonly ConcurrentDictionary<int, ManagedWeakReference> _reverse = new();
+	private readonly Dictionary<int, WeakReference<DependencyObject>> _reverse = new();
 
 	// A 32-bit counter supports ~2.1 billion unique handles per session. Diagnostic tools
 	// operate on the live visual tree of a running app — exhausting this counter would
@@ -48,17 +46,12 @@ internal sealed class ElementRefHandleRegistry : IElementRefHandleRegistry
 
 		ArgumentNullException.ThrowIfNull(element);
 
-		var entry = _table.GetValue(element, e => new RefEntry(Interlocked.Increment(ref _nextId), this));
-
-		// Note: _table.GetValue and _reverse.TryAdd are two separate operations. When
-		// DisableThreadingCheck is true, a concurrent call may observe the handle as
-		// unresolvable during the window between these two lines. This is an accepted
-		// trade-off: the threading check guarantees single-threaded access in normal use.
-		var weakRef = element is IWeakReferenceProvider provider
-			? (provider.WeakReference ?? WeakReferencePool.RentSelfWeakReference(provider))
-			: WeakReferencePool.RentWeakReference(element, element);
-
-		_reverse.TryAdd(entry.Id, weakRef);
+		var entry = _table.GetValue(element, e =>
+		{
+			var id = ++_nextId;
+			_reverse[id] = new WeakReference<DependencyObject>(e);
+			return new RefEntry(id, this);
+		});
 
 		var handle = ToBase36(entry.Id);
 
@@ -89,7 +82,7 @@ internal sealed class ElementRefHandleRegistry : IElementRefHandleRegistry
 			return false;
 		}
 
-		if (!_reverse.TryGetValue(numericId, out var mwr))
+		if (!_reverse.TryGetValue(numericId, out var weakRef))
 		{
 			if (_log.IsEnabled(LogLevel.Trace))
 			{
@@ -99,14 +92,14 @@ internal sealed class ElementRefHandleRegistry : IElementRefHandleRegistry
 			return false;
 		}
 
-		if (mwr.Target is DependencyObject target)
+		if (weakRef.TryGetTarget(out var target))
 		{
 			element = target;
 			return true;
 		}
 
 		// Lazy cleanup: object was GC'd before the RefEntry finalizer ran.
-		_reverse.TryRemove(numericId, out _);
+		_reverse.Remove(numericId);
 
 		if (_log.IsEnabled(LogLevel.Trace))
 		{
@@ -116,7 +109,7 @@ internal sealed class ElementRefHandleRegistry : IElementRefHandleRegistry
 		return false;
 	}
 
-	private void OnObjectCollected(int id) => _reverse.TryRemove(id, out _);
+	private void OnObjectCollected(int id) => _reverse.Remove(id);
 
 	private static string ToBase36(int value)
 	{
@@ -124,7 +117,7 @@ internal sealed class ElementRefHandleRegistry : IElementRefHandleRegistry
 
 		if (value <= 0)
 		{
-			// IDs are issued by Interlocked.Increment starting at 1; a non-positive value is a bug.
+			// IDs are issued by ++_nextId starting at 1; a non-positive value is a bug.
 			throw new ArgumentOutOfRangeException(nameof(value), value, "Handle ID must be positive.");
 		}
 
