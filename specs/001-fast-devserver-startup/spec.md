@@ -78,6 +78,7 @@ Today, IDE extensions and CLI launch DevServer instances independently with no a
 | [Appendix H: Manual QA](spec-appendix-h-manual-qa.md) | Scenarios requiring human testing (IDE compat, multi-instance, MCP clients, perf) |
 | [Appendix I: Workspace Resolution Matrix](spec-appendix-i-workspace-resolution-matrix.md) | Normative workspace/MCP support matrix and automated coverage audit |
 | [Appendix J: Workspace Transition Matrix](spec-appendix-j-workspace-transition-matrix.md) | Normative behavior when repo/workspace structure changes after startup |
+| [Appendix K: Windows Firewall](spec-appendix-k-windows-firewall.md) | Root cause, fix design, and QA plan for the Private-network firewall regression |
 
 ---
 
