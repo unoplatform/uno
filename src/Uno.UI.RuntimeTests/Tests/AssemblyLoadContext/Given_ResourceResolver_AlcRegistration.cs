@@ -15,11 +15,6 @@ using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Xaml;
 using Private.Infrastructure;
 
-// Disambiguate `AssemblyLoadContext` (System.Runtime.Loader type) from this file's
-// containing namespace `Uno.UI.RuntimeTests.Tests.AssemblyLoadContext`, otherwise the
-// compiler resolves bare `AssemblyLoadContext` to the namespace and emits CS0118.
-using AssemblyLoadContext = System.Runtime.Loader.AssemblyLoadContext;
-
 namespace Uno.UI.RuntimeTests.Tests.AssemblyLoadContext;
 
 /// <summary>
@@ -101,7 +96,7 @@ public class Given_ResourceResolver_AlcRegistration
 	public async Task When_DelegateFromSecondaryAlcRegistered_Then_RoutedToAlcScopedRegistry()
 	{
 		var secondaryAlcFactory = await CreateSecondaryAlcFactoryAsync();
-		var declaringAlc = AssemblyLoadContext.GetLoadContext(secondaryAlcFactory.Method.DeclaringType!.Assembly);
+		var declaringAlc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(secondaryAlcFactory.Method.DeclaringType!.Assembly);
 		Assert.AreSame(_testAlc, declaringAlc,
 			"Test precondition: the delegate's declaring type must resolve to the test's secondary ALC.");
 
@@ -147,8 +142,8 @@ public class Given_ResourceResolver_AlcRegistration
 		Func<ResourceDictionary> defaultAlcFactory = () => defaultDictionary;
 
 		Assert.AreSame(
-			AssemblyLoadContext.Default,
-			AssemblyLoadContext.GetLoadContext(defaultAlcFactory.Method.DeclaringType!.Assembly),
+			global::System.Runtime.Loader.AssemblyLoadContext.Default,
+			global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(defaultAlcFactory.Method.DeclaringType!.Assembly),
 			"Test precondition: the default-ALC factory's declaring type must resolve to the default ALC.");
 
 		// Default-ALC registration first.
@@ -304,14 +299,14 @@ public class Given_ResourceResolver_AlcRegistration
 		return (Dictionary<string, Func<ResourceDictionary>>)field!.GetValue(null)!;
 	}
 
-	private static Dictionary<string, Func<ResourceDictionary>> GetAlcRegistry(AssemblyLoadContext alc)
+	private static Dictionary<string, Func<ResourceDictionary>> GetAlcRegistry(global::System.Runtime.Loader.AssemblyLoadContext alc)
 	{
 		var field = typeof(ResourceResolver).GetField(
 			"_registeredDictionariesByUriByAlc",
 			BindingFlags.NonPublic | BindingFlags.Static);
 		Assert.IsNotNull(field, "ResourceResolver._registeredDictionariesByUriByAlc must be present.");
 
-		var alcDict = (Dictionary<AssemblyLoadContext, Dictionary<string, Func<ResourceDictionary>>>)field!.GetValue(null)!;
+		var alcDict = (Dictionary<global::System.Runtime.Loader.AssemblyLoadContext, Dictionary<string, Func<ResourceDictionary>>>)field!.GetValue(null)!;
 		Assert.IsTrue(alcDict.TryGetValue(alc, out var registry),
 			"The provided ALC has no entry in _registeredDictionariesByUriByAlc. " +
 			"This usually means no SG-emitted code ran in that ALC, or all its registrations " +
