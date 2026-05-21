@@ -79,6 +79,7 @@ public static class ElementRefHandle
 	/// </summary>
 	internal static IDisposable SetForTesting(IElementRefHandleRegistry registry)
 	{
+		ArgumentNullException.ThrowIfNull(registry);
 		var previous = Interlocked.Exchange(ref _default, registry);
 		return new RestoreScope(previous);
 	}

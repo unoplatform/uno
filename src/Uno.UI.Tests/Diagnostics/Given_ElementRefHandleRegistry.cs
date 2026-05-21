@@ -58,7 +58,8 @@ public class Given_ElementRefHandleRegistry
 		var registry = new ElementRefHandleRegistry();
 		var element = new Grid();
 
-		// Obtain the handle then clear the local strong reference.
+		// Obtain the handle via a separate no-inline frame so the JIT cannot keep
+		// additional temporary references alive on this frame's stack.
 		var handle = GetHandleAndRelease(registry, element);
 
 		// The registry must not implicitly root the object — element is still alive
