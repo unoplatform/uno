@@ -63,17 +63,20 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		protected override void Flush()
 		{
-			_ = X11Helper.XPutImage(
-				display: _x11Window.Display,
-				drawable: _x11Window.Window,
-				gc: _gc,
-				image: _xImage!.Value,
-				srcx: 0,
-				srcy: 0,
-				destx: 0,
-				desty: 0,
-				width: (uint)_width,
-				height: (uint)_height);
+			if (_xImage is { } xImage)
+			{
+				_ = X11Helper.XPutImage(
+					display: _x11Window.Display,
+					drawable: _x11Window.Window,
+					gc: _gc,
+					image: xImage,
+					srcx: 0,
+					srcy: 0,
+					destx: 0,
+					desty: 0,
+					width: (uint)_width,
+					height: (uint)_height);
+			}
 		}
 
 		public override void Dispose()
