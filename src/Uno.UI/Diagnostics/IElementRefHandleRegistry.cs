@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 
@@ -17,6 +18,7 @@ namespace Uno.UI.Diagnostics;
 public interface IElementRefHandleRegistry
 {
 	/// <inheritdoc cref="ElementRefHandle.GetOrCreate"/>
+	/// <exception cref="ArgumentNullException"><paramref name="element"/> is null.</exception>
 	string GetOrCreate(DependencyObject element);
 
 	/// <inheritdoc cref="ElementRefHandle.TryResolve"/>

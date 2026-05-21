@@ -217,7 +217,8 @@ public class Given_ElementRefHandleRegistry
 
 	private sealed class FakeRegistry : IElementRefHandleRegistry
 	{
-		public string GetOrCreate(Microsoft.UI.Xaml.DependencyObject element) => "fake";
+		public string GetOrCreate(Microsoft.UI.Xaml.DependencyObject element)
+			=> RuntimeHelpers.GetHashCode(element).ToString("x");
 		public bool TryResolve(string? handle, [NotNullWhen(true)] out Microsoft.UI.Xaml.DependencyObject? element)
 		{
 			element = null;
