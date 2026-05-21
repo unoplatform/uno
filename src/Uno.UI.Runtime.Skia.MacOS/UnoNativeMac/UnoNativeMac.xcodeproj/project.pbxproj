@@ -16,6 +16,8 @@
 		D11A81672CF523B900B3C0A5 /* UNOWebView.h in Headers */ = {isa = PBXBuildFile; fileRef = D11A81642CF523B900B3C0A5 /* UNOWebView.h */; };
 		D11A81692D09F05B00B3C0A5 /* UNOMediaPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = D11A81682D09F05400B3C0A5 /* UNOMediaPlayer.h */; };
 		D11A816B2D09F06700B3C0A5 /* UNOMediaPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = D11A816A2D09F06400B3C0A5 /* UNOMediaPlayer.m */; };
+		D1B8C7F62F03A00100000001 /* UNOSpeechRecognizer.h in Headers */ = {isa = PBXBuildFile; fileRef = D1B8C7F62F03A00100000002 /* UNOSpeechRecognizer.h */; };
+		D1B8C7F62F03A00100000003 /* UNOSpeechRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = D1B8C7F62F03A00100000004 /* UNOSpeechRecognizer.m */; };
 		D13AB8A82B5839B200693F8E /* libSkiaSharp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D13AB8A72B5839B200693F8E /* libSkiaSharp.dylib */; };
 		D18D4FAC2C2DE804003E4BBF /* UNONative.m in Sources */ = {isa = PBXBuildFile; fileRef = D18D4FAB2C2DE804003E4BBF /* UNONative.m */; };
 		D1A0651E2A7066F700101BE6 /* UNOMetalViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D1A0651D2A7066F700101BE6 /* UNOMetalViewDelegate.m */; };
@@ -39,6 +41,8 @@
 		D11A81652CF523B900B3C0A5 /* UNOWebView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNOWebView.m; sourceTree = "<group>"; };
 		D11A81682D09F05400B3C0A5 /* UNOMediaPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNOMediaPlayer.h; sourceTree = "<group>"; };
 		D11A816A2D09F06400B3C0A5 /* UNOMediaPlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNOMediaPlayer.m; sourceTree = "<group>"; };
+		D1B8C7F62F03A00100000002 /* UNOSpeechRecognizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNOSpeechRecognizer.h; sourceTree = "<group>"; };
+		D1B8C7F62F03A00100000004 /* UNOSpeechRecognizer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNOSpeechRecognizer.m; sourceTree = "<group>"; };
 		D13AB8A72B5839B200693F8E /* libSkiaSharp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSkiaSharp.dylib; path = UnoNativeMac/libSkiaSharp.dylib; sourceTree = "<group>"; };
 		D13AB8AC2B58566400693F8E /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		D18D4FAA2C2DE76F003E4BBF /* UNONative.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNONative.h; sourceTree = "<group>"; };
@@ -106,6 +110,8 @@
 				43BC95F52E618E4700902390 /* MouseButtons.h */,
 				D11A81682D09F05400B3C0A5 /* UNOMediaPlayer.h */,
 				D11A816A2D09F06400B3C0A5 /* UNOMediaPlayer.m */,
+				D1B8C7F62F03A00100000002 /* UNOSpeechRecognizer.h */,
+				D1B8C7F62F03A00100000004 /* UNOSpeechRecognizer.m */,
 				D11A81642CF523B900B3C0A5 /* UNOWebView.h */,
 				D11A81652CF523B900B3C0A5 /* UNOWebView.m */,
 				D1F248A82A67288B008A609E /* UnoNativeMac.h */,
@@ -139,6 +145,7 @@
 				A1B2C3D42F01A00100000001 /* UNOAccessibility.h in Headers */,
 				D11A81672CF523B900B3C0A5 /* UNOWebView.h in Headers */,
 				D11A81692D09F05B00B3C0A5 /* UNOMediaPlayer.h in Headers */,
+				D1B8C7F62F03A00100000001 /* UNOSpeechRecognizer.h in Headers */,
 				D1F248A92A67288B008A609E /* UnoNativeMac.h in Headers */,
 				43BC95F62E618E5400902390 /* MouseButtons.h in Headers */,
 				D1A065202A8467B200101BE6 /* UNOApplication.h in Headers */,
@@ -211,6 +218,7 @@
 				43BC95FA2E618F0900902390 /* MouseButtons.m in Sources */,
 				D1CC768B2AB9D464002A44F0 /* UNOClipboard.m in Sources */,
 				D11A816B2D09F06700B3C0A5 /* UNOMediaPlayer.m in Sources */,
+				D1B8C7F62F03A00100000003 /* UNOSpeechRecognizer.m in Sources */,
 				D116C63E2AC79876004B975F /* UNOCursor.m in Sources */,
 				D11A81662CF523B900B3C0A5 /* UNOWebView.m in Sources */,
 				D18D4FAC2C2DE804003E4BBF /* UNONative.m in Sources */,
