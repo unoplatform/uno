@@ -1078,7 +1078,7 @@ namespace Uno.UI
 			/// not resolve on another thread between those two steps.
 			/// </para>
 			/// </summary>
-			public static bool DisableThreadingCheck { get; internal set; }
+			public static bool DisableThreadingCheck { get; set; }
 		}
 
 		public static class DependencyProperty

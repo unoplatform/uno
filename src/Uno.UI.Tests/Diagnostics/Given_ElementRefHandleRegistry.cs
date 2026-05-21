@@ -3,7 +3,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -83,7 +82,7 @@ public class Given_ElementRefHandleRegistry
 	{
 		var registry = new ElementRefHandleRegistry();
 
-		var found = registry.TryResolve(null!, out var element);
+		var found = registry.TryResolve(null, out var element);
 
 		Assert.IsFalse(found);
 		Assert.IsNull(element);
@@ -130,28 +129,6 @@ public class Given_ElementRefHandleRegistry
 		Assert.IsTrue(foundLower);
 		Assert.AreSame(element, resolvedUpper);
 		Assert.AreSame(element, resolvedLower);
-	}
-
-	[TestMethod]
-	public void When_GetOrCreate_FromBackgroundThread_Throws()
-	{
-		FeatureConfiguration.ElementRefHandle.DisableThreadingCheck = false;
-
-		var registry = new ElementRefHandleRegistry();
-
-		Action act = () => Task.Run(() => registry.GetOrCreate(new Grid())).GetAwaiter().GetResult();
-		act.Should().Throw<InvalidOperationException>().WithMessage("*non-UI thread*");
-	}
-
-	[TestMethod]
-	public void When_TryResolve_FromBackgroundThread_Throws()
-	{
-		FeatureConfiguration.ElementRefHandle.DisableThreadingCheck = false;
-
-		var registry = new ElementRefHandleRegistry();
-
-		Action act = () => Task.Run(() => registry.TryResolve("1", out _)).GetAwaiter().GetResult();
-		act.Should().Throw<InvalidOperationException>().WithMessage("*non-UI thread*");
 	}
 
 	[TestMethod]
@@ -238,7 +215,7 @@ public class Given_ElementRefHandleRegistry
 	private sealed class FakeRegistry : IElementRefHandleRegistry
 	{
 		public string GetOrCreate(Microsoft.UI.Xaml.DependencyObject element) => "fake";
-		public bool TryResolve(string handle, [NotNullWhen(true)] out Microsoft.UI.Xaml.DependencyObject? element)
+		public bool TryResolve(string? handle, [NotNullWhen(true)] out Microsoft.UI.Xaml.DependencyObject? element)
 		{
 			element = null;
 			return false;

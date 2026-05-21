@@ -20,5 +20,5 @@ public interface IElementRefHandleRegistry
 	string GetOrCreate(DependencyObject element);
 
 	/// <inheritdoc cref="ElementRefHandle.TryResolve"/>
-	bool TryResolve(string handle, [NotNullWhen(true)] out DependencyObject? element);
+	bool TryResolve(string? handle, [NotNullWhen(true)] out DependencyObject? element);
 }

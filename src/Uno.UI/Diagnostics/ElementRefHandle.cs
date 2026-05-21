@@ -56,21 +56,21 @@ public static class ElementRefHandle
 	/// <summary>
 	/// Attempts to resolve a previously obtained handle back to its object.
 	/// </summary>
-	/// <param name="handle">The opaque handle string.</param>
+	/// <param name="handle">The opaque handle string. <see langword="null"/> or empty returns <see langword="false"/>.</param>
 	/// <param name="element">
 	/// When this method returns <see langword="true"/>, the live object;
 	/// otherwise <see langword="null"/>.
 	/// </param>
 	/// <returns>
 	/// <see langword="true"/> if the handle is known and the object is still alive;
-	/// <see langword="false"/> if the handle is unrecognized or the object has been
-	/// garbage-collected.
+	/// <see langword="false"/> if the handle is <see langword="null"/>, empty, unrecognized,
+	/// or the object has been garbage-collected.
 	/// </returns>
 	/// <exception cref="InvalidOperationException">
 	/// Thrown when not called from the UI thread (unless
 	/// <see cref="FeatureConfiguration.ElementRefHandle.DisableThreadingCheck"/> is set).
 	/// </exception>
-	public static bool TryResolve(string handle, [NotNullWhen(true)] out DependencyObject? element)
+	public static bool TryResolve(string? handle, [NotNullWhen(true)] out DependencyObject? element)
 		=> Volatile.Read(ref _default).TryResolve(handle, out element);
 
 	/// <summary>

@@ -70,7 +70,7 @@ internal sealed class ElementRefHandleRegistry : IElementRefHandleRegistry
 		return handle;
 	}
 
-	public bool TryResolve(string handle, [NotNullWhen(true)] out DependencyObject? element)
+	public bool TryResolve(string? handle, [NotNullWhen(true)] out DependencyObject? element)
 	{
 		if (!FeatureConfiguration.ElementRefHandle.DisableThreadingCheck && !NativeDispatcher.Main.HasThreadAccess)
 		{
