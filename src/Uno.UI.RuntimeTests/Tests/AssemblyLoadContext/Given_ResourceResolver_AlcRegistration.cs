@@ -227,9 +227,15 @@ public class Given_ResourceResolver_AlcRegistration
 		// the code path under test. Doing this rather than constructing the App avoids
 		// dragging the full application bootstrap (windows, dispatcher, etc.) into a
 		// test that only needs to observe the registry side-effects.
-		var globalStaticResourcesType = alcAppAssembly.GetType("AlcTestApp.GlobalStaticResources");
+		//
+		// The Uno XAML source generator emits GlobalStaticResources under the project's
+		// RootNamespace. AlcApp's csproj does not set <RootNamespace>, so the default is
+		// the assembly name "Uno.UI.RuntimeTests.AlcApp" — *not* the "AlcTestApp" C#
+		// namespace used by App.cs / MainPage.xaml.cs.
+		var globalStaticResourcesType = alcAppAssembly.GetType("Uno.UI.RuntimeTests.AlcApp.GlobalStaticResources");
 		Assert.IsNotNull(globalStaticResourcesType,
-			"AlcApp's SG-generated GlobalStaticResources type must be present.");
+			"AlcApp's SG-generated GlobalStaticResources type must be present at " +
+			"'Uno.UI.RuntimeTests.AlcApp.GlobalStaticResources' (RootNamespace = assembly name).");
 
 		var registerMethod = globalStaticResourcesType!.GetMethod(
 			"RegisterResourceDictionariesBySource",
