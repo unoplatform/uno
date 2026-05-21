@@ -57,7 +57,7 @@ internal static class HostAssemblyResolution
 		// Operator-facing kill switch: disables both the Resolving handler and
 		// the eager-load pass. Useful to bisect production issues that may have
 		// been introduced by the add-in isolation work.
-		if (Environment.GetEnvironmentVariable("UNO_DEVSERVER_DISABLE_ADDIN_ALC") == "1")
+		if (IsKillSwitchActive)
 		{
 			return;
 		}
@@ -97,34 +97,22 @@ internal static class HostAssemblyResolution
 	}
 
 	/// <summary>
-	/// Default file-name globs used by <see cref="EagerLoadFromDirectory"/> when
-	/// no explicit <c>patterns</c> are supplied: the OOB shared-framework assemblies
-	/// most prone to cross-major-version AssemblyRef mismatches.
+	/// File-name globs used by <see cref="EagerLoadFromDirectory"/> to pre-load
+	/// the OOB shared-framework assemblies most prone to cross-major-version
+	/// <c>AssemblyRef</c> mismatches. Pre-loading them into
+	/// <see cref="AssemblyLoadContext.Default"/> lets
+	/// <see cref="TryBridgeBySimpleName"/> serve them to any <see cref="AddInLoadContext"/>
+	/// that asks for a different major version of the same simple name.
 	/// </summary>
-	internal static readonly string[] DefaultEagerLoadPatterns =
+	internal static readonly System.Collections.Immutable.ImmutableArray<string> DefaultEagerLoadPatterns =
 	[
 		"System.*.dll",
 		"Microsoft.Extensions.*.dll",
 	];
 
 	/// <summary>
-	/// File-name globs used when pre-loading shared Uno Platform contract
-	/// assemblies from add-in directories so that all add-ins share a single
-	/// <see cref="System.Type"/> identity for licensing and other cross-add-in
-	/// types (fixes <see cref="System.IO.FileNotFoundException"/> for
-	/// <c>Uno.Licensing.Sdk.Contracts</c> when a consuming add-in cannot resolve
-	/// it through its own <c>AssemblyDependencyResolver</c>).
-	/// </summary>
-	internal static readonly string[] AddInSharedAssemblyPatterns =
-	[
-		"Uno.Licensing.*.dll",
-	];
-
-	/// <summary>
-	/// Eager-loads DLLs matching <paramref name="patterns"/> from
+	/// Eager-loads DLLs matching <see cref="DefaultEagerLoadPatterns"/> from
 	/// <paramref name="dir"/> into <see cref="AssemblyLoadContext.Default"/>.
-	/// When <paramref name="patterns"/> is <see langword="null"/> or empty the
-	/// <see cref="DefaultEagerLoadPatterns"/> are used.
 	/// </summary>
 	/// <remarks>
 	/// Idempotent: assemblies already present in <see cref="AssemblyLoadContext.Default"/>
@@ -135,14 +123,12 @@ internal static class HostAssemblyResolution
 	/// across the host/add-in boundary.
 	/// </remarks>
 	/// <returns>The number of assemblies successfully eager-loaded by this call.</returns>
-	internal static int EagerLoadFromDirectory(string dir, string[]? patterns = null)
+	internal static int EagerLoadFromDirectory(string dir)
 	{
 		if (string.IsNullOrEmpty(dir) || !System.IO.Directory.Exists(dir))
 		{
 			return 0;
 		}
-
-		var effectivePatterns = patterns is { Length: > 0 } ? patterns : DefaultEagerLoadPatterns;
 
 		// Build a set of simple names already loaded so we can skip duplicates.
 		var alreadyLoaded = new System.Collections.Generic.HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -154,8 +140,8 @@ internal static class HostAssemblyResolution
 			}
 		}
 
-		// Discover DLLs matching the requested glob patterns.
-		var candidates = effectivePatterns
+		// Discover DLLs matching the default glob patterns.
+		var candidates = DefaultEagerLoadPatterns
 			.SelectMany(p => System.IO.Directory.EnumerateFiles(dir, p));
 
 		var loaded = 0;
@@ -198,10 +184,19 @@ internal static class HostAssemblyResolution
 	/// <summary>
 	/// Attempts to satisfy <paramref name="requested"/> by returning an
 	/// already-loaded assembly from <paramref name="context"/> whose simple
-	/// name matches. Dynamic (reflection-emit) assemblies and assemblies with
-	/// an incompatible <see cref="AssemblyName.GetPublicKeyToken"/> are
-	/// skipped, preventing silent identity swaps.
+	/// name matches. Dynamic (reflection-emit) assemblies are skipped so
+	/// runtime-generated names that coincidentally collide with a real
+	/// <c>AssemblyRef</c> do not silently substitute the wrong type; and a
+	/// loaded assembly whose <see cref="System.Version"/> is strictly lower
+	/// than the requested version is rejected to prevent silent downgrades.
 	/// </summary>
+	/// <remarks>
+	/// No public-key-token comparison is performed: the host's add-in
+	/// scenario is unsigned-only on both sides (neither add-in DLLs nor
+	/// the contract assemblies they ship carry a strong name), so a PKT
+	/// check would never trigger in practice. Adding one back means
+	/// re-introducing a guard for a scenario the host never sees.
+	/// </remarks>
 	/// <returns>
 	/// The matching <see cref="Assembly"/> instance, or <c>null</c> when no
 	/// compatible candidate exists in <paramref name="context"/>.
@@ -215,8 +210,6 @@ internal static class HostAssemblyResolution
 		{
 			return null;
 		}
-
-		var requestedToken = requested.GetPublicKeyToken();
 
 		foreach (var loaded in context.Assemblies)
 		{
@@ -233,31 +226,6 @@ internal static class HostAssemblyResolution
 			if (!string.Equals(loadedName.Name, simpleName, StringComparison.OrdinalIgnoreCase))
 			{
 				continue;
-			}
-
-			// Enforce symmetric PKT policy:
-			//   - Unsigned request → only bridge to an unsigned loaded assembly.
-			//     Returning a strong-named assembly for an unsigned reference
-			//     could silently substitute a different assembly whose name
-			//     coincidentally matches.
-			//   - Signed request → loaded assembly must carry the same PKT.
-			//     Returning a differently-signed assembly would be a
-			//     security-relevant identity swap.
-			var loadedToken = loadedName.GetPublicKeyToken();
-			if (requestedToken is { Length: > 0 })
-			{
-				if (loadedToken is null || !loadedToken.AsSpan().SequenceEqual(requestedToken))
-				{
-					continue;
-				}
-			}
-			else
-			{
-				// Request is unsigned: skip any strong-named loaded assembly.
-				if (loadedToken is { Length: > 0 })
-				{
-					continue;
-				}
 			}
 
 			// Version guard: refuse to bridge when the loaded version is strictly

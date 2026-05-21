@@ -1,10 +1,11 @@
 namespace Uno.Licensing.TestContracts;
 
 /// <summary>
-/// Test stand-in for Uno.Licensing.Sdk.Contracts::ILicensingService.
-/// Named to match the "Uno.Licensing.*.dll" glob in
-/// HostAssemblyResolution.AddInSharedAssemblyPatterns so the cross-add-in
-/// type-sharing regression test exercises the real fix path.
+/// Test stand-in for <c>Uno.Licensing.Sdk.Contracts::ILicensingService</c>.
+/// The cross-add-in type-sharing regression test relies on this assembly being
+/// physically present in the provider add-in's directory but absent from every
+/// add-in's deps.json — exercising the file-system probe (step 4) in
+/// <c>AddInLoadContext.Load</c>.
 /// </summary>
 public interface ILicensingTestContract { }
 

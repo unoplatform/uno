@@ -3,22 +3,22 @@
 	<!--
 		Test contracts fixture for Uno.UI.RemoteControl.DevServer.Tests.
 
-		Mimics Uno.Licensing.Sdk.Contracts: an unsigned assembly whose simple name matches
-		the "Uno.Licensing.*.dll" glob in HostAssemblyResolution.AddInSharedAssemblyPatterns.
-
-		It is intentionally NOT produced with EnableDynamicLoading=true and is only physically
-		present in the *provider* add-in's output directory — not in the consumer's — so that
-		the regression test for cross-add-in type sharing can verify that EagerLoadFromDirectory
-		(called by AssemblyHelper before building AddInLoadContext) loads the DLL into Default
-		ALC and allows both add-ins to share a single ILicensingTestContract type identity.
+		Mimics Uno.Licensing.Sdk.Contracts: an unsigned contract assembly that is physically
+		present in the *provider* add-in's output directory but NOT in the consumer's, and
+		NOT listed in either add-in's deps.json. This reproduces the post-PR #23287 failure
+		scenario in which AddInLoadContext.Load steps 1-3 all return null because:
+		  1. The host TPA does not reference this assembly.
+		  2. AssemblyDependencyResolver only consults deps.json (which omits the entry).
+		Step 4 — the file-system probe across registered add-in directories — is what
+		recovers the load and gives both add-ins a single Type identity.
 	-->
 
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<IsPackable>false</IsPackable>
-		<!-- No EnableDynamicLoading — no deps.json; the only way to resolve this assembly
-		     at runtime is through Default ALC (via the eager-load fix). -->
+		<!-- No EnableDynamicLoading — the consuming add-ins have no deps.json entry for
+		     this assembly. Only the file-system probe in AddInLoadContext.Load can find it. -->
 	</PropertyGroup>
 
 </Project>

@@ -188,9 +188,9 @@
 			Cross-add-in shared type regression fixtures (#23287 / #23304):
 			Provider ships Uno.Licensing.TestContracts.dll in its directory;
 			Consumer does NOT (Private=false on the ProjectReference).
-			The test verifies that AssemblyHelper pre-loads Uno.Licensing.*.dll from
-			the provider directory into Default ALC before creating AddInLoadContext,
-			allowing both add-ins to share a single ILicensingTestContract type identity.
+			The contracts DLL is intentionally absent from every add-in's deps.json so the
+			test reproduces the production failure exactly: steps 1-3 of AddInLoadContext.Load
+			cannot resolve it. The file-system probe (step 4) is what makes the test green.
 		-->
 
 		<!-- Build provider (EnableDynamicLoading=false so Uno.Licensing.TestContracts is NOT in deps.json) -->
@@ -210,11 +210,11 @@
 		<!--
 			Explicitly stage Uno.Licensing.TestContracts.dll into the provider's fixture
 			directory. Without EnableDynamicLoading=true the ProjectReference does not copy
-			the DLL to the provider's bin, so we copy it manually here. The DLL matches the
-			"Uno.Licensing.*.dll" glob and must be physically present in the provider's
-			directory so EagerLoadFromDirectory can find and load it into Default ALC.
-			It is intentionally absent from the provider's deps.json so that step 3
-			(AssemblyDependencyResolver) cannot resolve it — the only path is the fix.
+			the DLL to the provider's bin, so we copy it manually here. The DLL must be
+			physically present in the provider's directory so the file-system probe (step 4
+			of AddInLoadContext.Load) can find it. It is intentionally absent from every
+			add-in's deps.json so that step 3 (AssemblyDependencyResolver) cannot resolve
+			it — the only path is the probe.
 		-->
 		<MSBuild Projects="Fixtures\Uno.Licensing.TestContracts\Uno.Licensing.TestContracts.csproj"
 		         Properties="Configuration=$(Configuration)"

@@ -131,115 +131,6 @@ public class Given_HostAssemblyResolution
 			"Microsoft.Extensions.* assemblies must be eager-loaded to bridge Logging/Configuration refs");
 	}
 
-	[TestMethod]
-	[Description("AddInSharedAssemblyPatterns must include Uno.Licensing.*.dll so that Uno.Licensing.Sdk.Contracts is pre-loaded into Default ALC and shared across add-ins.")]
-	public void AddInSharedAssemblyPatterns_ContainsUnoLicensingPattern()
-	{
-		HostAssemblyResolution.AddInSharedAssemblyPatterns.Should().Contain("Uno.Licensing.*.dll",
-			"pre-loading Uno.Licensing.*.dll from add-in directories is the fix for cross-add-in ILicensingService type-identity failures");
-	}
-
-	// ------------------------------------------------------------------ custom patterns filtering
-
-	[TestMethod]
-	[Description("When a custom patterns array is supplied, EagerLoadFromDirectory must enumerate only files matching those patterns and must NOT load files matching the default System.*/Microsoft.Extensions.* patterns.")]
-	public void EagerLoadFromDirectory_WithCustomPattern_SkipsFilesNotMatchingCustomPattern()
-	{
-		var sourceDir = System.IO.Path.GetDirectoryName(typeof(HostAssemblyResolution).Assembly.Location)!;
-
-		// Find any System.*.dll in the source dir to stage in our isolated temp dir.
-		var systemDll = System.IO.Directory
-			.EnumerateFiles(sourceDir, "System.*.dll")
-			.FirstOrDefault();
-
-		if (systemDll is null)
-		{
-			Assert.Inconclusive("No System.*.dll found in test output directory; cannot stage the test candidate.");
-			return;
-		}
-
-		var tempDir = System.IO.Path.Combine(
-			System.IO.Path.GetTempPath(),
-			"uno-custom-pattern-test-" + Guid.NewGuid().ToString("N"));
-		System.IO.Directory.CreateDirectory(tempDir);
-		try
-		{
-			System.IO.File.Copy(systemDll, System.IO.Path.Combine(tempDir, System.IO.Path.GetFileName(systemDll)));
-
-			// Call with a custom pattern that matches NOTHING in the temp dir.
-			var count = HostAssemblyResolution.EagerLoadFromDirectory(
-				tempDir,
-				["Uno.Licensing.*.dll"]);
-
-			count.Should().Be(0,
-				"a System.*.dll staged in the temp dir must not be loaded when the pattern is 'Uno.Licensing.*.dll'");
-		}
-		finally
-		{
-			try { System.IO.Directory.Delete(tempDir, recursive: true); } catch { /* best-effort */ }
-		}
-	}
-
-	[TestMethod]
-	[Description("When patterns is null, EagerLoadFromDirectory must fall back to DefaultEagerLoadPatterns and behave identically to the zero-argument overload.")]
-	public void EagerLoadFromDirectory_WithNullPatterns_FallsBackToDefaultPatterns()
-	{
-		var sourceDir = System.IO.Path.GetDirectoryName(typeof(HostAssemblyResolution).Assembly.Location)!;
-
-		// Build the set already loaded so we can find an unloaded candidate.
-		var alreadyLoaded = new System.Collections.Generic.HashSet<string>(StringComparer.OrdinalIgnoreCase);
-		foreach (var asm in System.Runtime.Loader.AssemblyLoadContext.Default.Assemblies)
-		{
-			if (!asm.IsDynamic && asm.GetName().Name is { } n)
-			{
-				alreadyLoaded.Add(n);
-			}
-		}
-
-		string? pickedFile = null;
-		foreach (var pattern in new[] { "System.*.dll", "Microsoft.Extensions.*.dll" })
-		{
-			foreach (var path in System.IO.Directory.EnumerateFiles(sourceDir, pattern))
-			{
-				if (!alreadyLoaded.Contains(System.IO.Path.GetFileNameWithoutExtension(path)))
-				{
-					pickedFile = path;
-					break;
-				}
-			}
-
-			if (pickedFile is not null) break;
-		}
-
-		if (pickedFile is null)
-		{
-			Assert.Inconclusive(
-				"No unloaded System.* or Microsoft.Extensions.* DLL found; " +
-				"null-pattern fallback cannot be exercised on this runtime.");
-			return;
-		}
-
-		var tempDir = System.IO.Path.Combine(
-			System.IO.Path.GetTempPath(),
-			"uno-null-pattern-test-" + Guid.NewGuid().ToString("N"));
-		System.IO.Directory.CreateDirectory(tempDir);
-		try
-		{
-			System.IO.File.Copy(pickedFile, System.IO.Path.Combine(tempDir, System.IO.Path.GetFileName(pickedFile)));
-
-			// null patterns → should use DefaultEagerLoadPatterns (System.* matches).
-			var count = HostAssemblyResolution.EagerLoadFromDirectory(tempDir, null);
-
-			count.Should().BeGreaterThan(0,
-				"passing null for patterns must fall back to DefaultEagerLoadPatterns, which includes System.*.dll; " +
-				"the staged '{0}' must be loaded", System.IO.Path.GetFileName(pickedFile));
-		}
-		finally
-		{
-			try { System.IO.Directory.Delete(tempDir, recursive: true); } catch { /* best-effort */ }
-		}
-	}
-
 	// ------------------------------------------------------------------ helpers
 
 	private static int CountResolvingHandlers()
@@ -269,21 +160,19 @@ public class Given_HostAssemblyResolution
 	// ------------------------------------------------------------------ returns loaded assembly
 
 	[TestMethod]
-	[Description("When the default ALC has an assembly with the requested simple name and matching PKT, TryBridgeBySimpleName must return that exact instance.")]
-	public void TryBridgeBySimpleName_ReturnsLoadedAssembly_WhenSimpleNameMatchesAndPktCompatible()
+	[Description("When the default ALC has an assembly with the requested simple name, TryBridgeBySimpleName must return that exact instance regardless of PKT (add-ins are unsigned in practice).")]
+	public void TryBridgeBySimpleName_ReturnsLoadedAssembly_WhenSimpleNameMatches()
 	{
 		// Force the assembly into Default.Assemblies.
 		var hostAssembly = typeof(System.Text.Json.JsonDocument).Assembly;
 
-		// Mirror what a compiled add-in AssemblyRef looks like: simple name + PKT.
 		var requested = new AssemblyName("System.Text.Json");
-		requested.SetPublicKeyToken(hostAssembly.GetName().GetPublicKeyToken());
 
 		var result = HostAssemblyResolution.TryBridgeBySimpleName(
 			AssemblyLoadContext.Default, requested);
 
 		result.Should().BeSameAs(hostAssembly,
-			"System.Text.Json is loaded in the default ALC and the name+PKT matches");
+			"System.Text.Json is loaded in the default ALC and the simple name matches");
 	}
 
 	// ------------------------------------------------------------------ returns null on miss
@@ -314,35 +203,13 @@ public class Given_HostAssemblyResolution
 			new AssemblyName("System.Text.Json"),
 			System.Reflection.Emit.AssemblyBuilderAccess.Run);
 
-		// Use a proper signed request (real add-in AssemblyRefs include the PKT).
 		var requested = new AssemblyName("System.Text.Json");
-		requested.SetPublicKeyToken(hostAssembly.GetName().GetPublicKeyToken());
 		var result = HostAssemblyResolution.TryBridgeBySimpleName(
 			AssemblyLoadContext.Default, requested);
 
 		result.Should().BeSameAs(hostAssembly,
 			"the bridge must return the real assembly, not a dynamic one");
 		result!.IsDynamic.Should().BeFalse("returned assembly must never be dynamic");
-	}
-
-	// ------------------------------------------------------------------ PKT symmetry
-
-	[TestMethod]
-	[Description("When the loaded assembly is strong-named but the request carries no PKT, the bridge must return null to prevent silently substituting a strong-named assembly for an unsigned reference.")]
-	public void TryBridgeBySimpleName_RejectsStrongNamedLoaded_WhenRequestedIsUnsigned()
-	{
-		// System.Text.Json is strong-named (Microsoft PKT).
-		_ = typeof(System.Text.Json.JsonDocument).Assembly;
-
-		// Request the same simple name without a PKT.
-		var requested = new AssemblyName("System.Text.Json") { Version = null };
-
-		var result = HostAssemblyResolution.TryBridgeBySimpleName(
-			AssemblyLoadContext.Default, requested);
-
-		result.Should().BeNull(
-			"a strong-named loaded assembly must not be returned for an unsigned request — " +
-			"the PKT mismatch could silently substitute the wrong assembly");
 	}
 
 	// ------------------------------------------------------------------ version downgrade
@@ -354,7 +221,6 @@ public class Given_HostAssemblyResolution
 		// Use System.Text.Encodings.Web — forced into Default by Given_AddInLoadContext.
 		var loaded = typeof(System.Text.Encodings.Web.JavaScriptEncoder).Assembly;
 		var loadedVersion = loaded.GetName().Version!;
-		var loadedPkt = loaded.GetName().GetPublicKeyToken()!;
 
 		// Request the same assembly one major version higher (simulates the
 		// add-in requesting v(N+1) while the host has only vN loaded).
@@ -363,7 +229,6 @@ public class Given_HostAssemblyResolution
 		{
 			Version = higherVersion,
 		};
-		requested.SetPublicKeyToken(loadedPkt);
 
 		var result = HostAssemblyResolution.TryBridgeBySimpleName(
 			AssemblyLoadContext.Default, requested);

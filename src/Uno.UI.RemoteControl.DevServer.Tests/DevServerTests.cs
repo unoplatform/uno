@@ -215,9 +215,9 @@ public class DevServerTests
 	[TestMethod]
 	[Retry(2, MillisecondsDelayBetweenRetries = 1000)]
 	[Description("Regression for #23304: when two add-ins share a contract assembly (e.g. Uno.Licensing.Sdk.Contracts) " +
-		"that is physically present only in the provider's directory and absent from the consumer's .deps.json, " +
-		"the host must pre-load the assembly into Default ALC (via AddInSharedAssemblyPatterns glob) so that both " +
-		"add-ins get a single ILicensingTestContract Type identity and DI resolution succeeds.")]
+		"that is physically present only in the provider's directory and absent from every add-in's .deps.json, " +
+		"the file-system probe (step 4) in AddInLoadContext.Load must locate the DLL, load it once into the shared " +
+		"AddInLoadContext, and give both add-ins a single ILicensingTestContract Type identity so DI resolution succeeds.")]
 	public async Task DevServer_ShouldResolveSharedContractAcrossAddIns_WhenContractOnlyInProviderDirectory()
 	{
 		var testAssemblyDir = Path.GetDirectoryName(typeof(DevServerTests).Assembly.Location)!;
@@ -255,25 +255,45 @@ public class DevServerTests
 
 			try
 			{
+				// Host parses --addins as a semicolon-separated path list (see
+				// Program.cs and ConfigurationExtensions.GetAddinsValue). Passing two
+				// space-separated paths would leave Microsoft.Extensions.Configuration
+				// to drop the second one as an unmatched positional argument.
 				var started = await helper.StartAsync(
 					CT,
-					extraArgs: $"--addins \"{providerDll}\" \"{consumerDll}\"");
+					extraArgs: $"--addins \"{providerDll};{consumerDll}\"");
 				helper.EnsureStarted();
 
 				started.Should().BeTrue("dev server should start with both cross-add-in fixtures loaded");
 				helper.AssertRunning();
 
-				// If the fix works: EagerLoadFromDirectory finds Uno.Licensing.TestContracts.dll in
-				// the provider's dir (matches Uno.Licensing.*.dll), loads it into Default ALC, and
-				// both add-ins bridge to the same Type. The consumer's IHostedService receives the
-				// ILicensingTestContract instance registered by the provider and writes this sentinel.
+				// If the fix works: AddInLoadContext.Load's file-system probe (step 4) finds
+				// Uno.Licensing.TestContracts.dll in the provider's directory and loads it
+				// once into the shared AddInLoadContext. Both add-ins then see the same Type
+				// identity; the consumer's IHostedService receives the ILicensingTestContract
+				// instance registered by the provider and writes its AssemblyQualifiedName
+				// to the sentinel file.
 				//
-				// Without the fix: FileNotFoundException or InvalidOperationException during add-in
-				// activation prevents the sentinel from being written.
+				// Without the fix: FileNotFoundException or InvalidOperationException during
+				// add-in activation prevents the sentinel from being written.
 				File.Exists(sentinel).Should().BeTrue(
 					"ConsumerHostedService.StartAsync must have been invoked with ILicensingTestContract " +
 					"resolved from DI, proving cross-add-in type sharing works when the contract DLL is " +
 					"only in the provider's directory");
+
+				// Stronger assertion: the sentinel contains the AQN of the contract type the
+				// consumer actually received from DI. If a regression left two distinct Type
+				// instances of ILicensingTestContract in play, DI would have failed before
+				// StartAsync ran — but as a belt-and-braces check, confirm the AQN refers to
+				// the shared contracts assembly rather than some unrelated fallback string.
+				var sentinelContent = File.ReadAllText(sentinel).Trim();
+				sentinelContent.Should().Contain(
+					"Uno.Licensing.TestContracts",
+					"the resolved contract type must come from the shared contracts assembly");
+				sentinelContent.Should().NotBe(
+					"resolved",
+					"the consumer must have received a concrete ILicensingTestContract instance whose AQN " +
+					"identifies the contracts assembly, not the placeholder string written when AQN was null");
 			}
 			finally
 			{

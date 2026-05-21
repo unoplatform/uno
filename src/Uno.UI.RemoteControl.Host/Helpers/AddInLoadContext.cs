@@ -38,6 +38,13 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 
 	private readonly AssemblyDependencyResolver[] _resolvers;
 
+	/// <summary>
+	/// Distinct directories of every registered add-in DLL. Used by step 4 of
+	/// <see cref="Load"/> to probe for a co-located <c>{simpleName}.dll</c>
+	/// when none of the other steps can satisfy the request.
+	/// </summary>
+	private readonly string[] _addInDirectories;
+
 	public AddInLoadContext(IEnumerable<string> addInPaths)
 		: base(name: "AddIns", isCollectible: false)
 	{
@@ -51,6 +58,7 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 		// caller's per-DLL try/catch and will surface there with a meaningful
 		// error.
 		var resolvers = new List<AssemblyDependencyResolver>();
+		var directories = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 		foreach (var path in addInPaths)
 		{
 			try
@@ -67,8 +75,18 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 					$"Uno.UI.RemoteControl.Host: AssemblyDependencyResolver construction failed for '{path}' " +
 					$"({ex}). Per-add-in dependency probing for this add-in will be skipped.");
 			}
+
+			// Remember the add-in's directory whether or not its dependency
+			// resolver was constructed successfully: step 4 still scans on the
+			// file system, which is independent of any deps.json.
+			var directory = Path.GetDirectoryName(path);
+			if (!string.IsNullOrEmpty(directory))
+			{
+				directories.Add(directory);
+			}
 		}
 		_resolvers = [.. resolvers];
+		_addInDirectories = [.. directories];
 	}
 
 	protected override Assembly? Load(AssemblyName assemblyName)
@@ -103,19 +121,13 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 			//    other genuinely add-in-private assemblies aren't in host TPA, so
 			//    they fall through to the plugin resolvers below.
 			//
-			// We catch both FileNotFoundException AND FileLoadException /
-			// BadImageFormatException here: TPA can match an assembly by simple
-			// name but reject the load on a strong-name / version / image
-			// mismatch (exactly the cross-major scenario this class exists to
-			// paper over). If the default ALC can't satisfy this name for any
-			// of those reasons, the add-in's own deps.json may still carry a
-			// usable copy, so we keep falling through rather than bubbling up.
+			// We catch FileNotFoundException, FileLoadException and
+			// BadImageFormatException because TPA can match an assembly by
+			// simple name but reject the load on a version / image mismatch
+			// (exactly the cross-major scenario this class exists to paper
+			// over). When that happens we keep falling through to the
+			// add-in-private resolvers and the file-system probe.
 			//
-			// We also validate the loaded assembly's PublicKeyToken against the
-			// request before returning — same identity-swap guard as step 1
-			// and the Default.Resolving handler in Program.cs. Asking by simple
-			// name alone could otherwise hand back a same-name-but-different-PKT
-			// assembly from TPA, which we'd never silently substitute elsewhere.
 			// Guard against re-entrancy: if Default's Resolving handler (or a
 			// downstream load) cycles back into this method, skip step 2 and
 			// fall through to the add-in's private resolvers.
@@ -124,43 +136,20 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 				s_inDefaultLoad.Value = true;
 				try
 				{
-					// We request by simple name + culture only — versionless / PKT-less
-					// — so the host's TPA can pick whichever copy it shipped (intent: let
-					// TPA resolution pick the host's version). The strong-name identity
-					// is validated explicitly below before we hand the assembly back.
+					// We request by simple name + culture only so the host's TPA
+					// can pick whichever copy it shipped, regardless of the add-in's
+					// compiled-against version. The only post-hoc check is the
+					// version-downgrade guard below.
 					Assembly? loaded = Default.LoadFromAssemblyName(new AssemblyName(name) { CultureInfo = assemblyName.CultureInfo });
-					var requestedToken = assemblyName.GetPublicKeyToken();
-					if (requestedToken is { Length: > 0 })
-					{
-						// Signed request: loaded assembly must carry the same PKT.
-						var loadedToken = loaded.GetName().GetPublicKeyToken();
-						if (loadedToken is null || !loadedToken.AsSpan().SequenceEqual(requestedToken))
-						{
-							loaded = null;
-						}
-					}
-					else
-					{
-						// Unsigned request: refuse a strong-named loaded assembly to match
-						// the symmetric PKT policy enforced by TryBridgeBySimpleName.
-						var loadedToken = loaded.GetName().GetPublicKeyToken();
-						if (loadedToken is { Length: > 0 })
-						{
-							loaded = null;
-						}
-					}
 
 					// Version guard: mirrors TryBridgeBySimpleName — refuse to serve a
 					// version lower than what the add-in requested.
-					if (loaded is not null)
+					var requestedVersion = assemblyName.Version;
+					var loadedVersion = loaded.GetName().Version;
+					if (requestedVersion is not null && loadedVersion is not null
+						&& loadedVersion < requestedVersion)
 					{
-						var requestedVersion = assemblyName.Version;
-						var loadedVersion = loaded.GetName().Version;
-						if (requestedVersion is not null && loadedVersion is not null
-							&& loadedVersion < requestedVersion)
-						{
-							loaded = null;
-						}
+						loaded = null;
 					}
 
 					if (loaded is not null)
@@ -170,7 +159,7 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 				}
 				catch (Exception ex) when (ex is FileNotFoundException or FileLoadException or BadImageFormatException)
 				{
-					/* not in host TPA, or found but rejected (strong-name / version / image mismatch) */
+					/* not in host TPA, or found but rejected (version / image mismatch) */
 				}
 				finally
 				{
@@ -188,6 +177,30 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 			if (path is not null)
 			{
 				return LoadFromAssemblyPath(path);
+			}
+		}
+
+		// 4. File-system probe across every registered add-in directory.
+		//    AssemblyDependencyResolver only consults .deps.json
+		//    (https://learn.microsoft.com/en-us/dotnet/api/system.runtime.loader.assemblydependencyresolver).
+		//    When a contract assembly is physically present in an add-in's directory
+		//    but absent from every add-in's deps.json (a transitive contract that
+		//    isn't surfaced as a runtime asset by the consuming packages), the first
+		//    three steps all return null and the runtime would throw
+		//    FileNotFoundException. This step mirrors the implicit directory probing
+		//    that Assembly.LoadFrom used to perform before add-in isolation was
+		//    introduced. Loading the assembly here keeps it inside this shared
+		//    AddInLoadContext, so every add-in gets the same Type identity and DI
+		//    resolution works across the add-in boundary.
+		if (name is not null)
+		{
+			foreach (var directory in _addInDirectories)
+			{
+				var candidate = Path.Combine(directory, name + ".dll");
+				if (File.Exists(candidate))
+				{
+					return LoadFromAssemblyPath(candidate);
+				}
 			}
 		}
 
