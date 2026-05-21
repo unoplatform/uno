@@ -191,6 +191,7 @@
             <Button Click="OnTopClick" Content="Top" />
             <Button Click="OnBottomClick" Content="Bottom" />
             <Button Click="OnAddItemsClick" Content="Add 20 items" />
+            <Button Click="OnRemoveExpandersClick" Content="Remove expanders" />
             <Button Click="OnClearClick" Content="Clear" />
             <Button Click="OnResetClick" Content="Reset" />
             <TextBlock

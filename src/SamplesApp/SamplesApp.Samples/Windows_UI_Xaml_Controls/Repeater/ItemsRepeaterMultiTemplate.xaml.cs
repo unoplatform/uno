@@ -131,6 +131,19 @@ public sealed partial class ItemsRepeaterMultiTemplate : Page
 		UpdateStatus();
 	}
 
+	private void OnRemoveExpandersClick(object sender, RoutedEventArgs e)
+	{
+		for (var i = _items.Count - 1; i >= 0; i--)
+		{
+			if (_items[i].ItemType == FeedItemType.DetailSection)
+			{
+				_items.RemoveAt(i);
+			}
+		}
+
+		UpdateStatus();
+	}
+
 	private void OnClearClick(object sender, RoutedEventArgs e)
 	{
 		_items.Clear();
