@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+    Minimal subset of the org.freedesktop.DBus interface used to probe for the
+    presence of well-known service names (e.g. to detect whether ibus-daemon or
+    fcitx is currently registered on the session bus before attempting to bind
+    an IME client to it).
+-->
+<node name="/" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+  <interface name="org.freedesktop.DBus">
+    <method name="NameHasOwner">
+      <arg direction="in"  type="s" name="name" />
+      <arg direction="out" type="b" name="has_owner" />
+    </method>
+  </interface>
+</node>
