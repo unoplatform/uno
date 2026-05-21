@@ -2,6 +2,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Diagnostics;
@@ -25,16 +26,18 @@ namespace Uno.UI.Diagnostics;
 /// </remarks>
 public static class ElementRefHandle
 {
+	// Read via Volatile.Read; written only through Interlocked.Exchange (in SetForTesting/RestoreScope)
+	// to guarantee visibility across threads when DisableThreadingCheck is true in test environments.
 	private static IElementRefHandleRegistry _default = new ElementRefHandleRegistry();
 
 	/// <summary>
 	/// Gets the active registry instance. Defaults to <see cref="ElementRefHandleRegistry"/>.
 	/// </summary>
 	/// <remarks>
-	/// Read-only in production. Replaced internally for testing scenarios via
-	/// <see cref="SetForTesting"/>.
+	/// Do not cache this value — it may be temporarily replaced by <see cref="SetForTesting"/>.
+	/// Always access the registry through this property or the static forwarding methods.
 	/// </remarks>
-	public static IElementRefHandleRegistry Default => _default;
+	public static IElementRefHandleRegistry Default => Volatile.Read(ref _default);
 
 	/// <summary>
 	/// Returns the opaque handle for <paramref name="element"/>,
@@ -48,7 +51,7 @@ public static class ElementRefHandle
 	/// <see cref="FeatureConfiguration.ElementRefHandle.DisableThreadingCheck"/> is set).
 	/// </exception>
 	public static string GetOrCreate(DependencyObject element)
-		=> _default.GetOrCreate(element);
+		=> Volatile.Read(ref _default).GetOrCreate(element);
 
 	/// <summary>
 	/// Attempts to resolve a previously obtained handle back to its object.
@@ -68,7 +71,7 @@ public static class ElementRefHandle
 	/// <see cref="FeatureConfiguration.ElementRefHandle.DisableThreadingCheck"/> is set).
 	/// </exception>
 	public static bool TryResolve(string handle, [NotNullWhen(true)] out DependencyObject? element)
-		=> _default.TryResolve(handle, out element);
+		=> Volatile.Read(ref _default).TryResolve(handle, out element);
 
 	/// <summary>
 	/// Replaces <see cref="Default"/> with <paramref name="registry"/> for the duration
@@ -76,13 +79,12 @@ public static class ElementRefHandle
 	/// </summary>
 	internal static IDisposable SetForTesting(IElementRefHandleRegistry registry)
 	{
-		var previous = _default;
-		_default = registry;
+		var previous = Interlocked.Exchange(ref _default, registry);
 		return new RestoreScope(previous);
 	}
 
 	private sealed class RestoreScope(IElementRefHandleRegistry previous) : IDisposable
 	{
-		public void Dispose() => _default = previous;
+		public void Dispose() => Interlocked.Exchange(ref _default, previous);
 	}
 }

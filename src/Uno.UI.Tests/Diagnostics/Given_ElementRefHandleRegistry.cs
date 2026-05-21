@@ -21,7 +21,7 @@ public class Given_ElementRefHandleRegistry
 	[TestCleanup]
 	public void Cleanup()
 	{
-		FeatureConfiguration.ElementRefHandle.DisableThreadingCheck = true;
+		FeatureConfiguration.ElementRefHandle.DisableThreadingCheck = false;
 	}
 
 	[TestMethod]

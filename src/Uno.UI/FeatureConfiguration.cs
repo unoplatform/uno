@@ -1062,13 +1062,23 @@ namespace Uno.UI
 		public static class ElementRefHandle
 		{
 			/// <summary>
-			/// Accessing the element ref handle registry isn't thread safe and should only
-			/// happen on the UI thread.
-			/// By default, attempting to access it from a non-UI thread will throw an exception.
-			/// Setting this flag to true will prevent the exception from being thrown at the risk
-			/// of having an undefined behavior and/or race conditions.
+			/// Accessing the element ref handle registry is not thread-safe and must only
+			/// happen on the UI thread. By default, attempting to access it from a non-UI
+			/// thread throws an <see cref="InvalidOperationException"/>.
+			/// <para>
+			/// Setting this to <see langword="true"/> suppresses that exception.
+			/// This is intended only for unit-test environments where a UI thread is not
+			/// available. Do not set this in production code.
+			/// </para>
+			/// <para>
+			/// When the threading check is disabled, note that <see cref="ElementRefHandleRegistry"/>
+			/// uses two separate data structures (<c>ConditionalWeakTable</c> and
+			/// <c>ConcurrentDictionary</c>) that are each individually thread-safe but are
+			/// updated in two distinct steps. A handle obtained by one thread may briefly
+			/// not resolve on another thread between those two steps.
+			/// </para>
 			/// </summary>
-			public static bool DisableThreadingCheck { get; set; }
+			public static bool DisableThreadingCheck { get; internal set; }
 		}
 
 		public static class DependencyProperty

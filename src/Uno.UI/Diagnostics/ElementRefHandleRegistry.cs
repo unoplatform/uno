@@ -33,6 +33,10 @@ internal sealed class ElementRefHandleRegistry : IElementRefHandleRegistry
 
 	private readonly ConditionalWeakTable<DependencyObject, RefEntry> _table = new();
 	private readonly ConcurrentDictionary<int, ManagedWeakReference> _reverse = new();
+
+	// A 32-bit counter supports ~2.1 billion unique handles per session. Diagnostic tools
+	// operate on the live visual tree of a running app — exhausting this counter would
+	// require registering every frame for ~8 years at 60 fps. No overflow guard needed.
 	private int _nextId;
 
 	public string GetOrCreate(DependencyObject element)
@@ -46,8 +50,13 @@ internal sealed class ElementRefHandleRegistry : IElementRefHandleRegistry
 
 		var entry = _table.GetValue(element, e => new RefEntry(Interlocked.Increment(ref _nextId), this));
 
-		var weakRef = (element as IWeakReferenceProvider)?.WeakReference
-			?? WeakReferencePool.RentSelfWeakReference((IWeakReferenceProvider)element);
+		// Note: _table.GetValue and _reverse.TryAdd are two separate operations. When
+		// DisableThreadingCheck is true, a concurrent call may observe the handle as
+		// unresolvable during the window between these two lines. This is an accepted
+		// trade-off: the threading check guarantees single-threaded access in normal use.
+		var weakRef = element is IWeakReferenceProvider provider
+			? (provider.WeakReference ?? WeakReferencePool.RentSelfWeakReference(provider))
+			: WeakReferencePool.RentWeakReference(element, element);
 
 		_reverse.TryAdd(entry.Id, weakRef);
 
@@ -74,7 +83,7 @@ internal sealed class ElementRefHandleRegistry : IElementRefHandleRegistry
 		{
 			if (_log.IsEnabled(LogLevel.Trace))
 			{
-				_log.Trace($"ElementRefHandle miss: handle={(handle ?? "(null)")} cause=unknown");
+				_log.Trace($"ElementRefHandle miss: handle={(handle ?? "(null)")} cause=invalid-format");
 			}
 
 			return false;
@@ -84,7 +93,7 @@ internal sealed class ElementRefHandleRegistry : IElementRefHandleRegistry
 		{
 			if (_log.IsEnabled(LogLevel.Trace))
 			{
-				_log.Trace($"ElementRefHandle miss: handle={handle} cause=unknown");
+				_log.Trace($"ElementRefHandle miss: handle={handle} cause=not-registered");
 			}
 
 			return false;
@@ -115,7 +124,8 @@ internal sealed class ElementRefHandleRegistry : IElementRefHandleRegistry
 
 		if (value <= 0)
 		{
-			return "0";
+			// IDs are issued by Interlocked.Increment starting at 1; a non-positive value is a bug.
+			throw new ArgumentOutOfRangeException(nameof(value), value, "Handle ID must be positive.");
 		}
 
 		Span<char> buffer = stackalloc char[8];
@@ -140,7 +150,8 @@ internal sealed class ElementRefHandleRegistry : IElementRefHandleRegistry
 			return false;
 		}
 
-		int acc = 0;
+		// Accumulate into a long to detect int overflow without exception-based control flow.
+		long acc = 0;
 
 		foreach (var ch in s)
 		{
@@ -157,17 +168,21 @@ internal sealed class ElementRefHandleRegistry : IElementRefHandleRegistry
 				return false;
 			}
 
-			try
-			{
-				checked { acc = acc * 36 + digit; }
-			}
-			catch (OverflowException)
+			acc = acc * 36 + digit;
+
+			if (acc > int.MaxValue)
 			{
 				return false;
 			}
 		}
 
-		value = acc;
+		// IDs start at 1; zero is not a valid issued handle.
+		if (acc <= 0)
+		{
+			return false;
+		}
+
+		value = (int)acc;
 		return true;
 	}
 }
