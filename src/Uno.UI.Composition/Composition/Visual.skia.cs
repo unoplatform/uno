@@ -121,12 +121,14 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	internal virtual bool CanPaint() => false;
 
 	/// <summary>
-	/// When true, this visual guarantees that everything it paints stays inside
-	/// <c>(0, 0, Size.X, Size.Y)</c> in its local coordinates. Used by the analytic drop-shadow walker
-	/// to derive an effective clip from the visual's bounds when no explicit clip is set — which in turn
-	/// drives the "skip this subtree because its max extent is inside the opaque silhouette" optimization.
-	/// Default <c>false</c>: a <see cref="Visual"/> is allowed to paint anywhere in WinUI semantics, so we
-	/// don't assume the bounds constrain it. Subclasses that genuinely respect their Size opt in.
+	/// When true, this visual guarantees that everything <em>it itself</em> paints stays inside
+	/// <c>(0, 0, Size.X, Size.Y)</c> in its local coordinates. This is a per-visual guarantee, not a
+	/// statement about the subtree — descendants may still paint anywhere. The analytic drop-shadow
+	/// walker uses it solely to decide whether <em>this visual's own</em> <c>TryAddShadowPaths</c> call
+	/// can be skipped (when Size is inside the opaque silhouette), and does not propagate Size as a clip
+	/// to children. Default <c>false</c>: a <see cref="Visual"/> is allowed to paint anywhere in WinUI
+	/// semantics, so we don't assume the bounds constrain it. Subclasses that genuinely respect their
+	/// Size opt in.
 	/// </summary>
 	internal virtual bool PaintsWithinOwnSize => false;
 
@@ -660,7 +662,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		canvas.Translate(shadow.Dx, shadow.Dy);
 
 		var pathYScale = 1f;
-		if (shadow.SigmaX.Equals(shadow.SigmaY))
+		if (!shadow.SigmaX.Equals(shadow.SigmaY) && !shadow.SigmaX.Equals(0f))
 		{
 			// SKMaskFilter only supports a single sigma. To get anisotropic device-space blur (SigmaX, SigmaY)
 			// we exploit respectCTM=true: the user-space sigma is multiplied by |CTM scale| per axis. So we
@@ -774,43 +776,62 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			hasClip = true;
 		}
 
-		// Skip optimization: if the visual's max extent is already inside the opaque silhouette, no
-		// contribution from this visual (or any of its descendants — they can't extend past this clip)
-		// would change the result. Skip the entire subtree.
-		if (hasClip && accumulator.IsFullyCovered(clipPath))
+		// Skip optimization (scoped to THIS visual, not the subtree): if the visual's own painting is
+		// guaranteed to land inside the opaque silhouette, we can skip its TryAddShadowPaths call.
+		// PaintsWithinOwnSize lets Size act as an upper bound on its painting (intersected with the
+		// effective clip). When that's not available we fall back to the effective clip itself, which is
+		// a sound upper bound when present. Either way, this only short-circuits THIS visual's
+		// contribution — children are still walked, because the Size bound is per-visual, not per-subtree.
+		var canSkipOwnContribution = false;
+		if (visual is { PaintsWithinOwnSize: true, Size: { X: > 0, Y: > 0 } size })
 		{
-			return true;
+			var sizeCandidate = _spareShadowPath;
+			sizeCandidate.Rewind();
+			sizeCandidate.AddRect(new SKRect(0, 0, size.X, size.Y));
+			sizeCandidate.Transform(toRoot);
+			if (hasClip)
+			{
+				sizeCandidate.Op(clipPath, SKPathOp.Intersect, sizeCandidate);
+			}
+			canSkipOwnContribution = accumulator.IsFullyCovered(sizeCandidate);
+		}
+		else if (hasClip)
+		{
+			canSkipOwnContribution = accumulator.IsFullyCovered(clipPath);
 		}
 
 		var combinedOpacity = opacityChain * visual.Opacity;
 
-		// scratch is always empty on entry — the previous visit clears it before recursing.
-		if (!visual.TryAddShadowPaths(scratch))
+		if (!canSkipOwnContribution)
 		{
-			return false;
-		}
-
-		foreach (var (path, alpha) in scratch)
-		{
-			var transformed = _spareShadowPath;
-			transformed.Rewind();
-			path.Transform(toRoot, transformed);
-
-			if (hasClip)
+			// scratch is always empty on entry — the previous visit clears it before recursing.
+			if (!visual.TryAddShadowPaths(scratch))
 			{
-				if (transformed.Op(clipPath, SKPathOp.Intersect, transformed) && !transformed.IsEmpty)
+				return false;
+			}
+
+			foreach (var (path, alpha) in scratch)
+			{
+				var transformed = _spareShadowPath;
+				transformed.Rewind();
+				path.Transform(toRoot, transformed);
+
+				if (hasClip)
+				{
+					if (transformed.Op(clipPath, SKPathOp.Intersect, transformed) && !transformed.IsEmpty)
+					{
+						accumulator.Add(transformed, alpha * combinedOpacity);
+					}
+				}
+				else
 				{
 					accumulator.Add(transformed, alpha * combinedOpacity);
 				}
-			}
-			else
-			{
-				accumulator.Add(transformed, alpha * combinedOpacity);
-			}
 
-			path.Dispose();
+				path.Dispose();
+			}
+			scratch.Clear();
 		}
-		scratch.Clear();
 
 		// Apply the post-painting clip to derive the clip for children. We can mutate clipPath in place —
 		// its previous value (the visual's own clip) is no longer needed past this point.
@@ -854,16 +875,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			preClipLocal.Transform(toRoot, dst);
 			return true;
 		}
-		else if (visual is { PaintsWithinOwnSize: true, Size: { X: > 0, Y: > 0 } })
-		{
-			dst.AddRect(new SKRect(0, 0, visual.Size.X, visual.Size.Y));
-			dst.Transform(toRoot);
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 
 	private Vector3 GetTotalOffset()
