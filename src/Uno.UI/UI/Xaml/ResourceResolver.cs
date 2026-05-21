@@ -857,8 +857,38 @@ namespace Uno.UI
 		/// external resource.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
 		public static void RegisterResourceDictionaryBySource(string uri, XamlParseContext context, Func<ResourceDictionary> dictionary, string filePath)
 		{
+			// Route registrations from secondary ALCs to the ALC-scoped registry rather than
+			// the global one. Without this, multiple assemblies sharing the same logical name
+			// (e.g. Uno.UI.HotDesign.Client.Core loaded in both Default and a per-sample ALC)
+			// race for the same key in `_registeredDictionariesByUri` and last-writer-wins —
+			// causing the host's Application.Resources to materialize Style/Template instances
+			// from a non-default ALC. When that ALC is later torn down, the Template's emitted
+			// Type literals become orphaned and Style lookups for them fail (no template
+			// applied → control sized 0×0). Prefer the calling-assembly's ALC; the dictionary
+			// delegate's Method.DeclaringType is the most reliable identification when the
+			// caller is the SG-emitted GlobalStaticResources.RegisterResourceDictionariesBySource.
+			var dictAlc = AssemblyLoadContext.GetLoadContext(dictionary.Method.DeclaringType?.Assembly ?? Assembly.GetCallingAssembly());
+			if (dictAlc is not null && dictAlc != AssemblyLoadContext.Default)
+			{
+				lock (_alcDictionariesLock)
+				{
+					if (!_registeredDictionariesByUriByAlc.TryGetValue(dictAlc, out var alcDict))
+					{
+						alcDict = new Dictionary<string, Func<ResourceDictionary>>(StringComparer.OrdinalIgnoreCase);
+						_registeredDictionariesByUriByAlc.Add(dictAlc, alcDict);
+					}
+					alcDict[uri] = dictionary;
+				}
+
+				// Do NOT register in the global dict for non-default ALCs — that's the bug
+				// this fix exists to prevent. We also skip the by-assembly and by-filepath
+				// caches since those are global and would have the same collision problem.
+				return;
+			}
+
 			_registeredDictionariesByUri[uri] = dictionary;
 
 			if (context != null)
