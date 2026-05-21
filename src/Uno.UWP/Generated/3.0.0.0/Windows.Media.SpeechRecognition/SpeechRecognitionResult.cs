@@ -53,8 +53,8 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 #endif
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public double RawConfidence
 		{
 			get
@@ -93,8 +93,8 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 #endif
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public string Text
 		{
 			get
@@ -103,8 +103,8 @@ namespace Windows.Media.SpeechRecognition
 			}
 		}
 #endif
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.SpeechRecognition.SpeechRecognitionResult> GetAlternates(uint maxAlternates)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionResult", "GetAlternates(uint maxAlternates)");
