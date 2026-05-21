@@ -133,21 +133,21 @@ public static class ElementRefHandle
     /// <summary>
     /// Attempts to resolve a previously obtained handle back to its object.
     /// </summary>
-    /// <param name="handle">The opaque handle string.</param>
+    /// <param name="handle">The opaque handle string. <see langword="null"/> or empty returns <see langword="false"/>.</param>
     /// <param name="element">
     /// When this method returns <see langword="true"/>, the live object;
     /// otherwise <see langword="null"/>.
     /// </param>
     /// <returns>
     /// <see langword="true"/> if the handle is known and the object is still alive;
-    /// <see langword="false"/> if the handle is unrecognized or the object has been
-    /// garbage-collected.
+    /// <see langword="false"/> if the handle is <see langword="null"/>, empty,
+    /// unrecognized, or the object has been garbage-collected.
     /// </returns>
     /// <exception cref="InvalidOperationException">
     /// Thrown when not called from the UI thread (unless
     /// <see cref="FeatureConfiguration.ElementRefHandle.DisableThreadingCheck"/> is set).
     /// </exception>
-    public static bool TryResolve(string handle, [NotNullWhen(true)] out DependencyObject? element)
+    public static bool TryResolve(string? handle, [NotNullWhen(true)] out DependencyObject? element)
         => Default.TryResolve(handle, out element);
 }
 
@@ -167,7 +167,7 @@ public interface IElementRefHandleRegistry
     string GetOrCreate(DependencyObject element);
 
     /// <inheritdoc cref="ElementRefHandle.TryResolve"/>
-    bool TryResolve(string handle, [NotNullWhen(true)] out DependencyObject? element);
+    bool TryResolve(string? handle, [NotNullWhen(true)] out DependencyObject? element);
 }
 ```
 
@@ -265,10 +265,10 @@ Located at `src/Uno.UI/Diagnostics/ElementRefHandleRegistry.cs`, namespace
 │  _table   : ConditionalWeakTable<DependencyObject, RefEntry>    │
 │              ──► forward map; GC collects entry when key dies   │
 │                                                                 │
-│  _reverse : ConcurrentDictionary<int, ManagedWeakReference>     │
+│  _reverse : ConcurrentDictionary<int, WeakReference<T>>         │
 │              ──► reverse map; cleaned lazily + by finalizer     │
 │                                                                 │
-│  _nextId  : int   (Interlocked.Increment)                       │
+│  _nextId  : int   (++, UI thread only)                          │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -291,11 +291,10 @@ if (!FeatureConfiguration.ElementRefHandle.DisableThreadingCheck
 The finalizer path is exempt (runs on finalizer thread; uses only
 `ConcurrentDictionary.TryRemove`).
 
-**Weak references**: `GetOrCreate` uses `IWeakReferenceProvider.WeakReference` when
-the object implements it (zero allocation for Uno objects); it falls back to
-`WeakReferencePool.RentSelfWeakReference`. The "rented" weak reference is never
-explicitly returned to the pool: its lifetime is bound to the registry entry, which
-is reclaimed by the GC together with the target object.
+**Weak references**: `GetOrCreate` stores a plain `WeakReference<DependencyObject>`
+per element. The reference is created inside the `ConditionalWeakTable.GetValue`
+factory (invoked at most once per element on the UI thread) so that the reverse-map
+insertion is always paired with the forward-map entry.
 
 **Logging**: traces emitted only at `Trace` level, conditioned on
 `Logger.IsEnabled(LogLevel.Trace)` to avoid cost in production. Log format uses
@@ -350,8 +349,6 @@ Design using a single, token-efficient string. The bridge code lives in
 ## 6. Tests
 
 **Location**: `src/Uno.UI.Tests/Diagnostics/Given_ElementRefHandleRegistry.cs`
-
-Pattern follows `src/Uno.UI.Tests/WeakReferencePool/Given_WeakReferencePool.cs`.
 
 | Test | Description |
 |------|-------------|

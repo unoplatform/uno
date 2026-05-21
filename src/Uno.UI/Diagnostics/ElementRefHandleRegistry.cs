@@ -1,7 +1,7 @@
 #nullable enable
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml;
@@ -30,7 +30,7 @@ internal sealed class ElementRefHandleRegistry : IElementRefHandleRegistry
 	}
 
 	private readonly ConditionalWeakTable<DependencyObject, RefEntry> _table = new();
-	private readonly Dictionary<int, WeakReference<DependencyObject>> _reverse = new();
+	private readonly ConcurrentDictionary<int, WeakReference<DependencyObject>> _reverse = new();
 
 	// A 32-bit counter supports ~2.1 billion unique handles per session. Diagnostic tools
 	// operate on the live visual tree of a running app — exhausting this counter would
@@ -99,7 +99,7 @@ internal sealed class ElementRefHandleRegistry : IElementRefHandleRegistry
 		}
 
 		// Lazy cleanup: object was GC'd before the RefEntry finalizer ran.
-		_reverse.Remove(numericId);
+		_reverse.TryRemove(numericId, out _);
 
 		if (_log.IsEnabled(LogLevel.Trace))
 		{
@@ -109,7 +109,7 @@ internal sealed class ElementRefHandleRegistry : IElementRefHandleRegistry
 		return false;
 	}
 
-	private void OnObjectCollected(int id) => _reverse.Remove(id);
+	private void OnObjectCollected(int id) => _reverse.TryRemove(id, out _);
 
 	private static string ToBase36(int value)
 	{

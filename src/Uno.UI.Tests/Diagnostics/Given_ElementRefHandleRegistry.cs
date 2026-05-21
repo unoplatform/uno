@@ -13,17 +13,20 @@ namespace Uno.UI.Tests.Diagnostics;
 [TestClass]
 public class Given_ElementRefHandleRegistry
 {
+	private bool _savedDisableThreadingCheck;
+
 	[TestInitialize]
 	public void Initialize()
 	{
 		// Unit tests run off the UI thread; opt out of the thread check globally.
+		_savedDisableThreadingCheck = FeatureConfiguration.ElementRefHandle.DisableThreadingCheck;
 		FeatureConfiguration.ElementRefHandle.DisableThreadingCheck = true;
 	}
 
 	[TestCleanup]
 	public void Cleanup()
 	{
-		FeatureConfiguration.ElementRefHandle.DisableThreadingCheck = false;
+		FeatureConfiguration.ElementRefHandle.DisableThreadingCheck = _savedDisableThreadingCheck;
 	}
 
 	[TestMethod]
