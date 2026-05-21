@@ -5,10 +5,13 @@ using Uno.UI.RemoteControl.Host.Helpers;
 namespace Uno.UI.RemoteControl.DevServer.Tests;
 
 /// <summary>
-/// Unit tests for <see cref="AddInLoadContext"/> assembly-bridging behaviour.
-/// These tests verify that Load() returns the host's already-loaded Assembly for
-/// framework and contract assemblies (step 1 of the three-step resolution chain),
-/// preserving Type identity across the host/add-in ALC boundary.
+/// Unit tests for <see cref="AddInLoadContext"/> assembly-bridging behaviour and the
+/// four-step resolution chain: (1) host-bridge via <c>Default.Assemblies</c>, (2) host
+/// TPA via <c>Default.LoadFromAssemblyName</c>, (3) per-add-in
+/// <see cref="System.Runtime.Loader.AssemblyDependencyResolver"/>, (4) file-system probe
+/// across registered add-in directories. The tests assert both happy paths and the
+/// guards (dynamic-skip, version downgrade refusal, path-traversal rejection, per-
+/// candidate load-failure isolation) that keep cross-add-in Type identity stable.
 /// </summary>
 [TestClass]
 public class Given_AddInLoadContext
@@ -277,6 +280,134 @@ public class Given_AddInLoadContext
 
 			act.Should().Throw<FileNotFoundException>(
 				"when no step (including the file-system probe) can satisfy the request, Load returns null and the runtime throws");
+		}
+		finally
+		{
+			try { Directory.Delete(tempDir, recursive: true); } catch { /* best-effort */ }
+		}
+	}
+
+	[TestMethod]
+	[Description("File-system probe must enforce the same version-downgrade guard as steps 1 and 2: a request for a higher version than the on-disk candidate's must return null rather than silently serving the older copy.")]
+	public void Load_RefusesDowngrade_WhenCandidateVersionLowerThanRequested()
+	{
+		File.Exists(StagedConsumerDll).Should().BeTrue();
+		File.Exists(StagedContractsDll).Should().BeTrue();
+
+		AssertContractsNotInDefaultAlc();
+
+		// Read the candidate's actual version so the test stays correct as the
+		// fixture's Version property evolves with the surrounding repo.
+		var candidateVersion = AssemblyName.GetAssemblyName(StagedContractsDll).Version!;
+		var higherVersion = new Version(candidateVersion.Major + 1, 0, 0, 0);
+
+		var tempDir = Path.Combine(Path.GetTempPath(), "uno-step4-version-" + Guid.NewGuid().ToString("N"));
+		Directory.CreateDirectory(tempDir);
+		try
+		{
+			var anchorPath = StageAddIn(StagedConsumerDll, tempDir, "AddInWithSharedContractConsumer.dll");
+			File.Copy(StagedContractsDll, Path.Combine(tempDir, "Uno.Licensing.TestContracts.dll"));
+
+			var ctx = new AddInLoadContext([anchorPath]);
+
+			// Ask for a strictly-higher major than what's on disk. Step 4 must NOT
+			// substitute the older copy — mirrors the symmetric downgrade guard
+			// in steps 1 and 2.
+			var requested = new AssemblyName("Uno.Licensing.TestContracts") { Version = higherVersion };
+
+			Action act = () => ctx.LoadFromAssemblyName(requested);
+
+			act.Should().Throw<FileNotFoundException>(
+				"step 4 must refuse a candidate whose version is strictly lower than the requested version " +
+				"(found v{0}, requested v{1})", candidateVersion, higherVersion);
+		}
+		finally
+		{
+			try { Directory.Delete(tempDir, recursive: true); } catch { /* best-effort */ }
+		}
+	}
+
+	[TestMethod]
+	[Description("File-system probe must load assemblies into the AddInLoadContext itself, not into Default ALC. Loading into Default would leak the contract type and break the isolation guarantee that PR #23287 set up.")]
+	public void Load_StoresProbedAssemblyInAddInLoadContext_NotInDefault()
+	{
+		File.Exists(StagedConsumerDll).Should().BeTrue();
+		File.Exists(StagedContractsDll).Should().BeTrue();
+
+		AssertContractsNotInDefaultAlc();
+
+		var tempDir = Path.Combine(Path.GetTempPath(), "uno-step4-alc-" + Guid.NewGuid().ToString("N"));
+		Directory.CreateDirectory(tempDir);
+		try
+		{
+			var anchorPath = StageAddIn(StagedConsumerDll, tempDir, "AddInWithSharedContractConsumer.dll");
+			File.Copy(StagedContractsDll, Path.Combine(tempDir, "Uno.Licensing.TestContracts.dll"));
+
+			var ctx = new AddInLoadContext([anchorPath]);
+			var resolved = ctx.LoadFromAssemblyName(new AssemblyName("Uno.Licensing.TestContracts"));
+
+			AssemblyLoadContext.GetLoadContext(resolved).Should().BeSameAs(ctx,
+				"step 4 must keep the probed assembly inside the AddInLoadContext so cross-add-in Type identity is preserved without leaking the contract into Default ALC");
+		}
+		finally
+		{
+			try { Directory.Delete(tempDir, recursive: true); } catch { /* best-effort */ }
+		}
+	}
+
+	[TestMethod]
+	[Description("File-system probe must reject malformed simple names that could escape the add-in directory via path traversal characters. The AssemblyName(string) ctor blocks separators on its own, but AssemblyName.Name has a public setter that does not — so the defensive guard inside Load is reachable through that path and worth exercising.")]
+	public void Load_RejectsPathTraversalInAssemblyName()
+	{
+		File.Exists(StagedConsumerDll).Should().BeTrue();
+
+		var tempDir = Path.Combine(Path.GetTempPath(), "uno-step4-traversal-" + Guid.NewGuid().ToString("N"));
+		Directory.CreateDirectory(tempDir);
+		try
+		{
+			var anchorPath = StageAddIn(StagedConsumerDll, tempDir, "AddInWithSharedContractConsumer.dll");
+
+			var ctx = new AddInLoadContext([anchorPath]);
+
+			// Use the Name property setter to bypass the constructor's parser.
+			var hostileName = new AssemblyName { Name = "..\\..\\foo" };
+
+			Action act = () => ctx.LoadFromAssemblyName(hostileName);
+
+			act.Should().Throw<FileNotFoundException>(
+				"step 4 must reject names that contain path separators rather than probing them");
+		}
+		finally
+		{
+			try { Directory.Delete(tempDir, recursive: true); } catch { /* best-effort */ }
+		}
+	}
+
+	[TestMethod]
+	[Description("File-system probe must isolate per-candidate load failures: a corrupt or non-managed DLL whose name matches the request must not abort the resolution chain — the runtime should see a clean FileNotFoundException as if no candidate had matched.")]
+	public void Load_SwallowsLoadFailure_AndReturnsNull_WhenCandidateCannotBeLoaded()
+	{
+		File.Exists(StagedConsumerDll).Should().BeTrue();
+
+		var tempDir = Path.Combine(Path.GetTempPath(), "uno-step4-bad-" + Guid.NewGuid().ToString("N"));
+		Directory.CreateDirectory(tempDir);
+		try
+		{
+			var anchorPath = StageAddIn(StagedConsumerDll, tempDir, "AddInWithSharedContractConsumer.dll");
+
+			// Drop a file with a .dll extension whose contents are NOT a valid managed assembly.
+			// LoadFromAssemblyPath will throw BadImageFormatException — step 4 must swallow it.
+			var badDllPath = Path.Combine(tempDir, "Not.A.Real.Assembly.dll");
+			File.WriteAllBytes(badDllPath, [0x00, 0x01, 0x02, 0x03]);
+
+			var ctx = new AddInLoadContext([anchorPath]);
+
+			Action act = () => ctx.LoadFromAssemblyName(new AssemblyName("Not.A.Real.Assembly"));
+
+			// The runtime surfaces FileNotFoundException once Load returns null — not the
+			// raw BadImageFormatException from inside step 4.
+			act.Should().Throw<FileNotFoundException>(
+				"step 4 must catch per-candidate load failures and treat them as misses so the resolution chain stays consistent");
 		}
 		finally
 		{

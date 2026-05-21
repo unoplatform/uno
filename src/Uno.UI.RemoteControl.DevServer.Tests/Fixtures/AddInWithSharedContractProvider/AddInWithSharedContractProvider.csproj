@@ -5,22 +5,24 @@
 
 		This add-in physically ships Uno.Licensing.TestContracts.dll in its output directory
 		(via the normal project reference below) and registers DefaultLicensingTestContract
-		in the DI container. It does NOT use EnableDynamicLoading=true so no .deps.json is
-		generated — forcing AssemblyDependencyResolver in AddInLoadContext to return null for
-		step 3, making the only resolution path through Default ALC (step 1).
+		in the DI container. Uno.Licensing.TestContracts is intentionally not listed in the
+		add-in's runtime asset graph (no EnableDynamicLoading, so the .deps.json that SDK
+		emits does not include the contracts assembly as a runtime asset), forcing
+		AssemblyDependencyResolver in AddInLoadContext to return null for step 3.
 
-		The fix under test: AssemblyHelper.Load pre-loads Uno.Licensing.*.dll from every
-		add-in directory into Default ALC before creating AddInLoadContext, so that
-		TryBridgeBySimpleName can serve the type to both add-ins with a single identity.
+		The fix under test: AddInLoadContext.Load step 4 probes the file system of every
+		registered add-in directory by simple name and loads the co-located DLL into the
+		shared add-in ALC, giving both add-ins a single ILicensingTestContract Type identity
+		without requiring the host to know which assemblies are shared.
 	-->
 
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<IsPackable>false</IsPackable>
-		<!-- Intentionally no EnableDynamicLoading — no .deps.json produced.
-		     Ensures step-3 (AssemblyDependencyResolver) cannot resolve Uno.Licensing.TestContracts,
-		     so the only path is through Default ALC via the eager-load fix. -->
+		<!-- Intentionally no EnableDynamicLoading — the SDK still emits a .deps.json for
+		     this add-in, but Uno.Licensing.TestContracts is not declared as a runtime asset
+		     in it, so step 3 (AssemblyDependencyResolver) cannot resolve the contracts. -->
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -29,8 +31,7 @@
 
 	<ItemGroup>
 		<!-- Private=true (default) — copies Uno.Licensing.TestContracts.dll to this add-in's
-		     output directory, making it discoverable by the Uno.Licensing.*.dll glob in
-		     HostAssemblyResolution.AddInSharedAssemblyPatterns. -->
+		     output directory, where step 4 (file-system probe) can discover it by name. -->
 		<ProjectReference Include="..\Uno.Licensing.TestContracts\Uno.Licensing.TestContracts.csproj" />
 	</ItemGroup>
 

@@ -4,25 +4,28 @@
 		Test fixture: the "consumer" side of the cross-add-in type-sharing regression test.
 
 		This add-in does NOT have Uno.Licensing.TestContracts.dll in its output directory
-		(Private=false on the project reference). It does NOT use EnableDynamicLoading=true
-		so no .deps.json is generated, meaning AssemblyDependencyResolver step 3 cannot
-		resolve Uno.Licensing.TestContracts for this add-in.
+		(Private=false on the project reference). Its own .deps.json has no runtime entry
+		for the contracts assembly either, so AssemblyDependencyResolver (step 3 of
+		AddInLoadContext.Load) cannot resolve it from the consumer's add-in directory.
 
-		Without the fix, the ILicensingTestContract parameter in ConsumerHostedService cannot
-		be resolved: type identity is broken because the DLL was never loaded into Default ALC
-		and the consumer's resolver has no deps.json entry for it.
+		Without the fix, the ILicensingTestContract parameter in ConsumerHostedService
+		cannot be resolved: the contracts DLL is not in Default ALC, not in host TPA, and
+		not in this add-in's deps.json. Steps 1-3 all return null and the runtime throws
+		FileNotFoundException during DI activation.
 
-		With the fix, AssemblyHelper pre-loads Uno.Licensing.TestContracts.dll from the
-		provider's directory into Default ALC (matching the Uno.Licensing.*.dll glob).
-		AddInLoadContext.Load step 1 (TryBridgeBySimpleName) then serves the same type
-		instance to both add-ins, so DI resolves ILicensingTestContract successfully.
+		With the fix, step 4 (file-system probe) of AddInLoadContext.Load locates the
+		DLL in the *provider* add-in's directory and loads it once into the shared add-in
+		ALC. Both add-ins then see the same ILicensingTestContract Type identity and DI
+		resolves successfully.
 	-->
 
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<IsPackable>false</IsPackable>
-		<!-- Intentionally no EnableDynamicLoading — no .deps.json produced. -->
+		<!-- Intentionally no EnableDynamicLoading — the SDK still emits a .deps.json for
+		     this add-in, but Uno.Licensing.TestContracts is not declared as a runtime asset
+		     in it. -->
 	</PropertyGroup>
 
 	<ItemGroup>

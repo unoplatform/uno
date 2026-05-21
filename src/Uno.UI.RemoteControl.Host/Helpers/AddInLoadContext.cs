@@ -39,11 +39,14 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 	private readonly AssemblyDependencyResolver[] _resolvers;
 
 	/// <summary>
-	/// Distinct directories of every registered add-in DLL. Used by step 4 of
-	/// <see cref="Load"/> to probe for a co-located <c>{simpleName}.dll</c>
-	/// when none of the other steps can satisfy the request.
+	/// Snapshot of every <c>.dll</c> co-located with a registered add-in, keyed by
+	/// simple name. Built once at construction time so step 4 of <see cref="Load"/>
+	/// is an O(1) dictionary lookup instead of a directory scan on every miss, and
+	/// so the resolution result is deterministic: when two add-in directories ship
+	/// the same simple name, the first one in the registration order wins —
+	/// independent of the host file-system enumeration order.
 	/// </summary>
-	private readonly string[] _addInDirectories;
+	private readonly Dictionary<string, string> _probeMap;
 
 	public AddInLoadContext(IEnumerable<string> addInPaths)
 		: base(name: "AddIns", isCollectible: false)
@@ -58,7 +61,9 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 		// caller's per-DLL try/catch and will surface there with a meaningful
 		// error.
 		var resolvers = new List<AssemblyDependencyResolver>();
-		var directories = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+		var orderedDirectories = new List<string>();
+		var seenDirectories = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
 		foreach (var path in addInPaths)
 		{
 			try
@@ -78,15 +83,51 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 
 			// Remember the add-in's directory whether or not its dependency
 			// resolver was constructed successfully: step 4 still scans on the
-			// file system, which is independent of any deps.json.
+			// file system, which is independent of any deps.json. Preserve the
+			// caller-supplied registration order so first-add-in-wins is stable.
 			var directory = Path.GetDirectoryName(path);
-			if (!string.IsNullOrEmpty(directory))
+			if (!string.IsNullOrEmpty(directory) && seenDirectories.Add(directory))
 			{
-				directories.Add(directory);
+				orderedDirectories.Add(directory);
 			}
 		}
+
 		_resolvers = [.. resolvers];
-		_addInDirectories = [.. directories];
+
+		// Snapshot every .dll co-located with the registered add-ins exactly once.
+		// First match wins: a DLL appearing in the first registered directory is
+		// not shadowed by a same-named file in a later directory.
+		_probeMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+		foreach (var directory in orderedDirectories)
+		{
+			IEnumerable<string> dllPaths;
+			try
+			{
+				dllPaths = Directory.EnumerateFiles(directory, "*.dll");
+			}
+			catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+			{
+				// Best-effort: an inaccessible add-in directory must not abort the
+				// whole probe snapshot; the per-add-in load will surface its own
+				// failure via AssemblyHelper's catch.
+				Console.Error.WriteLine(
+					$"Uno.UI.RemoteControl.Host: cannot enumerate add-in directory '{directory}' " +
+					$"for the file-system probe snapshot ({ex.GetType().Name}: {ex.Message}).");
+				continue;
+			}
+
+			foreach (var dllPath in dllPaths)
+			{
+				var simpleName = Path.GetFileNameWithoutExtension(dllPath);
+				if (!string.IsNullOrEmpty(simpleName))
+				{
+					// First-add-in-wins: TryAdd preserves the registration-order
+					// precedence so a later add-in can't silently shadow a contract
+					// shipped by an earlier one.
+					_probeMap.TryAdd(simpleName, dllPath);
+				}
+			}
+		}
 	}
 
 	protected override Assembly? Load(AssemblyName assemblyName)
@@ -180,10 +221,11 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 			}
 		}
 
-		// 4. File-system probe across every registered add-in directory.
-		//    AssemblyDependencyResolver only consults .deps.json
-		//    (https://learn.microsoft.com/en-us/dotnet/api/system.runtime.loader.assemblydependencyresolver).
-		//    When a contract assembly is physically present in an add-in's directory
+		// 4. File-system probe across the snapshot of DLLs co-located with the
+		//    registered add-ins. AssemblyDependencyResolver only consults
+		//    .deps.json
+		//    (https://learn.microsoft.com/en-us/dotnet/api/system.runtime.loader.assemblydependencyresolver):
+		//    when a contract assembly is physically present in an add-in's directory
 		//    but absent from every add-in's deps.json (a transitive contract that
 		//    isn't surfaced as a runtime asset by the consuming packages), the first
 		//    three steps all return null and the runtime would throw
@@ -192,20 +234,73 @@ internal sealed class AddInLoadContext : AssemblyLoadContext
 		//    introduced. Loading the assembly here keeps it inside this shared
 		//    AddInLoadContext, so every add-in gets the same Type identity and DI
 		//    resolution works across the add-in boundary.
-		if (name is not null)
+		if (name is null || !IsValidSimpleName(name))
 		{
-			foreach (var directory in _addInDirectories)
+			return null;
+		}
+
+		if (!_probeMap.TryGetValue(name, out var candidatePath))
+		{
+			return null;
+		}
+
+		// Symmetric downgrade guard with steps 1 and 2: refuse a candidate whose
+		// version is strictly lower than what the add-in requested. Reading the
+		// metadata is cheap relative to LoadFromAssemblyPath and avoids returning
+		// a silently-older copy that would later throw MissingMethodException at
+		// the first cross-assembly call.
+		var probeRequestedVersion = assemblyName.Version;
+		if (probeRequestedVersion is not null)
+		{
+			Version? candidateVersion;
+			try
 			{
-				var candidate = Path.Combine(directory, name + ".dll");
-				if (File.Exists(candidate))
-				{
-					return LoadFromAssemblyPath(candidate);
-				}
+				candidateVersion = AssemblyName.GetAssemblyName(candidatePath).Version;
+			}
+			catch (Exception ex) when (ex is FileNotFoundException or FileLoadException or BadImageFormatException or IOException)
+			{
+				// Candidate vanished or is unreadable since the snapshot was taken;
+				// fall through to a clean null so the runtime surfaces FNFE.
+				Console.Error.WriteLine(
+					$"Uno.UI.RemoteControl.Host: file-system probe could not read metadata for '{candidatePath}' " +
+					$"({ex.GetType().Name}: {ex.Message}).");
+				return null;
+			}
+
+			if (candidateVersion is not null && candidateVersion < probeRequestedVersion)
+			{
+				return null;
 			}
 		}
 
-		return null;
+		try
+		{
+			var loaded = LoadFromAssemblyPath(candidatePath);
+			Console.Error.WriteLine(
+				$"Uno.UI.RemoteControl.Host: file-system probe loaded '{name}' from '{candidatePath}'.");
+			return loaded;
+		}
+		catch (Exception ex) when (ex is FileNotFoundException or FileLoadException or BadImageFormatException)
+		{
+			// A malformed or partial DLL on disk must not abort the resolution
+			// chain — returning null lets the runtime surface a clean
+			// FileNotFoundException at the original AssemblyRef site.
+			Console.Error.WriteLine(
+				$"Uno.UI.RemoteControl.Host: file-system probe failed to load '{candidatePath}' " +
+				$"({ex.GetType().Name}: {ex.Message}).");
+			return null;
+		}
 	}
+
+	/// <summary>
+	/// Conservative filter to keep step 4 from probing names that would escape
+	/// the registered add-in directories. Add-in metadata-driven AssemblyRefs
+	/// never contain path separators, so any such name can be rejected.
+	/// </summary>
+	private static bool IsValidSimpleName(string name)
+		=> name.IndexOfAny(s_pathSeparators) < 0;
+
+	private static readonly char[] s_pathSeparators = ['/', '\\'];
 
 	protected override nint LoadUnmanagedDll(string unmanagedDllName)
 	{
