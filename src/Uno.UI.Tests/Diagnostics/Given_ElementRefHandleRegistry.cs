@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -136,10 +138,8 @@ public class Given_ElementRefHandleRegistry
 
 		var registry = new ElementRefHandleRegistry();
 
-		var ex = Assert.ThrowsException<InvalidOperationException>(
-			() => Task.Run(() => registry.GetOrCreate(new Grid())).GetAwaiter().GetResult());
-
-		Assert.IsTrue(ex.Message.Contains("non-UI thread", StringComparison.OrdinalIgnoreCase));
+		Action act = () => Task.Run(() => registry.GetOrCreate(new Grid())).GetAwaiter().GetResult();
+		act.Should().Throw<InvalidOperationException>().WithMessage("*non-UI thread*");
 	}
 
 	[TestMethod]
@@ -149,10 +149,8 @@ public class Given_ElementRefHandleRegistry
 
 		var registry = new ElementRefHandleRegistry();
 
-		var ex = Assert.ThrowsException<InvalidOperationException>(
-			() => Task.Run(() => registry.TryResolve("1", out _)).GetAwaiter().GetResult());
-
-		Assert.IsTrue(ex.Message.Contains("non-UI thread", StringComparison.OrdinalIgnoreCase));
+		Action act = () => Task.Run(() => registry.TryResolve("1", out _)).GetAwaiter().GetResult();
+		act.Should().Throw<InvalidOperationException>().WithMessage("*non-UI thread*");
 	}
 
 	[TestMethod]
