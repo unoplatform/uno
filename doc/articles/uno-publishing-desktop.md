@@ -151,3 +151,52 @@ Depending on your deployment settings, you can run the `Setup.exe` file to insta
 > [!IMPORTANT]
 > At this time, publishing with the [Visual Studio Publishing Wizard](https://learn.microsoft.com/visualstudio/deployment/quickstart-deploy-using-clickonce-folder?view=visualstudio)
 > is not supported for multi-targeted projects. Using the command line above is required.
+
+## Troubleshooting
+
+### NU1102: Unable to find package `Microsoft.NETCore.App.Runtime.Mono.win-x64`
+
+When publishing a self-contained desktop app for Windows, you may see an error similar to:
+
+```text
+error NU1102: Unable to find package Microsoft.NETCore.App.Runtime.Mono.win-x64 with version (= 10.0.x)
+  - Found N version(s) in nuget.org [ Nearest version: ... ]
+```
+
+This happens because, by default, the .NET SDK resolves the **Mono**-flavored runtime pack
+(`Microsoft.NETCore.App.Runtime.Mono.win-x64`) for the desktop target, and that pack is not
+always published on NuGet.org for every .NET servicing release. The **CoreCLR**-flavored
+runtime pack (`Microsoft.NETCore.App.Runtime.win-x64`) is published consistently and is
+generally a better fit for Windows desktop.
+
+To switch the desktop target to CoreCLR, set `UseMonoRuntime` to `false`. You can do this
+in two equivalent ways:
+
+# [**In the `.csproj`**](#tab/csproj)
+
+Scope the property to the desktop `TargetFramework` so that mobile and WebAssembly targets
+continue to use Mono:
+
+```xml
+<PropertyGroup Condition="'$(TargetFramework)' == 'net10.0-desktop'">
+  <UseMonoRuntime>false</UseMonoRuntime>
+</PropertyGroup>
+```
+
+# [**On the publish command line**](#tab/cli)
+
+```shell
+dotnet publish -f net10.0-desktop -r {{RID}} -p:SelfContained=true -p:TargetFrameworks=net10.0-desktop -p:UseMonoRuntime=false
+```
+
+***
+
+After applying the change, clear any cached restore state once and retry the publish:
+
+```shell
+dotnet nuget locals all --clear
+```
+
+> [!NOTE]
+> Only apply `UseMonoRuntime=false` to the desktop target. WebAssembly and mobile
+> (`-android`, `-ios`, `-maccatalyst`) targets still require Mono.
