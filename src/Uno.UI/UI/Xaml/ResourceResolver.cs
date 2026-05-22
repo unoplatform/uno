@@ -143,6 +143,16 @@ namespace Uno.UI
 		internal static bool ResolveResourceStatic(object key, out object value, object context = null)
 			=> TryStaticRetrieval(new SpecializedResourceDictionary.ResourceKey(key), context, out value);
 
+		// Phase 4 (D3, Mechanism 1) — theme-aware one-time resolution: resolves the named resource (and any
+		// StaticResource alias chain) against the explicitly passed owner theme rather than the process-global
+		// active theme. Used by ResourceDictionary.TryResolveAlias so a {StaticResource} alias inside a theme
+		// sub-dictionary (e.g. SystemControlFocusVisualPrimaryBrush → FocusStrokeColorOuterBrush) resolves its
+		// target in the same theme as the alias, matching WinUI's LookupThemeResource(theme, key).
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		internal static bool ResolveResourceStatic(object key, in SpecializedResourceDictionary.ResourceKey themeKey, out object value, object context = null)
+			=> TryStaticRetrieval(new SpecializedResourceDictionary.ResourceKey(key), themeKey, context, out value);
+
 		/// <summary>
 		/// Sets the default symbols font, assuming that the GlobalStaticResources have been initialized.
 		/// </summary>
@@ -257,6 +267,22 @@ namespace Uno.UI
 		internal static object ResolveTopLevelResource(SpecializedResourceDictionary.ResourceKey key, object fallbackValue = default)
 		{
 			if (TryTopLevelRetrieval(key, context: null, out var value) && value is object tValue)
+			{
+				return tValue;
+			}
+
+			return fallbackValue;
+		}
+
+		/// <summary>
+		/// Retrieve a top-level resource resolving the Light/Dark sub-dictionary against the explicitly
+		/// passed <paramref name="themeKey"/> (the resolving owner's effective theme) rather than the
+		/// process-global active theme. Mirrors WinUI resolving against <c>targetObject->GetTheme()</c>
+		/// (D3, Mechanism 1 — architecture.md §6); replaces the band-aid theme push at owner-theme call sites.
+		/// </summary>
+		internal static object ResolveTopLevelResource(SpecializedResourceDictionary.ResourceKey key, in SpecializedResourceDictionary.ResourceKey themeKey, object fallbackValue = default)
+		{
+			if (TryTopLevelRetrieval(key, themeKey, context: null, out var value) && value is object tValue)
 			{
 				return tValue;
 			}
@@ -398,8 +424,10 @@ namespace Uno.UI
 		{
 			var effectivePrecedence = precedence ?? themeRef.Precedence;
 
-			// Resolve current value from the pinned dictionary
-			var value = themeRef.RefreshValue(owner);
+			// D3 (Mechanism 1): resolve the current value from the pinned dictionary against the OWNER's
+			// effective theme (the setter target), threaded as a parameter — the style / visual-state setter
+			// call sites no longer push the element's theme onto the global stack.
+			var value = themeRef.RefreshValue(ThemeResolution.ResolveOwnerTheme(owner));
 			// MUX Reference: Theming.cpp:385-393 — SetValue uses baseValueSource (resolved precedence)
 			owner.SetValue(property, BindingPropertyHelper.Convert(property.Type, value), effectivePrecedence);
 
@@ -421,7 +449,11 @@ namespace Uno.UI
 		/// </returns>
 		internal static bool ApplyVisualStateSetter(SpecializedResourceDictionary.ResourceKey resourceKey, object context, BindingPath bindingPath, DependencyPropertyValuePrecedences precedence, ResourceUpdateReason updateReason)
 		{
-			if (TryVisualTreeRetrieval(resourceKey, context, out var value, out var providingDictionary)
+			// D3 (Mechanism 1): resolve the setter's {ThemeResource} against the TARGET element's effective theme
+			// (bindingPath.DataContext is the setter target), threaded as a parameter — the visual-state setter
+			// call site no longer pushes the element's theme onto the global stack.
+			var themeKey = ResourceDictionary.GetThemeKey(ThemeResolution.ResolveOwnerTheme(bindingPath.DataContext as DependencyObject));
+			if (TryVisualTreeRetrieval(resourceKey, themeKey, context, out var value, out var providingDictionary)
 				&& bindingPath.DataContext != null)
 			{
 				var property = DependencyProperty.GetProperty(bindingPath.DataContext.GetType(), bindingPath.LeafPropertyName);
@@ -481,6 +513,38 @@ namespace Uno.UI
 			return topLevel;
 		}
 
+		// Phase 4 (D3, Mechanism 1) — theme-aware visual-tree retrieval: select the Light/Dark sub-dictionary
+		// (incl. StaticResource aliases) against the explicitly passed owner theme rather than the process-global
+		// active theme. Used by ApplyVisualStateSetter so a visual-state setter's {ThemeResource} resolves
+		// against the setter target's effective theme.
+		private static bool TryVisualTreeRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, in SpecializedResourceDictionary.ResourceKey themeKey, object context, out object value, out ResourceDictionary providingDictionary)
+		{
+			var scope = CurrentScope.Sources.FirstOrDefault();
+
+			if (scope != null)
+			{
+				var dictionaries = (scope.Target as IDependencyObjectStoreProvider)?.Store.GetResourceDictionaries(true);
+
+				if (dictionaries != null)
+				{
+					foreach (var dict in dictionaries)
+					{
+						if (dict.TryGetValue(resourceKey, themeKey, out value, out providingDictionary, shouldCheckSystem: false))
+						{
+							return true;
+						}
+					}
+				}
+			}
+
+			var topLevel = TryTopLevelRetrieval(resourceKey, themeKey, context, out value, out providingDictionary);
+			if (!topLevel && _log.IsEnabled(LogLevel.Warning))
+			{
+				_log.LogWarning($"Couldn't statically resolve resource {resourceKey.Key}");
+			}
+			return topLevel;
+		}
+
 		// Old TryVisualTreeRetrieval overload removed - replaced by the overload
 		// that also returns the providing dictionary for theme resource pinning.
 
@@ -503,6 +567,33 @@ namespace Uno.UI
 			}
 
 			var topLevel = TryTopLevelRetrieval(resourceKey, context, out value);
+			if (!topLevel && _log.IsEnabled(LogLevel.Warning))
+			{
+				_log.LogWarning($"Couldn't statically resolve resource {resourceKey.Key}");
+			}
+			return topLevel;
+		}
+
+		/// <summary>
+		/// Try to retrieve a resource statically, selecting the Light/Dark sub-dictionary against the
+		/// explicitly passed <paramref name="themeKey"/> (the resolving owner's effective theme) rather than
+		/// the process-global active theme (D3, Mechanism 1 — architecture.md §6).
+		/// </summary>
+		internal static bool TryStaticRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, in SpecializedResourceDictionary.ResourceKey themeKey, object context, out object value)
+		{
+			foreach (var source in CurrentScope.Sources)
+			{
+				var dictionary = (source.Target as FrameworkElement)?.TryGetResources()
+					?? source.Target as ResourceDictionary;
+
+				if (dictionary != null
+					&& dictionary.TryGetValue(resourceKey, themeKey, out value, shouldCheckSystem: false))
+				{
+					return true;
+				}
+			}
+
+			var topLevel = TryTopLevelRetrieval(resourceKey, themeKey, context, out value);
 			if (!topLevel && _log.IsEnabled(LogLevel.Warning))
 			{
 				_log.LogWarning($"Couldn't statically resolve resource {resourceKey.Key}");
@@ -623,6 +714,19 @@ namespace Uno.UI
 		}
 
 		/// <summary>
+		/// Tries to retrieve a top-level resource selecting the Light/Dark sub-dictionary against the
+		/// explicitly passed <paramref name="themeKey"/> (the resolving owner's effective theme) rather than
+		/// the process-global active theme (D3, Mechanism 1 — architecture.md §6).
+		/// </summary>
+		internal static bool TryTopLevelRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, in SpecializedResourceDictionary.ResourceKey themeKey, object context, out object value)
+		{
+			value = null;
+			return (Application.Current?.Resources.TryGetValue(resourceKey, themeKey, out value, shouldCheckSystem: false) ?? false)
+				|| TryAssemblyResourceRetrieval(resourceKey, themeKey, context, out value)
+				|| TrySystemResourceRetrieval(resourceKey, themeKey, out value);
+		}
+
+		/// <summary>
 		/// Try to retrieve a resource statically, also returning the providing dictionary for theme resource pinning.
 		/// </summary>
 		internal static bool TryStaticRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value, out ResourceDictionary providingDictionary)
@@ -737,6 +841,34 @@ namespace Uno.UI
 			return false;
 		}
 
+		// Phase 4 (D3, Mechanism 1) — theme-aware providing-dictionary top-level retrieval: thread the owner's
+		// effective theme through every layer (app resources, assembly, system) and the StaticResource alias chain.
+		internal static bool TryTopLevelRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, in SpecializedResourceDictionary.ResourceKey themeKey, object context, out object value, out ResourceDictionary providingDictionary)
+		{
+			value = null;
+			providingDictionary = null;
+
+			if (Application.Current?.Resources.TryGetValue(resourceKey, themeKey, out value, out providingDictionary, shouldCheckSystem: false) ?? false)
+			{
+				return true;
+			}
+
+			// Assembly and system resources don't need pinning -- RefreshValue will fall back to TryTopLevelRetrieval
+			if (TryAssemblyResourceRetrieval(resourceKey, themeKey, context, out value))
+			{
+				providingDictionary = null;
+				return true;
+			}
+
+			if (TrySystemResourceRetrieval(resourceKey, themeKey, out value))
+			{
+				providingDictionary = null;
+				return true;
+			}
+
+			return false;
+		}
+
 		/// <summary>
 		/// Tries to retrieve a resource from the same assembly as the retrieving context. Used when parsing third-party libraries
 		/// (ie not application XAML, and not Uno.UI XAML)
@@ -783,10 +915,47 @@ namespace Uno.UI
 			return false;
 		}
 
+		// Phase 4 (D3, Mechanism 1) — theme-aware assembly-resource retrieval: select the Light/Dark
+		// sub-dictionary by the resolving owner's effective theme rather than the process-global active theme.
+		private static bool TryAssemblyResourceRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, in SpecializedResourceDictionary.ResourceKey themeKey, object context, out object value)
+		{
+			value = null;
+			if (!(context is XamlParseContext parseContext))
+			{
+				return false;
+			}
+
+			if (parseContext.AssemblyName == "Uno.UI")
+			{
+				return false;
+			}
+
+			if (parseContext.AssemblyName is not null)
+			{
+				if (_registeredDictionariesByAssembly.TryGetValue(parseContext.AssemblyName, out var assemblyDict))
+				{
+					foreach (var kvp in assemblyDict)
+					{
+						var rd = kvp.Value as ResourceDictionary;
+						if (rd.TryGetValue(resourceKey, themeKey, out value, shouldCheckSystem: false))
+						{
+							return true;
+						}
+					}
+				}
+			}
+
+			return false;
+		}
+
 		/// <summary>
 		/// Try to retrieve a resource value from system-level resources.
 		/// </summary>
 		internal static bool TrySystemResourceRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, out object value) => MasterDictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false);
+
+		// Phase 4 (D3, Mechanism 1) — theme-aware system-resource retrieval: select the Light/Dark
+		// sub-dictionary of the master dictionary by the resolving owner's effective theme.
+		internal static bool TrySystemResourceRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, in SpecializedResourceDictionary.ResourceKey themeKey, out object value) => MasterDictionary.TryGetValue(resourceKey, themeKey, out value, shouldCheckSystem: false);
 
 		internal static bool ContainsKeySystem(in SpecializedResourceDictionary.ResourceKey resourceKey) => MasterDictionary.ContainsKey(resourceKey, shouldCheckSystem: false);
 

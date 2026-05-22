@@ -110,15 +110,6 @@ internal sealed class ThemeResourceReference
 	public object? RefreshValue(Theme ownerTheme, ThemeWalkResourceCache? cache = null)
 		=> RefreshValueCore(ownerTheme, cache);
 
-	/// <summary>
-	/// Transitional overload kept for callers not yet migrated to thread the owner's theme (e.g.
-	/// ResourceResolver.ApplyThemeResource, which resolves within an active band-aid theme push).
-	/// Resolves against the process-global active theme, preserving the pre-D3 behavior.
-	/// </summary>
-	/// <remarks>The owner is no longer used for theme selection; it remains for signature continuity.</remarks>
-	public object? RefreshValue(DependencyObject? owner, ThemeWalkResourceCache? cache = null)
-		=> RefreshValueCore(ResourceDictionary.GetActiveThemeValue(), cache);
-
 	private object? RefreshValueCore(Theme theme, ThemeWalkResourceCache? cache)
 	{
 		var themeKey = ResourceDictionary.GetThemeKey(theme);
@@ -151,7 +142,7 @@ internal sealed class ThemeResourceReference
 		}
 
 		// Uno extension: Try top-level as last resort (for hot-reload/unpinned refs)
-		if (Uno.UI.ResourceResolver.TryTopLevelRetrieval(ResourceKey, ParseContext, out var topLevelValue))
+		if (Uno.UI.ResourceResolver.TryTopLevelRetrieval(ResourceKey, themeKey, ParseContext, out var topLevelValue))
 		{
 			SetResolvedValue(topLevelValue);
 			return topLevelValue;
@@ -207,7 +198,7 @@ internal sealed class ThemeResourceReference
 		}
 
 		// 3. Try top-level resources as last resort
-		if (Uno.UI.ResourceResolver.TryTopLevelRetrieval(ResourceKey, ParseContext, out var topLevelValue))
+		if (Uno.UI.ResourceResolver.TryTopLevelRetrieval(ResourceKey, themeKey, ParseContext, out var topLevelValue))
 		{
 			SetResolvedValue(topLevelValue);
 			return topLevelValue;

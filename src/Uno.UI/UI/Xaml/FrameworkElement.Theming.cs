@@ -231,94 +231,62 @@ public partial class FrameworkElement
 		var oldBaseForEvent = oldTheme == Theme.None ? appBaseTheme : oldBase;
 		bool effectiveThemeChanged = oldBaseForEvent != newBase || forceRefresh;
 
-		// 2. PUSH this element's theme to global context
-		// The push/pop is still needed because ResourceDictionary.GetActiveThemeDictionary()
-		// uses the global theme stack to determine which theme sub-dictionary to return.
-		// Even though ThemeResourceReference pins the target dictionary, the dictionary's
-		// TryGetValue still needs to know the active theme to select Light/Dark sub-dict.
-		var currentActiveTheme = ResourceDictionary.GetActiveTheme();
-		string themeKey;
-		bool needsPush;
-		if (newBase == Theme.None)
-		{
-			themeKey = currentActiveTheme.Key;
-			needsPush = false;
-		}
-		else
-		{
-			themeKey = newBase == Theme.Light ? "Light" : "Dark";
-			needsPush = !themeKey.Equals(currentActiveTheme.Key);
-		}
+		// D3 (Mechanism 1): the {ThemeResource} resolution leaf now keys on the owner's own theme
+		// (DependencyObjectStore.UpdateThemeReference → ResolveOwnerTheme), threaded as a parameter through the
+		// whole chain (dictionary, merged, system/assembly, and StaticResource aliases). No global theme push is
+		// needed: SetTheme below makes ResolveOwnerTheme(this) return the new theme for the in-walk resolution,
+		// exactly as WinUI's orchestrator-set ambient slot would (Theming.cpp:155).
 
-		if (needsPush)
+		// 3. FREEZE inherited properties first (MUX Reference: framework.cpp line 3301-3307)
+		if (RequestedTheme != ElementTheme.Default)
 		{
-			ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
+			NotifyThemeChangedForInheritedProperties(theme, freeze: true);
 		}
-
-		try
+		else if (effectiveThemeChanged)
 		{
-			// 3. FREEZE inherited properties first (MUX Reference: framework.cpp line 3301-3307)
-			if (RequestedTheme != ElementTheme.Default)
+			var parent = this.GetParent() as FrameworkElement;
+			var parentFg = parent?._themeForeground;
+			if (parentFg is not null)
 			{
-				NotifyThemeChangedForInheritedProperties(theme, freeze: true);
+				EnsureThemeForeground(parentFg);
 			}
-			else if (effectiveThemeChanged)
+			else if (_themeForeground is not null)
 			{
-				var parent = this.GetParent() as FrameworkElement;
-				var parentFg = parent?._themeForeground;
-				if (parentFg is not null)
-				{
-					EnsureThemeForeground(parentFg);
-				}
-				else if (_themeForeground is not null)
-				{
-					_themeForeground = null;
-					_isForegroundFrozen = false;
+				_themeForeground = null;
+				_isForegroundFrozen = false;
 
-					var fgProp = GetForegroundProperty();
-					if (fgProp is not null)
-					{
-						DependencyObjectExtensions.SetValue(
-							this, fgProp, DependencyProperty.UnsetValue,
-							DependencyPropertyValuePrecedences.Inheritance);
-					}
+				var fgProp = GetForegroundProperty();
+				if (fgProp is not null)
+				{
+					DependencyObjectExtensions.SetValue(
+						this, fgProp, DependencyProperty.UnsetValue,
+						DependencyPropertyValuePrecedences.Inheritance);
 				}
 			}
-
-			// 4. Persist theme BEFORE resolving theme resources.
-			//    D3 (Mechanism 1): {ThemeResource} resolution now keys on the owner's own _theme via
-			//    ThemeResolution.ResolveOwnerTheme (DependencyObjectStore.UpdateThemeReference), so _theme
-			//    must already hold the NEW theme when UpdateThemeBindings resolves below — otherwise the
-			//    walk would re-resolve against the OLD theme. (Pre-D3 SetTheme could run after
-			//    UpdateThemeBindings because resolution read the pushed ambient, not _theme.) oldTheme and
-			//    oldBase were captured at the top of this method, and PropagateThemeToChildren forwards the
-			//    passed `theme` parameter, so persisting here is safe.
-			//    MUX Reference: Theming.cpp line 155 sets m_theme; WinUI's in-walk resolution reads the
-			//    orchestrator-set ambient slot, which likewise already holds the new theme during the walk.
-			SetTheme(theme);
-
-			// 5. Update theme resources via pinned-dictionary path (resolves against the just-set _theme)
-			if (themeChanged)
-			{
-				UpdateThemeBindings(ResourceUpdateReason.ThemeResource);
-			}
-
-			// 6. Propagate to children (they may push their own context)
-			PropagateThemeToChildren(theme, forceRefresh);
-
-			// 7. Raise event LAST (MUX Reference: framework.cpp line 3317)
-			if (effectiveThemeChanged)
-			{
-				RaiseActualThemeChanged();
-			}
 		}
-		finally
+
+		// 4. Persist theme BEFORE resolving theme resources.
+		//    D3 (Mechanism 1): {ThemeResource} resolution now keys on the owner's own _theme via
+		//    ThemeResolution.ResolveOwnerTheme (DependencyObjectStore.UpdateThemeReference), so _theme
+		//    must already hold the NEW theme when UpdateThemeBindings resolves below — otherwise the
+		//    walk would re-resolve against the OLD theme. oldTheme and oldBase were captured at the top of
+		//    this method, and PropagateThemeToChildren forwards the passed `theme` parameter, so persisting
+		//    here is safe. MUX Reference: Theming.cpp line 155 sets m_theme.
+		SetTheme(theme);
+
+		// 5. Update theme resources via pinned-dictionary path (resolves against the just-set _theme)
+		if (themeChanged)
 		{
-			// 8. POP the global context
-			if (needsPush)
-			{
-				ResourceDictionary.PopRequestedThemeForSubTree();
-			}
+			UpdateThemeBindings(ResourceUpdateReason.ThemeResource);
+		}
+
+		// 6. Propagate to children
+		PropagateThemeToChildren(theme, forceRefresh);
+
+		// 7. Raise event LAST (MUX Reference: framework.cpp line 3317)
+		if (effectiveThemeChanged)
+		{
+			RaiseActualThemeChanged();
 		}
 	}
 
@@ -458,33 +426,28 @@ public partial class FrameworkElement
 				}
 			}
 
-			// Resolve the theme's default text foreground brush
-			var themeKey = Theming.GetBaseValue(theme) == Theme.Light ? "Light" : "Dark";
-			ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
-			try
+			// Resolve the theme's default text foreground brush against the element's OWN theme (D3,
+			// Mechanism 1): pass the theme key into the lookup instead of pushing it onto the global stack.
+			// MUX: CFrameworkElement::NotifyThemeChangedForInheritedProperties resolves the default text
+			// foreground from the element's theme (framework.cpp:3401-3492).
+			var themeKey = ResourceDictionary.GetThemeKey(theme);
+			var brush = (Brush)ResourceResolver.ResolveTopLevelResource(
+				"DefaultTextForegroundThemeBrush", themeKey, null);
+			if (brush is not null)
 			{
-				var brush = (Brush)ResourceResolver.ResolveTopLevelResource(
-					"DefaultTextForegroundThemeBrush", null);
-				if (brush is not null)
-				{
-					// Always store for child inheritance (popup content, template children)
-					_themeForeground = brush;
-					_isForegroundFrozen = true;
+				// Always store for child inheritance (popup content, template children)
+				_themeForeground = brush;
+				_isForegroundFrozen = true;
 
-					// Only set the DP when Foreground isn't already set by a higher
-					// precedence (local/style). This matches WinUI's skip behavior
-					// while preserving _themeForeground for child propagation.
-					if (foregroundProperty is not null && !skipSetValue)
-					{
-						this.SetValue(
-							foregroundProperty, brush,
-							DependencyPropertyValuePrecedences.Inheritance);
-					}
+				// Only set the DP when Foreground isn't already set by a higher
+				// precedence (local/style). This matches WinUI's skip behavior
+				// while preserving _themeForeground for child propagation.
+				if (foregroundProperty is not null && !skipSetValue)
+				{
+					this.SetValue(
+						foregroundProperty, brush,
+						DependencyPropertyValuePrecedences.Inheritance);
 				}
-			}
-			finally
-			{
-				ResourceDictionary.PopRequestedThemeForSubTree();
 			}
 		}
 		else

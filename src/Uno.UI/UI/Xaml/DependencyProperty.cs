@@ -639,56 +639,21 @@ namespace Microsoft.UI.Xaml
 		// rather than the app's active theme.
 		private static object ResolveFocusVisualBrushDefault(DependencyObject referenceObject, string resourceKey)
 		{
-			var themeKey = GetEffectiveThemeKey(referenceObject);
-			var activeTheme = ResourceDictionary.GetActiveTheme();
-			var needsPush = themeKey is not null && !themeKey.Equals(activeTheme.Key);
-
-			if (needsPush)
+			// Resolve the focus-visual default brush against the target's OWN effective theme (D3,
+			// Mechanism 1): pass the theme key into the lookup instead of pushing it onto the global
+			// stack. Matches CDependencyProperty::GetDefaultFocusVisualBrush resolving against
+			// targetObject->GetTheme() (DependencyProperty.cpp:131-150, 309-345).
+			// Port of CDependencyProperty::GetDefaultFocusVisualBrush (microsoft-ui-xaml2
+			// DependencyProperty.cpp:309-353): resolve the focus-visual brush against the target element's OWN
+			// effective theme (targetObject->GetTheme()), not the app/ambient theme. WinUI threads the theme
+			// through the entire resolution via core->LookupThemeResource(theme, key); Uno threads it as the
+			// themeKey parameter, which now also follows the {StaticResource} alias
+			// (SystemControlFocusVisualPrimaryBrush → FocusStrokeColorOuterBrush) into the matching theme
+			// sub-dictionary, so the resolved brush carries the element theme's color.
+			var themeKey = ResourceDictionary.GetThemeKey(ThemeResolution.ResolveOwnerTheme(referenceObject));
+			if (ResourceResolver.TryStaticRetrieval(resourceKey, themeKey, null, out var brush))
 			{
-				ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
-			}
-
-			try
-			{
-				if (ResourceResolver.TryStaticRetrieval(resourceKey, null, out var brush))
-				{
-					return brush;
-				}
-			}
-			finally
-			{
-				if (needsPush)
-				{
-					ResourceDictionary.PopRequestedThemeForSubTree();
-				}
-			}
-
-			return null;
-		}
-
-		// Returns the base theme key ("Light"/"Dark") that applies to the element,
-		// mirroring FrameworkElement.ActualTheme's resolution: prefer the element's
-		// own _theme (set during the theme walk), then fall back to the application
-		// theme. Returns null when neither is available.
-		private static string GetEffectiveThemeKey(DependencyObject referenceObject)
-		{
-			if (referenceObject is UIElement element)
-			{
-				var baseTheme = Theming.GetBaseValue(element.GetTheme());
-				if (baseTheme == Theme.None)
-				{
-					baseTheme = Theming.FromElementTheme(
-						Application.Current?.ActualElementTheme ?? ElementTheme.Light);
-				}
-
-				if (baseTheme == Theme.Light)
-				{
-					return "Light";
-				}
-				if (baseTheme == Theme.Dark)
-				{
-					return "Dark";
-				}
+				return brush;
 			}
 
 			return null;

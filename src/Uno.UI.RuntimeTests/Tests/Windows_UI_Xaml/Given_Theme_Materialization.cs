@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
@@ -607,6 +608,31 @@ public class Given_Theme_Materialization
 		await WindowHelper.WaitForLoaded(fallback);
 		Assert.AreEqual(LightSentinel, ColorOf(fallback),
 			"Under app Light, resolution should use the Light entry, not the dark Default fallback.");
+	}
+
+	// ---- §B leak-check guard — no global theme stack reintroduced (Phase 4) ----
+
+	[TestMethod]
+	public void When_Phase4_Global_Theme_Stack_Removed_Guard()
+	{
+		// tests.md §B: Phase 4 deleted the process-global requested-theme stack and the band-aid push API.
+		// This reflection guard fails if PushRequestedThemeForSubTree (or the _requestedThemeForSubTree stack)
+		// is reintroduced — preventing a regression back to global-ambient theme selection. Sibling/context
+		// isolation without the stack is covered by Given_ElementTheme's "Context Isolation" tests; non-FE
+		// owner theming by When_ThemeResource_On_NonFE_DependencyObject_*.
+		const BindingFlags allStatic = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
+		const BindingFlags allMembers = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance;
+
+		var resourceDictionary = typeof(ResourceDictionary);
+		Assert.IsNull(resourceDictionary.GetMethod("PushRequestedThemeForSubTree", allStatic),
+			"ResourceDictionary.PushRequestedThemeForSubTree must not be reintroduced (Phase 4 removed the global theme stack).");
+		Assert.IsNull(resourceDictionary.GetMethod("PushRequestedThemeForSubTreeByName", allStatic),
+			"ResourceDictionary.PushRequestedThemeForSubTreeByName must not be reintroduced.");
+
+		var themes = resourceDictionary.GetNestedType("Themes", BindingFlags.NonPublic);
+		Assert.IsNotNull(themes, "ResourceDictionary.Themes should still exist (it holds the app-level Active theme).");
+		Assert.IsNull(themes.GetField("_requestedThemeForSubTree", allMembers),
+			"Themes._requestedThemeForSubTree stack must not be reintroduced.");
 	}
 #endif
 }

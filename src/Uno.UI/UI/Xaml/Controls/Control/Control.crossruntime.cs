@@ -23,6 +23,13 @@ public partial class Control
 
 		if (@params.IsLive)
 		{
+			// MUX reference (CControl::EnterImpl): WinUI applies the built-in (lightweight) style here, and
+			// because that can resolve nested {ThemeResource}s, it temporarily sets the element's theme on the
+			// core's subtree-theme slot. Uno does NOT port this block 1:1: built-in/default styles are applied
+			// via FrameworkElement.OnLoadingPartial → ApplyStyles()/ApplyDefaultStyle(), and the theme push is
+			// obsolete after Phase 4 — built-in-style {ThemeResource}s resolve against the owner's effective
+			// theme (ThemeResolution.ResolveOwnerTheme), threaded through the resolution chain (D3, Mechanism 1).
+			// The original WinUI block is kept below verbatim as a reference only.
 			// if (SupportsBuiltInStyles() && !m_fIsBuiltInStyleApplied)
 			// {
 			// 	// When we apply the built-in style, we may resolve theme resources in doing so

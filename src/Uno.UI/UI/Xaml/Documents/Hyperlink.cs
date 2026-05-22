@@ -232,63 +232,36 @@ namespace Microsoft.UI.Xaml.Documents
 
 		internal void SetCurrentForeground()
 		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
-			// MUX Reference: Hyperlink.cpp UpdateForegroundColor uses GetContext()->LookupThemeResource(theme, ...)
-			// to resolve resources with the element's theme. We push the containing element's theme
-			// onto the resource stack so Application.Current.Resources.TryGetValue resolves with the
-			// correct theme, especially when called from pointer events outside theme propagation.
-			var needsPush = false;
-			var containingFe = GetContainingFrameworkElement();
-			if (containingFe is not null)
-			{
-				var theme = containingFe.GetTheme();
-				if (theme != Theme.None)
-				{
-					var themeKey = Theming.GetBaseValue(theme) == Theme.Light ? "Light" : "Dark";
-					var currentActiveTheme = ResourceDictionary.GetActiveTheme();
-					if (!themeKey.Equals(currentActiveTheme.Key))
-					{
-						ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
-						needsPush = true;
-					}
-				}
-			}
-#endif
+			// Resolve the pointer-state foreground brushes against the containing element's OWN effective
+			// theme (D3, Mechanism 1): pass the theme key into the lookup instead of pushing it onto the
+			// global stack. MUX: Hyperlink.cpp UpdateForegroundColor resolves via
+			// GetContext()->LookupThemeResource(theme, ...) using the element's theme. On platforms without
+			// an established per-object theme, ResolveOwnerTheme falls back to the app theme, as before.
+			var ownerThemeKey = ResourceDictionary.GetThemeKey(
+				ThemeResolution.ResolveOwnerTheme(GetContainingFrameworkElement()));
 
-			try
+			if (_pressedPointer is { }
+				&& Application.Current.Resources.TryGetValue(HyperlinkForegroundPressedKey, ownerThemeKey, out var pressedBrush, shouldCheckSystem: true))
 			{
-				if (_pressedPointer is { }
-					&& Application.Current.Resources.TryGetValue(HyperlinkForegroundPressedKey, out var pressedBrush))
-				{
-					this.SetValue(ForegroundProperty, pressedBrush, DependencyPropertyValuePrecedences.Animations);
-				}
-				else if (_hoveredPointer is { }
-					&& Application.Current.Resources.TryGetValue(HyperlinkForegroundPointerOverKey, out var hoveredBrush))
-				{
-					this.SetValue(ForegroundProperty, hoveredBrush, DependencyPropertyValuePrecedences.Animations);
-				}
-				else // normal
-				{
-					// this is close, although not identical, to what the WinUI source does
-					this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
-					if (this.GetCurrentHighestValuePrecedence(ForegroundProperty) == DependencyPropertyValuePrecedences.Local)
-					{
-						this.SetValue(ForegroundProperty, this.GetValue(ForegroundProperty), DependencyPropertyValuePrecedences.Animations);
-					}
-					else if (Application.Current.Resources.TryGetValue(HyperlinkForeground, out var defaultBrush))
-					{
-						this.SetValue(ForegroundProperty, defaultBrush, DependencyPropertyValuePrecedences.Animations);
-					}
-				}
+				this.SetValue(ForegroundProperty, pressedBrush, DependencyPropertyValuePrecedences.Animations);
 			}
-			finally
+			else if (_hoveredPointer is { }
+				&& Application.Current.Resources.TryGetValue(HyperlinkForegroundPointerOverKey, ownerThemeKey, out var hoveredBrush, shouldCheckSystem: true))
 			{
-#if UNO_HAS_ENHANCED_LIFECYCLE
-				if (needsPush)
+				this.SetValue(ForegroundProperty, hoveredBrush, DependencyPropertyValuePrecedences.Animations);
+			}
+			else // normal
+			{
+				// this is close, although not identical, to what the WinUI source does
+				this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
+				if (this.GetCurrentHighestValuePrecedence(ForegroundProperty) == DependencyPropertyValuePrecedences.Local)
 				{
-					ResourceDictionary.PopRequestedThemeForSubTree();
+					this.SetValue(ForegroundProperty, this.GetValue(ForegroundProperty), DependencyPropertyValuePrecedences.Animations);
 				}
-#endif
+				else if (Application.Current.Resources.TryGetValue(HyperlinkForeground, ownerThemeKey, out var defaultBrush, shouldCheckSystem: true))
+				{
+					this.SetValue(ForegroundProperty, defaultBrush, DependencyPropertyValuePrecedences.Animations);
+				}
 			}
 		}
 

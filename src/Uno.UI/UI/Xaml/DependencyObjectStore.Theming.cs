@@ -268,10 +268,6 @@ public partial class DependencyObjectStore
 			var ownerTheme = ThemeResolution.ResolveOwnerTheme(owner);
 			var ownerThemeKey = ResourceDictionary.GetThemeKey(ownerTheme);
 
-			// Transitional Mechanism-1 equivalence proof (architecture.md §6): record any divergence between
-			// the owner theme and what the legacy global stack would have produced. Removed in Phase 4.
-			ThemeResolution.RecordOwnerThemeDivergence(owner, ownerThemeKey);
-
 			// Phase A: Ancestor walk (WinUI: FindNextResolvedValueNoRef → ScopedResources::TraverseVisualTreeResources)
 			// If element is active, walk ancestor ResourceDictionaries to find
 			// the resource. This handles re-parenting correctly.
@@ -564,10 +560,19 @@ public partial class DependencyObjectStore
 		{
 			dictionariesInScope ??= GetResourceDictionaries(includeAppResources: false, resourceContextProvider, containingDictionary).ToArray();
 
+			// D3 (Mechanism 1): resolve deferred/unpinned {ThemeResource} (and theme-sensitive
+			// {StaticResource}) bindings against the OWNER's effective theme instead of the process-global
+			// active theme. This is the same owner theme the choke point UpdateThemeReference uses; threading
+			// it here replaces the band-aid theme push that used to wrap this load-time tree walk
+			// (architecture.md §5 #1/#3/#8) with an equivalent parameter — no global mutable state. For a
+			// non-FrameworkElement owner, the injected FE resource context supplies the theme.
+			var themeOwner = ActualInstance as FrameworkElement ?? resourceContextProvider ?? ActualInstance;
+			var ownerTheme = ThemeResolution.ResolveOwnerTheme(themeOwner);
+
 			var bindings = _resourceBindings.GetAllBindings();
 			foreach (var binding in bindings)
 			{
-				InnerUpdateResourceBindings(updateReason, dictionariesInScope, binding.Property, binding.Binding);
+				InnerUpdateResourceBindings(updateReason, dictionariesInScope, ownerTheme, binding.Property, binding.Binding);
 			}
 		}
 
@@ -582,11 +587,11 @@ public partial class DependencyObjectStore
 	/// See https://github.com/dotnet/runtime/issues/56309
 	/// </remarks>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private void InnerUpdateResourceBindings(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
+	private void InnerUpdateResourceBindings(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, Theme ownerTheme, DependencyProperty property, ResourceBinding binding)
 	{
 		try
 		{
-			InnerUpdateResourceBindingsUnsafe(updateReason, dictionariesInScope, property, binding);
+			InnerUpdateResourceBindingsUnsafe(updateReason, dictionariesInScope, ownerTheme, property, binding);
 		}
 		catch (Exception e)
 		{
@@ -603,13 +608,17 @@ public partial class DependencyObjectStore
 	/// See https://github.com/dotnet/runtime/issues/56309
 	/// </remarks>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private void InnerUpdateResourceBindingsUnsafe(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
+	private void InnerUpdateResourceBindingsUnsafe(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, Theme ownerTheme, DependencyProperty property, ResourceBinding binding)
 	{
 		if ((binding.UpdateReason & updateReason) == ResourceUpdateReason.None)
 		{
 			// If the reason for the update doesn't match the reason(s) that the binding was created for, don't update it
 			return;
 		}
+
+		// D3 (Mechanism 1): select the Light/Dark sub-dictionary by the owner's effective theme passed from
+		// UpdateResourceBindings, not the process-global active theme — replaces the band-aid push.
+		var ownerThemeKey = ResourceDictionary.GetThemeKey(ownerTheme);
 
 		// Note: we intentionally do NOT skip theme resource bindings here even though
 		// Phase 1 (UpdateAllThemeReferences) may have already resolved them. The Phase 2
@@ -633,7 +642,7 @@ public partial class DependencyObjectStore
 			var wasSet = false;
 			foreach (var dict in dictionariesInScope)
 			{
-				if (dict.TryGetValue(binding.ResourceKey, out var value, out var providingDict, shouldCheckSystem: false))
+				if (dict.TryGetValue(binding.ResourceKey, ownerThemeKey, out var value, out var providingDict, shouldCheckSystem: false))
 				{
 					wasSet = true;
 					SetResourceBindingValue(property, binding, value);
@@ -656,7 +665,7 @@ public partial class DependencyObjectStore
 
 			if (!wasSet)
 			{
-				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value))
+				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, ownerThemeKey, binding.ParseContext, out var value))
 				{
 					SetResourceBindingValue(property, binding, value);
 				}
