@@ -849,6 +849,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return collection;
 		}
 
+		// Strip `.language-XX` and `.lang-XX` filename segments so that
+		// `Strings/Resources.language-en-US.resw` and `Strings/en-US/Resources.resw`
+		// both yield `Resources` as the resource map name — keeping x:Uid resolution
+		// pointed at a single map regardless of which valid resw layout the user picks.
+		private static string GetResourceMapNameFromFileIdentity(string fileIdentity)
+		{
+			var nameWithoutExtension = Path.GetFileNameWithoutExtension(fileIdentity);
+			var segments = nameWithoutExtension.Split('.');
+			if (segments.Length <= 1)
+			{
+				return nameWithoutExtension;
+			}
+
+			var kept = segments
+				.Where(s =>
+					!s.StartsWith("language-", StringComparison.OrdinalIgnoreCase) &&
+					!s.StartsWith("lang-", StringComparison.OrdinalIgnoreCase));
+			return string.Join(".", kept);
+		}
+
 		private ResourceDetails[] BuildLocalResourceDetails(CancellationToken ct)
 		{
 			var resourceKeys = _resourceFiles
@@ -860,7 +880,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						var sourceText = file.File.GetText(ct)!;
 						var cachedFileKey = new ResourceCacheKey(file.Identity, sourceText.GetChecksum());
-						var resourceFileName = Path.GetFileNameWithoutExtension(file.Identity);
+						var resourceFileName = GetResourceMapNameFromFileIdentity(file.Identity);
 
 						if (_cachedResources.TryGetValue(cachedFileKey, out var cachedResource))
 						{

@@ -77,12 +77,23 @@ public class ResourcesGenerationTask_v0 : Task
 		var language = resourceCandidate.GetQualifierValue("language");
 		if (language == null)
 		{
-			// TODO: Add support for resources without a language qualifier
-			TraceWarning("UNOB0003", $"Ignoring resource {resource.ItemSpec}, could not determine the language");
-			yield break;
-		}
+			// Files without an explicit language qualifier (e.g. `Strings/Resources.resw`)
+			// are treated as default-language candidates, matching the WinUI/MakePri
+			// behavior. This requires the project's `DefaultLanguage` MSBuild property
+			// to be set.
+			if (string.IsNullOrEmpty(DefaultLanguage))
+			{
+				TraceWarning("UNOB0003", $"Ignoring resource {resource.ItemSpec}, could not determine the language and DefaultLanguage is not set");
+				yield break;
+			}
 
-		TraceLog($"Language found : {language}");
+			language = DefaultLanguage;
+			TraceLog($"No language qualifier found; using DefaultLanguage '{language}'");
+		}
+		else
+		{
+			TraceLog($"Language found : {language}");
+		}
 
 		var resourceFile = resource.ItemSpec;
 		var sourceLastWriteTime = new FileInfo(resourceFile).LastWriteTimeUtc;
@@ -91,11 +102,16 @@ public class ResourcesGenerationTask_v0 : Task
 
 		TraceLog($"{resources.Count} resources found");
 
-		if (Path.GetFileNameWithoutExtension(resource.ItemSpec).Equals("Resources", StringComparison.OrdinalIgnoreCase))
+		// The resource map name is derived from the qualifier-stripped logical path so
+		// that `Strings/Resources.language-en-US.resw` and `Strings/en-US/Resources.resw`
+		// both resolve to the same map name (`Resources`).
+		var resourceMapName = Path.GetFileNameWithoutExtension(resourceCandidate.LogicalPath);
+
+		if (resourceMapName.Equals("Resources", StringComparison.OrdinalIgnoreCase))
 		{
 			if (TargetPlatform == "android")
 			{
-				yield return GenerateAndroidResources(language, sourceLastWriteTime, resources, comment, resource);
+				yield return GenerateAndroidResources(language, sourceLastWriteTime, resources, comment, resourceMapName);
 			}
 			else if (TargetPlatform == "uikit")
 			{
@@ -103,27 +119,36 @@ public class ResourcesGenerationTask_v0 : Task
 			}
 		}
 
-		yield return GenerateUnoPRIResources(language, sourceLastWriteTime, resources, comment, resource);
+		yield return GenerateUnoPRIResources(language, sourceLastWriteTime, resources, comment, resource, resourceMapName);
 	}
 
-	private ITaskItem GenerateUnoPRIResources(string language, DateTime sourceLastWriteTime, Dictionary<string, string> resources, string comment, ITaskItem resource)
+	private ITaskItem GenerateUnoPRIResources(string language, DateTime sourceLastWriteTime, Dictionary<string, string> resources, string comment, ITaskItem resource, string resourceMapName)
 	{
 		string buildBasePath()
 		{
+			// Determine the resw's relative location within the project, then strip
+			// language/qualifier folder & filename segments so all valid layouts —
+			// folder bare (`Strings/en-US/Resources.resw`), folder explicit
+			// (`Strings/language-en-US/Resources.resw`), filename explicit
+			// (`Strings/Resources.language-en-US.resw`), unqualified (`Strings/Resources.resw`) —
+			// collapse to the same parent directory. The language is then re-injected
+			// as a sub-folder so siblings of the flat layout don't collide on the
+			// same `.upri` output path.
+			string relativePath;
 			if (resource.GetMetadata("TargetPath") is { Length: > 0 } targetPath)
 			{
-				return Path.GetDirectoryName(targetPath);
+				relativePath = targetPath;
 			}
 			else if (Path.IsPathRooted(resource.ItemSpec))
 			{
 				string definingProjectDirectory = resource.GetMetadata("DefiningProjectDirectory");
 				if (resource.ItemSpec.StartsWith(definingProjectDirectory, StringComparison.Ordinal))
 				{
-					return resource.ItemSpec.Replace(definingProjectDirectory, "");
+					relativePath = resource.ItemSpec.Replace(definingProjectDirectory, "");
 				}
 				else if (resource.ItemSpec.StartsWith(TargetProjectDirectory, StringComparison.Ordinal))
 				{
-					return resource.ItemSpec.Replace(TargetProjectDirectory, "");
+					relativePath = resource.ItemSpec.Replace(TargetProjectDirectory, "");
 				}
 				else
 				{
@@ -132,12 +157,13 @@ public class ResourcesGenerationTask_v0 : Task
 			}
 			else
 			{
-				return Path.GetDirectoryName(resource.ItemSpec);
+				relativePath = resource.ItemSpec;
 			}
+
+			var strippedDirectory = Path.GetDirectoryName(ResourceCandidate.Parse(relativePath, relativePath).LogicalPath) ?? string.Empty;
+			return Path.Combine(strippedDirectory, language);
 		}
 
-
-		var resourceMapName = Path.GetFileNameWithoutExtension(resource.ItemSpec);
 		var logicalTargetPath = Path.Combine(buildBasePath(), resourceMapName + ".upri");
 		var actualTargetPath = Path.Combine(OutputPath, logicalTargetPath);
 
@@ -200,7 +226,7 @@ public class ResourcesGenerationTask_v0 : Task
 		);
 	}
 
-	private ITaskItem GenerateAndroidResources(string language, DateTime sourceLastWriteTime, Dictionary<string, string> resources, string comment, ITaskItem resource)
+	private ITaskItem GenerateAndroidResources(string language, DateTime sourceLastWriteTime, Dictionary<string, string> resources, string comment, string resourceMapName)
 	{
 		string localizedDirectory;
 		if (language == DefaultLanguage)
@@ -225,8 +251,7 @@ public class ResourcesGenerationTask_v0 : Task
 		}
 
 		// The file name have to be unique, otherwise it could be overwritten by a file with the same named defined directly in the application's head
-		var resourceMapName = Path.GetFileNameWithoutExtension(resource.ItemSpec)?.ToLowerInvariant();
-		var logicalTargetPath = Path.Combine("r", localizedDirectory, $"{resourceMapName}_resw-strings.xml");
+		var logicalTargetPath = Path.Combine("r", localizedDirectory, $"{resourceMapName.ToLowerInvariant()}_resw-strings.xml");
 		var actualTargetPath = Path.Combine(OutputPath, logicalTargetPath);
 
 		var targetLastWriteTime = new FileInfo(actualTargetPath).LastWriteTimeUtc;
