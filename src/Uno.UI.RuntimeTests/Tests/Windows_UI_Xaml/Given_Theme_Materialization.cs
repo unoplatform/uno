@@ -140,9 +140,10 @@ public class Given_Theme_Materialization
 	public async Task When_Item_Recycled_Across_Unload_Reload_Keeps_Light()
 	{
 		// S2. A row in a Light island is realized, the island is unloaded (tab switch / recycle),
-		// then reloaded. After reload the row must still resolve the Light sentinel. Uno today
-		// clears the element theme on unload (ClearThemeStateOnUnloaded), so the reloaded row
-		// resolves the Dark ambient. WinUI keeps m_theme and re-themes from the parent on re-Enter.
+		// then reloaded. After reload the row must still resolve the Light sentinel. Earlier Uno
+		// cleared the element theme on unload (ClearThemeStateOnUnloaded), so a reloaded row could
+		// resolve the Dark ambient; like WinUI, the per-object theme is now kept across unload and
+		// re-Enter re-themes from the parent (D2/D4), so the row stays Light.
 #if HAS_UNO
 		using var _ = ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Dark);
 		await WindowHelper.WaitForIdle();
