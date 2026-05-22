@@ -68,7 +68,6 @@ To make your Uno app accessible, follow the same patterns you would use on WinUI
 | [Custom automation peers](xref:Uno.Features.Accessibility.AutomationPeers) | Skia accessibility architecture and ARIA role mappings |
 | [Role override](xref:Uno.Features.Accessibility.RoleOverride) | Uno-specific `AutomationPropertiesExtensions.Role` attached property for explicit ARIA role control |
 | [Testing with screen readers](xref:Uno.Features.Accessibility.TestingWithScreenReaders) | WASM activation, SamplesApp testing, and debugging the accessibility tree |
-| [WASM Skia accessibility guide](xref:Uno.Features.Accessibility.WasmSkiaAccessibility) | How Uno Platform generates the semantic DOM on WASM Skia, activation flow, ARIA mappings, and configuration |
 
 ## AccessibilitySettings
 

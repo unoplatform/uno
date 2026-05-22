@@ -19,14 +19,28 @@ To activate manually from browser DevTools:
 document.getElementById('uno-enable-accessibility').click();
 ```
 
-To skip the activation button entirely and enable the accessibility layer on startup:
+For automated testing scenarios where you need the accessibility layer ready before any user interaction, you can force it on at startup:
 
 ```csharp
 FeatureConfiguration.AutomationPeer.AutoEnableAccessibility = true;
 ```
 
+> [!WARNING]
+> `AutoEnableAccessibility` materializes and continuously maintains the full semantic DOM for the lifetime of the app, which has a significant runtime cost (every visual-tree change updates the semantic overlay). It is intended for testing and debugging — leave it disabled in production so the cost is only paid when an assistive technology actually requests accessibility. Set it before the host is built (typically in `App.xaml.cs` before `MainWindow` is created); it is read once during accessibility subsystem initialization.
+
 > [!NOTE]
 > On Windows (Win32) and macOS, the accessibility tree is always active — no manual activation is required.
+
+## Browser and screen reader pairing (WASM)
+
+When testing WASM apps with a screen reader, the browser choice affects results:
+
+| Browser | Screen Reader | Notes |
+|---------|---------------|-------|
+| Chrome | NVDA (Windows) | Best overall support for ARIA in Chromium-based browsers. |
+| Firefox | NVDA (Windows) | Good alternative; Firefox has its own accessibility engine. |
+| Safari | VoiceOver (macOS) | Best VoiceOver experience. |
+| Chrome | VoiceOver (macOS) | Works, but Safari is recommended. Enable Full Keyboard Access in System Settings → Keyboard. |
 
 ## Using the SamplesApp
 
@@ -66,5 +80,4 @@ Inspect using browser DevTools:
 - [AutomationProperties reference](xref:Uno.Features.Accessibility.AutomationProperties)
 - [Custom automation peers](xref:Uno.Features.Accessibility.AutomationPeers)
 - [Role override](xref:Uno.Features.Accessibility.RoleOverride)
-- [WASM Skia accessibility guide](xref:Uno.Features.Accessibility.WasmSkiaAccessibility)
 - [Accessibility testing (Microsoft Learn)](https://learn.microsoft.com/windows/apps/design/accessibility/accessibility-testing)
