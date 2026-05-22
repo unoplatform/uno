@@ -629,8 +629,12 @@ public class Given_ElementTheme
 
 #if HAS_UNO
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_No_RequestedTheme_Uses_App_Theme()
 	{
+		// Pin the app to Light (RequiresFullWindow lets it reach the content) so this app-theme
+		// assertion is deterministic regardless of the developer's OS theme.
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		var element = new Border() { Width = 100, Height = 100 };
 
 		WindowHelper.WindowContent = element;
@@ -1605,8 +1609,11 @@ public class Given_ElementTheme
 	/// even when a sibling element has a different RequestedTheme.
 	/// </summary>
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[RequiresFullWindow]
 	public async Task When_Sibling_Has_Different_Theme_TextBlock_Foreground_Matches_App_Theme()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		var root = (StackPanel)XamlReader.Load(
 			"""
 			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -2500,8 +2507,11 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[RequiresFullWindow]
 	public async Task When_Theme_Changes_Button_Normal_Foreground_Updates()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Basic test: does a Button's normal (non-hovered) Foreground update
 		// when its parent's theme changes?
 		var root = new StackPanel { Width = 200, Height = 200 };
@@ -2528,8 +2538,11 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[RequiresFullWindow]
 	public async Task When_Grandparent_RequestedTheme_Changes_Button_Foreground_Updates()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Matches BasicThemeResources scenario: Page sets RequestedTheme,
 		// buttons are nested several levels deep.
 		var outerPanel = new StackPanel { Width = 300, Height = 300 };
@@ -2570,8 +2583,11 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[RequiresFullWindow]
 	public async Task When_XamlParsed_Buttons_Theme_Change_Foreground_Updates()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Test XAML-parsed buttons (matching BasicThemeResources scenario)
 		// where buttons are created via XAML parsing, not programmatically.
 		var xaml = """
@@ -2617,8 +2633,12 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[RequiresFullWindow]
 	public async Task When_Theme_Changes_TextBlock_Foreground_Updates()
 	{
+		// Pin the app to Light so this Light->Dark difference test is deterministic on any OS theme.
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Basic test: does a TextBlock's Foreground update when parent theme changes?
 		var root = new StackPanel { Width = 200, Height = 200 };
 		var textBlock = new TextBlock { Text = "Hello" };
@@ -2641,8 +2661,11 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[RequiresFullWindow]
 	public async Task When_Theme_Default_To_Dark_Button_PointerOver_Updates()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Matches SamplesApp behavior: page starts with Default theme (Light app theme),
 		// then user switches to Dark. The button in PointerOver should update.
 		var root = new StackPanel { Width = 200, Height = 200 }; // No explicit RequestedTheme (= Default)
@@ -2838,8 +2861,11 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[RequiresFullWindow]
 	public async Task When_Root_Theme_Cycles_Dark_Default_TextBlock_Foreground_Restores()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Repro: SamplesApp three-dots Dark → Default → navigate to page → TextBlock white instead of black
 		// Root cause: EnsureThemeForeground sets Inheritance-precedence foreground on all children
 		// during Dark push, but when root switches back to Default, only root's _themeForeground
@@ -2877,8 +2903,11 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[RequiresFullWindow]
 	public async Task When_Root_Theme_Cycles_New_Content_Has_Correct_Foreground()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Tests that NEW content loaded after Dark→Default cycle gets correct foreground
 		var root = new StackPanel { Width = 200, Height = 200 };
 
@@ -2908,8 +2937,11 @@ public class Given_ElementTheme
 	#region Root Theme Cycle Then Element Theme Change (Issue Repro)
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[RequiresFullWindow]
 	public async Task When_RootTheme_Cycles_Then_Element_RequestedTheme_Dark_Button_Foreground_Updates()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Exact SamplesApp repro:
 		// 1. Three-dots button → root.RequestedTheme = Dark → root.RequestedTheme = Default
 		// 2. Navigate to BasicThemeResources page (loads fresh content)
@@ -3496,8 +3528,10 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_Element_Theme_None_Does_Not_Force_Dark()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Element enters tree with no explicit theme and no parent theme
 		// Should use app theme (Light), not default to Dark
 		var element = new Border { Width = 100, Height = 100 };
@@ -3602,8 +3636,11 @@ public class Given_ElementTheme
 	///   After Local Default:  col0=black,      col1=white,      col2=black  (col1 keeps Dark)
 	/// </summary>
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[RequiresFullWindow]
 	public async Task When_ParentThemeChanges_BasicThemeResources_FullRepro()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		var page = new Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.BasicThemeResources_Test();
 
 		WindowHelper.WindowContent = page;

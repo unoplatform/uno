@@ -27,6 +27,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	{
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		// Not [RequiresFullWindow]/UseApplicationLightTheme: this test sets WindowContent=null mid-run,
+		// which nulls XamlRoot.Content in full-window mode (breaking UseDarkTheme). It runs embedded and
+		// relies on the host staying Light (IsAppThemeLight + the UseDarkTheme restore fix) for determinism.
 		public async Task When_Detached_From_Window_While_Theme_Changed()
 		{
 			var SUT = new Button { Content = "Ye button" };
@@ -79,8 +82,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[RequiresFullWindow]
 		public async Task When_ComboBox_Theme_Changed_After_First_Open()
 		{
+			using var _ = ThemeHelper.UseApplicationLightTheme();
 			var comboBox = new ComboBox() { PlaceholderText = "combo" };
 			WindowHelper.WindowContent = comboBox;
 			await WindowHelper.WaitForLoaded(comboBox);
