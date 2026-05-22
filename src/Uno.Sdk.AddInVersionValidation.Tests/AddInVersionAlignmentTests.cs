@@ -84,40 +84,23 @@ public class AddInVersionAlignmentTests
 		("Uno.UI.App.Mcp", "AppMcp"),
 	];
 
-	private const string HostPackageId = "Uno.WinUI.DevServer";
-
 	[TestMethod]
 	[Description("Walks the assembly load graph rooted at each add-in's primary server DLL and fails on real version-resolution conflicts " +
 		"(guaranteed downgrade-refusal at runtime, or non-deterministic load-order disagreements between add-ins).")]
 	public void AddInLoadGraphMustResolveAgainstHostTpaWithoutDowngrade()
 	{
 		var metadata = ReadAssemblyMetadata();
-		var manifestPath = metadata["UnoSdkManifestPath"];
-		File.Exists(manifestPath).Should().BeTrue(
-			"the Uno.Sdk packages.json manifest must be reachable from the test");
-		var manifest = ParseManifest(manifestPath);
 
-		// Sync gate: csproj add-in versions must match the manifest.
-		foreach (var (packageId, groupName) in KnownAddIns)
-		{
-			var manifestVersion = manifest
-				.FirstOrDefault(g => string.Equals(g.Group, groupName, StringComparison.OrdinalIgnoreCase))
-				?.Version;
-			manifestVersion.Should().NotBeNull(
-				"the manifest must declare a '{0}' group carrying the version for '{1}'", groupName, packageId);
+		// Each add-in PackageReference is injected at build time by the
+		// _InjectAddInPackageReferencesFromManifest target in the csproj, reading the
+		// version directly from src/Uno.Sdk/packages.json. There is no separate sync gate
+		// to verify — by construction the versions match the manifest.
+		var hostBinDir = metadata["UnoHostBinDir"];
+		Directory.Exists(hostBinDir).Should().BeTrue(
+			"the locally-built host bin directory must exist at '{0}' (ProjectReference to " +
+			"Uno.UI.RemoteControl.Host.csproj should have built it)", hostBinDir);
 
-			var metadataKey = ToMetadataKey(packageId);
-			metadata.Should().ContainKey(metadataKey,
-				"the test csproj must reference '{0}' with GeneratePathProperty so the restored package path is exposed", packageId);
-
-			var restoredPath = metadata[metadataKey];
-			var actualVersion = Path.GetFileName(restoredPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
-			actualVersion.Should().Be(manifestVersion,
-				"the csproj's '{0}' PackageReference (Version={1}) must match the manifest (Version={2}).",
-				packageId, actualVersion, manifestVersion);
-		}
-
-		var hostTpa = BuildHostTpa(metadata[ToMetadataKey(HostPackageId)]);
+		var hostTpa = BuildHostTpa(hostBinDir);
 
 		// BFS each add-in's load graph from its primary server DLL.
 		var case1Fatal = new List<Case1>();
@@ -162,7 +145,7 @@ public class AddInVersionAlignmentTests
 			return;
 		}
 
-		var report = BuildReport(case1Fatal, case1Latent, case2, unresolvedReachable, manifestPath);
+		var report = BuildReport(case1Fatal, case1Latent, case2, unresolvedReachable, metadata["UnoSdkManifestPath"]);
 		Assert.Fail(report);
 	}
 
@@ -454,7 +437,6 @@ public class AddInVersionAlignmentTests
 			"Uno.Settings.DevServer" => "UnoSettingsDevServerPath",
 			"Uno.UI.HotDesign" => "UnoUIHotDesignPath",
 			"Uno.UI.App.Mcp" => "UnoUIAppMcpPath",
-			"Uno.WinUI.DevServer" => "UnoWinUIDevServerPath",
 			_ => throw new InvalidOperationException(
 				$"No assembly-metadata key declared for package '{packageId}'.")
 		};
@@ -521,9 +503,11 @@ public class AddInVersionAlignmentTests
 	/// Builds the host's effective TPA: every assembly the runtime resolves to before any
 	/// add-in is consulted. Sources: the .NET shared frameworks
 	/// (Microsoft.NETCore.App + Microsoft.AspNetCore.App per the host's runtimeconfig.json)
-	/// and the host's bundled deps under <c>tools/rc/host/net10.0/</c>.
+	/// and the host's bundled deps. <paramref name="hostBinDir"/> is the directory containing
+	/// the host DLLs — typically the locally-built <c>bin/&lt;config&gt;/net10.0/</c> output
+	/// when the test references the host project directly.
 	/// </summary>
-	private static Dictionary<string, Version> BuildHostTpa(string hostPackageRoot)
+	private static Dictionary<string, Version> BuildHostTpa(string hostBinDir)
 	{
 		var tpa = new Dictionary<string, Version>(StringComparer.OrdinalIgnoreCase);
 
@@ -540,16 +524,15 @@ public class AddInVersionAlignmentTests
 			}
 		}
 
-		var hostNet10 = Path.Combine(hostPackageRoot, "tools", "rc", "host", "net10.0");
-		if (Directory.Exists(hostNet10))
+		if (Directory.Exists(hostBinDir))
 		{
-			foreach (var dll in Directory.EnumerateFiles(hostNet10, "*.dll"))
+			foreach (var dll in Directory.EnumerateFiles(hostBinDir, "*.dll"))
 			{
 				var name = Path.GetFileNameWithoutExtension(dll);
 				if (TryReadAssemblyVersion(dll, out var version))
 				{
 					// Bundled host deps win over BCL if both exist — the host's runtime
-					// loads them from tools/rc/host/ ahead of any framework fallback.
+					// loads them from its own bin directory ahead of any framework fallback.
 					tpa[name] = version;
 				}
 			}

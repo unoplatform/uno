@@ -2,14 +2,14 @@
 
 	<!--
 		Validates that every DevServer add-in shipped together in a single Uno.Sdk release
-		(per src/Uno.Sdk/packages.json) agrees on the version of every AssemblyRef it shares
-		with the other add-ins of the same release. Misalignments cause runtime failures in
-		the DevServer host (FileNotFoundException, TypeLoadException, "Unable to resolve service").
+		(per src/Uno.Sdk/packages.json) is compatible with the DevServer host built by THIS
+		branch — both individually (host can satisfy each add-in's transitive AssemblyRefs)
+		and pairwise (no two add-ins disagree on the version of an assembly the host doesn't
+		carry).
 
 		The test is intentionally a regression gate: it is expected to be RED whenever the
-		add-in maintainers ship a Uno.Sdk version with misaligned dependencies, and turns GREEN
-		when they align them. The dedicated Linux CI step (`devserver_tests_linux`) runs it on
-		every PR to surface misalignments early.
+		add-in maintainers ship a Uno.Sdk version with misaligned dependencies or the host
+		bundles a lower-major version than an add-in needs. Turns GREEN once they align.
 	-->
 
 	<PropertyGroup>
@@ -20,43 +20,117 @@
 		<NoWarn>$(NoWarn);VSTHRD200</NoWarn>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<UnoSdkManifestPath>$(MSBuildThisFileDirectory)..\Uno.Sdk\packages.json</UnoSdkManifestPath>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<PackageReference Include="AwesomeAssertions" />
+	</ItemGroup>
 
+	<ItemGroup>
 		<!--
-			DevServer add-in packages. Versions MUST match src/Uno.Sdk/packages.json (the
-			alignment test verifies this and fails fast on drift so the sync is enforced).
-			Restoring them puts the runtime DLLs in the NuGet cache so the test can inspect
-			their AssemblyRef tables.
+			DevServer host built from THIS repo. We reference the project (not a NuGet
+			package) so the alignment check always validates the host being shipped by this
+			branch, not a fixed published version that would drift out of sync with the
+			add-ins. ReferenceOutputAssembly=false because we don't compile against the
+			host's API; the test reads the bin output as a static set of DLLs.
 		-->
-		<PackageReference Include="Uno.Settings.DevServer" Version="1.8.0-dev.42" GeneratePathProperty="true" />
-		<PackageReference Include="Uno.UI.HotDesign" Version="1.19.0-dev.325" GeneratePathProperty="true" />
-		<PackageReference Include="Uno.UI.App.Mcp" Version="1.2.0-dev.41" GeneratePathProperty="true" />
-
-		<!--
-			DevServer host (Uno.UI.RemoteControl.Host) shipped via Uno.WinUI.DevServer.
-			The host's AssemblyRef table is the third source of truth in this alignment
-			check: a misalignment between an add-in and the host produces the same runtime
-			failures as a misalignment between two add-ins. packages.json uses the
-			DefaultUnoVersion placeholder for the Core group that carries this package, so
-			the version pinned here must be bumped manually to track what end users actually
-			run with the current Uno.Sdk release.
-		-->
-		<PackageReference Include="Uno.WinUI.DevServer" Version="6.6.0-dev.527" GeneratePathProperty="true" />
+		<ProjectReference Include="..\Uno.UI.RemoteControl.Host\Uno.UI.RemoteControl.Host.csproj"
+		                  ReferenceOutputAssembly="false"
+		                  SkipGetTargetFrameworkProperties="true"
+		                  UndefineProperties="TargetFramework"
+		                  Private="false" />
 	</ItemGroup>
 
 	<!--
-		Expose the restored package paths to the test code via assembly metadata.
-		AssemblyMetadata("Key", "Value") gets emitted as an AssemblyMetadataAttribute the test
-		can read at runtime to locate each package's content root without guessing where NuGet
-		put it (handles NUGET_PACKAGES overrides cleanly).
+		Inline MSBuild task: read a manifest group's version from packages.json. Lets the
+		add-in PackageReferences below pull their versions from the single source of truth
+		(the same manifest Uno.Sdk.Private itself consumes), so there is no manual sync
+		requirement and no drift between this test and the SDK that ships the add-ins.
+	-->
+	<UsingTask TaskName="ReadManifestGroupVersion"
+	           TaskFactory="RoslynCodeTaskFactory"
+	           AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+		<ParameterGroup>
+			<ManifestPath ParameterType="System.String" Required="true" />
+			<GroupName ParameterType="System.String" Required="true" />
+			<Version ParameterType="System.String" Output="true" />
+		</ParameterGroup>
+		<Task>
+			<Using Namespace="System" />
+			<Using Namespace="System.IO" />
+			<Using Namespace="System.Text.RegularExpressions" />
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[
+				// Regex parse: the inline task runs under desktop MSBuild which does not carry
+				// System.Text.Json. The packages.json structure is stable and consistent —
+				// each entry is an object with adjacent "group" and "version" properties — so
+				// regex is sufficient. The pattern tolerates whitespace and either property
+				// ordering by checking both directions.
+				var text = File.ReadAllText(ManifestPath);
+				var escapedGroup = Regex.Escape(GroupName);
+				var pattern1 = "\"group\"\\s*:\\s*\"" + escapedGroup + "\"\\s*,\\s*\"version\"\\s*:\\s*\"([^\"]+)\"";
+				var pattern2 = "\"version\"\\s*:\\s*\"([^\"]+)\"\\s*,\\s*\"group\"\\s*:\\s*\"" + escapedGroup + "\"";
+				var match = Regex.Match(text, pattern1, RegexOptions.IgnoreCase);
+				if (!match.Success)
+				{
+					match = Regex.Match(text, pattern2, RegexOptions.IgnoreCase);
+				}
+				if (!match.Success)
+				{
+					Log.LogError("Group '" + GroupName + "' not found in manifest '" + ManifestPath + "'.");
+					return false;
+				}
+				Version = match.Groups[1].Value;
+				return true;
+				]]>
+			</Code>
+		</Task>
+	</UsingTask>
+
+	<Target Name="_InjectAddInPackageReferencesFromManifest"
+	        BeforeTargets="CollectPackageReferences;Restore">
+
+		<ReadManifestGroupVersion ManifestPath="$(UnoSdkManifestPath)" GroupName="settings">
+			<Output TaskParameter="Version" PropertyName="_UnoSettingsDevServerVersion" />
+		</ReadManifestGroupVersion>
+		<ReadManifestGroupVersion ManifestPath="$(UnoSdkManifestPath)" GroupName="hotdesign">
+			<Output TaskParameter="Version" PropertyName="_UnoUIHotDesignVersion" />
+		</ReadManifestGroupVersion>
+		<ReadManifestGroupVersion ManifestPath="$(UnoSdkManifestPath)" GroupName="AppMcp">
+			<Output TaskParameter="Version" PropertyName="_UnoUIAppMcpVersion" />
+		</ReadManifestGroupVersion>
+
+		<ItemGroup>
+			<PackageReference Include="Uno.Settings.DevServer"
+			                  Version="$(_UnoSettingsDevServerVersion)"
+			                  GeneratePathProperty="true" />
+			<PackageReference Include="Uno.UI.HotDesign"
+			                  Version="$(_UnoUIHotDesignVersion)"
+			                  GeneratePathProperty="true" />
+			<PackageReference Include="Uno.UI.App.Mcp"
+			                  Version="$(_UnoUIAppMcpVersion)"
+			                  GeneratePathProperty="true" />
+		</ItemGroup>
+	</Target>
+
+	<!--
+		Expose paths and manifest location to the test code via assembly metadata. The
+		AssemblyMetadataAttribute entries get read at test runtime to locate each package's
+		content root without guessing where NuGet put it (handles NUGET_PACKAGES overrides
+		cleanly).
+
+		The host path points directly at the bin output of the locally-built project — the
+		test's BuildHostTpa understands both the NuGet `tools/rc/host/net10.0/` layout and
+		the direct `bin/<config>/<tfm>/` layout.
 	-->
 	<ItemGroup>
 		<AssemblyMetadata Include="UnoSettingsDevServerPath" Value="$(PkgUno_Settings_DevServer)" Condition="'$(PkgUno_Settings_DevServer)' != ''" />
 		<AssemblyMetadata Include="UnoUIHotDesignPath" Value="$(PkgUno_UI_HotDesign)" Condition="'$(PkgUno_UI_HotDesign)' != ''" />
 		<AssemblyMetadata Include="UnoUIAppMcpPath" Value="$(PkgUno_UI_App_Mcp)" Condition="'$(PkgUno_UI_App_Mcp)' != ''" />
-		<AssemblyMetadata Include="UnoWinUIDevServerPath" Value="$(PkgUno_WinUI_DevServer)" Condition="'$(PkgUno_WinUI_DevServer)' != ''" />
-		<AssemblyMetadata Include="UnoSdkManifestPath" Value="$(MSBuildThisFileDirectory)..\Uno.Sdk\packages.json" />
+		<AssemblyMetadata Include="UnoHostBinDir" Value="$(MSBuildThisFileDirectory)..\Uno.UI.RemoteControl.Host\bin\$(Configuration)\$(NetCurrent)" />
+		<AssemblyMetadata Include="UnoSdkManifestPath" Value="$(UnoSdkManifestPath)" />
 	</ItemGroup>
 
 </Project>
