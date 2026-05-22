@@ -156,10 +156,12 @@ public partial class Popup
 	partial void OnHorizontalOffsetChangedPartial(double oldHorizontalOffset, double newHorizontalOffset) =>
 		PopupPanel?.InvalidateMeasure();
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 	// MUX Reference: Popup.cpp CPopup::NotifyThemeChangedCore (lines 3589-3610)
 	// Popup's Child is reparented to PopupRoot's visual tree, so the normal
-	// PropagateThemeToChildren walk won't reach it. We must explicitly propagate.
+	// PropagateThemeToChildren walk won't reach it. We must explicitly propagate a *runtime* theme
+	// change to the (logical) child here. (D5) This override is platform-neutral so native gets the
+	// same propagation hook; on native it is currently dormant because FrameworkElement.NotifyThemeChanged
+	// is a no-op outside the enhanced lifecycle — the native theme walk is wired in Phase 7.
 	private protected override void NotifyThemeChangedCore(Theme theme, bool forceRefresh)
 	{
 		base.NotifyThemeChangedCore(theme, forceRefresh);
@@ -169,7 +171,6 @@ public partial class Popup
 			child.NotifyThemeChanged(theme, forceRefresh);
 		}
 	}
-#endif
 
 	internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
 	{

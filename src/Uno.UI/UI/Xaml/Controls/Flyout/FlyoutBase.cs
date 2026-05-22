@@ -752,9 +752,16 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		// MUX Reference: FlyoutBase_partial.cpp ForwardThemeToPresenter (lines 1534-1592)
-		// Walks up from placement target to find the nearest non-Default RequestedTheme
-		// and applies it to the presenter and popup, ensuring flyout content matches
-		// the theme of the subtree it was opened from.
+		// (D6) WinUI's ForwardThemeToPresenter walks up from the placement target for the nearest
+		// non-Default RequestedTheme and forwards only that explicit element override; the app/inherited
+		// theme reaches the presenter by a separate path (the popup child's logical-parent inheritance at
+		// Enter, plus ActualTheme's fallback to the app/OS base theme — framework.cpp:3984-3991). Uno
+		// instead forwards the placement target's *effective* ActualTheme directly. This themes a flyout
+		// opened over app-themed (not element-themed) content correctly on the FIRST open, and it composes
+		// with the per-object theme established at Enter (D2): once Phase 7 wires that establishment on
+		// native, target.ActualTheme reflects the full inherited theme there too, so this single line gives
+		// native first-open parity without re-introducing a theme push. ActualTheme is always Light or Dark
+		// (never Default), so the presenter and popup receive an explicit base theme.
 		private void ForwardThemeToPresenter()
 		{
 			if (_popup?.Child is not Control presenter || Target is not { } target)
@@ -762,8 +769,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				return;
 			}
 
-			// Only override if presenter's RequestedTheme hasn't been explicitly set,
-			// or was previously overridden by us.
+			// Only override if presenter's RequestedTheme hasn't been explicitly set, or was previously
+			// overridden by us — preserve an explicitly-set presenter theme.
+			// MUX: m_isFlyoutPresenterRequestedThemeOverridden (FlyoutBase_partial.cpp:1542-1545).
 			var presenterTheme = presenter.RequestedTheme;
 			var isDefault = presenterTheme == ElementTheme.Default;
 			if (!isDefault && !m_isFlyoutPresenterRequestedThemeOverridden)
@@ -771,27 +779,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				return;
 			}
 
-			// Walk up from placement target to find nearest non-Default RequestedTheme
-			var requestedTheme = ElementTheme.Default;
-			DependencyObject current = target;
-			while (current is FrameworkElement currentFe)
-			{
-				requestedTheme = currentFe.RequestedTheme;
-				if (requestedTheme != ElementTheme.Default)
-				{
-					break;
-				}
-
-				var parent = VisualTreeHelper.GetParent(current);
-				if (parent is PopupRoot)
-				{
-					// If the target is in a Popup's visual tree, skip PopupRoot
-					// and use the logical parent instead (the Popup's owner).
-					parent = currentFe.Parent;
-				}
-
-				current = parent;
-			}
+			// The placement target's effective theme (its own, inherited, or app/OS base), always Light/Dark.
+			var requestedTheme = target.ActualTheme;
 
 			if (requestedTheme != presenterTheme)
 			{
@@ -799,7 +788,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				m_isFlyoutPresenterRequestedThemeOverridden = true;
 			}
 
-			// Also set the popup's theme for SystemBackdrop support.
+			// Also set the popup's theme for SystemBackdrop support (FlyoutBase_partial.cpp:1586-1588).
 			_popup.RequestedTheme = requestedTheme;
 		}
 

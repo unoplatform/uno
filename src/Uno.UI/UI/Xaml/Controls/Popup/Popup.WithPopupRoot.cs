@@ -106,18 +106,14 @@ public partial class Popup
 
 				_closePopup.Disposable = currentXamlRoot?.OpenPopup(this);
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
-				// MUX Reference: Popup.cpp CPopupRoot::CompleteAdditionToOpenPopupList (lines 4289-4302)
-				// After the popup is added to PopupRoot, propagate this popup's theme
-				// to its child. The child was just reparented under PopupRoot (which has
-				// Theme.None), so it needs the theme from its logical parent (this Popup).
-				var popupTheme = GetTheme();
-				if (popupTheme != Theme.None && Child is FrameworkElement feChild)
-				{
-					feChild.NotifyThemeChanged(popupTheme);
-				}
-#endif
-
+				// D5: theme establishment for the popup child is no longer pushed here. Adding the
+				// PopupPanel to PopupRoot runs the tree-Enter walk over the (reparented) Child, and
+				// DependencyObjectStore.EstablishThemeAtEnter now inherits from the Child's *logical*
+				// parent — this Popup (Popup.Base.cs sets the Child's LogicalParentOverride) — so the
+				// content adopts the opener's theme on first attach, matching WinUI's EnterImpl theme
+				// block (depends.cpp:1026-1041). This is platform-neutral establishment; the Enter walk
+				// is wired for native in Phase 7 (TODO: native tree-attach), which is why T4/T5 are
+				// expected RED on Android/iOS until then.
 			}
 			else
 			{
