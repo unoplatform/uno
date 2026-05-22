@@ -1181,21 +1181,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Pointer_Tap()
 		{
-			if (OperatingSystem.IsBrowser())
-			{
-				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
-				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
-				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
-			}
-
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+				Text = "Hello world"
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -1229,8 +1220,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new TextBox
 			{
 				Width = 350,
-				Text = "Hello world          ",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+				Text = "Hello world          "
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -1298,21 +1288,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Pointer_RightClick_No_Selection()
 		{
-			if (OperatingSystem.IsBrowser())
-			{
-				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
-				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
-				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
-			}
-
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+				Text = "Hello world"
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -1390,21 +1371,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Pointer_Hold_Drag()
 		{
-			if (OperatingSystem.IsBrowser())
-			{
-				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
-				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
-				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
-			}
-
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+				Text = "Hello world"
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -1437,21 +1409,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Pointer_Hold_Drag_OutOfBounds()
 		{
-			if (OperatingSystem.IsBrowser())
-			{
-				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
-				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
-				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
-			}
-
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+				Text = "Hello world"
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -1485,21 +1448,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_LongText_Pointer_Hold_Drag_OutOfBounds()
 		{
-			if (OperatingSystem.IsBrowser())
-			{
-				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
-				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
-				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
-			}
-
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "This should be a lot longer than the width of the TextBox.",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+				Text = "This should be a lot longer than the width of the TextBox."
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -1684,21 +1638,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Typing_While_Pointer_Held()
 		{
-			if (OperatingSystem.IsBrowser())
-			{
-				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
-				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
-				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
-			}
-
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+				Text = "Hello world"
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -1754,21 +1699,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(VirtualKey.A, VirtualKeyModifiers.Control)]
 		public async Task When_Move_Caret_While_Pointer_Held(VirtualKey key, VirtualKeyModifiers modifiers)
 		{
-			if (OperatingSystem.IsBrowser())
-			{
-				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
-				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
-				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
-			}
-
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+				Text = "Hello world"
 			};
 
 			var handled = false;
@@ -1813,21 +1749,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Cut_While_Pointer_Held()
 		{
-			if (OperatingSystem.IsBrowser())
-			{
-				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
-				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
-				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
-			}
-
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+				Text = "Hello world"
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -1901,8 +1828,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+				Text = "Hello world"
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -1949,21 +1875,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Escape_While_Pointer_Held()
 		{
-			if (OperatingSystem.IsBrowser())
-			{
-				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
-				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
-				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
-			}
-
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+				Text = "Hello world"
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -2892,22 +2809,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit)] // Fails in Skia UIKit CI - https://github.com/unoplatform/uno-private/issues/808
 		public async Task When_Multiline_Pointer_Tap()
 		{
-			if (OperatingSystem.IsBrowser())
-			{
-				// Temporarily: Wasm Skia can't use Arial so the coordinates being pressed are not what we expect.
-				// In future when we have Open Sans by default, we'll need to remove the use of Arial and maybe
-				// adjust the coordinates so that they do what we want. Then the test will become stable on Skia Desktop and Wasm Skia.
-				Assert.Inconclusive("Skipped on Wasm Skia due to font differences.");
-			}
-
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
 			{
 				Width = 250,
 				AcceptsReturn = true,
-				Text = "Lorem\ripsum dolor sit\ramet consectetur\radipiscing",
-				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
+				Text = "Lorem\ripsum dolor sit\ramet consectetur\radipiscing"
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -2939,7 +2847,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(17, SUT.SelectionStart);
+			Assert.AreEqual(16, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 

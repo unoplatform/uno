@@ -1484,8 +1484,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new TextBlock
 			{
 				Text = "FirstLine\r\n Second",
-				IsTextSelectionEnabled = true,
-				FontFamily = "Arial" // to remain consistent between platforms with different default fonts
+				IsTextSelectionEnabled = true
 			};
 
 			await UITestHelper.Load(SUT);
