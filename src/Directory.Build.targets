@@ -118,6 +118,7 @@
 		<PackageReference Update="SkiaSharp.Views" Version="$(SkiaSharpVersion)" />
 		<PackageReference Update="SkiaSharp.Views.Uno" Version="$(SkiaSharpVersion)" />
 		<PackageReference Update="SkiaSharp.Views.Uno.WinUI" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.Views.WinUI" Version="$(SkiaSharpVersion)" />
 		<PackageReference Update="SkiaSharp.Views.WPF" Version="$(SkiaSharpVersion)"  />
 		<PackageReference Update="SkiaSharp" Version="$(SkiaSharpVersion)"  />
 		<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="$(SkiaSharpVersion)" />

@@ -9,11 +9,13 @@
 		<RootNamespace>Uno.WinUI.Graphics2DSK</RootNamespace>
 
 		<Nullable>enable</Nullable>
-		
+
+		<DefineConstants>$(DefineConstants);WINAPPSDK</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp" />
+		<PackageReference Include="SkiaSharp.Views.WinUI" />
 	</ItemGroup>
 
 	<PropertyGroup>
