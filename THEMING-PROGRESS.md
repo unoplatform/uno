@@ -8,7 +8,7 @@ One phase per session, strictly in order. Scenario labels S1–S5 are defined in
 ## Phases
 
 - [ ] **Phase 0** — Baseline + regression test scaffold
-- [ ] **Phase 1** — Per-object theme on every `DependencyObject` (D1)
+- [x] **Phase 1** — Per-object theme on every `DependencyObject` (D1)
 - [ ] **Phase 2** — Establish theme at tree `Enter` for every DO (D2) + stop clearing on unload (D4)
 - [ ] **Phase 3** — Resolve `{ThemeResource}` against the owner's effective theme (D3, Mechanism 1)
 - [ ] **Phase 4** — Remove the 11 band-aid pushes + delete the global stack
@@ -20,6 +20,16 @@ One phase per session, strictly in order. Scenario labels S1–S5 are defined in
 ## Evidence log
 
 (one line per completed phase: what built; which tests ran on /winui-runtime-tests and /runtime-tests and their results)
+
+- **Phase 1 (D1) — DONE.** Moved per-object `_theme` + `GetTheme`/`SetTheme` + `IsProcessingThemeWalk`
+  from `UIElement` onto `DependencyObjectStore` (UIElement/FrameworkElement kept as thin forwarders);
+  added `ThemeResolution.ResolveOwnerTheme(owner)` (own theme → nearest themed inheritance ancestor →
+  app base theme). Behavior-preserving — **not** wired into `{ThemeResource}` resolution yet (that is
+  Phase 3, Mechanism 1). Built `SamplesApp.Skia.Generic` (Release, net10.0, `UnoFastDevBuild`) clean
+  (0 errors). `/runtime-tests` theming suite (Skia Desktop): **143/144** = Phase 0 baseline (the lone
+  failure `When_Flyout_Closed_Target_Does_Not_Hold_Flyout` is the pre-existing GC flake). New
+  `Given_ThemeResolution` unit tests: **7/7** green (incl. the non-`UIElement` owner case D1 enables).
+  Not run this session: WASM/native heads; `/winui-runtime-tests` oracle (deferred, per carry-over notes).
 
 ---
 
