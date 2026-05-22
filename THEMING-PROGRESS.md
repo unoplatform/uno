@@ -12,7 +12,7 @@ One phase per session, strictly in order. Scenario labels S1–S5 are defined in
 - [x] **Phase 2** — Establish theme at tree `Enter` for every DO (D2) + stop clearing on unload (D4)
 - [x] **Phase 3** — Resolve `{ThemeResource}` against the owner's effective theme (D3, Mechanism 1)
 - [x] **Phase 4** — Remove the 11 band-aid pushes + delete the global stack
-- [ ] **Phase 5** — Popup/Flyout logical-parent inheritance + flyout `ActualTheme` forwarding (D5, D6)
+- [x] **Phase 5** — Popup/Flyout logical-parent inheritance + flyout `ActualTheme` forwarding (D5, D6)
 - [ ] **Phase 6** — Application/OS/custom-theme/high-contrast precedence (D7, D8)
 - [ ] **Phase 7** — Native (Android/iOS) parity
 - [ ] **Phase 8** — Full validation, WinUI parity, cleanup, docs
@@ -146,6 +146,44 @@ One phase per session, strictly in order. Scenario labels S1–S5 are defined in
     stack; §B guard green; zero `[THEME-P3-DIVERGENCE]` lines (counter gone). `dotnet format whitespace
     --verify-no-changes` clean on all changed files. WASM/native heads + `/winui-runtime-tests` oracle deferred
     (per carry-over notes).
+
+- **Phase 5 (D5 + D6) — DONE.** Popup/flyout content is themed on the FIRST open from its opener's effective
+  theme, established at tree Enter rather than via an explicit post-open push.
+  - **D5 — logical-parent inheritance at Enter.** `DependencyObjectStore.EstablishThemeAtEnter` now inherits a
+    `FrameworkElement`'s theme from its **logical** inheritance parent (`FrameworkElement.Parent` =
+    `LogicalParentOverride ?? Store.Parent`), a faithful port of WinUI's `EnterImpl` theme block
+    (depends.cpp:1026-1041, `GetInheritanceParentInternal(fLogicalParent=TRUE)` "so popups and flyouts inherit
+    theme changes"); non-FE DOs keep using the visual/inheritance parent (`GetParentInternal(false)`). A `Popup`
+    sets its `Child`'s `LogicalParentOverride` to itself (`Popup.Base.cs OnChildChangedPartial`), so the reparented
+    content now follows the opener's theme instead of the `Theme.None` `PopupRoot`. Removed the now-redundant
+    enhanced-lifecycle popup-open theme push in `Popup.WithPopupRoot.cs` (subsumed by `EstablishThemeAtEnter`'s
+    logical-parent inheritance) and un-gated the `Popup.NotifyThemeChangedCore` runtime-propagation override so
+    the logic is platform-neutral. Native tree-attach is Phase 7 (`NotifyThemeChanged` is a no-op outside the
+    enhanced lifecycle today), so T4/T5 stay RED on native until then.
+  - **D6 — flyout forwards the placement target's effective `ActualTheme`.** `FlyoutBase.ForwardThemeToPresenter`
+    now forwards `target.ActualTheme` instead of walking up for the nearest explicit non-Default `RequestedTheme`.
+    WinUI's `ForwardThemeToPresenter` forwards only the explicit element override and lets the app/inherited theme
+    reach the presenter via logical-parent inheritance + `ActualTheme`'s app/OS-base fallback
+    (framework.cpp:3984-3991); forwarding the *effective* `ActualTheme` is the equivalent net result and
+    additionally themes a flyout opened over **app-themed** (not element-themed) content on the first open. It
+    composes with the per-object Enter theme (D2): once Phase 7 establishes that on native, `target.ActualTheme`
+    reflects the full inherited theme there too, so native first-open parity falls out without re-introducing a
+    theme push. `m_isFlyoutPresenterRequestedThemeOverridden` semantics and the placement-target
+    `ActualThemeChanged` subscription are preserved. `TextCommandBarFlyout`/`CommandBarFlyout` inherit
+    `ForwardThemeToPresenter` via `FlyoutBase` and need no extra work (the S4 mobile text-selection context menu
+    is the motivating case; full native validation = Phase 7).
+  - Built `SamplesApp.Skia.Generic` (Release, net10.0, `UnoFastDevBuild`) clean (0 errors). `/runtime-tests`
+    theming suite + `Given_Theme_Materialization` (Skia Desktop): **144/145** = Phase 4 baseline (lone failure =
+    the pre-existing GC flake `When_Flyout_Closed_Target_Does_Not_Hold_Flyout`, fails on baseline too — confirmed
+    its message is the `'collected'` GC assertion, unrelated to theme resolution). **T4** (`Flyout` first open from
+    a Light region) and **T5** (`Popup` first open in a Light region) green, identical first/second open; the §B
+    leak guard green; the existing "Popup and Flyout Theme Propagation" tests in `Given_ElementTheme`
+    (`Popup_Child_Inherits`, `Popup_Owner_Theme_Changes`, `Flyout_Opened_From_Dark`, `Flyout_Target_Theme_Changes`,
+    `Nested_Theme_Boundary_Flyout`, `Flyout_PlacementTarget_Theme_Changes`, `MenuFlyout_Opened_After`) all green.
+    `dotnet format whitespace --verify-no-changes` clean on the 4 changed files. WASM/native heads +
+    `/winui-runtime-tests` oracle deferred (WASM links the same `Uno.UI.Skia` assembly; native parity = Phase 7).
+    One code commit (`fix(theming): theme popup/flyout content from placement target ActualTheme on first open
+    (D5/D6)`).
 
 ---
 
