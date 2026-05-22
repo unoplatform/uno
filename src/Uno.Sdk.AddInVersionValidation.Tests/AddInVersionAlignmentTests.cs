@@ -101,6 +101,7 @@ public class AddInVersionAlignmentTests
 			"Uno.UI.RemoteControl.Host.csproj should have built it)", hostBinDir);
 
 		var hostTpa = BuildHostTpa(hostBinDir);
+		var hostAssemblyGraph = BuildHostAssemblyGraph(hostBinDir);
 
 		// BFS each add-in's load graph from its primary server DLL.
 		var case1Fatal = new List<Case1>();
@@ -145,7 +146,7 @@ public class AddInVersionAlignmentTests
 			return;
 		}
 
-		var report = BuildReport(case1Fatal, case1Latent, case2, unresolvedReachable, metadata["UnoSdkManifestPath"]);
+		var report = BuildReport(case1Fatal, case1Latent, case2, unresolvedReachable, hostAssemblyGraph, metadata["UnoSdkManifestPath"]);
 		Assert.Fail(report);
 	}
 
@@ -187,9 +188,15 @@ public class AddInVersionAlignmentTests
 				{
 					if (hostVersion >= refVersion)
 					{
-						// Forward-roll: bridge serves host's version. The host's DLL is
-						// what gets loaded; we don't walk its refs here (they are the
-						// host's own load-graph problem, not the add-in's).
+						// Forward-roll: the add-in's compiled AssemblyRef requests an older
+						// AssemblyVersion than what the host loads. The default ALC binder
+						// would strict-match-fail on OOB-style refs (Kiota → STEW v8 with
+						// host v10 was the original #23287 crash), but the bridge handler
+						// in HostAssemblyResolution.TryBridgeBySimpleName intercepts via
+						// Default.Resolving and returns the host's higher instance. As long
+						// as that handler stays in place, forward-rolls do not crash at
+						// runtime, so they are deliberately not reported here — this test
+						// gates on currently-crashable misalignments only.
 						continue;
 					}
 
@@ -315,6 +322,7 @@ public class AddInVersionAlignmentTests
 		List<Case1Latent> case1Latent,
 		List<Case2> case2,
 		List<UnresolvedRef> unresolvedReachable,
+		IReadOnlyDictionary<string, IReadOnlyList<string>> hostAssemblyGraph,
 		string manifestPath)
 	{
 		var report = new StringBuilder();
@@ -344,7 +352,7 @@ public class AddInVersionAlignmentTests
 				var dllList = dlls.Count <= 3 ? string.Join(", ", dlls) : $"{string.Join(", ", dlls.Take(3))}, and {dlls.Count - 3} more";
 
 				report.AppendLine($"  • {group.Key.Reference}");
-				report.AppendLine($"      host loaded   v{group.Key.HostVersion}");
+				report.AppendLine($"      host loaded   v{group.Key.HostVersion}{FormatHostReferrers(group.Key.Reference, hostAssemblyGraph)}");
 				report.AppendLine($"      add-in needs  v{group.Key.RequiredVersion}  ({group.Key.AddInPackage})");
 				report.AppendLine($"      reached via   {dllList}");
 				report.AppendLine();
@@ -363,7 +371,7 @@ public class AddInVersionAlignmentTests
 				.ThenBy(g => g.Key.AddInPackage, StringComparer.OrdinalIgnoreCase))
 			{
 				report.AppendLine($"  • {group.Key.Reference}");
-				report.AppendLine($"      host loaded     v{group.Key.HostVersion}");
+				report.AppendLine($"      host loaded     v{group.Key.HostVersion}{FormatHostReferrers(group.Key.Reference, hostAssemblyGraph)}");
 				report.AppendLine($"      add-in needs    v{group.Key.RequiredVersion}");
 				report.AppendLine($"      add-in bundles  v{group.Key.BundledVersion}  ({group.Key.AddInPackage})");
 				report.AppendLine();
@@ -539,6 +547,103 @@ public class AddInVersionAlignmentTests
 		}
 
 		return tpa;
+	}
+
+	/// <summary>
+	/// Walks the host's transitive AssemblyRef graph starting from the host's primary
+	/// executable assembly. For each referenced assembly simple name, records the host DLLs
+	/// that reference it. This is the source of truth for two report features:
+	/// <list type="bullet">
+	///   <item><description>Attribution: when an add-in clashes on an assembly the host carries, name the host DLL(s) that ref the same assembly.</description></item>
+	///   <item><description>Cross-major noise filter: assemblies the host's code does not actually reference (System.Collections, System.Threading — type-forwards) are absent from the graph and therefore excluded from the cross-major report.</description></item>
+	/// </list>
+	/// </summary>
+	/// <remarks>
+	/// The walk is bounded to DLLs physically present in <paramref name="hostBinDir"/>: when
+	/// an <c>AssemblyRef</c> does not resolve to a DLL in that directory (typical for refs
+	/// satisfied by the .NET shared framework), the ref is still recorded but the walk does
+	/// not recurse into it. This is enough to capture every assembly the host's compiled code
+	/// actually mentions, which is the relevant set for cross-major analysis.
+	/// </remarks>
+	private static IReadOnlyDictionary<string, IReadOnlyList<string>> BuildHostAssemblyGraph(string hostBinDir)
+	{
+		// The primary DLL is the one matching the bin directory's project name. For the
+		// DevServer host project that is `Uno.UI.RemoteControl.Host.dll`. Resolve generically
+		// off the .runtimeconfig.json or .deps.json (only one per project), since both follow
+		// the `<ProjectName>.runtimeconfig.json` / `<ProjectName>.deps.json` convention.
+		var depsFile = Directory.EnumerateFiles(hostBinDir, "*.deps.json").FirstOrDefault();
+		if (depsFile is null)
+		{
+			return new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase);
+		}
+
+		var primaryDll = Path.Combine(hostBinDir, Path.GetFileNameWithoutExtension(depsFile)[..^Path.GetExtension(Path.GetFileNameWithoutExtension(depsFile)).Length] + ".dll");
+		// Path.GetFileNameWithoutExtension strips ".json" from "X.deps.json" leaving "X.deps";
+		// we want just "X" — drop the trailing ".deps".
+		var primarySimple = Path.GetFileNameWithoutExtension(depsFile);
+		if (primarySimple.EndsWith(".deps", StringComparison.OrdinalIgnoreCase))
+		{
+			primarySimple = primarySimple[..^5];
+		}
+		primaryDll = Path.Combine(hostBinDir, primarySimple + ".dll");
+
+		if (!File.Exists(primaryDll))
+		{
+			return new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase);
+		}
+
+		var inverse = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+		var visited = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+		var queue = new Queue<string>();
+		queue.Enqueue(primaryDll);
+
+		while (queue.TryDequeue(out var dll))
+		{
+			if (!visited.Add(dll))
+			{
+				continue;
+			}
+
+			var dllSimpleName = Path.GetFileNameWithoutExtension(dll);
+			foreach (var (refName, _) in ReadAssemblyRefs(dll))
+			{
+				if (!inverse.TryGetValue(refName, out var refList))
+				{
+					refList = [];
+					inverse[refName] = refList;
+				}
+				if (!refList.Contains(dllSimpleName, StringComparer.OrdinalIgnoreCase))
+				{
+					refList.Add(dllSimpleName);
+				}
+
+				var candidate = Path.Combine(hostBinDir, refName + ".dll");
+				if (File.Exists(candidate))
+				{
+					queue.Enqueue(candidate);
+				}
+			}
+		}
+
+		return inverse.ToDictionary(
+			kvp => kvp.Key,
+			kvp => (IReadOnlyList<string>)kvp.Value.OrderBy(n => n, StringComparer.OrdinalIgnoreCase).ToList(),
+			StringComparer.OrdinalIgnoreCase);
+	}
+
+	/// <summary>
+	/// Formats the "referenced by ..." suffix listing the host DLLs whose AssemblyRef table
+	/// mentions <paramref name="simpleName"/>. Empty when the host's transitive graph does
+	/// not reference the assembly (i.e. it would be loaded via framework type-forward).
+	/// </summary>
+	private static string FormatHostReferrers(string simpleName, IReadOnlyDictionary<string, IReadOnlyList<string>> hostAssemblyGraph)
+	{
+		if (!hostAssemblyGraph.TryGetValue(simpleName, out var referrers) || referrers.Count == 0)
+		{
+			return string.Empty;
+		}
+		var capped = referrers.Count <= 3 ? string.Join(", ", referrers) : $"{string.Join(", ", referrers.Take(3))}, and {referrers.Count - 3} more";
+		return $"  referenced by {capped}";
 	}
 
 	private static IEnumerable<string> EnumerateSharedFrameworkDirs(string? bclDir)
