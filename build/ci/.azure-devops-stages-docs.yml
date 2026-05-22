@@ -21,7 +21,7 @@ stages:
     - template: setup/.azure-devops-setup-doc-validations.yml
 
 - stage: docs_generation
-  displayName: Docs Generation
+  displayName: Build - Documentation
   dependsOn: Setup
   jobs:
   - template: docs/.azure-devops-docs.yml

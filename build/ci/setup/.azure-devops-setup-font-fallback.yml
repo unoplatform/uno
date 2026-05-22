@@ -3,7 +3,7 @@ parameters:
 
 stages:
 - stage: FontFallback_Validation
-  displayName: Validate FontFallbackMaps
+  displayName: Setup - Font Fallback Maps Validation
   dependsOn: []
 
   jobs:
