@@ -533,31 +533,35 @@ public partial class FrameworkElement
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
 	/// <summary>
-	/// Clears theme foreground state when unloading from the visual tree.
-	/// Called from <see cref="OnUnloadedPartial"/> to prevent stale inherited
-	/// values from leaking across runtime tests or re-parenting scenarios.
+	/// Clears inherited theme-foreground state when unloading from the visual tree.
+	/// Called from <see cref="OnUnloadedPartial"/> to prevent a stale frozen foreground
+	/// brush from leaking to elements loaded later under the same parent.
 	/// </summary>
+	/// <remarks>
+	/// MUX Reference: CDependencyObject keeps m_theme across Leave; it is re-established (or
+	/// overridden by a different ancestor theme) when the element re-enters the tree via the
+	/// EnterImpl theme block (depends.cpp:1023-1048), ported to
+	/// <see cref="DependencyObjectStore.EstablishThemeAtEnter"/>. So unlike earlier Uno behavior,
+	/// this method intentionally does <b>not</b> reset the per-object theme (D4) — see the note below.
+	/// </remarks>
 	private void ClearThemeStateOnUnloaded()
 	{
-		// Clear inherited theme foreground when leaving the tree to prevent
-		// stale values from leaking to elements loaded later in the same
-		// parent (e.g., between runtime tests). Elements with explicit
-		// RequestedTheme (_isForegroundFrozen) retain their brush because
-		// they own the theme boundary.
+		// Clear inherited theme foreground when leaving the tree to prevent stale values from
+		// leaking to elements loaded later under the same parent (e.g., between runtime tests).
+		// This is foreground hygiene only and is independent of the per-object theme: elements with
+		// explicit RequestedTheme (_isForegroundFrozen) keep their brush because they own the theme
+		// boundary, and on re-Enter the correct foreground is re-pulled (NotifyThemeChanged when the
+		// parent theme differs, or OnLoadingPartial's parent-foreground pull otherwise).
 		if (!_isForegroundFrozen)
 		{
 			_themeForeground = null;
 		}
 
-		// Clear stored theme so that when this element re-enters the tree
-		// (possibly under a different theme region), OnLoadingPartial will
-		// correctly inherit the new parent's theme. Elements with explicit
-		// RequestedTheme don't need this because OnLoadingPartial calls
-		// NotifyThemeChanged for them.
-		if (RequestedTheme == ElementTheme.Default)
-		{
-			SetTheme(Theme.None);
-		}
+		// D4: the per-object theme (_theme) is intentionally NOT cleared here. WinUI does not reset
+		// m_theme on Leave; the theme persists and re-Enter re-themes from the (possibly different)
+		// inheritance parent (DependencyObjectStore.EstablishThemeAtEnter, ported from
+		// CDependencyObject::EnterImpl, depends.cpp:1023-1048). Clearing it on unload made a recycled
+		// element resolve the global ambient on reload instead of its island theme (scenario S2).
 	}
 #endif
 
