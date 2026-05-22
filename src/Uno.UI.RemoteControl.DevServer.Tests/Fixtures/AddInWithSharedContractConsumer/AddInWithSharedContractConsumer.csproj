@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<!--
+		Test fixture: the "consumer" side of the cross-add-in type-sharing regression test.
+
+		This add-in does NOT have Uno.Licensing.TestContracts.dll in its output directory
+		(Private=false on the project reference) and its deps.json does not list the
+		contracts as a runtime asset either. Both AssemblyDependencyResolver and the
+		consumer's own directory probing therefore fail to locate the contracts DLL —
+		the only path that succeeds is loading the contracts from the *provider* add-in's
+		directory, via Assembly.LoadFrom's loaded-from probing or the host's bridge.
+	-->
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Private=false: compile-time reference only; DLL is NOT copied to this add-in's
+		     output directory. Simulates the production scenario where the contracts assembly
+		     is a transitive compile-time ref but not a runtime asset in the consuming add-in. -->
+		<ProjectReference Include="..\Uno.Licensing.TestContracts\Uno.Licensing.TestContracts.csproj"
+		                  Private="false" />
+	</ItemGroup>
+
+</Project>

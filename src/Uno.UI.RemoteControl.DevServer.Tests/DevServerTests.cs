@@ -289,4 +289,98 @@ public class DevServerTests
 			}
 		}
 	}
+
+	// ------------------------------------------------------------------ cross-add-in type sharing regression (#23304)
+
+	[TestMethod]
+	[Retry(2, MillisecondsDelayBetweenRetries = 1000)]
+	[Description("Regression for #23304: when two add-ins share a contract assembly (e.g. Uno.Licensing.Sdk.Contracts) " +
+		"that is physically present only in the provider's directory and absent from every add-in's .deps.json, " +
+		"both add-ins must observe a single Type identity for the contract so that DI resolves the consumer's " +
+		"constructor dependency successfully. Loading all add-ins via Assembly.LoadFrom into the default " +
+		"AssemblyLoadContext gives the runtime's LoadFromResolveHandler the directory hints it needs to locate " +
+		"the contracts DLL on-demand from the provider's directory.")]
+	public async Task DevServer_ShouldResolveSharedContractAcrossAddIns_WhenContractOnlyInProviderDirectory()
+	{
+		var testAssemblyDir = Path.GetDirectoryName(typeof(DevServerTests).Assembly.Location)!;
+		var providerDll = Path.Combine(
+			testAssemblyDir, "Fixtures", "AddInWithSharedContractProvider", "AddInWithSharedContractProvider.dll");
+		var consumerDll = Path.Combine(
+			testAssemblyDir, "Fixtures", "AddInWithSharedContractConsumer", "AddInWithSharedContractConsumer.dll");
+
+		File.Exists(providerDll).Should()
+			.BeTrue("provider fixture must be staged by _BuildAndCopyAddInTestFixtures");
+		File.Exists(consumerDll).Should()
+			.BeTrue("consumer fixture must be staged by _BuildAndCopyAddInTestFixtures");
+
+		// The contracts DLL must be in the provider's directory; this is what makes
+		// directory-probing resolve it once both add-ins share an ALC.
+		var contractsDll = Path.Combine(
+			testAssemblyDir, "Fixtures", "AddInWithSharedContractProvider", "Uno.Licensing.TestContracts.dll");
+		File.Exists(contractsDll).Should()
+			.BeTrue("Uno.Licensing.TestContracts.dll must be staged in the provider's fixture directory");
+
+		// The contracts DLL must NOT be in the consumer's directory — exact reproduction
+		// of the production scenario.
+		var consumerContractsDll = Path.Combine(
+			testAssemblyDir, "Fixtures", "AddInWithSharedContractConsumer", "Uno.Licensing.TestContracts.dll");
+		File.Exists(consumerContractsDll).Should()
+			.BeFalse("Uno.Licensing.TestContracts.dll must NOT be in the consumer's fixture directory");
+
+		var sentinel = Path.Combine(Path.GetTempPath(), $"shared-contract-{Guid.NewGuid():N}.txt");
+		try
+		{
+			await using var helper = new DevServerTestHelper(
+				_logger,
+				environmentVariables: new Dictionary<string, string>
+				{
+					["UNO_DEVSERVER_TEST_SHARED_CONTRACT_SENTINEL"] = sentinel,
+				});
+
+			try
+			{
+				// --addins is a semicolon-separated path list (Microsoft.Extensions.Configuration
+				// parses a single string; two space-separated tokens would silently drop the second).
+				var started = await helper.StartAsync(
+					CT,
+					extraArgs: $"--addins \"{providerDll};{consumerDll}\"");
+				helper.EnsureStarted();
+
+				started.Should().BeTrue("dev server should start with both cross-add-in fixtures loaded");
+				helper.AssertRunning();
+
+				// ConsumerHostedService.StartAsync writes the resolved contract's
+				// AssemblyQualifiedName to the sentinel. If add-ins share a single Type
+				// identity, DI resolves the constructor dependency and the sentinel exists.
+				// If they do not, DI throws InvalidOperationException (or the contracts DLL
+				// is not loadable at all) and the sentinel is never written.
+				File.Exists(sentinel).Should().BeTrue(
+					"ConsumerHostedService.StartAsync must have been invoked with ILicensingTestContract " +
+					"resolved from DI, proving cross-add-in type sharing when the contract DLL ships only " +
+					"in the provider's directory");
+
+				// Belt-and-braces: confirm the resolved type actually comes from the shared
+				// contracts assembly rather than some unrelated fallback.
+				var sentinelContent = File.ReadAllText(sentinel).Trim();
+				sentinelContent.Should().Contain(
+					"Uno.Licensing.TestContracts",
+					"the resolved contract type must come from the shared contracts assembly");
+				sentinelContent.Should().NotBe(
+					"resolved",
+					"the consumer must have received a concrete ILicensingTestContract instance whose AQN " +
+					"identifies the contracts assembly, not the placeholder string written when AQN is null");
+			}
+			finally
+			{
+				await helper.StopAsync(CT);
+			}
+		}
+		finally
+		{
+			if (File.Exists(sentinel))
+			{
+				File.Delete(sentinel);
+			}
+		}
+	}
 }

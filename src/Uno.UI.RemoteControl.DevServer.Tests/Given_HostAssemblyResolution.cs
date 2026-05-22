@@ -204,24 +204,61 @@ public class Given_HostAssemblyResolution
 		result!.IsDynamic.Should().BeFalse("returned assembly must never be dynamic");
 	}
 
-	// ------------------------------------------------------------------ PKT symmetry
+	// ------------------------------------------------------------------ asymmetric PKT match
 
 	[TestMethod]
-	[Description("When the loaded assembly is strong-named but the request carries no PKT, the bridge must return null to prevent silently substituting a strong-named assembly for an unsigned reference.")]
-	public void TryBridgeBySimpleName_RejectsStrongNamedLoaded_WhenRequestedIsUnsigned()
+	[Description("Signed request (non-empty PublicKeyToken) whose token does not match the loaded assembly's must return null. Identity validation, not an allow-list.")]
+	public void TryBridgeBySimpleName_RefusesBridge_WhenSignedRequestPktDoesNotMatchLoaded()
 	{
-		// System.Text.Json is strong-named (Microsoft PKT).
-		_ = typeof(System.Text.Json.JsonDocument).Assembly;
+		var hostAssembly = typeof(System.Text.Json.JsonDocument).Assembly;
+		var realPkt = hostAssembly.GetName().GetPublicKeyToken()!;
+		realPkt.Length.Should().BeGreaterThan(0, "the bridged framework assembly is expected to be strong-named");
 
-		// Request the same simple name without a PKT.
-		var requested = new AssemblyName("System.Text.Json") { Version = null };
+		// Build a fake PKT distinct from the real one (flip the last byte).
+		var fakePkt = (byte[])realPkt.Clone();
+		fakePkt[^1] = (byte)(fakePkt[^1] ^ 0xFF);
+
+		var requested = new AssemblyName("System.Text.Json");
+		requested.SetPublicKeyToken(fakePkt);
 
 		var result = HostAssemblyResolution.TryBridgeBySimpleName(
 			AssemblyLoadContext.Default, requested);
 
 		result.Should().BeNull(
-			"a strong-named loaded assembly must not be returned for an unsigned request — " +
-			"the PKT mismatch could silently substitute the wrong assembly");
+			"the loaded assembly's PKT differs from the signed request's PKT — bridging would be an identity swap");
+	}
+
+	[TestMethod]
+	[Description("Signed request whose PublicKeyToken matches the loaded assembly's must return the loaded assembly — the normal signed-framework bridge path (e.g. Kiota → System.Text.Encodings.Web).")]
+	public void TryBridgeBySimpleName_Bridges_WhenSignedRequestPktMatchesLoaded()
+	{
+		var hostAssembly = typeof(System.Text.Json.JsonDocument).Assembly;
+		var realPkt = hostAssembly.GetName().GetPublicKeyToken()!;
+
+		var requested = new AssemblyName("System.Text.Json");
+		requested.SetPublicKeyToken(realPkt);
+
+		var result = HostAssemblyResolution.TryBridgeBySimpleName(
+			AssemblyLoadContext.Default, requested);
+
+		result.Should().BeSameAs(hostAssembly,
+			"the signed request's PKT matches the loaded assembly — bridge must serve it");
+	}
+
+	[TestMethod]
+	[Description("Unsigned request must skip the PKT check entirely: cross-add-in unsigned contracts are bridged by name only. This is asymmetric on purpose — a request without an identity claim cannot demand identity matching.")]
+	public void TryBridgeBySimpleName_Bridges_WhenUnsignedRequestMatchesSignedLoaded()
+	{
+		var hostAssembly = typeof(System.Text.Json.JsonDocument).Assembly;
+
+		// Unsigned request — no PKT set.
+		var requested = new AssemblyName("System.Text.Json");
+
+		var result = HostAssemblyResolution.TryBridgeBySimpleName(
+			AssemblyLoadContext.Default, requested);
+
+		result.Should().BeSameAs(hostAssembly,
+			"an unsigned request must bridge to a same-named loaded assembly regardless of the loaded PKT");
 	}
 
 	// ------------------------------------------------------------------ version downgrade
@@ -230,10 +267,9 @@ public class Given_HostAssemblyResolution
 	[Description("When the loaded assembly version is lower than the requested version, TryBridgeBySimpleName must return null to avoid silently serving a downgraded version.")]
 	public void TryBridgeBySimpleName_RejectsDowngrade_WhenLoadedVersionLowerThanRequested()
 	{
-		// Use System.Text.Encodings.Web — forced into Default by Given_AddInLoadContext.
+		// Touch JavaScriptEncoder to force the assembly into Default.Assemblies.
 		var loaded = typeof(System.Text.Encodings.Web.JavaScriptEncoder).Assembly;
 		var loadedVersion = loaded.GetName().Version!;
-		var loadedPkt = loaded.GetName().GetPublicKeyToken()!;
 
 		// Request the same assembly one major version higher (simulates the
 		// add-in requesting v(N+1) while the host has only vN loaded).
@@ -242,7 +278,6 @@ public class Given_HostAssemblyResolution
 		{
 			Version = higherVersion,
 		};
-		requested.SetPublicKeyToken(loadedPkt);
 
 		var result = HostAssemblyResolution.TryBridgeBySimpleName(
 			AssemblyLoadContext.Default, requested);

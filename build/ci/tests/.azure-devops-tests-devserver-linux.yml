@@ -1,0 +1,79 @@
+parameters:
+  poolName: ''
+
+jobs:
+- job: DevServer_Tests_Linux
+  displayName: 'Run DevServer Tests (Linux)'
+  timeoutInMinutes: 30
+  cancelTimeoutInMinutes: 0
+
+  pool: ${{ parameters.poolName }}
+
+  variables:
+    CombinedConfiguration: Release|Any CPU
+    CI_Build: true
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: ../templates/gitversion.yml
+  - template: ../templates/dotnet-install.yml
+
+  # Required to build fixtures targeting net8.0 / net9.0 (used by DevServer integration tests).
+  - task: UseDotNet@2
+    displayName: Install .NET 9 SDK
+    inputs:
+      packageType: 'sdk'
+      version: '9.0.300'
+      installationPath: $(DOTNET_INSTALL_DIR)
+
+  - task: UseDotNet@2
+    displayName: Install .NET 8 SDK
+    inputs:
+      packageType: 'sdk'
+      version: '8.0.x'
+      installationPath: $(DOTNET_INSTALL_DIR)
+
+  # Focused build & test of the DevServer host and its unit / integration tests.
+  # This stage is intentionally independent of the heavier unit-tests stage so that
+  # add-in resolution regressions surface quickly in PR feedback. Runs on Linux to
+  # provide cross-platform coverage of the host-side assembly resolution code that
+  # is otherwise only exercised on the Windows unit-tests stage.
+  - pwsh: |
+      dotnet build src/Uno.UI.RemoteControl.DevServer.Tests/Uno.UI.RemoteControl.DevServer.Tests.csproj `
+        -c Release `
+        -p:UnoTargetFrameworkOverride=net10.0 `
+        -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true `
+        -bl:$(build.artifactstagingdirectory)/devserver-tests-build.binlog
+    displayName: Build DevServer tests + fixtures
+
+  - pwsh: |
+      dotnet test src/Uno.UI.RemoteControl.DevServer.Tests/Uno.UI.RemoteControl.DevServer.Tests.csproj `
+        -c Release `
+        -p:UnoTargetFrameworkOverride=net10.0 `
+        -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true `
+        --no-build `
+        --no-progress `
+        --report-trx `
+        --results-directory $(Build.SourcesDirectory)/artifacts/TestResults
+    displayName: Run DevServer tests
+
+  - task: PublishTestResults@2
+    displayName: Publish TRX Test Results
+    inputs:
+      testResultsFormat: 'VSTest'
+      testResultsFiles: '*.trx'
+      searchFolder: '$(Build.SourcesDirectory)/artifacts/TestResults'
+      testRunTitle: 'DevServer Tests (Linux)'
+      mergeTestResults: true
+    continueOnError: true
+    condition: always()
+
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: devserver-tests-linux-logs
+      ArtifactType: Container
