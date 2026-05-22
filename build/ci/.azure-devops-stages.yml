@@ -102,6 +102,16 @@ stages:
     parameters:
       poolName: '$(windowsScaledPool)'
 
+- stage: addin_version_alignment
+  displayName: Tests - Add-in Version Alignment
+  dependsOn: []
+
+  jobs:
+
+  - template: tests/.azure-devops-tests-devserver-linux.yml
+    parameters:
+      poolName: '$(linuxScaledPool)'
+
 - stage: wasm_tests
   displayName: Tests - WebAssembly Native
   condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeWasm'], 'true')))
