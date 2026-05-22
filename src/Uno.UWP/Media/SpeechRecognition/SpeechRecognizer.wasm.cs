@@ -40,12 +40,10 @@ namespace Windows.Media.SpeechRecognition
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
 			{
-				if (speechRecognizer._currentCompletionSource != null)
-				{
-					speechRecognizer._currentCompletionSource.SetException(
-						new InvalidOperationException($"Speech recognition failed with '{error}'"));
-				}
-				else
+				// TrySetException: the completion source may already be completed (a result arrived,
+				// or it was cancelled by Dispose), in which case the failure is only logged.
+				if (speechRecognizer._currentCompletionSource?.TrySetException(
+						new InvalidOperationException($"Speech recognition failed with '{error}'")) != true)
 				{
 					if (typeof(SpeechRecognizer).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 					{
@@ -77,7 +75,9 @@ namespace Windows.Media.SpeechRecognition
 					Text = result,
 					RawConfidence = confidence
 				};
-				speechRecognizer?._currentCompletionSource.SetResult(recognitionResult);
+
+				// TrySetResult: ignore a late/duplicate result if the source was already completed.
+				speechRecognizer._currentCompletionSource?.TrySetResult(recognitionResult);
 			}
 			return 0;
 		}
@@ -110,7 +110,12 @@ namespace Windows.Media.SpeechRecognition
 
 		public void Dispose()
 		{
-			_currentCompletionSource?.SetCanceled();
+			// TrySetCanceled (not SetCanceled): once recognition has completed via a result or error
+			// the source is already finalized, and SetCanceled would throw
+			// InvalidOperationException ("TaskT_TransitionToFinal_AlreadyCompleted") — which would also
+			// skip RemoveInstance below and leak the JS recognizer instance.
+			_currentCompletionSource?.TrySetCanceled();
+			_currentCompletionSource = null;
 
 			NativeMethods.RemoveInstance(_instanceId.ToString());
 		}
