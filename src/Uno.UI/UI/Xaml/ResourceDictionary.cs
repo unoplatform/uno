@@ -277,6 +277,17 @@ namespace Microsoft.UI.Xaml
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal bool TryGetValue(in ResourceKey resourceKey, out object value, bool shouldCheckSystem)
+			=> TryGetValue(resourceKey, GetActiveTheme(), out value, shouldCheckSystem);
+
+		// Phase 3 (D3, Mechanism 1) — theme-aware leaf lookup.
+		// The Light/Dark theme sub-dictionary is selected by the explicitly-passed <paramref name="themeKey"/>
+		// (the resolving owner's effective theme) instead of the process-global GetActiveTheme(). The
+		// parameterless overload above forwards GetActiveTheme() so callers that have not yet been migrated
+		// to thread the owner theme keep their current behavior during the migration. MUX: this matches
+		// SetThemeResourceBinding pushing the owner's own m_theme before resolving (Theming.cpp:368-376) —
+		// here the theme travels as a parameter rather than via the ambient slot (architecture.md §6).
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal bool TryGetValue(in ResourceKey resourceKey, in ResourceKey themeKey, out object value, bool shouldCheckSystem)
 		{
 			bool useKeysNotFoundCache = resourceKey.ShouldFilter;
 			var modifiedKey = resourceKey;
@@ -306,13 +317,13 @@ namespace Microsoft.UI.Xaml
 				return true;
 			}
 
-			if (GetFromMerged(modifiedKey, out value))
+			if (GetFromMerged(modifiedKey, themeKey, out value))
 			{
 				return true;
 			}
 
-			if (GetActiveThemeDictionary(GetActiveTheme()) is { } activeThemeDictionary
-				&& activeThemeDictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+			if (GetActiveThemeDictionary(themeKey) is { } activeThemeDictionary
+				&& activeThemeDictionary.TryGetValue(resourceKey, themeKey, out value, shouldCheckSystem: false))
 			{
 				return true;
 			}
@@ -343,6 +354,13 @@ namespace Microsoft.UI.Xaml
 		/// </remarks>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal bool TryGetValue(in ResourceKey resourceKey, out object value, out ResourceDictionary providingDictionary, bool shouldCheckSystem)
+			=> TryGetValue(resourceKey, GetActiveTheme(), out value, out providingDictionary, shouldCheckSystem);
+
+		// Phase 3 (D3, Mechanism 1) — theme-aware leaf lookup (providing-dictionary variant). See the
+		// value-only overload above. The providing dictionary pinned for a theme hit is THIS dictionary
+		// (the owner of ThemeDictionaries), so re-querying after a theme change picks the new sub-dict.
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal bool TryGetValue(in ResourceKey resourceKey, in ResourceKey themeKey, out object value, out ResourceDictionary providingDictionary, bool shouldCheckSystem)
 		{
 			bool useKeysNotFoundCache = resourceKey.ShouldFilter;
 			var modifiedKey = resourceKey;
@@ -374,15 +392,15 @@ namespace Microsoft.UI.Xaml
 				return true;
 			}
 
-			if (GetFromMerged(modifiedKey, out value, out providingDictionary))
+			if (GetFromMerged(modifiedKey, themeKey, out value, out providingDictionary))
 			{
 				return true;
 			}
 
 			// When found via theme dictionary, pin THIS dictionary (the owner of ThemeDictionaries),
 			// not the inner theme sub-dictionary. This is critical for correct theme switching.
-			if (GetActiveThemeDictionary(GetActiveTheme()) is { } activeThemeDictionary
-				&& activeThemeDictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+			if (GetActiveThemeDictionary(themeKey) is { } activeThemeDictionary
+				&& activeThemeDictionary.TryGetValue(resourceKey, themeKey, out value, shouldCheckSystem: false))
 			{
 				providingDictionary = this;
 				return true;
@@ -410,12 +428,17 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private bool GetFromMerged(in ResourceKey resourceKey, out object value, out ResourceDictionary providingDictionary)
+			=> GetFromMerged(resourceKey, GetActiveTheme(), out value, out providingDictionary);
+
+		// Phase 3 (D3, Mechanism 1): thread the resolving owner's theme into the merged-dictionary
+		// recursion so merged dictionaries select the same theme sub-dictionary as the root lookup.
+		private bool GetFromMerged(in ResourceKey resourceKey, in ResourceKey themeKey, out object value, out ResourceDictionary providingDictionary)
 		{
 			var count = _mergedDictionaries.Count;
 
 			for (int i = count - 1; i >= 0; i--)
 			{
-				if (_mergedDictionaries[i].TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false))
+				if (_mergedDictionaries[i].TryGetValue(resourceKey, themeKey, out value, out providingDictionary, shouldCheckSystem: false))
 				{
 					return true;
 				}
@@ -552,13 +575,17 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private bool GetFromMerged(in ResourceKey resourceKey, out object value)
+			=> GetFromMerged(resourceKey, GetActiveTheme(), out value);
+
+		// Phase 3 (D3, Mechanism 1): theme-threaded merged-dictionary recursion (value-only variant).
+		private bool GetFromMerged(in ResourceKey resourceKey, in ResourceKey themeKey, out object value)
 		{
 			// Check last dictionary first - //https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/resourcedictionary-and-xaml-resource-references#merged-resource-dictionaries
 			var count = _mergedDictionaries.Count;
 
 			for (int i = count - 1; i >= 0; i--)
 			{
-				if (_mergedDictionaries[i].TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+				if (_mergedDictionaries[i].TryGetValue(resourceKey, themeKey, out value, shouldCheckSystem: false))
 				{
 					return true;
 				}
@@ -932,6 +959,24 @@ namespace Microsoft.UI.Xaml
 		internal static object GetStaticResourceAliasPassthrough(string resourceKey, XamlParseContext parseContext) => new StaticResourceAliasRedirect(resourceKey, parseContext);
 
 		internal static ResourceKey GetActiveTheme() => Themes.RequestedThemeForSubTree;
+
+		// Phase 3 (D3, Mechanism 1): maps a per-object Theme (CDependencyObject::m_theme) to the
+		// Light/Dark theme sub-dictionary key. Mirrors the band-aid push pattern used across the 11
+		// push sites (Theming.GetBaseValue(theme) == Theme.Light ? "Light" : "Dark"), so the
+		// threaded-parameter path selects the identical sub-dictionary. High-contrast composition is
+		// Phase 6 (D8); for now only the base bits select Light vs Dark.
+		internal static ResourceKey GetThemeKey(Theme theme)
+			=> Theming.GetBaseValue(theme) == Theme.Light ? Themes.Light : Themes.Dark;
+
+		// Reverse of GetThemeKey: the active theme key expressed as a Theme enum, used by the
+		// transitional parameterless ThemeResourceReference.RefreshValue(owner) path so it can feed the
+		// (now Theme-keyed, WinUI-aligned) ThemeWalkResourceCache. "Light"/"Dark" map to the base theme;
+		// any other key (e.g. the uninitialized "Default") maps to Theme.None.
+		internal static Theme GetActiveThemeValue()
+		{
+			var key = GetActiveTheme().Key;
+			return key == "Light" ? Theme.Light : key == "Dark" ? Theme.Dark : Theme.None;
+		}
 
 		internal static void PushRequestedThemeForSubTree(ResourceKey theme)
 			=> Themes.PushRequestedThemeForSubTree(theme);

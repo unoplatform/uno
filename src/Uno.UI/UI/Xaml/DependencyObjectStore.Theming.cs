@@ -261,6 +261,17 @@ public partial class DependencyObjectStore
 			object? newValue = null;
 			bool resolved = false;
 
+			// D3 (Mechanism 1): compute the owner's effective theme ONCE here — the single centralized
+			// "use the owner's theme" choke point, the analog of WinUI's SetThemeResourceBinding pushing
+			// this->m_theme before resolving (Theming.cpp:368-376). Both the Phase A ancestor walk and the
+			// Phase B pinned-dict refresh resolve against this theme instead of the process-global ambient.
+			var ownerTheme = ThemeResolution.ResolveOwnerTheme(owner);
+			var ownerThemeKey = ResourceDictionary.GetThemeKey(ownerTheme);
+
+			// Transitional Mechanism-1 equivalence proof (architecture.md §6): record any divergence between
+			// the owner theme and what the legacy global stack would have produced. Removed in Phase 4.
+			ThemeResolution.RecordOwnerThemeDivergence(owner, ownerThemeKey);
+
 			// Phase A: Ancestor walk (WinUI: FindNextResolvedValueNoRef → ScopedResources::TraverseVisualTreeResources)
 			// If element is active, walk ancestor ResourceDictionaries to find
 			// the resource. This handles re-parenting correctly.
@@ -269,7 +280,7 @@ public partial class DependencyObjectStore
 				var dicts = GetResourceDictionaries(includeAppResources: false);
 				foreach (var dict in dicts)
 				{
-					if (dict.TryGetValue(themeRef.ResourceKey, out var ancestorValue, shouldCheckSystem: false))
+					if (dict.TryGetValue(themeRef.ResourceKey, ownerThemeKey, out var ancestorValue, shouldCheckSystem: false))
 					{
 						themeRef.LastResolvedValue = ancestorValue;
 						themeRef.IsResolved = true;
@@ -286,7 +297,7 @@ public partial class DependencyObjectStore
 			// already by the tree lookup above."
 			if (!resolved)
 			{
-				newValue = themeRef.RefreshValue(owner, cache);
+				newValue = themeRef.RefreshValue(ownerTheme, cache);
 			}
 
 			// MUX: Theming.cpp:385-393 — SetValue with resolved value
