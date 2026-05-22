@@ -15,11 +15,53 @@ internal static partial class SystemThemeHelper
 	private static EventHandler? _systemThemeChanged;
 	private static bool _changesObserved;
 	private static SystemTheme? _lastSystemTheme;
+	private static SystemTheme? _systemThemeOverride;
 
 	/// <summary>
-	/// Gets the current system theme.
+	/// Gets the current system theme. When <see cref="SystemThemeOverride"/> is set (for testing),
+	/// that value is reported instead of the real OS theme.
 	/// </summary>
-	internal static SystemTheme SystemTheme => _lastSystemTheme ??= GetSystemTheme();
+	internal static SystemTheme SystemTheme => _lastSystemTheme ??= EffectiveSystemTheme;
+
+	/// <summary>
+	/// The effective system theme: the override when one is set (for tests), otherwise the real
+	/// OS theme reported by the platform.
+	/// </summary>
+	private static SystemTheme EffectiveSystemTheme => _systemThemeOverride ?? GetSystemTheme();
+
+	/// <summary>
+	/// Test hook (analogous to <c>ScaleOverride</c>): when set, <see cref="SystemTheme"/> reports this
+	/// value instead of the real OS theme; set to <c>null</c> to restore real OS detection. Assigning
+	/// raises <see cref="SystemThemeChanged"/> when the effective theme changes, mirroring a real OS
+	/// theme change so observers (e.g. <c>Application.OnSystemThemeChanged</c>) react exactly as in
+	/// production. Enables runtime tests to validate behavior under a deterministic ambient OS theme,
+	/// and under runtime OS-theme changes, independently of the real machine theme.
+	/// </summary>
+	internal static SystemTheme? SystemThemeOverride
+	{
+		get => _systemThemeOverride;
+		set
+		{
+			if (_systemThemeOverride == value)
+			{
+				return;
+			}
+
+			_systemThemeOverride = value;
+
+			// Setting the override is an explicit "force the system theme" action, so notify
+			// observers UNCONDITIONALLY. We deliberately do NOT gate on _lastSystemTheme the way
+			// RefreshSystemTheme() does (that path is for polling the real OS): _lastSystemTheme
+			// tracks the last OS-notified theme and can legitimately desync from the application's
+			// current theme — e.g. after a test sets an explicit app theme via
+			// SetExplicitRequestedTheme and then restores it. A conditional raise would then find
+			// cached == new and skip, leaving the application on a stale theme (the cause of
+			// in-suite test flakiness). Re-asserting here makes the override reliable regardless of
+			// prior state.
+			_lastSystemTheme = EffectiveSystemTheme;
+			RaiseSystemThemeChanged();
+		}
+	}
 
 	/// <summary>
 	/// Triggered when system theme changes.
@@ -95,7 +137,7 @@ internal static partial class SystemThemeHelper
 	internal static void RefreshSystemTheme()
 	{
 		var cachedTheme = _lastSystemTheme;
-		var currentTheme = GetSystemTheme();
+		var currentTheme = EffectiveSystemTheme;
 		if (cachedTheme != currentTheme)
 		{
 			_lastSystemTheme = currentTheme;
