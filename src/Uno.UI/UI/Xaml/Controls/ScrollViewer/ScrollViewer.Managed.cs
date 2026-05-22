@@ -170,6 +170,17 @@ namespace Microsoft.UI.Xaml.Controls
 				var overscroll = contentExtent - viewportEnd;
 				if (offset > 0 && overscroll < -0.5)
 				{
+					// Suppress trim while a wheel/touch-driven AnchorPoint animation is mid-flight.
+					// Otherwise transient extent shrinks during the scroll's layout convergence pull
+					// the offset down, producing the user-visible "fight back" / brief blanking on
+					// variable-height ItemsRepeater samples. Once the animation is within 50ms of its
+					// target (or has stopped), the offset is at the user's intent and we let trim run.
+					if ((_presenter as ScrollContentPresenter)?.IsScrollAnimationInProgress() == true)
+					{
+						global::System.Console.WriteLine($"[SCROLL-DIAG] TrimOverscroll {orientation} SUPPRESSED (animation in progress): VO={offset:F1} EH={contentExtent:F1} overscroll={overscroll:F1}");
+						return;
+					}
+					global::System.Console.WriteLine($"[SCROLL-DIAG] TrimOverscroll {orientation}: VO={offset:F1} VPH={presenterViewportSize:F1} EH={contentExtent:F1} overscroll={overscroll:F1} → ChangeView({offset + overscroll:F1})");
 					ChangeViewForOrientation(orientation, overscroll);
 				}
 			}
@@ -177,13 +188,25 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void ChangeViewForOrientation(Orientation orientation, double scrollAdjustment)
 		{
-			if (orientation == Orientation.Vertical)
+			// Mark this as internal trimming so the pending-target retry mechanism doesn't treat the
+			// derived offset as the user's explicit intent. Without this guard, an over-aggressive
+			// trim during transient extent shrinkage would overwrite the user's ChangeView target,
+			// causing the offset to never recover when the extent grows back.
+			try
 			{
-				ChangeView(null, VerticalOffset + scrollAdjustment, null, disableAnimation: true);
+				_isTrimOverscrollChangeView = true;
+				if (orientation == Orientation.Vertical)
+				{
+					ChangeView(null, VerticalOffset + scrollAdjustment, null, disableAnimation: true);
+				}
+				else
+				{
+					ChangeView(HorizontalOffset + scrollAdjustment, null, null, disableAnimation: true);
+				}
 			}
-			else
+			finally
 			{
-				ChangeView(HorizontalOffset + scrollAdjustment, null, null, disableAnimation: true);
+				_isTrimOverscrollChangeView = false;
 			}
 		}
 		#endregion

@@ -220,6 +220,21 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
+			// Uno workaround: tolerate sub-pixel extent fluctuations. During wheel/touch scrolling on
+			// the variable-heights ItemsRepeater, the layout is re-measured at every effective-viewport
+			// tick and the avg-based extent estimation produces tiny float-precision differences that
+			// would otherwise repeatedly invalidate the scroller's arrange (`m_scroller.InvalidateArrange()`
+			// below) and re-trigger another IR measure on the same arrange pass — producing a layout cycle
+			// where origin/size flip between two states each pass and items shift visibly per frame.
+			if (Math.Abs(m_layoutExtent.X - extent.X) < 0.5 &&
+				Math.Abs(m_layoutExtent.Y - extent.Y) < 0.5 &&
+				Math.Abs(m_layoutExtent.Width - extent.Width) < 0.5 &&
+				Math.Abs(m_layoutExtent.Height - extent.Height) < 0.5)
+			{
+				m_layoutExtent = extent;
+				return;
+			}
+
 			m_expectedViewportShift.X += m_layoutExtent.X - extent.X;
 			m_expectedViewportShift.Y += m_layoutExtent.Y - extent.Y;
 

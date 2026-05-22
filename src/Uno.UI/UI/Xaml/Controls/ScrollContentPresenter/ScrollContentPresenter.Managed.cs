@@ -207,6 +207,10 @@ namespace Microsoft.UI.Xaml.Controls
 			[CallerMemberName] string callerName = "",
 			[CallerLineNumber] int callerLine = -1)
 		{
+			if (verticalOffset.HasValue || horizontalOffset.HasValue)
+			{
+				global::System.Console.WriteLine($"[SCROLL-DIAG] SCP.Set caller={callerName}@{callerLine} h={horizontalOffset?.ToString("F1") ?? "_"} v={verticalOffset?.ToString("F1") ?? "_"} | curVO={VerticalOffset:F1} EH={ExtentHeight:F1} VPH={ViewportHeight:F1} | options={{anim={!options.DisableAnimation},touch={options.IsTouch},inter={options.IsIntermediate}}}");
+			}
 			bool success = true, updated = false;
 
 			if (horizontalOffset is double hOffset)
@@ -295,6 +299,25 @@ namespace Microsoft.UI.Xaml.Controls
 				ScrollOffsets = new Point(updatedHorizontalOffset, updatedVerticalOffset);
 				InvalidateViewport();
 			}
+		}
+
+		// Used by ScrollViewer.TrimOverscroll to skip clamping while a wheel-driven AnchorPoint animation
+		// is mid-flight. Without this gate, transient extent shrinks during a scroll layout cycle would
+		// trim the offset down — even though the user hasn't reached their target — producing the
+		// visible "fight back" / brief blanking symptom on the Variable-Heights ItemsRepeater sample.
+		// The 50ms threshold matches the existing settle-detection in Update below: once the animation
+		// is within 50ms of its target we let trim run (the offset is already at or near the user's intent).
+		internal bool IsScrollAnimationInProgress(double minRemainingMs = 50)
+		{
+			if (Content is UIElement contentElt)
+			{
+				var visual = contentElt.Visual;
+				if (visual.TryGetAnimationController(nameof(Visual.AnchorPoint)) is { } controller)
+				{
+					return controller.Remaining > TimeSpan.FromMilliseconds(minRemainingMs);
+				}
+			}
+			return false;
 		}
 
 		private void Update(UIElement view, double horizontalOffset, double verticalOffset, double zoom, ScrollOptions options)

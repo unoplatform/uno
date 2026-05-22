@@ -680,14 +680,23 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override Size ArrangeOverride(Size finalSize)
 		{
 			ViewportArrangeSize = finalSize;
+			var voBefore = VerticalOffset;
+			var ehBefore = ExtentHeight;
 
-			return AnchoringArrangeOverride(finalSize, size =>
+			var result = AnchoringArrangeOverride(finalSize, size =>
 			{
 				var arranged = base.ArrangeOverride(size);
 				TrimOverscroll(Orientation.Horizontal);
 				TrimOverscroll(Orientation.Vertical);
 				return arranged;
 			});
+
+			if (Math.Abs(voBefore - VerticalOffset) > 0.5 || Math.Abs(ehBefore - ExtentHeight) > 0.5)
+			{
+				global::System.Console.WriteLine($"[SCROLL-DIAG] SV.ArrangeOverride finalSize={finalSize.Width:F0}x{finalSize.Height:F0} | VO {voBefore:F1}→{VerticalOffset:F1} | EH {ehBefore:F1}→{ExtentHeight:F1} | SH={ScrollableHeight:F1}");
+			}
+
+			return result;
 		}
 
 		partial void TrimOverscroll(Orientation orientation);
@@ -711,6 +720,7 @@ namespace Microsoft.UI.Xaml.Controls
 				UpdateDimensionProperties();
 			}
 			UpdateZoomedContentAlignment();
+			TryReapplyPendingChangeViewTarget();
 		}
 
 		private double LayoutRoundIfNeeded(FrameworkElement fe, double value)
@@ -1500,6 +1510,9 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().LogDebug($"ChangeView(horizontalOffset={horizontalOffset}, verticalOffset={verticalOffset}, zoomFactor={zoomFactor}, disableAnimation={disableAnimation})");
 			}
 
+			var source = _isTrimOverscrollChangeView ? "TRIM" : (_isReapplyingPendingChangeViewTarget ? "RETRY" : "USER");
+			global::System.Console.WriteLine($"[SCROLL-DIAG] ChangeView[{source}](h={horizontalOffset?.ToString("F1") ?? "_"}, v={verticalOffset?.ToString("F1") ?? "_"}, anim={!disableAnimation}) | currentVO={VerticalOffset:F1} EH={ExtentHeight:F1} SH={ScrollableHeight:F1}");
+
 			if (horizontalOffset == null && verticalOffset == null && zoomFactor == null)
 			{
 				return true; // nothing to do
@@ -1511,6 +1524,22 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (verticalOffsetChanged || horizontalOffsetChanged || zoomFactorChanged)
 			{
+				// Track explicit user target so we can re-apply it across extent oscillations
+				// during layout convergence. When the IR's StackLayout estimates the extent based
+				// on a partial realization (e.g. after ChangeView jumps far from current viewport),
+				// the extent shrinks/grows over multiple arrange passes; TrimOverscroll clamps the
+				// offset DOWN at the smallest transient extent and never re-extends it once the
+				// extent grows back. The retry hook in AfterArrange pushes the offset back up to
+				// the requested target (clamped to the current ScrollableHeight) once the extent
+				// stabilizes — which mirrors the user's reported "second click works" behavior.
+				if (!_isReapplyingPendingChangeViewTarget && !_isTrimOverscrollChangeView)
+				{
+					_pendingChangeViewHorizontalTarget = horizontalOffset;
+					_pendingChangeViewVerticalTarget = verticalOffset;
+					_pendingChangeViewWasInstant = disableAnimation;
+					_pendingChangeViewRetryCount = 0;
+				}
+
 				return ChangeViewCore(
 					horizontalOffset,
 					verticalOffset,
@@ -1521,6 +1550,94 @@ namespace Microsoft.UI.Xaml.Controls
 			else
 			{
 				return false;
+			}
+		}
+
+		// State for the pending-target retry mechanism (see ChangeView and TryReapplyPendingChangeViewTarget).
+		private double? _pendingChangeViewHorizontalTarget;
+		private double? _pendingChangeViewVerticalTarget;
+		private bool _pendingChangeViewWasInstant;
+		private int _pendingChangeViewRetryCount;
+		private bool _isReapplyingPendingChangeViewTarget;
+#pragma warning disable CS0649 // Set in ScrollViewer.Managed.cs (UNO_HAS_MANAGED_SCROLL_PRESENTER); reference build never assigns it.
+		private bool _isTrimOverscrollChangeView;
+#pragma warning restore CS0649
+		private const int MaxPendingChangeViewRetries = 5;
+		private const double PendingChangeViewTolerance = 0.5;
+
+		// Re-applies the user's most recent ChangeView target if extent oscillation during layout
+		// convergence left the offset below the (now-reachable) target. Bounded by
+		// MaxPendingChangeViewRetries to prevent infinite loops if the layout never settles.
+		private void TryReapplyPendingChangeViewTarget()
+		{
+			// Skip when we're already inside a reapply (avoids recursion via ChangeView → arrange → AfterArrange).
+			if (_isReapplyingPendingChangeViewTarget)
+			{
+				return;
+			}
+
+			// Only apply this convergence safety net for instant (disableAnimation=true) ChangeView
+			// calls. Animated ChangeView already drives a frame-by-frame approach to the target and
+			// would have its animation interrupted by a snap re-apply.
+			if (!_pendingChangeViewWasInstant ||
+				(_pendingChangeViewHorizontalTarget is null && _pendingChangeViewVerticalTarget is null))
+			{
+				return;
+			}
+
+			// Each AfterArrange after the original ChangeView is a "convergence opportunity". We allow
+			// up to MaxPendingChangeViewRetries arrange passes to lift the offset back up to the user's
+			// requested target before giving up. Without a fixed bound the pending target would persist
+			// indefinitely and could surprise later code paths that rely on the offset being stable.
+			_pendingChangeViewRetryCount++;
+			if (_pendingChangeViewRetryCount > MaxPendingChangeViewRetries)
+			{
+				_pendingChangeViewHorizontalTarget = null;
+				_pendingChangeViewVerticalTarget = null;
+				return;
+			}
+
+			var needsReapply = false;
+			double? hReapply = null;
+			double? vReapply = null;
+
+			if (_pendingChangeViewVerticalTarget is double vTarget)
+			{
+				// Compute the offset that the user's target maps to in the CURRENT extent. If the
+				// extent has shrunk below the user's request, this is the new far edge; if it has
+				// grown back, this approaches the original request.
+				var clampedTarget = Math.Max(0, Math.Min(vTarget, ScrollableHeight));
+				if (clampedTarget - VerticalOffset > PendingChangeViewTolerance)
+				{
+					needsReapply = true;
+					vReapply = clampedTarget;
+				}
+				// else: VO is at or above the clamped target. Don't push DOWN — that's TrimOverscroll's
+				// job, and it ran already as part of base ArrangeOverride. Keep pending so a later
+				// extent growth can still pull us up toward the user's original target.
+			}
+
+			if (_pendingChangeViewHorizontalTarget is double hTarget)
+			{
+				var clampedTarget = Math.Max(0, Math.Min(hTarget, ScrollableWidth));
+				if (clampedTarget - HorizontalOffset > PendingChangeViewTolerance)
+				{
+					needsReapply = true;
+					hReapply = clampedTarget;
+				}
+			}
+
+			if (needsReapply)
+			{
+				try
+				{
+					_isReapplyingPendingChangeViewTarget = true;
+					ChangeView(hReapply, vReapply, null, disableAnimation: true);
+				}
+				finally
+				{
+					_isReapplyingPendingChangeViewTarget = false;
+				}
 			}
 		}
 

@@ -277,6 +277,14 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
+			if (Math.Abs(m_viewportManager.GetLayoutExtent().X - extent.X) > 0.5 ||
+				Math.Abs(m_viewportManager.GetLayoutExtent().Y - extent.Y) > 0.5 ||
+				Math.Abs(m_viewportManager.GetLayoutExtent().Width - extent.Width) > 0.5 ||
+				Math.Abs(m_viewportManager.GetLayoutExtent().Height - extent.Height) > 0.5)
+			{
+				var oldExt = m_viewportManager.GetLayoutExtent();
+				global::System.Console.WriteLine($"[SCROLL-DIAG] IR.MeasureOverride extent: ({oldExt.X:F0},{oldExt.Y:F0}) {oldExt.Width:F0}x{oldExt.Height:F0} → ({extent.X:F0},{extent.Y:F0}) {extent.Width:F0}x{extent.Height:F0}  | desired={desiredSize.Width:F0}x{desiredSize.Height:F0}");
+			}
 			m_viewportManager.SetLayoutExtent(extent);
 			return desiredSize;
 		}

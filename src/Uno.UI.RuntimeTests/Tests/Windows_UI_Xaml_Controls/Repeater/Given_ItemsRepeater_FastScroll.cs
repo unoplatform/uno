@@ -244,6 +244,215 @@ public class Given_ItemsRepeater_FastScroll
 			+ "the pre-fix clamp caused an under-estimated extent that left late items unreachable.");
 	}
 
+	[TestMethod]
+#if __ANDROID__ || __IOS__ || __WASM__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
+	public async Task When_BottomClickedTwice_Then_LastItemIsAtViewportBottom()
+	{
+		// Companion to When_BottomClickedOnceAfterLoad: confirms that, given ENOUGH layout passes
+		// (here: two ChangeView calls), the layout DOES converge and the last item lines up. This
+		// matches the user's reported behavior — second Bottom click works after the first leaves
+		// the UI blank.
+		//
+		// If this test passes while When_BottomClickedOnceAfterLoad fails, the gap is ONE-SHOT
+		// convergence: each ChangeView is a single layout pass that doesn't iterate to extent
+		// stability. The fix should make a single ChangeView(ScrollableHeight) reach the actual
+		// content end, matching native WinUI behavior.
+		var sut = CreateHighVarianceSut(itemCount: 200, viewport: new Size(300, 600));
+		await LoadAsync(sut);
+
+		// First click — like the user's "broken" first-click scenario, so we exercise the same path.
+		sut.Scroller.ChangeView(null, sut.Scroller.ScrollableHeight, null, disableAnimation: true);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Second click — uses the post-first-click ScrollableHeight, which should now reflect the
+		// real content extent.
+		sut.Scroller.ChangeView(null, sut.Scroller.ScrollableHeight, null, disableAnimation: true);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var lastItem = FindMaterializedElementForIndex(sut, 199);
+		lastItem.Should().NotBeNull("Item 199 must be materialized after two Bottom clicks");
+
+		var lastItemBottomY = lastItem!.TransformToVisual(sut.Scroller).TransformPoint(new Point(0, lastItem.ActualHeight)).Y;
+		lastItemBottomY.Should().BeApproximately(sut.Scroller.ViewportHeight, OffsetTolerance,
+			$"Item 199's bottom edge must be flush with the viewport bottom after the second Bottom click. "
+			+ $"SH={sut.Scroller.ScrollableHeight:F2} EH={sut.Scroller.ExtentHeight:F2} VO={sut.Scroller.VerticalOffset:F2}");
+	}
+
+	[TestMethod]
+#if __ANDROID__ || __IOS__ || __WASM__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
+	public async Task When_BottomClickedOnceAfterLoad_Then_LastItemIsAtViewportBottom()
+	{
+		// Reproduces Issue 2 from the manual ItemsRepeaterVariableHeights sample:
+		// "Clicking Bottom should scroll the list all the way down so item 199's bottom edge
+		//  is exactly aligned with the bottom of the list. On first click after load the UI
+		//  becomes blank; only on the second click does it work."
+		//
+		// Root cause hypothesis: the initial extent reported by StackLayout under-estimates the real
+		// cumulative content size (only top items are realized; average is biased small). A single
+		// ChangeView to ScrollableHeight scrolls past the realized region into a logically-empty
+		// area; the subsequent layout pass corrects the extent but the viewport offset is now stale,
+		// so visible items are off-screen ("blank UI").
+		//
+		// On native WinUI this single ChangeView is enough — the layout/anchor pipeline lands on the
+		// correct end-of-list position the first time.
+		var sut = CreateHighVarianceSut(itemCount: 200, viewport: new Size(300, 600));
+		await LoadAsync(sut);
+
+		var afterLoadSH = sut.Scroller.ScrollableHeight;
+		var afterLoadEH = sut.Scroller.ExtentHeight;
+		var afterLoadVO = sut.Scroller.VerticalOffset;
+
+		// Single ChangeView matches the user's "click Bottom once after load" gesture.
+		sut.Scroller.ChangeView(null, sut.Scroller.ScrollableHeight, null, disableAnimation: true);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var afterScrollSH = sut.Scroller.ScrollableHeight;
+		var afterScrollEH = sut.Scroller.ExtentHeight;
+		var afterScrollVO = sut.Scroller.VerticalOffset;
+
+		var lastItem = FindMaterializedElementForIndex(sut, 199);
+		lastItem.Should().NotBeNull(
+			$"Item 199 (last) must be materialized after a single Bottom click. "
+			+ $"AfterLoad: SH={afterLoadSH:F2} EH={afterLoadEH:F2} VO={afterLoadVO:F2}; "
+			+ $"AfterScroll: SH={afterScrollSH:F2} EH={afterScrollEH:F2} VO={afterScrollVO:F2}");
+
+		var lastItemBottomY = lastItem!.TransformToVisual(sut.Scroller).TransformPoint(new Point(0, lastItem.ActualHeight)).Y;
+		lastItemBottomY.Should().BeApproximately(sut.Scroller.ViewportHeight, OffsetTolerance,
+			$"After a single ChangeView(ScrollableHeight) the last item's bottom edge must be flush with the viewport bottom. "
+			+ $"AfterLoad: SH={afterLoadSH:F2} EH={afterLoadEH:F2} VO={afterLoadVO:F2}; "
+			+ $"AfterScroll: SH={afterScrollSH:F2} EH={afterScrollEH:F2} VO={afterScrollVO:F2}; "
+			+ $"item199 IR-Y={lastItem.ActualOffset.Y:F2}, height={lastItem.ActualHeight:F2}.");
+	}
+
+	[TestMethod]
+#if __ANDROID__ || __IOS__ || __WASM__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
+	public async Task When_IncrementalScrollDown_Then_VerticalOffsetProgressesMonotonically()
+	{
+		// Reproduces Issue 1 from the manual ItemsRepeaterVariableHeights sample:
+		// "As I scroll down, the list suddenly randomly flickers and jumps. I have to fight against
+		//  the list to keep scrolling, as it jumps back."
+		//
+		// Operationally, this means a sequence of ChangeView(target = previous + delta) calls must
+		// land on offsets that progress monotonically downward — the layout pipeline must not
+		// auto-correct the offset BACK to a smaller value just because extent estimation shifts when
+		// previously-virtualized items get measured.
+		var sut = CreateHighVarianceSut(itemCount: 200, viewport: new Size(300, 600));
+		await LoadAsync(sut);
+
+		const double Delta = 100.0;
+		const int Steps = 60;
+
+		double previousOffset = sut.Scroller.VerticalOffset;
+		for (var i = 1; i <= Steps; i++)
+		{
+			var target = previousOffset + Delta;
+			sut.Scroller.ChangeView(null, target, null, disableAnimation: true);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var observed = sut.Scroller.VerticalOffset;
+			observed.Should().BeGreaterThanOrEqualTo(previousOffset - OffsetTolerance,
+				$"Step {i}: incremental scroll-down must not snap back. Previous offset {previousOffset:F2}, "
+				+ $"target {target:F2}, observed {observed:F2}.");
+
+			previousOffset = observed;
+
+			// Bail early if we've reached the bottom — at that point further ChangeView calls clamp
+			// to ScrollableHeight and the monotonicity guarantee no longer applies (we cannot scroll
+			// past the end).
+			if (Math.Abs(observed - sut.Scroller.ScrollableHeight) < 1)
+			{
+				break;
+			}
+		}
+	}
+
+	[TestMethod]
+#if __ANDROID__ || __IOS__ || __WASM__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
+	public async Task When_IncrementalScrollDown_Then_RealizedItemsShiftByExactlyTheScrollDelta()
+	{
+		// Stronger version of Issue 1 ("fight back / flicker"): the visual position of items that
+		// remain materialized across two adjacent scroll steps must shift up by EXACTLY the scroll
+		// delta. Any deviation = the extent-origin / layout-origin moved underneath us, which is
+		// what the user perceives as the list "jumping back".
+		//
+		// On WinUI the IScrollAnchorProvider pipeline (or the StackLayout origin computation when no
+		// anchor is selected) keeps the realized items visually pinned across average-size shifts.
+		// On Uno Skia, when StackLayout.GetExtent re-estimates and shifts the extent's MajorStart,
+		// items end up at different IR-local Y positions, breaking the invariant.
+		var sut = CreateHighVarianceSut(itemCount: 200, viewport: new Size(300, 600));
+		await LoadAsync(sut);
+
+		// Step 1: scroll into the middle of the list so the realization window has settled and the
+		// average element size estimate has stabilized somewhat. Use a small jump so we don't kick
+		// off the bigger anchor-shift dynamics that have their own dedicated tests.
+		sut.Scroller.ChangeView(null, 800.0, null, disableAnimation: true);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var beforeOffset = sut.Scroller.VerticalOffset;
+		var viewportHeight = sut.Scroller.ViewportHeight;
+		var beforeAllChildren = EnumerateRepeaterChildren(sut.Repeater)
+			.Where(c => c.ActualHeight > 0 && c.ActualOffset.Y > -1000)
+			.Where(c => c.DataContext is ItemModel)
+			.Select(c => (
+				Element: c,
+				ItemId: ((ItemModel)c.DataContext!).Id,
+				ViewportY: c.TransformToVisual(sut.Scroller).TransformPoint(new Point(0, 0)).Y,
+				IRY: c.ActualOffset.Y,
+				Height: c.ActualHeight))
+			.OrderBy(t => t.IRY)
+			.ToList();
+		// Items overlap the viewport when their TOP is above viewport bottom AND their BOTTOM is below
+		// viewport top. A 1200px-tall item that starts at viewport-Y=-370 still partially fills the
+		// visible area; restricting to items with ViewportY in [0, vp] would miss those.
+		var beforePositions = beforeAllChildren
+			.Where(t => t.ViewportY < viewportHeight && t.ViewportY + t.Height > 0)
+			.ToDictionary(t => t.ItemId, t => t.ViewportY);
+
+		var diagnosticBefore = $"VO={beforeOffset:F2}, EH={sut.Scroller.ExtentHeight:F2}, "
+			+ $"realized={beforeAllChildren.Count} items. "
+			+ $"First few: [{string.Join(", ", beforeAllChildren.Take(5).Select(t => $"#{t.ItemId}@IR-Y={t.IRY:F0}/VP-Y={t.ViewportY:F0}/H={t.Height:F0}"))}]";
+
+		beforePositions.Should().NotBeEmpty(
+			"At least one item must overlap the viewport at the starting offset for the test to be meaningful. " + diagnosticBefore);
+
+		// Step 2: small incremental scroll, mimicking a single mouse-wheel notch.
+		const double Delta = 80.0;
+		sut.Scroller.ChangeView(null, beforeOffset + Delta, null, disableAnimation: true);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var afterOffset = sut.Scroller.VerticalOffset;
+		var actualDelta = afterOffset - beforeOffset;
+
+		var afterPositions = EnumerateRepeaterChildren(sut.Repeater)
+			.Where(c => c.ActualHeight > 0 && c.ActualOffset.Y > -1000)
+			.Where(c => c.DataContext is ItemModel)
+			.ToDictionary(
+				c => ((ItemModel)c.DataContext!).Id,
+				c => c.TransformToVisual(sut.Scroller).TransformPoint(new Point(0, 0)).Y);
+
+		// Compare items present in both snapshots: their viewport-Y must shift by exactly -actualDelta.
+		// Any other shift means content moved against the user's scroll direction = "fight back".
+		var commonIds = beforePositions.Keys.Intersect(afterPositions.Keys).ToArray();
+		commonIds.Should().NotBeEmpty("At least one item must remain materialized across the small scroll step");
+
+		foreach (var id in commonIds)
+		{
+			var expectedY = beforePositions[id] - actualDelta;
+			afterPositions[id].Should().BeApproximately(expectedY, 1.0,
+				$"Item {id}: visible position must shift by exactly the scroll delta ({actualDelta:F2}px). "
+				+ $"Before {beforePositions[id]:F2}, expected {expectedY:F2}, after {afterPositions[id]:F2}. "
+				+ "Deviation = layout-origin shifted under the user = the 'fight back' / flicker symptom.");
+		}
+	}
+
 	// ----- helpers -----
 
 	private static SutHandle CreateHighVarianceSut(int itemCount, Size viewport)
