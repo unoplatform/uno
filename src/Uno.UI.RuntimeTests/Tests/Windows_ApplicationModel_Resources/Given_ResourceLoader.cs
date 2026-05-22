@@ -174,6 +174,28 @@ namespace Uno.UI.RuntimeTests.Tests
 			Assert.AreEqual(@"Text in 'en-US'", SUT.GetString("Given_ResourceLoader/When_LocalizedResource"));
 		}
 
+		// The resw files behind these tests live at:
+		//   Resources/Test_FilenamePrefixLayout.resw                 (default — picks up DefaultLanguage = en-US)
+		//   Resources/Test_FilenamePrefixLayout.language-cs-CZ.resw  (filename-suffix layout per the MRT spec)
+		// Both files must collapse into the same `Test_FilenamePrefixLayout` resource map.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void When_FilenamePrefixLayout_DefaultLanguage()
+		{
+			ApplicationLanguages.PrimaryLanguageOverride = "en-US";
+			var SUT = ResourceLoader.GetForViewIndependentUse("Uno.UI.RuntimeTests/Test_FilenamePrefixLayout");
+			Assert.AreEqual("Default greeting (en-US)", SUT.GetString("Greeting"));
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void When_FilenamePrefixLayout_LocalizedLanguage()
+		{
+			ApplicationLanguages.PrimaryLanguageOverride = "cs-CZ";
+			var SUT = ResourceLoader.GetForViewIndependentUse("Uno.UI.RuntimeTests/Test_FilenamePrefixLayout");
+			Assert.AreEqual("Localized greeting (cs-CZ)", SUT.GetString("Greeting"));
+		}
+
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_FileAndStringNameFormat()
