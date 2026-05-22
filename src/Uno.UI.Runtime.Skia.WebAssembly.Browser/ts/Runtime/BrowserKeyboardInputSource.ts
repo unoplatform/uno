@@ -2,7 +2,12 @@
 	export class BrowserKeyboardInputSource {
 		private static _exports: any;
 		private static _source: any;
-		
+		// True once the user has Tab'd past the "Enable Accessibility" button into the XAML app.
+		// Without a11y enabled, document.activeElement stays on the button (no FocusSynchronizer),
+		// so we can't infer in-app focus from the DOM. This flag tracks it instead so subsequent
+		// Shift+Tab presses are routed to the managed FocusManager rather than exiting the app.
+		private static _hasTabbedIntoApp: boolean = false;
+
 		public static initialize(inputSource: any): any {
 			if (BrowserKeyboardInputSource._exports == undefined) {
 				const browserExports = WebAssemblyWindowWrapper.getAssemblyExports();
@@ -33,12 +38,20 @@
 						return;
 					}
 
-					// Button focused + Shift+Tab — let browser move focus back naturally
-					if (isOnButton && evt.shiftKey) {
+					// Button focused + Shift+Tab BEFORE user has entered the XAML app — let
+					// browser move focus back to the previous browser-level focusable (e.g.
+					// the address bar). Once focus has entered the app, Shift+Tab must reach
+					// the managed FocusManager so the user can navigate backward in XAML.
+					if (isOnButton && evt.shiftKey && !BrowserKeyboardInputSource._hasTabbedIntoApp) {
 						return;
 					}
 
-					// Button focused + Tab (no shift) — fall through to managed FocusManager
+					// Button focused + Tab (no shift) — fall through to managed FocusManager.
+					// This is the moment XAML takes focus from the button, so remember it
+					// to keep future Shift+Tab presses routed through managed.
+					if (isOnButton && !evt.shiftKey) {
+						BrowserKeyboardInputSource._hasTabbedIntoApp = true;
+					}
 				}
 
 				// Don't route keyup to managed code while on the button
