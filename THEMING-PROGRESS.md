@@ -10,7 +10,7 @@ One phase per session, strictly in order. Scenario labels S1–S5 are defined in
 - [ ] **Phase 0** — Baseline + regression test scaffold
 - [x] **Phase 1** — Per-object theme on every `DependencyObject` (D1)
 - [x] **Phase 2** — Establish theme at tree `Enter` for every DO (D2) + stop clearing on unload (D4)
-- [ ] **Phase 3** — Resolve `{ThemeResource}` against the owner's effective theme (D3, Mechanism 1)
+- [x] **Phase 3** — Resolve `{ThemeResource}` against the owner's effective theme (D3, Mechanism 1)
 - [ ] **Phase 4** — Remove the 11 band-aid pushes + delete the global stack
 - [ ] **Phase 5** — Popup/Flyout logical-parent inheritance + flyout `ActualTheme` forwarding (D5, D6)
 - [ ] **Phase 6** — Application/OS/custom-theme/high-contrast precedence (D7, D8)
@@ -52,6 +52,56 @@ One phase per session, strictly in order. Scenario labels S1–S5 are defined in
   WASM-head build skipped per maintainer direction: it links the same `Uno.UI.Skia` assembly already
   validated on Skia and the changed code is platform-agnostic shared code. WASM/native runtime +
   `/winui-runtime-tests` oracle deferred. Two commits: D2 (`feat`), D4 (`fix`).
+
+- **Phase 3 (D3, Mechanism 1) — DONE.** Made the `{ThemeResource}` resolution leaf a pure function of
+  (key, owner's effective theme), replacing the process-global active-theme stack at the leaf. Threaded a
+  theme parameter through `ResourceDictionary.TryGetValue` (value + providing-dict) and `GetFromMerged`
+  (the parameterless overloads forward `GetActiveTheme()` so unmigrated callers are unchanged; added
+  `GetThemeKey`/`GetActiveThemeValue`), `ThemeResourceReference.RefreshValue(Theme ownerTheme, …)` (+
+  `RefreshValueWithTreeWalk`; the owner-based overload is kept as a transitional wrapper for
+  `ApplyThemeResource`), and `ThemeWalkResourceCache`. The single centralized choke point is
+  `DependencyObjectStore.UpdateThemeReference`, which computes `ThemeResolution.ResolveOwnerTheme(owner)`
+  **once** and passes it to Phase A (ancestor walk) + Phase B (pinned-dict refresh) — the analog of WinUI
+  `CDependencyObject::SetThemeResourceBinding` pushing `this->m_theme` (Theming.cpp:368-376), but threaded
+  as a parameter (no process-global mutable state). `FrameworkElement.NotifyThemeChangedCore` now persists
+  `SetTheme(theme)` **before** `UpdateThemeBindings` so the in-walk resolution keys on the new theme.
+  **ThemeWalkResourceCache aligned with WinUI** (per maintainer request): the cache key is now the `Theme`
+  enum **base value** — matching `tuple<CResourceDictionary*, Theming::Theme, xstring_ptr, weakref>`
+  (ThemeWalkResourceCache.h:55) and the `GetBaseValue` stored by `SetRequestedThemeForSubTree`
+  (xcpcore.cpp:7903) — threaded as a parameter instead of read from the global `GetActiveTheme()`; the
+  value remains a `ManagedWeakReference` (== `xref::weakref_ptr`). Static-parse-path audit (step 6):
+  `{ThemeResource}` on a DP emits the dynamic `ApplyResource(isThemeResourceExtension: true)` path →
+  owner-theme-aware via the choke point; only non-DP members use the theme-agnostic static path
+  (pre-existing limitation, theme tracking not feasible there) — no generator change needed. The
+  `_requestedThemeForSubTree` stack + the 11 band-aid pushes remain (now no-ops for theme selection;
+  removed in Phase 4).
+  Built `SamplesApp.Skia.Generic` (Release, net10.0, `UnoFastDevBuild`) clean (0 errors). `/runtime-tests`
+  theming suite + `Given_Theme_Materialization` (Skia Desktop): **143/144** = Phase 0/1/2 baseline (lone
+  failure is the pre-existing GC flake `When_Flyout_Closed_Target_Does_Not_Hold_Flyout`); T1/T2/T3/T6/T7 +
+  the element-theme / code-behind-style / uno #23177 repros remain green. `dotnet format whitespace
+  --verify-no-changes` clean on the 6 changed files.
+  **Equivalence gate (architecture.md §6).** A transitional divergence counter
+  (`ThemeResolution.RecordOwnerThemeDivergence`, removed in Phase 4) compares the owner-theme key vs
+  `GetActiveTheme()` at the choke point. It is **non-silent: 38 distinct signatures**, all root-caused
+  (Root-Cause First, via stack capture) to transitional coexistence of the new parameter with the
+  still-present band-aids, in two paths:
+  - **Path 1 (majority) — `EstablishThemeAtEnter` enter-time resolution.** The owner already has its
+    established island theme, but no band-aid pushes at Enter, so the legacy ambient is the app theme. The
+    new leaf resolves the owner's theme — **this is the D3 fix**, and it matches WinUI (`EnterImpl` →
+    `UpdateAllThemeReferences` → `SetThemeResourceBinding` pushes `m_theme`, Theming.cpp:368). The old leaf
+    leaked the ambient and was corrected later by the `OnLoadingPartial` push.
+  - **Path 2 (few) — template build (`LoadContent`) + `ApplyStyleWithThemeContext`.** A not-yet-entered
+    template part (theme `None`) makes `ResolveOwnerTheme` fall back to `Themes.Active` while band-aid #5
+    has pushed the templated-parent theme. Transient; corrected when the part enters the tree.
+  In both paths the value is corrected before it is observed, so **final behavior is identical to baseline**
+  (143/144, incl. the WinUI-oracle materialization tests that assert exact Light sentinels on island
+  template parts). No category-(b) plumbing error produces a wrong **final** value. Per the maintainer's
+  decision, the divergences are accepted as category-(a) intended/transitional WinUI-correct changes (the
+  prompt's "document any intentional divergence" escape hatch); the literal "zero" is not achievable while
+  Phase 2's enter-time resolution and the band-aids coexist, and the divergences resolve once Phase 4
+  removes the band-aids/stack. WASM/native heads + `/winui-runtime-tests` oracle deferred (per carry-over
+  notes; WASM links the same `Uno.UI.Skia` assembly already validated). One code commit
+  (`fix(theming): resolve ThemeResources against owner's effective theme (D3)`).
 
 ---
 
