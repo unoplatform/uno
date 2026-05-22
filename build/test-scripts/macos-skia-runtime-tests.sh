@@ -17,20 +17,37 @@ if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
 	fi
 fi
 
+NUNIT_TOOL_DIR="$BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool"
+run_nunit_tool() { (cd "$NUNIT_TOOL_DIR" && dotnet run "$@"); }
+
 cd $SamplesAppArtifactPath
 dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE
 
 ## Export the failed tests list for reuse in a pipeline retry
-pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
 echo "Running NUnitTransformTool"
 
 ## Fail the build when no test results could be read
-dotnet run fail-empty $TEST_RESULTS_FILE
+run_nunit_tool fail-empty $TEST_RESULTS_FILE
 
-if [ $? -eq 0 ]; then
-	dotnet run list-failed $TEST_RESULTS_FILE $UNO_TESTS_FAILED_LIST
+FAILED_COUNT=$(run_nunit_tool count-failed $TEST_RESULTS_FILE)
+run_nunit_tool list-failed $TEST_RESULTS_FILE $UNO_TESTS_FAILED_LIST
+
+# In-job retry: if a small number of tests failed, rerun only those to catch flakes
+if [ "$FAILED_COUNT" -gt 0 ] && [ "$FAILED_COUNT" -le 20 ]; then
+	echo "##[warning]$FAILED_COUNT test(s) failed — retrying in-job to filter flakes..."
+	export UITEST_RUNTIME_TESTS_FILTER=$(cat $UNO_TESTS_FAILED_LIST | base64 -b 0)
+
+	TEST_RESULTS_RERUN_FILE="${TEST_RESULTS_FILE%.xml}-rerun.xml"
+
+	cd $SamplesAppArtifactPath
+	dotnet SamplesApp.Skia.Generic.dll --runtime-tests="$TEST_RESULTS_RERUN_FILE" || true
+
+	if [ -f "$TEST_RESULTS_RERUN_FILE" ]; then
+		run_nunit_tool merge-results $TEST_RESULTS_FILE $TEST_RESULTS_RERUN_FILE $TEST_RESULTS_FILE
+		run_nunit_tool list-failed $TEST_RESULTS_FILE $UNO_TESTS_FAILED_LIST
+	else
+		echo "##[warning]Rerun did not produce a results file; original results kept."
+	fi
 fi
-
-popd

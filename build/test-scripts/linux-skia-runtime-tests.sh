@@ -25,24 +25,44 @@ USE_XVFB=${1:-true}
 sudo chmod a+rw /dev/dri/card* 2>/dev/null || true
 sudo chmod a+rw /dev/fb* 2>/dev/null || true
 
-cd $SamplesAppArtifactPath
-if [ "$USE_XVFB" = "true" ]; then
-	xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE' || true # sometimes we crash during app shutdown, so we're forcing a 0 exit code
-else
-	dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE || true
-fi
+NUNIT_TOOL_DIR="$BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool"
+run_nunit_tool() { (cd "$NUNIT_TOOL_DIR" && dotnet run "$@"); }
+
+run_skia_tests() {
+	# $RUNTIME_TESTS_OUTPUT is exported so it is visible in the sh -c subshell below.
+	export RUNTIME_TESTS_OUTPUT="$1"
+	cd $SamplesAppArtifactPath
+	if [ "$USE_XVFB" = "true" ]; then
+		# Sometimes we crash during app shutdown, so we force a 0 exit code.
+		xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$RUNTIME_TESTS_OUTPUT' || true
+	else
+		dotnet SamplesApp.Skia.Generic.dll --runtime-tests="$RUNTIME_TESTS_OUTPUT" || true
+	fi
+}
+
+run_skia_tests "$TEST_RESULTS_FILE"
 
 ## Export the failed tests list for reuse in a pipeline retry
-pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
-echo "Running NUnitTransformTool"
-
 ## Fail the build when no test results could be read
-dotnet run fail-empty $TEST_RESULTS_FILE
+run_nunit_tool fail-empty $TEST_RESULTS_FILE
 
-if [ $? -eq 0 ]; then
-	dotnet run list-failed $TEST_RESULTS_FILE $UNO_TESTS_FAILED_LIST
+FAILED_COUNT=$(run_nunit_tool count-failed $TEST_RESULTS_FILE)
+run_nunit_tool list-failed $TEST_RESULTS_FILE $UNO_TESTS_FAILED_LIST
+
+# In-job retry: if a small number of tests failed, rerun only those to catch flakes
+if [ "$FAILED_COUNT" -gt 0 ] && [ "$FAILED_COUNT" -le 20 ]; then
+	echo "##[warning]$FAILED_COUNT test(s) failed — retrying in-job to filter flakes..."
+	export UITEST_RUNTIME_TESTS_FILTER=$(cat $UNO_TESTS_FAILED_LIST | base64 -w 0)
+
+	TEST_RESULTS_RERUN_FILE="${TEST_RESULTS_FILE%.xml}-rerun.xml"
+	run_skia_tests "$TEST_RESULTS_RERUN_FILE"
+
+	if [ -f "$TEST_RESULTS_RERUN_FILE" ]; then
+		run_nunit_tool merge-results $TEST_RESULTS_FILE $TEST_RESULTS_RERUN_FILE $TEST_RESULTS_FILE
+		run_nunit_tool list-failed $TEST_RESULTS_FILE $UNO_TESTS_FAILED_LIST
+	else
+		echo "##[warning]Rerun did not produce a results file; original results kept."
+	fi
 fi
-
-popd

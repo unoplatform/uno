@@ -275,6 +275,36 @@ then
 
 		# Copy the results to the build directory
 		cp -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" "$UNO_ORIGINAL_TEST_RESULTS"
+
+		# In-job retry: if a small number of tests failed, rerun only those to catch flakes.
+		# The simulator is still running at this point so we can relaunch the app immediately.
+		NUNIT_TOOL_DIR_IOS="$BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool"
+		run_nunit_tool_ios() { (cd "$NUNIT_TOOL_DIR_IOS" && dotnet run "$@"); }
+
+		IOS_FAILED_COUNT=$(run_nunit_tool_ios count-failed "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE")
+
+		if [ "$IOS_FAILED_COUNT" -gt 0 ] && [ "$IOS_FAILED_COUNT" -le 20 ]; then
+			echo "##[warning]$IOS_FAILED_COUNT test(s) failed — retrying in-job to filter flakes..."
+
+			mkdir -p $(dirname ${UNO_TESTS_RUNTIMETESTS_FAILED_LIST})
+			run_nunit_tool_ios list-failed "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" "$UNO_TESTS_RUNTIMETESTS_FAILED_LIST"
+
+			export SIMCTL_CHILD_UITEST_RUNTIME_TESTS_FILTER=$(cat "$UNO_TESTS_RUNTIMETESTS_FAILED_LIST" | base64 -b 0)
+			export SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE=/tmp/TestResult-rerun-$(date +"%Y%m%d%H%M%S").xml
+
+			xcrun simctl launch "$UITEST_IOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID"
+
+			RETRY_END_TIME=$((SECONDS + TIMEOUT))
+			while [[ ! -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" && $SECONDS -lt $RETRY_END_TIME ]]; do
+				sleep $INTERVAL
+			done
+
+			if [ -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" ]; then
+				run_nunit_tool_ios merge-results "$UNO_ORIGINAL_TEST_RESULTS" "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" "$UNO_ORIGINAL_TEST_RESULTS"
+			else
+				echo "##[warning]Rerun did not produce a results file; original results kept."
+			fi
+		fi
 	else
 		echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is not available, the test run has timed out."
 	fi

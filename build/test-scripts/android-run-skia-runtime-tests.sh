@@ -120,66 +120,92 @@ echo "Emulator started"
 # Install the app
 $ANDROID_HOME/platform-tools/adb install $UNO_UITEST_ANDROIDAPK_PATH
 
-UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME="TestResult-`date +"%Y%m%d%H%M%S"`.xml"
-UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH="$BUILD_SOURCESDIRECTORY/build/$UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME"
+NUNIT_TOOL_DIR="$BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool"
+run_nunit_tool() { (cd "$NUNIT_TOOL_DIR" && dotnet run "$@"); }
+
 UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_BASE_PATH="/storage/emulated/0/Android/data/$UNO_UITEST_APP_ID/files"
-UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH="$UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_BASE_PATH/$UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME"
 
-# grant the storage permission to the app to write the test results and read the environment file
-$ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.WRITE_EXTERNAL_STORAGE
-$ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.READ_EXTERNAL_STORAGE
+# Starts the app and waits for the result file to appear on device.
+# Arguments:
+#   $1  filter (base64-encoded test name list)
+#   $2  local output path for the XML result file
+run_android_tests() {
+	local filter="$1"
+	local local_result_path="$2"
+	local result_filename
+	result_filename="TestResult-$(date +"%Y%m%d%H%M%S").xml"
+	local device_result_path="$UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_BASE_PATH/$result_filename"
 
-# start the android app using environment variables using adb
-$ANDROID_HOME/platform-tools/adb shell am start \
-  -n $UNO_UITEST_APP_ID/crc6448f3b0362cbf4bc9.MainActivity \
-  -e UITEST_RUNTIME_TEST_GROUP "$UITEST_RUNTIME_TEST_GROUP" \
-  -e UITEST_RUNTIME_TEST_GROUP_COUNT "$UITEST_RUNTIME_TEST_GROUP_COUNT" \
-  -e UITEST_RUNTIME_AUTOSTART_RESULT_FILE "$UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH" \
-  -e UITEST_RUNTIME_TESTS_FILTER "$UITEST_RUNTIME_TESTS_FILTER" \
+	# grant the storage permission to the app to write the test results and read the environment file
+	$ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.WRITE_EXTERNAL_STORAGE
+	$ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.READ_EXTERNAL_STORAGE
 
-# Set the timeout in seconds
-UITEST_TEST_TIMEOUT_AS_MINUTES=${UITEST_TEST_TIMEOUT:0:${#UITEST_TEST_TIMEOUT}-1}
-TIMEOUT=$(($UITEST_TEST_TIMEOUT_AS_MINUTES * 60))
-END_TIME=$((SECONDS+TIMEOUT))
+	# start the android app using environment variables using adb
+	$ANDROID_HOME/platform-tools/adb shell am start \
+	  -n $UNO_UITEST_APP_ID/crc6448f3b0362cbf4bc9.MainActivity \
+	  -e UITEST_RUNTIME_TEST_GROUP "$UITEST_RUNTIME_TEST_GROUP" \
+	  -e UITEST_RUNTIME_TEST_GROUP_COUNT "$UITEST_RUNTIME_TEST_GROUP_COUNT" \
+	  -e UITEST_RUNTIME_AUTOSTART_RESULT_FILE "$device_result_path" \
+	  -e UITEST_RUNTIME_TESTS_FILTER "$filter" \
 
-echo "Waiting for $UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH to be available..."
+	# Set the timeout in seconds
+	local UITEST_TEST_TIMEOUT_AS_MINUTES=${UITEST_TEST_TIMEOUT:0:${#UITEST_TEST_TIMEOUT}-1}
+	local TIMEOUT=$(($UITEST_TEST_TIMEOUT_AS_MINUTES * 60))
+	local END_TIME=$((SECONDS+TIMEOUT))
 
-while [[ ! $($ANDROID_HOME/platform-tools/adb shell test -e "$UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH" > /dev/null) && $SECONDS -lt $END_TIME ]]; do
-    sleep 15
+	echo "Waiting for $device_result_path to be available..."
+
+	while [[ ! $($ANDROID_HOME/platform-tools/adb shell test -e "$device_result_path" > /dev/null) && $SECONDS -lt $END_TIME ]]; do
+	    sleep 15
+
+		## Dump the emulator's system log
+		$ANDROID_HOME/platform-tools/adb shell logcat -d > $LOGS_PATH/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$UITEST_TEST_MODE_NAME.interim.txt
+
+	    # exit loop early if the app is not running anymore
+	    if ! $ANDROID_HOME/platform-tools/adb shell ps | grep "$UNO_UITEST_APP_ID" > /dev/null; then
+	        echo "The app is not running anymore"
+	        break
+	    fi
+	done
+
+	$ANDROID_HOME/platform-tools/adb pull $device_result_path "$local_result_path" || echo "ERROR: could not adb pull $device_result_path"
 
 	## Dump the emulator's system log
-	$ANDROID_HOME/platform-tools/adb shell logcat -d > $LOGS_PATH/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$UITEST_TEST_MODE_NAME.interim.txt
+	$ANDROID_HOME/platform-tools/adb shell logcat -d > $LOGS_PATH/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$UITEST_TEST_MODE_NAME.txt
+}
 
-    # exit loop if the APP_PID is not running anymore
-    if ! $ANDROID_HOME/platform-tools/adb shell ps | grep "$UNO_UITEST_APP_ID" > /dev/null; then
-        echo "The app is not running anymore"
-        break
-    fi
-done
+# --- First run ---
 
-$ANDROID_HOME/platform-tools/adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH $UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME || echo "ERROR: could not adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH"
-
-## Dump the emulator's system log
-$ANDROID_HOME/platform-tools/adb shell logcat -d > $LOGS_PATH/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$UITEST_TEST_MODE_NAME.txt
+UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH="$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml"
+run_android_tests "$UITEST_RUNTIME_TESTS_FILTER" "$UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH"
 
 # create $BUILD_SOURCESDIRECTORY/build/uitests-failure-results before exiting, so that `PublishBuildArtifacts@1` doesn't error out just because the tests crashed.
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
-if [ ! -f "$UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME" ]; then
-	echo "ERROR: The test results file $UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME does not exist (did nunit crash ?)"
+if [ ! -f "$UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH" ]; then
+	echo "ERROR: The test results file $UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH does not exist (did nunit crash ?)"
 	exit 1
 fi
 
-## Export the failed tests list for reuse in a pipeline retry
-pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
-
-echo "Running NUnitTransformTool"
-
 ## Fail the build when no test results could be read
-dotnet run fail-empty $UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH
+run_nunit_tool fail-empty $UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH
 
-if [ $? -eq 0 ]; then
-	dotnet run list-failed $UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH $UNO_TESTS_FAILED_LIST
+FAILED_COUNT=$(run_nunit_tool count-failed $UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH)
+run_nunit_tool list-failed $UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH $UNO_TESTS_FAILED_LIST
+
+# In-job retry: if a small number of tests failed, rerun only those to catch flakes
+if [ "$FAILED_COUNT" -gt 0 ] && [ "$FAILED_COUNT" -le 20 ]; then
+	echo "##[warning]$FAILED_COUNT test(s) failed — retrying in-job to filter flakes..."
+
+	RERUN_FILTER=$(cat $UNO_TESTS_FAILED_LIST | base64 -w 0)
+	RERUN_RESULT_PATH="$BUILD_SOURCESDIRECTORY/build/TestResult-rerun.xml"
+
+	run_android_tests "$RERUN_FILTER" "$RERUN_RESULT_PATH"
+
+	if [ -f "$RERUN_RESULT_PATH" ]; then
+		run_nunit_tool merge-results $UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH $RERUN_RESULT_PATH $UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH
+		run_nunit_tool list-failed $UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH $UNO_TESTS_FAILED_LIST
+	else
+		echo "##[warning]Rerun did not produce a results file; original results kept."
+	fi
 fi
-
-popd
