@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI;
@@ -22,19 +22,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 /// owner's effective theme), where the owner's theme is established at tree-<c>Enter</c> from
 /// its (logical) inheritance parent — never from a process-global ambient.
 ///
-/// These tests target the materialization paths that today's "push the theme at the
-/// materialization site" band-aids miss (virtualized realization, recycle, runtime-add,
-/// popup/flyout first-open). They are expected to be GREEN on native WinUI and (today) RED
-/// on Uno; later phases turn them green.
+/// <para><b>Polarity (important).</b> The reported defects all share one shape: the ambient
+/// OS theme is <b>Dark</b> while the relevant subtree is themed <b>Light</b> at the
+/// <i>element</i> level (the real app sets <c>root.RequestedTheme = Light</c>, not
+/// <c>Application.RequestedTheme</c>, so the app follows the OS). A materialized / recycled /
+/// scrolled-in / first-opened element with no governing theme walk then resolves the global
+/// ambient (Dark) instead of its own Light theme. These repros reproduce exactly that:
+/// a <b>Light element-level island under a (simulated) Dark ambient</b>, asserting the
+/// materialized child resolves <b>Light</b>.</para>
+///
+/// <para><b>Determinism.</b> The ambient OS theme is pinned via
+/// <see cref="ThemeHelper.UseSystemThemeOverride"/> so the repros are RED on current master on
+/// <i>any</i> machine OS theme — not only when the developer's OS happens to be Dark (which is
+/// why the existing theming suite "passes" on a Light OS and fails on a Dark OS today).</para>
 ///
 /// Authoring notes:
-/// - Deterministic sentinel brushes via local <c>ThemeDictionaries["Light"]/["Dark"]</c>
+/// - Deterministic sentinel brushes via local <c>ThemeDictionaries["Light"]/["Dark"]/["Default"]</c>
 ///   (Light = #FF111111, Dark = #FFEEEEEE), asserting exact <see cref="Color"/> values.
+/// - The outer region is themed <c>RequestedTheme="Dark"</c> so the test also exercises a real
+///   "Light island inside a Dark region" boundary on native WinUI (where the Uno-only ambient
+///   override compiles out and the app is Light by default) — keeping the test a valid oracle.
 /// - This class intentionally does NOT inherit <see cref="Given_ElementTheme"/>'s
 ///   native-platform exclusion, so the popup/flyout first-open tests (S4) run on iOS/Android.
-/// - App/OS-theme-only behaviors use <c>ThemeHelper.UseApplication*Theme</c> (Uno-only) under
-///   <c>#if HAS_UNO</c>; on WinUI those pins compile out (the app is Light by default) so the
-///   test still runs as the WinUI oracle wherever its assertions are WinUI-portable.
 /// </summary>
 [TestClass]
 [RunsOnUIThread]
@@ -62,37 +71,43 @@ public class Given_Theme_Materialization
 	private static Color? ColorOf(object element)
 		=> (element as Border)?.Background is SolidColorBrush b ? b.Color : null;
 
-	// ---- T1 — S1: virtualized list item in a themed island resolves the island theme ----
+	private static Color? ForegroundOf(object element)
+		=> (element as TextBlock)?.Foreground is SolidColorBrush b ? b.Color : null;
+
+	// ---- T1 — S1: virtualized list item in a Light island under a Dark ambient resolves Light ----
 
 	[TestMethod]
 	[RequiresFullWindow]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
-	public async Task When_Virtualized_Item_In_Themed_Subtree_Resolves_Subtree_Theme()
+	public async Task When_Virtualized_Item_In_Light_Island_Under_Dark_Ambient_Resolves_Light()
 	{
 		// S1. A ListView item realized (initially and after ScrollIntoView) inside a
-		// RequestedTheme="Dark" island must resolve the Dark sentinel, regardless of the
-		// ambient app theme. WinUI: the container inherits Dark at Enter → Dark. Uno today:
-		// items realized outside the theme walk read the process-global ambient (app Light).
+		// RequestedTheme="Light" island must resolve the Light sentinel even though the ambient OS
+		// theme is Dark. WinUI: the container inherits Light at Enter → Light. Uno today: items
+		// realized outside the theme walk read the process-global ambient (Dark) → leak.
 #if HAS_UNO
-		using var _ = ThemeHelper.UseApplicationLightTheme();
+		using var _ = ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Dark);
 		await WindowHelper.WaitForIdle();
 #endif
 		var root = (Grid)XamlReader.Load(
 			$$"""
 			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-				<Grid.Resources>
-					<ResourceDictionary>
-						{{SentinelDictsXaml}}
-					</ResourceDictionary>
-				</Grid.Resources>
-				<ListView x:Name="list" RequestedTheme="Dark" Height="300" Width="200">
-					<ListView.ItemTemplate>
-						<DataTemplate>
-							<Border x:Name="cell" Height="40" Background="{ThemeResource SentinelBrush}" />
-						</DataTemplate>
-					</ListView.ItemTemplate>
-				</ListView>
+			      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			      RequestedTheme="Dark">
+				<Border RequestedTheme="Light">
+					<Border.Resources>
+						<ResourceDictionary>
+							{{SentinelDictsXaml}}
+						</ResourceDictionary>
+					</Border.Resources>
+					<ListView x:Name="list" Height="300" Width="200">
+						<ListView.ItemTemplate>
+							<DataTemplate>
+								<Border x:Name="cell" Height="40" Background="{ThemeResource SentinelBrush}" />
+							</DataTemplate>
+						</ListView.ItemTemplate>
+					</ListView>
+				</Border>
 			</Grid>
 			""");
 
@@ -105,45 +120,44 @@ public class Given_Theme_Materialization
 
 		var first = await WindowHelper.WaitForNonNull(() => list.ContainerFromIndex(0) as ListViewItem);
 		var firstCell = first.FindFirstDescendant<Border>("cell");
-		Assert.AreEqual(DarkSentinel, ColorOf(firstCell),
-			"Initially-realized item should resolve the Dark island sentinel.");
+		Assert.AreEqual(LightSentinel, ColorOf(firstCell),
+			"Initially-realized item in a Light island should resolve Light, not the Dark ambient.");
 
 		list.ScrollIntoView(list.Items[150]);
 		await WindowHelper.WaitForIdle();
 
 		var scrolled = await WindowHelper.WaitForNonNull(() => list.ContainerFromIndex(150) as ListViewItem);
 		var scrolledCell = scrolled.FindFirstDescendant<Border>("cell");
-		Assert.AreEqual(DarkSentinel, ColorOf(scrolledCell),
-			"Item realized after ScrollIntoView should also resolve the Dark island sentinel.");
+		Assert.AreEqual(LightSentinel, ColorOf(scrolledCell),
+			"Item realized after ScrollIntoView should also resolve the Light island sentinel.");
 	}
 
-	// ---- T2 — S2: list item recycled across unload/reload keeps its theme ----
+	// ---- T2 — S2: list item recycled across unload/reload keeps its theme (D4) ----
 
 	[TestMethod]
 	[RequiresFullWindow]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
-	public async Task When_Item_Recycled_Across_Unload_Reload_Keeps_Theme()
+	public async Task When_Item_Recycled_Across_Unload_Reload_Keeps_Light()
 	{
-		// S2. A row in a Dark island is realized, the island is unloaded (tab switch / recycle),
-		// then reloaded. After reload the row must still resolve the Dark sentinel. Uno today
+		// S2. A row in a Light island is realized, the island is unloaded (tab switch / recycle),
+		// then reloaded. After reload the row must still resolve the Light sentinel. Uno today
 		// clears the element theme on unload (ClearThemeStateOnUnloaded), so the reloaded row
-		// resolves the ambient app theme. WinUI keeps m_theme and re-themes from the parent on
-		// re-Enter.
+		// resolves the Dark ambient. WinUI keeps m_theme and re-themes from the parent on re-Enter.
 #if HAS_UNO
-		using var _ = ThemeHelper.UseApplicationLightTheme();
+		using var _ = ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Dark);
 		await WindowHelper.WaitForIdle();
 #endif
-		var host = new Border { Width = 220, Height = 320 };
-		var island = (Grid)XamlReader.Load(
+		var host = new Border { Width = 220, Height = 320, RequestedTheme = ElementTheme.Dark };
+		var island = (Border)XamlReader.Load(
 			$$"""
-			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			      RequestedTheme="Dark">
-				<Grid.Resources>
+			<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			        RequestedTheme="Light">
+				<Border.Resources>
 					<ResourceDictionary>
 						{{SentinelDictsXaml}}
 					</ResourceDictionary>
-				</Grid.Resources>
+				</Border.Resources>
 				<ListView x:Name="list" Height="300" Width="200">
 					<ListView.ItemTemplate>
 						<DataTemplate>
@@ -151,7 +165,7 @@ public class Given_Theme_Materialization
 						</DataTemplate>
 					</ListView.ItemTemplate>
 				</ListView>
-			</Grid>
+			</Border>
 			""");
 		var list = (ListView)island.FindName("list");
 		list.ItemsSource = Enumerable.Range(0, 20).Select(i => $"Item {i}").ToArray();
@@ -163,7 +177,7 @@ public class Given_Theme_Materialization
 
 		var firstCell = (await WindowHelper.WaitForNonNull(() => list.ContainerFromIndex(0) as ListViewItem))
 			.FindFirstDescendant<Border>("cell");
-		Assert.AreEqual(DarkSentinel, ColorOf(firstCell), "Row should resolve Dark before recycle.");
+		Assert.AreEqual(LightSentinel, ColorOf(firstCell), "Row should resolve Light before recycle.");
 
 		// Unload the island (simulates tab navigation away), then reload it.
 		host.Child = null;
@@ -174,42 +188,50 @@ public class Given_Theme_Materialization
 
 		var reloadedCell = (await WindowHelper.WaitForNonNull(() => list.ContainerFromIndex(0) as ListViewItem))
 			.FindFirstDescendant<Border>("cell");
-		Assert.AreEqual(DarkSentinel, ColorOf(reloadedCell),
-			"Row should still resolve the Dark island sentinel after unload/reload (no recycle staleness).");
+		Assert.AreEqual(LightSentinel, ColorOf(reloadedCell),
+			"Row should still resolve the Light island sentinel after unload/reload (no recycle staleness leaking the Dark ambient).");
 	}
 
-	// ---- T3 — S3: cell scrolled into view under pure app theme resolves the app theme ----
+	// ---- T3 — S3: nested-template cell materialized in a Light island under a Dark ambient ----
 
 	[TestMethod]
 	[RequiresFullWindow]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
-	public async Task When_Cell_Scrolled_Into_View_Under_App_Theme_Resolves_App_Theme()
+	public async Task When_Nested_Template_Cell_Scrolled_Into_View_Resolves_Light()
 	{
-		// S3. Pure app-level theme (no element RequestedTheme anywhere). A cell materialized on
-		// scroll must resolve the app theme. This is the OS-vs-app precedence shape: the app is
-		// set Dark; a cell realized outside the walk must use Dark, not a stale/ambient value.
-		// (Confirmed in WinUI probe app: a cell realized on scroll under a Dark-themed app
-		// renders the Dark value.)
+		// S3. A cell materialized on scroll — through a nested ContentControl template, like a data
+		// grid cell — inside a Light island must resolve the Light sentinel under a Dark ambient.
+		// Targets the "columns scrolled into view use dark styling" case where deep template
+		// materialization happens outside the theme walk.
 #if HAS_UNO
-		using var _ = ThemeHelper.UseApplicationDarkTheme();
+		using var _ = ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Dark);
 		await WindowHelper.WaitForIdle();
 #endif
 		var root = (Grid)XamlReader.Load(
 			$$"""
 			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-				<Grid.Resources>
-					<ResourceDictionary>
-						{{SentinelDictsXaml}}
-					</ResourceDictionary>
-				</Grid.Resources>
-				<ListView x:Name="list" Height="300" Width="200">
-					<ListView.ItemTemplate>
-						<DataTemplate>
-							<Border x:Name="cell" Height="40" Background="{ThemeResource SentinelBrush}" />
-						</DataTemplate>
-					</ListView.ItemTemplate>
-				</ListView>
+			      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			      RequestedTheme="Dark">
+				<Border RequestedTheme="Light">
+					<Border.Resources>
+						<ResourceDictionary>
+							{{SentinelDictsXaml}}
+						</ResourceDictionary>
+					</Border.Resources>
+					<ListView x:Name="list" Height="300" Width="200">
+						<ListView.ItemTemplate>
+							<DataTemplate>
+								<ContentControl HorizontalContentAlignment="Stretch">
+									<ContentControl.ContentTemplate>
+										<DataTemplate>
+											<Border x:Name="cell" Height="40" Background="{ThemeResource SentinelBrush}" />
+										</DataTemplate>
+									</ContentControl.ContentTemplate>
+								</ContentControl>
+							</DataTemplate>
+						</ListView.ItemTemplate>
+					</ListView>
+				</Border>
 			</Grid>
 			""");
 		var list = (ListView)root.FindName("list");
@@ -224,26 +246,27 @@ public class Given_Theme_Materialization
 
 		var scrolled = await WindowHelper.WaitForNonNull(() => list.ContainerFromIndex(150) as ListViewItem);
 		var scrolledCell = scrolled.FindFirstDescendant<Border>("cell");
-		Assert.AreEqual(DarkSentinel, ColorOf(scrolledCell),
-			"Cell scrolled into view under a Dark app theme should resolve the Dark sentinel.");
+		Assert.AreEqual(LightSentinel, ColorOf(scrolledCell),
+			"Nested-template cell materialized on scroll in a Light island should resolve Light, not the Dark ambient.");
 	}
 
-	// ---- T4 — S4: flyout first open from a themed region uses that region's theme ----
+	// ---- T4 — S4: flyout first open from a Light region uses that region's theme ----
 
 	[TestMethod]
-	public async Task When_Flyout_First_Open_From_Themed_Region_Uses_Region_Theme()
+	public async Task When_Flyout_First_Open_From_Light_Region_Uses_Region_Theme()
 	{
-		// S4. A flyout opened from a Dark island must show Dark content on the FIRST open
-		// (today it heals only on the second open). Asserts the resolved sentinel value, not
-		// just ActualTheme, and that first-open == second-open.
-		// The sentinel ThemeDictionaries live on the flyout content itself so the resource is
-		// always reachable from the popup namescope; the THEME selection (Light vs Dark) is what
-		// this test exercises.
+		// S4. A flyout opened from a Light island must show Light content on the FIRST open under a
+		// Dark ambient (today it heals only on the second open). Asserts the resolved sentinel value,
+		// not just ActualTheme, and that first-open == second-open.
+#if HAS_UNO
+		using var _ = ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Dark);
+		await WindowHelper.WaitForIdle();
+#endif
 		var root = (Grid)XamlReader.Load(
 			$$"""
 			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			      RequestedTheme="Dark">
+			      RequestedTheme="Light">
 				<Button x:Name="target" Content="Open">
 					<FlyoutBase.AttachedFlyout>
 						<Flyout>
@@ -271,8 +294,8 @@ public class Given_Theme_Materialization
 			FlyoutBase.ShowAttachedFlyout(target);
 			await WindowHelper.WaitForIdle();
 			var firstOpen = ColorOf(flyout.Content);
-			Assert.AreEqual(DarkSentinel, firstOpen,
-				"Flyout content should resolve the Dark region sentinel on the FIRST open.");
+			Assert.AreEqual(LightSentinel, firstOpen,
+				"Flyout content should resolve the Light region sentinel on the FIRST open.");
 
 			// Close and reopen — the value must be identical (no "fix on second open").
 			flyout.Hide();
@@ -292,16 +315,21 @@ public class Given_Theme_Materialization
 	// ---- T5 — S4: popup first open inherits the opener's theme ----
 
 	[TestMethod]
-	public async Task When_Popup_First_Open_In_Themed_Region_Has_Region_Theme()
+	public async Task When_Popup_First_Open_In_Light_Region_Has_Region_Theme()
 	{
 		// S4 (isolated popup path). A bare Popup whose child binds the sentinel must resolve the
-		// opener island's Dark theme on the FIRST open. Today this relies on a second-open heal.
+		// opener island's Light theme on the FIRST open under a Dark ambient. Today this relies on a
+		// second-open heal.
+#if HAS_UNO
+		using var _ = ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Dark);
+		await WindowHelper.WaitForIdle();
+#endif
 		var root = (Grid)XamlReader.Load(
 			$$"""
 			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			      Width="200" Height="200"
-			      RequestedTheme="Dark">
+			      RequestedTheme="Light">
 				<Popup x:Name="popup">
 					<Border x:Name="popupCell" Width="60" Height="60"
 					        Background="{ThemeResource SentinelBrush}">
@@ -324,8 +352,8 @@ public class Given_Theme_Materialization
 		{
 			popup.IsOpen = true;
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(DarkSentinel, ColorOf(cell),
-				"Popup child should resolve the Dark opener sentinel on the FIRST open.");
+			Assert.AreEqual(LightSentinel, ColorOf(cell),
+				"Popup child should resolve the Light opener sentinel on the FIRST open.");
 		}
 		finally
 		{
@@ -334,25 +362,25 @@ public class Given_Theme_Materialization
 		}
 	}
 
-	// ---- T6 — S5: control added at runtime into a themed island resolves the island theme ----
+	// ---- T6 — S5: control added at runtime into a Light island resolves the island theme ----
 
 	[TestMethod]
 	[RequiresFullWindow]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
-	public async Task When_Control_Added_At_Runtime_Into_Themed_Subtree_Resolves_Subtree_Theme()
+	public async Task When_Control_Added_At_Runtime_Into_Light_Island_Resolves_Light()
 	{
-		// S5. A control created and added at runtime into an already-loaded RequestedTheme="Dark"
-		// parent must resolve the Dark sentinel. Also covers D1: a non-FrameworkElement
+		// S5. A control created and added at runtime into an already-loaded RequestedTheme="Light"
+		// parent must resolve the Light sentinel under a Dark ambient. Also covers D1: a non-FE
 		// DependencyObject ({ThemeResource} on a Brush/DO) resolves the subtree theme.
 #if HAS_UNO
-		using var _ = ThemeHelper.UseApplicationLightTheme();
+		using var _ = ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Dark);
 		await WindowHelper.WaitForIdle();
 #endif
 		var parent = (Grid)XamlReader.Load(
 			$$"""
 			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			      RequestedTheme="Dark">
+			      RequestedTheme="Light">
 				<Grid.Resources>
 					<ResourceDictionary>
 						{{SentinelDictsXaml}}
@@ -377,8 +405,8 @@ public class Given_Theme_Materialization
 		await WindowHelper.WaitForLoaded(added);
 		await WindowHelper.WaitForIdle();
 
-		Assert.AreEqual(DarkSentinel, ColorOf(added),
-			"Control added at runtime into a Dark island should resolve the Dark sentinel.");
+		Assert.AreEqual(LightSentinel, ColorOf(added),
+			"Control added at runtime into a Light island should resolve the Light sentinel, not the Dark ambient.");
 	}
 
 	// ---- T7 — public regression guard: app theme switch updates ThemeResource values ----
@@ -389,8 +417,8 @@ public class Given_Theme_Materialization
 	public async Task When_App_Theme_Switches_ThemeResource_Values_Update()
 	{
 		// Public app-dark-switch regression guard. Switching app Light→Dark must flip bound
-		// {ThemeResource} values (and nested elements) and report the new ActualTheme inside the
-		// ActualThemeChanged handler. (Largely fixed already; this guards against regression.)
+		// {ThemeResource} values (and nested elements). (Largely fixed already; this guards against
+		// regression.)
 #if HAS_UNO
 		using var _ = ThemeHelper.UseApplicationLightTheme();
 		await WindowHelper.WaitForIdle();
@@ -440,10 +468,9 @@ public class Given_Theme_Materialization
 	{
 		// General correctness (foreground-freeze emulation) underpinning the S1/S2 text symptoms.
 		// A TextBlock with no local Foreground inside a RequestedTheme="Light" boundary must use
-		// the Light default text brush even when the ambient app theme is Dark, and stay light
-		// across an app dark→light→dark cycle.
+		// the Light default text brush even when the ambient OS theme is Dark.
 #if HAS_UNO
-		using var _ = ThemeHelper.UseApplicationDarkTheme();
+		using var _ = ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Dark);
 		await WindowHelper.WaitForIdle();
 #endif
 		var root = (Border)XamlReader.Load(
@@ -464,14 +491,14 @@ public class Given_Theme_Materialization
 			""");
 		WindowHelper.WindowContent = lightRef;
 		await WindowHelper.WaitForLoaded(lightRef);
-		var expectedLight = (lightRef.Foreground as SolidColorBrush)?.Color;
+		var expectedLight = ForegroundOf(lightRef);
 
 		WindowHelper.WindowContent = root;
 		await WindowHelper.WaitForLoaded(root);
 		await WindowHelper.WaitForIdle();
 
-		Assert.AreEqual(expectedLight, (text.Foreground as SolidColorBrush)?.Color,
-			"TextBlock in a Light boundary should use the Light default foreground regardless of ambient.");
+		Assert.AreEqual(expectedLight, ForegroundOf(text),
+			"TextBlock in a Light boundary should use the Light default foreground regardless of the Dark ambient.");
 	}
 
 	// ---- T9 — explicit app theme suppresses OS following (Uno-only; Phase 6) ----
@@ -509,13 +536,16 @@ public class Given_Theme_Materialization
 
 		Assert.AreEqual(LightSentinel, ColorOf(root), "Value should be Light before the OS change.");
 
-		// Simulate an OS theme change to Dark.
-		Application.Current.OnRequestedThemeChanged();
-		await WindowHelper.WaitForIdle();
+		// Simulate an OS theme change to Dark via the system-theme override (raises the same path a
+		// real OS change would).
+		using (ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Dark))
+		{
+			await WindowHelper.WaitForIdle();
 
-		Assert.AreEqual(ElementTheme.Light, Application.Current.ActualElementTheme,
-			"Explicit app theme must not follow the OS to Dark.");
-		Assert.AreEqual(LightSentinel, ColorOf(root), "Bound value should stay Light.");
+			Assert.AreEqual(ElementTheme.Light, Application.Current.ActualElementTheme,
+				"Explicit app theme must not follow the OS to Dark.");
+			Assert.AreEqual(LightSentinel, ColorOf(root), "Bound value should stay Light.");
+		}
 	}
 #endif
 
@@ -525,16 +555,15 @@ public class Given_Theme_Materialization
 	[TestMethod]
 	[RequiresFullWindow]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
-	public async Task When_Custom_Theme_Ditched_And_Fallback_Does_Not_Leak_Dark()
+	public async Task When_Element_Dark_Island_And_Fallback_Does_Not_Leak_Dark()
 	{
-		// Decision = DITCH custom themes. (a) RequestedCustomTheme="Light" still resolves the
-		// standard Light value. (b) element RequestedTheme="Dark" under app Light resolves the
-		// standard Dark sentinel. (c) a dictionary defining only a Dark "Default" entry, consumed
-		// under app Light, must resolve the app base Light value, not the dark "Default".
+		// Decision = DITCH custom themes (Phase 6). (a) Element RequestedTheme="Dark" under app Light
+		// resolves the standard Dark sentinel. (b) A dictionary defining only a Dark "Default" entry,
+		// consumed under app Light, must resolve the app base Light value, not the dark "Default".
 		using var _ = ThemeHelper.UseApplicationLightTheme();
 		await WindowHelper.WaitForIdle();
 
-		// (b) element Dark island under app Light → standard Dark sentinel.
+		// (a) element Dark island under app Light → standard Dark sentinel.
 		var island = (Border)XamlReader.Load(
 			$$"""
 			<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -552,7 +581,7 @@ public class Given_Theme_Materialization
 		Assert.AreEqual(DarkSentinel, ColorOf(island),
 			"Element RequestedTheme=Dark under app Light should resolve the standard Dark sentinel.");
 
-		// (c) fallback robustness: a dictionary with only a Dark "Default" entry, consumed under
+		// (b) fallback robustness: a dictionary with only a Dark "Default" entry, consumed under
 		// app Light, must NOT silently resolve the dark "Default".
 		var fallback = (Border)XamlReader.Load(
 			"""
