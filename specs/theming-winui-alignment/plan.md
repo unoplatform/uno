@@ -216,7 +216,7 @@ Phases are **strictly ordered** by dependency. Do not start phase N+1 until phas
 
 **Goal.** Popup/flyout content is correctly themed on the **first** open from its placement target's effective theme, on all platforms. Fixes the S4 styling defect.
 
-**Depends on.** Phases 1–4 (Phase 7 extends native attach; this phase is the cross-platform logic + the flyout forwarding fix that benefits all platforms).
+**Depends on.** Phases 1–4. This phase is the enhanced-lifecycle (Skia/WASM) popup/flyout theming fix. Native is out of scope for element-level theming (OS + application theme only); Phase 7 confirms/documents the native scope rather than extending element theming to native.
 
 **WinUI references.** Logical-parent inheritance at Enter `depends.cpp:1023-1048` + `GetInheritanceParentInternal(fLogicalParent)` `framework.cpp:3097-3130`; popup theme handling in the top-level notify `xcpcore.cpp:7826-7831`; `FlyoutBase` forwards target theme — Uno port at `FlyoutBase.cs:744-804`.
 
@@ -227,14 +227,15 @@ Phases are **strictly ordered** by dependency. Do not start phase N+1 until phas
 
 **Steps.**
 1. Ensure the Phase 2 `Enter` theme step uses the **logical** inheritance parent for popup/flyout content so it inherits the opener's theme at first attach. Verify the `Popup.Child` → logical parent linkage exists on all platforms (it is used by the enhanced path today; generalize it).
-2. Remove the `UNO_HAS_ENHANCED_LIFECYCLE` gating that confines popup theme propagation to Skia/WASM (`Popup.WithPopupRoot.cs:109-119`, `Popup.cs:159-172`) so native gets the same establishment. (Native attach specifics are completed in Phase 7; this phase makes the logic platform-neutral.)
-3. **D6 fix in `FlyoutBase.ForwardThemeToPresenter` (`:755-794`):** today it walks up looking for the nearest **non-Default `RequestedTheme`** and forwards only that. Change it to forward the placement target's **`ActualTheme`** (the effective theme, which includes app/inherited theme), so a flyout opened over content that is themed only at the app level is still themed. Keep the existing `ActualThemeChanged` subscription (`:542-545`) so runtime target theme changes still propagate. Preserve `m_isFlyoutPresenterRequestedThemeOverridden` semantics (don't override an explicitly-set presenter theme).
+2. Remove the now-redundant explicit popup-open theme push (`Popup.WithPopupRoot.cs`) — it is subsumed by the `EstablishThemeAtEnter` logical-parent inheritance (step 1) on enhanced-lifecycle. **Keep popup theme propagation gated to `UNO_HAS_ENHANCED_LIFECYCLE`:** element-level theming is a Skia/WASM feature and is **not** brought to native — native targets support OS + application theme only (see Phase 7). Native theming behavior is left unchanged by this phase.
+3. **D6 fix in `FlyoutBase.ForwardThemeToPresenter` (enhanced-lifecycle only):** today it walks up looking for the nearest **non-Default `RequestedTheme`** and forwards only that. On Skia/WASM, change it to forward the placement target's **`ActualTheme`** (the effective theme, which includes app/inherited theme), so a flyout opened over content that is themed only at the app level is still themed. Keep the existing `ActualThemeChanged` subscription so runtime target theme changes still propagate. Preserve `m_isFlyoutPresenterRequestedThemeOverridden` semantics (don't override an explicitly-set presenter theme). **Gate the change to `UNO_HAS_ENHANCED_LIFECYCLE`: on native, keep the legacy `RequestedTheme` walk unchanged** (native = OS + application theme; element-level theme out of scope).
 4. Confirm `TextCommandBarFlyout`/`CommandBarFlyout` presenters inherit via `FlyoutBase` and need no extra work beyond step 3.
 
 **Acceptance criteria.**
 - Builds all heads.
-- T4 (`TextCommandBarFlyout` first-open) and T5 (`Popup` first-open) go green on Skia + WASM (native validated in Phase 7).
+- T4 (`TextCommandBarFlyout` first-open) and T5 (`Popup` first-open) go green on Skia + WASM. They are **excluded on native** (`[PlatformCondition(Exclude, NativeAndroid|NativeIOS)]`) — element-level theming is not a native capability (native = OS + app theme).
 - Existing popup/flyout theme tests in `Given_ElementTheme` ("Popup and Flyout Theme Propagation" region) stay green.
+- Native theming behavior is unchanged (the D5/D6 changes are gated to `UNO_HAS_ENHANCED_LIFECYCLE`).
 
 **Validation.** Theming suite + materialization tests (Skia + WASM); manual flyout-over-app-themed-content check.
 
@@ -280,33 +281,32 @@ Phases are **strictly ordered** by dependency. Do not start phase N+1 until phas
 
 ---
 
-## Phase 7 — Native (Android/iOS) parity
+## Phase 7 — Native (Android/iOS) theme scope: OS + application theme only
 
-**Goal.** Bring per-DO theme + `Enter` inheritance to the native (non-enhanced-lifecycle) path so the S4 mobile context-menu case is fixed on iOS/Android and native matches Skia/WASM.
+**Goal.** Confirm and document that native (non-enhanced-lifecycle Android/iOS) targets support **OS theme + application theme only**, and that **element-level theming is intentionally out of scope on native**. The per-object theme + `Enter` inheritance machinery built in Phases 1–5 is a Skia/WASM (`UNO_HAS_ENHANCED_LIFECYCLE`) feature and is **not** ported to the native view hierarchy. Native theming behavior is left **unchanged** by this refactor.
 
-**Depends on.** Phases 1–6 green on Skia/WASM. Highest risk — keep last.
+**Rationale (decision).** Native tree mechanics differ fundamentally (native view hierarchy, no uniform "DO entered live tree" hook), and porting per-DO theme + `Enter` inheritance there is high-risk for limited benefit. Native already follows OS + application theme; element-level `RequestedTheme` inheritance (the element-`RequestedTheme`-on-root variant of S4) is a Skia/WASM capability and is accepted as a native limitation. This supersedes the earlier "native parity" goal.
 
-**WinUI references.** Same as Phases 2/5 (the model is platform-neutral in WinUI). For native tree mechanics, follow Uno's existing native enter/leave (`OnLoaded`/`OnUnloaded`, native `Loaded` hooks).
+**Depends on.** Phases 1–6 green on Skia/WASM.
 
 **Files.**
-- `src/Uno.CrossTargetting.targets:77,81` (`UNO_HAS_ENHANCED_LIFECYCLE` definition — understand, do not necessarily change).
-- Native enter/load: `FrameworkElement` native partials, `UIElement` native partials, `Popup`/`PopupRoot` native paths.
-- All `#if UNO_HAS_ENHANCED_LIFECYCLE` theme blocks touched in earlier phases.
+- `src/Uno.CrossTargetting.targets` (`UNO_HAS_ENHANCED_LIFECYCLE` definition — understand only; do not change).
+- All `#if UNO_HAS_ENHANCED_LIFECYCLE` theme blocks touched in earlier phases (verify the native `#else`/absent path is unchanged).
 
 **Steps.**
-1. Audit every `#if UNO_HAS_ENHANCED_LIFECYCLE` theme gate introduced/touched in Phases 2–5. For each, provide a native-correct path that establishes `_theme` at native tree-attach (native `Loaded`/added-to-window) and re-resolves refs. The per-DO theme storage (Phase 1) and `ResolveOwnerTheme` are already platform-neutral; the missing piece on native is the **attach hook** that runs the `Enter` theme step.
-2. Wire the `Enter` theme step into the native attach lifecycle (the native equivalent of going live). Where native lacks a uniform "DO entered tree" hook for non-UIElement DOs, scope the establishment to the FE/UIElement attach and rely on `ResolveOwnerTheme`'s ancestor walk for non-UIElement owners.
-3. Native popup/flyout: ensure `Popup.Child` logical-parent linkage and the Phase 5 forwarding run on native so the text-selection context menu (`TextCommandBarFlyout`) is themed on first open.
-4. Be mindful: native controls (native text selection menus, native inputs) may render via OS chrome and honor OS appearance independently of Uno theming — distinguish the **Uno-managed** popup content (in scope) from **OS-native chrome** (out of scope; document if the S4 menu is partly OS-native on a platform).
+1. Audit every `#if UNO_HAS_ENHANCED_LIFECYCLE` theme gate introduced/touched in Phases 1–5 and confirm the native path is **unchanged** from before the refactor: no per-DO theme establishment at native attach, no `Enter` inheritance walk, no element-theme push, no new element-theme code compiled into native. `EstablishThemeAtEnter` and the popup logical-parent inheritance run only on enhanced-lifecycle.
+2. Confirm native popup/flyout content follows the application/OS theme: `FlyoutBase.ForwardThemeToPresenter` keeps the legacy `RequestedTheme` walk on native (no `ActualTheme`-based per-object inheritance); `Popup` theme propagation stays enhanced-lifecycle-gated. The element-`RequestedTheme`-on-root S4 scenario is not supported on native by design.
+3. Confirm element-theme materialization repros (T4/T5 and any others asserting element-level theme) are excluded on native (`[PlatformCondition(Exclude, NativeAndroid|NativeIOS)]`).
+4. Note: native controls (native text-selection menus, native inputs) may render via OS chrome and honor OS appearance independently of Uno — they already follow OS/app theme. Document the native theming scope (OS + app theme; no element-level theme) so future work does not re-attempt element theming on native without an explicit decision.
 
 **Acceptance criteria.**
-- Builds and runs on Android + iOS.
-- T4/T5 (popup/flyout first-open) green on native.
-- No regressions in native theming behavior; existing native-applicable theming tests green.
+- Builds and runs on Android + iOS with native theming behavior **unchanged** (OS + application theme switching works as before).
+- No element-level theme machinery compiled into native; no native theming regressions.
+- Element-theme materialization tests (T4/T5, etc.) excluded on native; existing native-applicable theming tests green.
 
-**Validation.** Runtime tests on Android + iOS heads for `Given_Theme_Materialization` popup tests; manual repro of S4 (long-press text → context menu) shows correct styling on first open.
+**Validation.** Build Android + iOS; confirm OS/application theme switching; confirm no native theming regressions vs. pre-refactor.
 
-**Commit.** `feat(theming): native parity for per-object theme and Enter inheritance`.
+**Commit.** `docs(theming): scope native to OS + application theme (element theme is Skia/WASM only)`.
 
 ---
 
@@ -318,15 +318,15 @@ Phases are **strictly ordered** by dependency. Do not start phase N+1 until phas
 
 **Steps.**
 1. **WinUI oracle re-confirm:** run the entire theming suite (old + new, all WinUI-runnable tests) on `/winui-runtime-tests` and confirm **all green** on native WinUI. This re-establishes the suite as a correct oracle after any test edits made across the phases.
-2. **Uno match:** run the **entire** theming suite + `Given_Theme_Materialization` via `/runtime-tests` on Skia Desktop, WASM, Android, iOS. All green, matching the WinUI results. Compare to Phase 0 baseline; explain any test that legitimately changed (e.g. a test that asserted the old buggy unload-clear behavior) — such a change must itself be a WinUI-green assertion.
+2. **Uno match:** run the **entire** theming suite + `Given_Theme_Materialization` via `/runtime-tests` on Skia Desktop and WASM (the platforms with element-level theming). All green, matching the WinUI results. On Android + iOS, run the native-applicable subset (element-level theme tests are excluded on native via `[PlatformCondition(Exclude, NativeAndroid|NativeIOS)]`) and confirm OS + application theme switching works with no native regressions. Compare to Phase 0 baseline; explain any test that legitimately changed (e.g. a test that asserted the old buggy unload-clear behavior) — such a change must itself be a WinUI-green assertion.
 3. Remove any remaining transitional shims (parameterless `TryGetValue` wrappers added in Phase 3 if no longer needed, dead `#if` branches, `Control.crossruntime.cs:32-46` commented-out WinUI port if now superseded).
 4. Performance sanity: run the resource-dictionary benchmarks (`src/SamplesApp/Benchmarks.Shared/.../ResourceDictionaryBench/*`) before/after to confirm no regression (expect neutral-to-better — fewer pushes).
 5. Update developer docs: a short "Theming model" note describing the WinUI-aligned invariant (resolution = f(key, owner theme); theme established at Enter; logical-parent inheritance for popups), so future control authors don't reintroduce band-aids.
 6. Update memory/spec status doc with final results.
 
 **Acceptance criteria.**
-- All theming tests green on all four platform heads.
-- WinUI parity confirmed for ported scenarios.
+- Skia + WASM: all theming tests green. Android + iOS: native-applicable subset green (element-theme tests excluded), OS + application theme switching works, no native regressions.
+- WinUI parity confirmed for ported scenarios (Skia/WASM); native scope (OS + app theme only) documented.
 - No `PushRequestedThemeForSubTree` / global theme stack anywhere in the codebase.
 - Benchmarks neutral or improved.
 
@@ -345,6 +345,6 @@ Phases are **strictly ordered** by dependency. Do not start phase N+1 until phas
 | S2 (recycle on tab navigation) | Phase 2 (D2 Enter) + D4 (no unload clear) + Phase 3 (D3) | T2 |
 | S3 (scrolled-in cells) | Phase 2 (D2) + Phase 3 (D3) | T3 |
 | S1 / S5 (virtualized item / runtime-added control) | Phase 2 (D2) + Phase 3 (D3) + Phase 6 (D7 OS/custom) | T1, T6 |
-| S4 (popup/flyout first open) | Phase 5 (D5/D6) + Phase 7 (native) | T4, T5 |
+| S4 (popup/flyout first open) | Phase 5 (D5/D6) on Skia/WASM; native = OS/app theme only (Phase 7 — element theme out of scope on native) | T4, T5 (Skia/WASM; excluded on native) |
 | uno #23177 (app dark switch) | preserved by Phases 2–4; hardened | existing repros + T7 |
 | OS/theme leak narrative | Phase 6 (D7) | T9 + custom-theme test |

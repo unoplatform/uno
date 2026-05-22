@@ -22,8 +22,11 @@
      `/winui-runtime-tests`).
   2. **Regression guards** — must stay green through the refactor (Phases 1–4) and after the band-aids are
      deleted (Phase 4).
-  3. **Native S4 repros** — T4/T5 (popup/flyout first open) are expected **RED on Android/iOS**, where the
-     band-aids don't run; Phase 5/7 turn them green.
+  3. **Element-theme repros are Skia/WASM** — T4/T5 (popup/flyout first open) assert the *element* theme of a
+     Light island. Element-level theming is an enhanced-lifecycle (Skia/WASM) feature; native targets support
+     OS + application theme only (a popup/flyout follows the app/OS theme there). T4/T5 are therefore
+     **excluded on native** (`[PlatformCondition(Exclude, NativeAndroid|NativeIOS)]`); the element-theme
+     variant of S4 is a known native limitation, not a bug to fix on native.
 
   The deterministic *Skia* evidence of the leak is the **existing theming suite under a Dark ambient** (it
   was OS-theme-dependent — see below).
@@ -44,9 +47,11 @@
   OS-following suppression, `IsThemeSetExplicitly`, `SystemThemeOverride`, custom-theme: reproduce in a
   throwaway native WinUI Blank App (`dotnet new` WinUI templates — see `plan.md`), observe the real values,
   and encode them with a "confirmed in WinUI probe app" comment.
-- **Reproduce first, but know where each repro is RED.** Product-leak scenarios are green on Skia/WASM
-  (band-aid-covered) and serve as oracle + regression guards there; they are RED on **native** (S4) and are
-  proven on Skia only post-refactor (Phases 3–4) once the band-aids are removed.
+- **Reproduce first, but know where each repro applies.** Product-leak scenarios are green on Skia/WASM
+  (band-aid-covered) and serve as oracle + regression guards there; they are proven on Skia post-refactor
+  (Phases 3–4) once the band-aids are removed. Element-level theme repros (incl. S4 T4/T5) do **not** apply to
+  native — native is OS + application theme only — so they are excluded on Android/iOS rather than expected to
+  pass there.
 - **Deterministic colors.** Don't assert against evolving system/Fluent brushes. Define sentinel brushes in
   `ThemeDictionaries["Light"]`/`["Dark"]`/`["Default"]` (Light `#FF111111`, Dark `#FFEEEEEE`) and assert exact
   `Color` values.
@@ -54,8 +59,10 @@
   (Uno-only, `#if HAS_UNO`). The helper **throws on WinUI** (no OS-theme override exists there), so any test
   that calls it must be excluded on WinUI with `[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]`.
 - **Platform reach.** These live in a class (`Given_Theme_Materialization`) that does **not** inherit
-  `Given_ElementTheme`'s native exclusion, so the popup tests (S4) run on iOS/Android. Tag full-window-dependent
-  tests `[RequiresFullWindow]`.
+  `Given_ElementTheme`'s class-level native exclusion. Element-level theme tests (incl. the popup/flyout
+  first-open tests T4/T5) are excluded on native **per-method** (`[PlatformCondition(Exclude,
+  NativeAndroid|NativeIOS)]`) because native supports OS + application theme only, not element-level theme.
+  Tag full-window-dependent tests `[RequiresFullWindow]`.
 - **Naming.** Behavior-descriptive names; **no private tracker IDs in committed code**. Map S1–S5 to internal
   trackers only in the gitignored `baseline-results.md`.
 - **Existing coverage to keep green** (do not duplicate): `Given_ElementTheme`, `Given_ThemeResource`,
@@ -104,12 +111,14 @@ Skia/WASM, `[RequiresFullWindow]`.
 
 ### T4 — S4: flyout first open from a Light region uses that region's theme
 `When_Flyout_First_Open_From_Light_Region_Uses_Region_Theme`. Open a `Flyout` from a Light island; assert the
-content resolves Light on the **first** open and identically on the second (no "fix on second open"). **Expected
-RED on native (Android/iOS)** — Phase 5/7. Runs on all platforms (no native exclusion).
+content resolves Light on the **first** open and identically on the second (no "fix on second open"). Green on
+Skia + WASM (Phase 5). **Excluded on native (Android/iOS)** — element-level theming is Skia/WASM only; native
+follows the app/OS theme.
 
 ### T5 — S4: popup first open in a Light region has Light content
 `When_Popup_First_Open_In_Light_Region_Has_Region_Theme`. A bare `Popup` whose child binds the sentinel; assert
-Light on first open. **Expected RED on native** — Phase 5/7. All platforms.
+Light on first open. Green on Skia + WASM (Phase 5). **Excluded on native** — element-level theming is Skia/WASM
+only; native follows the app/OS theme.
 
 ### T6 — S5: control added at runtime into a Light island resolves Light
 `When_Control_Added_At_Runtime_Into_Light_Island_Resolves_Light`. Add a real control after load into an
@@ -151,14 +160,16 @@ Uno-only; Phase 6 turns part (b) green. Skia/WASM, `[RequiresFullWindow]`.
 
 | Test | Skia | WASM | Android | iOS | WinUI parity (`/winui-runtime-tests`) |
 |------|------|------|---------|-----|----------------------------------------|
-| T1, T3, T6 | green (guard) | green (guard) | — | — | ✓ (must be green) |
-| T2 | green (guard) | green (guard) | (✓ after P7) | (✓ after P7) | ✓ |
-| T4, T5 | green (guard) | green (guard) | **RED → green P7** | **RED → green P7** | ✓ |
+| T1, T3, T6 | green (guard) | green (guard) | — (excluded) | — (excluded) | ✓ (must be green) |
+| T2 | green (guard) | green (guard) | — (excluded) | — (excluded) | ✓ |
+| T4, T5 | green (Phase 5) | green (Phase 5) | — (excluded) | — (excluded) | ✓ |
 | T7, T8 | green (guard) | green (guard) | — | — | ✓ (T7 Uno-only → probe app) |
 | T9, T10 | green (guard) | green (guard) | — | — | probe app (Uno-only) |
 
 "green (guard)" = passes today (band-aid-covered) and must keep passing through the refactor. The leak's
 deterministic Skia evidence is the existing suite under a Dark ambient (now hardened to be OS-independent).
+"— (excluded)" = element-level theme test, excluded on native (`[PlatformCondition(Exclude,
+NativeAndroid|NativeIOS)]`): native targets support OS + application theme only, not element-level theme.
 
 Run via the `/runtime-tests` skill (Skia default; WASM and native heads where applicable); for WinUI parity use
 `/winui-runtime-tests` on Windows.
