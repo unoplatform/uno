@@ -154,7 +154,7 @@ internal sealed class FcitxInputMethod : IX11InputMethod
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().Warn("Fcitx D-Bus connection lost. Falling back to XIM.");
+				this.Log().Warn("Fcitx D-Bus connection lost — IME will be disabled.");
 			}
 			_isEnabled = false;
 			return false;
