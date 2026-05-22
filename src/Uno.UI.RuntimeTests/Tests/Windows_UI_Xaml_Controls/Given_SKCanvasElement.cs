@@ -1,9 +1,11 @@
-﻿using System;
+﻿#if __SKIA__ || WINAPPSDK
+using System;
 using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.WinUI.Graphics2DSK;
@@ -15,6 +17,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_SKCanvasElement
 {
 	[TestMethod]
+	// RenderTargetBitmap on native WinUI does not capture SwapChainPanel content,
+	// so a screenshot of an SKCanvasElement (backed by SKSwapChainPanel on WinAppSDK)
+	// returns the controls behind it. Clipping is still verified on Skia targets.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Clipped_Inside_ScrollViewer()
 	{
 		var SUT = new BlueFillSKCanvasElement
@@ -25,13 +31,13 @@ public class Given_SKCanvasElement
 
 		var border = new Border
 		{
-			BorderBrush = Microsoft.UI.Colors.Green,
+			BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Green),
 			Height = 400,
 			Child = new ScrollViewer
 			{
 				VerticalAlignment = VerticalAlignment.Top,
 				Height = 100,
-				Background = Microsoft.UI.Colors.Red,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
 				Content = SUT
 			}
 		};
@@ -132,3 +138,4 @@ public class Given_SKCanvasElement
 		}
 	}
 }
+#endif
