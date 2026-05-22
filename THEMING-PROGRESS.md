@@ -167,9 +167,10 @@ One phase per session, strictly in order. Scenario labels S1–S5 are defined in
     reach the presenter via logical-parent inheritance + `ActualTheme`'s app/OS-base fallback
     (framework.cpp:3984-3991); forwarding the *effective* `ActualTheme` is the equivalent net result and
     additionally themes a flyout opened over **app-themed** (not element-themed) content on the first open. It
-    composes with the per-object Enter theme (D2). This `ActualTheme` change is **gated to
-    `UNO_HAS_ENHANCED_LIFECYCLE`**: on native, `ForwardThemeToPresenter` keeps the legacy `RequestedTheme` walk
-    unchanged (native = OS + application theme only — see Phase 7), so native theming is not altered.
+    composes with the per-object Enter theme (D2). This is **gated to `UNO_HAS_ENHANCED_LIFECYCLE`**:
+    `ForwardThemeToPresenter` is a **no-op on native** (no element-level theme is forwarded — the presenter keeps
+    its default/inherited theme and the flyout follows the application/OS theme; native = OS + application theme
+    only, see Phase 7).
     `m_isFlyoutPresenterRequestedThemeOverridden` semantics and the placement-target `ActualThemeChanged`
     subscription are preserved. `TextCommandBarFlyout`/`CommandBarFlyout` inherit `ForwardThemeToPresenter` via
     `FlyoutBase` and need no extra work (the element-`RequestedTheme`-on-root variant of the S4 mobile
@@ -185,13 +186,16 @@ One phase per session, strictly in order. Scenario labels S1–S5 are defined in
     `dotnet format whitespace --verify-no-changes` clean. WASM deferred (links the same `Uno.UI.Skia` assembly);
     `/winui-runtime-tests` oracle deferred.
   - **Native scope (maintainer decision):** native targets support **OS + application theme only, not
-    element-level theme**; the D5/D6 changes are all gated to `UNO_HAS_ENHANCED_LIFECYCLE` and native theming is
-    **unchanged**. T4/T5 are excluded on native (`[PlatformCondition(Exclude, NativeAndroid|NativeIOS)]`). Phase 7
-    was redefined accordingly (confirm/document the native OS+app scope rather than bring element theming to
-    native); `architecture.md`/`plan.md`/`tests.md` updated to match. Commits: `fix(theming): theme popup/flyout
-    content from placement target ActualTheme on first open (D5/D6)`, then `refactor(theming): keep element-level
-    theming Skia/WASM-only; native is OS + app theme` (code gating + T4/T5 native exclusion), plus a docs commit
-    for the spec/native-scope adjustments.
+    element-level theme**. All element-level theming is gated to `UNO_HAS_ENHANCED_LIFECYCLE`, and on native
+    `FlyoutBase.ForwardThemeToPresenter` is a **no-op** — the legacy element-`RequestedTheme` walk was removed so
+    a native flyout follows purely the application/OS theme (the presenter keeps its default/inherited theme and
+    resolves the app theme via the normal path). T4/T5 are excluded on native
+    (`[PlatformCondition(Exclude, NativeAndroid|NativeIOS)]`). Phase 7 was redefined accordingly (confirm/document
+    the native OS+app scope rather than bring element theming to native); `architecture.md`/`plan.md`/`tests.md`/
+    `README.md` updated to match. Commits: `fix(theming): theme popup/flyout content from placement target
+    ActualTheme on first open (D5/D6)`; `refactor(theming): keep element-level theming Skia/WASM-only; native is
+    OS + app theme` (gating + T4/T5 native exclusion); `refactor(theming): native flyout follows app/OS theme
+    (no element-theme forwarding)`; plus docs commits for the spec/native-scope adjustments.
 
 ---
 
