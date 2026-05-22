@@ -18,6 +18,14 @@
 		<Nullable>enable</Nullable>
 		<IsPackable>false</IsPackable>
 		<NoWarn>$(NoWarn);VSTHRD200</NoWarn>
+		<!--
+			Disable apphost generation. MSTest.Sdk turns the project into an Exe; on Linux
+			that produces a native apphost wrapper which fails to copy when a folder of the
+			same name already exists at the destination (a Linux-only build error seen on
+			the CI agent). The test runs via `dotnet test` against the DLL directly, so the
+			apphost is not needed.
+		-->
+		<UseAppHost>false</UseAppHost>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -77,13 +85,16 @@
 				{
 					match = Regex.Match(text, pattern2, RegexOptions.IgnoreCase);
 				}
-				if (!match.Success)
+				if (match.Success)
+				{
+					Version = match.Groups[1].Value;
+				}
+				else
 				{
 					Log.LogError("Group '" + GroupName + "' not found in manifest '" + ManifestPath + "'.");
-					return false;
 				}
-				Version = match.Groups[1].Value;
-				return true;
+				// RoslynCodeTaskFactory appends `return !Log.HasLoggedErrors;` after the Fragment.
+				// Don't add explicit returns or the appended return becomes unreachable (CS0162).
 				]]>
 			</Code>
 		</Task>
