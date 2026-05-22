@@ -35,11 +35,38 @@ jobs:
       version: '8.0.x'
       installationPath: $(DOTNET_INSTALL_DIR)
 
-  # Focused build & test of the DevServer host and its unit / integration tests.
-  # This stage is intentionally independent of the heavier unit-tests stage so that
-  # add-in resolution regressions surface quickly in PR feedback. Runs on Linux to
-  # provide cross-platform coverage of the host-side assembly resolution code that
-  # is otherwise only exercised on the Windows unit-tests stage.
+  # This stage runs two complementary checks:
+  #
+  #   1. Uno.Sdk.AddInVersionValidation.Tests — the regression gate that fails whenever the
+  #      add-in packages declared in src/Uno.Sdk/packages.json have misaligned AssemblyRef
+  #      versions. RED here means add-in maintainers need to align their dependencies before
+  #      this PR can merge.
+  #
+  #   2. Uno.UI.RemoteControl.DevServer.Tests — the host-side integration tests that verify
+  #      add-in loading and cross-add-in type sharing. GREEN here means the host correctly
+  #      handles whatever the SDK ships.
+  #
+  # Kept isolated from the heavier Windows unit-tests stage so PR authors see add-in
+  # resolution regressions immediately, on Linux (the cheapest agent class).
+  - pwsh: |
+      dotnet build src/Uno.Sdk.AddInVersionValidation.Tests/Uno.Sdk.AddInVersionValidation.Tests.csproj `
+        -c Release `
+        -p:UnoTargetFrameworkOverride=net10.0 `
+        -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true `
+        -bl:$(build.artifactstagingdirectory)/addin-validation-build.binlog
+    displayName: Build add-in version validation
+
+  - pwsh: |
+      dotnet test --project src/Uno.Sdk.AddInVersionValidation.Tests/Uno.Sdk.AddInVersionValidation.Tests.csproj `
+        -c Release `
+        -p:UnoTargetFrameworkOverride=net10.0 `
+        -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true `
+        --no-build `
+        --no-progress `
+        --report-trx `
+        --results-directory $(Build.SourcesDirectory)/artifacts/TestResults
+    displayName: Run add-in version validation (regression gate — RED until packages.json add-ins align their dependencies)
+
   - pwsh: |
       dotnet build src/Uno.UI.RemoteControl.DevServer.Tests/Uno.UI.RemoteControl.DevServer.Tests.csproj `
         -c Release `

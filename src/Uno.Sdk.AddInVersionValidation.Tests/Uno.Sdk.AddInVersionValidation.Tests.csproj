@@ -1,0 +1,50 @@
+<Project Sdk="MSTest.Sdk/4.0.2">
+
+	<!--
+		Validates that every DevServer add-in shipped together in a single Uno.Sdk release
+		(per src/Uno.Sdk/packages.json) agrees on the version of every AssemblyRef it shares
+		with the other add-ins of the same release. Misalignments cause runtime failures in
+		the DevServer host (FileNotFoundException, TypeLoadException, "Unable to resolve service").
+
+		The test is intentionally a regression gate: it is expected to be RED whenever the
+		add-in maintainers ship a Uno.Sdk version with misaligned dependencies, and turns GREEN
+		when they align them. The dedicated Linux CI step (`devserver_tests_linux`) runs it on
+		every PR to surface misalignments early.
+	-->
+
+	<PropertyGroup>
+		<TargetFramework>$(NetCurrent)</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+		<NoWarn>$(NoWarn);VSTHRD200</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AwesomeAssertions" />
+
+		<!--
+			DevServer add-in packages. Versions MUST match src/Uno.Sdk/packages.json (the
+			alignment test verifies this and fails fast on drift so the sync is enforced).
+			Restoring them puts the runtime DLLs in the NuGet cache so the test can inspect
+			their AssemblyRef tables.
+		-->
+		<PackageReference Include="Uno.Settings.DevServer" Version="1.8.0-dev.42" GeneratePathProperty="true" />
+		<PackageReference Include="Uno.UI.HotDesign" Version="1.19.0-dev.325" GeneratePathProperty="true" />
+		<PackageReference Include="Uno.UI.App.Mcp" Version="1.2.0-dev.41" GeneratePathProperty="true" />
+	</ItemGroup>
+
+	<!--
+		Expose the restored package paths to the test code via assembly metadata.
+		AssemblyMetadata("Key", "Value") gets emitted as an AssemblyMetadataAttribute the test
+		can read at runtime to locate each package's content root without guessing where NuGet
+		put it (handles NUGET_PACKAGES overrides cleanly).
+	-->
+	<ItemGroup>
+		<AssemblyMetadata Include="UnoSettingsDevServerPath" Value="$(PkgUno_Settings_DevServer)" Condition="'$(PkgUno_Settings_DevServer)' != ''" />
+		<AssemblyMetadata Include="UnoUIHotDesignPath" Value="$(PkgUno_UI_HotDesign)" Condition="'$(PkgUno_UI_HotDesign)' != ''" />
+		<AssemblyMetadata Include="UnoUIAppMcpPath" Value="$(PkgUno_UI_App_Mcp)" Condition="'$(PkgUno_UI_App_Mcp)' != ''" />
+		<AssemblyMetadata Include="UnoSdkManifestPath" Value="$(MSBuildThisFileDirectory)..\Uno.Sdk\packages.json" />
+	</ItemGroup>
+
+</Project>
