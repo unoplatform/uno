@@ -64,18 +64,15 @@ namespace Microsoft.UI.Xaml
 		private InputCursor _protectedCursor;
 		private SerialDisposable _disposedEventDisposable = new();
 
-		/// <summary>
-		/// Internal theme state for this element. Matches WinUI's m_theme field in CDependencyObject.
-		/// </summary>
-		private Theme _theme = Theme.None;
-
-		// WinUI stores fIsProcessingEnterLeave (bit 15) and fIsProcessingThemeWalk (bit 16)
-		// in a DependencyObjectBitFields uint on CDependencyObject (corep.h:224-348).
+		// WinUI stores fIsProcessingEnterLeave (bit 15) in a DependencyObjectBitFields uint on
+		// CDependencyObject (corep.h:224-348; CDependencyObject.h:298). The per-object theme
+		// (m_theme) and the theme-walk bit (fIsProcessingThemeWalk, bit 16) now live on
+		// DependencyObjectStore, since WinUI carries them on every CDependencyObject — not just
+		// elements (the D1 discrepancy). See DependencyObjectStore.Theming.cs.
 		[Flags]
 		private enum UIElementFlag : uint
 		{
 			IsProcessingEnterLeave = 1 << 15, // WinUI CDependencyObject bit 15
-			IsProcessingThemeWalk = 1 << 16,  // WinUI CDependencyObject bit 16
 		}
 
 		private UIElementFlag _uiElementFlags;
@@ -83,32 +80,24 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Gets the current theme value for this element.
 		/// </summary>
-		internal Theme GetTheme() => _theme;
+		/// <remarks>Thin forwarder to <see cref="DependencyObjectStore"/>, where the per-object theme
+		/// lives for every DependencyObject (WinUI: CDependencyObject::GetTheme, CDependencyObject.h:1648).</remarks>
+		internal Theme GetTheme() => ((IDependencyObjectStoreProvider)this).Store.GetTheme();
 
 		/// <summary>
 		/// Sets the theme value for this element.
 		/// </summary>
-		internal void SetTheme(Theme theme) => _theme = theme;
+		internal void SetTheme(Theme theme) => ((IDependencyObjectStoreProvider)this).Store.SetTheme(theme);
 
 		/// <summary>
 		/// Gets whether this element is currently processing a theme walk.
 		/// </summary>
-		internal bool IsProcessingThemeWalk => (_uiElementFlags & UIElementFlag.IsProcessingThemeWalk) != 0;
+		internal bool IsProcessingThemeWalk => ((IDependencyObjectStoreProvider)this).Store.IsProcessingThemeWalk;
 
 		/// <summary>
 		/// Sets whether this element is currently processing a theme walk.
 		/// </summary>
-		internal void SetIsProcessingThemeWalk(bool value)
-		{
-			if (value)
-			{
-				_uiElementFlags |= UIElementFlag.IsProcessingThemeWalk;
-			}
-			else
-			{
-				_uiElementFlags &= ~UIElementFlag.IsProcessingThemeWalk;
-			}
-		}
+		internal void SetIsProcessingThemeWalk(bool value) => ((IDependencyObjectStoreProvider)this).Store.SetIsProcessingThemeWalk(value);
 
 		public Size DesiredSize => Visibility == Visibility.Visible && HasLayoutStorage ? m_desiredSize : default;
 

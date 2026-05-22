@@ -622,7 +622,7 @@ namespace Microsoft.UI.Xaml
 						ResourceResolver.UpdateSystemThemeBindings(updateReason);
 
 						// When the application theme changes, notify the visual tree to update
-						// stored element themes (UIElement._theme). PropagateResourcesChanged only
+						// stored per-object themes (DependencyObjectStore._theme). PropagateResourcesChanged only
 						// updates theme bindings but not stored themes, which causes new elements
 						// entering the tree (via OnLoadingPartial) to inherit stale themes from
 						// their parent.
