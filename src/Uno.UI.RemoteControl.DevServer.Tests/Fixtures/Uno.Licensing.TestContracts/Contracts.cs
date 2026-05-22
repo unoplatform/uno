@@ -1,4 +1,4 @@
-namespace Uno.Licensing.TestContracts;
+﻿namespace Uno.Licensing.TestContracts;
 
 /// <summary>
 /// Test stand-in for <c>Uno.Licensing.Sdk.Contracts::ILicensingService</c>.

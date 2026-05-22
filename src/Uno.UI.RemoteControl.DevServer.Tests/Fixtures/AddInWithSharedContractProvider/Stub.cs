@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 using Uno.Licensing.TestContracts;
 using Uno.Utils.DependencyInjection;
