@@ -102,12 +102,17 @@ public partial class DependencyObjectStore
 	{
 		var owner = ActualInstance;
 
-		// MUX: depends.cpp:1027-1037 — a FrameworkElement inherits from its *logical* inheritance parent
-		// (so popups/flyouts follow the opener: GetInheritanceParentInternal(fLogicalParent=TRUE),
-		// framework.cpp:3097-3130); other DOs use the (visual) inheritance parent. In Uno the store's
-		// inheritance Parent serves both. (Exact logical-parent-for-popups linkage is D5/Phase 5; today
-		// popup content is themed explicitly by Popup open code — Popup.WithPopupRoot.cs:114-118.)
-		var parent = Parent as DependencyObject;
+		// MUX: depends.cpp:1026-1037 — a FrameworkElement inherits from its *logical* inheritance parent
+		// (GetInheritanceParentInternal(fLogicalParent=TRUE), framework.cpp:3097-3130) "so popups and
+		// flyouts inherit theme changes"; other DOs use the (visual) parent (GetParentInternal(false)).
+		// (D5) In Uno the logical inheritance parent is FrameworkElement.Parent (LogicalParentOverride ??
+		// Store.Parent): a Popup sets its Child's LogicalParentOverride to itself (Popup.Base.cs
+		// OnChildChangedPartial), so the content follows the theme of the opener rather than the
+		// PopupRoot it is visually reparented under. For non-FrameworkElement DOs (brushes, setters,
+		// storyboards) there is no logical-parent override, so the store's inheritance Parent is used.
+		var parent = owner is FrameworkElement frameworkElementOwner
+			? frameworkElementOwner.Parent
+			: Parent as DependencyObject;
 		var parentTheme = (parent as IDependencyObjectStoreProvider)?.Store.GetTheme() ?? Theme.None;
 
 		// MUX: depends.cpp:1039-1047
