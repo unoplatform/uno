@@ -294,9 +294,15 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else if (canScrollHorizontally && (properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift))
 				{
+					// A genuine horizontal wheel (IsHorizontalMouseWheel) already carries the correct horizontal
+					// sign (positive = right), matching WinUI's MouseWheelRight/MouseWheelLeft handling. A vertical
+					// wheel repurposed as horizontal via Shift uses the vertical convention (positive = wheel up),
+					// which must be negated so wheel-down scrolls right and wheel-up scrolls left -- the same inversion
+					// the vertical branch below applies. Without this negation, Shift + wheel scrolling is inverted (#22007).
+					var horizontalDelta = properties.IsHorizontalMouseWheel ? delta : -delta;
 #if __WASM__
 					success = Set(
-						horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
+						horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, horizontalDelta),
 						disableAnimation: false);
 #else
 					// Trackpad/touchpad-style scroll events can arrive at display-refresh rate (~60/s) with precise
@@ -316,9 +322,9 @@ namespace Microsoft.UI.Xaml.Controls
 						// (inline pickers) nearly unresponsive. Use delta directly as pixel offset
 						// for 1:1 trackpad-to-scroll mapping. Discrete mouse wheel (|delta| >= 120)
 						// still uses the standard formula for correct per-notch distance.
-						var hScrollAmount = Math.Abs(delta) < ScrollViewerDefaultMouseWheelDelta
-							? (double)delta
-							: GetHorizontalScrollWheelDelta(DesiredSize, delta);
+						var hScrollAmount = Math.Abs(horizontalDelta) < ScrollViewerDefaultMouseWheelDelta
+							? (double)horizontalDelta
+							: GetHorizontalScrollWheelDelta(DesiredSize, horizontalDelta);
 						success = Set(
 							horizontalOffset: HorizontalOffset + hScrollAmount,
 							options: new(DisableAnimation: true, IsIntermediate: false));
@@ -326,7 +332,7 @@ namespace Microsoft.UI.Xaml.Controls
 					else
 					{
 						success = Set(
-							horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
+							horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, horizontalDelta),
 							disableAnimation: false);
 					}
 #endif
