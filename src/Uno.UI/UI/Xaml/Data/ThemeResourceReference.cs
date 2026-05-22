@@ -88,12 +88,17 @@ internal sealed class ThemeResourceReference
 	}
 
 	/// <summary>
-	/// Re-resolves the theme resource value from the pinned dictionary only.
+	/// Re-resolves the theme resource value from the pinned dictionary only, against the resolving
+	/// owner's effective <paramref name="ownerTheme"/>.
 	/// Used during theme change walks where the ancestor walk is handled by the caller.
 	/// </summary>
-	/// <param name="owner">The DependencyObject that owns this theme resource binding.</param>
+	/// <param name="ownerTheme">
+	/// The effective theme of the DependencyObject that owns this binding, computed once by the caller
+	/// (DependencyObjectStore.UpdateThemeReference via ThemeResolution.ResolveOwnerTheme). This replaces the
+	/// process-global active theme as the input that selects the Light/Dark sub-dictionary (D3, Mechanism 1).
+	/// </param>
 	/// <param name="cache">Optional per-walk cache to avoid redundant dictionary lookups.</param>
-	/// <returns>The resolved value for the current theme.</returns>
+	/// <returns>The resolved value for the owner's theme.</returns>
 	/// <remarks>
 	/// MUX Reference: CThemeResource::RefreshValue() in ThemeResource.cpp (lines 64-129)
 	///
@@ -102,21 +107,35 @@ internal sealed class ThemeResourceReference
 	/// UpdateAllThemeReferences (matching WinUI's UpdateThemeReference which walks
 	/// ancestors before calling RefreshValue).
 	/// </remarks>
+	public object? RefreshValue(Theme ownerTheme, ThemeWalkResourceCache? cache = null)
+		=> RefreshValueCore(ownerTheme, cache);
+
+	/// <summary>
+	/// Transitional overload kept for callers not yet migrated to thread the owner's theme (e.g.
+	/// ResourceResolver.ApplyThemeResource, which resolves within an active band-aid theme push).
+	/// Resolves against the process-global active theme, preserving the pre-D3 behavior.
+	/// </summary>
+	/// <remarks>The owner is no longer used for theme selection; it remains for signature continuity.</remarks>
 	public object? RefreshValue(DependencyObject? owner, ThemeWalkResourceCache? cache = null)
+		=> RefreshValueCore(ResourceDictionary.GetActiveThemeValue(), cache);
+
+	private object? RefreshValueCore(Theme theme, ThemeWalkResourceCache? cache)
 	{
+		var themeKey = ResourceDictionary.GetThemeKey(theme);
+
 		// Try pinned dictionary (fast path)
 		if (_targetDictionary is not null && _targetDictionary.TryGetTarget(out var dict))
 		{
 			// Check cache first
-			if (cache is not null && cache.TryGetCachedValue(dict, ResourceKey, out var cachedValue))
+			if (cache is not null && cache.TryGetCachedValue(dict, ResourceKey, theme, out var cachedValue))
 			{
 				SetResolvedValue(cachedValue);
 				return cachedValue;
 			}
 
-			if (dict.TryGetValue(ResourceKey, out var value, shouldCheckSystem: false))
+			if (dict.TryGetValue(ResourceKey, themeKey, out var value, shouldCheckSystem: false))
 			{
-				cache?.CacheValue(dict, ResourceKey, value);
+				cache?.CacheValue(dict, ResourceKey, theme, value);
 				SetResolvedValue(value);
 				return value;
 			}
@@ -146,20 +165,22 @@ internal sealed class ThemeResourceReference
 	/// Re-resolves the theme resource value with full tree-walk fallback.
 	/// Used during initial resolution and hot-reload, NOT during theme change walks.
 	/// </summary>
-	public object? RefreshValueWithTreeWalk(DependencyObject? owner, ThemeWalkResourceCache? cache = null)
+	public object? RefreshValueWithTreeWalk(Theme ownerTheme, DependencyObject? owner, ThemeWalkResourceCache? cache = null)
 	{
+		var themeKey = ResourceDictionary.GetThemeKey(ownerTheme);
+
 		// 1. Try pinned dictionary (fast path)
 		if (_targetDictionary is not null && _targetDictionary.TryGetTarget(out var dict))
 		{
-			if (cache is not null && cache.TryGetCachedValue(dict, ResourceKey, out var cachedValue))
+			if (cache is not null && cache.TryGetCachedValue(dict, ResourceKey, ownerTheme, out var cachedValue))
 			{
 				SetResolvedValue(cachedValue);
 				return cachedValue;
 			}
 
-			if (dict.TryGetValue(ResourceKey, out var value, shouldCheckSystem: false))
+			if (dict.TryGetValue(ResourceKey, themeKey, out var value, shouldCheckSystem: false))
 			{
-				cache?.CacheValue(dict, ResourceKey, value);
+				cache?.CacheValue(dict, ResourceKey, ownerTheme, value);
 				SetResolvedValue(value);
 				return value;
 			}
@@ -173,11 +194,11 @@ internal sealed class ThemeResourceReference
 			{
 				foreach (var walkDict in dictionaries)
 				{
-					if (walkDict.TryGetValue(ResourceKey, out var value, out var newProvidingDict, shouldCheckSystem: false))
+					if (walkDict.TryGetValue(ResourceKey, themeKey, out var value, out var newProvidingDict, shouldCheckSystem: false))
 					{
 						// Re-pin the new dictionary
 						_targetDictionary = new WeakReference<ResourceDictionary>(newProvidingDict);
-						cache?.CacheValue(newProvidingDict, ResourceKey, value);
+						cache?.CacheValue(newProvidingDict, ResourceKey, ownerTheme, value);
 						SetResolvedValue(value);
 						return value;
 					}

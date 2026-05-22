@@ -285,21 +285,23 @@ public partial class FrameworkElement
 				}
 			}
 
-			// 4. Update theme resources via pinned-dictionary path
+			// 4. Persist theme BEFORE resolving theme resources.
+			//    D3 (Mechanism 1): {ThemeResource} resolution now keys on the owner's own _theme via
+			//    ThemeResolution.ResolveOwnerTheme (DependencyObjectStore.UpdateThemeReference), so _theme
+			//    must already hold the NEW theme when UpdateThemeBindings resolves below — otherwise the
+			//    walk would re-resolve against the OLD theme. (Pre-D3 SetTheme could run after
+			//    UpdateThemeBindings because resolution read the pushed ambient, not _theme.) oldTheme and
+			//    oldBase were captured at the top of this method, and PropagateThemeToChildren forwards the
+			//    passed `theme` parameter, so persisting here is safe.
+			//    MUX Reference: Theming.cpp line 155 sets m_theme; WinUI's in-walk resolution reads the
+			//    orchestrator-set ambient slot, which likewise already holds the new theme during the walk.
+			SetTheme(theme);
+
+			// 5. Update theme resources via pinned-dictionary path (resolves against the just-set _theme)
 			if (themeChanged)
 			{
 				UpdateThemeBindings(ResourceUpdateReason.ThemeResource);
 			}
-
-			// 5. Persist theme (MUX Reference: Theming.cpp line 155)
-			//    Done BEFORE propagating to children and raising the event so
-			//    that ActualTheme returns the new value both in this element's
-			//    and in descendants' ActualThemeChanged handlers. oldTheme was
-			//    already captured at the top of this method, UpdateThemeBindings
-			//    resolves resources from the pushed subtree context (not from
-			//    _theme), and PropagateThemeToChildren forwards the passed
-			//    `theme` parameter, so moving this earlier is safe.
-			SetTheme(theme);
 
 			// 6. Propagate to children (they may push their own context)
 			PropagateThemeToChildren(theme, forceRefresh);
