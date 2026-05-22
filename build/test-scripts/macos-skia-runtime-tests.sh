@@ -20,8 +20,12 @@ fi
 NUNIT_TOOL_DIR="$BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool"
 run_nunit_tool() { (cd "$NUNIT_TOOL_DIR" && dotnet run "$@"); }
 
+# Maximum failures to trigger an in-job retry; overridable via env var.
+FLAKE_RETRY_MAX_FAILURES=${FLAKE_RETRY_MAX_FAILURES:-20}
+
 cd $SamplesAppArtifactPath
-dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE
+# Sometimes we crash during app shutdown, so we force a 0 exit code (same as Linux).
+dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE || true
 
 ## Export the failed tests list for reuse in a pipeline retry
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
@@ -31,11 +35,11 @@ echo "Running NUnitTransformTool"
 ## Fail the build when no test results could be read
 run_nunit_tool fail-empty $TEST_RESULTS_FILE
 
-FAILED_COUNT=$(run_nunit_tool count-failed $TEST_RESULTS_FILE)
+FAILED_COUNT=$(run_nunit_tool count-failed $TEST_RESULTS_FILE | tail -1)
 run_nunit_tool list-failed $TEST_RESULTS_FILE $UNO_TESTS_FAILED_LIST
 
 # In-job retry: if a small number of tests failed, rerun only those to catch flakes
-if [ "$FAILED_COUNT" -gt 0 ] && [ "$FAILED_COUNT" -le 20 ]; then
+if [ "$FAILED_COUNT" -gt 0 ] && [ "$FAILED_COUNT" -le "$FLAKE_RETRY_MAX_FAILURES" ]; then
 	echo "##[warning]$FAILED_COUNT test(s) failed — retrying in-job to filter flakes..."
 	export UITEST_RUNTIME_TESTS_FILTER=$(cat $UNO_TESTS_FAILED_LIST | base64 -b 0)
 

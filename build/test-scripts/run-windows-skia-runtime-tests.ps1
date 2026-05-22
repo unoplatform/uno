@@ -29,7 +29,8 @@ function Invoke-NUnitToolCaptureOutput([string[]]$Arguments)
     Push-Location "$env:BUILD_SOURCESDIRECTORY\src\Uno.NUnitTransformTool"
     try
     {
-        $result = dotnet run @Arguments
+        # dotnet run may emit build noise before the actual output; take only the last line.
+        $result = (dotnet run @Arguments | Select-Object -Last 1)
         Assert-ExitCodeIsZero
         return $result
     }
@@ -38,6 +39,9 @@ function Invoke-NUnitToolCaptureOutput([string[]]$Arguments)
         Pop-Location
     }
 }
+
+# Maximum failures to trigger an in-job retry; overridable via env var.
+$FlakeRetryMaxFailures = [int]($env:FLAKE_RETRY_MAX_FAILURES ?? "20")
 
 $UNO_TESTS_FAILED_LIST="$env:BUILD_SOURCESDIRECTORY\build\uitests-failure-results\failed-tests-windows-runtimetests-windows-$env:UITEST_RUNTIME_TEST_GROUP.txt"
 $TEST_RESULTS_FILE="$env:build_sourcesdirectory\build\skia-windows-runtime-tests-results.xml"
@@ -64,7 +68,7 @@ $FAILED_COUNT = [int](Invoke-NUnitToolCaptureOutput "count-failed", $TEST_RESULT
 Invoke-NUnitTool "list-failed", $TEST_RESULTS_FILE, $UNO_TESTS_FAILED_LIST
 
 # In-job retry: if a small number of tests failed, rerun only those to catch flakes
-if ($FAILED_COUNT -gt 0 -and $FAILED_COUNT -le 20) {
+if ($FAILED_COUNT -gt 0 -and $FAILED_COUNT -le $FlakeRetryMaxFailures) {
     Write-Host "##[warning]$FAILED_COUNT test(s) failed — retrying in-job to filter flakes..."
 
     $base64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes((Get-Content $UNO_TESTS_FAILED_LIST)))

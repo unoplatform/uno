@@ -193,6 +193,12 @@ pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 dotnet build
 popd
 
+NUNIT_TOOL_DIR="$BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool"
+run_nunit_tool_ios() { (cd "$NUNIT_TOOL_DIR" && dotnet run --no-build "$@"); }
+
+# Maximum failures to trigger an in-job retry; overridable via env var.
+FLAKE_RETRY_MAX_FAILURES=${FLAKE_RETRY_MAX_FAILURES:-20}
+
 cd $BUILD_SOURCESDIRECTORY/build
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
@@ -278,12 +284,9 @@ then
 
 		# In-job retry: if a small number of tests failed, rerun only those to catch flakes.
 		# The simulator is still running at this point so we can relaunch the app immediately.
-		NUNIT_TOOL_DIR_IOS="$BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool"
-		run_nunit_tool_ios() { (cd "$NUNIT_TOOL_DIR_IOS" && dotnet run "$@"); }
+		IOS_FAILED_COUNT=$(run_nunit_tool_ios count-failed "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" | tail -1)
 
-		IOS_FAILED_COUNT=$(run_nunit_tool_ios count-failed "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE")
-
-		if [ "$IOS_FAILED_COUNT" -gt 0 ] && [ "$IOS_FAILED_COUNT" -le 20 ]; then
+		if [ "$IOS_FAILED_COUNT" -gt 0 ] && [ "$IOS_FAILED_COUNT" -le "$FLAKE_RETRY_MAX_FAILURES" ]; then
 			echo "##[warning]$IOS_FAILED_COUNT test(s) failed — retrying in-job to filter flakes..."
 
 			mkdir -p $(dirname ${UNO_TESTS_RUNTIMETESTS_FAILED_LIST})
@@ -293,14 +296,22 @@ then
 			export SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE=/tmp/TestResult-rerun-$(date +"%Y%m%d%H%M%S").xml
 
 			xcrun simctl launch "$UITEST_IOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID"
+			RETRY_APP_PID=$(xcrun simctl spawn "$UITEST_IOSDEVICE_ID" launchctl list | grep "$SAMPLESAPP_BUNDLE_ID" | awk '{print $1}')
 
 			RETRY_END_TIME=$((SECONDS + TIMEOUT))
 			while [[ ! -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" && $SECONDS -lt $RETRY_END_TIME ]]; do
 				sleep $INTERVAL
+
+				# exit loop early if the retry app is not running anymore
+				if ! ps -p $RETRY_APP_PID > /dev/null; then
+					echo "The app is not running anymore (retry run)"
+					break
+				fi
 			done
 
 			if [ -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" ]; then
 				run_nunit_tool_ios merge-results "$UNO_ORIGINAL_TEST_RESULTS" "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" "$UNO_ORIGINAL_TEST_RESULTS"
+				run_nunit_tool_ios list-failed "$UNO_ORIGINAL_TEST_RESULTS" "$UNO_TESTS_RUNTIMETESTS_FAILED_LIST"
 			else
 				echo "##[warning]Rerun did not produce a results file; original results kept."
 			fi
@@ -379,11 +390,13 @@ fi
 
 if [ "$UITEST_AUTOMATED_GROUP" == 'RuntimeTests' ];
 then
-	## Fail the build when no runtime test results could be read
-	dotnet run fail-empty $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE
+	## Fail the build when no runtime test results could be read.
+	## Use UNO_ORIGINAL_TEST_RESULTS which holds the merged result after a retry,
+	## or the first-run copy when no retry was triggered.
+	dotnet run fail-empty $UNO_ORIGINAL_TEST_RESULTS
 
 	if [ $? -eq 0 ]; then
-		dotnet run list-failed $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE $UNO_TESTS_RUNTIMETESTS_FAILED_LIST
+		dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_RUNTIMETESTS_FAILED_LIST
 	fi
 fi
 

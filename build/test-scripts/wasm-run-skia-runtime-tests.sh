@@ -36,6 +36,9 @@ export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-resul
 NUNIT_TOOL_DIR="$BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool"
 run_nunit_tool() { (cd "$NUNIT_TOOL_DIR" && dotnet run "$@"); }
 
+# Maximum failures to trigger an in-job retry; overridable via env var.
+FLAKE_RETRY_MAX_FAILURES=${FLAKE_RETRY_MAX_FAILURES:-20}
+
 build_runtime_tests_url() {
     local results_file="$1"
     local filter="$2"
@@ -99,6 +102,10 @@ start_chrome_and_wait() {
 
     if ! test -f "$results_file"; then
         echo "##[error]Results file not created within ${WAIT_TIMEOUT_S}s — Chrome may be hung. Exiting."
+        killall -9 chrome || true
+        killall -9 xvfb-run || true
+        killall -9 Xvfb || true
+        killall -9 chrome_crashpad_handler || true
         exit 1
     fi
 }
@@ -112,8 +119,8 @@ if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
     UITEST_RUNTIME_TESTS_FILTER=${UITEST_RUNTIME_TESTS_FILTER//=/!}
 
     # echo the failed filter list, if not empty
-    if [ -n "$UNO_TESTS_FAILED_LIST" ]; then
-        echo "Tests to run: $UNO_TESTS_FAILED_LIST"
+    if [ -n "$UITEST_RUNTIME_TESTS_FILTER" ]; then
+        echo "Tests to run: $UITEST_RUNTIME_TESTS_FILTER"
     fi
 else
     export UITEST_RUNTIME_TESTS_FILTER=""
@@ -128,11 +135,11 @@ mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 ## Fail the build when no test results could be read
 run_nunit_tool fail-empty $RESULTS_FILE
 
-FAILED_COUNT=$(run_nunit_tool count-failed $RESULTS_FILE)
+FAILED_COUNT=$(run_nunit_tool count-failed $RESULTS_FILE | tail -1)
 run_nunit_tool list-failed $RESULTS_FILE $UNO_TESTS_FAILED_LIST
 
 # In-job retry: if a small number of tests failed, rerun only those to catch flakes
-if [ "$FAILED_COUNT" -gt 0 ] && [ "$FAILED_COUNT" -le 20 ]; then
+if [ "$FAILED_COUNT" -gt 0 ] && [ "$FAILED_COUNT" -le "$FLAKE_RETRY_MAX_FAILURES" ]; then
     echo "##[warning]$FAILED_COUNT test(s) failed — retrying in-job to filter flakes..."
 
     RERUN_FILTER=$(cat $UNO_TESTS_FAILED_LIST | base64 -w 0)
@@ -148,4 +155,6 @@ if [ "$FAILED_COUNT" -gt 0 ] && [ "$FAILED_COUNT" -le 20 ]; then
     else
         echo "##[warning]Rerun did not produce a results file; original results kept."
     fi
+
+    rm -f "$RESULTS_RERUN_FILE" || true
 fi

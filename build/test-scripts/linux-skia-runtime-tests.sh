@@ -28,6 +28,9 @@ sudo chmod a+rw /dev/fb* 2>/dev/null || true
 NUNIT_TOOL_DIR="$BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool"
 run_nunit_tool() { (cd "$NUNIT_TOOL_DIR" && dotnet run "$@"); }
 
+# Maximum failures to trigger an in-job retry; overridable via env var.
+FLAKE_RETRY_MAX_FAILURES=${FLAKE_RETRY_MAX_FAILURES:-20}
+
 run_skia_tests() {
 	# $RUNTIME_TESTS_OUTPUT is exported so it is visible in the sh -c subshell below.
 	export RUNTIME_TESTS_OUTPUT="$1"
@@ -48,11 +51,11 @@ mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 ## Fail the build when no test results could be read
 run_nunit_tool fail-empty $TEST_RESULTS_FILE
 
-FAILED_COUNT=$(run_nunit_tool count-failed $TEST_RESULTS_FILE)
+FAILED_COUNT=$(run_nunit_tool count-failed $TEST_RESULTS_FILE | tail -1)
 run_nunit_tool list-failed $TEST_RESULTS_FILE $UNO_TESTS_FAILED_LIST
 
 # In-job retry: if a small number of tests failed, rerun only those to catch flakes
-if [ "$FAILED_COUNT" -gt 0 ] && [ "$FAILED_COUNT" -le 20 ]; then
+if [ "$FAILED_COUNT" -gt 0 ] && [ "$FAILED_COUNT" -le "$FLAKE_RETRY_MAX_FAILURES" ]; then
 	echo "##[warning]$FAILED_COUNT test(s) failed — retrying in-job to filter flakes..."
 	export UITEST_RUNTIME_TESTS_FILTER=$(cat $UNO_TESTS_FAILED_LIST | base64 -w 0)
 

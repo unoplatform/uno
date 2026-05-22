@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Transactions;
 using System.Xml;
 using Mono.Cecil;
 using Mono.Collections.Generic;
@@ -19,6 +18,13 @@ namespace Uno.ReferenceImplComparer
 	{
 		static int Main(string[] args)
 		{
+			if (args.Length == 0)
+			{
+				Console.Error.WriteLine("Usage: NUnitTransformTool <command> [args...]");
+				Console.Error.WriteLine("Commands: list-failed, fail-empty, count-failed, merge-results");
+				return 1;
+			}
+
 			switch (args[0])
 			{
 				case "list-failed":
@@ -29,15 +35,17 @@ namespace Uno.ReferenceImplComparer
 					return CountFailedTests(args[1]);
 				case "merge-results":
 					return MergeResults(args[1], args[2], args[3]);
+				default:
+					Console.Error.WriteLine($"Unknown command: {args[0]}");
+					Console.Error.WriteLine("Commands: list-failed, fail-empty, count-failed, merge-results");
+					return 1;
 			}
-
-			return 0;
 		}
 
 		private static int FailOnEmptyResults(string inputFile)
 		{
 			var doc = new XmlDocument();
-			doc.LoadXml(File.ReadAllText(inputFile));
+			doc.Load(inputFile);
 
 			var allNodes = doc.SelectNodes("//test-case");
 
@@ -58,7 +66,7 @@ namespace Uno.ReferenceImplComparer
 		private static int ListFailedTests(string inputFile, string outputFile)
 		{
 			var doc = new XmlDocument();
-			doc.LoadXml(File.ReadAllText(inputFile));
+			doc.Load(inputFile);
 
 			var failedNodes = doc.SelectNodes("//test-case[@result='Failed']")!;
 
@@ -67,16 +75,14 @@ namespace Uno.ReferenceImplComparer
 			{
 				var name = failedNode.GetAttribute("fullname");
 
-				// This is used to remove the test parameters from the test name, which are not used by the nunit-console runner.
+				// Remove test parameters from the name — nunit-console uses bare names in filters.
 				var simpleName = SimpleNameRegex().Replace(name, "");
 
 				failedTests.Add(simpleName);
 			}
 
-			// Add a dummy line to be used to rerun the test running in case
-			// tests get canceled. This condition happens when running nunit-console
-			// and the retry attribute which markes runners as cancelled and fails any
-			// subsequent test.
+			// Sentinel: ensures the filter expression is never empty even if the app cancelled
+			// some tests. Without it, an empty filter would run the full suite on retry.
 			failedTests.Add("invalid-test-for-retry");
 
 			File.WriteAllText(outputFile, string.Join(" | ", failedTests));
@@ -93,7 +99,7 @@ namespace Uno.ReferenceImplComparer
 		private static int CountFailedTests(string inputFile)
 		{
 			var doc = new XmlDocument();
-			doc.LoadXml(File.ReadAllText(inputFile));
+			doc.Load(inputFile);
 
 			var count = doc.SelectNodes("//test-case[@result='Failed']")?.Count ?? 0;
 
@@ -106,7 +112,9 @@ namespace Uno.ReferenceImplComparer
 		/// For each test in the rerun, its result in the original is replaced by
 		/// the rerun outcome.  If the rerun made a previously-failed test pass,
 		/// the failure details are removed and the test is marked retried="true".
-		/// Summary statistics on the root test-run element are recalculated.
+		/// Summary statistics on the root test-run and all test-suite elements are recalculated.
+		/// Parameter-suffixed names are normalised the same way list-failed normalises them so
+		/// that rerun results are matched even when NUnit includes full parameter strings.
 		/// </summary>
 		private static int MergeResults(string originalFile, string rerunFile, string outputFile)
 		{
@@ -116,12 +124,17 @@ namespace Uno.ReferenceImplComparer
 			var rerunDoc = new XmlDocument();
 			rerunDoc.Load(rerunFile);
 
+			// Build lookup using the same parameter-stripped key as ListFailedTests.
 			var originalCases = new Dictionary<string, XmlElement>();
 			foreach (XmlElement node in originalDoc.SelectNodes("//test-case")!)
 			{
 				var name = node.GetAttribute("fullname");
-				if (!string.IsNullOrEmpty(name))
-					originalCases.TryAdd(name, node);
+				if (string.IsNullOrEmpty(name))
+					continue;
+
+				var key = SimpleNameRegex().Replace(name, "");
+				if (!originalCases.TryAdd(key, node))
+					Console.Error.WriteLine($"##[warning]Duplicate test-case key '{key}' in original results — only first occurrence will be updated.");
 			}
 
 			var updatedCount = 0;
@@ -129,8 +142,11 @@ namespace Uno.ReferenceImplComparer
 			foreach (XmlElement rerunCase in rerunDoc.SelectNodes("//test-case")!)
 			{
 				var fullName = rerunCase.GetAttribute("fullname");
+				if (string.IsNullOrEmpty(fullName))
+					continue;
 
-				if (string.IsNullOrEmpty(fullName) || !originalCases.TryGetValue(fullName, out var originalCase))
+				var key = SimpleNameRegex().Replace(fullName, "");
+				if (!originalCases.TryGetValue(key, out var originalCase))
 					continue;
 
 				var originalResult = originalCase.GetAttribute("result");
@@ -156,26 +172,38 @@ namespace Uno.ReferenceImplComparer
 
 			RecalculateTestRunTotals(originalDoc);
 
-			originalDoc.Save(outputFile);
+			// Write atomically so a partial write never corrupts the original.
+			var tmpFile = outputFile + ".tmp";
+			originalDoc.Save(tmpFile);
+			File.Move(tmpFile, outputFile, overwrite: true);
+
 			Console.WriteLine($"Merged {updatedCount} test result(s) from rerun. Output: {outputFile}");
 			return 0;
 		}
 
 		private static void RecalculateTestRunTotals(XmlDocument doc)
 		{
-			var testRun = doc.SelectSingleNode("//test-run") as XmlElement;
-			if (testRun is null)
-				return;
+			// Update all intermediate test-suite nodes so nested suite counts are correct.
+			foreach (XmlElement suite in doc.SelectNodes("//test-suite")!.OfType<XmlElement>())
+				RecalculateSuiteOrRunTotals(suite);
 
+			// Update the root test-run element last.
+			if (doc.SelectSingleNode("//test-run") is XmlElement testRun)
+				RecalculateSuiteOrRunTotals(testRun);
+		}
+
+		private static void RecalculateSuiteOrRunTotals(XmlElement node)
+		{
 			var passed = 0;
 			var failed = 0;
 			var skipped = 0;
 			var inconclusive = 0;
 			var total = 0;
-			foreach (XmlElement node in doc.SelectNodes("//test-case")!)
+
+			foreach (XmlElement tc in node.SelectNodes(".//test-case")!.OfType<XmlElement>())
 			{
 				total++;
-				switch (node.GetAttribute("result"))
+				switch (tc.GetAttribute("result"))
 				{
 					case "Passed": passed++; break;
 					case "Failed": failed++; break;
@@ -184,12 +212,12 @@ namespace Uno.ReferenceImplComparer
 				}
 			}
 
-			testRun.SetAttribute("total", total.ToString(CultureInfo.InvariantCulture));
-			testRun.SetAttribute("passed", passed.ToString(CultureInfo.InvariantCulture));
-			testRun.SetAttribute("failed", failed.ToString(CultureInfo.InvariantCulture));
-			testRun.SetAttribute("skipped", skipped.ToString(CultureInfo.InvariantCulture));
-			testRun.SetAttribute("inconclusive", inconclusive.ToString(CultureInfo.InvariantCulture));
-			testRun.SetAttribute("result", failed > 0 ? "Failed" : "Passed");
+			node.SetAttribute("total", total.ToString(CultureInfo.InvariantCulture));
+			node.SetAttribute("passed", passed.ToString(CultureInfo.InvariantCulture));
+			node.SetAttribute("failed", failed.ToString(CultureInfo.InvariantCulture));
+			node.SetAttribute("skipped", skipped.ToString(CultureInfo.InvariantCulture));
+			node.SetAttribute("inconclusive", inconclusive.ToString(CultureInfo.InvariantCulture));
+			node.SetAttribute("result", failed > 0 ? "Failed" : "Passed");
 		}
 
 		[GeneratedRegex(@"\(([^)]*)\)")]

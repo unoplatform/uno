@@ -123,6 +123,9 @@ $ANDROID_HOME/platform-tools/adb install $UNO_UITEST_ANDROIDAPK_PATH
 NUNIT_TOOL_DIR="$BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool"
 run_nunit_tool() { (cd "$NUNIT_TOOL_DIR" && dotnet run "$@"); }
 
+# Maximum failures to trigger an in-job retry; overridable via env var.
+FLAKE_RETRY_MAX_FAILURES=${FLAKE_RETRY_MAX_FAILURES:-20}
+
 UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_BASE_PATH="/storage/emulated/0/Android/data/$UNO_UITEST_APP_ID/files"
 
 # Starts the app and waits for the result file to appear on device.
@@ -190,11 +193,11 @@ fi
 ## Fail the build when no test results could be read
 run_nunit_tool fail-empty $UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH
 
-FAILED_COUNT=$(run_nunit_tool count-failed $UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH)
+FAILED_COUNT=$(run_nunit_tool count-failed $UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH | tail -1)
 run_nunit_tool list-failed $UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH $UNO_TESTS_FAILED_LIST
 
 # In-job retry: if a small number of tests failed, rerun only those to catch flakes
-if [ "$FAILED_COUNT" -gt 0 ] && [ "$FAILED_COUNT" -le 20 ]; then
+if [ "$FAILED_COUNT" -gt 0 ] && [ "$FAILED_COUNT" -le "$FLAKE_RETRY_MAX_FAILURES" ]; then
 	echo "##[warning]$FAILED_COUNT test(s) failed — retrying in-job to filter flakes..."
 
 	RERUN_FILTER=$(cat $UNO_TESTS_FAILED_LIST | base64 -w 0)
