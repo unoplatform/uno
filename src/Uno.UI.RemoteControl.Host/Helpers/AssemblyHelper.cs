@@ -1,9 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Host.Helpers;
@@ -18,17 +20,31 @@ public class AssemblyHelper
 	private static readonly ILogger _log = typeof(AssemblyHelper).Log();
 
 	/// <summary>
-	/// Loads the supplied add-in DLLs.
+	/// Loads the supplied add-in DLLs into <see cref="AssemblyLoadContext.Default"/>
+	/// via <see cref="Assembly.LoadFrom(string)"/>.
 	/// </summary>
 	/// <remarks>
-	/// As of the host add-in isolation work, all add-ins are loaded into a
-	/// shared <see cref="AddInLoadContext"/> backed by per-add-in
-	/// <see cref="System.Runtime.Loader.AssemblyDependencyResolver"/> instances.
-	/// This isolates add-in dependency trees (e.g. transitive packages whose
-	/// versions diverge from what the host loaded) while preserving Type
-	/// identity for framework / contract assemblies the host has already
-	/// loaded. Add-ins remain visible to each other inside the shared context,
-	/// matching the prior <see cref="Assembly.LoadFrom(string)"/> behaviour.
+	/// <para>
+	/// Every add-in lives in the same <see cref="AssemblyLoadContext"/> as the host —
+	/// the default ALC. This guarantees a single <see cref="System.Type"/> identity for
+	/// any assembly loaded by name, regardless of which add-in triggered the load. The
+	/// host's <see cref="IServiceProvider"/> can therefore register and resolve types
+	/// defined in any add-in without the cross-ALC identity mismatches that arise when
+	/// add-ins are loaded into a private context.
+	/// </para>
+	/// <para>
+	/// Cross-major-version <c>AssemblyRef</c>s (e.g. an add-in compiled against
+	/// <c>System.Text.Encodings.Web v8.0.0.0</c> while the host carries v10 in its TPA)
+	/// are handled by the <c>Default.Resolving</c> handler installed in
+	/// <see cref="HostAssemblyResolution.Install"/>, which bridges by simple name and
+	/// returns the host's already-loaded instance.
+	/// </para>
+	/// <para>
+	/// Each successful load also triggers a proactive scan of the assembly's
+	/// <c>AssemblyRef</c> table to surface version/PKT misalignments early, with a
+	/// message that explains both the problem and the next step for the add-in's
+	/// maintainer.
+	/// </para>
 	/// </remarks>
 	public static IImmutableList<AssemblyLoadResult> Load(IImmutableList<string> dllFiles, ITelemetry? telemetry = null, bool throwIfLoadFailed = false)
 	{
@@ -48,67 +64,29 @@ public class AssemblyHelper
 
 			telemetry?.TrackEvent("addin-loading-start", default(Dictionary<string, string>), null);
 
-			// Kill switch: revert to the legacy Assembly.LoadFrom behaviour so operators
-			// can bisect regressions introduced by the add-in isolation work without
-			// needing a redeployment. Both the ALC creation and the HostAssemblyResolution
-			// handler are skipped — the process returns to the pre-isolation state.
-			if (HostAssemblyResolution.IsKillSwitchActive)
+			foreach (var dll in distinctDlls)
 			{
-				foreach (var dll in distinctDlls)
+				try
 				{
-					try
-					{
-						_log.LogDebug("Loading add-in assembly {Dll} (kill switch active — legacy Assembly.LoadFrom).", dll);
-						var assembly = Assembly.LoadFrom(dll);
-						results.Add(new AssemblyLoadResult(dll, assembly, null));
-					}
-					catch (Exception err)
-					{
-						failedCount++;
-						_log.LogError(err, "Failed to load assembly {Dll}.", dll);
-						results.Add(new AssemblyLoadResult(dll, null, err));
-						if (throwIfLoadFailed) throw;
-					}
+					_log.LogDebug("Loading add-in assembly {Dll}.", dll);
+
+					var assembly = Assembly.LoadFrom(dll);
+					results.Add(new AssemblyLoadResult(dll, assembly, null));
+
+					// Proactive diagnostic: surface version / PKT misalignments early so add-in
+					// maintainers have actionable feedback before the misalignment manifests as
+					// a runtime FileNotFoundException, MissingMethodException, or TypeLoadException.
+					ReportAssemblyRefMismatches(assembly, dll);
 				}
-			}
-			else
-			{
-				// All add-ins share a single AssemblyLoadContext backed by per-add-in
-				// AssemblyDependencyResolver instances. This isolates add-in dependency
-				// trees (e.g. Kiota's net8.0 binaries that hard-reference
-				// System.Text.Encodings.Web 8.0.0.0) from the host's framework
-				// assemblies while letting Microsoft.*/System.* and shared contract types
-				// resolve against the host's already-loaded versions. Add-ins still see
-				// each other's types (matching the prior Assembly.LoadFrom behaviour).
-				var loadContext = new AddInLoadContext(distinctDlls);
-
-				foreach (var dll in distinctDlls)
+				catch (Exception err)
 				{
-					try
+					failedCount++;
+					_log.LogError(err, "Failed to load assembly {Dll}.", dll);
+					results.Add(new AssemblyLoadResult(dll, null, err));
+
+					if (throwIfLoadFailed)
 					{
-						_log.LogDebug("Loading add-in assembly {Dll}.", dll);
-
-						// Load the top-level add-in by file path so the caller's
-						// specific DLL is always what ends up in the context — going
-						// through LoadFromAssemblyName here would route through the
-						// Default.Assemblies / TPA fallback in AddInLoadContext.Load
-						// and could silently substitute a host-loaded assembly if the
-						// add-in's simple name happened to collide. Transitive deps
-						// still flow through that override as intended.
-						var assembly = loadContext.LoadFromAssemblyPath(dll);
-
-						results.Add(new AssemblyLoadResult(dll, assembly, null));
-					}
-					catch (Exception err)
-					{
-						failedCount++;
-						_log.LogError(err, "Failed to load assembly {Dll}.", dll);
-						results.Add(new AssemblyLoadResult(dll, null, err));
-
-						if (throwIfLoadFailed)
-						{
-							throw;
-						}
+						throw;
 					}
 				}
 			}
@@ -149,4 +127,119 @@ public class AssemblyHelper
 			throw;
 		}
 	}
+
+	/// <summary>
+	/// Walks <paramref name="addIn"/>'s <c>AssemblyRef</c> table and logs a warning
+	/// for any reference whose simple name is already present in
+	/// <see cref="AssemblyLoadContext.Default"/> with a different version or
+	/// <see cref="AssemblyName.GetPublicKeyToken"/>. The message names the add-in,
+	/// the misaligned reference, the requested vs loaded version, and the concrete
+	/// action the add-in maintainer should take. Verbose mode (env-var
+	/// <c>UNO_DEVSERVER_VERBOSE_ADDIN_REFS=1</c>) additionally enumerates every
+	/// reference of every add-in for deep-dive debugging.
+	/// </summary>
+	private static void ReportAssemblyRefMismatches(Assembly addIn, string sourcePath)
+	{
+		var addInName = addIn.GetName().Name ?? Path.GetFileNameWithoutExtension(sourcePath);
+		var verbose = Environment.GetEnvironmentVariable("UNO_DEVSERVER_VERBOSE_ADDIN_REFS") == "1";
+
+		AssemblyName[] refs;
+		try
+		{
+			refs = addIn.GetReferencedAssemblies();
+		}
+		catch (Exception ex)
+		{
+			_log.LogDebug(ex, "Could not enumerate AssemblyRefs for {AddIn}; skipping the mismatch scan.", addInName);
+			return;
+		}
+
+		// Build an index of loaded assemblies once, keyed by simple name.
+		var loadedByName = new Dictionary<string, AssemblyName>(StringComparer.OrdinalIgnoreCase);
+		foreach (var loaded in AssemblyLoadContext.Default.Assemblies)
+		{
+			if (loaded.IsDynamic)
+			{
+				continue;
+			}
+
+			var loadedName = loaded.GetName();
+			if (loadedName.Name is { } simple && !loadedByName.ContainsKey(simple))
+			{
+				loadedByName[simple] = loadedName;
+			}
+		}
+
+		foreach (var reference in refs)
+		{
+			if (reference.Name is not { } refName)
+			{
+				continue;
+			}
+
+			if (!loadedByName.TryGetValue(refName, out var loadedRef))
+			{
+				if (verbose)
+				{
+					_log.LogDebug(
+						"Add-in {AddIn} references {Ref} (not currently loaded — will be resolved on demand).",
+						addInName, reference.FullName);
+				}
+				continue;
+			}
+
+			var refVersion = reference.Version;
+			var loadedVersion = loadedRef.Version;
+			var versionMismatch = refVersion is not null && loadedVersion is not null && refVersion != loadedVersion;
+
+			var refPkt = reference.GetPublicKeyToken();
+			var loadedPkt = loadedRef.GetPublicKeyToken();
+			var pktMismatch = refPkt is { Length: > 0 } &&
+				(loadedPkt is null || !loadedPkt.AsSpan().SequenceEqual(refPkt));
+
+			if (!versionMismatch && !pktMismatch)
+			{
+				if (verbose)
+				{
+					_log.LogDebug(
+						"Add-in {AddIn} references {Ref} — aligned with the host's loaded version.",
+						addInName, reference.FullName);
+				}
+				continue;
+			}
+
+			// Build a single, actionable warning. The structure is:
+			//   - what happened (which add-in, which ref, what's mismatched)
+			//   - why it matters (the runtime consequence)
+			//   - what to do (concrete next step for the add-in's maintainer)
+			_log.LogWarning(
+				"Add-in '{AddIn}' (loaded from '{Source}') references '{RefName}, Version={RefVersion}, PublicKeyToken={RefPkt}' " +
+				"but the host has '{RefName}, Version={LoadedVersion}, PublicKeyToken={LoadedPkt}' loaded. " +
+				"The Default.Resolving handler will bridge this request at runtime to the host's instance; " +
+				"if you later see TypeLoadException, MissingMethodException, or 'Unable to resolve service' for types " +
+				"from '{RefName}', this version misalignment is the most likely cause. " +
+				"Action for the add-in's maintainer — pick one: " +
+				"(1) align the '{RefName}' package version in '{AddIn}' with the version the host (and the other add-ins " +
+				"of the same Uno.Sdk release) reference; or " +
+				"(2) load '{RefName}' inside a private AssemblyLoadContext owned by '{AddIn}' so its own copy stays " +
+				"isolated from the host's, then route the contract surface across the boundary via interfaces that the " +
+				"host already loads. Option 1 is preferred whenever possible because it avoids cross-ALC Type-identity issues entirely.",
+				addInName,
+				sourcePath,
+				refName,
+				refVersion?.ToString() ?? "<none>",
+				FormatPkt(refPkt),
+				loadedVersion?.ToString() ?? "<none>",
+				FormatPkt(loadedPkt),
+				refName,
+				refName,
+				refName,
+				addInName,
+				refName,
+				addInName);
+		}
+	}
+
+	private static string FormatPkt(byte[]? pkt)
+		=> pkt is { Length: > 0 } ? Convert.ToHexString(pkt).ToLowerInvariant() : "<none>";
 }

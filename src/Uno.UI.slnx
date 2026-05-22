@@ -104,6 +104,15 @@
     <Project Path="Uno.UI.RemoteControl.DevServer.Tests/Fixtures/AddInWithDiServiceRegistration/AddInWithDiServiceRegistration.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
+    <Project Path="Uno.UI.RemoteControl.DevServer.Tests/Fixtures/Uno.Licensing.TestContracts/Uno.Licensing.TestContracts.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
+    <Project Path="Uno.UI.RemoteControl.DevServer.Tests/Fixtures/AddInWithSharedContractProvider/AddInWithSharedContractProvider.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
+    <Project Path="Uno.UI.RemoteControl.DevServer.Tests/Fixtures/AddInWithSharedContractConsumer/AddInWithSharedContractConsumer.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
     <Project Path="Uno.UI.RemoteControl.Host/Uno.UI.RemoteControl.Host.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
@@ -577,6 +586,9 @@
     </Project>
   </Folder>
   <Project Path="Uno.Sdk/Uno.Sdk.csproj">
+    <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+  </Project>
+  <Project Path="Uno.Sdk.AddInVersionValidation.Tests/Uno.Sdk.AddInVersionValidation.Tests.csproj">
     <BuildType Solution="Release_NoSamples|*" Project="Debug" />
   </Project>
   <Properties Name="TestCaseManagementSettings" Scope="PostLoad">
