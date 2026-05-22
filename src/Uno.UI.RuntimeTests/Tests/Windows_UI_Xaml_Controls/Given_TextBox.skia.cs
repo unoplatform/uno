@@ -1179,6 +1179,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RequiresScaling(1f)]
 		public async Task When_Pointer_Tap()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1208,7 +1209,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
@@ -1286,6 +1287,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RequiresScaling(1f)]
 		public async Task When_Pointer_RightClick_No_Selection()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1315,7 +1317,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.ReleaseRight();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
@@ -1369,6 +1371,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RequiresScaling(1f)]
 		public async Task When_Pointer_Hold_Drag()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1397,16 +1400,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			mouse.MoveBy(-51, 0);
 
 			Assert.AreEqual(1, SUT.SelectionStart);
-			Assert.AreEqual(9, SUT.SelectionLength);
+			Assert.AreEqual(8, SUT.SelectionLength);
 		}
 
 		[TestMethod]
+		[RequiresScaling(1f)]
 		public async Task When_Pointer_Hold_Drag_OutOfBounds()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1435,17 +1439,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			mouse.MoveBy(0, 50);
 			mouse.MoveBy(-150, 0);
 
 			Assert.AreEqual(0, SUT.SelectionStart);
-			Assert.AreEqual(10, SUT.SelectionLength);
+			Assert.AreEqual(9, SUT.SelectionLength);
 		}
 
 		[TestMethod]
+		[RequiresScaling(1f)]
 		public async Task When_LongText_Pointer_Hold_Drag_OutOfBounds()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1474,7 +1479,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			mouse.MoveBy(0, 50);
@@ -1482,14 +1487,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(0, SUT.SelectionStart);
-			Assert.AreEqual(10, SUT.SelectionLength);
+			Assert.AreEqual(9, SUT.SelectionLength);
 
 			mouse.MoveBy(0, 50);
 			mouse.MoveBy(600, 0);
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(10, SUT.SelectionStart);
-			Assert.AreEqual(SUT.Text.Length - 10, SUT.SelectionLength);
+			Assert.AreEqual(9, SUT.SelectionStart);
+			Assert.AreEqual(SUT.Text.Length - 9, SUT.SelectionLength);
 		}
 
 		[TestMethod]
@@ -1636,6 +1641,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RequiresScaling(1f)]
 		public async Task When_Typing_While_Pointer_Held()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1664,14 +1670,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			mouse.MoveBy(-51, 0);
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, SUT.SelectionStart);
-			Assert.AreEqual(9, SUT.SelectionLength);
+			Assert.AreEqual(8, SUT.SelectionLength);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
 			await WindowHelper.WaitForIdle();
@@ -1684,7 +1690,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual("Hello world", SUT.Text);
 			Assert.AreEqual(1, SUT.SelectionStart);
-			Assert.AreEqual(9, SUT.SelectionLength);
+			Assert.AreEqual(8, SUT.SelectionLength);
 		}
 
 		[TestMethod]
@@ -1697,6 +1703,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(VirtualKey.Back, VirtualKeyModifiers.None)]
 		[DataRow(VirtualKey.Delete, VirtualKeyModifiers.None)]
 		[DataRow(VirtualKey.A, VirtualKeyModifiers.Control)]
+		[RequiresScaling(1f)]
 		public async Task When_Move_Caret_While_Pointer_Held(VirtualKey key, VirtualKeyModifiers modifiers)
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1728,14 +1735,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			mouse.MoveBy(-51, 0);
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, SUT.SelectionStart);
-			Assert.AreEqual(9, SUT.SelectionLength);
+			Assert.AreEqual(8, SUT.SelectionLength);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, modifiers));
 			await WindowHelper.WaitForIdle();
@@ -1743,10 +1750,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse(handled);
 			Assert.AreEqual("Hello world", SUT.Text);
 			Assert.AreEqual(1, SUT.SelectionStart);
-			Assert.AreEqual(9, SUT.SelectionLength);
+			Assert.AreEqual(8, SUT.SelectionLength);
 		}
 
 		[TestMethod]
+		[RequiresScaling(1f)]
 		public async Task When_Cut_While_Pointer_Held()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1775,19 +1783,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			mouse.MoveBy(-51, 0);
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, SUT.SelectionStart);
-			Assert.AreEqual(9, SUT.SelectionLength);
+			Assert.AreEqual(8, SUT.SelectionLength);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.X, _platformCtrlKey));
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual("Hd", SUT.Text);
+			Assert.AreEqual("Hld", SUT.Text);
 
 			Assert.AreEqual(1, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
@@ -1796,7 +1804,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, SUT.SelectionStart);
-			Assert.AreEqual(1, SUT.SelectionLength);
+			Assert.AreEqual(2, SUT.SelectionLength);
 		}
 
 		[TestMethod]
@@ -1849,14 +1857,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			mouse.MoveBy(-51, 0);
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, SUT.SelectionStart);
-			Assert.AreEqual(9, SUT.SelectionLength);
+			Assert.AreEqual(8, SUT.SelectionLength);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, _platformCtrlKey));
 			await WindowHelper.WaitForIdle();
@@ -1873,6 +1881,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RequiresScaling(1f)]
 		public async Task When_Escape_While_Pointer_Held()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1901,14 +1910,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			mouse.MoveBy(-51, 0);
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, SUT.SelectionStart);
-			Assert.AreEqual(9, SUT.SelectionLength);
+			Assert.AreEqual(8, SUT.SelectionLength);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Escape, VirtualKeyModifiers.None));
 			await WindowHelper.WaitForIdle();
@@ -1917,7 +1926,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, SUT.SelectionStart);
-			Assert.AreEqual(9, SUT.SelectionLength);
+			Assert.AreEqual(8, SUT.SelectionLength);
 
 			// We're pretty much "not pressed" at all at this point, even if we're technically still holding the mouse
 			// so we can actually type stuff in!
@@ -1925,7 +1934,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.A, VirtualKeyModifiers.None, unicodeKey: 'a'));
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual("Had", SUT.Text);
+			Assert.AreEqual("Hald", SUT.Text);
 			Assert.AreEqual(2, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
