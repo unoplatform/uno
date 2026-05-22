@@ -9,7 +9,7 @@ One phase per session, strictly in order. Scenario labels S1–S5 are defined in
 
 - [ ] **Phase 0** — Baseline + regression test scaffold
 - [x] **Phase 1** — Per-object theme on every `DependencyObject` (D1)
-- [ ] **Phase 2** — Establish theme at tree `Enter` for every DO (D2) + stop clearing on unload (D4)
+- [x] **Phase 2** — Establish theme at tree `Enter` for every DO (D2) + stop clearing on unload (D4)
 - [ ] **Phase 3** — Resolve `{ThemeResource}` against the owner's effective theme (D3, Mechanism 1)
 - [ ] **Phase 4** — Remove the 11 band-aid pushes + delete the global stack
 - [ ] **Phase 5** — Popup/Flyout logical-parent inheritance + flyout `ActualTheme` forwarding (D5, D6)
@@ -30,6 +30,28 @@ One phase per session, strictly in order. Scenario labels S1–S5 are defined in
   failure `When_Flyout_Closed_Target_Does_Not_Hold_Flyout` is the pre-existing GC flake). New
   `Given_ThemeResolution` unit tests: **7/7** green (incl. the non-`UIElement` owner case D1 enables).
   Not run this session: WASM/native heads; `/winui-runtime-tests` oracle (deferred, per carry-over notes).
+
+- **Phase 2 (D2 + D4) — DONE.** **D2:** ported the `EnterImpl` theme block (`depends.cpp:1023-1048`) as
+  `DependencyObjectStore.EstablishThemeAtEnter()` — every DO going live inherits its theme from its
+  (logical) inheritance parent before any `{ThemeResource}` resolves (FE → `NotifyThemeChanged`, which
+  re-applies the element's own `RequestedTheme` override; other DOs → `SetTheme` + `UpdateAllThemeReferences`).
+  Hosted on the per-DO store (the `CDependencyObject` analog, carries `_theme` since D1) and invoked from
+  the enhanced-lifecycle Enter walk (`UIElement.mux.cs` `DependencyObject_EnterImpl`, gated by
+  `UNO_HAS_ENHANCED_LIFECYCLE`; native attach = Phase 7). The Enter walk runs synchronously on attach,
+  before the first measure pass raises Loading, so `GetTheme()` is established before the deferred
+  `{ThemeResource}` refs (created by `ApplyResource` at parse) first resolve at load. Removed the duplicate
+  inherit / explicit-`RequestedTheme` block from `FrameworkElement.OnLoadingPartial` (the Enter step
+  subsumes it); the band-aid theme push at load is kept (removed Phase 4). **D4:** removed the
+  `SetTheme(Theme.None)` reset in `ClearThemeStateOnUnloaded` (WinUI keeps `m_theme` across Leave; re-Enter
+  re-themes) — kept the separate `_themeForeground` stale-foreground hygiene clear (re-pulled on re-Enter).
+  Built `SamplesApp.Skia.Generic` (Release, net10.0, `UnoFastDevBuild`) clean (0 errors) after each commit.
+  `/runtime-tests` theming suite (Skia Desktop): **143/144** = Phase 0/1 baseline (lone failure is the
+  pre-existing GC flake `When_Flyout_Closed_Target_Does_Not_Hold_Flyout`); the recycle test (S2/T2),
+  `When_Detached_From_Window_While_Theme_Changed`, and the `Given_ElementTheme` entry/exit + dynamic-child
+  invariant tests are all green — no behavior change, as expected (resolution leaf untouched until Phase 3).
+  WASM-head build skipped per maintainer direction: it links the same `Uno.UI.Skia` assembly already
+  validated on Skia and the changed code is platform-agnostic shared code. WASM/native runtime +
+  `/winui-runtime-tests` oracle deferred. Two commits: D2 (`feat`), D4 (`fix`).
 
 ---
 
