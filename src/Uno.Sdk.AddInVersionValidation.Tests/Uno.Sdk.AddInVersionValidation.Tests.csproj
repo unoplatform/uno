@@ -32,6 +32,17 @@
 		<PackageReference Include="Uno.Settings.DevServer" Version="1.8.0-dev.42" GeneratePathProperty="true" />
 		<PackageReference Include="Uno.UI.HotDesign" Version="1.19.0-dev.325" GeneratePathProperty="true" />
 		<PackageReference Include="Uno.UI.App.Mcp" Version="1.2.0-dev.41" GeneratePathProperty="true" />
+
+		<!--
+			DevServer host (Uno.UI.RemoteControl.Host) shipped via Uno.WinUI.DevServer.
+			The host's AssemblyRef table is the third source of truth in this alignment
+			check: a misalignment between an add-in and the host produces the same runtime
+			failures as a misalignment between two add-ins. packages.json uses the
+			DefaultUnoVersion placeholder for the Core group that carries this package, so
+			the version pinned here must be bumped manually to track what end users actually
+			run with the current Uno.Sdk release.
+		-->
+		<PackageReference Include="Uno.WinUI.DevServer" Version="6.6.0-dev.527" GeneratePathProperty="true" />
 	</ItemGroup>
 
 	<!--
@@ -44,6 +55,7 @@
 		<AssemblyMetadata Include="UnoSettingsDevServerPath" Value="$(PkgUno_Settings_DevServer)" Condition="'$(PkgUno_Settings_DevServer)' != ''" />
 		<AssemblyMetadata Include="UnoUIHotDesignPath" Value="$(PkgUno_UI_HotDesign)" Condition="'$(PkgUno_UI_HotDesign)' != ''" />
 		<AssemblyMetadata Include="UnoUIAppMcpPath" Value="$(PkgUno_UI_App_Mcp)" Condition="'$(PkgUno_UI_App_Mcp)' != ''" />
+		<AssemblyMetadata Include="UnoWinUIDevServerPath" Value="$(PkgUno_WinUI_DevServer)" Condition="'$(PkgUno_WinUI_DevServer)' != ''" />
 		<AssemblyMetadata Include="UnoSdkManifestPath" Value="$(MSBuildThisFileDirectory)..\Uno.Sdk\packages.json" />
 	</ItemGroup>
 
