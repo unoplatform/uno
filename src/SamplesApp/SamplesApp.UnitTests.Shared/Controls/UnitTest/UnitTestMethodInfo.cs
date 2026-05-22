@@ -74,10 +74,35 @@ internal record UnitTestMethodInfo
 			return true;
 		}
 
+		if (IsExcludedByFilters(filters))
+		{
+			return false;
+		}
+
+		var inclusionFilters = filters.Where(f => !f.StartsWith("~", StringComparison.Ordinal)).ToArray();
+		if (!inclusionFilters.Any())
+		{
+			return true; // only exclusion filters — include everything not excluded
+		}
+
 		var fullName = GetFullName();
-		return filters.Any(filter =>
+		return inclusionFilters.Any(filter =>
 			Name.Contains(filter, StrComp)
 			|| fullName.Contains(filter, StrComp));
+	}
+
+	private bool IsExcludedByFilters(string[]? filters)
+	{
+		if (!(filters?.Any() ?? false))
+		{
+			return false;
+		}
+
+		var fullName = GetFullName();
+		return filters
+			.Where(f => f.StartsWith("~", StringComparison.Ordinal))
+			.Select(f => f[1..])
+			.Any(excl => Name.Contains(excl, StrComp) || fullName.Contains(excl, StrComp));
 	}
 
 	private bool HasCustomAttribute<T>(MemberInfo? testMethod)
@@ -143,6 +168,11 @@ internal record UnitTestMethodInfo
 
 	public IEnumerable<TestCase> GetMatchingCases(string[]? filters)
 	{
+		if (IsExcludedByFilters(filters))
+		{
+			return [];
+		}
+
 		var cases = GetCases().ToArray();
 		if (!(filters?.Any() ?? false) || MatchesFilter(filters))
 		{
@@ -157,7 +187,21 @@ internal record UnitTestMethodInfo
 		var caseName = testCase.ToString();
 		var fullCaseName = GetFullName() + caseName;
 
-		return filters.Any(filter =>
+		// Exclusion filters: ~prefix means never run this case
+		foreach (var f in filters)
+		{
+			if (f.StartsWith("~", StringComparison.Ordinal))
+			{
+				var excl = f[1..];
+				if (caseName.Contains(excl, StrComp) || fullCaseName.Contains(excl, StrComp))
+				{
+					return false;
+				}
+			}
+		}
+
+		var inclusionFilters = filters.Where(f => !f.StartsWith("~", StringComparison.Ordinal)).ToArray();
+		return inclusionFilters.Any(filter =>
 			caseName.Contains(filter, StrComp)
 			|| fullCaseName.Contains(filter, StrComp));
 	}

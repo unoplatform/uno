@@ -129,6 +129,10 @@ FLAKE_RETRY_MAX_FAILURES=${FLAKE_RETRY_MAX_FAILURES:-20}
 # Maximum seconds between heartbeat emissions before the watchdog kills the app.
 HEARTBEAT_TIMEOUT_S=${HEARTBEAT_TIMEOUT_S:-300}
 
+# Set by run_android_tests when the heartbeat watchdog fires.
+HUNG_TEST_NAME=""
+HUNG_HB_AGE=0
+
 UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_BASE_PATH="/storage/emulated/0/Android/data/$UNO_UITEST_APP_ID/files"
 
 # Starts the app and waits for the result file to appear on device.
@@ -183,7 +187,20 @@ run_android_tests() {
 		local HB_AGE=$(( SECONDS - LAST_HB_S ))
 		if [ "$PREV_HB_COUNT" -gt 0 ] && [ $HB_AGE -gt $HEARTBEAT_TIMEOUT_S ]; then
 			echo "##[error]No heartbeat for ${HB_AGE}s — test appears hung."
+			# Print the last 3 heartbeats for context
 			$ANDROID_HOME/platform-tools/adb shell logcat -d | grep 'UNO-RT-HEARTBEAT' | tail -3
+
+			# Extract the name of the hung test from the last STARTING heartbeat without a matching COMPLETED
+			local last_starting
+			last_starting=$($ANDROID_HOME/platform-tools/adb shell logcat -d \
+				| grep 'UNO-RT-HEARTBEAT' | grep 'STARTING' | tail -1 \
+				| sed 's/.*STARTING //')
+			if [ -n "$last_starting" ]; then
+				HUNG_TEST_NAME="$last_starting"
+				HUNG_HB_AGE=$HB_AGE
+				echo "##[error]Hung test identified: $HUNG_TEST_NAME (no heartbeat for ${HB_AGE}s)"
+			fi
+
 			$ANDROID_HOME/platform-tools/adb shell am force-stop "$UNO_UITEST_APP_ID" || true
 			break
 		fi
@@ -209,6 +226,14 @@ run_android_tests "$UITEST_RUNTIME_TESTS_FILTER" "$UITEST_RUNTIME_AUTOSTART_RESU
 # create $BUILD_SOURCESDIRECTORY/build/uitests-failure-results before exiting, so that `PublishBuildArtifacts@1` doesn't error out just because the tests crashed.
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
+# When the watchdog fires the result file is never written; synthesise a failure entry
+# so the rest of the pipeline has something to work with.
+if [ ! -f "$UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH" ] && [ -n "$HUNG_TEST_NAME" ]; then
+	HUNG_SIMPLE=$(echo "$HUNG_TEST_NAME" | sed 's/(.*//')
+	echo "##[warning]Creating synthetic result for hung test '$HUNG_SIMPLE' (${HUNG_HB_AGE}s without heartbeat)."
+	run_nunit_tool create-hung-result "$HUNG_SIMPLE" "$UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH" "$HUNG_HB_AGE"
+fi
+
 if [ ! -f "$UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH" ]; then
 	echo "ERROR: The test results file $UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH does not exist (did nunit crash ?)"
 	exit 1
@@ -220,12 +245,29 @@ run_nunit_tool fail-empty $UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH
 FAILED_COUNT=$(run_nunit_tool count-failed $UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH | tail -1)
 run_nunit_tool list-failed $UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH $UNO_TESTS_FAILED_LIST
 
+RERUN_RESULT_PATH="$BUILD_SOURCESDIRECTORY/build/TestResult-rerun.xml"
+
+if [ -n "$HUNG_TEST_NAME" ]; then
+	# Watchdog fired: rerun the full shard but skip the hung test so we get results for
+	# all the tests that never ran.  The hung test remains marked Failed in the merged output.
+	HUNG_SIMPLE=$(echo "$HUNG_TEST_NAME" | sed 's/(.*//')
+	echo "##[warning]Watchdog retry: rerunning shard excluding '$HUNG_SIMPLE'..."
+	RERUN_FILTER=$(printf '~%s' "$HUNG_SIMPLE" | base64 -w 0)
+
+	run_android_tests "$RERUN_FILTER" "$RERUN_RESULT_PATH"
+
+	if [ -f "$RERUN_RESULT_PATH" ]; then
+		run_nunit_tool merge-results "$UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH" "$RERUN_RESULT_PATH" "$UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH"
+		run_nunit_tool list-failed "$UITEST_RUNTIME_AUTOSTART_RESULT_LOCAL_PATH" "$UNO_TESTS_FAILED_LIST"
+	else
+		echo "##[warning]Watchdog retry did not produce a results file; original results kept."
+	fi
+
 # In-job retry: if a small number of tests failed, rerun only those to catch flakes
-if [ "$FAILED_COUNT" -gt 0 ] && [ "$FAILED_COUNT" -le "$FLAKE_RETRY_MAX_FAILURES" ]; then
+elif [ "$FAILED_COUNT" -gt 0 ] && [ "$FAILED_COUNT" -le "$FLAKE_RETRY_MAX_FAILURES" ]; then
 	echo "##[warning]$FAILED_COUNT test(s) failed — retrying in-job to filter flakes..."
 
 	RERUN_FILTER=$(cat $UNO_TESTS_FAILED_LIST | base64 -w 0)
-	RERUN_RESULT_PATH="$BUILD_SOURCESDIRECTORY/build/TestResult-rerun.xml"
 
 	run_android_tests "$RERUN_FILTER" "$RERUN_RESULT_PATH"
 

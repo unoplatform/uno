@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -21,7 +22,7 @@ namespace Uno.ReferenceImplComparer
 			if (args.Length == 0)
 			{
 				Console.Error.WriteLine("Usage: NUnitTransformTool <command> [args...]");
-				Console.Error.WriteLine("Commands: list-failed, fail-empty, count-failed, merge-results");
+				Console.Error.WriteLine("Commands: list-failed, fail-empty, count-failed, merge-results, create-hung-result");
 				return 1;
 			}
 
@@ -35,9 +36,12 @@ namespace Uno.ReferenceImplComparer
 					return CountFailedTests(args[1]);
 				case "merge-results":
 					return MergeResults(args[1], args[2], args[3]);
+				case "create-hung-result":
+					// create-hung-result <testName> <outputFile> [hangSeconds]
+					return CreateHungResult(args[1], args[2], args.Length > 3 ? int.Parse(args[3], CultureInfo.InvariantCulture) : 0);
 				default:
 					Console.Error.WriteLine($"Unknown command: {args[0]}");
-					Console.Error.WriteLine("Commands: list-failed, fail-empty, count-failed, merge-results");
+					Console.Error.WriteLine("Commands: list-failed, fail-empty, count-failed, merge-results, create-hung-result");
 					return 1;
 			}
 		}
@@ -218,6 +222,49 @@ namespace Uno.ReferenceImplComparer
 			node.SetAttribute("skipped", skipped.ToString(CultureInfo.InvariantCulture));
 			node.SetAttribute("inconclusive", inconclusive.ToString(CultureInfo.InvariantCulture));
 			node.SetAttribute("result", failed > 0 ? "Failed" : "Passed");
+		}
+
+		/// <summary>
+		/// Produces a minimal NUnit XML result file that marks <paramref name="testName"/> as Failed
+		/// with a watchdog-timeout message.  The file can be merged with a later re-run result.
+		/// </summary>
+		private static int CreateHungResult(string testName, string outputFile, int hangSeconds)
+		{
+			var duration = hangSeconds > 0 ? hangSeconds.ToString(CultureInfo.InvariantCulture) : "300";
+			var message = hangSeconds > 0
+				? $"Test hung for {hangSeconds}s (no heartbeat). The CI watchdog terminated the test runner."
+				: "Test hung (no heartbeat). The CI watchdog terminated the test runner.";
+
+			// Sanitise for XML attribute/text content
+			testName = testName.Trim();
+			var safeName = SecurityElement.Escape(testName) ?? testName;
+			var safeMessage = SecurityElement.Escape(message) ?? message;
+
+			var xml = $"""
+				<?xml version="1.0" encoding="utf-8" standalone="no"?>
+				<test-run id="2" name="WatchdogSynthetic" fullname="WatchdogSynthetic" testcasecount="1"
+				          result="Failed" total="1" passed="0" failed="1" inconclusive="0" skipped="0">
+				  <test-suite type="Assembly" id="0-1000" name="WatchdogSynthetic" fullname="WatchdogSynthetic"
+				              testcasecount="1" result="Failed" total="1" passed="0" failed="1" inconclusive="0" skipped="0">
+				    <test-suite type="TestFixture" id="0-1001" name="WatchdogSynthetic" fullname="WatchdogSynthetic"
+				                testcasecount="1" result="Failed" total="1" passed="0" failed="1" inconclusive="0" skipped="0">
+				      <test-case id="0-1002" name="{safeName}" fullname="WatchdogSynthetic.{safeName}"
+				                 result="Failed" duration="{duration}">
+				        <failure>
+				          <message>{safeMessage}</message>
+				        </failure>
+				      </test-case>
+				    </test-suite>
+				  </test-suite>
+				</test-run>
+				""";
+
+			var tmpFile = outputFile + ".tmp";
+			File.WriteAllText(tmpFile, xml, Encoding.UTF8);
+			File.Move(tmpFile, outputFile, overwrite: true);
+
+			Console.WriteLine($"Created synthetic hung-test result: {testName} → {outputFile}");
+			return 0;
 		}
 
 		[GeneratedRegex(@"\(([^)]*)\)")]
