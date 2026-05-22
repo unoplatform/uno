@@ -39,6 +39,9 @@ run_nunit_tool() { (cd "$NUNIT_TOOL_DIR" && dotnet run "$@"); }
 # Maximum failures to trigger an in-job retry; overridable via env var.
 FLAKE_RETRY_MAX_FAILURES=${FLAKE_RETRY_MAX_FAILURES:-20}
 
+# Maximum seconds between heartbeat emissions before the watchdog kills the app.
+HEARTBEAT_TIMEOUT_S=${HEARTBEAT_TIMEOUT_S:-300}
+
 build_runtime_tests_url() {
     local results_file="$1"
     local filter="$2"
@@ -55,6 +58,8 @@ build_runtime_tests_url() {
 start_chrome_and_wait() {
     local results_file="$1"
     local canary_file="${results_file}.canary"
+    local HEARTBEAT_LOG
+    HEARTBEAT_LOG=$(mktemp /tmp/uno-rt-heartbeat.XXXXXX)
 
     rm -f "$canary_file" || true
 
@@ -68,7 +73,11 @@ start_chrome_and_wait() {
         killall -9 Xvfb || true
         killall -9 chrome_crashpad_handler || true
         rm -fr /tmp/.X99-lock || true
-        xvfb-run --auto-servernum google-chrome --enable-logging=stderr --no-sandbox "${RUNTIME_TESTS_URL}" &
+        : > "$HEARTBEAT_LOG"
+        # tee forwards chrome's output to the CI log; grep captures heartbeat markers to HEARTBEAT_LOG.
+        # Console.log from WASM reaches Chrome's stderr via --enable-logging=stderr.
+        xvfb-run --auto-servernum google-chrome --enable-logging=stderr --no-sandbox "${RUNTIME_TESTS_URL}" \
+            2>&1 | tee >(grep --line-buffered '##UNO-RT-HEARTBEAT##' >> "$HEARTBEAT_LOG") &
 
         # wait one minute for the canary file to be created, otherwise fail the script.
         # This may happen if xvfb-run of chrome fails to start
@@ -90,15 +99,31 @@ start_chrome_and_wait() {
     # if the canary file does not exist show a message and exit
     if ! test -f "$canary_file"; then
         echo "Canary file not found. The app may not have started? Exiting."
+        rm -f "$HEARTBEAT_LOG" || true
         exit 1
     fi
 
-    # Wait for results file with a watchdog timeout so a hung app does not stall the job
+    # Wait for results file; check heartbeat watchdog every 10s once tests are running.
     local WAIT_TIMEOUT_S=3600
     local WAIT_END=$((SECONDS + WAIT_TIMEOUT_S))
     while ! test -f "$results_file" && [ $SECONDS -lt $WAIT_END ]; do
         sleep 10
+        if [ -s "$HEARTBEAT_LOG" ]; then
+            local HB_AGE=$(( $(date +%s) - $(stat -c %Y "$HEARTBEAT_LOG") ))
+            if [ $HB_AGE -gt $HEARTBEAT_TIMEOUT_S ]; then
+                echo "##[error]No heartbeat for ${HB_AGE}s — test appears hung. Last heartbeats:"
+                tail -3 "$HEARTBEAT_LOG"
+                killall -9 chrome || true
+                killall -9 xvfb-run || true
+                killall -9 Xvfb || true
+                killall -9 chrome_crashpad_handler || true
+                rm -f "$HEARTBEAT_LOG" || true
+                exit 1
+            fi
+        fi
     done
+
+    rm -f "$HEARTBEAT_LOG" || true
 
     if ! test -f "$results_file"; then
         echo "##[error]Results file not created within ${WAIT_TIMEOUT_S}s — Chrome may be hung. Exiting."

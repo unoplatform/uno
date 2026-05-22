@@ -40,6 +40,63 @@ function Invoke-NUnitToolCaptureOutput([string[]]$Arguments)
     }
 }
 
+# Runs the Skia app with a heartbeat watchdog. Kills the process if no ##UNO-RT-HEARTBEAT##
+# marker appears in stdout for more than $HeartbeatTimeoutS seconds.
+function Invoke-SkiaTests([string]$ResultsFile)
+{
+    $heartbeatLog = [System.IO.Path]::GetTempFileName()
+    $heartbeatTimeoutS = [int]($env:HEARTBEAT_TIMEOUT_S ?? "300")
+    $artifactPath = $env:SamplesAppArtifactPath
+
+    # Run the app in a background job so we can monitor its stdout for heartbeat markers.
+    $job = Start-Job -ScriptBlock {
+        param($path, $dir, $hbLog)
+        Push-Location $dir
+        try
+        {
+            dotnet SamplesApp.Skia.Generic.dll "--runtime-tests=$path" 2>&1 | ForEach-Object {
+                Write-Output $_
+                if ($_ -match '##UNO-RT-HEARTBEAT##')
+                {
+                    [System.IO.File]::AppendAllText($hbLog, "$_`n")
+                }
+            }
+        }
+        finally
+        {
+            Pop-Location
+        }
+    } -ArgumentList $ResultsFile, $artifactPath, $heartbeatLog
+
+    try
+    {
+        while ($job.State -eq 'Running')
+        {
+            Start-Sleep -Seconds 10
+            Receive-Job $job  # flush output to console
+
+            if ((Test-Path $heartbeatLog) -and (Get-Item $heartbeatLog).Length -gt 0)
+            {
+                $hbAge = ((Get-Date) - (Get-Item $heartbeatLog).LastWriteTime).TotalSeconds
+                if ($hbAge -gt $heartbeatTimeoutS)
+                {
+                    Write-Host "##[error]No heartbeat for $([int]$hbAge)s — test appears hung. Last heartbeats:"
+                    Get-Content $heartbeatLog -Tail 3 | Write-Host
+                    Stop-Job $job
+                    Remove-Item $heartbeatLog -Force -ErrorAction SilentlyContinue
+                    exit 1
+                }
+            }
+        }
+        Receive-Job $job  # flush remaining output
+    }
+    finally
+    {
+        Remove-Job $job -Force -ErrorAction SilentlyContinue
+        Remove-Item $heartbeatLog -Force -ErrorAction SilentlyContinue
+    }
+}
+
 # Maximum failures to trigger an in-job retry; overridable via env var.
 $FlakeRetryMaxFailures = [int]($env:FLAKE_RETRY_MAX_FAILURES ?? "20")
 
@@ -53,8 +110,7 @@ if (Test-Path $UNO_TESTS_FAILED_LIST) {
     $env:UITEST_RUNTIME_TESTS_FILTER="$base64"
 }
 
-cd $env:SamplesAppArtifactPath
-dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE
+Invoke-SkiaTests $TEST_RESULTS_FILE
 
 ## Export the failed tests list for reuse in a pipeline retry
 New-Item -ItemType Directory -Force -Path (Split-Path $UNO_TESTS_FAILED_LIST)
@@ -74,8 +130,7 @@ if ($FAILED_COUNT -gt 0 -and $FAILED_COUNT -le $FlakeRetryMaxFailures) {
     $base64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes((Get-Content $UNO_TESTS_FAILED_LIST)))
     $env:UITEST_RUNTIME_TESTS_FILTER = $base64
 
-    cd $env:SamplesAppArtifactPath
-    dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_RERUN_FILE
+    Invoke-SkiaTests $TEST_RESULTS_RERUN_FILE
 
     if (Test-Path $TEST_RESULTS_RERUN_FILE) {
         Invoke-NUnitTool "merge-results", $TEST_RESULTS_FILE, $TEST_RESULTS_RERUN_FILE, $TEST_RESULTS_FILE

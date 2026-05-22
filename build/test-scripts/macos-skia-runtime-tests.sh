@@ -23,9 +23,41 @@ run_nunit_tool() { (cd "$NUNIT_TOOL_DIR" && dotnet run "$@"); }
 # Maximum failures to trigger an in-job retry; overridable via env var.
 FLAKE_RETRY_MAX_FAILURES=${FLAKE_RETRY_MAX_FAILURES:-20}
 
-cd $SamplesAppArtifactPath
-# Sometimes we crash during app shutdown, so we force a 0 exit code (same as Linux).
-dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE || true
+# Maximum seconds between heartbeat emissions before the watchdog kills the app.
+HEARTBEAT_TIMEOUT_S=${HEARTBEAT_TIMEOUT_S:-300}
+
+run_macos_tests() {
+	local RESULTS_FILE="$1"
+	local HEARTBEAT_LOG
+	HEARTBEAT_LOG=$(mktemp /tmp/uno-rt-heartbeat.XXXXXX)
+	: > "$HEARTBEAT_LOG"
+
+	cd $SamplesAppArtifactPath
+	# tee forwards all output to the CI log while grep filters heartbeat markers to HEARTBEAT_LOG.
+	# Sometimes we crash during app shutdown, so the pipeline exit code is ignored via wait ... || true.
+	dotnet SamplesApp.Skia.Generic.dll --runtime-tests="$RESULTS_FILE" \
+		2>&1 | tee >(grep --line-buffered '##UNO-RT-HEARTBEAT##' >> "$HEARTBEAT_LOG") &
+	local PIPE_PID=$!
+
+	# Watchdog: once the first heartbeat is received, kill if no new heartbeat within HEARTBEAT_TIMEOUT_S.
+	while kill -0 $PIPE_PID 2>/dev/null; do
+		sleep 10
+		if [ -s "$HEARTBEAT_LOG" ]; then
+			local HB_AGE=$(( $(date +%s) - $(stat -f %m "$HEARTBEAT_LOG") ))
+			if [ $HB_AGE -gt $HEARTBEAT_TIMEOUT_S ]; then
+				echo "##[error]No heartbeat for ${HB_AGE}s — test appears hung. Last heartbeats:"
+				tail -3 "$HEARTBEAT_LOG"
+				kill -9 $PIPE_PID 2>/dev/null || true
+				rm -f "$HEARTBEAT_LOG"
+				exit 1
+			fi
+		fi
+	done
+	wait $PIPE_PID || true
+	rm -f "$HEARTBEAT_LOG"
+}
+
+run_macos_tests "$TEST_RESULTS_FILE"
 
 ## Export the failed tests list for reuse in a pipeline retry
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
@@ -45,8 +77,7 @@ if [ "$FAILED_COUNT" -gt 0 ] && [ "$FAILED_COUNT" -le "$FLAKE_RETRY_MAX_FAILURES
 
 	TEST_RESULTS_RERUN_FILE="${TEST_RESULTS_FILE%.xml}-rerun.xml"
 
-	cd $SamplesAppArtifactPath
-	dotnet SamplesApp.Skia.Generic.dll --runtime-tests="$TEST_RESULTS_RERUN_FILE" || true
+	run_macos_tests "$TEST_RESULTS_RERUN_FILE"
 
 	if [ -f "$TEST_RESULTS_RERUN_FILE" ]; then
 		run_nunit_tool merge-results $TEST_RESULTS_FILE $TEST_RESULTS_RERUN_FILE $TEST_RESULTS_FILE

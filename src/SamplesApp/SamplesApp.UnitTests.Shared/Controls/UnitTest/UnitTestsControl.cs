@@ -416,8 +416,19 @@ namespace Uno.UI.Samples.Tests
 			}
 		}
 
+		// Emits a line to stdout so CI scripts can detect hung tests via a heartbeat watchdog.
+		// The ##UNO-RT-HEARTBEAT## prefix allows grep-based filtering without affecting normal log noise.
+		private static void EmitHeartbeat(string phase, string testName, TimeSpan? duration = null)
+		{
+			var line = duration is { } d
+				? $"##UNO-RT-HEARTBEAT## {DateTime.UtcNow:O} {phase} {testName} {(long)d.TotalMilliseconds}ms"
+				: $"##UNO-RT-HEARTBEAT## {DateTime.UtcNow:O} {phase} {testName}";
+			Console.WriteLine(line);
+		}
+
 		private void ReportTestResult(UnitTestClassInfo testClassInfo, UnitTestMethodInfo testMethodInfo, string testName, TimeSpan duration, TestResult testResult, Exception error = null, string message = null, string console = null)
 		{
+			EmitHeartbeat("COMPLETED", testName, duration);
 			_testCases.Add(
 				new TestCaseResult
 				{
@@ -865,6 +876,7 @@ namespace Uno.UI.Samples.Tests
 					// This will help developers to identify faulty tests when the app is crashing.
 					await ReportMessage($"Running test {fullTestName}");
 					ReportTestsResults();
+					EmitHeartbeat("STARTING", fullTestName);
 
 					var sw = new Stopwatch();
 					var iterationFailed = false;

@@ -199,6 +199,9 @@ run_nunit_tool_ios() { (cd "$NUNIT_TOOL_DIR" && dotnet run --no-build "$@"); }
 # Maximum failures to trigger an in-job retry; overridable via env var.
 FLAKE_RETRY_MAX_FAILURES=${FLAKE_RETRY_MAX_FAILURES:-20}
 
+# Maximum seconds between heartbeat emissions before the watchdog kills the app.
+HEARTBEAT_TIMEOUT_S=${HEARTBEAT_TIMEOUT_S:-300}
+
 cd $BUILD_SOURCESDIRECTORY/build
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
@@ -250,11 +253,19 @@ then
 	export APP_PID=`xcrun simctl spawn "$UITEST_IOSDEVICE_ID" launchctl list | grep "$SAMPLESAPP_BUNDLE_ID" | awk '{print $1}'`
 	echo "App PID: $APP_PID"
 
-	# Set the timeout in seconds 
+	# Set the timeout in seconds
 	UITEST_TEST_TIMEOUT_AS_MINUTES=${UITEST_TEST_TIMEOUT:0:${#UITEST_TEST_TIMEOUT}-1}
 	TIMEOUT=$(($UITEST_TEST_TIMEOUT_AS_MINUTES * 60))
 	INTERVAL=15
 	END_TIME=$((SECONDS+TIMEOUT))
+
+	# Stream simulator device logs in background; filter for heartbeat markers.
+	# Console.WriteLine from .NET iOS is routed through NSLog and appears in the simulator syslog.
+	IOS_HEARTBEAT_LOG=$(mktemp /tmp/uno-rt-heartbeat.XXXXXX)
+	xcrun simctl spawn "$UITEST_IOSDEVICE_ID" log stream \
+		--predicate 'eventMessage CONTAINS "UNO-RT-HEARTBEAT"' \
+		>> "$IOS_HEARTBEAT_LOG" &
+	IOS_LOG_STREAM_PID=$!
 
 	echo "Waiting for $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE to be available..."
 
@@ -263,12 +274,28 @@ then
 		# echo "Waiting $INTERVAL seconds for test results to be written to $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE";
 		sleep $INTERVAL
 
+		# Heartbeat watchdog: if tests have started but no new marker in HEARTBEAT_TIMEOUT_S, abort.
+		if [ -s "$IOS_HEARTBEAT_LOG" ]; then
+			IOS_HB_AGE=$(( $(date +%s) - $(stat -f %m "$IOS_HEARTBEAT_LOG") ))
+			if [ $IOS_HB_AGE -gt $HEARTBEAT_TIMEOUT_S ]; then
+				echo "##[error]No heartbeat for ${IOS_HB_AGE}s — test appears hung. Last heartbeats:"
+				tail -3 "$IOS_HEARTBEAT_LOG"
+				kill $IOS_LOG_STREAM_PID 2>/dev/null || true
+				rm -f "$IOS_HEARTBEAT_LOG" || true
+				xcrun simctl terminate "$UITEST_IOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID" || true
+				break
+			fi
+		fi
+
 		# exit loop if the APP_PID is not running anymore
 		if ! ps -p $APP_PID > /dev/null; then
 			echo "The app is not running anymore"
 			break
 		fi
 	done
+
+	kill $IOS_LOG_STREAM_PID 2>/dev/null || true
+	rm -f "$IOS_HEARTBEAT_LOG" || true
 
 	if ! [ -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" ]; then
  		echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is not available, waiting 2 seconds"
@@ -298,9 +325,27 @@ then
 			xcrun simctl launch "$UITEST_IOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID"
 			RETRY_APP_PID=$(xcrun simctl spawn "$UITEST_IOSDEVICE_ID" launchctl list | grep "$SAMPLESAPP_BUNDLE_ID" | awk '{print $1}')
 
+			IOS_RETRY_HEARTBEAT_LOG=$(mktemp /tmp/uno-rt-heartbeat-retry.XXXXXX)
+			xcrun simctl spawn "$UITEST_IOSDEVICE_ID" log stream \
+				--predicate 'eventMessage CONTAINS "UNO-RT-HEARTBEAT"' \
+				>> "$IOS_RETRY_HEARTBEAT_LOG" &
+			IOS_RETRY_LOG_STREAM_PID=$!
+
 			RETRY_END_TIME=$((SECONDS + TIMEOUT))
 			while [[ ! -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" && $SECONDS -lt $RETRY_END_TIME ]]; do
 				sleep $INTERVAL
+
+				if [ -s "$IOS_RETRY_HEARTBEAT_LOG" ]; then
+					IOS_RETRY_HB_AGE=$(( $(date +%s) - $(stat -f %m "$IOS_RETRY_HEARTBEAT_LOG") ))
+					if [ $IOS_RETRY_HB_AGE -gt $HEARTBEAT_TIMEOUT_S ]; then
+						echo "##[error]No heartbeat for ${IOS_RETRY_HB_AGE}s in retry run — test appears hung."
+						tail -3 "$IOS_RETRY_HEARTBEAT_LOG"
+						kill $IOS_RETRY_LOG_STREAM_PID 2>/dev/null || true
+						rm -f "$IOS_RETRY_HEARTBEAT_LOG" || true
+						xcrun simctl terminate "$UITEST_IOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID" || true
+						break
+					fi
+				fi
 
 				# exit loop early if the retry app is not running anymore
 				if ! ps -p $RETRY_APP_PID > /dev/null; then
@@ -308,6 +353,9 @@ then
 					break
 				fi
 			done
+
+			kill $IOS_RETRY_LOG_STREAM_PID 2>/dev/null || true
+			rm -f "$IOS_RETRY_HEARTBEAT_LOG" || true
 
 			if [ -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" ]; then
 				run_nunit_tool_ios merge-results "$UNO_ORIGINAL_TEST_RESULTS" "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" "$UNO_ORIGINAL_TEST_RESULTS"

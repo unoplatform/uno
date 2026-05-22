@@ -126,6 +126,9 @@ run_nunit_tool() { (cd "$NUNIT_TOOL_DIR" && dotnet run "$@"); }
 # Maximum failures to trigger an in-job retry; overridable via env var.
 FLAKE_RETRY_MAX_FAILURES=${FLAKE_RETRY_MAX_FAILURES:-20}
 
+# Maximum seconds between heartbeat emissions before the watchdog kills the app.
+HEARTBEAT_TIMEOUT_S=${HEARTBEAT_TIMEOUT_S:-300}
+
 UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_BASE_PATH="/storage/emulated/0/Android/data/$UNO_UITEST_APP_ID/files"
 
 # Starts the app and waits for the result file to appear on device.
@@ -143,6 +146,9 @@ run_android_tests() {
 	$ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.WRITE_EXTERNAL_STORAGE
 	$ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.READ_EXTERNAL_STORAGE
 
+	# Clear logcat so heartbeat line counting starts fresh for this run.
+	$ANDROID_HOME/platform-tools/adb logcat -c
+
 	# start the android app using environment variables using adb
 	$ANDROID_HOME/platform-tools/adb shell am start \
 	  -n $UNO_UITEST_APP_ID/crc6448f3b0362cbf4bc9.MainActivity \
@@ -158,11 +164,29 @@ run_android_tests() {
 
 	echo "Waiting for $device_result_path to be available..."
 
+	local PREV_HB_COUNT=0
+	local LAST_HB_S=$SECONDS
+
 	while [[ ! $($ANDROID_HOME/platform-tools/adb shell test -e "$device_result_path" > /dev/null) && $SECONDS -lt $END_TIME ]]; do
 	    sleep 15
 
 		## Dump the emulator's system log
 		$ANDROID_HOME/platform-tools/adb shell logcat -d > $LOGS_PATH/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$UITEST_TEST_MODE_NAME.interim.txt
+
+		# Heartbeat watchdog: count heartbeat lines in logcat; if count stalls, the test may be hung.
+		local HB_COUNT
+		HB_COUNT=$($ANDROID_HOME/platform-tools/adb shell logcat -d | grep -c 'UNO-RT-HEARTBEAT' || echo 0)
+		if [ "$HB_COUNT" -gt "$PREV_HB_COUNT" ]; then
+			PREV_HB_COUNT=$HB_COUNT
+			LAST_HB_S=$SECONDS
+		fi
+		local HB_AGE=$(( SECONDS - LAST_HB_S ))
+		if [ "$PREV_HB_COUNT" -gt 0 ] && [ $HB_AGE -gt $HEARTBEAT_TIMEOUT_S ]; then
+			echo "##[error]No heartbeat for ${HB_AGE}s — test appears hung."
+			$ANDROID_HOME/platform-tools/adb shell logcat -d | grep 'UNO-RT-HEARTBEAT' | tail -3
+			$ANDROID_HOME/platform-tools/adb shell am force-stop "$UNO_UITEST_APP_ID" || true
+			break
+		fi
 
 	    # exit loop early if the app is not running anymore
 	    if ! $ANDROID_HOME/platform-tools/adb shell ps | grep "$UNO_UITEST_APP_ID" > /dev/null; then
