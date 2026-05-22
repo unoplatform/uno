@@ -18,6 +18,10 @@ namespace Windows.Media.SpeechRecognition
 		// TODO: Make a breaking change for Android and iOS and make the setters internal unconditionally.
 		public double RawConfidence { get; internal set; }
 		public string Text { get; internal set; }
+
+		// Implemented for WebAssembly; the generated partial still provides the NotImplemented stub for
+		// the other targets (its #if guard excludes __WASM__).
+		public SpeechRecognitionResultStatus Status { get; internal set; }
 #else
 		public double RawConfidence { get; set; }
 		public string Text { get; set; }
