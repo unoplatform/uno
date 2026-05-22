@@ -46,8 +46,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[RequiresFullWindow]
 		public async Task When_Parent_Resource_Override_On_Loaded()
 		{
+			using var _ = ThemeHelper.UseApplicationLightTheme();
 			using (StyleHelper.UseAppLevelResources(new App_Level_Resources()))
 			{
 				var userControl = new When_Parent_Resource_Override_On_Loaded();
@@ -144,8 +146,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[RequiresFullWindow]
 		public async Task When_Theme_Changed()
 		{
+			using var _ = ThemeHelper.UseApplicationLightTheme();
 			var control = new ThemeResource_Theme_Changing_Override();
 			WindowHelper.WindowContent = control;
 
@@ -200,8 +204,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 #if HAS_UNO
 		[TestMethod]
+		[RequiresFullWindow]
 		public async Task When_ActualThemeChanged_Throws()
 		{
+			using var _ = ThemeHelper.UseApplicationLightTheme();
 			using (StyleHelper.UseAppLevelResources(new App_Level_Resources()))
 			{
 				var border = (Border)XamlReader.Load(
@@ -229,6 +235,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		private async Task When_DefaultForeground(Color lightThemeColor, Color darkThemeColor)
 		{
+#if HAS_UNO
+			using var _ = ThemeHelper.UseApplicationLightTheme();
+#endif
 			var run = new Run()
 			{
 				Text = "Hello"
