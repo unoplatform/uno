@@ -11,7 +11,7 @@ One phase per session, strictly in order. Scenario labels S1–S5 are defined in
 - [x] **Phase 1** — Per-object theme on every `DependencyObject` (D1)
 - [x] **Phase 2** — Establish theme at tree `Enter` for every DO (D2) + stop clearing on unload (D4)
 - [x] **Phase 3** — Resolve `{ThemeResource}` against the owner's effective theme (D3, Mechanism 1)
-- [ ] **Phase 4** — Remove the 11 band-aid pushes + delete the global stack
+- [x] **Phase 4** — Remove the 11 band-aid pushes + delete the global stack
 - [ ] **Phase 5** — Popup/Flyout logical-parent inheritance + flyout `ActualTheme` forwarding (D5, D6)
 - [ ] **Phase 6** — Application/OS/custom-theme/high-contrast precedence (D7, D8)
 - [ ] **Phase 7** — Native (Android/iOS) parity
@@ -102,6 +102,50 @@ One phase per session, strictly in order. Scenario labels S1–S5 are defined in
   removes the band-aids/stack. WASM/native heads + `/winui-runtime-tests` oracle deferred (per carry-over
   notes; WASM links the same `Uno.UI.Skia` assembly already validated). One code commit
   (`fix(theming): resolve ThemeResources against owner's effective theme (D3)`).
+
+- **Phase 4 — DONE.** Removed all 11 band-aid pushes and deleted the process-global requested-theme stack;
+  resolution is now purely a function of (key, owner's effective theme) threaded as a parameter.
+  - **Real-work re-points (push → owner-theme parameter):** #2 foreground freeze (`DefaultTextForegroundThemeBrush`
+    via a theme-aware `ResourceResolver.ResolveTopLevelResource`), #9 Hyperlink pointer-state brushes (theme-aware
+    `Application.Resources.TryGetValue`), #10 keyframe theme refs (pass the target element as resolution owner),
+    #11 focus-visual default (`ResolveFocusVisualBrushDefault` → `GetThemeKey(ResolveOwnerTheme(target))`), and
+    `ResourceResolver.ApplyThemeResource`/`ApplyVisualStateSetter` (resolve against the setter target's theme).
+  - **Pure push removals:** #1 `NotifyThemeChangedCore`, #3 `OnLoadingPartial`, #4 `ApplyStyleWithThemeContext`,
+    #5 `FrameworkTemplate.LoadContent`, #6/#7 `VisualStateGroup`, #8 `BindingHelper.UpdateResourceBindings`.
+  - **Deleted:** `ResourceDictionary.Push/PopRequestedThemeForSubTree(+ByName)`, the `Themes._requestedThemeForSubTree`
+    stack + `RequestedThemeForSubTree` property (so `GetActiveTheme()` collapses to `Themes.Active`, the app
+    fallback), `GetActiveThemeValue()` + the transitional `RefreshValue(owner)` wrapper, and the Phase 3 divergence
+    counter (`ThemeResolution.RecordOwnerThemeDivergence` + `OwnerThemeDivergenceCount`).
+  - **Key deep fix (WinUI alignment, no shortcut):** removing the global push exposed that Mechanism 1 must
+    thread the owner theme through the WHOLE resolution chain, not just the top-level lookup — including
+    assembly/system retrieval (`MasterDictionary`), the `RefreshValueCore` top-level fallback, and crucially
+    **`StaticResource` alias resolution** (`TryResolveAlias` → `ResolveResourceStatic`). Fluent v2 defines focus
+    and default-text brushes as aliases inside theme sub-dictionaries (e.g. `SystemControlFocusVisualPrimaryBrush
+    → FocusStrokeColorOuterBrush`); without theme-threading the alias, selecting the right sub-dictionary still
+    resolved the target against the app ambient. Made `TryResolveAlias`/`TryVisualTreeRetrieval`/`TryTopLevelRetrieval`/
+    `TryStaticRetrieval`/`TrySystemResourceRetrieval`/`TryAssemblyResourceRetrieval` theme-aware, matching WinUI's
+    `core->LookupThemeResource(theme, key)` which sets the theme context for the entire chain
+    (`CDependencyProperty::GetDefaultFocusVisualBrush`, DependencyProperty.cpp:309-353; xcpcore.cpp LookupThemeResource).
+  - **Two regressions root-caused (Root-Cause First, never re-added a push):** (a) the visual-state setter path
+    (`ApplyVisualStateSetter`) resolved the app theme — fixed by threading the setter target's theme into
+    `TryVisualTreeRetrieval`; (b) the manual-`LoadContent`-without-attach repro asserted the band-aid's build-time
+    resolution, which WinUI doesn't do (it establishes template-content theme at `Enter` from the logical/templated
+    parent) — updated the test to attach the realized content as a virtualizing panel does. The passing sibling
+    test `When_ContentTemplate_Materialized_In_Themed_Subtree_Uses_Subtree_Theme` already covers the WinUI-faithful
+    attach path.
+  - **§B leak guard added:** `Given_Theme_Materialization.When_Phase4_Global_Theme_Stack_Removed_Guard` — a reflection
+    guard that fails if `PushRequestedThemeForSubTree` or the `_requestedThemeForSubTree` stack is reintroduced.
+  - **Grep-clean:** no live Uno band-aid API anywhere in `src/`. The only remaining `RequestedThemeForSubTree`
+    substring matches are WinUI C++ citations / a reference comment (Control.crossruntime.cs `CControl::EnterImpl`
+    reference, ThemeWalkResourceCache citations) that document WinUI's own ambient slot — kept for port fidelity;
+    the reflection guard (not grep) is the authoritative protection against reintroducing the Uno API.
+  - Built `SamplesApp.Skia.Generic` (Release, net10.0, `UnoFastDevBuild`) clean (0 errors). `/runtime-tests` theming
+    suite + `Given_Theme_Materialization` (Skia Desktop): **144/145** (lone failure = the pre-existing GC flake
+    `When_Flyout_Closed_Target_Does_Not_Hold_Flyout`, fails on baseline too). T1/T2/T3/T6/T7 + the element-theme /
+    code-behind-style / uno #23177 / focus-visual / visual-state repros all green with ZERO band-aids and no global
+    stack; §B guard green; zero `[THEME-P3-DIVERGENCE]` lines (counter gone). `dotnet format whitespace
+    --verify-no-changes` clean on all changed files. WASM/native heads + `/winui-runtime-tests` oracle deferred
+    (per carry-over notes).
 
 ---
 
