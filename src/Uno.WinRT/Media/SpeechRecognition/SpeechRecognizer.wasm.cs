@@ -47,18 +47,36 @@ namespace Windows.Media.SpeechRecognition
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
 			{
-				// TrySetException: the completion source may already be completed (a result arrived,
-				// or it was cancelled by Dispose), in which case the failure is only logged.
-				if (speechRecognizer._currentCompletionSource?.TrySetException(
-						new InvalidOperationException($"Speech recognition failed with '{error}'")) != true)
+				// Web Speech reports benign terminations (no-speech, aborted, no-match) and genuine
+				// failures (network, not-allowed, …) through the same "error" channel. Mirror UWP and
+				// complete with a SpeechRecognitionResult carrying the mapped Status instead of throwing,
+				// so every outcome flows back to the caller exactly like a successful recognition.
+				speechRecognizer.OnStateChanged(SpeechRecognizerState.Idle);
+				var recognitionResult = new SpeechRecognitionResult()
 				{
-					if (typeof(SpeechRecognizer).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
-					{
-						typeof(SpeechRecognizer).Log().LogError($"Speech recognition failed with '{error}'");
-					}
-				}
+					Text = string.Empty,
+					Status = MapErrorToStatus(error)
+				};
+
+				// TrySetResult: ignore the report if the source was already completed or cancelled.
+				speechRecognizer._currentCompletionSource?.TrySetResult(recognitionResult);
 			}
 		}
+
+		private static SpeechRecognitionResultStatus MapErrorToStatus(string error) =>
+			error switch
+			{
+				"no-speech" => SpeechRecognitionResultStatus.TimeoutExceeded,
+				"no-match" => SpeechRecognitionResultStatus.Success,
+				"aborted" => SpeechRecognitionResultStatus.UserCanceled,
+				"audio-capture" => SpeechRecognitionResultStatus.MicrophoneUnavailable,
+				"not-allowed" => SpeechRecognitionResultStatus.MicrophoneUnavailable,
+				"service-not-allowed" => SpeechRecognitionResultStatus.MicrophoneUnavailable,
+				"network" => SpeechRecognitionResultStatus.NetworkFailure,
+				"language-not-supported" => SpeechRecognitionResultStatus.TopicLanguageNotSupported,
+				"bad-grammar" => SpeechRecognitionResultStatus.GrammarCompilationFailure,
+				_ => SpeechRecognitionResultStatus.Unknown
+			};
 
 		[JSExport]
 		internal static Task DispatchErrorAsync(string instanceId, string error)
@@ -94,7 +112,8 @@ namespace Windows.Media.SpeechRecognition
 				var recognitionResult = new SpeechRecognitionResult()
 				{
 					Text = result,
-					RawConfidence = confidence
+					RawConfidence = confidence,
+					Status = SpeechRecognitionResultStatus.Success
 				};
 
 				// TrySetResult: ignore a late/duplicate result if the source was already completed.
@@ -127,8 +146,15 @@ namespace Windows.Media.SpeechRecognition
 
 			if (!recognizeResult)
 			{
-				throw new InvalidOperationException(
-					"Speech recognizer is not available on this device.");
+				_currentCompletionSource = null;
+
+				// No recognition engine in this browser. Report it through the result/status contract
+				// rather than throwing, consistent with the other completion paths.
+				return new SpeechRecognitionResult()
+				{
+					Text = string.Empty,
+					Status = SpeechRecognitionResultStatus.Unknown
+				};
 			}
 
 			var result = await _currentCompletionSource.Task;
