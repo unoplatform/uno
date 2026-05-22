@@ -255,11 +255,14 @@ public class Given_Theme_Materialization
 	// ---- T4 — S4: flyout first open from a Light region uses that region's theme ----
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 	public async Task When_Flyout_First_Open_From_Light_Region_Uses_Region_Theme()
 	{
 		// S4. A flyout opened from a Light island must show Light content on the FIRST open under a
 		// Dark ambient (today it heals only on the second open). Asserts the resolved sentinel value,
 		// not just ActualTheme, and that first-open == second-open.
+		// Excluded on native: element-level theme inheritance is a Skia/WASM feature — native targets
+		// support OS + application theme only (the flyout follows the app/OS theme there).
 #if HAS_UNO
 		using var _ = ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Dark);
 		await WindowHelper.WaitForIdle();
@@ -317,11 +320,13 @@ public class Given_Theme_Materialization
 	// ---- T5 — S4: popup first open inherits the opener's theme ----
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 	public async Task When_Popup_First_Open_In_Light_Region_Has_Region_Theme()
 	{
 		// S4 (isolated popup path). A bare Popup whose child binds the sentinel must resolve the
-		// opener island's Light theme on the FIRST open under a Dark ambient. Today this relies on a
-		// second-open heal.
+		// opener island's Light theme on the FIRST open under a Dark ambient.
+		// Excluded on native: element-level theme inheritance is a Skia/WASM feature — native targets
+		// support OS + application theme only (the popup child follows the app/OS theme there).
 #if HAS_UNO
 		using var _ = ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Dark);
 		await WindowHelper.WaitForIdle();

@@ -752,16 +752,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		// MUX Reference: FlyoutBase_partial.cpp ForwardThemeToPresenter (lines 1534-1592)
-		// (D6) WinUI's ForwardThemeToPresenter walks up from the placement target for the nearest
-		// non-Default RequestedTheme and forwards only that explicit element override; the app/inherited
-		// theme reaches the presenter by a separate path (the popup child's logical-parent inheritance at
-		// Enter, plus ActualTheme's fallback to the app/OS base theme — framework.cpp:3984-3991). Uno
-		// instead forwards the placement target's *effective* ActualTheme directly. This themes a flyout
-		// opened over app-themed (not element-themed) content correctly on the FIRST open, and it composes
-		// with the per-object theme established at Enter (D2): once Phase 7 wires that establishment on
-		// native, target.ActualTheme reflects the full inherited theme there too, so this single line gives
-		// native first-open parity without re-introducing a theme push. ActualTheme is always Light or Dark
-		// (never Default), so the presenter and popup receive an explicit base theme.
+		// Forwards the placement target's theme to the presenter and popup so the flyout matches the region
+		// it was opened from. Element-level theme inheritance is a Skia/WASM (enhanced-lifecycle) feature;
+		// native targets support OS + application theme only (plan.md Phase 7), so the forwarded theme is
+		// computed differently per platform below and native behavior is intentionally left unchanged.
 		private void ForwardThemeToPresenter()
 		{
 			if (_popup?.Child is not Control presenter || Target is not { } target)
@@ -779,8 +773,37 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				return;
 			}
 
-			// The placement target's effective theme (its own, inherited, or app/OS base), always Light/Dark.
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			// (D6) Forward the placement target's *effective* ActualTheme (its own, inherited, or app/OS
+			// base) — always Light/Dark. Unlike WinUI's literal walk for the nearest explicit RequestedTheme
+			// (which relies on logical-parent inheritance + ActualTheme's app fallback to cover app-themed
+			// content), reading ActualTheme directly themes a flyout opened over app-themed content correctly
+			// on the FIRST open and keys on the per-object theme established at Enter (D2).
 			var requestedTheme = target.ActualTheme;
+#else
+			// Native supports OS + application theme only (no element-level theme inheritance / per-object
+			// theme at Enter). Keep the legacy WinUI walk for the nearest explicitly-set RequestedTheme so
+			// native theming support is unchanged by this refactor.
+			var requestedTheme = ElementTheme.Default;
+			DependencyObject current = target;
+			while (current is FrameworkElement currentFe)
+			{
+				requestedTheme = currentFe.RequestedTheme;
+				if (requestedTheme != ElementTheme.Default)
+				{
+					break;
+				}
+
+				var parent = VisualTreeHelper.GetParent(current);
+				if (parent is PopupRoot)
+				{
+					// If the target is in a Popup's visual tree, skip PopupRoot and use the logical parent.
+					parent = currentFe.Parent;
+				}
+
+				current = parent;
+			}
+#endif
 
 			if (requestedTheme != presenterTheme)
 			{
