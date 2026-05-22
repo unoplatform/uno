@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
 /// <summary>
-/// Abstraction for X11 input method backends (IBus D-Bus, Fcitx D-Bus, XIM fallback).
+/// Abstraction for X11 D-Bus input method backends (IBus, Fcitx).
 /// Consumed by <see cref="X11KeyboardInputSource"/> and <see cref="X11ImeTextBoxExtension"/>.
 /// </summary>
 internal interface IX11InputMethod : IDisposable

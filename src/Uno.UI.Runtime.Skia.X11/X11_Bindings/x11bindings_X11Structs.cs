@@ -757,11 +757,6 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields, typeof(XGravityEvent))]
 		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields, typeof(XIconSize))]
 		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields, typeof(XImage))]
-		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields, typeof(XIMFeedbackStruct))]
-		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields, typeof(XIMPreeditCaretCallbackStruct))]
-		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields, typeof(XIMPreeditDrawCallbackStruct))]
-		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields, typeof(XIMStyles))]
-		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields, typeof(XIMText))]
 		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields, typeof(XKeyBoardState.AutoRepeats))]
 		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields, typeof(XKeyBoardState))]
 		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields, typeof(XKeyEvent))]
@@ -772,7 +767,6 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields, typeof(XModifierKeymap))]
 		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields, typeof(XMotionEvent))]
 		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields, typeof(XNoExposeEvent))]
-		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields, typeof(XPoint))]
 		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields, typeof(XPropertyEvent))]
 		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields, typeof(XRectangle))]
 		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields, typeof(XReparentEvent))]
@@ -1865,20 +1859,6 @@ namespace Uno.WinUI.Runtime.Skia.X11
 	}
 
 	[Flags]
-	public enum XIMProperties
-	{
-		XIMPreeditArea = 0x0001,
-		XIMPreeditCallbacks = 0x0002,
-		XIMPreeditPosition = 0x0004,
-		XIMPreeditNothing = 0x0008,
-		XIMPreeditNone = 0x0010,
-		XIMStatusArea = 0x0100,
-		XIMStatusCallbacks = 0x0200,
-		XIMStatusNothing = 0x0400,
-		XIMStatusNone = 0x0800,
-	}
-
-	[Flags]
 	public enum WindowType
 	{
 		Client = 1,
@@ -1930,21 +1910,6 @@ namespace Uno.WinUI.Runtime.Skia.X11
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
-	public unsafe struct XIMStyles
-	{
-		public ushort count_styles;
-		public IntPtr* supported_styles;
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	[Serializable]
-	public struct XPoint
-	{
-		public short X;
-		public short Y;
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
 	[Serializable]
 	public struct XRectangle
 	{
@@ -1954,27 +1919,6 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		public short H;
 	}
 
-
-	[StructLayout(LayoutKind.Sequential)]
-	[Serializable]
-	public class XIMCallback
-	{
-		public IntPtr client_data;
-		public XIMProc callback;
-		[NonSerialized] private GCHandle gch;
-
-		public XIMCallback(IntPtr clientData, XIMProc proc)
-		{
-			this.client_data = clientData;
-			this.gch = GCHandle.Alloc(proc);
-			this.callback = proc;
-		}
-
-		~XIMCallback()
-		{
-			gch.Free();
-		}
-	}
 
 	[StructLayout(LayoutKind.Sequential)]
 	public unsafe struct XImage
@@ -2009,102 +1953,6 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		public IntPtr blue_mask;
 		public int colormap_size;
 		public int bits_per_rgb;
-	}
-
-	public enum XIMFeedback
-	{
-		Reverse = 1,
-		Underline = 2,
-		Highlight = 4,
-		Primary = 32,
-		Secondary = 64,
-		Tertiary = 128,
-	}
-
-	public struct XIMFeedbackStruct
-	{
-		public byte FeedbackMask; // one or more of XIMFeedback enum
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	public struct XIMText
-	{
-		public ushort Length;
-		public IntPtr Feedback; // to XIMFeedbackStruct
-		public int EncodingIsWChar;
-		public IntPtr String; // it could be either char* or wchar_t*
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	public struct XIMPreeditDrawCallbackStruct
-	{
-		public int Caret;
-		public int ChangeFirst;
-		public int ChangeLength;
-		public IntPtr Text; // to XIMText
-	}
-
-	public enum XIMCaretDirection
-	{
-		XIMForwardChar,
-		XIMBackwardChar,
-		XIMForwardWord,
-		XIMBackwardWord,
-		XIMCaretUp,
-		XIMCaretDown,
-		XIMNextLine,
-		XIMPreviousLine,
-		XIMLineStart,
-		XIMLineEnd,
-		XIMAbsolutePosition,
-		XIMDontChange
-	}
-
-	public enum XIMCaretStyle
-	{
-		IsInvisible,
-		IsPrimary,
-		IsSecondary
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	public struct XIMPreeditCaretCallbackStruct
-	{
-		public int Position;
-		public XIMCaretDirection Direction;
-		public XIMCaretStyle Style;
-	}
-
-	// only PreeditStartCallback requires return value though.
-	public delegate int XIMProc(IntPtr xim, IntPtr clientData, IntPtr callData);
-
-	public static class XNames
-	{
-		public const string XNVaNestedList = "XNVaNestedList";
-		public const string XNQueryInputStyle = "queryInputStyle";
-		public const string XNClientWindow = "clientWindow";
-		public const string XNInputStyle = "inputStyle";
-		public const string XNFocusWindow = "focusWindow";
-		public const string XNResourceName = "resourceName";
-		public const string XNResourceClass = "resourceClass";
-
-		// XIMPreeditCallbacks delegate names.
-		public const string XNPreeditStartCallback = "preeditStartCallback";
-		public const string XNPreeditDoneCallback = "preeditDoneCallback";
-		public const string XNPreeditDrawCallback = "preeditDrawCallback";
-		public const string XNPreeditCaretCallback = "preeditCaretCallback";
-		public const string XNPreeditStateNotifyCallback = "preeditStateNotifyCallback";
-		public const string XNPreeditAttributes = "preeditAttributes";
-		// XIMStatusCallbacks delegate names.
-		public const string XNStatusStartCallback = "statusStartCallback";
-		public const string XNStatusDoneCallback = "statusDoneCallback";
-		public const string XNStatusDrawCallback = "statusDrawCallback";
-		public const string XNStatusAttributes = "statusAttributes";
-
-		public const string XNArea = "area";
-		public const string XNAreaNeeded = "areaNeeded";
-		public const string XNSpotLocation = "spotLocation";
-		public const string XNFontSet = "fontSet";
 	}
 
 	[StructLayout(LayoutKind.Sequential)]

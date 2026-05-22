@@ -17,8 +17,8 @@ internal static class X11InputMethodDetector
 	private const string Fcitx4ServiceName = "org.fcitx.Fcitx";
 
 	/// <summary>
-	/// Detect the active IME and create a D-Bus client for it.
-	/// Returns null if no D-Bus IME is available (XIM fallback should be used).
+	/// Detect the active IME and create a D-Bus client for it. Returns null when no
+	/// IBus/Fcitx service is reachable — callers should treat that as "IME disabled".
 	/// </summary>
 	public static async Task<IX11InputMethod?> DetectAndCreateAsync()
 	{
@@ -28,7 +28,7 @@ internal static class X11InputMethodDetector
 		{
 			if (typeof(X11InputMethodDetector).Log().IsEnabled(LogLevel.Debug))
 			{
-				typeof(X11InputMethodDetector).Log().Debug("IME explicitly disabled via UNO_IM_MODULE=none. Using XIM fallback.");
+				typeof(X11InputMethodDetector).Log().Debug("IME explicitly disabled via UNO_IM_MODULE=none.");
 			}
 			return null;
 		}
@@ -39,7 +39,7 @@ internal static class X11InputMethodDetector
 		{
 			if (typeof(X11InputMethodDetector).Log().IsEnabled(LogLevel.Warning))
 			{
-				typeof(X11InputMethodDetector).Log().Warn("No D-Bus session bus available. Using XIM fallback.");
+				typeof(X11InputMethodDetector).Log().Warn("No D-Bus session bus available — IME will be disabled.");
 			}
 			return null;
 		}
@@ -94,7 +94,7 @@ internal static class X11InputMethodDetector
 
 			if (typeof(X11InputMethodDetector).Log().IsEnabled(LogLevel.Debug))
 			{
-				typeof(X11InputMethodDetector).Log().Debug("No D-Bus IME service is running. Using XIM fallback.");
+				typeof(X11InputMethodDetector).Log().Debug("No D-Bus IME service is running — IME will be disabled.");
 			}
 			return null;
 		}

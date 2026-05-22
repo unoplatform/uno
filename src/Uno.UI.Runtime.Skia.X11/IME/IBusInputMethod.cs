@@ -110,10 +110,9 @@ internal sealed class IBusInputMethod : IX11InputMethod
 		}
 		catch (DBusConnectionClosedException)
 		{
-			// IBus service disconnected — disable and fall back to XIM
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().Warn("IBus D-Bus connection lost. Falling back to XIM.");
+				this.Log().Warn("IBus D-Bus connection lost — IME will be disabled.");
 			}
 			_isEnabled = false;
 			return false;
