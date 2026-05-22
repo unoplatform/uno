@@ -102,8 +102,8 @@ stages:
     parameters:
       poolName: '$(windowsScaledPool)'
 
-- stage: devserver_tests_linux
-  displayName: Tests - DevServer (Linux)
+- stage: addin_version_alignment
+  displayName: Tests - Add-in Version Alignment
   dependsOn: []
 
   jobs:

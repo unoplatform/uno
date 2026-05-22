@@ -2,89 +2,41 @@ parameters:
   poolName: ''
 
 jobs:
-- job: DevServer_Tests_Linux
-  displayName: 'Run DevServer Tests (Linux)'
-  timeoutInMinutes: 30
+- job: AddIn_Version_Alignment
+  displayName: 'Run'
+  timeoutInMinutes: 15
   cancelTimeoutInMinutes: 0
 
   pool: ${{ parameters.poolName }}
 
   variables:
-    CombinedConfiguration: Release|Any CPU
     CI_Build: true
 
   steps:
   - checkout: self
     clean: true
+    # Full clone (no fetchDepth) — Directory.Build.props references NBGV-set properties.
+    # While this minimal step does not run the NBGV task itself, a deep clone keeps any
+    # incidental NBGV usage during restore from failing on missing git history.
 
-  - template: ../templates/gitversion.yml
+  # Single .NET SDK install (the one pinned in build/ci/net10/_global.json). The
+  # validation test targets $(NetCurrent) = net10.0 and the runtime/test platform that
+  # the SDK ships with is enough — no separate net8/net9 SDK is needed because the
+  # test only restores three NuGet packages and walks their static AssemblyRef tables.
   - template: ../templates/dotnet-install.yml
 
-  # Required to build fixtures targeting net8.0 / net9.0 (used by DevServer integration tests).
-  - task: UseDotNet@2
-    displayName: Install .NET 9 SDK
-    inputs:
-      packageType: 'sdk'
-      version: '9.0.300'
-      installationPath: $(DOTNET_INSTALL_DIR)
-
-  - task: UseDotNet@2
-    displayName: Install .NET 8 SDK
-    inputs:
-      packageType: 'sdk'
-      version: '8.0.x'
-      installationPath: $(DOTNET_INSTALL_DIR)
-
-  # This stage runs two complementary checks:
-  #
-  #   1. Uno.Sdk.AddInVersionValidation.Tests — the regression gate that fails whenever the
-  #      add-in packages declared in src/Uno.Sdk/packages.json have misaligned AssemblyRef
-  #      versions. RED here means add-in maintainers need to align their dependencies before
-  #      this PR can merge.
-  #
-  #   2. Uno.UI.RemoteControl.DevServer.Tests — the host-side integration tests that verify
-  #      add-in loading and cross-add-in type sharing. GREEN here means the host correctly
-  #      handles whatever the SDK ships.
-  #
-  # Kept isolated from the heavier Windows unit-tests stage so PR authors see add-in
-  # resolution regressions immediately, on Linux (the cheapest agent class).
-  - pwsh: |
-      dotnet build src/Uno.Sdk.AddInVersionValidation.Tests/Uno.Sdk.AddInVersionValidation.Tests.csproj `
-        -c Release `
-        -p:UnoTargetFrameworkOverride=net10.0 `
-        -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true `
-        -bl:$(build.artifactstagingdirectory)/addin-validation-build.binlog
-    displayName: Build add-in version validation
-
-  - pwsh: |
-      dotnet test --project src/Uno.Sdk.AddInVersionValidation.Tests/Uno.Sdk.AddInVersionValidation.Tests.csproj `
-        -c Release `
-        -p:UnoTargetFrameworkOverride=net10.0 `
-        -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true `
-        --no-build `
-        --no-progress `
-        --report-trx `
+  # Regression gate: Uno.Sdk.AddInVersionValidation.Tests scans every DevServer add-in
+  # declared in src/Uno.Sdk/packages.json for cross-package AssemblyRef version mismatches.
+  # The job is intentionally RED whenever the add-in maintainers ship a Uno.Sdk version
+  # with misaligned dependencies, and turns GREEN once they align them. The heavier
+  # DevServer host-side integration tests run on the Windows unit_tests stage as part
+  # of the regular slnf.
+  - script: |
+      dotnet test --project src/Uno.Sdk.AddInVersionValidation.Tests/Uno.Sdk.AddInVersionValidation.Tests.csproj \
+        -c Release \
+        --report-trx \
         --results-directory $(Build.SourcesDirectory)/artifacts/TestResults
-    displayName: Run add-in version validation (regression gate — RED until packages.json add-ins align their dependencies)
-
-  - pwsh: |
-      dotnet build src/Uno.UI.RemoteControl.DevServer.Tests/Uno.UI.RemoteControl.DevServer.Tests.csproj `
-        -c Release `
-        -p:UnoTargetFrameworkOverride=net10.0 `
-        -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true `
-        -bl:$(build.artifactstagingdirectory)/devserver-tests-build.binlog
-    displayName: Build DevServer tests + fixtures
-
-  - pwsh: |
-      dotnet test --project src/Uno.UI.RemoteControl.DevServer.Tests/Uno.UI.RemoteControl.DevServer.Tests.csproj `
-        -c Release `
-        -p:UnoTargetFrameworkOverride=net10.0 `
-        -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true `
-        --no-build `
-        --no-progress `
-        --report-trx `
-        --results-directory $(Build.SourcesDirectory)/artifacts/TestResults
-    displayName: Run DevServer tests
+    displayName: 'Validate cross-add-in AssemblyRef alignment'
 
   - task: PublishTestResults@2
     displayName: Publish TRX Test Results
@@ -92,15 +44,7 @@ jobs:
       testResultsFormat: 'VSTest'
       testResultsFiles: '*.trx'
       searchFolder: '$(Build.SourcesDirectory)/artifacts/TestResults'
-      testRunTitle: 'DevServer Tests (Linux)'
+      testRunTitle: 'Add-in Version Alignment'
       mergeTestResults: true
     continueOnError: true
     condition: always()
-
-  - task: PublishBuildArtifacts@1
-    retryCountOnTaskFailure: 3
-    condition: always()
-    inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: devserver-tests-linux-logs
-      ArtifactType: Container
