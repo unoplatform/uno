@@ -49,7 +49,7 @@ jobs:
     displayName: Build DevServer tests + fixtures
 
   - pwsh: |
-      dotnet test src/Uno.UI.RemoteControl.DevServer.Tests/Uno.UI.RemoteControl.DevServer.Tests.csproj `
+      dotnet test --project src/Uno.UI.RemoteControl.DevServer.Tests/Uno.UI.RemoteControl.DevServer.Tests.csproj `
         -c Release `
         -p:UnoTargetFrameworkOverride=net10.0 `
         -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true `
