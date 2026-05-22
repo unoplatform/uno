@@ -23,7 +23,10 @@ One phase per session, strictly in order. Scenario labels S1–S5 are defined in
 
 ---
 
-## Phase 0 — working notes (IN PROGRESS — not complete; repro strategy decision pending)
+## Phase 0 — working notes (repros + baseline + test-hardening DONE; WinUI-oracle pending)
+
+> The "blocking decisions / 17-fail / repro-strategy" notes below this header are a **historical snapshot**
+> from an earlier session and are superseded by the **RESOLUTION** section at the bottom of this file.
 
 **Impl location:** branch `dev/mazi/theming-winui` is checked out at `D:\Work\uno` (the main worktree),
 1 commit past `master` (spec docs only). Spec: `specs/theming-winui-alignment/`.
@@ -80,16 +83,36 @@ Default-foreground / theme-leak (look deterministic — the target bug):
 `When_Parent_Resource_Override_On_Loaded`, `When_Theme_Changed`, `When_ActualThemeChanged_Throws`.
 Possibly flaky (GC/lifetime): `When_Flyout_Closed_Target_Does_Not_Hold_Flyout`.
 
-### OPEN DECISION (blocking — pending maintainer input)
-- **Q1 repro strategy:** (a) redesign T1–T10 to deterministically pin a Dark ambient + Light element and
-  target the paths that actually leak (default-foreground / dynamic-change / uncovered), iterating to RED;
-  (b) lean on the existing failing tests as the baseline repros (reclassify "keep green"); (c) maintainer
-  describes the NDA-safe uncovered control+trigger so repros match S1–S5 closely.
-- **Q2 OS-dark handling:** (a) always pin app theme for determinism + flag OS-only fails in baseline;
-  (b) add a deterministic OS=Dark-leak repro (simulate via `SystemThemeHelper`); (c) record baseline as-is.
+## RESOLUTION (current state — supersedes the snapshot above)
 
-### Next steps
-1. Resolve Q1/Q2. 2. (Re)author repros to be RED on Skia/WASM (and native for S4). 3. Run WASM + the
-existing-suite baseline; write `specs/theming-winui-alignment/baseline-results.md` (gitignored, NDA-safe).
-4. WinUI-oracle pass (`/winui-runtime-tests`) for WinUI-runnable tests; probe app for Uno-only behaviors.
-5. Tick Phase 0 + commit + push.
+### Delivered this session
+1. **OS-theme simulation test API** — `SystemThemeHelper.SystemThemeOverride` (property, analogous to
+   `ScaleOverride`) + `ThemeHelper.UseSystemThemeOverride(ApplicationTheme)` (disposable; throws on WinUI so
+   callers add `[PlatformCondition(Exclude, NativeWinUI)]`). Lets runtime tests pin the ambient OS theme
+   deterministically and simulate runtime OS-theme changes. Validated OS-independent.
+2. **Repros rewritten to the correct polarity** — `Given_Theme_Materialization` (T1–T10): Light element-level
+   island under a (simulated) Dark ambient, mapped to the real issues (S1–S5 + uno #23177). Finding: minimal
+   repros are **band-aid-covered on Skia → green**; their role is WinUI-oracle + regression-guard + native-S4
+   (T4/T5 expected RED on Android/iOS). The deterministic Skia evidence is the existing suite under Dark.
+3. **Baseline** (gitignored `baseline-results.md`): existing theming suite **133/134 (Light) → 117/134 (Dark)**.
+4. **Root-caused & fixed the OS-dark "unreliability"** — it was a shared-state bug in `ThemeHelper.UseDarkTheme()`
+   (restored the shared `XamlRoot.Content` host from `Application.RequestedTheme`, leaving it Dark on a Dark OS
+   → poisoned later tests). `UseDarkTheme()` now restores the host's **original** theme. **Not** the product
+   ambient leak, and **not** test-hygiene. (Full analysis in `baseline-results.md` → RESOLUTION.)
+5. **Test-hardening** (maintainer's choice = per-test app-Light): affected theme tests pin
+   `ThemeHelper.UseApplicationLightTheme()` (`#if HAS_UNO`) + `[RequiresFullWindow]`. Exception:
+   `When_Detached_From_Window_While_Theme_Changed` stays embedded (nulls `WindowContent` mid-test).
+6. **Validated:** full theming suite + 10 repros = **143/144 on BOTH Light and Dark** (suite is now
+   OS-independent). The single remaining failure, `When_Flyout_Closed_Target_Does_Not_Hold_Flyout`, is a
+   pre-existing GC/lifetime flake that fails on Light too — unrelated to theming/OS, out of scope.
+
+### Files changed (staged, not committed)
+- `src/Uno.UWP/Helpers/Theming/SystemThemeHelper.cs` — `SystemThemeOverride`.
+- `src/Uno.UI.RuntimeTests/Helpers/ThemeHelper.cs` — `UseSystemThemeOverride` + `UseDarkTheme` fix.
+- `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml/Given_Theme_Materialization.cs` — rewritten repros.
+- `Given_ElementTheme.cs`, `Given_ThemeResource.cs`, `Given_FrameworkElement_ThemeResources.cs` — hardening.
+
+### Remaining for Phase 0
+- **WinUI-oracle pass** (`/winui-runtime-tests`): confirm the WinUI-portable repros (T1–T6, T8) are GREEN on
+  native WinUI; probe-app for the Uno-only ones (T7/T9/T10). This is the last Phase 0 acceptance gate.
+- Then Phase 0 is fully ticked → proceed to Phase 1 (per-object theme on `DependencyObjectStore`, D1).
