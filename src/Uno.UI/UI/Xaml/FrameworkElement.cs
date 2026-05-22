@@ -421,26 +421,13 @@ namespace Microsoft.UI.Xaml
 			this.StoreTryEnableHardReferences();
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
-			// Inherit theme from parent if we don't have explicit RequestedTheme
-			if (RequestedTheme == ElementTheme.Default)
-			{
-				var parent = this.GetParent() as UIElement;
-				// Only inherit if our theme hasn't already been set (e.g., by
-				// NotifyThemeChanged from Popup open code before this deferred
-				// Loading fires). Without this guard, popup content that was
-				// correctly themed by Popup.OnIsOpenChangedPartialNative would
-				// be overwritten with PopupRoot's stored theme during the
-				// first Measure pass.
-				if (GetTheme() == Theme.None && parent != null && parent.GetTheme() != Theme.None)
-				{
-					SetTheme(parent.GetTheme());
-				}
-			}
-			else
-			{
-				// We have explicit theme - ensure it's applied
-				NotifyThemeChanged(Theming.FromElementTheme(RequestedTheme));
-			}
+			// Theme establishment/inheritance now happens earlier, at tree Enter, for every DO
+			// (DependencyObjectStore.EstablishThemeAtEnter, ported from CDependencyObject::EnterImpl
+			// depends.cpp:1023-1048). The Enter walk runs synchronously on attach — before this Loading
+			// pass — so GetTheme() is already established by the time the push below reads it. The
+			// duplicate inherit / explicit-RequestedTheme block that used to live here has been removed
+			// (D2); the Enter step subsumes it (it inherits from the logical parent and re-applies this
+			// element's own RequestedTheme override via NotifyThemeChanged).
 
 			// Push the element's theme context so ThemeResource references in styles
 			// and bindings resolve with the correct theme, especially for elements

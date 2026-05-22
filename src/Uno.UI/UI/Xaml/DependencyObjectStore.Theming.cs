@@ -73,6 +73,70 @@ public partial class DependencyObjectStore
 
 	#endregion
 
+	#region Theme establishment at tree Enter — WinUI: CDependencyObject::EnterImpl theme block (depends.cpp:1023-1048)
+
+	/// <summary>
+	/// Establishes this object's theme as it goes live in the visual tree, inheriting from its
+	/// (logical) inheritance parent before any {ThemeResource} resolves. Mirrors the theme block of
+	/// WinUI's <c>CDependencyObject::EnterImpl</c>.
+	/// </summary>
+	/// <remarks>
+	/// MUX Reference: CDependencyObject::EnterImpl theme block — depends.cpp:1023-1048.
+	///
+	/// This is the D2 step. It runs for every <see cref="DependencyObject"/> going live so that
+	/// <see cref="GetTheme"/> is reliably non-<see cref="Theme.None"/> at the first {ThemeResource}
+	/// resolution — the precondition that lets resolution key on the owner's own theme (D3) rather than
+	/// a process-global ambient. WinUI hosts this on CDependencyObject; Uno hosts it here on the
+	/// <see cref="DependencyObjectStore"/> that every DO owns (and that carries <c>_theme</c> since D1),
+	/// invoked from the enhanced-lifecycle Enter walk (UIElement.Enter → DependencyObject_EnterImpl).
+	///
+	/// Ordering: the Enter walk runs synchronously when the element is attached
+	/// (UIElement.AddChild → ChildEnter → EnterImpl), which is before the first measure pass that raises
+	/// Loading (FrameworkElement.OnLoadingPartial → RaiseLoadingEventIfNeeded). {ThemeResource} refs
+	/// created by <c>ResourceResolver.ApplyResource</c> at parse time are deferred and first resolved at
+	/// load (OnLoadingPartial → UpdateThemeBindings(ResolvedOnLoading) → _resourceBindings tree walk), by
+	/// which point the theme established here is already in place. So theme establishment precedes the
+	/// first theme-ref resolution at load.
+	/// </remarks>
+	internal void EstablishThemeAtEnter()
+	{
+		var owner = ActualInstance;
+
+		// MUX: depends.cpp:1027-1037 — a FrameworkElement inherits from its *logical* inheritance parent
+		// (so popups/flyouts follow the opener: GetInheritanceParentInternal(fLogicalParent=TRUE),
+		// framework.cpp:3097-3130); other DOs use the (visual) inheritance parent. In Uno the store's
+		// inheritance Parent serves both. (Exact logical-parent-for-popups linkage is D5/Phase 5; today
+		// popup content is themed explicitly by Popup open code — Popup.WithPopupRoot.cs:114-118.)
+		var parent = Parent as DependencyObject;
+		var parentTheme = (parent as IDependencyObjectStoreProvider)?.Store.GetTheme() ?? Theme.None;
+
+		// MUX: depends.cpp:1039-1047
+		if (parent is not null && parentTheme != Theme.None && parentTheme != _theme)
+		{
+			if (owner is FrameworkElement frameworkElement)
+			{
+				// Inherit the parent theme and walk this subtree. NotifyThemeChanged re-applies this
+				// element's own RequestedTheme override (FrameworkElement.Theming.cs:180-183).
+				frameworkElement.NotifyThemeChanged(parentTheme);
+			}
+			else
+			{
+				// Non-FrameworkElement DO: there is no NotifyThemeChanged walk; adopt the parent theme
+				// and re-resolve this object's own theme references.
+				SetTheme(parentTheme);
+				UpdateAllThemeReferences(owner, cache: null);
+			}
+		}
+		else
+		{
+			// MUX: depends.cpp:1046 — update theme references to account for the new ancestor theme
+			// dictionaries now reachable from this position in the tree.
+			UpdateAllThemeReferences(owner, cache: null);
+		}
+	}
+
+	#endregion
+
 	#region Theme resource binding storage — WinUI: SetThemeResource / SetThemeResourceBinding (Theming.cpp lines 349-400)
 
 	/// <summary>
