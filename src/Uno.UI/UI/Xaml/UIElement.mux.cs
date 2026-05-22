@@ -1115,31 +1115,15 @@ namespace Microsoft.UI.Xaml
 			//	NotifyInheritanceContextChanged();
 			//}
 
-			//if (IsActiveInVisualTree)
-			//{
-			//	// If our theme is different from the parent, make sure we walk the subtree.
-			//	DependencyObject? pParent = null;
-
-			//	if (this is FrameworkElement thisAsFe)
-			//	{
-			//		// Get logical parent so popups and flyouts inherit theme changes
-			//		pParent = GetInheritanceParentInternal(true /* fLogicalParent */);
-			//	}
-			//	else
-			//	{
-			//		pParent = GetParentInternal(false /* public */);
-			//	}
-
-			//	if (pParent is not null && pParent.GetTheme() != Theme.None && pParent.GetTheme() != m_theme)
-			//	{
-			//		NotifyThemeChanged(pParent.GetTheme());
-			//	}
-			//	else
-			//	{
-			//		// Update theme references to account for new ancestor theme dictionaries.
-			//		UpdateAllThemeReferences();
-			//	}
-			//}
+			// MUX: depends.cpp:1023-1048 — establish this object's theme from its (logical) inheritance
+			// parent now that it is live, before any {ThemeResource} resolves (D2). The logic lives on
+			// DependencyObjectStore (the CDependencyObject analog that carries _theme since D1); it is
+			// invoked here from the enhanced-lifecycle Enter walk. Native (non-enhanced-lifecycle) attach
+			// is wired in Phase 7 — this whole Enter walk is already gated by UNO_HAS_ENHANCED_LIFECYCLE.
+			if (IsActiveInVisualTree)
+			{
+				((IDependencyObjectStoreProvider)this).Store.EstablishThemeAtEnter();
+			}
 		}
 
 		internal virtual void EnterImpl(EnterParams @params, int depth)
