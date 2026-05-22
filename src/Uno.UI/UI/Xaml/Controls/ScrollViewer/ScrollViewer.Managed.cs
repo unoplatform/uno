@@ -213,30 +213,21 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		#endregion
 
-		// Compensates for an ItemsRepeater layout-origin shift by adjusting both the SCP's
-		// VerticalOffset / HorizontalOffset DPs AND the visual.AnchorPoint composition value in
-		// the same frame. The IR shifts items by `-m_lastExtent.Y` during arrange
-		// (FlowLayoutAlgorithm.cs:707-708); without this compensating viewport shift the user sees
-		// items physically jump in the viewport (issue #23041's flicker symptom).
-		partial void ApplyOffsetShift(double dx, double dy)
+		// Compensates for an ItemsRepeater layout-origin shift WITHOUT modifying the user's
+		// logical scroll offsets. The IR shifts items by `-m_lastExtent.Y` during arrange
+		// (FlowLayoutAlgorithm.cs:707-708); the SCP's visual.AnchorPoint formula
+		// (LayoutOrigin - offset, see ComputeAnchorPointTarget) absorbs that origin shift so
+		// the user's logical position stays stable across StackLayout's anchor-index churn —
+		// without this refresh the AnchorPoint stays at its pre-shift value and items visibly
+		// jump (issue #23041's flicker symptom).
+		partial void ApplyOffsetShift()
 		{
 			if (_presenter is not ScrollContentPresenter scp)
 			{
 				return;
 			}
 
-			// Update offsets atomically with the shift, both on the SCP (the IScrollInfo source
-			// of truth) and on the visual.AnchorPoint (the composition rendering offset). Setting
-			// AnchorPoint synchronously to match the new offset means no animation interruption is
-			// visible: at the same render frame, the IR's content moves by `-shift` in IR-local
-			// coords (because m_layoutExtent shifted) and the visual's view into that content
-			// moves by `+shift` — net zero on screen.
-			scp.ApplyOffsetShift(dx, dy);
-
-			// Mirror the SCP's new offsets into the SV DP layer so external consumers see a
-			// consistent value. Use the intermediate flag because this is a layout-driven
-			// adjustment, not a user/programmatic scroll request.
-			scp.RaiseScrolledForLayoutShift();
+			scp.OnLayoutOriginShifted();
 		}
 	}
 }

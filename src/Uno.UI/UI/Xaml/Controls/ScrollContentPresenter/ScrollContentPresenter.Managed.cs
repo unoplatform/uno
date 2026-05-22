@@ -318,40 +318,62 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// Adjust the offsets and the visual's AnchorPoint in lockstep with an ItemsRepeater
-		// layout-origin shift. Called via ScrollViewer.OnRepeaterLayoutOriginShifted when the IR's
-		// FlowLayoutAlgorithm reports a non-zero `m_layoutExtent` shift caused by StackLayout's
-		// anchor-based extent estimation. Visual.AnchorPoint is set instantly (no animation) to
-		// the shifted target — this snapshot moves with the IR's content so the user sees no
-		// visual jump on the same frame.
-		internal void ApplyOffsetShift(double dx, double dy)
+		// Refresh visual.AnchorPoint to reflect the IR's current LayoutOrigin without changing
+		// the user's logical scroll offsets. Called via ScrollViewer.OnRepeaterLayoutOriginShifted
+		// when the IR's FlowLayoutAlgorithm reports a non-zero m_layoutExtent shift driven by
+		// StackLayout's anchor-based extent estimation. Setting AnchorPoint = LayoutOrigin -
+		// offset (instead of -offset) keeps the user's logical scroll position (VerticalOffset)
+		// stable across the origin shift while compensating for the items' new IR-local
+		// arrangement (FlowLayoutAlgorithm.cs:707-708 translates by -m_lastExtent.Y). VerticalOffset
+		// itself is NOT modified — preserving its meaning as "scroll position into content".
+		internal void OnLayoutOriginShifted()
 		{
-			HorizontalOffset += dx;
-			VerticalOffset += dy;
-
 			if (Content is UIElement contentElt && contentElt.Visual is { } visual)
 			{
-				// If a wheel-driven AnchorPoint animation is in flight, terminating it via
-				// StopAnimation followed by an instantaneous AnchorPoint update keeps the visual
-				// position consistent with the new offsets at the same frame as the IR's content
-				// shift. The user's perceived scroll motion stays smooth because the next wheel
-				// event (typically within 16ms) will re-arm the animation toward an updated
-				// target. Without resetting the animation, it would continue toward a stale
-				// AnchorPoint target and visibly fight the shift.
+				var origin = (Content as global::Microsoft.UI.Xaml.Controls.ItemsRepeater)?.LayoutOrigin
+					?? new Point(0, 0);
+				var newAnchor = ComputeAnchorPointTarget(HorizontalOffset, VerticalOffset);
+				global::System.Console.WriteLine(
+					$"[SCROLL-DIAG] OnLayoutOriginShifted: origin=({origin.X:F1},{origin.Y:F1}) "
+					+ $"H={HorizontalOffset:F1} V={VerticalOffset:F1} curAnchor=({visual.AnchorPoint.X:F1},{visual.AnchorPoint.Y:F1}) "
+					+ $"→ newAnchor=({newAnchor.X:F1},{newAnchor.Y:F1})");
 				visual.StopAnimation(nameof(global::Microsoft.UI.Composition.Visual.AnchorPoint));
-				visual.AnchorPoint = new global::System.Numerics.Vector2((float)-HorizontalOffset, (float)-VerticalOffset);
+				visual.AnchorPoint = newAnchor;
 			}
 		}
 
-		internal void RaiseScrolledForLayoutShift()
+		// Computes the visual.AnchorPoint target that places the user's logical (h, v) offset at
+		// the top-left of the viewport, accounting for the IR's LayoutOrigin if the content is an
+		// ItemsRepeater. FlowLayoutAlgorithm.Arrange shifts child bounds by `-m_lastExtent.X/Y`,
+		// so the visual must add LayoutOrigin to find the correct content position.
+		private global::System.Numerics.Vector2 ComputeAnchorPointTarget(double horizontalOffset, double verticalOffset)
 		{
-			Updated(HorizontalOffset, VerticalOffset, isIntermediate: true);
+			var origin = (Content as global::Microsoft.UI.Xaml.Controls.ItemsRepeater)?.LayoutOrigin
+				?? new Point(0, 0);
+			return new global::System.Numerics.Vector2(
+				(float)(origin.X - horizontalOffset),
+				(float)(origin.Y - verticalOffset));
+		}
+
+		// Inverse of ComputeAnchorPointTarget: given the current visual.AnchorPoint, return the
+		// logical (HorizontalOffset, VerticalOffset) it represents. Used by the AnchorPoint
+		// composition animation's frame callback to keep the SCP / SV offset DPs in sync with
+		// the animated visual position.
+		private (double h, double v) FromAnchorPoint(global::System.Numerics.Vector2 anchorPoint)
+		{
+			var origin = (Content as global::Microsoft.UI.Xaml.Controls.ItemsRepeater)?.LayoutOrigin
+				?? new Point(0, 0);
+			return (origin.X - anchorPoint.X, origin.Y - anchorPoint.Y);
 		}
 
 		private void Update(UIElement view, double horizontalOffset, double verticalOffset, double zoom, ScrollOptions options)
 		{
-			var target = new Vector2((float)-horizontalOffset, (float)-verticalOffset);
+			var target = ComputeAnchorPointTarget(horizontalOffset, verticalOffset);
 			var visual = view.Visual;
+			global::System.Console.WriteLine(
+				$"[SCROLL-DIAG] Update: H={horizontalOffset:F1} V={verticalOffset:F1} "
+				+ $"curAnchor=({visual.AnchorPoint.X:F1},{visual.AnchorPoint.Y:F1}) "
+				+ $"→ target=({target.X:F1},{target.Y:F1}) disAnim={options.DisableAnimation}");
 
 			// No matter the `options.DisableAnimation`, if we have an animation running
 			if (visual.TryGetAnimationController(nameof(Visual.AnchorPoint)) is { } controller
@@ -379,13 +401,18 @@ namespace Microsoft.UI.Xaml.Controls
 				var animation = compositor.CreateVector2KeyFrameAnimation();
 				animation.InsertKeyFrame(1.0f, target, easing);
 				animation.Duration = TimeSpan.FromSeconds(1);
-				void OnFrame(CompositionAnimation? _) => Updated(Math.Round(-visual.AnchorPoint.X), Math.Round(-visual.AnchorPoint.Y), true);
+				void OnFrame(CompositionAnimation? _)
+				{
+					var (h, v) = FromAnchorPoint(visual.AnchorPoint);
+					Updated(Math.Round(h), Math.Round(v), true);
+				}
 				void OnStopped(object? _, EventArgs __)
 				{
 					animation.AnimationFrame -= OnFrame;
 					animation.Stopped -= OnStopped;
 
-					Updated(Math.Round(-visual.AnchorPoint.X), Math.Round(-visual.AnchorPoint.Y), false);
+					var (h, v) = FromAnchorPoint(visual.AnchorPoint);
+					Updated(Math.Round(h), Math.Round(v), false);
 				}
 
 				animation.AnimationFrame += OnFrame;

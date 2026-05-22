@@ -224,21 +224,23 @@ namespace Microsoft.UI.Xaml.Controls
 			// (FlowLayoutAlgorithm.cs:707-708). When StackLayout's anchor-based extent estimation
 			// returns a different MajorStart between layout passes (which happens during scroll
 			// as the anchor index recomputes), m_lastExtent.X/Y shifts and items get arranged at
-			// different y-coordinates in the IR's local space. The IR computes the expected
-			// viewport shift here and the SV must apply it; otherwise the user sees items jump
-			// in the viewport (issue #23041's flicker symptom).
+			// different y-coordinates in the IR's local space. The SCP's visual.AnchorPoint
+			// formula already factors in IR.LayoutOrigin so VerticalOffset / HorizontalOffset
+			// keep their meaning across the shift — but the AnchorPoint must be REFRESHED with
+			// the new LayoutOrigin or the rendering stays at its pre-shift visual position and
+			// items visibly jump (issue #23041's flicker symptom).
 			//
-			// In WinUI's pipeline this shift propagates through SV.AnchoringArrangeOverride only
+			// In WinUI's pipeline the shift propagates through SV.AnchoringArrangeOverride only
 			// when VerticalAnchorRatio / HorizontalAnchorRatio is set (otherwise IsAnchoring
 			// returns false and the shift is dropped on the floor). Uno's classic SV with chat-
-			// style ItemsRepeater commonly leaves the ratio unset, so we instead push the shift
-			// directly to the SV via OnRepeaterLayoutOriginShifted — the same compensation, just
+			// style ItemsRepeater commonly leaves the ratio unset, so we trigger the AnchorPoint
+			// refresh directly via OnRepeaterLayoutOriginShifted — same visual compensation, just
 			// not gated on the user explicitly opting into anchor-ratio scrolling.
 			var _shiftDx = m_layoutExtent.X - extent.X;
 			var _shiftDy = m_layoutExtent.Y - extent.Y;
 			if ((_shiftDx != 0 || _shiftDy != 0) && m_scroller is ScrollViewer _shiftSv)
 			{
-				_shiftSv.OnRepeaterLayoutOriginShifted(_shiftDx, _shiftDy);
+				_shiftSv.OnRepeaterLayoutOriginShifted();
 			}
 
 			m_expectedViewportShift.X += _shiftDx;

@@ -904,6 +904,14 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
+			// Clear the request immediately so subsequent arranges don't re-fire recoerce.
+			// Recoerce is "one-shot per ChangeView" to avoid oscillating with TrimOverscroll
+			// when StackLayout's anchor-based extent estimate fluctuates between layout passes
+			// — without this, recoerce keeps pulling the offset up while trim keeps pushing it
+			// back down at every realization-driven extent shift.
+			_requestedVerticalOffset = double.NaN;
+			_requestedHorizontalOffset = double.NaN;
+
 			try
 			{
 				_isInternalChangeView = true;
@@ -930,25 +938,22 @@ namespace Microsoft.UI.Xaml.Controls
 		// the extent's MajorStart moves between 0 and a negative value). FlowLayoutAlgorithm.Arrange
 		// translates child bounds by `-m_lastExtent.Y` (FlowLayoutAlgorithm.cs:707-708), so when
 		// the origin shifts, items get arranged at different y-coordinates in the IR's local space.
-		// Without this compensating shift on the SV side, the items visually jump in the user's
-		// viewport — the flicker symptom of issue #23041.
+		// Without a compensating refresh on the SV's visual.AnchorPoint, items visually jump in
+		// the user's viewport — the flicker symptom of issue #23041.
 		//
-		// Mirrors the WinUI IR's expectation that the SV applies `m_expectedViewportShift` to its
-		// viewport offset (ViewportManagerWithPlatformFeatures.cpp:235-256). Uno's SV anchoring
-		// pipeline only fires that shift when VerticalAnchorRatio / HorizontalAnchorRatio is
-		// explicitly set; this entry point honors the IR's shift unconditionally so the
-		// realization-driven origin shift is never user-visible.
-		internal void OnRepeaterLayoutOriginShifted(double dx, double dy)
+		// The compensation is purely visual: VerticalOffset / HorizontalOffset stay unchanged
+		// (they represent the user's logical scroll position into content). The SCP's
+		// AnchorPoint formula already accounts for the IR's LayoutOrigin (see
+		// ComputeAnchorPointTarget in ScrollContentPresenter.Managed.cs); this entry point
+		// triggers a refresh so the new LayoutOrigin is reflected in the rendering immediately
+		// — without it, the AnchorPoint stays at its pre-shift value until the next ChangeView /
+		// wheel input.
+		internal void OnRepeaterLayoutOriginShifted()
 		{
-			if (dx == 0 && dy == 0)
-			{
-				return;
-			}
-
-			ApplyOffsetShift(dx, dy);
+			ApplyOffsetShift();
 		}
 
-		partial void ApplyOffsetShift(double dx, double dy);
+		partial void ApplyOffsetShift();
 
 		private void UpdateComputedVerticalScrollability(bool invalidate)
 		{
