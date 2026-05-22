@@ -56,4 +56,56 @@ public class Given_Xuid
 
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	public async Task When_Xuid_FilenamePrefixLayout()
+	{
+		// Same scenario as When_Xuid_Basic, but the resw lives under the spec
+		// filename layout (`Strings/Resources.language-en.resw`) rather than the
+		// folder layout. The generator must collapse the file to the same `Resources`
+		// resource map so x:Uid resolution still finds the key.
+		var xamlFile = new XamlFile("ContentDialog1.xaml", """
+		                                             <ContentDialog
+		                                             	x:Class="TestRepro.XuidGeneratorError"
+		                                             	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		                                             	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		                                             	x:Uid="XuidGeneratorErrorUid">
+		                                             </ContentDialog>
+		                                             """);
+
+		var resourceFile = new ResourceFile("", "Resources.language-en.resw",
+			"""
+			<?xml version="1.0" encoding="utf-8"?>
+			<root>
+			  <data name="XuidGeneratorErrorUid.PrimaryButtonText" xml:space="preserve">
+			    <value>SomeValue</value>
+			  </data>
+			</root>
+			""");
+
+		var test = new Verify.Test([xamlFile], [resourceFile])
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro;
+					public sealed partial class XuidGeneratorError : ContentDialog
+					{
+						public XuidGeneratorError()
+						{
+							this.InitializeComponent();
+						}
+					}
+					"""
+				}
+			},
+			ReferenceAssemblies = _Dotnet.CurrentAndroid.WithUnoPackage(),
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
 }

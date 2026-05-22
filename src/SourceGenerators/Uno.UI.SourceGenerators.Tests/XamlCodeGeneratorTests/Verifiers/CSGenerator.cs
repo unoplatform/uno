@@ -194,10 +194,16 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 
 				foreach (var resourceFile in _resourceFiles)
 				{
-					globalConfigBuilder.Append($@"[C:/Project/0/Strings/{resourceFile.Locale}/{resourceFile.FileName}]
+					// An empty Locale lets a test exercise the spec filename-suffix layout
+					// (`Strings/Resources.language-en.resw`) instead of the folder layout
+					// (`Strings/en/Resources.resw`).
+					var resourcePath = string.IsNullOrEmpty(resourceFile.Locale)
+						? $"C:/Project/0/Strings/{resourceFile.FileName}"
+						: $"C:/Project/0/Strings/{resourceFile.Locale}/{resourceFile.FileName}";
+					globalConfigBuilder.Append($@"[{resourcePath}]
 build_metadata.AdditionalFiles.SourceItemGroup = PRIResource
 ");
-					TestState.AdditionalFiles.Add(($"C:/Project/0/Strings/{resourceFile.Locale}/{resourceFile.FileName}", resourceFile.Contents));
+					TestState.AdditionalFiles.Add((resourcePath, resourceFile.Contents));
 				}
 
 				TestState.AnalyzerConfigFiles.Add(("/.globalconfig", globalConfigBuilder.ToString()));

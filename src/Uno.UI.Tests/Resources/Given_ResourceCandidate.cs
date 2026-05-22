@@ -75,6 +75,21 @@ namespace Uno.UI.Tests.Resources
 		[DataRow(@"Strings\language-ca-Es-VALENCIA\Resources.resw", @"Strings\Resources.resw", null, "ca-Es-VALENCIA", null)]
 		[DataRow(@"Strings\language-zh-Hans\Resources.resw", @"Strings\Resources.resw", null, "zh-Hans", null)]
 		[DataRow(@"Strings\language-quz-PE\Resources.resw", @"Strings\Resources.resw", null, "quz-PE", null)]
+		// Spec filename layout (`Strings\Resources.language-XX-XX.resw`) — the explicit
+		// `language-` / `lang-` prefix lets MakePri/WinUI place all language variants
+		// in one folder, which Uno must collapse to the same `Resources` resource map.
+		[DataRow(@"Strings\Resources.language-en-US.resw", @"Strings\Resources.resw", null, "en-US", null)]
+		[DataRow(@"Strings\Resources.language-cs-CZ.resw", @"Strings\Resources.resw", null, "cs-CZ", null)]
+		[DataRow(@"Strings\Resources.lang-de-DE.resw", @"Strings\Resources.resw", null, "de-DE", null)]
+		[DataRow(@"Strings\Resources.language-zh-Hans.resw", @"Strings\Resources.resw", null, "zh-Hans", null)]
+		[DataRow(@"Strings\Resources.language-quz-PE.resw", @"Strings\Resources.resw", null, "quz-PE", null)]
+		// Bare BCP-47 in resw filenames is NOT a language qualifier — matches WinUI/MakePri,
+		// which emits `PRI249: Invalid qualifier` and indexes such files under a separate
+		// non-localized resource map. Locking in the negative behavior prevents anyone
+		// from later relaxing it past the spec.
+		[DataRow(@"Strings\Resources.en-US.resw", @"Strings\Resources.en-US.resw", null, null, null)]
+		[DataRow(@"Strings\Resources.cs-CZ.resw", @"Strings\Resources.cs-CZ.resw", null, null, null)]
+		[DataRow(@"Strings\Resources.zh-Hans.resw", @"Strings\Resources.zh-Hans.resw", null, null, null)]
 		// MRT: bare BCP-47 language tags are only allowed as folder names.
 		// File-name segments must carry the explicit `lang-` / `language-`
 		// prefix — otherwise arbitrary filenames whose first subtag happens
