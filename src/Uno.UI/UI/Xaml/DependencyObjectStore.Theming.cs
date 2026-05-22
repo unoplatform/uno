@@ -24,6 +24,55 @@ namespace Microsoft.UI.Xaml;
 
 public partial class DependencyObjectStore
 {
+	#region Per-object theme — WinUI: CDependencyObject::m_theme (CDependencyObject.h:1761)
+
+	// MUX Reference: CDependencyObject.h:1757-1761
+	//   Theming::Theme m_theme : 5;
+	//   "Holds both the base theme (Light, Dark) and any HighContrast theme. ThemeNone indicates
+	//    that the initial theme is being used, and that no theme change has occurred. ThemeNone is
+	//    used to defer ThemeResourceExpression binding until the first theme change occurs, for
+	//    better perf."
+	//
+	// In WinUI every CDependencyObject — not just elements — carries a resolved theme, established
+	// at tree Enter (depends.cpp:1023-1048) and inherited from its (logical) inheritance parent.
+	// In Uno this previously lived on UIElement only (the D1 discrepancy); it now lives on the store
+	// that every DependencyObject owns, so non-UIElement DOs (brushes, setters, storyboards) also
+	// carry a theme. UIElement/FrameworkElement keep GetTheme()/SetTheme() as thin forwarders here.
+	private Theme _theme = Theme.None;
+
+	/// <summary>
+	/// Gets the current per-object theme. Defaults to <see cref="Theme.None"/> (no theme established).
+	/// </summary>
+	/// <remarks>MUX Reference: CDependencyObject::GetTheme — CDependencyObject.h:1648.</remarks>
+	internal Theme GetTheme() => _theme;
+
+	/// <summary>
+	/// Sets the per-object theme.
+	/// </summary>
+	internal void SetTheme(Theme theme) => _theme = theme;
+
+	// MUX Reference: CDependencyObject.h:300-302
+	//   XUINT32 fIsProcessingThemeWalk : 1;  // bit 16
+	//   "Indicates whether the DO is currently processing themes. It is used to prevent stack
+	//    overflows caused by cycles."
+	// WinUI packs this with other lifecycle bits in a DependencyObjectBitFields uint
+	// (corep.h:224-348), on every CDependencyObject — so it lives here on the store.
+	// (fIsProcessingEnterLeave, bit 15, currently still lives on UIElement; it can move here when
+	// Enter/Leave is generalized to every DO in a later phase.)
+	private bool _isProcessingThemeWalk;
+
+	/// <summary>
+	/// Gets whether this object is currently processing a theme walk (re-entrancy guard).
+	/// </summary>
+	internal bool IsProcessingThemeWalk => _isProcessingThemeWalk;
+
+	/// <summary>
+	/// Sets whether this object is currently processing a theme walk.
+	/// </summary>
+	internal void SetIsProcessingThemeWalk(bool value) => _isProcessingThemeWalk = value;
+
+	#endregion
+
 	#region Theme resource binding storage — WinUI: SetThemeResource / SetThemeResourceBinding (Theming.cpp lines 349-400)
 
 	/// <summary>
