@@ -184,26 +184,12 @@ namespace Microsoft.UI.Xaml
 		/// <returns>A new instance of the template</returns>
 		View? IFrameworkTemplateInternal.LoadContent(DependencyObject? templatedParent)
 		{
-			// When the template is materialized inside a themed subtree (e.g. an
-			// ancestor with RequestedTheme=Light while the app/OS is in Dark), the
-			// {ThemeResource} bindings in the template must resolve against that
-			// subtree's theme, not Themes.Active. Without this push, runtime
-			// materialization (DataGrid row virtualization, ContentPresenter
-			// re-materialization, etc.) would resolve against the application
-			// theme and capture the wrong value on non-FE DependencyObjects such
-			// as attached behaviors.
-			var needsThemePush = false;
-			if (templatedParent is UIElement templatedParentUIElement)
-			{
-				var baseTheme = Theming.GetBaseValue(templatedParentUIElement.GetTheme());
-				if (baseTheme is Theme.Light or Theme.Dark)
-				{
-					var themeKey = baseTheme == Theme.Light ? "Light" : "Dark";
-					ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
-					needsThemePush = true;
-				}
-			}
-
+			// D3 (Mechanism 1): {ThemeResource} bindings in the template resolve against the OWNER's own theme,
+			// threaded as a parameter through the resolution chain (ApplyResource → UpdateThemeReference →
+			// ResolveOwnerTheme). Template parts are not yet entered at build time (GetTheme() == None), so they
+			// resolve the app theme here and are re-themed when each part enters the live tree
+			// (DependencyObjectStore.EstablishThemeAtEnter, ported from CDependencyObject::EnterImpl
+			// depends.cpp:1023-1048). No global theme push is needed.
 			try
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
@@ -241,10 +227,6 @@ namespace Microsoft.UI.Xaml
 				TemplatedParentScope.PopScope();
 #endif
 				ResourceResolver.PopScope();
-				if (needsThemePush)
-				{
-					ResourceDictionary.PopRequestedThemeForSubTree();
-				}
 			}
 		}
 

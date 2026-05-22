@@ -4419,20 +4419,27 @@ public class Given_ElementTheme
 		await WindowHelper.WaitForLoaded(root);
 		await WindowHelper.WaitForIdle();
 
-		// Manually load the template content with the anchor as the templated parent
-		// — without adding it to the visual tree. The resolution captured by the
-		// template's bindings MUST be Light (Green) because the templated parent's
-		// effective theme is Light, regardless of the application theme.
+		// Materialize the template with the Light-themed ContentControl as templated parent, then attach it
+		// to the live tree — exactly what a virtualizing panel does when it realizes a row. The {ThemeResource}
+		// resolves to Light (Green) because the realized content's theme is established from its (logical)
+		// inheritance parent — the Light templated parent — when it enters the tree.
+		// MUX: WinUI establishes template-content theme at Enter (CDependencyObject::EnterImpl,
+		// depends.cpp:1023-1048), not at LoadContent; a pre-attach read would observe the app theme on WinUI
+		// too, so this repro attaches the realized content as the real virtualization path does.
 		var anchor = (ContentControl)root.FindName("anchor");
 		var template = (DataTemplate)root.Resources["ManualTemplate"];
 
 		var materializedRoot = (Border)template.LoadContent(anchor);
 		Assert.IsNotNull(materializedRoot);
 
+		anchor.Content = materializedRoot;
+		await WindowHelper.WaitForLoaded(materializedRoot);
+		await WindowHelper.WaitForIdle();
+
 		var brush = materializedRoot.Background as SolidColorBrush;
 		Assert.IsNotNull(brush, "Background should be a SolidColorBrush");
 		Assert.AreEqual(Colors.Green, brush.Color,
-			$"Template materialized for a Light-themed templated parent should resolve " +
+			$"Template realized for a Light-themed templated parent should resolve " +
 			$"{{ThemeResource}} to Green even though the app theme is Dark, got {brush.Color}. " +
 			$"This matches the scenario where a DataGrid row's template is realized while " +
 			$"the surrounding subtree is in Light mode but the application and OS are in Dark mode.");

@@ -1,9 +1,5 @@
 ﻿#nullable enable
 
-using System;
-using System.Collections.Generic;
-using Uno.Foundation.Logging;
-
 // Port of WinUI's per-object effective-theme resolution.
 //
 // MUX References:
@@ -72,45 +68,4 @@ internal static class ThemeResolution
 	private static DependencyObject? GetInheritanceParent(DependencyObject owner)
 		=> owner is IDependencyObjectStoreProvider provider ? provider.Store.Parent as DependencyObject : null;
 
-	// ── Phase 3 transitional equivalence proof (architecture.md §6) ────────────────────────────────
-	// While the legacy global theme stack (ResourceDictionary's _requestedThemeForSubTree + the 11
-	// band-aid pushes) and the new owner-theme parameter coexist, every in-tree {ThemeResource}
-	// resolution must select the SAME theme via either mechanism. At the single resolution choke point
-	// (DependencyObjectStore.UpdateThemeReference) we compare the owner's effective theme key — the new
-	// Mechanism-1 input — against ResourceDictionary.GetActiveTheme(), the legacy input. A run of the
-	// full theming suite + Given_Theme_Materialization with ZERO recorded divergences is the proof that
-	// Mechanism 1 is behavior-equivalent, and the gate before Phase 4 deletes the stack.
-	//
-	// This is intentionally a non-fatal logged counter, NOT a Debug.Assert: the suite is validated in a
-	// Release build (where Debug.Assert is compiled out), and a non-fatal counter also lets the whole run
-	// complete so every divergence is captured at once. Removed in Phase 4 together with the stack.
-	internal static long OwnerThemeDivergenceCount;
-	private static HashSet<string>? _reportedOwnerThemeDivergences;
-
-	/// <summary>
-	/// Records, at the single resolution choke point, any divergence between the owner's effective theme
-	/// (the new Mechanism-1 input) and the legacy active theme. See the comment above. Transitional.
-	/// </summary>
-	internal static void RecordOwnerThemeDivergence(DependencyObject? owner, SpecializedResourceDictionary.ResourceKey ownerThemeKey)
-	{
-		var activeThemeKey = ResourceDictionary.GetActiveTheme();
-		if (string.Equals(ownerThemeKey.Key, activeThemeKey.Key, StringComparison.Ordinal))
-		{
-			return;
-		}
-
-		OwnerThemeDivergenceCount++;
-
-		var signature = $"{owner?.GetType().Name ?? "<null>"}: owner='{ownerThemeKey.Key}' active='{activeThemeKey.Key}'";
-		_reportedOwnerThemeDivergences ??= new();
-		if (_reportedOwnerThemeDivergences.Add(signature))
-		{
-			// Console for guaranteed capture in the Release runtime-test stdout; logger for completeness.
-			Console.WriteLine($"[THEME-P3-DIVERGENCE] {signature}");
-			if (typeof(ThemeResolution).Log().IsEnabled(LogLevel.Warning))
-			{
-				typeof(ThemeResolution).Log().Warn($"[THEME-P3-DIVERGENCE] {signature}");
-			}
-		}
-	}
 }

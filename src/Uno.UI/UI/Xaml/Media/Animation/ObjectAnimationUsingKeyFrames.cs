@@ -333,36 +333,18 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return;
 			}
 
-			var baseTheme = Theming.GetBaseValue(effectiveTheme);
-			if (baseTheme == Theme.None)
+			// Resolve each keyframe's {ThemeResource} values against the TARGET element's effective theme
+			// (D3, Mechanism 1): pass the target element as the resolution owner so UpdateThemeReference keys
+			// on ResolveOwnerTheme(targetElement) instead of pushing the theme onto the global stack. For an
+			// HighContrast-only theme (no Light/Dark base) there was no push, so resolve against the app theme
+			// as before (full HC composition is Phase 6 / D8).
+			DependencyObject owner = Theming.GetBaseValue(effectiveTheme) == Theme.None ? null : targetElement;
+			foreach (var keyFrame in KeyFrames)
 			{
-				// No base Light/Dark theme (e.g. HighContrast): resolve without overriding the active theme.
-				foreach (var keyFrame in KeyFrames)
+				if (keyFrame is IDependencyObjectStoreProvider provider)
 				{
-					if (keyFrame is IDependencyObjectStoreProvider provider)
-					{
-						provider.Store.UpdateAllThemeReferences(null);
-					}
+					provider.Store.UpdateAllThemeReferences(owner);
 				}
-
-				return;
-			}
-
-			var themeKey = baseTheme == Theme.Light ? "Light" : "Dark";
-			ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
-			try
-			{
-				foreach (var keyFrame in KeyFrames)
-				{
-					if (keyFrame is IDependencyObjectStoreProvider provider)
-					{
-						provider.Store.UpdateAllThemeReferences(null);
-					}
-				}
-			}
-			finally
-			{
-				ResourceDictionary.PopRequestedThemeForSubTree();
 			}
 		}
 

@@ -275,6 +275,17 @@ namespace Microsoft.UI.Xaml
 		internal bool TryGetValue(Type resourceKey, out object value, bool shouldCheckSystem)
 			=> TryGetValue(new ResourceKey(resourceKey), out value, shouldCheckSystem);
 
+		// Phase 3/4 (D3, Mechanism 1) — theme-aware convenience overloads that forward the resolving
+		// owner's effective theme key to the leaf lookup, mirroring the parameterless object/string
+		// overloads above. Used by call sites that previously pushed the owner's theme onto the global stack.
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal bool TryGetValue(object key, in ResourceKey themeKey, out object value, bool shouldCheckSystem)
+			=> TryGetValue(new ResourceKey(key), themeKey, out value, shouldCheckSystem);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal bool TryGetValue(string resourceKey, in ResourceKey themeKey, out object value, bool shouldCheckSystem)
+			=> TryGetValue(new ResourceKey(resourceKey), themeKey, out value, shouldCheckSystem);
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal bool TryGetValue(in ResourceKey resourceKey, out object value, bool shouldCheckSystem)
 			=> TryGetValue(resourceKey, GetActiveTheme(), out value, shouldCheckSystem);
@@ -308,7 +319,7 @@ namespace Microsoft.UI.Xaml
 				if (value is SpecialValue)
 				{
 					TryMaterializeLazy(resourceKey, ref value);
-					TryResolveAlias(ref value);
+					TryResolveAlias(ref value, themeKey);
 				}
 
 #if DEBUG && DEBUG_SET_RESOURCE_SOURCE
@@ -330,7 +341,7 @@ namespace Microsoft.UI.Xaml
 
 			if (shouldCheckSystem && !IsSystemDictionary) // We don't fall back on system resources from within a system-defined dictionary, to avoid an infinite recurse
 			{
-				return ResourceResolver.TrySystemResourceRetrieval(modifiedKey, out value);
+				return ResourceResolver.TrySystemResourceRetrieval(modifiedKey, themeKey, out value);
 			}
 
 			if (useKeysNotFoundCache && !shouldCheckSystem)
@@ -382,7 +393,7 @@ namespace Microsoft.UI.Xaml
 				if (value is SpecialValue)
 				{
 					TryMaterializeLazy(resourceKey, ref value);
-					TryResolveAlias(ref value);
+					TryResolveAlias(ref value, themeKey);
 				}
 
 #if DEBUG && DEBUG_SET_RESOURCE_SOURCE
@@ -408,7 +419,7 @@ namespace Microsoft.UI.Xaml
 
 			if (shouldCheckSystem && !IsSystemDictionary)
 			{
-				if (ResourceResolver.TrySystemResourceRetrieval(modifiedKey, out value))
+				if (ResourceResolver.TrySystemResourceRetrieval(modifiedKey, themeKey, out value))
 				{
 					// System resources are always available at top-level;
 					// no need to pin a specific dictionary -- RefreshValue()
@@ -563,10 +574,17 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <returns>True if <paramref name="value"/> is a <see cref="StaticResourceAliasRedirect"/>, false otherwise</returns>
 		private bool TryResolveAlias(ref object value)
+			=> TryResolveAlias(ref value, GetActiveTheme());
+
+		// Phase 4 (D3, Mechanism 1): resolve the StaticResource alias target against the passed owner theme,
+		// so an alias inside a theme sub-dictionary (e.g. SystemControlFocusVisualPrimaryBrush →
+		// FocusStrokeColorOuterBrush) resolves its target in the SAME theme as the alias rather than the
+		// process-global active theme. Matches WinUI's LookupThemeResource(theme, key) (xcpcore.cpp).
+		private bool TryResolveAlias(ref object value, in ResourceKey themeKey)
 		{
 			if (value is StaticResourceAliasRedirect alias)
 			{
-				ResourceResolver.ResolveResourceStatic(alias.ResourceKey, out var resourceKeyTarget, alias.ParseContext);
+				ResourceResolver.ResolveResourceStatic(alias.ResourceKey, themeKey, out var resourceKeyTarget, alias.ParseContext);
 				value = resourceKeyTarget;
 				return true;
 			}
@@ -958,48 +976,16 @@ namespace Microsoft.UI.Xaml
 
 		internal static object GetStaticResourceAliasPassthrough(string resourceKey, XamlParseContext parseContext) => new StaticResourceAliasRedirect(resourceKey, parseContext);
 
-		internal static ResourceKey GetActiveTheme() => Themes.RequestedThemeForSubTree;
+		// Phase 4 (D3, Mechanism 1): the per-subtree theme is now threaded as a parameter (the resolving
+		// owner's effective theme, ThemeResolution.ResolveOwnerTheme), so the process-global requested-theme
+		// stack is gone. GetActiveTheme returns the application/OS base theme — used only as the fallback for
+		// resource lookups with no owner context (e.g. app-level Application.Resources lookups).
+		internal static ResourceKey GetActiveTheme() => Themes.Active;
 
-		// Phase 3 (D3, Mechanism 1): maps a per-object Theme (CDependencyObject::m_theme) to the
-		// Light/Dark theme sub-dictionary key. Mirrors the band-aid push pattern used across the 11
-		// push sites (Theming.GetBaseValue(theme) == Theme.Light ? "Light" : "Dark"), so the
-		// threaded-parameter path selects the identical sub-dictionary. High-contrast composition is
-		// Phase 6 (D8); for now only the base bits select Light vs Dark.
+		// Maps a per-object Theme (CDependencyObject::m_theme) to the Light/Dark theme sub-dictionary key.
+		// High-contrast composition is Phase 6 (D8); for now only the base bits select Light vs Dark.
 		internal static ResourceKey GetThemeKey(Theme theme)
 			=> Theming.GetBaseValue(theme) == Theme.Light ? Themes.Light : Themes.Dark;
-
-		// Reverse of GetThemeKey: the active theme key expressed as a Theme enum, used by the
-		// transitional parameterless ThemeResourceReference.RefreshValue(owner) path so it can feed the
-		// (now Theme-keyed, WinUI-aligned) ThemeWalkResourceCache. "Light"/"Dark" map to the base theme;
-		// any other key (e.g. the uninitialized "Default") maps to Theme.None.
-		internal static Theme GetActiveThemeValue()
-		{
-			var key = GetActiveTheme().Key;
-			return key == "Light" ? Theme.Light : key == "Dark" ? Theme.Dark : Theme.None;
-		}
-
-		internal static void PushRequestedThemeForSubTree(ResourceKey theme)
-			=> Themes.PushRequestedThemeForSubTree(theme);
-
-		internal static void PopRequestedThemeForSubTree()
-			=> Themes.PopRequestedThemeForSubTree();
-
-		/// <summary>
-		/// Pushes a theme onto the stack for the current element's subtree resource resolution.
-		/// This is an Uno Platform-specific API intended for framework use only.
-		/// </summary>
-		/// <param name="theme">The theme name (e.g. "Light", "Dark", "Default").</param>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void PushRequestedThemeForSubTreeByName(string theme)
-			=> Themes.PushRequestedThemeForSubTree(theme);
-
-		/// <summary>
-		/// Pops the theme from the stack after processing an element's subtree.
-		/// This is an Uno Platform-specific API intended for framework use only.
-		/// </summary>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void PopRequestedThemeForSubTreeByName()
-			=> Themes.PopRequestedThemeForSubTree();
 
 		internal static void SetActiveTheme(SpecializedResourceDictionary.ResourceKey key)
 			=> Themes.Active = key;
@@ -1049,36 +1035,12 @@ namespace Microsoft.UI.Xaml
 			public static SpecializedResourceDictionary.ResourceKey Light { get; } = "Light";
 			public static SpecializedResourceDictionary.ResourceKey Dark { get; } = "Dark";
 			public static SpecializedResourceDictionary.ResourceKey Default { get; } = "Default";
+
+			// The application/OS base theme. Phase 4 deleted the process-global per-subtree theme stack
+			// (the analog of WinUI's CCoreServices::m_requestedThemeForSubTree ambient slot); the per-subtree
+			// theme is now threaded as the resolving owner's effective theme (ThemeResolution.ResolveOwnerTheme).
+			// Active remains the fallback for resource lookups that have no owner context.
 			public static SpecializedResourceDictionary.ResourceKey Active { get; set; } = Default;
-
-			// Stack for element-level theme context (matching WinUI's m_requestedThemeForSubTree pattern)
-			private static readonly Stack<SpecializedResourceDictionary.ResourceKey> _requestedThemeForSubTree = new();
-
-			/// <summary>
-			/// Gets the currently active theme for resource lookups.
-			/// If an element has pushed its theme onto the stack, that theme is used.
-			/// Otherwise, falls back to the application's active theme.
-			/// </summary>
-			public static SpecializedResourceDictionary.ResourceKey RequestedThemeForSubTree =>
-				_requestedThemeForSubTree.Count > 0 ? _requestedThemeForSubTree.Peek() : Active;
-
-			/// <summary>
-			/// Pushes a theme onto the stack for the current element's subtree processing.
-			/// </summary>
-			public static void PushRequestedThemeForSubTree(SpecializedResourceDictionary.ResourceKey theme)
-				=> _requestedThemeForSubTree.Push(theme);
-
-			/// <summary>
-			/// Pops the theme from the stack after processing an element's subtree.
-			/// </summary>
-			public static void PopRequestedThemeForSubTree()
-			{
-				Debug.Assert(_requestedThemeForSubTree.Count > 0, "PopRequestedThemeForSubTree called with empty stack");
-				if (_requestedThemeForSubTree.Count > 0)
-				{
-					_requestedThemeForSubTree.Pop();
-				}
-			}
 		}
 	}
 }
