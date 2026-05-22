@@ -1,0 +1,33 @@
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_ApplicationModel_Resources_ResourceLoader.ResourceLoader_FilenameLayout"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Shared.Windows_ApplicationModel_Resources_ResourceLoader"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel Padding="16" Spacing="8">
+
+            <!--  Header  -->
+            <TextBlock FontWeight="Bold" Text="Spec filename layout (Resources.language-XX-XX.resw)" />
+            <TextBlock
+                Opacity="0.7"
+                Text="Switch the OS / app display language between en-US and cs-CZ to see the strings change."
+                TextWrapping="Wrap" />
+
+            <!--  Localized greeting  -->
+            <TextBlock x:Uid="ResourceLoader_FilenameLayout_Greeting" Text="(invalid — x:Uid did not resolve)" />
+
+            <!--  Localized description  -->
+            <TextBlock
+                x:Uid="ResourceLoader_FilenameLayout_Description"
+                Text="(invalid — x:Uid did not resolve)"
+                TextWrapping="Wrap" />
+
+        </StackPanel>
+    </Grid>
+</UserControl>
