@@ -615,6 +615,153 @@ public class Given_Theme_Materialization
 			"Under app Light, resolution should use the Light entry, not the dark Default fallback.");
 	}
 
+	// ---- D7 — the app-level custom-theme axis is ditched (Uno-only; Phase 6) ----
+
+#if HAS_UNO
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	public async Task When_Custom_Theme_Name_Is_Ditched_Resolves_Standard()
+	{
+		// Decision = DITCH custom themes (custom-theme.md → Option B). A non-Light/Dark custom name must no
+		// longer become the active theme key (Themes.Active is strictly Light/Dark, +HC), so it can never
+		// select a custom ThemeDictionaries["Foo"] entry nor fall back to the dark "Default". A "Light"/
+		// "Dark" custom name is the harmless bucket and still resolves the standard theme. The standard
+		// per-element resolution (element RequestedTheme=Light/Dark) is unaffected.
+		// (Before the ditch, setting RequestedCustomTheme made GetActiveTheme() that arbitrary name; this
+		// test is RED on that code and GREEN after the ditch — confirmed in WinUI probe app: WinUI has no
+		// custom-theme axis, the application theme is strictly Light/Dark.)
+		using var _ = ThemeHelper.UseApplicationLightTheme();
+		await WindowHelper.WaitForIdle();
+
+		try
+		{
+#pragma warning disable CS0618 // RequestedCustomTheme is obsolete: assert it is now a no-op.
+			Uno.UI.ApplicationHelper.RequestedCustomTheme = "UnoBrandCustom";
+#pragma warning restore CS0618
+			await WindowHelper.WaitForIdle();
+
+			// (a) The active theme key stays the standard app theme (Light) — the custom name is ignored.
+			Assert.AreEqual("Light", ResourceDictionary.GetActiveTheme().Key,
+				"A non-Light/Dark custom name must not become the active theme key (custom axis ditched).");
+
+			// (b) A standard sentinel dictionary, consumed under app Light with a custom name set, resolves
+			// the Light sentinel — not the dark "Default" the old custom axis fell back to for a missing key.
+			var standard = (Border)XamlReader.Load(
+				$$"""
+				<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				        Width="50" Height="50" Background="{ThemeResource SentinelBrush}">
+					<Border.Resources>
+						<ResourceDictionary>
+							{{SentinelDictsXaml}}
+						</ResourceDictionary>
+					</Border.Resources>
+				</Border>
+				""");
+			WindowHelper.WindowContent = standard;
+			await WindowHelper.WaitForLoaded(standard);
+			Assert.AreEqual(LightSentinel, ColorOf(standard),
+				"With a custom name set, resolution stays the standard app Light theme (not the dark Default).");
+
+			// (c) An element RequestedTheme="Dark" island still resolves the standard Dark dictionary while a
+			// custom name is set — element theme is strictly Light/Dark and the custom axis never participates.
+			var darkIsland = (Border)XamlReader.Load(
+				$$"""
+				<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				        RequestedTheme="Dark" Width="50" Height="50" Background="{ThemeResource SentinelBrush}">
+					<Border.Resources>
+						<ResourceDictionary>
+							{{SentinelDictsXaml}}
+						</ResourceDictionary>
+					</Border.Resources>
+				</Border>
+				""");
+			WindowHelper.WindowContent = darkIsland;
+			await WindowHelper.WaitForLoaded(darkIsland);
+			Assert.AreEqual(DarkSentinel, ColorOf(darkIsland),
+				"Element RequestedTheme=Dark resolves the standard Dark dictionary regardless of any custom name.");
+
+			// (d) Harmless bucket: a "Light" custom name under app Light still resolves the standard theme.
+#pragma warning disable CS0618
+			Uno.UI.ApplicationHelper.RequestedCustomTheme = "Light";
+#pragma warning restore CS0618
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("Light", ResourceDictionary.GetActiveTheme().Key,
+				"A \"Light\" custom name still resolves the standard Light theme (harmless bucket).");
+		}
+		finally
+		{
+#pragma warning disable CS0618
+			Uno.UI.ApplicationHelper.RequestedCustomTheme = null;
+#pragma warning restore CS0618
+		}
+	}
+#endif
+
+	// ---- D8 — high-contrast composition selects the HC sub-dictionary (Uno-only; Phase 6) ----
+
+#if HAS_UNO
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	public async Task When_HighContrast_Active_Selects_HighContrast_Dictionary()
+	{
+		// D8 (Phase 6): high contrast is an OS/app-global dimension OR-ed onto the base theme. When HC is
+		// active, a {ThemeResource} whose dictionary defines a HighContrast sub-dictionary resolves the HC
+		// value — the HC sub-dictionary is selected ahead of Light/Dark — matching WinUI's
+		// EnsureActiveThemeDictionary (Resources.cpp:718-758). Here app Light maps to "HighContrastWhite"
+		// first, then the generic "HighContrast" key defined by this dictionary. (Uno-only HC override via
+		// the accessibility settings; confirmed in WinUI probe app: a HighContrast ThemeDictionaries entry
+		// is used when the OS high-contrast feature is on.)
+		var hcSentinel = Color.FromArgb(0xFF, 0x00, 0xFF, 0x00);
+
+		using var lightApp = ThemeHelper.UseApplicationLightTheme();
+		await WindowHelper.WaitForIdle();
+
+		// Activate high contrast BEFORE the content loads so its first resolution selects the HC dictionary.
+		Uno.WinRTFeatureConfiguration.Accessibility.HighContrast = true;
+		try
+		{
+			await WindowHelper.WaitForIdle();
+
+			var root = (Border)XamlReader.Load(
+				"""
+				<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				        Width="50" Height="50" Background="{ThemeResource SentinelBrush}">
+					<Border.Resources>
+						<ResourceDictionary>
+							<ResourceDictionary.ThemeDictionaries>
+								<ResourceDictionary x:Key="Light">
+									<SolidColorBrush x:Key="SentinelBrush" Color="#FF111111" />
+								</ResourceDictionary>
+								<ResourceDictionary x:Key="Dark">
+									<SolidColorBrush x:Key="SentinelBrush" Color="#FFEEEEEE" />
+								</ResourceDictionary>
+								<ResourceDictionary x:Key="HighContrast">
+									<SolidColorBrush x:Key="SentinelBrush" Color="#FF00FF00" />
+								</ResourceDictionary>
+							</ResourceDictionary.ThemeDictionaries>
+						</ResourceDictionary>
+					</Border.Resources>
+				</Border>
+				""");
+			WindowHelper.WindowContent = root;
+			await WindowHelper.WaitForLoaded(root);
+
+			Assert.AreEqual(hcSentinel, ColorOf(root),
+				"With high contrast active, the HighContrast sub-dictionary must be selected ahead of Light/Dark.");
+		}
+		finally
+		{
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrast = false;
+			await WindowHelper.WaitForIdle();
+		}
+	}
+#endif
+
 	// ---- §B leak-check guard — no global theme stack reintroduced (Phase 4) ----
 
 	[TestMethod]
