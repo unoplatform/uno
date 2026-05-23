@@ -1,5 +1,7 @@
 ﻿#nullable enable
 
+using Uno.Helpers.Theming;
+
 // Port of WinUI's per-object effective-theme resolution.
 //
 // MUX References:
@@ -35,6 +37,10 @@ internal static class ThemeResolution
 	/// </summary>
 	internal static Theme ResolveOwnerTheme(DependencyObject? owner)
 	{
+		// High contrast is an OS/app-global dimension OR-ed onto the base theme (architecture.md §3:
+		// effective theme = base | highContrast; MUX FrameworkTheming::GetTheme, FrameworkTheming.cpp:123).
+		var highContrast = GetApplicationHighContrastTheme();
+
 		// MUX: depends.cpp:1023-1048 — a DO's theme is established at Enter from its (logical)
 		// inheritance parent. We mirror the *result* of that establishment by walking the
 		// inheritance-parent chain to the nearest DO that already carries a theme.
@@ -43,15 +49,25 @@ internal static class ThemeResolution
 			var theme = GetStoreTheme(current);
 			if (theme != Theme.None)
 			{
-				return theme;
+				return Theming.GetBaseValue(theme) | highContrast;
 			}
 		}
 
 		// MUX: framework.cpp:3953-3978 — ActualTheme falls back to the app/OS base theme
 		// (FrameworkTheming::GetBaseTheme) when no per-object theme is set.
-		// TODO (Phase 6 / D8): OR in the application's high-contrast bits once HC composition lands.
-		return Theming.FromElementTheme(Application.Current?.ActualElementTheme ?? ElementTheme.Light);
+		return Theming.FromElementTheme(Application.Current?.ActualElementTheme ?? ElementTheme.Light) | highContrast;
 	}
+
+	/// <summary>
+	/// The application's current high-contrast theme bits (<see cref="Theme.HighContrast"/> when the OS
+	/// high-contrast feature is active, otherwise <see cref="Theme.HighContrastNone"/>). High contrast is a
+	/// global OS/app dimension in WinUI (read from FrameworkTheming, not from the per-object theme — MUX
+	/// FrameworkTheming.cpp:123), so it is OR-ed onto every resolved owner theme. The high-contrast
+	/// sub-dictionary itself is selected at the resolution leaf
+	/// (<see cref="ResourceDictionary"/>.GetActiveThemeDictionary), which reads the same global state.
+	/// </summary>
+	private static Theme GetApplicationHighContrastTheme()
+		=> SystemThemeHelper.IsHighContrast ? Theme.HighContrast : Theme.HighContrastNone;
 
 	/// <summary>
 	/// Gets the per-object theme stored on the object's <see cref="DependencyObjectStore"/>, or

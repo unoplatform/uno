@@ -30,6 +30,16 @@ internal static partial class SystemThemeHelper
 	private static SystemTheme EffectiveSystemTheme => _systemThemeOverride ?? GetSystemTheme();
 
 	/// <summary>
+	/// Gets whether the OS high-contrast accessibility feature is currently active. High contrast is an
+	/// OS/app-global dimension orthogonal to the Light/Dark base theme (it is OR-ed onto the base theme,
+	/// matching WinUI's <c>FrameworkTheming::GetTheme</c>). Sourced from
+	/// <see cref="Uno.WinRTFeatureConfiguration.Accessibility.HighContrast"/>, which is settable — so it
+	/// doubles as the deterministic override hook for runtime tests and as the value real per-platform
+	/// detection writes into. The default is <c>false</c> (high contrast off).
+	/// </summary>
+	internal static bool IsHighContrast => Uno.WinRTFeatureConfiguration.Accessibility.HighContrast;
+
+	/// <summary>
 	/// Test hook (analogous to <c>ScaleOverride</c>): when set, <see cref="SystemTheme"/> reports this
 	/// value instead of the real OS theme; set to <c>null</c> to restore real OS detection. Assigning
 	/// raises <see cref="SystemThemeChanged"/> when the effective theme changes, mirroring a real OS
