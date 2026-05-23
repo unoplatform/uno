@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.UI.Xaml.Data;
 using Uno.Extensions;
+using Uno.Helpers.Theming;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
@@ -651,18 +652,54 @@ namespace Microsoft.UI.Xaml
 
 		private ResourceDictionary _activeThemeDictionary;
 		private ResourceKey _activeTheme;
+		private bool _activeThemeHighContrast;
 
 		private ResourceDictionary GetActiveThemeDictionary(in ResourceKey activeTheme)
 		{
-			if (!activeTheme.Equals(_activeTheme))
+			// High contrast is an OS/app-global dimension: WinUI reads it from FrameworkTheming, not from
+			// the per-object theme (Resources.cpp:718,740), while the base Light/Dark comes from the
+			// resolving owner's theme (the passed key — the analog of WinUI's RequestedThemeForSubTree).
+			// Cache invalidates when either the base theme key or the high-contrast state changes (MUX:
+			// EnsureActiveThemeDictionary's baseThemeChanged | highContrastChanged guard, Resources.cpp:699-704).
+			var highContrast = Themes.IsHighContrast;
+			if (!activeTheme.Equals(_activeTheme) || highContrast != _activeThemeHighContrast)
 			{
 				InvalidateNotFoundCache(false);
 				_activeTheme = activeTheme;
-				_activeThemeDictionary = GetThemeDictionary(activeTheme) ?? GetThemeDictionary(Themes.Default);
+				_activeThemeHighContrast = highContrast;
+				_activeThemeDictionary = ResolveActiveThemeDictionary(activeTheme, highContrast);
 			}
 
 			return _activeThemeDictionary;
 		}
+
+		// MUX: CResourceDictionary::EnsureActiveThemeDictionary (Resources.cpp:687-819). When high contrast
+		// is active, the high-contrast sub-dictionary wins: map the owner's base theme to its high-contrast
+		// variant (Light → HighContrastWhite, Dark → HighContrastBlack — the subtree-requested branch,
+		// Resources.cpp:720-737), then the generic "HighContrast" key (Resources.cpp:758). If no
+		// high-contrast sub-dictionary is defined, fall through to the base Light/Dark theme, then to
+		// "Default" (Resources.cpp:764-790). Full high-contrast brush parity (the OS HighContrastBlack/
+		// White/Custom app-wide variant and runtime high-contrast-change propagation) is a documented
+		// follow-up; this selects the high-contrast sub-dictionary when one is present.
+		private ResourceDictionary ResolveActiveThemeDictionary(in ResourceKey baseTheme, bool highContrast)
+		{
+			if (highContrast)
+			{
+				var highContrastDictionary =
+					GetThemeDictionary(GetHighContrastKeyForBaseTheme(baseTheme))
+					?? GetThemeDictionary(Themes.HighContrast);
+
+				if (highContrastDictionary is not null)
+				{
+					return highContrastDictionary;
+				}
+			}
+
+			return GetThemeDictionary(baseTheme) ?? GetThemeDictionary(Themes.Default);
+		}
+
+		private static ResourceKey GetHighContrastKeyForBaseTheme(in ResourceKey baseTheme)
+			=> baseTheme.Equals(Themes.Dark) ? Themes.HighContrastBlack : Themes.HighContrastWhite;
 
 		private ResourceDictionary GetThemeDictionary(in ResourceKey theme)
 		{
@@ -982,8 +1019,11 @@ namespace Microsoft.UI.Xaml
 		// resource lookups with no owner context (e.g. app-level Application.Resources lookups).
 		internal static ResourceKey GetActiveTheme() => Themes.Active;
 
-		// Maps a per-object Theme (CDependencyObject::m_theme) to the Light/Dark theme sub-dictionary key.
-		// High-contrast composition is Phase 6 (D8); for now only the base bits select Light vs Dark.
+		// Maps a per-object Theme (CDependencyObject::m_theme) to the BASE Light/Dark theme sub-dictionary
+		// key — the analog of WinUI's RequestedThemeForSubTree. High contrast is composed separately at the
+		// resolution leaf: GetActiveThemeDictionary reads the OS/app-global high-contrast state (as WinUI's
+		// EnsureActiveThemeDictionary reads FrameworkTheming::GetHighContrastTheme, Resources.cpp:718,740)
+		// and selects the high-contrast sub-dictionary, so the threaded key stays the base theme.
 		internal static ResourceKey GetThemeKey(Theme theme)
 			=> Theming.GetBaseValue(theme) == Theme.Light ? Themes.Light : Themes.Dark;
 
@@ -1036,11 +1076,25 @@ namespace Microsoft.UI.Xaml
 			public static SpecializedResourceDictionary.ResourceKey Dark { get; } = "Dark";
 			public static SpecializedResourceDictionary.ResourceKey Default { get; } = "Default";
 
+			// High-contrast theme sub-dictionary keys (MUX EnsureActiveThemeDictionary, Resources.cpp:
+			// 725-758). HighContrastWhite/Black are the Light/Dark high-contrast variants; HighContrast is
+			// the generic fallback key.
+			public static SpecializedResourceDictionary.ResourceKey HighContrast { get; } = "HighContrast";
+			public static SpecializedResourceDictionary.ResourceKey HighContrastWhite { get; } = "HighContrastWhite";
+			public static SpecializedResourceDictionary.ResourceKey HighContrastBlack { get; } = "HighContrastBlack";
+
 			// The application/OS base theme. Phase 4 deleted the process-global per-subtree theme stack
 			// (the analog of WinUI's CCoreServices::m_requestedThemeForSubTree ambient slot); the per-subtree
 			// theme is now threaded as the resolving owner's effective theme (ThemeResolution.ResolveOwnerTheme).
-			// Active remains the fallback for resource lookups that have no owner context.
+			// Active remains the fallback for resource lookups that have no owner context. After Phase 6 (D7)
+			// the custom-theme axis is gone, so Active is strictly "Light"/"Dark".
 			public static SpecializedResourceDictionary.ResourceKey Active { get; set; } = Default;
+
+			// The OS/app-global high-contrast state (MUX: FrameworkTheming::HasHighContrastTheme). Read live
+			// from the accessibility settings — high contrast is orthogonal to the Light/Dark base theme and
+			// is composed at the resolution leaf (GetActiveThemeDictionary), matching WinUI reading it from
+			// FrameworkTheming rather than from the per-object/subtree theme.
+			public static bool IsHighContrast => SystemThemeHelper.IsHighContrast;
 		}
 	}
 }
