@@ -269,22 +269,47 @@ then
 
 	echo "Waiting for $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE to be available..."
 
+	# Heartbeat watchdog state (count-based, mirrors Android approach).
+	# IOS_HB_COUNT tracks lines in the stream file; if count stalls the test is hung.
+	# IOS_LAST_HB_S tracks when count last advanced, for age calculation.
+	IOS_PREV_HB_COUNT=0
+	IOS_LAST_HB_S=$SECONDS
+	IOS_HUNG_TEST_NAME=""
+	IOS_HUNG_HB_AGE=0
+
 	# Loop until the file exists or the timeout is reached
 	while [[ ! -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" && $SECONDS -lt $END_TIME ]]; do
-		# echo "Waiting $INTERVAL seconds for test results to be written to $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE";
 		sleep $INTERVAL
 
-		# Heartbeat watchdog: if tests have started but no new marker in HEARTBEAT_TIMEOUT_S, abort.
-		if [ -s "$IOS_HEARTBEAT_LOG" ]; then
-			IOS_HB_AGE=$(( $(date +%s) - $(stat -f %m "$IOS_HEARTBEAT_LOG") ))
-			if [ $IOS_HB_AGE -gt $HEARTBEAT_TIMEOUT_S ]; then
-				echo "##[error]No heartbeat for ${IOS_HB_AGE}s — test appears hung. Last heartbeats:"
-				tail -3 "$IOS_HEARTBEAT_LOG"
-				kill $IOS_LOG_STREAM_PID 2>/dev/null || true
-				rm -f "$IOS_HEARTBEAT_LOG" || true
-				xcrun simctl terminate "$UITEST_IOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID" || true
-				break
-			fi
+		# Count heartbeat lines captured so far by the background stream.
+		IOS_HB_COUNT=$(grep -c 'UNO-RT-HEARTBEAT' "$IOS_HEARTBEAT_LOG" 2>/dev/null || echo 0)
+		if [ "$IOS_HB_COUNT" -gt "$IOS_PREV_HB_COUNT" ]; then
+			IOS_PREV_HB_COUNT=$IOS_HB_COUNT
+			IOS_LAST_HB_S=$SECONDS
+		fi
+		IOS_HB_AGE=$(( SECONDS - IOS_LAST_HB_S ))
+
+		# Watchdog: heartbeats have started but stopped advancing.
+		if [ "$IOS_PREV_HB_COUNT" -gt 0 ] && [ "$IOS_HB_AGE" -gt "$HEARTBEAT_TIMEOUT_S" ]; then
+			echo "##[error]No heartbeat for ${IOS_HB_AGE}s — test appears hung. Last heartbeats:"
+			tail -3 "$IOS_HEARTBEAT_LOG"
+			IOS_HUNG_TEST_NAME=$(grep 'STARTING' "$IOS_HEARTBEAT_LOG" | tail -1 | sed 's/.*STARTING //')
+			IOS_HUNG_HB_AGE=$IOS_HB_AGE
+			[ -n "$IOS_HUNG_TEST_NAME" ] && echo "##[error]Hung test identified: $IOS_HUNG_TEST_NAME"
+			kill $IOS_LOG_STREAM_PID 2>/dev/null || true
+			rm -f "$IOS_HEARTBEAT_LOG" || true
+			xcrun simctl terminate "$UITEST_IOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID" || true
+			break
+		fi
+
+		# Fallback: no heartbeats at all after 2× the timeout — app may be stuck at startup
+		# or the log stream is not capturing heartbeats. Kill to avoid hour-long hangs.
+		if [ "$IOS_PREV_HB_COUNT" -eq 0 ] && [ "$IOS_HB_AGE" -gt $(( HEARTBEAT_TIMEOUT_S * 2 )) ]; then
+			echo "##[error]No heartbeats received for ${IOS_HB_AGE}s — app stuck at startup or log stream not working. Terminating."
+			kill $IOS_LOG_STREAM_PID 2>/dev/null || true
+			rm -f "$IOS_HEARTBEAT_LOG" || true
+			xcrun simctl terminate "$UITEST_IOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID" || true
+			break
 		fi
 
 		# exit loop if the APP_PID is not running anymore
@@ -298,11 +323,42 @@ then
 	rm -f "$IOS_HEARTBEAT_LOG" || true
 
 	if ! [ -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" ]; then
- 		echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is not available, waiting 2 seconds"
- 		sleep 2
- 	fi
-  
-	# if the file exists, show a message
+		sleep 2
+	fi
+
+	# Helper: wait for a simulator run and apply the heartbeat watchdog.
+	# $1 = result file path, $2 = app pid, $3 = timeout end ($SECONDS), $4 = heartbeat log path, $5 = log stream PID
+	ios_wait_for_result() {
+		local result_file="$1" app_pid="$2" end_time="$3" hb_log="$4" stream_pid="$5"
+		local prev_hb=0 last_hb_s=$SECONDS
+
+		while [[ ! -f "$result_file" && $SECONDS -lt $end_time ]]; do
+			sleep $INTERVAL
+			local hb_count
+			hb_count=$(grep -c 'UNO-RT-HEARTBEAT' "$hb_log" 2>/dev/null || echo 0)
+			if [ "$hb_count" -gt "$prev_hb" ]; then prev_hb=$hb_count; last_hb_s=$SECONDS; fi
+			local age=$(( SECONDS - last_hb_s ))
+			if [ "$prev_hb" -gt 0 ] && [ "$age" -gt "$HEARTBEAT_TIMEOUT_S" ]; then
+				echo "##[error]No heartbeat for ${age}s in retry run — test appears hung."
+				tail -3 "$hb_log"
+				kill "$stream_pid" 2>/dev/null || true
+				rm -f "$hb_log" || true
+				xcrun simctl terminate "$UITEST_IOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID" || true
+				break
+			fi
+			if [ "$prev_hb" -eq 0 ] && [ "$age" -gt $(( HEARTBEAT_TIMEOUT_S * 2 )) ]; then
+				echo "##[error]No heartbeats in retry for ${age}s — terminating."
+				kill "$stream_pid" 2>/dev/null || true
+				rm -f "$hb_log" || true
+				xcrun simctl terminate "$UITEST_IOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID" || true
+				break
+			fi
+			if ! ps -p "$app_pid" > /dev/null; then echo "The app is not running anymore (retry run)"; break; fi
+		done
+		kill "$stream_pid" 2>/dev/null || true
+		rm -f "$hb_log" || true
+	}
+
 	if [ -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" ]; then
 		echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is available, the test run is complete."
 
@@ -310,14 +366,13 @@ then
 		cp -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" "$UNO_ORIGINAL_TEST_RESULTS"
 
 		# In-job retry: if a small number of tests failed, rerun only those to catch flakes.
-		# The simulator is still running at this point so we can relaunch the app immediately.
-		IOS_FAILED_COUNT=$(run_nunit_tool_ios count-failed "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" | tail -1)
+		IOS_FAILED_COUNT=$(run_nunit_tool_ios count-failed "$UNO_ORIGINAL_TEST_RESULTS" | tail -1)
 
 		if [ "$IOS_FAILED_COUNT" -gt 0 ] && [ "$IOS_FAILED_COUNT" -le "$FLAKE_RETRY_MAX_FAILURES" ]; then
 			echo "##[warning]$IOS_FAILED_COUNT test(s) failed — retrying in-job to filter flakes..."
 
 			mkdir -p $(dirname ${UNO_TESTS_RUNTIMETESTS_FAILED_LIST})
-			run_nunit_tool_ios list-failed "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" "$UNO_TESTS_RUNTIMETESTS_FAILED_LIST"
+			run_nunit_tool_ios list-failed "$UNO_ORIGINAL_TEST_RESULTS" "$UNO_TESTS_RUNTIMETESTS_FAILED_LIST"
 
 			export SIMCTL_CHILD_UITEST_RUNTIME_TESTS_FILTER=$(cat "$UNO_TESTS_RUNTIMETESTS_FAILED_LIST" | base64 -b 0)
 			export SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE=/tmp/TestResult-rerun-$(date +"%Y%m%d%H%M%S").xml
@@ -325,37 +380,14 @@ then
 			xcrun simctl launch "$UITEST_IOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID"
 			RETRY_APP_PID=$(xcrun simctl spawn "$UITEST_IOSDEVICE_ID" launchctl list | grep "$SAMPLESAPP_BUNDLE_ID" | awk '{print $1}')
 
-			IOS_RETRY_HEARTBEAT_LOG=$(mktemp /tmp/uno-rt-heartbeat-retry.XXXXXX)
+			RETRY_HB_LOG=$(mktemp /tmp/uno-rt-heartbeat-retry.XXXXXX)
 			xcrun simctl spawn "$UITEST_IOSDEVICE_ID" log stream \
 				--predicate 'eventMessage CONTAINS "UNO-RT-HEARTBEAT"' \
-				>> "$IOS_RETRY_HEARTBEAT_LOG" &
-			IOS_RETRY_LOG_STREAM_PID=$!
+				>> "$RETRY_HB_LOG" &
+			RETRY_STREAM_PID=$!
 
-			RETRY_END_TIME=$((SECONDS + TIMEOUT))
-			while [[ ! -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" && $SECONDS -lt $RETRY_END_TIME ]]; do
-				sleep $INTERVAL
-
-				if [ -s "$IOS_RETRY_HEARTBEAT_LOG" ]; then
-					IOS_RETRY_HB_AGE=$(( $(date +%s) - $(stat -f %m "$IOS_RETRY_HEARTBEAT_LOG") ))
-					if [ $IOS_RETRY_HB_AGE -gt $HEARTBEAT_TIMEOUT_S ]; then
-						echo "##[error]No heartbeat for ${IOS_RETRY_HB_AGE}s in retry run — test appears hung."
-						tail -3 "$IOS_RETRY_HEARTBEAT_LOG"
-						kill $IOS_RETRY_LOG_STREAM_PID 2>/dev/null || true
-						rm -f "$IOS_RETRY_HEARTBEAT_LOG" || true
-						xcrun simctl terminate "$UITEST_IOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID" || true
-						break
-					fi
-				fi
-
-				# exit loop early if the retry app is not running anymore
-				if ! ps -p $RETRY_APP_PID > /dev/null; then
-					echo "The app is not running anymore (retry run)"
-					break
-				fi
-			done
-
-			kill $IOS_RETRY_LOG_STREAM_PID 2>/dev/null || true
-			rm -f "$IOS_RETRY_HEARTBEAT_LOG" || true
+			ios_wait_for_result "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" \
+				"$RETRY_APP_PID" "$((SECONDS + TIMEOUT))" "$RETRY_HB_LOG" "$RETRY_STREAM_PID"
 
 			if [ -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" ]; then
 				run_nunit_tool_ios merge-results "$UNO_ORIGINAL_TEST_RESULTS" "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" "$UNO_ORIGINAL_TEST_RESULTS"
@@ -364,6 +396,36 @@ then
 				echo "##[warning]Rerun did not produce a results file; original results kept."
 			fi
 		fi
+
+	elif [ -n "$IOS_HUNG_TEST_NAME" ]; then
+		# Watchdog fired: create a synthetic failure record then rerun the shard excluding the hung test.
+		IOS_HUNG_SIMPLE=$(echo "$IOS_HUNG_TEST_NAME" | sed 's/(.*//')
+		echo "##[warning]Creating synthetic result for hung test '$IOS_HUNG_SIMPLE' (${IOS_HUNG_HB_AGE}s without heartbeat)."
+		run_nunit_tool_ios create-hung-result "$IOS_HUNG_SIMPLE" "$UNO_ORIGINAL_TEST_RESULTS" "$IOS_HUNG_HB_AGE"
+
+		echo "##[warning]Watchdog retry: rerunning shard excluding '$IOS_HUNG_SIMPLE'..."
+		export SIMCTL_CHILD_UITEST_RUNTIME_TESTS_FILTER=$(printf '~%s' "$IOS_HUNG_SIMPLE" | base64 -b 0)
+		export SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE=/tmp/TestResult-watchdog-retry-$(date +"%Y%m%d%H%M%S").xml
+
+		xcrun simctl launch "$UITEST_IOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID"
+		RETRY_APP_PID=$(xcrun simctl spawn "$UITEST_IOSDEVICE_ID" launchctl list | grep "$SAMPLESAPP_BUNDLE_ID" | awk '{print $1}')
+
+		RETRY_HB_LOG=$(mktemp /tmp/uno-rt-heartbeat-retry.XXXXXX)
+		xcrun simctl spawn "$UITEST_IOSDEVICE_ID" log stream \
+			--predicate 'eventMessage CONTAINS "UNO-RT-HEARTBEAT"' \
+			>> "$RETRY_HB_LOG" &
+		RETRY_STREAM_PID=$!
+
+		ios_wait_for_result "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" \
+			"$RETRY_APP_PID" "$((SECONDS + TIMEOUT))" "$RETRY_HB_LOG" "$RETRY_STREAM_PID"
+
+		if [ -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" ]; then
+			run_nunit_tool_ios merge-results "$UNO_ORIGINAL_TEST_RESULTS" "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" "$UNO_ORIGINAL_TEST_RESULTS"
+			run_nunit_tool_ios list-failed "$UNO_ORIGINAL_TEST_RESULTS" "$UNO_TESTS_RUNTIMETESTS_FAILED_LIST"
+		else
+			echo "##[warning]Watchdog retry did not produce a results file; original results kept."
+		fi
+
 	else
 		echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is not available, the test run has timed out."
 	fi
