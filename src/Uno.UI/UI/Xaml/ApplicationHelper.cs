@@ -10,32 +10,26 @@ public class ApplicationHelper
 	private static string _requestedCustomTheme;
 
 	/// <summary>
-	/// This is a custom theme that can be used in ThemeDictionaries
+	/// This property is obsolete. The app-level custom-theme axis has been removed to align with WinUI,
+	/// which has no custom-theme-name concept — the application theme is strictly Light or Dark. Setting
+	/// this property is now a no-op and no longer selects a custom <c>ThemeDictionaries</c> entry.
 	/// </summary>
 	/// <remarks>
-	/// When the custom theme key is not found in a theme dictionary, it will fallback to
-	/// Application.RequestedTheme (Dark/Light)
+	/// Migration: provide a custom/brand palette via a merged <see cref="ResourceDictionary"/> that
+	/// overrides specific brush/color keys on top of the standard Light/Dark theme dictionaries, rather
+	/// than inventing a new theme name. To switch the application between the standard themes, set
+	/// <see cref="Application.RequestedTheme"/> (before the application resources are loaded). A
+	/// <c>"Light"</c>/<c>"Dark"</c> custom name continues to resolve as the corresponding standard theme.
+	/// See <c>specs/theming-winui-alignment/custom-theme.md</c> (Phase 6, Option B).
 	/// </remarks>
+	[Obsolete("The app-level custom-theme axis has been removed (it has no WinUI equivalent and cannot compose with element-level theming). Setting RequestedCustomTheme is now a no-op. Provide a custom palette via merged ResourceDictionaries that override specific brush/color keys on top of the Light/Dark theme dictionaries, and use Application.RequestedTheme to switch between the standard themes.")]
 	public static string RequestedCustomTheme
 	{
 		get => _requestedCustomTheme;
-		set
-		{
-			_requestedCustomTheme = value;
-			if (_requestedCustomTheme != null)
-			{
-				if (_requestedCustomTheme.Equals("Dark"))
-				{
-					Application.Current.RequestedTheme = ApplicationTheme.Dark;
-				}
-				else if (_requestedCustomTheme.Equals("Light"))
-				{
-					Application.Current.RequestedTheme = ApplicationTheme.Light;
-				}
-			}
-
-			Application.UpdateRequestedThemesForResources();
-		}
+		// No-op: the value is retained for source compatibility (it round-trips), but it no longer keys a
+		// custom ThemeDictionaries entry — Themes.Active is strictly Light/Dark (+ high contrast, composed
+		// at the resolution leaf). See Application.UpdateRequestedThemesForResources.
+		set => _requestedCustomTheme = value;
 	}
 
 	/// <summary>

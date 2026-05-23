@@ -389,8 +389,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 #endif
 
 		[TestMethod]
-		public void When_Has_Custom_Theme()
+		public void When_Custom_Theme_Name_Is_Ditched()
 		{
+			// Phase 6 (D7): the app-level custom-theme axis is ditched (custom-theme.md → Option B). A
+			// non-Light/Dark custom name no longer selects a custom ThemeDictionaries entry — the active
+			// theme stays the standard Light/Dark — so a key that exists only under the custom name is not
+			// resolved. (Before the ditch this resolved Colors.HotPink via Themes.Active = "Pink".)
 			var rd = new ResourceDictionary();
 			var pink = new ResourceDictionary();
 			pink["Color1"] = new SolidColorBrush(Colors.HotPink);
@@ -400,14 +404,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 #if !NETFX_CORE
 			UnitTestsApp.App.EnsureApplication();
 
+#pragma warning disable CS0618 // RequestedCustomTheme is obsolete: assert it is now a no-op.
 			ApplicationHelper.RequestedCustomTheme = "Pink";
+#pragma warning restore CS0618
 
-			Assert.IsTrue(rd.ContainsKey("Color1"));
+			// The custom name no longer keys the "Pink" sub-dictionary, so Color1 is not found.
+			Assert.IsFalse(rd.ContainsKey("Color1"));
 
-			var retrieved = rd["Color1"];
-			Assert.AreEqual(Colors.HotPink, ((SolidColorBrush)retrieved).Color);
-
+#pragma warning disable CS0618
 			ApplicationHelper.RequestedCustomTheme = null;
+#pragma warning restore CS0618
 #endif
 		}
 
