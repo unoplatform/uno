@@ -568,6 +568,7 @@ namespace Microsoft.UI.Xaml
 		/// <param name="merged">A dictionary present in the merged dictionaries</param>
 		internal void RefreshMergedDictionary(ResourceDictionary merged)
 		{
+			Console.WriteLine($"[STEVE] Attempting to refresh merged dictionary with source {merged.Source}");
 			if (merged.Source is null)
 			{
 				throw new InvalidOperationException("Unable to refresh dictionary without a Source being set");
@@ -576,7 +577,17 @@ namespace Microsoft.UI.Xaml
 			var index = _mergedDictionaries.IndexOf(merged);
 			if (index != -1)
 			{
-				_mergedDictionaries[index] = ResourceResolver.RetrieveDictionaryForSource(merged.Source);
+				Console.WriteLine($"[STEVE] Refreshing merged dictionary with source {merged.Source}");
+				var newMerged = _mergedDictionaries[index] = ResourceResolver.RetrieveDictionaryForSource(merged.Source);
+
+				// Add any extra merged dictionaries from merged into newMerged that it doesnt already contain
+				foreach (var extraMerged in merged.MergedDictionaries)
+				{
+					if (!newMerged.MergedDictionaries.Contains(extraMerged))
+					{
+						newMerged.MergedDictionaries.Add(extraMerged);
+					}
+				}
 			}
 			else
 			{

@@ -409,7 +409,7 @@ partial class ClientHotReloadProcessor
 
 			// Traverse the current app's tree to replace dictionaries matching the source property
 			// with the updated ones.
-			UpdateResourceDictionaries(updatedDictionaries, Application.Current.Resources);
+			UpdateResourceDictionaries(Application.Current.Resources);
 
 			// Force the app reevaluate global resources changes
 			Application.Current.UpdateResourceBindingsForHotReload();
@@ -421,18 +421,46 @@ partial class ClientHotReloadProcessor
 	/// <summary>
 	/// Refreshes ResourceDictionary instances that have been detected as updated
 	/// </summary>
-	/// <param name="updatedDictionaries"></param>
 	/// <param name="root"></param>
-	private static void UpdateResourceDictionaries(List<Uri> updatedDictionaries, ResourceDictionary root)
+	private static void UpdateResourceDictionaries(ResourceDictionary root)
 	{
+		var visited = new HashSet<ResourceDictionary>();
+		UpdateResourceDictionariesCore(root, visited);
+	}
+
+	private static void UpdateResourceDictionariesCore(ResourceDictionary root, HashSet<ResourceDictionary> visited)
+	{
+		Console.WriteLine($"[STEVE] Visiting dictionary {root} with source {root.Source}, type of root is {root.GetType()}");
+		if (!visited.Add(root))
+		{
+			Console.WriteLine($"[STEVE] Already visited dictionary {root} with source {root.Source}, skipping to avoid cycle");
+			return;
+		}
+
+		// Snapshot before mutation: RefreshMergedDictionary replaces entries in MergedDictionaries.
 		var dictionariesToRefresh = root
 			.MergedDictionaries
-			.Where(merged => updatedDictionaries.Any(d => d == merged.Source))
 			.ToArray();
 
 		foreach (var merged in dictionariesToRefresh)
 		{
-			root.RefreshMergedDictionary(merged);
+			Console.WriteLine($"[STEVE] Refreshing dictionary {merged} with source {merged.Source}, type of merged is {merged.GetType()}");
+			try
+			{
+				root.RefreshMergedDictionary(merged);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"[STEVE] Error refreshing dictionary {merged} with source {merged.Source}: {ex}");
+			}
+		}
+
+		// Recurse into the (possibly replaced) merged dictionaries so nested matches (e.g. dictionaries
+		// reachable only via an intermediate Source-less wrapper like BaseTheme) are also refreshed.
+		foreach (var merged in root.MergedDictionaries.ToArray())
+		{
+			Console.WriteLine($"[STEVE] Recursing into dictionary {merged} with source {merged.Source}, type of merged is {merged.GetType()}");
+			UpdateResourceDictionariesCore(merged, visited);
 		}
 	}
 #endif
