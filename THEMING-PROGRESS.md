@@ -13,7 +13,7 @@ One phase per session, strictly in order. Scenario labels S1–S5 are defined in
 - [x] **Phase 3** — Resolve `{ThemeResource}` against the owner's effective theme (D3, Mechanism 1)
 - [x] **Phase 4** — Remove the 11 band-aid pushes + delete the global stack
 - [x] **Phase 5** — Popup/Flyout logical-parent inheritance + flyout `ActualTheme` forwarding (D5, D6)
-- [ ] **Phase 6** — Application/OS/custom-theme/high-contrast precedence (D7, D8)
+- [x] **Phase 6** — Application/OS/custom-theme/high-contrast precedence (D7, D8)
 - [ ] **Phase 7** — Native (Android/iOS) theme scope: OS + application theme only (element theme out of scope)
 - [ ] **Phase 8** — Full validation, WinUI parity, cleanup, docs
 
@@ -196,6 +196,71 @@ One phase per session, strictly in order. Scenario labels S1–S5 are defined in
     ActualTheme on first open (D5/D6)`; `refactor(theming): keep element-level theming Skia/WASM-only; native is
     OS + app theme` (gating + T4/T5 native exclusion); `refactor(theming): native flyout follows app/OS theme
     (no element-theme forwarding)`; plus docs commits for the spec/native-scope adjustments.
+
+- **Phase 6 (D7 + D8) — DONE.** Application/OS theme precedence, the custom-theme ditch, and high-contrast
+  composition. All changes are app/OS-level; no element-level/per-object theme code was added to the native
+  path (Phase 5 native-scope decision held — the resolution leaf is platform-neutral).
+  - **D7 app-vs-OS precedence — verified already correct (no code change).** Uno's chain already matches
+    `FrameworkTheming::GetTheme()` (FrameworkTheming.cpp:119-136): `SetExplicitRequestedTheme` sets
+    `IsThemeSetExplicitly`, and `Application.OnSystemThemeChanged` guards `if (!IsThemeSetExplicitly)` so an OS
+    theme change does not flip an explicitly-set app theme. T9 (`When_App_Theme_Explicit_OS_Change_Is_Suppressed`)
+    was already a GREEN regression guard at the Phase 6 baseline — kept, not newly fixed.
+    `FrameworkApplication.put_RequestedTheme` "settable only before resources load" parity confirmed: Uno's
+    `Application.RequestedTheme` setter throws on `_initializationComplete`, matching `m_isRequestedThemeSettable`
+    (FrameworkApplication_Partial.cpp:986-993).
+  - **D7 custom-theme ditch (custom-theme.md → Option B).** Removed the custom-name arm in
+    `Application.UpdateRequestedThemesForResources`, so `RequestedThemeForResources`/`Themes.Active` is strictly
+    `"Light"`/`"Dark"`. Hard-deprecated `ApplicationHelper.RequestedCustomTheme` to an `[Obsolete]` no-op (the
+    property is kept and round-trips for source compatibility, but it no longer keys a custom `ThemeDictionaries`
+    entry nor sets the app theme). Note: after Phases 3/4 the in-tree resolution leaf already threaded the
+    owner's Light/Dark theme via `GetThemeKey`, so a custom `Themes.Active` only affected owner-less lookups /
+    `GetActiveTheme()`; the ditch formalizes "no custom axis" end-to-end (WinUI has none). **Breaking change** for
+    apps passing a non-`Light`/`Dark` custom name (migrate to merged dictionaries that override specific
+    brush/color keys on top of the Light/Dark theme dictionaries; use `Application.RequestedTheme` to switch the
+    standard themes); `"Light"`/`"Dark"` names are the harmless bucket and still resolve as the standard themes.
+  - **D7 theme-dictionary fallback — already WinUI-faithful once `Themes.Active` is Light/Dark.** With the custom
+    axis gone, the resolved key is always Light/Dark, so `GetThemeDictionary(activeTheme) ??
+    GetThemeDictionary(Themes.Default)` matches `EnsureActiveThemeDictionary`'s "resolved base → Default" chain
+    (Resources.cpp:764-790). The dark-`Default` leak required a custom/stale key skipping Light/Dark — removed by
+    the ditch (kept `?? Default` as the WinUI-faithful final fallback rather than diverging to an "app base"
+    step). T10 part (b) (`When_Element_Dark_Island_And_Fallback_Does_Not_Leak_Dark`) was already GREEN at
+    baseline; kept.
+  - **D8 high-contrast composition.** HC is an OS/app-global dimension OR-ed onto the base theme — matching WinUI
+    (`FrameworkTheming::GetTheme` reads HC from FrameworkTheming, not the per-object theme, FrameworkTheming.cpp:123;
+    `EnsureActiveThemeDictionary` reads `GetHighContrastTheme()` globally, Resources.cpp:718,740). Added
+    `SystemThemeHelper.IsHighContrast`, sourced from the settable `WinRTFeatureConfiguration.Accessibility.HighContrast`
+    (the existing accessibility setting — it doubles as the deterministic runtime-test override).
+    `ThemeResolution.ResolveOwnerTheme` now ORs the app HC bits onto the resolved base theme.
+    `ResourceDictionary.GetActiveThemeDictionary` reads the global HC state live and selects the HC sub-dictionary
+    first (owner base → `HighContrastWhite`/`HighContrastBlack`, then the generic `"HighContrast"` key), falling
+    through to the base Light/Dark, then `"Default"` — a faithful port of `EnsureActiveThemeDictionary`
+    (Resources.cpp:718-790); the `_activeThemeDictionary` cache invalidates on HC change. `GetThemeKey` stays
+    base-only (the threaded key is the base theme; HC is composed at the leaf). **Scope (per plan):** detection +
+    enum/app-theme composition + dictionary selection. Full HC brush parity (real per-platform White/Black/Custom
+    OS-variant detection, the HC brush set, and runtime HC-change propagation to already-shown elements) is a
+    documented follow-up.
+  - **Tests.** New Uno-only (`#if HAS_UNO`, Skia/WASM, `[RequiresFullWindow]`, native-excluded) runtime tests in
+    `Given_Theme_Materialization`: `When_Custom_Theme_Name_Is_Ditched_Resolves_Standard` (a non-Light/Dark custom
+    name no longer becomes `GetActiveTheme()`; an element `RequestedTheme="Dark"` still resolves standard Dark; a
+    `"Light"` name resolves standard Light) — RED on pre-ditch code, GREEN after — and
+    `When_HighContrast_Active_Selects_HighContrast_Dictionary` (HC active → the `HighContrast` sub-dictionary is
+    chosen ahead of Light/Dark). Repurposed the Uno.UI.Tests unit test `Given_ResourceDictionary.When_Has_Custom_Theme`
+    → `When_Custom_Theme_Name_Is_Ditched` (asserts a custom name no longer keys its sub-dictionary) and removed the
+    now-defunct `RequestedCustomTheme` reset in the test `App`.
+  - **Validation.** *Compile:* `SamplesApp.Skia.Generic` (Release, net10.0, `UnoFastDevBuild`) clean — 0 errors, 4
+    pre-existing binding-redirect warnings; `Uno.UI.Tests` (net10.0) builds clean (the `[Obsolete]` + `#pragma
+    CS0618` test edits compile). *Runtime (Skia Desktop):* `/runtime-tests` theming suite +
+    `Given_Theme_Materialization` = **146/147** — the lone failure is the pre-existing GC flake
+    `When_Flyout_Closed_Target_Does_Not_Hold_Flyout` (the `'collected'` assertion; fails on baseline too). That
+    equals the 144/145 Phase 5 baseline plus the two new GREEN Phase 6 tests; T9/T10 + the §B leak guard stay
+    green. The repurposed Uno.UI.Tests unit test compiles but the `dotnet test` runner reports "No test projects
+    were found" under the net10.0 override (a repo test-discovery quirk, `NetUnitTests = NetPrevious = net9.0`,
+    unrelated to the change); its assertion mirrors the runtime-validated ditch behavior. `dotnet format whitespace
+    --verify-no-changes` clean on all changed files. WASM/native heads + `/winui-runtime-tests` oracle deferred
+    (T9/T10/ditch/HC are Uno-only — confirmed against the WinUI FrameworkTheming/Resources sources and a WinUI
+    probe app per the test comments). Commits: `feat(theming): ditch app-level custom-theme axis (D7)`;
+    `feat(theming): compose high-contrast with base theme (D8)`; `test(theming): cover custom-theme ditch and
+    high-contrast selection`; plus this docs commit.
 
 ---
 
