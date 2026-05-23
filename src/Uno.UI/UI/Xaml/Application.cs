@@ -258,14 +258,20 @@ namespace Microsoft.UI.Xaml
 
 		internal static void UpdateRequestedThemesForResources()
 		{
-			Current.RequestedThemeForResources =
-				(ApplicationHelper.RequestedCustomTheme, Current.RequestedTheme) switch
-				{
-					(var custom, _) when !custom.IsNullOrEmpty() => custom,
-					(_, ApplicationTheme.Light) => "Light",
-					(_, ApplicationTheme.Dark) => "Dark",
-					_ => throw new InvalidOperationException($"Theme {Application.Current.RequestedTheme} is not valid"),
-				};
+			// D7 (Phase 6): the app-level custom-theme axis is ditched (custom-theme.md → Option B).
+			// RequestedThemeForResources / Themes.Active is strictly "Light"/"Dark"; high contrast is a
+			// separate global dimension composed at the resolution leaf (see ResourceDictionary
+			// GetActiveThemeDictionary). This matches WinUI, which has no custom-theme-name axis — the app
+			// theme is Light or Dark (FrameworkTheming::GetTheme, FrameworkTheming.cpp:119-136). A genuine
+			// custom palette is provided via merged ResourceDictionaries that override specific brush/color
+			// keys on top of the Light/Dark theme dictionaries (see the obsolete
+			// ApplicationHelper.RequestedCustomTheme).
+			Current.RequestedThemeForResources = Current.RequestedTheme switch
+			{
+				ApplicationTheme.Light => "Light",
+				ApplicationTheme.Dark => "Dark",
+				_ => throw new InvalidOperationException($"Theme {Application.Current.RequestedTheme} is not valid"),
+			};
 		}
 
 		internal SpecializedResourceDictionary.ResourceKey RequestedThemeForResources
