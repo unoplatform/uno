@@ -30,6 +30,20 @@ They are also accessible using the status bar Uno logo: hover your mouse pointer
 
 If the extension is not behaving properly, try using the `Developer: Reload Window` (or `Ctrl+R`) command in the palette.
 
+## `.lscache` files appearing in the solution
+
+After upgrading to **C# Dev Kit 3.20** or later, opening an Uno solution in VS Code may produce a large batch of untracked `<ProjectName>.csproj.lscache` files next to each project. Uno solutions typically have multiple platform heads and test projects, so the visual impact is larger than for a typical .NET solution.
+
+This is **not an Uno issue** and **not an error**. `.lscache` files are language-service caches written by the C# Dev Kit project system. They contain cached project metadata (references, target frameworks, output paths, restored package info) so the workspace can load quickly on the next session. The format is plain text, contains no source code or secrets, and the files regenerate automatically if deleted.
+
+They are safe to commit to source control if you prefer to keep them tracked. If you'd rather exclude them, add the following line to your repository's `.gitignore`:
+
+```
+*.lscache
+```
+
+This behavior is owned by the C# Dev Kit project system and tracked upstream at [microsoft/vscode-dotnettools#3080](https://github.com/microsoft/vscode-dotnettools/issues/3080).
+
 ## Reporting issues
 
 You can report issues directly from VS Code by either:
