@@ -27,7 +27,6 @@ FeatureConfiguration.AutomationPeer.AutoEnableAccessibility = true;
 
 > [!WARNING]
 > `AutoEnableAccessibility` materializes and continuously maintains the full semantic DOM for the lifetime of the app, which has a significant runtime cost (every visual-tree change updates the semantic overlay). It is intended for testing and debugging — leave it disabled in production so the cost is only paid when an assistive technology actually requests accessibility. Set it before the host is built (typically in `App.xaml.cs` before `MainWindow` is created); it is read once during accessibility subsystem initialization.
-
 > [!NOTE]
 > On Windows (Win32) and macOS, the accessibility tree is always active — no manual activation is required.
 
