@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaStreamSourceSwitchStreamsRequest MediaStreamSourceSwitchStreamsRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaStreamSourceSwitchStreamsRequest%20MediaStreamSourceSwitchStreamsRequestedEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestedEventArgs", "Request");
 			}
 		}
 #endif

@@ -19,11 +19,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhotoConfirmationControl.Enabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PhotoConfirmationControl.Enabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.PhotoConfirmationControl", "Enabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.PhotoConfirmationControl", "bool PhotoConfirmationControl.Enabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.PhotoConfirmationControl", "Enabled");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPixelFormat PhotoConfirmationControl.PixelFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPixelFormat%20PhotoConfirmationControl.PixelFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.PhotoConfirmationControl", "PixelFormat");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.PhotoConfirmationControl", "MediaPixelFormat PhotoConfirmationControl.PixelFormat");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.PhotoConfirmationControl", "PixelFormat");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhotoConfirmationControl.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PhotoConfirmationControl.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.PhotoConfirmationControl", "Supported");
 			}
 		}
 #endif

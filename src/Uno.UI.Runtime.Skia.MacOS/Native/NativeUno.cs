@@ -540,6 +540,32 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial nint uno_mediaplayer_set_view(nint media, nint view, nint window);
 
+	// Speech recognition
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_speech_set_callbacks(
+		delegate* unmanaged[Cdecl]<nint, byte*, void> hypothesis,
+		delegate* unmanaged[Cdecl]<nint, int, void> state,
+		delegate* unmanaged[Cdecl]<nint, byte*, byte*, void> result,
+		delegate* unmanaged[Cdecl]<nint, byte*, void> error);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial nint uno_speech_recognizer_create(string locale);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_speech_recognizer_destroy(nint recognizer);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_speech_recognizer_start(nint recognizer);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_speech_recognizer_stop(nint recognizer);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_speech_recognizer_is_available(nint recognizer);
+
 	// Accessibility — per-window context lifecycle
 
 	[LibraryImport("libUnoNativeMac.dylib")]

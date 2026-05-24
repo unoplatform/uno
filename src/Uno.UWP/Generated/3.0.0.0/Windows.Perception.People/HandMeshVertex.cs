@@ -13,7 +13,7 @@ namespace Windows.Perception.People
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HandMeshVertex(global::System.Numerics.Vector3 _Position, global::System.Numerics.Vector3 _Normal)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.People.HandMeshVertex", "HandMeshVertex.HandMeshVertex(Vector3 _Position, Vector3 _Normal)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.People.HandMeshVertex", "HandMeshVertex(Vector3 _Position, Vector3 _Normal)");
 		}
 #endif
 		// Forced skipping of method Windows.Perception.People.HandMeshVertex.HandMeshVertex(System.Numerics.Vector3, System.Numerics.Vector3)

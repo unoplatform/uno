@@ -14,7 +14,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> RemoteSystemKindFilter.RemoteSystemKinds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20RemoteSystemKindFilter.RemoteSystemKinds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemKindFilter", "RemoteSystemKinds");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.System.RemoteSystems
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public RemoteSystemKindFilter(global::System.Collections.Generic.IEnumerable<string> remoteSystemKinds)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemKindFilter", "RemoteSystemKindFilter.RemoteSystemKindFilter(IEnumerable<string> remoteSystemKinds)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemKindFilter", "RemoteSystemKindFilter(IEnumerable<string> remoteSystemKinds)");
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKindFilter.RemoteSystemKindFilter(System.Collections.Generic.IEnumerable<string>)

@@ -19,11 +19,11 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PointerVisualizationSettings.IsBarrelButtonFeedbackEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PointerVisualizationSettings.IsBarrelButtonFeedbackEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerVisualizationSettings", "IsBarrelButtonFeedbackEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.PointerVisualizationSettings", "bool PointerVisualizationSettings.IsBarrelButtonFeedbackEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.PointerVisualizationSettings", "IsBarrelButtonFeedbackEnabled");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PointerVisualizationSettings.IsContactFeedbackEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PointerVisualizationSettings.IsContactFeedbackEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerVisualizationSettings", "IsContactFeedbackEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.PointerVisualizationSettings", "bool PointerVisualizationSettings.IsContactFeedbackEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.PointerVisualizationSettings", "IsContactFeedbackEnabled");
 			}
 		}
 #endif
@@ -45,7 +45,7 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.PointerVisualizationSettings GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member PointerVisualizationSettings PointerVisualizationSettings.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointerVisualizationSettings%20PointerVisualizationSettings.GetForCurrentView%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerVisualizationSettings", "GetForCurrentView()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.IsBarrelButtonFeedbackEnabled.get

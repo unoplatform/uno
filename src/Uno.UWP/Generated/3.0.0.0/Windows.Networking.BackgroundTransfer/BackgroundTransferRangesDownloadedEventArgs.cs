@@ -19,7 +19,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<BackgroundTransferFileRange> BackgroundTransferRangesDownloadedEventArgs.AddedRanges is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CBackgroundTransferFileRange%3E%20BackgroundTransferRangesDownloadedEventArgs.AddedRanges");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferRangesDownloadedEventArgs", "AddedRanges");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.BackgroundTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BackgroundTransferRangesDownloadedEventArgs.WasDownloadRestarted is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BackgroundTransferRangesDownloadedEventArgs.WasDownloadRestarted");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferRangesDownloadedEventArgs", "WasDownloadRestarted");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Networking.BackgroundTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral BackgroundTransferRangesDownloadedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20BackgroundTransferRangesDownloadedEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.BackgroundTransfer.BackgroundTransferRangesDownloadedEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferRangesDownloadedEventArgs.AddedRanges.get

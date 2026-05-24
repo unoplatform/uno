@@ -1,4 +1,4 @@
-<Project Sdk="MSTest.Sdk/4.0.2">
+﻿<Project Sdk="MSTest.Sdk/4.0.2">
 
 	<PropertyGroup>
 		<TargetFramework>$(NetCurrent)</TargetFramework>
@@ -9,6 +9,20 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<!--
+			Test fixtures under Fixtures\ are built as standalone class libraries
+			(see _BuildAndCopyAddInTestFixtures target below). Keep them out of
+			this project's default Compile / None / EmbeddedResource globs so the
+			fixture's own obj-AssemblyInfo doesn't collide with this project's
+			auto-generated assembly attributes.
+		-->
+		<Compile Remove="Fixtures\**" />
+		<None Remove="Fixtures\**" />
+		<EmbeddedResource Remove="Fixtures\**" />
+		<None Include="Fixtures\**\*.cs;Fixtures\**\*.csproj" Visible="true" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="AwesomeAssertions" />
 		<PackageReference Include="MessagePack" Version="3.1.4" /> <!-- pin transient dependency -->
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
@@ -17,7 +31,7 @@
 		<PackageReference Include="Microsoft.VisualStudio.SolutionPersistence" Version="1.0.52" />
 		<PackageReference Include="StreamJsonRpc" Version="2.17.11" />
 		<PackageReference Include="ModelContextProtocol" Version="1.1.0" />
-		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.1.1">
+		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.2.1">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
@@ -62,6 +76,9 @@
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\HealthReportFactory.cs" Link="Mcp\HealthReportFactory.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\McpJsonUtilities.cs" Link="Mcp\McpJsonUtilities.cs" />
 
+		<!-- Link host-side assembly resolution helper for unit testing -->
+		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\HostAssemblyResolution.cs" Link="Helpers\HostAssemblyResolution.cs" />
+
 		<!-- Link ConfigurationExtensions for add-in value parsing tests -->
 		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\ConfigurationExtensions.cs" Link="Helpers\ConfigurationExtensions.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.Host\IDEChannel\IIdeChannelManager.cs" Link="IDEChannel\IIdeChannelManager.cs" />
@@ -84,6 +101,38 @@
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Server\Uno.UI.RemoteControl.Server.csproj" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Server.Processors\Uno.UI.RemoteControl.Server.Processors.csproj" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\Uno.UI.RemoteControl.TestProcessor\Uno.UI.RemoteControl.TestProcessor.csproj" ReferenceOutputAssembly="false" />
+
+		<!--
+			Add-in test fixtures. Referenced only so CI restore picks them up; the
+			actual build + output staging is driven by _BuildAndCopyAddInTestFixtures
+			below. Fixtures\** is removed from default globs above so their compile
+			graphs stay decoupled from this project.
+		-->
+		<ProjectReference Include="Fixtures\AddInWithCrossMajorVersionRefs\AddInWithCrossMajorVersionRefs.csproj"
+		                  ReferenceOutputAssembly="false"
+		                  SkipGetTargetFrameworkProperties="true"
+		                  UndefineProperties="TargetFramework"
+		                  Private="false" />
+		<ProjectReference Include="Fixtures\AddInWithDiServiceRegistration\AddInWithDiServiceRegistration.csproj"
+		                  ReferenceOutputAssembly="false"
+		                  SkipGetTargetFrameworkProperties="true"
+		                  UndefineProperties="TargetFramework"
+		                  Private="false" />
+		<ProjectReference Include="Fixtures\Uno.Licensing.TestContracts\Uno.Licensing.TestContracts.csproj"
+		                  ReferenceOutputAssembly="false"
+		                  SkipGetTargetFrameworkProperties="true"
+		                  UndefineProperties="TargetFramework"
+		                  Private="false" />
+		<ProjectReference Include="Fixtures\AddInWithSharedContractProvider\AddInWithSharedContractProvider.csproj"
+		                  ReferenceOutputAssembly="false"
+		                  SkipGetTargetFrameworkProperties="true"
+		                  UndefineProperties="TargetFramework"
+		                  Private="false" />
+		<ProjectReference Include="Fixtures\AddInWithSharedContractConsumer\AddInWithSharedContractConsumer.csproj"
+		                  ReferenceOutputAssembly="false"
+		                  SkipGetTargetFrameworkProperties="true"
+		                  UndefineProperties="TargetFramework"
+		                  Private="false" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -91,5 +140,105 @@
 		<ProjectReference Include="..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" />
 	</ItemGroup>
+
+	<!--
+		Build all add-in test fixtures and stage their output under $(OutDir)Fixtures\
+		so DevServerTests can hand paths to the host via the addins CLI flag.
+
+		Done via MSBuild task (not ProjectReference) so each fixture's TargetFramework
+		stays decoupled from this test project's NetCurrent TFM negotiation and from
+		its compile / AssemblyInfo graph.
+
+		Each fixture's full bin directory is staged (not just the main DLL) so
+		AssemblyDependencyResolver inside AddInLoadContext has a real dep graph to
+		consult (EnableDynamicLoading drops private NuGet payloads next to the DLL).
+	-->
+	<Target Name="_BuildAndCopyAddInTestFixtures" BeforeTargets="Build">
+
+		<!-- AddInWithCrossMajorVersionRefs: net8.0 fixture with v8 AssemblyRefs -->
+		<MSBuild Projects="Fixtures\AddInWithCrossMajorVersionRefs\AddInWithCrossMajorVersionRefs.csproj"
+		         Properties="Configuration=$(Configuration)"
+		         Targets="Build"
+		         RemoveProperties="TargetFramework">
+			<Output TaskParameter="TargetOutputs" ItemName="_CrossMajorFixtureOutput" />
+		</MSBuild>
+		<ItemGroup>
+			<_CrossMajorFixtureBinFiles Include="%(_CrossMajorFixtureOutput.RootDir)%(_CrossMajorFixtureOutput.Directory)**\*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(_CrossMajorFixtureBinFiles)"
+		      DestinationFolder="$(OutDir)Fixtures\AddInWithCrossMajorVersionRefs\%(RecursiveDir)"
+		      SkipUnchangedFiles="true" />
+
+		<!-- AddInWithDiServiceRegistration: net9.0 fixture for DI cross-ALC validation -->
+		<MSBuild Projects="Fixtures\AddInWithDiServiceRegistration\AddInWithDiServiceRegistration.csproj"
+		         Properties="Configuration=$(Configuration)"
+		         Targets="Build"
+		         RemoveProperties="TargetFramework">
+			<Output TaskParameter="TargetOutputs" ItemName="_DiFixtureOutput" />
+		</MSBuild>
+		<ItemGroup>
+			<_DiFixtureBinFiles Include="%(_DiFixtureOutput.RootDir)%(_DiFixtureOutput.Directory)**\*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(_DiFixtureBinFiles)"
+		      DestinationFolder="$(OutDir)Fixtures\AddInWithDiServiceRegistration\%(RecursiveDir)"
+		      SkipUnchangedFiles="true" />
+
+		<!--
+			Cross-add-in shared type regression fixtures (#23304):
+			Provider ships Uno.Licensing.TestContracts.dll in its directory and registers
+			the contract in DI. Consumer does NOT (Private=false on the ProjectReference)
+			and depends on the contract via constructor injection. Reproduces the
+			"contracts DLL physically in only one add-in's directory, absent from every
+			deps.json" scenario from the production failure.
+		-->
+
+		<!-- Build provider -->
+		<MSBuild Projects="Fixtures\AddInWithSharedContractProvider\AddInWithSharedContractProvider.csproj"
+		         Properties="Configuration=$(Configuration)"
+		         Targets="Build"
+		         RemoveProperties="TargetFramework">
+			<Output TaskParameter="TargetOutputs" ItemName="_SharedProviderOutput" />
+		</MSBuild>
+		<ItemGroup>
+			<_SharedProviderBinFiles Include="%(_SharedProviderOutput.RootDir)%(_SharedProviderOutput.Directory)**\*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(_SharedProviderBinFiles)"
+		      DestinationFolder="$(OutDir)Fixtures\AddInWithSharedContractProvider\%(RecursiveDir)"
+		      SkipUnchangedFiles="true" />
+
+		<!--
+			Explicitly stage Uno.Licensing.TestContracts.dll into the provider's fixture
+			directory. Without EnableDynamicLoading=true the ProjectReference does not copy
+			the DLL to the provider's bin, so we copy it manually. The DLL must be physically
+			present in the provider's directory so directory-probing (whether via
+			Assembly.LoadFrom or via any future host-side probe) can find it. It is
+			intentionally absent from every add-in's deps.json so that AssemblyDependencyResolver
+			alone cannot recover the load.
+		-->
+		<MSBuild Projects="Fixtures\Uno.Licensing.TestContracts\Uno.Licensing.TestContracts.csproj"
+		         Properties="Configuration=$(Configuration)"
+		         Targets="Build"
+		         RemoveProperties="TargetFramework">
+			<Output TaskParameter="TargetOutputs" ItemName="_ContractsOutput" />
+		</MSBuild>
+		<Copy SourceFiles="%(_ContractsOutput.FullPath)"
+		      DestinationFolder="$(OutDir)Fixtures\AddInWithSharedContractProvider\"
+		      SkipUnchangedFiles="true" />
+
+		<!-- Build consumer (does NOT include Uno.Licensing.TestContracts.dll — Private=false) -->
+		<MSBuild Projects="Fixtures\AddInWithSharedContractConsumer\AddInWithSharedContractConsumer.csproj"
+		         Properties="Configuration=$(Configuration)"
+		         Targets="Build"
+		         RemoveProperties="TargetFramework">
+			<Output TaskParameter="TargetOutputs" ItemName="_SharedConsumerOutput" />
+		</MSBuild>
+		<ItemGroup>
+			<_SharedConsumerBinFiles Include="%(_SharedConsumerOutput.RootDir)%(_SharedConsumerOutput.Directory)**\*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(_SharedConsumerBinFiles)"
+		      DestinationFolder="$(OutDir)Fixtures\AddInWithSharedContractConsumer\%(RecursiveDir)"
+		      SkipUnchangedFiles="true" />
+
+	</Target>
 
 </Project>

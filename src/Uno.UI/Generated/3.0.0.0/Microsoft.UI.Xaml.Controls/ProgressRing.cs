@@ -23,7 +23,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ProgressRingTemplateSettings ProgressRing.TemplateSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProgressRingTemplateSettings%20ProgressRing.TemplateSettings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ProgressRing", "TemplateSettings");
 			}
 		}
 #endif

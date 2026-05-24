@@ -15,7 +15,7 @@ namespace Windows.Globalization
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<string> GetLanguagesForUser(global::Windows.System.User user)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<string> ApplicationLanguages.GetLanguagesForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20ApplicationLanguages.GetLanguagesForUser%28User%20user%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.ApplicationLanguages", "GetLanguagesForUser(User user)");
 		}
 #endif
 		// Forced skipping of method Windows.Globalization.ApplicationLanguages.Languages.get

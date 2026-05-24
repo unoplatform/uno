@@ -44,7 +44,15 @@ public partial class AutomationPeer : DependencyObject
 	/// </summary>
 	/// <param name="patternInterface">The pattern identifier.</param>
 	/// <returns>The object implementing the pattern interface, or null if the pattern is not supported.</returns>
-	public object? GetPattern(PatternInterface patternInterface) => GetPatternCore(patternInterface);
+	public object? GetPattern(PatternInterface patternInterface)
+	{
+		var result = GetPatternCore(patternInterface);
+		if (result is null && this is FrameworkElementAutomationPeer feap)
+		{
+			result = feap.GetDefaultPattern(patternInterface);
+		}
+		return result;
+	}
 
 	/// <summary>
 	/// Sets the AutomationPeer that is the parent of this AutomationPeer.

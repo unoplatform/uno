@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackItem CurrentMediaPlaybackItemChangedEventArgs.NewItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackItem%20CurrentMediaPlaybackItemChangedEventArgs.NewItem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs", "NewItem");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackItem CurrentMediaPlaybackItemChangedEventArgs.OldItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackItem%20CurrentMediaPlaybackItemChangedEventArgs.OldItem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs", "OldItem");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackItemChangedReason CurrentMediaPlaybackItemChangedEventArgs.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackItemChangedReason%20CurrentMediaPlaybackItemChangedEventArgs.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs", "Reason");
 			}
 		}
 #endif

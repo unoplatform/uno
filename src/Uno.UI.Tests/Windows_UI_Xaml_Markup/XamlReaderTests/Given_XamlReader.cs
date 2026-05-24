@@ -849,7 +849,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		[TestMethod]
 		public void When_ImplicitStyle_WithoutKey()
 		{
-			Assert.ThrowsExactly<Uno.Xaml.XamlParseException>(() =>
+			Assert.ThrowsExactly<XamlParseException>(() =>
 			{
 				var s = GetContent(nameof(When_ImplicitStyle_WithoutKey));
 				var r = Microsoft.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
@@ -1094,7 +1094,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		public void When_CreateFromString_Invalid_MethodName()
 		{
 			var xaml = "<CreateFromStringInvalidMethodNameOwner Test=\"8\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
-			Assert.ThrowsExactly<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
+			Assert.ThrowsExactly<XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
 		}
 
 		[TestMethod]
@@ -1112,14 +1112,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		public void When_CreateFromString_Non_Static_Method()
 		{
 			var xaml = "<CreateFromStringNonStaticMethodOwner Test=\"4\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
-			Assert.ThrowsExactly<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
+			Assert.ThrowsExactly<XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
 		}
 
 		[TestMethod]
 		public void When_CreateFromString_Private_Static_Method()
 		{
 			var xaml = "<CreateFromStringPrivateStaticMethodOwner Test=\"21\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
-			Assert.ThrowsExactly<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
+			Assert.ThrowsExactly<XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
 		}
 
 		[TestMethod]
@@ -1137,15 +1137,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		public void When_CreateFromString_Invalid_Parameters()
 		{
 			var xaml = "<CreateFromStringInvalidParametersOwner Test=\"2\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
-			Assert.ThrowsExactly<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
+			Assert.ThrowsExactly<XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
 		}
 
 		[TestMethod]
 		public void When_CreateFromString_Invalid_Return_Type()
 		{
 			var xaml = "<CreateFromStringInvalidReturnTypeOwner Test=\"1\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
-			// TODO: This should throw XamlParseException too
-			Assert.ThrowsExactly<Uno.Xaml.XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
+			Assert.ThrowsExactly<XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
 		}
 
 		[TestMethod]

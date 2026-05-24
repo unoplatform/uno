@@ -10,36 +10,49 @@ This page lists supported .NET versions and [C# language versions](https://learn
 
 ## Table of supported versions
 
-# [**Uno Platform 6.3 and later**](#tab/uno63)
+# [**Uno Platform 6.4 and later**](#tab/uno64)
 
-| Platform                                   | Default .NET version | Default C# version |  Max .NET version | Max C# version |
-|--------------------------------------------|:--------------------:|:------------------:|:-----------------:|:--------------:|
-| WebAssembly                                | .NET 9               | 13                 | .NET 10           | 14             |
-| Skia Desktop                               | .NET 9               | 13                 | .NET 10           | 14             |
-| WinAppSDK                                  | .NET 9               | 13                 | .NET 10           | 14             |
-| iOS, Android                               | .NET 9               | 13                 | .NET 10           | 14             |
+| Platform                                   | Default .NET version | Default C# version | Min .NET version | Min C# version | Max .NET version | Max C# version |
+|--------------------------------------------|:--------------------:|:------------------:|:----------------:|:--------------:|:----------------:|:--------------:|
+| WebAssembly                                | .NET 10              | 14                 | .NET 9           | 13             | .NET 10          | 14             |
+| Skia Desktop                               | .NET 10              | 14                 | .NET 9           | 13             | .NET 10          | 14             |
+| WinAppSDK                                  | .NET 10              | 14                 | .NET 9           | 13             | .NET 10          | 14             |
+| iOS, Android                               | .NET 10              | 14                 | .NET 9           | 13             | .NET 10          | 14             |
 
 ### Notes
 
-- In Uno Platform 6.3, support for .NET 8 has been removed.
 - [.NET 9.0](https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-9/overview), the successor to .NET 8, has a special focus on cloud-native apps and performance.
   As a Standard Term Support (STS) release, it is now supported for **24 months (until November 10, 2026)**. See the [STS latest announcement](https://devblogs.microsoft.com/dotnet/dotnet-sts-releases-supported-for-24-months/) for more details.
 
   > [!NOTE]
-  > For **mobile workloads**, there is **no change yet**, support remains at **18 months**. See [MAUI support policy](https://dotnet.microsoft.com/en-us/platform/support/policy/maui) for more details.
+  > For **mobile workloads**, there is **no change yet**, support remains at **18 months (until May 12, 2026)**. See [MAUI support policy](https://dotnet.microsoft.com/en-us/platform/support/policy/maui) for more details.
 
 - [.NET 10.0](https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-10/overview), the successor to .NET 9, includes improvements in performance, C# 14 support, and long-term platform stability.
   As a Long Term Support (LTS) release, it will be supported for **three years (until November 2028)**.
-  At the moment, it is in preview and the least stable option for new projects.
+  .NET 10 is now the stable and default runtime option for new Uno Platform projects, while .NET 9 remains supported.
+
+# [**Uno Platform 6.3**](#tab/uno63)
+
+| Platform                                   | Default .NET version | Default C# version | Min .NET version | Min C# version | Max .NET version | Max C# version |
+|--------------------------------------------|:--------------------:|:------------------:|:----------------:|:--------------:|:----------------:|:--------------:|
+| WebAssembly                                | .NET 9               | 13                 | .NET 9           | 13             | .NET 10          | 14             |
+| Skia Desktop                               | .NET 9               | 13                 | .NET 9           | 13             | .NET 10          | 14             |
+| WinAppSDK                                  | .NET 9               | 13                 | .NET 9           | 13             | .NET 10          | 14             |
+| iOS, Android                               | .NET 9               | 13                 | .NET 9           | 13             | .NET 10          | 14             |
+
+### Notes
+
+- In Uno Platform 6.3, support for .NET 8 has been removed.
+- In Uno Platform 6.3, .NET 10 support was available as preview/RC support (not yet the stable default).
 
 # [**Uno Platform 5 and later**](#tab/uno5)
 
-| Platform                                   | Default .NET version | Default C# version |  Max .NET version | Max C# version |
-|--------------------------------------------|:--------------------:|:------------------:|:-----------------:|:--------------:|
-| WebAssembly                                | .NET 8               | 12                 | .NET 9            | 13             |
-| Skia Desktop                               | .NET 8               | 12                 | .NET 9            | 13             |
-| WinAppSDK                                  | .NET 8               | 12                 | .NET 9            | 13             |
-| iOS, Android                               | .NET 8               | 12                 | .NET 9            | 13             |
+| Platform                                   | Default .NET version | Default C# version | Min .NET version | Min C# version | Max .NET version | Max C# version |
+|--------------------------------------------|:--------------------:|:------------------:|:----------------:|:--------------:|:----------------:|:--------------:|
+| WebAssembly                                | .NET 8               | 12                 | .NET 8           | 12             | .NET 9           | 13             |
+| Skia Desktop                               | .NET 8               | 12                 | .NET 8           | 12             | .NET 9           | 13             |
+| WinAppSDK                                  | .NET 8               | 12                 | .NET 8           | 12             | .NET 9           | 13             |
+| iOS, Android                               | .NET 8               | 12                 | .NET 8           | 12             | .NET 9           | 13             |
 
 ### Notes
 

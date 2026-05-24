@@ -1401,12 +1401,13 @@ namespace Uno.WinAppSDKSyncGenerator
 		private void BuildNotImplementedException(IndentedStringBuilder b, ISymbol member, bool forceRaise)
 		{
 			var typeName = member.ContainingType.ToDisplayString();
-			var memberName = member.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+			var memberName = member.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat
+				.RemoveMemberOptions(SymbolDisplayMemberOptions.IncludeContainingType | SymbolDisplayMemberOptions.IncludeType));
 
 			if (forceRaise)
 			{
 				b.AppendLineInvariant(
-					$"throw new global::System.NotImplementedException(\"The member {memberName} is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m={Uri.EscapeDataString(memberName)}\");"
+					$"throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException(\"{typeName}\", \"{memberName}\");"
 				);
 			}
 			else

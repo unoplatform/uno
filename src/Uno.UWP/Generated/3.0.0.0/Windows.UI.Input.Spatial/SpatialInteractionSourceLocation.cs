@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3? SpatialInteractionSourceLocation.AngularVelocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%3F%20SpatialInteractionSourceLocation.AngularVelocity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceLocation", "AngularVelocity");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Quaternion? SpatialInteractionSourceLocation.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Quaternion%3F%20SpatialInteractionSourceLocation.Orientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceLocation", "Orientation");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3? SpatialInteractionSourceLocation.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%3F%20SpatialInteractionSourceLocation.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceLocation", "Position");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialInteractionSourcePositionAccuracy SpatialInteractionSourceLocation.PositionAccuracy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialInteractionSourcePositionAccuracy%20SpatialInteractionSourceLocation.PositionAccuracy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceLocation", "PositionAccuracy");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialPointerInteractionSourcePose SpatialInteractionSourceLocation.SourcePointerPose is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialPointerInteractionSourcePose%20SpatialInteractionSourceLocation.SourcePointerPose");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceLocation", "SourcePointerPose");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3? SpatialInteractionSourceLocation.Velocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%3F%20SpatialInteractionSourceLocation.Velocity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceLocation", "Velocity");
 			}
 		}
 #endif

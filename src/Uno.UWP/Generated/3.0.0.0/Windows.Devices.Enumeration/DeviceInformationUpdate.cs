@@ -15,7 +15,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceInformationKind DeviceInformationUpdate.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceInformationKind%20DeviceInformationUpdate.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformationUpdate", "Kind");
 			}
 		}
 #endif
@@ -25,7 +25,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> DeviceInformationUpdate.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20object%3E%20DeviceInformationUpdate.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformationUpdate", "Properties");
 			}
 		}
 #endif

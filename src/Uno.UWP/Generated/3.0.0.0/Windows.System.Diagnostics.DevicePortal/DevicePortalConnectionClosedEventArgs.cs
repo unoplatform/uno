@@ -19,7 +19,7 @@ namespace Windows.System.Diagnostics.DevicePortal
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DevicePortalConnectionClosedReason DevicePortalConnectionClosedEventArgs.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DevicePortalConnectionClosedReason%20DevicePortalConnectionClosedEventArgs.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs", "Reason");
 			}
 		}
 #endif

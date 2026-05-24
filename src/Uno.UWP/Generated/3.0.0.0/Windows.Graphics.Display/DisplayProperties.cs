@@ -14,11 +14,11 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayOrientations DisplayProperties.AutoRotationPreferences is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayOrientations%20DisplayProperties.AutoRotationPreferences");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayProperties", "AutoRotationPreferences");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayProperties", "DisplayOrientations DisplayProperties.AutoRotationPreferences");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayProperties", "AutoRotationPreferences");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayOrientations DisplayProperties.CurrentOrientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayOrientations%20DisplayProperties.CurrentOrientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayProperties", "CurrentOrientation");
 			}
 		}
 #endif
@@ -38,7 +38,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float DisplayProperties.LogicalDpi is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20DisplayProperties.LogicalDpi");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayProperties", "LogicalDpi");
 			}
 		}
 #endif
@@ -48,7 +48,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayOrientations DisplayProperties.NativeOrientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayOrientations%20DisplayProperties.NativeOrientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayProperties", "NativeOrientation");
 			}
 		}
 #endif
@@ -58,7 +58,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ResolutionScale DisplayProperties.ResolutionScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResolutionScale%20DisplayProperties.ResolutionScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayProperties", "ResolutionScale");
 			}
 		}
 #endif
@@ -68,7 +68,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DisplayProperties.StereoEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DisplayProperties.StereoEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayProperties", "StereoEnabled");
 			}
 		}
 #endif
@@ -76,7 +76,7 @@ namespace Windows.Graphics.Display
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetColorProfileAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> DisplayProperties.GetColorProfileAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStream%3E%20DisplayProperties.GetColorProfileAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayProperties", "GetColorProfileAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Display.DisplayProperties.ColorProfileChanged.add
@@ -103,12 +103,12 @@ namespace Windows.Graphics.Display
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayProperties", "event DisplayPropertiesEventHandler DisplayProperties.ColorProfileChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayProperties", "event ColorProfileChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayProperties", "event DisplayPropertiesEventHandler DisplayProperties.ColorProfileChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayProperties", "event ColorProfileChanged");
 			}
 		}
 #endif
@@ -119,12 +119,12 @@ namespace Windows.Graphics.Display
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayProperties", "event DisplayPropertiesEventHandler DisplayProperties.DisplayContentsInvalidated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayProperties", "event DisplayContentsInvalidated");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayProperties", "event DisplayPropertiesEventHandler DisplayProperties.DisplayContentsInvalidated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayProperties", "event DisplayContentsInvalidated");
 			}
 		}
 #endif
@@ -135,12 +135,12 @@ namespace Windows.Graphics.Display
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayProperties", "event DisplayPropertiesEventHandler DisplayProperties.LogicalDpiChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayProperties", "event LogicalDpiChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayProperties", "event DisplayPropertiesEventHandler DisplayProperties.LogicalDpiChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayProperties", "event LogicalDpiChanged");
 			}
 		}
 #endif
@@ -151,12 +151,12 @@ namespace Windows.Graphics.Display
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayProperties", "event DisplayPropertiesEventHandler DisplayProperties.OrientationChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayProperties", "event OrientationChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayProperties", "event DisplayPropertiesEventHandler DisplayProperties.OrientationChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayProperties", "event OrientationChanged");
 			}
 		}
 #endif
@@ -167,12 +167,12 @@ namespace Windows.Graphics.Display
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayProperties", "event DisplayPropertiesEventHandler DisplayProperties.StereoEnabledChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayProperties", "event StereoEnabledChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayProperties", "event DisplayPropertiesEventHandler DisplayProperties.StereoEnabledChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayProperties", "event StereoEnabledChanged");
 			}
 		}
 #endif

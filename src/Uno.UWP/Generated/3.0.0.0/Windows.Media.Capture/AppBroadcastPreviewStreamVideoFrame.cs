@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer AppBroadcastPreviewStreamVideoFrame.VideoBuffer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20AppBroadcastPreviewStreamVideoFrame.VideoBuffer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreviewStreamVideoFrame", "VideoBuffer");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastPreviewStreamVideoHeader AppBroadcastPreviewStreamVideoFrame.VideoHeader is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastPreviewStreamVideoHeader%20AppBroadcastPreviewStreamVideoFrame.VideoHeader");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPreviewStreamVideoFrame", "VideoHeader");
 			}
 		}
 #endif

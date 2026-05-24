@@ -17,7 +17,7 @@ namespace Microsoft.UI.Input.DragDrop
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetTarget(global::Microsoft.UI.Input.DragDrop.IDropOperationTarget target)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DropOperationTargetRequestedEventArgs", "void DropOperationTargetRequestedEventArgs.SetTarget(IDropOperationTarget target)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DropOperationTargetRequestedEventArgs", "SetTarget(IDropOperationTarget target)");
 		}
 #endif
 	}

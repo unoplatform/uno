@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public LayoutCycleException() : base()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.LayoutCycleException", "LayoutCycleException.LayoutCycleException()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.LayoutCycleException", "LayoutCycleException()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Xaml.LayoutCycleException.LayoutCycleException()
@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public LayoutCycleException(string message) : base(message)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.LayoutCycleException", "LayoutCycleException.LayoutCycleException(string message)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.LayoutCycleException", "LayoutCycleException(string message)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Xaml.LayoutCycleException.LayoutCycleException(string)
@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public LayoutCycleException(string message, global::System.Exception innerException) : base(message, innerException)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.LayoutCycleException", "LayoutCycleException.LayoutCycleException(string message, Exception innerException)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.LayoutCycleException", "LayoutCycleException(string message, Exception innerException)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Xaml.LayoutCycleException.LayoutCycleException(string, System.Exception)

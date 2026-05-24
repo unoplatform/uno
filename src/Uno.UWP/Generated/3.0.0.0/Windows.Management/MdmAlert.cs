@@ -14,11 +14,11 @@ namespace Windows.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MdmAlert.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MdmAlert.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.MdmAlert", "Data");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "string MdmAlert.Data");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "Data");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MdmAlertDataType MdmAlert.Format is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MdmAlertDataType%20MdmAlert.Format");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.MdmAlert", "Format");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "MdmAlertDataType MdmAlert.Format");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "Format");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MdmAlertMark MdmAlert.Mark is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MdmAlertMark%20MdmAlert.Mark");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.MdmAlert", "Mark");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "MdmAlertMark MdmAlert.Mark");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "Mark");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MdmAlert.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MdmAlert.Source");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.MdmAlert", "Source");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "string MdmAlert.Source");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "Source");
 			}
 		}
 #endif
@@ -70,7 +70,7 @@ namespace Windows.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MdmAlert.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MdmAlert.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.MdmAlert", "Status");
 			}
 		}
 #endif
@@ -80,11 +80,11 @@ namespace Windows.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MdmAlert.Target is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MdmAlert.Target");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.MdmAlert", "Target");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "string MdmAlert.Target");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "Target");
 			}
 		}
 #endif
@@ -94,11 +94,11 @@ namespace Windows.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MdmAlert.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MdmAlert.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.MdmAlert", "Type");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "string MdmAlert.Type");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "Type");
 			}
 		}
 #endif
@@ -106,7 +106,7 @@ namespace Windows.Management
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MdmAlert()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "MdmAlert.MdmAlert()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmAlert", "MdmAlert()");
 		}
 #endif
 		// Forced skipping of method Windows.Management.MdmAlert.MdmAlert()

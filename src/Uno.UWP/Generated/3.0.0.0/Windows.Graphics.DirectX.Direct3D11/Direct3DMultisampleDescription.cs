@@ -13,7 +13,7 @@ namespace Windows.Graphics.DirectX.Direct3D11
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public Direct3DMultisampleDescription(int _Count, int _Quality)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription", "Direct3DMultisampleDescription.Direct3DMultisampleDescription(int _Count, int _Quality)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription", "Direct3DMultisampleDescription(int _Count, int _Quality)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription.Direct3DMultisampleDescription(int, int)

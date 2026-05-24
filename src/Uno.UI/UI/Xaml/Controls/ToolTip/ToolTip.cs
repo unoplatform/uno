@@ -2,6 +2,7 @@
 
 using System;
 using DirectUI;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
@@ -18,6 +19,9 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ToolTip : ContentControl
 	{
+		protected override AutomationPeer OnCreateAutomationPeer()
+			=> new ToolTipAutomationPeer(this);
+
 		private const double TOOLTIP_TOLERANCE = 2.0;    // Used in PlacementMode.Mouse positioning to avoid screen edges.
 		private const double DEFAULT_KEYBOARD_OFFSET = 12;  // Default offset for automatic tooltips opened by keyboard.
 		internal const double DEFAULT_MOUSE_OFFSET = 20;   // Default offset for automatic tooltips opened by mouse.

@@ -14,7 +14,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RemoteSystemDiscoveryType RemoteSystemDiscoveryTypeFilter.RemoteSystemDiscoveryType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemDiscoveryType%20RemoteSystemDiscoveryTypeFilter.RemoteSystemDiscoveryType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemDiscoveryTypeFilter", "RemoteSystemDiscoveryType");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.System.RemoteSystems
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public RemoteSystemDiscoveryTypeFilter(global::Windows.System.RemoteSystems.RemoteSystemDiscoveryType discoveryType)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemDiscoveryTypeFilter", "RemoteSystemDiscoveryTypeFilter.RemoteSystemDiscoveryTypeFilter(RemoteSystemDiscoveryType discoveryType)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemDiscoveryTypeFilter", "RemoteSystemDiscoveryTypeFilter(RemoteSystemDiscoveryType discoveryType)");
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemDiscoveryTypeFilter.RemoteSystemDiscoveryTypeFilter(Windows.System.RemoteSystems.RemoteSystemDiscoveryType)

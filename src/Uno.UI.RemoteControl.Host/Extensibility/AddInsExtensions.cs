@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.Linq;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Uno.Utils.DependencyInjection;
 using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.Server.Telemetry;
+using Uno.Utils.DependencyInjection;
 
 namespace Uno.UI.RemoteControl.Host.Extensibility;
 

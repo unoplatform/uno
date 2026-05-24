@@ -19,7 +19,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoFrame ProcessVideoFrameContext.InputFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoFrame%20ProcessVideoFrameContext.InputFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.ProcessVideoFrameContext", "InputFrame");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoFrame ProcessVideoFrameContext.OutputFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoFrame%20ProcessVideoFrameContext.OutputFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.ProcessVideoFrameContext", "OutputFrame");
 			}
 		}
 #endif

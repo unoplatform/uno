@@ -19,7 +19,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<CastingSource> CastingDevicePickerFilter.SupportedCastingSources is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CCastingSource%3E%20CastingDevicePickerFilter.SupportedCastingSources");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevicePickerFilter", "SupportedCastingSources");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CastingDevicePickerFilter.SupportsAudio is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CastingDevicePickerFilter.SupportsAudio");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevicePickerFilter", "SupportsAudio");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePickerFilter", "bool CastingDevicePickerFilter.SupportsAudio");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePickerFilter", "SupportsAudio");
 			}
 		}
 #endif
@@ -43,11 +43,11 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CastingDevicePickerFilter.SupportsPictures is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CastingDevicePickerFilter.SupportsPictures");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevicePickerFilter", "SupportsPictures");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePickerFilter", "bool CastingDevicePickerFilter.SupportsPictures");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePickerFilter", "SupportsPictures");
 			}
 		}
 #endif
@@ -57,11 +57,11 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CastingDevicePickerFilter.SupportsVideo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CastingDevicePickerFilter.SupportsVideo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevicePickerFilter", "SupportsVideo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePickerFilter", "bool CastingDevicePickerFilter.SupportsVideo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePickerFilter", "SupportsVideo");
 			}
 		}
 #endif

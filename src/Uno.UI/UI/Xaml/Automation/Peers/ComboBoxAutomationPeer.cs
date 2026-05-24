@@ -47,40 +47,42 @@ public partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.I
 
 	protected override IList<AutomationPeer> GetChildrenCore()
 	{
-		return base.GetChildrenCore();
+		// Matches WinUI 3's ComboBoxAutomationPeer::GetChildrenCore
+		// (MUX: ComboBoxAutomationPeer_Partial.cpp).
+		// - dropdown open: return the realized item peers (ItemsControl children) so each
+		//   ComboBoxItem appears as a sibling under the ComboBox node; the items are realized
+		//   inside the popup, but ItemsPanelRoot.Children still enumerates them and each item
+		//   peer resolves to its own provider via the AutomationPeer parent chain.
+		// - dropdown closed: return an empty list. The selected item's faceplate is exposed
+		//   via ComboBoxItemAutomationPeer.GetChildrenCore (which surfaces the ContentPresenter
+		//   when IsSelected and IsDropDownOpen=false).
+		// - editable: prepend the editable TextBox peer at position 0.
+		var children = new List<AutomationPeer>();
 
-		//UNO TODO: Implement GetLightDismissElement on ComboBox
-		//UIElement spOwner = Owner as UIElement;
-		//ComboBox spComboBox = spOwner as ComboBox;
+		if (Owner is not ComboBox comboBox)
+		{
+			return children;
+		}
 
-		//if (spComboBox == null || !spComboBox.IsDropDownOpen)
-		//{
-		//	return base.GetChildrenCore();
-		//}
+		if (comboBox.IsDropDownOpen)
+		{
+			foreach (var itemPeer in base.GetChildrenCore())
+			{
+				if (itemPeer is not null)
+				{
+					children.Add(itemPeer);
+				}
+			}
+		}
 
-		//IList<AutomationPeer> apChildren = new DirectUI.TrackerCollection<AutomationPeer>();
+		if (comboBox.IsEditable
+			&& comboBox.GetEditableTextPart() is { } editableText
+			&& editableText.GetOrCreateAutomationPeer() is { } editablePeer)
+		{
+			children.Insert(0, editablePeer);
+		}
 
-		//var spLightDismissElement;
-		//spComboBox.GetLightDismissElement(out spLightDismissElement);
-
-		//if (spLightDismissElement != null)
-		//{
-		//	var ap = spLightDismissElement.GetOrCreateAutomationPeer();
-		//	apChildren.Add(ap);
-		//}
-
-		//UNO TODO: Implement GetEditableTextPart and IsEditable on ComboBox
-
-		//bool isEditable = spComboBox.IsEditable;
-		//UIElement spEditableTextElement;
-
-		//if (isEditable && spComboBox.GetEditableTextPart(out spEditableTextElement))
-		//{
-		//	IAutomationPeer ap = spEditableTextElement.GetOrCreateAutomationPeer();
-		//	apChildren.Insert(0, ap);
-		//}
-
-		//return apChildren;
+		return children;
 	}
 
 	protected override string GetClassNameCore() => nameof(ComboBox);

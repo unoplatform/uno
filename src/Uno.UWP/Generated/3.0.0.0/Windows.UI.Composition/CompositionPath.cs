@@ -12,7 +12,7 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CompositionPath(global::Windows.Graphics.IGeometrySource2D source)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionPath", "CompositionPath.CompositionPath(IGeometrySource2D source)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionPath", "CompositionPath(IGeometrySource2D source)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.CompositionPath.CompositionPath(Windows.Graphics.IGeometrySource2D)

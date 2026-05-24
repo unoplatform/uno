@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2File.Path is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2File.Path");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2File", "Path");
 			}
 		}
 #endif

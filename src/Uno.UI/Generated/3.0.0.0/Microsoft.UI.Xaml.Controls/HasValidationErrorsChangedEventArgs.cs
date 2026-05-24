@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HasValidationErrorsChangedEventArgs.NewValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HasValidationErrorsChangedEventArgs.NewValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs", "NewValue");
 			}
 		}
 #endif

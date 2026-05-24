@@ -19,7 +19,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppWindowClosedReason AppWindowClosedEventArgs.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppWindowClosedReason%20AppWindowClosedEventArgs.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowClosedEventArgs", "Reason");
 			}
 		}
 #endif

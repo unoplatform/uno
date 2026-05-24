@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentResponse.PayerEmail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentResponse.PayerEmail");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentResponse", "PayerEmail");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentResponse.PayerName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentResponse.PayerName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentResponse", "PayerName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentResponse.PayerPhoneNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentResponse.PayerPhoneNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentResponse", "PayerPhoneNumber");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentToken PaymentResponse.PaymentToken is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentToken%20PaymentResponse.PaymentToken");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentResponse", "PaymentToken");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentAddress PaymentResponse.ShippingAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentAddress%20PaymentResponse.ShippingAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentResponse", "ShippingAddress");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentShippingOption PaymentResponse.ShippingOption is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentShippingOption%20PaymentResponse.ShippingOption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentResponse", "ShippingOption");
 			}
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Windows.ApplicationModel.Payments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction CompleteAsync(global::Windows.ApplicationModel.Payments.PaymentRequestCompletionStatus status)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction PaymentResponse.CompleteAsync(PaymentRequestCompletionStatus status) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20PaymentResponse.CompleteAsync%28PaymentRequestCompletionStatus%20status%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentResponse", "CompleteAsync(PaymentRequestCompletionStatus status)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentResponse.PayerEmail.get

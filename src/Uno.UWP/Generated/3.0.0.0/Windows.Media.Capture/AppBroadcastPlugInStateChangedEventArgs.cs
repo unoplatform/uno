@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastPlugInState AppBroadcastPlugInStateChangedEventArgs.PlugInState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastPlugInState%20AppBroadcastPlugInStateChangedEventArgs.PlugInState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastPlugInStateChangedEventArgs", "PlugInState");
 			}
 		}
 #endif

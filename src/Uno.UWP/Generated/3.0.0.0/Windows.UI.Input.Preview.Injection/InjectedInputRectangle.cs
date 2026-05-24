@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Preview.Injection
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public InjectedInputRectangle(int _Left, int _Top, int _Bottom, int _Right)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputRectangle", "InjectedInputRectangle.InjectedInputRectangle(int _Left, int _Top, int _Bottom, int _Right)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Preview.Injection.InjectedInputRectangle", "InjectedInputRectangle(int _Left, int _Top, int _Bottom, int _Right)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputRectangle.InjectedInputRectangle(int, int, int, int)

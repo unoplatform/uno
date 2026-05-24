@@ -73,7 +73,7 @@ cd src
 cp crosstargeting_override.props.sample crosstargeting_override.props
 ```
 
-**2. Edit `crosstargeting_override.props`:**
+**2. Edit `crosstargeting_override.props`** (recommended fast-iteration config):
 ```xml
 <Project>
   <PropertyGroup>
@@ -82,9 +82,26 @@ cp crosstargeting_override.props.sample crosstargeting_override.props
     <!-- <UnoTargetFrameworkOverride>net10.0-android</UnoTargetFrameworkOverride>  Android -->
     <!-- <UnoTargetFrameworkOverride>net10.0-ios</UnoTargetFrameworkOverride>      iOS -->
     <!-- <UnoTargetFrameworkOverride>net10.0-windows10.0.19041.0</UnoTargetFrameworkOverride> Windows -->
+
+    <!-- Disables analyzers + code-style enforcement for local builds. No effect on CI. -->
+    <UnoFastDevBuild>true</UnoFastDevBuild>
   </PropertyGroup>
 </Project>
 ```
+
+Or pass the same flags per-build instead of committing them:
+
+```bash
+dotnet build … -p:UnoTargetFrameworkOverride=net10.0 -p:UnoFastDevBuild=true
+```
+
+**Why these flags:**
+- `UnoTargetFrameworkOverride` — restricts cross-targeted projects to a single TFM, skipping the redundant net9.0 outputs while you iterate on net10.0 (or vice versa).
+- `UnoFastDevBuild` — disables `RunAnalyzersDuringBuild`, `EnforceCodeStyleInBuild`, and the `Microsoft.CodeAnalysis.NetAnalyzers` package for local builds. **Guarded by `ContinuousIntegrationBuild`, so CI is never affected** — analyzer-strict checks still run on every PR. Set persistently via the `UNO_FAST_DEV_BUILD=true` environment variable if you'd rather not edit the file.
+
+Combined impact on `SamplesApp.Skia.Generic` (Windows, 32-core, warm NuGet cache): clean build ~3:23 → ~1:59, incremental rebuild after a Uno.UI edit ~2:23 → ~0:58. The `/runtime-tests` skill passes both flags by default (use `strict` to opt out for CI-equivalent coverage).
+
+**Do not commit `crosstargeting_override.props`** — it is per-developer config and is intentionally `.gitignore`d.
 
 **3. Use matching solution filter:**
 
@@ -260,30 +277,15 @@ Run these after making changes:
 5. **Sample app** (visual changes): `cd src/SamplesApp/SamplesApp.Wasm && dotnet run`
 6. **XAML formatting** (SamplesApp changes): `dotnet xstyler -d src/SamplesApp -r`
 
-### SamplesApp: Register XAML files (CRITICAL)
+### SamplesApp: Add XAML files
 
-When adding XAML samples to the `SamplesApp`, you must register the XAML and its code-behind in `src/SamplesApp/UITests.Shared/UITests.Shared.projitems` or the sample will not appear in the app.
-
-- ALWAYS add your XAML file to `src/SamplesApp/UITests.Shared/UITests.Shared.projitems`
-- Without this registration, your sample will NOT be visible in SamplesApp
-- Add both the XAML page and the code-behind file. Example:
-
-```xml
-<Page Include="$(MSBuildThisFileDirectory)YourFolder\YourSample.xaml">
-  <SubType>Designer</SubType>
-  <Generator>MSBuild:Compile</Generator>
-</Page>
-<Compile Include="$(MSBuildThisFileDirectory)YourFolder\YourSample.xaml.cs">
-  <DependentUpon>YourSample.xaml</DependentUpon>
-</Compile>
-```
+When adding XAML samples to the `SamplesApp`, drop the files anywhere under `src/SamplesApp/SamplesApp.Samples/` — they are auto-discovered by glob (no manual registration required).
 
 Sample creation checklist:
-1. Create your sample XAML and code-behind under an appropriate folder in `UITests.Shared`.
+1. Create your sample XAML and code-behind under an appropriate folder in `src/SamplesApp/SamplesApp.Samples/`.
 2. Add the `[Uno.UI.Samples.Controls.Sample]` attribute to the code-behind class.
-3. Register the XAML and code-behind in `UITests.Shared.projitems` (see XML above).
-4. Format XAML: `dotnet xstyler -f src/SamplesApp/UITests.Shared/YourFolder/YourSample.xaml`
-5. Build and run `SamplesApp` to verify the sample appears.
+3. Format XAML: `dotnet xstyler -f src/SamplesApp/SamplesApp.Samples/YourFolder/YourSample.xaml`
+4. Build and run `SamplesApp` to verify the sample appears.
 
 Theming guideline (brief): prefer `{ThemeResource}` for backgrounds/foregrounds so samples work in light and dark themes.
 
@@ -363,7 +365,7 @@ dotnet tool restore
 dotnet xstyler -d src/SamplesApp -r
 
 # Format a single file
-dotnet xstyler -f src/SamplesApp/UITests.Shared/MyFile.xaml
+dotnet xstyler -f src/SamplesApp/SamplesApp.Samples/MyFile.xaml
 
 # Check without modifying (CI mode)
 dotnet xstyler -d src/SamplesApp -r -p

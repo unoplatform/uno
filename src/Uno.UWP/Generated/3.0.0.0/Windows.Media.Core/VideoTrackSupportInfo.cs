@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDecoderStatus VideoTrackSupportInfo.DecoderStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaDecoderStatus%20VideoTrackSupportInfo.DecoderStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoTrackSupportInfo", "DecoderStatus");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaSourceStatus VideoTrackSupportInfo.MediaSourceStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSourceStatus%20VideoTrackSupportInfo.MediaSourceStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoTrackSupportInfo", "MediaSourceStatus");
 			}
 		}
 #endif

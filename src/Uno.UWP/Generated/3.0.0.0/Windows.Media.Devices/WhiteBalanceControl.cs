@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint WhiteBalanceControl.Max is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20WhiteBalanceControl.Max");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "Max");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint WhiteBalanceControl.Min is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20WhiteBalanceControl.Min");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "Min");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ColorTemperaturePreset WhiteBalanceControl.Preset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ColorTemperaturePreset%20WhiteBalanceControl.Preset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "Preset");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint WhiteBalanceControl.Step is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20WhiteBalanceControl.Step");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "Step");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WhiteBalanceControl.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WhiteBalanceControl.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "Supported");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint WhiteBalanceControl.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20WhiteBalanceControl.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "Value");
 			}
 		}
 #endif
@@ -77,14 +77,14 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetPresetAsync(global::Windows.Media.Devices.ColorTemperaturePreset preset)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction WhiteBalanceControl.SetPresetAsync(ColorTemperaturePreset preset) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WhiteBalanceControl.SetPresetAsync%28ColorTemperaturePreset%20preset%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "SetPresetAsync(ColorTemperaturePreset preset)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetValueAsync(uint temperature)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction WhiteBalanceControl.SetValueAsync(uint temperature) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WhiteBalanceControl.SetValueAsync%28uint%20temperature%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.WhiteBalanceControl", "SetValueAsync(uint temperature)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.WhiteBalanceControl.Max.get

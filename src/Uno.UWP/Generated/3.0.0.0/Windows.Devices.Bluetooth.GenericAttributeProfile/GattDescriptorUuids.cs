@@ -14,7 +14,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattDescriptorUuids.CharacteristicAggregateFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattDescriptorUuids.CharacteristicAggregateFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorUuids", "CharacteristicAggregateFormat");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattDescriptorUuids.CharacteristicExtendedProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattDescriptorUuids.CharacteristicExtendedProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorUuids", "CharacteristicExtendedProperties");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattDescriptorUuids.CharacteristicPresentationFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattDescriptorUuids.CharacteristicPresentationFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorUuids", "CharacteristicPresentationFormat");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattDescriptorUuids.CharacteristicUserDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattDescriptorUuids.CharacteristicUserDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorUuids", "CharacteristicUserDescription");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattDescriptorUuids.ClientCharacteristicConfiguration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattDescriptorUuids.ClientCharacteristicConfiguration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorUuids", "ClientCharacteristicConfiguration");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattDescriptorUuids.ServerCharacteristicConfiguration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattDescriptorUuids.ServerCharacteristicConfiguration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorUuids", "ServerCharacteristicConfiguration");
 			}
 		}
 #endif

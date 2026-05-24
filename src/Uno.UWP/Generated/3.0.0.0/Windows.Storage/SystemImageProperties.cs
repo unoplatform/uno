@@ -19,7 +19,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemImageProperties.HorizontalSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemImageProperties.HorizontalSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemImageProperties", "HorizontalSize");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemImageProperties.VerticalSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemImageProperties.VerticalSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.SystemImageProperties", "VerticalSize");
 			}
 		}
 #endif

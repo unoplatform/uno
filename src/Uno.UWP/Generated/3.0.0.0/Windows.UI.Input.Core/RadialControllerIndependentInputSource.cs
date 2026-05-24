@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RadialController RadialControllerIndependentInputSource.Controller is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RadialController%20RadialControllerIndependentInputSource.Controller");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Core.RadialControllerIndependentInputSource", "Controller");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreDispatcher RadialControllerIndependentInputSource.Dispatcher is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreDispatcher%20RadialControllerIndependentInputSource.Dispatcher");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Core.RadialControllerIndependentInputSource", "Dispatcher");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Input.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DispatcherQueue RadialControllerIndependentInputSource.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherQueue%20RadialControllerIndependentInputSource.DispatcherQueue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Core.RadialControllerIndependentInputSource", "DispatcherQueue");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.UI.Input.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.Core.RadialControllerIndependentInputSource CreateForView(global::Windows.ApplicationModel.Core.CoreApplicationView view)
 		{
-			throw new global::System.NotImplementedException("The member RadialControllerIndependentInputSource RadialControllerIndependentInputSource.CreateForView(CoreApplicationView view) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RadialControllerIndependentInputSource%20RadialControllerIndependentInputSource.CreateForView%28CoreApplicationView%20view%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Core.RadialControllerIndependentInputSource", "CreateForView(CoreApplicationView view)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Core.RadialControllerIndependentInputSource.Controller.get

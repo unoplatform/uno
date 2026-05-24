@@ -68,7 +68,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionObject AnimatedVisualPlayer.ProgressObject is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionObject%20AnimatedVisualPlayer.ProgressObject");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer", "ProgressObject");
 			}
 		}
 #endif

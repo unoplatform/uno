@@ -19,7 +19,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayUpdateRequestedEventArgs.SinceStarted is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayUpdateRequestedEventArgs.SinceStarted");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs", "SinceStarted");
 			}
 		}
 #endif
@@ -27,28 +27,28 @@ namespace Windows.Devices.Lights.Effects
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetColor(global::Windows.UI.Color desiredColor)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs", "void LampArrayUpdateRequestedEventArgs.SetColor(Color desiredColor)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs", "SetColor(Color desiredColor)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetColorForIndex(int lampIndex, global::Windows.UI.Color desiredColor)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs", "void LampArrayUpdateRequestedEventArgs.SetColorForIndex(int lampIndex, Color desiredColor)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs", "SetColorForIndex(int lampIndex, Color desiredColor)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetSingleColorForIndices(global::Windows.UI.Color desiredColor, int[] lampIndexes)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs", "void LampArrayUpdateRequestedEventArgs.SetSingleColorForIndices(Color desiredColor, int[] lampIndexes)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs", "SetSingleColorForIndices(Color desiredColor, int[] lampIndexes)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetColorsForIndices(global::Windows.UI.Color[] desiredColors, int[] lampIndexes)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs", "void LampArrayUpdateRequestedEventArgs.SetColorsForIndices(Color[] desiredColors, int[] lampIndexes)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs", "SetColorsForIndices(Color[] desiredColors, int[] lampIndexes)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs.SinceStarted.get

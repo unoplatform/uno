@@ -19,7 +19,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebViewControlNavigationCompletedEventArgs.IsSuccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WebViewControlNavigationCompletedEventArgs.IsSuccess");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlNavigationCompletedEventArgs", "IsSuccess");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri WebViewControlNavigationCompletedEventArgs.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20WebViewControlNavigationCompletedEventArgs.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlNavigationCompletedEventArgs", "Uri");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebErrorStatus WebViewControlNavigationCompletedEventArgs.WebErrorStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebErrorStatus%20WebViewControlNavigationCompletedEventArgs.WebErrorStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlNavigationCompletedEventArgs", "WebErrorStatus");
 			}
 		}
 #endif

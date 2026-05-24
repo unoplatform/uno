@@ -15,7 +15,7 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WriteOnlyArrayAttribute() : base()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("System.Runtime.InteropServices.WindowsRuntime.WriteOnlyArrayAttribute", "WriteOnlyArrayAttribute.WriteOnlyArrayAttribute()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("System.Runtime.InteropServices.WindowsRuntime.WriteOnlyArrayAttribute", "WriteOnlyArrayAttribute()");
 		}
 #endif
 		// Forced skipping of method System.Runtime.InteropServices.WindowsRuntime.WriteOnlyArrayAttribute.WriteOnlyArrayAttribute()

@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ESimProfileInstallProgress(int _TotalSizeInBytes, int _InstalledSizeInBytes)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.ESimProfileInstallProgress", "ESimProfileInstallProgress.ESimProfileInstallProgress(int _TotalSizeInBytes, int _InstalledSizeInBytes)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.ESimProfileInstallProgress", "ESimProfileInstallProgress(int _TotalSizeInBytes, int _InstalledSizeInBytes)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfileInstallProgress.ESimProfileInstallProgress(int, int)

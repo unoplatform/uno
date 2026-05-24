@@ -16,7 +16,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContentIslandStateChangedEventArgs.DidLocalToClientTransformMatrixChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentIslandStateChangedEventArgs.DidLocalToClientTransformMatrixChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIslandStateChangedEventArgs", "DidLocalToClientTransformMatrixChange");
 			}
 		}
 #endif
@@ -26,7 +26,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContentIslandStateChangedEventArgs.DidLocalToParentTransformMatrixChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentIslandStateChangedEventArgs.DidLocalToParentTransformMatrixChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentIslandStateChangedEventArgs", "DidLocalToParentTransformMatrixChange");
 			}
 		}
 #endif

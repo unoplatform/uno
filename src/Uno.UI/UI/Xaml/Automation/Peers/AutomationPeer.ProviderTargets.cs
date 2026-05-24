@@ -30,6 +30,30 @@ partial class AutomationPeer
 				return true;
 
 			default:
+				// Data/virtual peers (e.g. LoopingSelectorItemDataAutomationPeer) don't
+				// own a UIElement directly. Walk the parent peer chain to find the
+				// nearest ancestor that has one, so the provider infrastructure can
+				// create a virtual provider keyed by this peer.
+				var parentPeer = GetParent();
+				var depth = 0;
+				while (parentPeer is not null && depth++ < 50)
+				{
+					if (parentPeer is FrameworkElementAutomationPeer { Owner: { } parentElement })
+					{
+						owner = parentElement;
+						return true;
+					}
+
+					if (parentPeer is ItemAutomationPeer parentItemPeer
+						&& parentItemPeer.GetContainer() is { } parentContainer)
+					{
+						owner = parentContainer;
+						return true;
+					}
+
+					parentPeer = parentPeer.GetParent();
+				}
+
 				owner = null;
 				return false;
 		}

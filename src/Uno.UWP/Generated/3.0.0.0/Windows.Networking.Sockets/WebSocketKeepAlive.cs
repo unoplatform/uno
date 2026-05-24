@@ -12,7 +12,7 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WebSocketKeepAlive()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.WebSocketKeepAlive", "WebSocketKeepAlive.WebSocketKeepAlive()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.WebSocketKeepAlive", "WebSocketKeepAlive()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.WebSocketKeepAlive.WebSocketKeepAlive()
@@ -20,7 +20,7 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Run(global::Windows.ApplicationModel.Background.IBackgroundTaskInstance taskInstance)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.WebSocketKeepAlive", "void WebSocketKeepAlive.Run(IBackgroundTaskInstance taskInstance)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.WebSocketKeepAlive", "Run(IBackgroundTaskInstance taskInstance)");
 		}
 #endif
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTask

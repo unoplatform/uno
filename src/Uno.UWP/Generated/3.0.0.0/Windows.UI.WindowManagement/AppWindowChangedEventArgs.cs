@@ -19,7 +19,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidAvailableWindowPresentationsChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppWindowChangedEventArgs.DidAvailableWindowPresentationsChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "DidAvailableWindowPresentationsChange");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidDisplayRegionsChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppWindowChangedEventArgs.DidDisplayRegionsChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "DidDisplayRegionsChange");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidFrameChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppWindowChangedEventArgs.DidFrameChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "DidFrameChange");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidSizeChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppWindowChangedEventArgs.DidSizeChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "DidSizeChange");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidTitleBarChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppWindowChangedEventArgs.DidTitleBarChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "DidTitleBarChange");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidVisibilityChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppWindowChangedEventArgs.DidVisibilityChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "DidVisibilityChange");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidWindowPresentationChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppWindowChangedEventArgs.DidWindowPresentationChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "DidWindowPresentationChange");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppWindowChangedEventArgs.DidWindowingEnvironmentChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppWindowChangedEventArgs.DidWindowingEnvironmentChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowChangedEventArgs", "DidWindowingEnvironmentChange");
 			}
 		}
 #endif

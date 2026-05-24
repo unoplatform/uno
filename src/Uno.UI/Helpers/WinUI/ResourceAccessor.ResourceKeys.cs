@@ -166,5 +166,7 @@ internal partial class ResourceAccessor
 	public const string SR_WarningSuitableWebView2NotFound = "WarningSuitableWebView2NotFound";
 	public const string SR_DownloadWebView2Runtime = "DownloadWebView2Runtime";
 
+	public const string SR_UIA_LIGHTDISMISS_NAME = "UIA_LIGHTDISMISS_NAME";
+
 	public const string IR_NoiseAsset_256X256_PNG = "NoiseAsset_256X256_PNG";
 }

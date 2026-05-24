@@ -48,8 +48,8 @@ namespace Uno.Samples.UITest.Generator
 			// Normalize separators
 			filePath = filePath.Replace('\\', '/');
 
-			// Extract portion after UITests.Shared/
-			var marker = "UITests.Shared/";
+			// Extract portion after SamplesApp.Samples/
+			var marker = "SamplesApp.Samples/";
 			var index = filePath.IndexOf(marker, StringComparison.Ordinal);
 			if (index < 0)
 			{

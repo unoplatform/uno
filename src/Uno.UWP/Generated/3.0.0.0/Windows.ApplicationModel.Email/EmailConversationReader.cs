@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.Email
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Email.EmailConversationBatch> ReadBatchAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<EmailConversationBatch> EmailConversationReader.ReadBatchAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CEmailConversationBatch%3E%20EmailConversationReader.ReadBatchAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailConversationReader", "ReadBatchAsync()");
 		}
 #endif
 	}

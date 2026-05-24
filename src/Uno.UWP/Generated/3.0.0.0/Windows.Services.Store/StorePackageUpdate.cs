@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StorePackageUpdate.Mandatory is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StorePackageUpdate.Mandatory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePackageUpdate", "Mandatory");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Package StorePackageUpdate.Package is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Package%20StorePackageUpdate.Package");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePackageUpdate", "Package");
 			}
 		}
 #endif

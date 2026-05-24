@@ -14,7 +14,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer KnownSmartCardAppletIds.PaymentSystemEnvironment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20KnownSmartCardAppletIds.PaymentSystemEnvironment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.KnownSmartCardAppletIds", "PaymentSystemEnvironment");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer KnownSmartCardAppletIds.ProximityPaymentSystemEnvironment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20KnownSmartCardAppletIds.ProximityPaymentSystemEnvironment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.KnownSmartCardAppletIds", "ProximityPaymentSystemEnvironment");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer AppBroadcastStreamAudioFrame.AudioBuffer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20AppBroadcastStreamAudioFrame.AudioBuffer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamAudioFrame", "AudioBuffer");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppBroadcastStreamAudioHeader AppBroadcastStreamAudioFrame.AudioHeader is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppBroadcastStreamAudioHeader%20AppBroadcastStreamAudioFrame.AudioHeader");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamAudioFrame", "AudioHeader");
 			}
 		}
 #endif

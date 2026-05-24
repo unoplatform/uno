@@ -44,7 +44,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsWrapGrid.FirstCacheIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ItemsWrapGrid.FirstCacheIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "FirstCacheIndex");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsWrapGrid.FirstVisibleIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ItemsWrapGrid.FirstVisibleIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "FirstVisibleIndex");
 			}
 		}
 #endif
@@ -68,7 +68,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsWrapGrid.LastCacheIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ItemsWrapGrid.LastCacheIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "LastCacheIndex");
 			}
 		}
 #endif
@@ -78,7 +78,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsWrapGrid.LastVisibleIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ItemsWrapGrid.LastVisibleIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "LastVisibleIndex");
 			}
 		}
 #endif
@@ -90,7 +90,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PanelScrollingDirection ItemsWrapGrid.ScrollingDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PanelScrollingDirection%20ItemsWrapGrid.ScrollingDirection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "ScrollingDirection");
 			}
 		}
 #endif

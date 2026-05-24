@@ -19,7 +19,7 @@ namespace Windows.Media.Ocr
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<OcrLine> OcrResult.Lines is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3COcrLine%3E%20OcrResult.Lines");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrResult", "Lines");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Ocr
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string OcrResult.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20OcrResult.Text");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrResult", "Text");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Ocr
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? OcrResult.TextAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%3F%20OcrResult.TextAngle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Ocr.OcrResult", "TextAngle");
 			}
 		}
 #endif

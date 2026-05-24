@@ -14,7 +14,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool UserInformation.AccountPictureChangeEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20UserInformation.AccountPictureChangeEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.UserInformation", "AccountPictureChangeEnabled");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool UserInformation.NameAccessAllowed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20UserInformation.NameAccessAllowed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.UserInformation", "NameAccessAllowed");
 			}
 		}
 #endif
@@ -32,77 +32,77 @@ namespace Windows.System.UserProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Storage.IStorageFile GetAccountPicture(global::Windows.System.UserProfile.AccountPictureKind kind)
 		{
-			throw new global::System.NotImplementedException("The member IStorageFile UserInformation.GetAccountPicture(AccountPictureKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IStorageFile%20UserInformation.GetAccountPicture%28AccountPictureKind%20kind%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.UserInformation", "GetAccountPicture(AccountPictureKind kind)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.UserProfile.SetAccountPictureResult> SetAccountPictureAsync(global::Windows.Storage.IStorageFile image)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SetAccountPictureResult> UserInformation.SetAccountPictureAsync(IStorageFile image) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSetAccountPictureResult%3E%20UserInformation.SetAccountPictureAsync%28IStorageFile%20image%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.UserInformation", "SetAccountPictureAsync(IStorageFile image)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.UserProfile.SetAccountPictureResult> SetAccountPicturesAsync(global::Windows.Storage.IStorageFile smallImage, global::Windows.Storage.IStorageFile largeImage, global::Windows.Storage.IStorageFile video)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SetAccountPictureResult> UserInformation.SetAccountPicturesAsync(IStorageFile smallImage, IStorageFile largeImage, IStorageFile video) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSetAccountPictureResult%3E%20UserInformation.SetAccountPicturesAsync%28IStorageFile%20smallImage%2C%20IStorageFile%20largeImage%2C%20IStorageFile%20video%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.UserInformation", "SetAccountPicturesAsync(IStorageFile smallImage, IStorageFile largeImage, IStorageFile video)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.UserProfile.SetAccountPictureResult> SetAccountPictureFromStreamAsync(global::Windows.Storage.Streams.IRandomAccessStream image)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SetAccountPictureResult> UserInformation.SetAccountPictureFromStreamAsync(IRandomAccessStream image) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSetAccountPictureResult%3E%20UserInformation.SetAccountPictureFromStreamAsync%28IRandomAccessStream%20image%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.UserInformation", "SetAccountPictureFromStreamAsync(IRandomAccessStream image)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.UserProfile.SetAccountPictureResult> SetAccountPicturesFromStreamsAsync(global::Windows.Storage.Streams.IRandomAccessStream smallImage, global::Windows.Storage.Streams.IRandomAccessStream largeImage, global::Windows.Storage.Streams.IRandomAccessStream video)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SetAccountPictureResult> UserInformation.SetAccountPicturesFromStreamsAsync(IRandomAccessStream smallImage, IRandomAccessStream largeImage, IRandomAccessStream video) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSetAccountPictureResult%3E%20UserInformation.SetAccountPicturesFromStreamsAsync%28IRandomAccessStream%20smallImage%2C%20IRandomAccessStream%20largeImage%2C%20IRandomAccessStream%20video%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.UserInformation", "SetAccountPicturesFromStreamsAsync(IRandomAccessStream smallImage, IRandomAccessStream largeImage, IRandomAccessStream video)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<string> GetDisplayNameAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> UserInformation.GetDisplayNameAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20UserInformation.GetDisplayNameAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.UserInformation", "GetDisplayNameAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<string> GetFirstNameAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> UserInformation.GetFirstNameAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20UserInformation.GetFirstNameAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.UserInformation", "GetFirstNameAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<string> GetLastNameAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> UserInformation.GetLastNameAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20UserInformation.GetLastNameAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.UserInformation", "GetLastNameAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<string> GetPrincipalNameAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> UserInformation.GetPrincipalNameAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20UserInformation.GetPrincipalNameAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.UserInformation", "GetPrincipalNameAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Uri> GetSessionInitiationProtocolUriAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Uri> UserInformation.GetSessionInitiationProtocolUriAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUri%3E%20UserInformation.GetSessionInitiationProtocolUriAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.UserInformation", "GetSessionInitiationProtocolUriAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<string> GetDomainNameAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> UserInformation.GetDomainNameAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20UserInformation.GetDomainNameAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.UserInformation", "GetDomainNameAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.System.UserProfile.UserInformation.AccountPictureChanged.add
@@ -116,12 +116,12 @@ namespace Windows.System.UserProfile
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserProfile.UserInformation", "event EventHandler<object> UserInformation.AccountPictureChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserProfile.UserInformation", "event AccountPictureChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserProfile.UserInformation", "event EventHandler<object> UserInformation.AccountPictureChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserProfile.UserInformation", "event AccountPictureChanged");
 			}
 		}
 #endif

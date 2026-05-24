@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object PrintTaskOptionChangedEventArgs.OptionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20PrintTaskOptionChangedEventArgs.OptionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.OptionDetails.PrintTaskOptionChangedEventArgs", "OptionId");
 			}
 		}
 #endif

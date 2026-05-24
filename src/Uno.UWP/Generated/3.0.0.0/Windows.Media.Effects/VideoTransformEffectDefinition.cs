@@ -14,7 +14,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoTransformEffectDefinition.ActivatableClassId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoTransformEffectDefinition.ActivatableClassId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformEffectDefinition", "ActivatableClassId");
 			}
 		}
 #endif
@@ -24,11 +24,11 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect VideoTransformEffectDefinition.CropRectangle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20VideoTransformEffectDefinition.CropRectangle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformEffectDefinition", "CropRectangle");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformEffectDefinition", "Rect VideoTransformEffectDefinition.CropRectangle");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformEffectDefinition", "CropRectangle");
 			}
 		}
 #endif
@@ -38,11 +38,11 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaMirroringOptions VideoTransformEffectDefinition.Mirror is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaMirroringOptions%20VideoTransformEffectDefinition.Mirror");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformEffectDefinition", "Mirror");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformEffectDefinition", "MediaMirroringOptions VideoTransformEffectDefinition.Mirror");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformEffectDefinition", "Mirror");
 			}
 		}
 #endif
@@ -52,11 +52,11 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size VideoTransformEffectDefinition.OutputSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20VideoTransformEffectDefinition.OutputSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformEffectDefinition", "OutputSize");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformEffectDefinition", "Size VideoTransformEffectDefinition.OutputSize");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformEffectDefinition", "OutputSize");
 			}
 		}
 #endif
@@ -66,11 +66,11 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color VideoTransformEffectDefinition.PaddingColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20VideoTransformEffectDefinition.PaddingColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformEffectDefinition", "PaddingColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformEffectDefinition", "Color VideoTransformEffectDefinition.PaddingColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformEffectDefinition", "PaddingColor");
 			}
 		}
 #endif
@@ -80,11 +80,11 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaVideoProcessingAlgorithm VideoTransformEffectDefinition.ProcessingAlgorithm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaVideoProcessingAlgorithm%20VideoTransformEffectDefinition.ProcessingAlgorithm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformEffectDefinition", "ProcessingAlgorithm");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformEffectDefinition", "MediaVideoProcessingAlgorithm VideoTransformEffectDefinition.ProcessingAlgorithm");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformEffectDefinition", "ProcessingAlgorithm");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet VideoTransformEffectDefinition.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPropertySet%20VideoTransformEffectDefinition.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformEffectDefinition", "Properties");
 			}
 		}
 #endif
@@ -104,11 +104,11 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaRotation VideoTransformEffectDefinition.Rotation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaRotation%20VideoTransformEffectDefinition.Rotation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformEffectDefinition", "Rotation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformEffectDefinition", "MediaRotation VideoTransformEffectDefinition.Rotation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformEffectDefinition", "Rotation");
 			}
 		}
 #endif
@@ -118,7 +118,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoTransformSphericalProjection VideoTransformEffectDefinition.SphericalProjection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoTransformSphericalProjection%20VideoTransformEffectDefinition.SphericalProjection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Effects.VideoTransformEffectDefinition", "SphericalProjection");
 			}
 		}
 #endif
@@ -126,7 +126,7 @@ namespace Windows.Media.Effects
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VideoTransformEffectDefinition()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformEffectDefinition", "VideoTransformEffectDefinition.VideoTransformEffectDefinition()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoTransformEffectDefinition", "VideoTransformEffectDefinition()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Effects.VideoTransformEffectDefinition.VideoTransformEffectDefinition()

@@ -19,7 +19,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect AppWindowTitleBarOcclusion.OccludingRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20AppWindowTitleBarOcclusion.OccludingRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WindowManagement.AppWindowTitleBarOcclusion", "OccludingRect");
 			}
 		}
 #endif

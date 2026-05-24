@@ -19,7 +19,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContentEnvironmentStateChangedEventArgs.DidAppWindowIdChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentEnvironmentStateChangedEventArgs.DidAppWindowIdChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs", "DidAppWindowIdChange");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContentEnvironmentStateChangedEventArgs.DidDisplayIdChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentEnvironmentStateChangedEventArgs.DidDisplayIdChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs", "DidDisplayIdChange");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContentEnvironmentStateChangedEventArgs.DidDisplayScaleChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentEnvironmentStateChangedEventArgs.DidDisplayScaleChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentEnvironmentStateChangedEventArgs", "DidDisplayScaleChange");
 			}
 		}
 #endif

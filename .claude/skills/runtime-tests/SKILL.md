@@ -43,18 +43,22 @@ Choose **Skia WASM** only when:
 - The user explicitly asks for WASM/browser testing, OR
 - The bug or behavior is WASM-specific (e.g., DOM interaction, browser rendering, JS interop)
 
+**Strict mode**: If the user input contains the keyword `strict`, omit the `-p:UnoFastDevBuild=true` and `-p:UnoTargetFrameworkOverride=net10.0` flags from the build command in Phase 1 so the build runs with full CI-equivalent analyzer coverage and all cross-targeted TFMs. Use this only when verifying that a change still compiles cleanly under CI strictness — for normal iteration the default (fast) flags should be left on.
+
 ### Phase 1: Build the Test App
 
 **CRITICAL**: Set timeout to 15+ minutes. **NEVER cancel builds.**
 
+The default build commands below pass `-p:UnoFastDevBuild=true` (disables analyzers for local iteration — has no effect on CI) and `-p:UnoTargetFrameworkOverride=net10.0` (skips the redundant net9.0 cross-targeted output for Skia libraries). Combined, these cut a clean `SamplesApp.Skia.Generic` build from ~3:23 → ~1:59 and a Uno.UI-incremental rebuild from ~2:23 → ~0:58 on a 32-core Windows machine. Omit both flags if the user requested `strict` mode (see Phase 0).
+
 #### Skia Desktop (default)
 ```bash
-dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net10.0
+dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net10.0 -p:UnoFastDevBuild=true -p:UnoTargetFrameworkOverride=net10.0
 ```
 
 #### Skia WASM
 ```bash
-dotnet publish src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj -c Release -f net10.0
+dotnet publish src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj -c Release -f net10.0 -p:UnoFastDevBuild=true -p:UnoTargetFrameworkOverride=net10.0
 ```
 
 Note: WASM requires `publish` (not just `build`) to produce the static web assets needed for hosting.
@@ -217,7 +221,7 @@ kill $HTTP_PID $COMPANION_PID 2>/dev/null || true
 | | Skia Desktop | Skia WASM |
 |-|-------------|-----------|
 | **Project** | `SamplesApp.Skia.Generic` | `SamplesApp.Skia.WebAssembly.Browser` |
-| **Build command** | `dotnet build ... -c Release -f net10.0` | `dotnet publish ... -c Release -f net10.0` |
+| **Build command** | `dotnet build ... -c Release -f net10.0 -p:UnoFastDevBuild=true -p:UnoTargetFrameworkOverride=net10.0` | `dotnet publish ... -c Release -f net10.0 -p:UnoFastDevBuild=true -p:UnoTargetFrameworkOverride=net10.0` |
 | **Run method** | `dotnet SamplesApp.Skia.Generic.dll --runtime-tests=...` | Browser navigates to URL with query params |
 | **Filter delivery** | `UITEST_RUNTIME_TESTS_FILTER` env var | `--runtime-test-filter` URL query param |
 | **Base64 `=` handling** | Standard base64 | Replace `=` with `!` before URL-encoding |
