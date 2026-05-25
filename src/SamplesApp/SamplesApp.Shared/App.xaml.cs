@@ -597,9 +597,16 @@ namespace SamplesApp
 			// Surface latent crashes that would otherwise be silently swallowed during Uno
 			// Platform development. Apps are still free to flip these off, but for SamplesApp
 			// (and the runtime-tests host) we want all errors to be visible.
-			// Note: ThrowOnUnresolvedResource is not enabled here yet because SamplesApp
-			// currently references resources that fail to resolve at startup. Once those are
-			// fixed it can move to default-on.
+			//
+			// ThrowOnUnresolvedResource is intentionally NOT enabled here. Enabling it surfaces
+			// thousands of false positives that are all {ThemeResource} bindings to resources
+			// that ARE defined (ControlCornerRadius, OverlayCornerRadius, the TabView/Expander/
+			// ProgressBar theme brushes, ...). Those resolve correctly via the theme walk, but
+			// the resource-binding fallback walk is not theme-aware (it does not resolve against
+			// the owner's effective Light/Dark theme), so it reports them as unresolved. The
+			// proper fix is the theme-aware resource resolution work (resolve against the owner's
+			// theme); once that lands this flag can be turned on and will throw only on genuine
+			// {StaticResource} misses.
 			Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions = true;
 			Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.PropagateDispatcherExceptions = true;
 #endif
