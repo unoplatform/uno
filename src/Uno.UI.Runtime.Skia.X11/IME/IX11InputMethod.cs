@@ -15,6 +15,13 @@ internal interface IX11InputMethod : IDisposable
 	bool IsEnabled { get; }
 
 	/// <summary>
+	/// Completes when the backend has finished its asynchronous initialization,
+	/// regardless of success. After this completes, <see cref="IsEnabled"/> reflects
+	/// the final connection state.
+	/// </summary>
+	Task InitTask { get; }
+
+	/// <summary>
 	/// Forward a key event to the IME for processing.
 	/// Returns true if the IME consumed the event (do not dispatch KeyDown/KeyUp).
 	/// </summary>

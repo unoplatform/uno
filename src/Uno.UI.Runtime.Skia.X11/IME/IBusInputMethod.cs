@@ -34,6 +34,8 @@ internal sealed class IBusInputMethod : IX11InputMethod
 
 	public bool IsEnabled => _isEnabled;
 
+	public Task InitTask { get; }
+
 	public event Action<string>? Commit;
 	public event Action<uint, uint, uint>? ForwardKey;
 	public event Action<string?, int>? PreeditChanged;
@@ -41,7 +43,7 @@ internal sealed class IBusInputMethod : IX11InputMethod
 	public IBusInputMethod(string sessionBusAddress)
 	{
 		_sessionBusAddress = sessionBusAddress;
-		_ = InitAsync();
+		InitTask = InitAsync();
 	}
 
 	private async Task InitAsync()
