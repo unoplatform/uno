@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Windows.Foundation;
@@ -12,13 +11,11 @@ internal class X11KeyboardInputSource : IUnoKeyboardInputSource
 	public event TypedEventHandler<object, KeyEventArgs>? KeyDown;
 	public event TypedEventHandler<object, KeyEventArgs>? KeyUp;
 
-	private X11XamlRootHost _host;
+	private readonly X11XamlRootHost _host;
 
-	// D-Bus IME backend, populated asynchronously after we probe the session bus
-	// for an actually-running ibus/fcitx service. Reads from the X11 event thread
-	// see null until detection completes; in that window keys go through the plain
-	// XLookupString path with no composition.
-	private volatile IX11InputMethod? _dbusIme;
+	// D-Bus IME backend, set once from the detector's result that X11ApplicationHost
+	// awaited during InitializeAsync. Null if no IBus/Fcitx daemon is reachable.
+	private readonly IX11InputMethod? _dbusIme;
 
 	public X11KeyboardInputSource(IXamlRootHost host)
 	{
@@ -30,25 +27,13 @@ internal class X11KeyboardInputSource : IUnoKeyboardInputSource
 		_host = (X11XamlRootHost)host;
 		_host.SetKeyboardSource(this);
 
-		// Fire-and-forget: detection involves D-Bus probes which we don't want to
-		// block the keyboard source constructor on. Keystrokes that arrive before
-		// detection finishes go through the plain XLookupString path with no composition.
-		_ = InitDBusImeAsync();
-	}
-
-	private async Task InitDBusImeAsync()
-	{
-		var ime = await X11InputMethodDetector.DetectAndCreateAsync();
-		if (ime is null)
+		_dbusIme = X11InputMethodDetector.DetectedInputMethod;
+		if (_dbusIme is not null)
 		{
-			return;
+			_dbusIme.Commit += OnDBusImeCommit;
+			_dbusIme.ForwardKey += OnDBusImeForwardKey;
+			_dbusIme.PreeditChanged += OnDBusImePreeditChanged;
 		}
-
-		ime.Commit += OnDBusImeCommit;
-		ime.ForwardKey += OnDBusImeForwardKey;
-		ime.PreeditChanged += OnDBusImePreeditChanged;
-
-		_dbusIme = ime;
 	}
 
 	internal IX11InputMethod? GetDBusIme() => _dbusIme;

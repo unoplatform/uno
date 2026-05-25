@@ -17,10 +17,23 @@ internal static class X11InputMethodDetector
 	private const string Fcitx4ServiceName = "org.fcitx.Fcitx";
 
 	/// <summary>
-	/// Detect the active IME and create a D-Bus client for it. Returns null when no
-	/// IBus/Fcitx service is reachable — callers should treat that as "IME disabled".
+	/// The detected and fully-connected D-Bus IME, or null if none is available.
+	/// Populated by <see cref="DetectAsync"/>; consumers (e.g. <see cref="X11KeyboardInputSource"/>)
+	/// read this synchronously after host initialization has completed.
 	/// </summary>
-	public static async Task<IX11InputMethod?> DetectAndCreateAsync()
+	public static IX11InputMethod? DetectedInputMethod { get; private set; }
+
+	/// <summary>
+	/// Runs detection and stores the result in <see cref="DetectedInputMethod"/>.
+	/// Awaited from <c>X11ApplicationHost.InitializeAsync</c> so detection completes
+	/// before any window is created.
+	/// </summary>
+	public static async Task DetectAsync()
+	{
+		DetectedInputMethod = await DetectAndCreateAsyncImpl();
+	}
+
+	private static async Task<IX11InputMethod?> DetectAndCreateAsyncImpl()
 	{
 		var imName = DetectImeName();
 
@@ -65,11 +78,11 @@ internal static class X11InputMethodDetector
 			// Hint matches a running service → use it.
 			if (preferIBus && ibusAvailable)
 			{
-				return CreateIBus(sessionBus);
+				return await CreateIBusAsync(sessionBus);
 			}
 			if (preferFcitx && fcitxAvailable)
 			{
-				return CreateFcitx(sessionBus);
+				return await CreateFcitxAsync(sessionBus);
 			}
 
 			// Hint doesn't match anything running — fall back to whichever is actually up.
@@ -80,7 +93,7 @@ internal static class X11InputMethodDetector
 					typeof(X11InputMethodDetector).Log().Info(
 						$"Env hint '{imName ?? "(none)"}' did not match a running D-Bus IME, falling back to IBus.");
 				}
-				return CreateIBus(sessionBus);
+				return await CreateIBusAsync(sessionBus);
 			}
 			if (fcitxAvailable)
 			{
@@ -89,7 +102,7 @@ internal static class X11InputMethodDetector
 					typeof(X11InputMethodDetector).Log().Info(
 						$"Env hint '{imName ?? "(none)"}' did not match a running D-Bus IME, falling back to Fcitx.");
 				}
-				return CreateFcitx(sessionBus);
+				return await CreateFcitxAsync(sessionBus);
 			}
 
 			if (typeof(X11InputMethodDetector).Log().IsEnabled(LogLevel.Debug))
@@ -166,21 +179,35 @@ internal static class X11InputMethodDetector
 		}
 	}
 
-	private static IX11InputMethod CreateIBus(string sessionBus)
+	private static async Task<IX11InputMethod?> CreateIBusAsync(string sessionBus)
 	{
 		if (typeof(X11InputMethodDetector).Log().IsEnabled(LogLevel.Information))
 		{
 			typeof(X11InputMethodDetector).Log().Info("Creating IBus D-Bus IME client.");
 		}
-		return new IBusInputMethod(sessionBus);
+		var ime = new IBusInputMethod(sessionBus);
+		await ime.InitTask;
+		if (ime.IsEnabled)
+		{
+			return ime;
+		}
+		ime.Dispose();
+		return null;
 	}
 
-	private static IX11InputMethod CreateFcitx(string sessionBus)
+	private static async Task<IX11InputMethod?> CreateFcitxAsync(string sessionBus)
 	{
 		if (typeof(X11InputMethodDetector).Log().IsEnabled(LogLevel.Information))
 		{
 			typeof(X11InputMethodDetector).Log().Info("Creating Fcitx D-Bus IME client.");
 		}
-		return new FcitxInputMethod(sessionBus);
+		var ime = new FcitxInputMethod(sessionBus);
+		await ime.InitTask;
+		if (ime.IsEnabled)
+		{
+			return ime;
+		}
+		ime.Dispose();
+		return null;
 	}
 }
