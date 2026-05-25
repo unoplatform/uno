@@ -33,7 +33,7 @@ namespace Windows.Media.Capture.Frames
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrameFormat.VideoFormat.get
 		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrameFormat.DepthScaleInMeters.get
+		// Forced skipping of method Windows.Media.Capture.Frames.DepthMediaFrameFormat.VideoFormat.get
 	}
 }

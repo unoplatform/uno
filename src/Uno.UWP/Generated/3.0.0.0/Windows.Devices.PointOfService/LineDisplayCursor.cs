@@ -83,13 +83,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursor.CanCustomize.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursor.IsBlinkSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursor.IsBlockSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursor.IsHalfBlockSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursor.IsUnderlineSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursor.IsReverseSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursor.IsOtherSupported.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.PointOfService.LineDisplayCursorAttributes GetAttributes()
@@ -104,5 +97,12 @@ namespace Windows.Devices.PointOfService
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> LineDisplayCursor.TryUpdateAttributesAsync(LineDisplayCursorAttributes attributes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20LineDisplayCursor.TryUpdateAttributesAsync%28LineDisplayCursorAttributes%20attributes%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursor.CanCustomize.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursor.IsBlinkSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursor.IsBlockSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursor.IsHalfBlockSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursor.IsOtherSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursor.IsReverseSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCursor.IsUnderlineSupported.get
 	}
 }

@@ -17,6 +17,7 @@ internal partial class BrowserRenderer
 
 	private int _renderCount;
 	private SKCanvas? _canvas;
+	private bool _pendingInvalidate;
 
 	public BrowserRenderer(IXamlRootHost host, bool forceSoftwareRendering)
 	{
@@ -43,6 +44,12 @@ internal partial class BrowserRenderer
 
 	internal void InvalidateRender()
 	{
+		if (_pendingInvalidate)
+		{
+			return;
+		}
+
+		_pendingInvalidate = true;
 		_nativeInstance ??= NativeMethods.CreateInstance(this, WebAssemblyWindowWrapper.Instance.CanvasId);
 		NativeMethods.Invalidate(_nativeInstance);
 	}
@@ -55,6 +62,8 @@ internal partial class BrowserRenderer
 
 	private void RenderFrame()
 	{
+		_pendingInvalidate = false;
+
 		// The RootElement may not be set yet during startup because the JavaScript
 		// requestAnimationFrame can fire before the app initialization completes.
 		if (_host.RootElement is not { Visual.CompositionTarget: CompositionTarget compositionTarget })

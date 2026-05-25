@@ -15,12 +15,12 @@ namespace Microsoft.UI.Xaml.Automation
 		// Skipping already declared property VerticalScrollPercentProperty
 		// Skipping already declared property VerticalViewSizeProperty
 		// Skipping already declared property VerticallyScrollableProperty
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.HorizontallyScrollableProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.HorizontalScrollPercentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.HorizontalViewSizeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.HorizontallyScrollableProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.NoScroll.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.VerticallyScrollableProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.VerticalScrollPercentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.VerticalViewSizeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.ScrollPatternIdentifiers.VerticallyScrollableProperty.get
 	}
 }

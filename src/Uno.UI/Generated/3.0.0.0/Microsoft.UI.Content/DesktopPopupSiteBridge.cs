@@ -39,34 +39,6 @@ namespace Microsoft.UI.Content
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float OverrideScale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float DesktopPopupSiteBridge.OverrideScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20DesktopPopupSiteBridge.OverrideScale");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopPopupSiteBridge", "float DesktopPopupSiteBridge.OverrideScale");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Content.ContentLayoutDirection? LayoutDirectionOverride
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ContentLayoutDirection? DesktopPopupSiteBridge.LayoutDirectionOverride is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentLayoutDirection%3F%20DesktopPopupSiteBridge.LayoutDirectionOverride");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopPopupSiteBridge", "ContentLayoutDirection? DesktopPopupSiteBridge.LayoutDirectionOverride");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue
 		{
 			get
@@ -77,11 +49,11 @@ namespace Microsoft.UI.Content
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Content.ContentIsland Parent
+		public bool IsClosed
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentIsland DesktopPopupSiteBridge.Parent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIsland%20DesktopPopupSiteBridge.Parent");
+				throw new global::System.NotImplementedException("The member bool DesktopPopupSiteBridge.IsClosed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DesktopPopupSiteBridge.IsClosed");
 			}
 		}
 #endif
@@ -107,6 +79,44 @@ namespace Microsoft.UI.Content
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Content.ContentLayoutDirection? LayoutDirectionOverride
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ContentLayoutDirection? DesktopPopupSiteBridge.LayoutDirectionOverride is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentLayoutDirection%3F%20DesktopPopupSiteBridge.LayoutDirectionOverride");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopPopupSiteBridge", "ContentLayoutDirection? DesktopPopupSiteBridge.LayoutDirectionOverride");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float OverrideScale
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float DesktopPopupSiteBridge.OverrideScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20DesktopPopupSiteBridge.OverrideScale");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopPopupSiteBridge", "float DesktopPopupSiteBridge.OverrideScale");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Content.ContentIsland Parent
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ContentIsland DesktopPopupSiteBridge.Parent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIsland%20DesktopPopupSiteBridge.Parent");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Content.ContentSiteView SiteView
 		{
 			get
@@ -127,30 +137,11 @@ namespace Microsoft.UI.Content
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsClosed
+		public static global::Microsoft.UI.Content.DesktopPopupSiteBridge Create(global::Microsoft.UI.Content.ContentIsland parent)
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool DesktopPopupSiteBridge.IsClosed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DesktopPopupSiteBridge.IsClosed");
-			}
+			throw new global::System.NotImplementedException("The member DesktopPopupSiteBridge DesktopPopupSiteBridge.Create(ContentIsland parent) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DesktopPopupSiteBridge%20DesktopPopupSiteBridge.Create%28ContentIsland%20parent%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.PreviousSiblingAutomationProviderRequested.remove
-		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.NextSiblingAutomationProviderRequested.add
-		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.NextSiblingAutomationProviderRequested.remove
-		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.ParentAutomationProviderRequested.add
-		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.ParentAutomationProviderRequested.remove
-		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.PreviousSiblingAutomationProviderRequested.add
-		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.AutomationProvider.get
-		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.DispatcherQueue.get
-		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.LayoutDirectionOverride.get
-		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.LayoutDirectionOverride.set
-		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.OverrideScale.get
-		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.OverrideScale.set
-		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.Parent.get
-		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.IsVisible.get
-		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.SiteView.get
-		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.WindowId.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Connect(global::Microsoft.UI.Content.ContentIsland content)
@@ -221,23 +212,32 @@ namespace Microsoft.UI.Content
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopPopupSiteBridge", "void DesktopPopupSiteBridge.Dispose()");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.IsClosed.get
 		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.Closed.add
 		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.Closed.remove
 		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.FrameworkClosed.add
 		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.FrameworkClosed.remove
-		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.AutomationOption.get
-		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.AutomationOption.set
-		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.IsEnabled.get
 		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.FragmentRootAutomationProviderRequested.add
 		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.FragmentRootAutomationProviderRequested.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Content.DesktopPopupSiteBridge Create(global::Microsoft.UI.Content.ContentIsland parent)
-		{
-			throw new global::System.NotImplementedException("The member DesktopPopupSiteBridge DesktopPopupSiteBridge.Create(ContentIsland parent) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DesktopPopupSiteBridge%20DesktopPopupSiteBridge.Create%28ContentIsland%20parent%29");
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.NextSiblingAutomationProviderRequested.add
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.NextSiblingAutomationProviderRequested.remove
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.ParentAutomationProviderRequested.add
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.ParentAutomationProviderRequested.remove
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.PreviousSiblingAutomationProviderRequested.add
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.PreviousSiblingAutomationProviderRequested.remove
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.AutomationOption.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.AutomationOption.set
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.AutomationProvider.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.DispatcherQueue.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.IsClosed.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.IsEnabled.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.IsVisible.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.LayoutDirectionOverride.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.LayoutDirectionOverride.set
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.OverrideScale.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.OverrideScale.set
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.Parent.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.SiteView.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.WindowId.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Microsoft.UI.ClosableNotifierHandler Closed

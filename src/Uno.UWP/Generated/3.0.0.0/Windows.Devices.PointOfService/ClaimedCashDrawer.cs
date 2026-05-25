@@ -53,10 +53,6 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedCashDrawer.DeviceId.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedCashDrawer.IsEnabled.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedCashDrawer.IsDrawerOpen.get
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedCashDrawer.CloseAlarm.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> OpenDrawerAsync()
@@ -110,6 +106,10 @@ namespace Windows.Devices.PointOfService
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedCashDrawer", "void ClaimedCashDrawer.Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedCashDrawer.CloseAlarm.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedCashDrawer.DeviceId.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedCashDrawer.IsDrawerOpen.get
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedCashDrawer.IsEnabled.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedCashDrawer, object> ReleaseDeviceRequested

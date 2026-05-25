@@ -25,6 +25,16 @@ namespace Windows.Services.Maps
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan DurationWithoutTraffic
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan MapRouteLeg.DurationWithoutTraffic is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MapRouteLeg.DurationWithoutTraffic");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.TimeSpan EstimatedDuration
 		{
 			get
@@ -65,16 +75,6 @@ namespace Windows.Services.Maps
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan DurationWithoutTraffic
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan MapRouteLeg.DurationWithoutTraffic is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MapRouteLeg.DurationWithoutTraffic");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Services.Maps.TrafficCongestion TrafficCongestion
 		{
 			get
@@ -84,11 +84,11 @@ namespace Windows.Services.Maps
 		}
 #endif
 		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.BoundingBox.get
-		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.Path.get
-		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.LengthInMeters.get
-		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.EstimatedDuration.get
-		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.Maneuvers.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.DurationWithoutTraffic.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.EstimatedDuration.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.LengthInMeters.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.Maneuvers.get
+		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.Path.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteLeg.TrafficCongestion.get
 	}
 }

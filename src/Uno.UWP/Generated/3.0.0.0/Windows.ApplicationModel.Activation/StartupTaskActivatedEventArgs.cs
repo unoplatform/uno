@@ -45,16 +45,6 @@ namespace Windows.ApplicationModel.Activation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.System.User User
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member User StartupTaskActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20StartupTaskActivatedEventArgs.User");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string TaskId
 		{
 			get
@@ -63,10 +53,20 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.StartupTaskActivatedEventArgs.TaskId.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.System.User User
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member User StartupTaskActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20StartupTaskActivatedEventArgs.User");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.ApplicationModel.Activation.StartupTaskActivatedEventArgs.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.StartupTaskActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.StartupTaskActivatedEventArgs.SplashScreen.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.StartupTaskActivatedEventArgs.TaskId.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.StartupTaskActivatedEventArgs.User.get
 		// Processing: Windows.ApplicationModel.Activation.IStartupTaskActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs

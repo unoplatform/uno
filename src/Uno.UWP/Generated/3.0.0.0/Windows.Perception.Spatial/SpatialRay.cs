@@ -10,6 +10,14 @@ namespace Windows.Perception.Spatial
 	{
 		// Forced skipping of method Windows.Perception.Spatial.SpatialRay.SpatialRay()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public SpatialRay(global::System.Numerics.Vector3 _Origin, global::System.Numerics.Vector3 _Direction)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialRay", "SpatialRay.SpatialRay(Vector3 _Origin, Vector3 _Direction)");
+		}
+#endif
+		// Forced skipping of method Windows.Perception.Spatial.SpatialRay.SpatialRay(System.Numerics.Vector3, System.Numerics.Vector3)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::System.Numerics.Vector3 Origin;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

@@ -35,6 +35,11 @@ namespace Uno.UI.Tests.Resources
 		[DataRow(@"Assets\scale-400\logo.png", @"Assets\logo.png", "400", null, null)]
 		[DataRow(@"Assets\SCALE-400\logo.png", @"Assets\logo.png", "400", null, null)]
 		[DataRow(@"Assets\scale-400\logo-2.png", @"Assets\logo-2.png", "400", null, null)]
+		// Hyphenated filenames — exercise the BCP-47 shape pre-check that
+		// short-circuits the CultureInfo fallback in IsLanguageTag.
+		[DataRow(@"Assets\scale-200\logo-3.png", @"Assets\logo-3.png", "200", null, null)]
+		[DataRow(@"Assets\asset-v2.png", @"Assets\asset-v2.png", null, null, null)]
+		[DataRow(@"Assets\v2-beta.png", @"Assets\v2-beta.png", null, null, null)]
 		[DataRow(@"Assets\scale-400\logo.9.png", @"Assets\logo.9.png", "400", null, null)]
 		[DataRow(@"Assets\logo.scale-400.9.png", @"Assets\logo.9.png", "400", null, null)]
 		[DataRow(@"Assets\folder\scale-400\logo.png", @"Assets\folder\logo.png", "400", null, null)]
@@ -57,6 +62,29 @@ namespace Uno.UI.Tests.Resources
 		[DataRow(@"Assets\logo.scale-200.lang-fr-CA.png", @"Assets\logo.png", "200", "fr-CA", null)]
 		[DataRow(@"Assets\sr-Cyrl\logo.png", @"Assets\logo.png", null, "sr-Cyrl", null)]
 		[DataRow(@"fr\Assets\sr-Cyrl\logo.png", @"Assets\logo.png", null, "sr-Cyrl", null)]
+		// Locales that triggered UNOB0003 due to language detection failures
+		[DataRow(@"Strings\quz-PE\Resources.resw", @"Strings\Resources.resw", null, "quz-PE", null)]
+		[DataRow(@"Strings\zh-CN\Resources.resw", @"Strings\Resources.resw", null, "zh-CN", null)]
+		[DataRow(@"Strings\zh-TW\Resources.resw", @"Strings\Resources.resw", null, "zh-TW", null)]
+		[DataRow(@"Strings\ca-Es-VALENCIA\Resources.resw", @"Strings\Resources.resw", null, "ca-Es-VALENCIA", null)]
+		[DataRow(@"Strings\pa-IN\Resources.resw", @"Strings\Resources.resw", null, "pa-IN", null)]
+		[DataRow(@"Strings\zh-Hans\Resources.resw", @"Strings\Resources.resw", null, "zh-Hans", null)]
+		[DataRow(@"Strings\zh-Hant\Resources.resw", @"Strings\Resources.resw", null, "zh-Hant", null)]
+		// Long-form "language-" prefix with complex subtags — exercises the
+		// known-qualifier short-circuit in IsLanguageTag.
+		[DataRow(@"Strings\language-ca-Es-VALENCIA\Resources.resw", @"Strings\Resources.resw", null, "ca-Es-VALENCIA", null)]
+		[DataRow(@"Strings\language-zh-Hans\Resources.resw", @"Strings\Resources.resw", null, "zh-Hans", null)]
+		[DataRow(@"Strings\language-quz-PE\Resources.resw", @"Strings\Resources.resw", null, "quz-PE", null)]
+		// MRT: bare BCP-47 language tags are only allowed as folder names.
+		// File-name segments must carry the explicit `lang-` / `language-`
+		// prefix — otherwise arbitrary filenames whose first subtag happens
+		// to be a valid ISO 639 code (e.g. `uno` = Quechua, `eng` = English)
+		// would be misclassified as language qualifiers.
+		[DataRow(@"Assets\Formats\uno-overalls.png", @"Assets\Formats\uno-overalls.png", null, null, null)]
+		[DataRow(@"Assets\Formats\uno-overalls.gif", @"Assets\Formats\uno-overalls.gif", null, null, null)]
+		[DataRow(@"Assets\Formats\uno-overalls.jpg", @"Assets\Formats\uno-overalls.jpg", null, null, null)]
+		[DataRow(@"Assets\eng-extension.png", @"Assets\eng-extension.png", null, null, null)]
+		[DataRow(@"Assets\logo.en.png", @"Assets\logo.en.png", null, null, null)]
 		[TestMethod]
 		public void When_Parse(string relativePath, string logicalPath, string scale, string language, string custom)
 		{

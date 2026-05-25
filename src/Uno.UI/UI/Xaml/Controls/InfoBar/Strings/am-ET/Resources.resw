@@ -118,11 +118,11 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="InfoBarCloseButtonName" xml:space="preserve">
-    <value>ዝጋ</value>
+    <value>ይዝጉ</value>
     <comment>Automation name of the close button.</comment>
   </data>
   <data name="InfoBarCloseButtonTooltip" xml:space="preserve">
-    <value>ዝጋ</value>
+    <value>ይዝጉ</value>
     <comment>The tooltip that appears on the Close button in InfoBar.</comment>
   </data>
   <data name="InfoBarClosedNotification" xml:space="preserve">
@@ -130,7 +130,7 @@
     <comment>The string read by narrator when the InfoBar closes.</comment>
   </data>
   <data name="InfoBarCustomLandmarkName" xml:space="preserve">
-    <value>InfoBar</value>
+    <value>የመረጃ አሞሌ</value>
     <comment>This is the custom landmark used to denote an InfoBar to narrator.</comment>
   </data>
   <data name="InfoBarIconSeverityErrorName" xml:space="preserve">

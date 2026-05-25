@@ -52,50 +52,9 @@ public partial class RichTextBlockAutomationPeer : FrameworkElementAutomationPee
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.Text;
 
-	// We populate automation peer children from its block collection recursively
-	// Here we need to eliminate all text elements which are overflowing to next RichTextBlockOverflow if any
-	protected override IList<AutomationPeer> GetChildrenCore()
-	{
-		var owner = Owner as Controls.RichTextBlockOverflow;
-
-		var posContentStart = 0;
-		var posOverflowStart = int.MaxValue;
-
-		var returnValue = base.GetChildrenCore();
-
-		if (owner.ContentStart is { } contentStart)
-		{
-			posContentStart = contentStart.Offset;
-
-			if (owner.HasOverflowContent)
-			{
-				if (owner.OverflowContentTarget?.ContentStart is { } spOverflowStart)
-				{
-					posOverflowStart = spOverflowStart.Offset;
-				}
-			}
-		}
-
-		var spSourceControl = owner.ContentSource;
-		var spBlocks = spSourceControl.Blocks;
-		var count = spBlocks.Count;
-
-		for (var i = 0; i < count; i++)
-		{
-			var spBlock = spBlocks[i];
-			if (owner.HasOverflowContent)
-			{
-				var blockStart = spBlock.ContentStart;
-
-				if (blockStart.Offset >= posOverflowStart)
-				{
-					break;
-				}
-			}
-
-			returnValue = spBlock.AppendAutomationPeerChildren(posContentStart, posOverflowStart);
-		}
-
-		return returnValue;
-	}
+	// UNO TODO: Populate automation peer children from block collection recursively,
+	// filtering out text elements that overflow to RichTextBlockOverflow.
+	// The previous implementation was broken (copy-pasted from RichTextBlockOverflow
+	// and used ContentSource which doesn't exist on RichTextBlock).
+	// For now, use the base implementation which walks the visual tree.
 }

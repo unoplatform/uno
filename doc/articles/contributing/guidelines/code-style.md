@@ -6,6 +6,26 @@ uid: Uno.Contributing.CodeStyle
 
 Uno uses EditorConfig ([here's our configuration](https://github.com/unoplatform/uno/blob/master/.editorconfig)) to maintain consistent coding styles and settings in our codebase, such as indent style, tab width, end of line characters, encoding, and more. Most IDEs should respect the `EditorConfig` settings by default when applying formatting. We typically observe the [Microsoft C# Coding Conventions](https://learn.microsoft.com/dotnet/csharp/programming-guide/inside-a-program/coding-conventions) with one notable exception - Uno uses Tabs. If you install this [Visual Studio plugin](https://marketplace.visualstudio.com/items?itemName=mynkow.FormatdocumentonSave) it will automatically format your contributions upon file save.
 
+## XAML Formatting (SamplesApp)
+
+XAML files under `src/SamplesApp/` are formatted using [XamlStyler](https://github.com/Xavalon/XamlStyler). The configuration is in `src/SamplesApp/Settings.XamlStyler`.
+
+```bash
+# One-time setup (restore tools after cloning)
+dotnet tool restore
+
+# Format all SamplesApp XAML files
+dotnet xstyler -d src/SamplesApp -r
+
+# Format a single file
+dotnet xstyler -f src/SamplesApp/UITests.Shared/MyFile.xaml
+
+# Check without modifying (CI mode)
+dotnet xstyler -d src/SamplesApp -r -p
+```
+
+A GitHub Actions workflow enforces XAML formatting on PRs that modify SamplesApp XAML files.
+
 ## Refactoring
 
 Pure refactoring for its own sake should generally be done in a separate, refactoring-only pull request, and you should generally open an issue to initiate discussion with the core team before you start such a refactoring, to determine if it's really appropriate. See [this blog post on Open Source Contribution Etiquette](https://tirania.org/blog/archive/2010/Dec-31.html) for some explanation of the reasons why. Consistently-observed conventions are essential to the long-term health of the codebase.

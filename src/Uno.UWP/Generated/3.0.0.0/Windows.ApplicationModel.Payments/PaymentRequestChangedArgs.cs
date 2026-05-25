@@ -43,9 +43,6 @@ namespace Windows.ApplicationModel.Payments
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.ChangeKind.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.ShippingAddress.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.SelectedShippingOption.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Acknowledge(global::Windows.ApplicationModel.Payments.PaymentRequestChangedResult changeResult)
@@ -53,5 +50,8 @@ namespace Windows.ApplicationModel.Payments
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentRequestChangedArgs", "void PaymentRequestChangedArgs.Acknowledge(PaymentRequestChangedResult changeResult)");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.ChangeKind.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.SelectedShippingOption.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedArgs.ShippingAddress.get
 	}
 }

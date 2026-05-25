@@ -24,7 +24,9 @@
             PaneBackground="Red"
             PanePlacement="Right">
             <SplitView.Content>
-                <Button x:Name="PaneToggle" Click="Button_Click">Toggle</Button>
+                <Button x:Name="PaneToggle" Click="Button_Click">
+                    Toggle
+                </Button>
             </SplitView.Content>
             <SplitView.Pane>
                 <TextBlock

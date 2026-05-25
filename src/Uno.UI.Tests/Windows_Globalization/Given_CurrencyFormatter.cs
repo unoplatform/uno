@@ -241,6 +241,9 @@ public class Given_CurrencyFormatter
 
 
 	[TestMethod]
+#if IS_RUNTIME_UI_TESTS
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+#endif
 	[DataRow("HNL", "1.00", "L.")]
 	[DataRow("AED", "1.00", "د.إ.‏")]
 	[DataRow("AFN", "1.00", "؋")]
@@ -432,6 +435,9 @@ public class Given_CurrencyFormatter
 	}
 
 	[TestMethod]
+#if IS_RUNTIME_UI_TESTS
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+#endif
 	[DataRow("HNL", "1.00")]
 	[DataRow("AED", "1.00")]
 	[DataRow("AFN", "1.00")]

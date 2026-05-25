@@ -33,7 +33,7 @@ namespace Windows.Management.Deployment
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Management.Deployment.PackageUserInformation.UserSecurityId.get
 		// Forced skipping of method Windows.Management.Deployment.PackageUserInformation.InstallState.get
+		// Forced skipping of method Windows.Management.Deployment.PackageUserInformation.UserSecurityId.get
 	}
 }

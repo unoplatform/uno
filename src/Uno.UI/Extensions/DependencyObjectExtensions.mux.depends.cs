@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // depends.h, depends.cpp
 
@@ -6,29 +6,20 @@
 
 using Uno.UI.Xaml.Core;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Documents;
 
 namespace Uno.UI.Extensions
 {
 	internal static partial class DependencyObjectExtensions
 	{
+		// Matches WinUI's CDependencyObject::GetVisualTree / CDependencyObject::SetVisualTree.
+		// In WinUI, every CDependencyObject has an m_pVisualTree field.
+		// In Uno, this is stored on DependencyObjectStore so all DependencyObject types get it.
+
 		internal static VisualTree? GetVisualTree(this DependencyObject dependencyObject)
 		{
-			// The current implementation does not match MUX https://github.com/unoplatform/uno/issues/8978
-			if (dependencyObject is UIElement uiElement)
+			if (dependencyObject is IDependencyObjectStoreProvider provider)
 			{
-				return uiElement.VisualTreeCache;
-			}
-
-			if (dependencyObject is FlyoutBase flyoutBase)
-			{
-				return flyoutBase.VisualTreeCache;
-			}
-
-			if (dependencyObject is TextElement textElement)
-			{
-				return textElement.VisualTreeCache;
+				return provider.Store.VisualTreeCache;
 			}
 
 			return null;
@@ -36,20 +27,9 @@ namespace Uno.UI.Extensions
 
 		internal static void SetVisualTree(this DependencyObject dependencyObject, VisualTree visualTree)
 		{
-			// The current implementation does not match MUX https://github.com/unoplatform/uno/issues/8978
-			if (dependencyObject is UIElement uiElement)
+			if (dependencyObject is IDependencyObjectStoreProvider provider)
 			{
-				uiElement.VisualTreeCache = visualTree;
-			}
-
-			if (dependencyObject is FlyoutBase flyoutBase)
-			{
-				flyoutBase.VisualTreeCache = visualTree;
-			}
-
-			if (dependencyObject is TextElement textElement)
-			{
-				textElement.VisualTreeCache = visualTree;
+				provider.Store.VisualTreeCache = visualTree;
 			}
 		}
 	}

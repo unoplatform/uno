@@ -50,17 +50,19 @@ namespace TestRepro
 			base.IsParsing = true;
 			// Source 0\UserControl1.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.Grid
-			{
-				IsParsing = true,
-				// Source 0\UserControl1.xaml (Line 12:3)
-			}
-			.UserControl1_81d855d5b3bba02f594dcda3b149beb2_XamlApply((UserControl1_81d855d5b3bba02f594dcda3b149beb2XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-			{
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_UserControl1_81d855d5b3bba02f594dcda3b149beb2);
-			__p1.CreationComplete();
-			}
-			))
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.Grid
+				{
+					IsParsing = true,
+					// Source 0\UserControl1.xaml (Line 12:3)
+				}
+				.UserControl1_81d855d5b3bba02f594dcda3b149beb2_XamlApply((UserControl1_81d855d5b3bba02f594dcda3b149beb2XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+				{
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_UserControl1_81d855d5b3bba02f594dcda3b149beb2);
+				__p1.CreationComplete();
+				}
+				))
+			)
 			;
 			
 			this

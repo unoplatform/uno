@@ -8,6 +8,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Foundation.Metadata
 	public class Given_ApiInformation
 	{
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_IsPropertyPresent_Called_Twice()
 		{
 			// Verifies fix for issue #4803

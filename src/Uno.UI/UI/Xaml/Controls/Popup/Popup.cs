@@ -11,6 +11,7 @@ using Uno.UI;
 using Uno;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml.Core;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -150,6 +151,21 @@ public partial class Popup
 
 	partial void OnHorizontalOffsetChangedPartial(double oldHorizontalOffset, double newHorizontalOffset) =>
 		PopupPanel?.InvalidateMeasure();
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+	// MUX Reference: Popup.cpp CPopup::NotifyThemeChangedCore (lines 3589-3610)
+	// Popup's Child is reparented to PopupRoot's visual tree, so the normal
+	// PropagateThemeToChildren walk won't reach it. We must explicitly propagate.
+	private protected override void NotifyThemeChangedCore(Theme theme, bool forceRefresh)
+	{
+		base.NotifyThemeChangedCore(theme, forceRefresh);
+
+		if (Child is FrameworkElement child)
+		{
+			child.NotifyThemeChanged(theme, forceRefresh);
+		}
+	}
+#endif
 
 	internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
 	{
@@ -351,4 +367,9 @@ public partial class Popup
 
 	internal static DependencyProperty LightDismissOverlayBackgroundProperty { get; } =
 		DependencyProperty.Register(nameof(LightDismissOverlayBackground), typeof(Brush), typeof(Popup), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
+
+	internal void SetAssociatedVisualTree(VisualTree visualTree)
+	{
+		visualTree.AttachElement(this);
+	}
 }

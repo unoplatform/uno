@@ -33,7 +33,7 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandResult.StatusCode.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandResult.ResponseData.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandResult.StatusCode.get
 	}
 }

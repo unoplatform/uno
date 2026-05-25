@@ -6,7 +6,17 @@ uid: Uno.Features.AndroidTv
 
 Uno Platform is proud to support Android TV, enabling you to extend your application's reach to this wide family of devices with unique use cases.
 
-## Enabling Android TV support
+## Enabling Android TV support via `UnoFeatures` (recommended)
+
+For projects using the `Uno.Sdk`, the simplest way to add Android TV support is by adding the `AndroidTV` feature to your project's `<UnoFeatures>` property:
+
+```xml
+<UnoFeatures>$(UnoFeatures);AndroidTV</UnoFeatures>
+```
+
+This automatically adds a reference to the `Xamarin.AndroidX.Leanback` package. New projects created from the Uno Platform templates with the **Android TV** option enabled will also have the manifest, intent filter, banner, and focus highlight overrides stamped automatically. You can still apply the manual steps below if you need to fine-tune the configuration or are working with an older project layout.
+
+## Enabling Android TV support manually
 
 To make your application properly show up among installed apps on Android TV and to be able to publish the app to the store, you need to adjust the app manifest to declare support for Android TV.
 
@@ -77,3 +87,17 @@ To disable the native Android highlighting of focused elements, the `styles.xml`
 ```
 
 Please note, that this will disable all the highlights, even in embedded native controls you may host within the Uno Platform app.
+
+## Shipping a TV-only app alongside a phone app
+
+The opt-in described above produces a single APK that targets both phones and Android TVs. If you need to publish a separate experience on each form factor (for example, because the TV UI diverges substantially from the phone UI), the recommended approach is to ship **two separate Uno Platform apps**:
+
+1. **A "phone" Uno Platform app** — your existing Uno project. Leave the `AndroidTV` opt-in disabled here.
+2. **A "TV" Uno Platform app** — a second Uno project dedicated to Android TV with the `AndroidTV` opt-in enabled.
+
+To set up the TV-only app:
+
+- Create a new Uno Platform app (`dotnet new unoapp -o MyApp.TV`) targeting Android, and enable the `AndroidTV` opt-in.
+- In `MyApp.TV/Platforms/Android/AndroidManifest.xml`, change `android:required` on the `android.software.leanback` `<uses-feature>` element from `false` to `true`. This makes the APK install only on devices that support leanback (i.e. Android TVs).
+- Use a distinct application id (for example `com.companyname.myapp.tv`) so the TV app and phone app can coexist on the Play Store as separate listings.
+- Move shared code (view models, services, resources) into a class library and reference it from both apps.

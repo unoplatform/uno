@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Xml;
 using Microsoft.CodeAnalysis;
@@ -40,9 +41,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private readonly RoslynMetadataHelper _metadataHelper;
 
+		private readonly bool _enableImplicitNamespaces;
+		private readonly (string Prefix, string Uri)[] _implicitPrefixes;
+		private readonly string _implicitPrefixesKey;
+
 		private int _depth;
 
-		public XamlFileParser(string excludeXamlNamespacesProperty, string includeXamlNamespacesProperty, string[] excludeXamlNamespaces, string[] includeXamlNamespaces, RoslynMetadataHelper roslynMetadataHelper)
+		public XamlFileParser(
+			string excludeXamlNamespacesProperty,
+			string includeXamlNamespacesProperty,
+			string[] excludeXamlNamespaces,
+			string[] includeXamlNamespaces,
+			RoslynMetadataHelper roslynMetadataHelper,
+			bool enableImplicitNamespaces = false,
+			(string Prefix, string Uri)[]? implicitPrefixes = null)
 		{
 			_excludeXamlNamespacesProperty = excludeXamlNamespacesProperty;
 			_excludeXamlNamespaces = excludeXamlNamespaces;
@@ -51,6 +63,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_includeXamlNamespaces = includeXamlNamespaces;
 
 			_metadataHelper = roslynMetadataHelper;
+			_enableImplicitNamespaces = enableImplicitNamespaces;
+			_implicitPrefixes = implicitPrefixes ?? Array.Empty<(string, string)>();
+			_implicitPrefixesKey = string.Join("|", _implicitPrefixes.Select(p => p.Prefix + ":" + p.Uri));
 		}
 
 		public ParallelQuery<XamlFileDefinition> ParseFiles(IEnumerable<XamlSource> xamlSourceFiles, string projectDirectory, CancellationToken ct)
@@ -96,7 +111,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var sourceText = src.Item.File.GetText(ct) ?? throw new Exception($"Failed to read additional file '{sourcePath}'");
 				var sourceLink = src.Link.Replace('\\', '/');
 
-				var cachedFileKey = new CachedFileKey(_includeXamlNamespacesProperty, _excludeXamlNamespacesProperty, sourcePath, sourceLink, sourceText.GetChecksum());
+				var cachedFileKey = new CachedFileKey(_includeXamlNamespacesProperty, _excludeXamlNamespacesProperty, sourcePath, sourceLink, sourceText.GetChecksum(), _enableImplicitNamespaces, _implicitPrefixesKey);
 				if (_cachedFiles.TryGetValue(cachedFileKey, out var cached))
 				{
 					_cachedFiles[cachedFileKey] = cached.WithUpdatedLastTimeUsed();
@@ -176,19 +191,184 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var hasxBind = originalString.Contains("{x:Bind", StringComparison.Ordinal);
 
+			string content;
 			if (!hasxBind)
 			{
-				// No need to modify file
-				return XmlReader.Create(new StringReader(originalString));
+				content = originalString;
+			}
+			else
+			{
+				// Apply replacements to avoid having issues with the XAML parser which does not
+				// support quotes in positional markup extensions parameters.
+				// Note that the UWP preprocessor does not need to apply those replacements as the
+				// x:Bind expressions are being removed during the first phase and replaced by "connections".
+				content = XBindExpressionParser.RewriteDocumentPaths(originalString);
 			}
 
-			// Apply replacements to avoid having issues with the XAML parser which does not
-			// support quotes in positional markup extensions parameters.
-			// Note that the UWP preprocessor does not need to apply those replacements as the
-			// x:Bind expressions are being removed during the first phase and replaced by "connections".
-			var adjusted = XBindExpressionParser.RewriteDocumentPaths(originalString);
+			if (_enableImplicitNamespaces)
+			{
+				content = InjectImplicitXmlns(content);
+			}
 
-			return XmlReader.Create(new StringReader(adjusted));
+			return XmlReader.Create(new StringReader(content));
+		}
+
+		/// <summary>
+		/// Injects missing xmlns declarations into the root element of a XAML document.
+		/// This ensures XAML files without explicit xmlns/xmlns:x declarations can be
+		/// parsed by the standard XmlReader without requiring ConformanceLevel.Fragment.
+		/// Injects each missing declaration independently (default xmlns, xmlns:x, implicit prefixes).
+		/// </summary>
+		private string InjectImplicitXmlns(string content)
+		{
+			// Find the root element opening tag, skipping XML declarations, comments, and whitespace.
+			// The root element starts with '<' followed by a letter or underscore (not '?', '!', or '/').
+			var rootTagStart = -1;
+			for (var i = 0; i < content.Length - 1; i++)
+			{
+				if (content[i] == '<')
+				{
+					var next = content[i + 1];
+					if (next == '?' || next == '!')
+					{
+						// Skip XML declaration (<?...?>) or comment/CDATA (<!...>)
+						if (next == '?')
+						{
+							i = content.IndexOf("?>", i, StringComparison.Ordinal);
+							if (i < 0) return content;
+							i++; // skip past '>'
+						}
+						else
+						{
+							// Skip <!-- ... --> comments
+							if (i + 3 < content.Length && content[i + 2] == '-' && content[i + 3] == '-')
+							{
+								i = content.IndexOf("-->", i, StringComparison.Ordinal);
+								if (i < 0) return content;
+								i += 2; // skip past '-->'
+							}
+							else
+							{
+								i = content.IndexOf('>', i);
+								if (i < 0) return content;
+							}
+						}
+					}
+					else if (char.IsLetter(next) || next == '_')
+					{
+						rootTagStart = i;
+						break;
+					}
+				}
+			}
+
+			if (rootTagStart < 0)
+			{
+				return content;
+			}
+
+			// Find the end of the root element opening tag, tracking quotes to avoid
+			// matching '>' characters inside attribute values.
+			var rootTagEnd = -1;
+			{
+				var inQuote = false;
+				var quoteChar = '\0';
+				for (var i = rootTagStart + 1; i < content.Length; i++)
+				{
+					var c = content[i];
+					if (inQuote)
+					{
+						if (c == quoteChar)
+						{
+							inQuote = false;
+						}
+					}
+					else
+					{
+						if (c == '"' || c == '\'')
+						{
+							inQuote = true;
+							quoteChar = c;
+						}
+						else if (c == '>')
+						{
+							rootTagEnd = i;
+							break;
+						}
+					}
+				}
+			}
+
+			if (rootTagEnd < 0)
+			{
+				return content;
+			}
+
+			// Check xmlns presence within the root tag span only (not the entire document),
+			// handling both single-quoted and double-quoted attribute values.
+			var rootTag = content.AsSpan(rootTagStart, rootTagEnd - rootTagStart);
+			var hasDefaultXmlns = rootTag.IndexOf("xmlns=\"".AsSpan(), StringComparison.Ordinal) >= 0
+				|| rootTag.IndexOf("xmlns='".AsSpan(), StringComparison.Ordinal) >= 0;
+			var hasXmlnsX = rootTag.IndexOf("xmlns:x=\"".AsSpan(), StringComparison.Ordinal) >= 0
+				|| rootTag.IndexOf("xmlns:x='".AsSpan(), StringComparison.Ordinal) >= 0;
+
+			// Quick check: if all base declarations are present and no implicit prefixes to inject, skip
+			if (hasDefaultXmlns && hasXmlnsX && _implicitPrefixes.Length == 0)
+			{
+				return content;
+			}
+
+			var injections = new StringBuilder();
+
+			// Inject default xmlns if missing
+			if (!hasDefaultXmlns)
+			{
+				injections.Append(" xmlns=\"");
+				injections.Append(XamlConstants.PresentationXamlXmlNamespace);
+				injections.Append('"');
+			}
+
+			// Inject xmlns:x if missing
+			if (!hasXmlnsX)
+			{
+				injections.Append(" xmlns:x=\"");
+				injections.Append(XamlConstants.XamlXmlNamespace);
+				injections.Append('"');
+			}
+
+			// Inject any XmlnsPrefix-registered prefixes if missing from root tag.
+			// Skip reserved/built-in prefixes ("x", "xml", "xmlns") to avoid producing invalid XML
+			// or clashing with the xmlns:x we already inject above.
+			foreach (var (prefix, uri) in _implicitPrefixes)
+			{
+				if (string.Equals(prefix, "x", StringComparison.Ordinal)
+					|| string.Equals(prefix, "xml", StringComparison.Ordinal)
+					|| string.Equals(prefix, "xmlns", StringComparison.Ordinal))
+				{
+					continue;
+				}
+
+				var prefixDeclDouble = $"xmlns:{prefix}=\"";
+				var prefixDeclSingle = $"xmlns:{prefix}='";
+				if (rootTag.IndexOf(prefixDeclDouble.AsSpan(), StringComparison.Ordinal) < 0
+					&& rootTag.IndexOf(prefixDeclSingle.AsSpan(), StringComparison.Ordinal) < 0)
+				{
+					injections.Append(' ');
+					injections.Append(prefixDeclDouble);
+					injections.Append(uri);
+					injections.Append('"');
+				}
+			}
+
+			if (injections.Length == 0)
+			{
+				return content;
+			}
+
+			// Insert injections just before the closing '>' of the root element
+			var isSelfClosing = rootTagEnd > 0 && content[rootTagEnd - 1] == '/';
+			var insertPos = isSelfClosing ? rootTagEnd - 1 : rootTagEnd;
+			return content.Insert(insertPos, injections.ToString());
 		}
 
 		private static bool IsSkiaNotConditional(string localName, string namespaceUri)

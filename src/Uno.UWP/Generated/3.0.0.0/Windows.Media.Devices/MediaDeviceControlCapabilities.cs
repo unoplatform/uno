@@ -73,11 +73,11 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Supported.get
-		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Min.get
-		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Max.get
-		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Step.get
-		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Default.get
 		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.AutoModeSupported.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Default.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Max.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Min.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Step.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Supported.get
 	}
 }

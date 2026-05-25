@@ -43,8 +43,8 @@ namespace Windows.Media.Streaming.Adaptive
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadBitrateChangedEventArgs.OldValue.get
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadBitrateChangedEventArgs.NewValue.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadBitrateChangedEventArgs.OldValue.get
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadBitrateChangedEventArgs.Reason.get
 	}
 }

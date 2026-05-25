@@ -53,9 +53,9 @@ namespace Windows.Media.Devices.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureCompensationCapabilities.Supported.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureCompensationCapabilities.Min.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureCompensationCapabilities.Max.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureCompensationCapabilities.Min.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureCompensationCapabilities.Step.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameExposureCompensationCapabilities.Supported.get
 	}
 }

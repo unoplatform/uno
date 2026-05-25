@@ -64,6 +64,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		var view = View!;
 
 		_textInputLayer = new UIView();
+		_textInputLayer.UserInteractionEnabled = false;
 		view.AddSubview(_textInputLayer);
 
 		_skCanvasView = new SkiaCanvas();
@@ -130,7 +131,6 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 		if (svgPath != _lastSvgClipPath)
 		{
-			var oldPath = _lastSvgClipPath;
 			_lastSvgClipPath = svgPath;
 
 			NativeDispatcher.Main.Enqueue(() =>
@@ -139,7 +139,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 				{
 					ClipBySvgPath(svgPath);
 				}
-				else if (_lastSvgClipPath is not null)
+				else
 				{
 					ClearNativeClipping();
 				}

@@ -313,25 +313,27 @@ namespace Windows.System
 				case "NumpadDecimal":
 					return VirtualKey.Decimal;
 				case "Numpad0":
-					return VirtualKey.Number0;
+					return VirtualKey.NumberPad0;
 				case "Numpad1":
-					return VirtualKey.Number1;
+					return VirtualKey.NumberPad1;
 				case "Numpad2":
-					return VirtualKey.Number2;
+					return VirtualKey.NumberPad2;
 				case "Numpad3":
-					return VirtualKey.Number3;
+					return VirtualKey.NumberPad3;
 				case "Numpad4":
-					return VirtualKey.Number4;
+					return VirtualKey.NumberPad4;
 				case "Numpad5":
-					return VirtualKey.Number5;
+					return VirtualKey.NumberPad5;
 				case "Numpad6":
-					return VirtualKey.Number6;
+					return VirtualKey.NumberPad6;
 				case "Numpad7":
-					return VirtualKey.Number7;
+					return VirtualKey.NumberPad7;
 				case "Numpad8":
-					return VirtualKey.Number8;
+					return VirtualKey.NumberPad8;
 				case "Numpad9":
-					return VirtualKey.Number9;
+					return VirtualKey.NumberPad9;
+				case "NumpadEnter":
+					return VirtualKey.Enter;
 			}
 
 			// A lot of keys and codes are similar.

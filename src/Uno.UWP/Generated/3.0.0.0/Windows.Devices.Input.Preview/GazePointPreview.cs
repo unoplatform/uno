@@ -63,10 +63,10 @@ namespace Windows.Devices.Input.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.Preview.GazePointPreview.SourceDevice.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazePointPreview.EyeGazePosition.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazePointPreview.HeadGazePosition.get
-		// Forced skipping of method Windows.Devices.Input.Preview.GazePointPreview.Timestamp.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazePointPreview.HidInputReport.get
+		// Forced skipping of method Windows.Devices.Input.Preview.GazePointPreview.SourceDevice.get
+		// Forced skipping of method Windows.Devices.Input.Preview.GazePointPreview.Timestamp.get
 	}
 }

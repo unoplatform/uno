@@ -6,11 +6,18 @@
 		AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll"
 		TaskName="Uno.UI.Tasks.Assets.ExpandPackageAssets_v0" />
 
+	<!--
+		When building Uno.UI itself, keep this task out-of-proc and explicitly pin Runtime/Architecture.
+		Without these attributes, TaskHostFactory can infer a CLR4 host and probe for MSBuild.exe
+		under the dotnet SDK folder, which causes task-host launch failures.
+	-->
 	<UsingTask
 		Condition="'$(_IsUnoUISolution)'!=''"
 		AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll"
 		TaskName="Uno.UI.Tasks.Assets.ExpandPackageAssets_v0"
-		TaskFactory="TaskHostFactory" />
+		TaskFactory="TaskHostFactory"
+		Runtime="CurrentRuntime"
+		Architecture="CurrentArchitecture" />
 
 	<PropertyGroup>
 		<_UnoDirectorySeparator Condition="'$(OS)' == 'Unix'">/</_UnoDirectorySeparator>

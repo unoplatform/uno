@@ -241,10 +241,27 @@ namespace Microsoft.UI.Xaml
 			var currentValues = _current;
 			var targetValues = (state, transition: FindTransition(currentValues.state?.Name, state?.Name));
 
-			// As accessing to VisualState and VisualTransition properties (Storyboard ans Setters) may trigger the materialization of the VisualState,
-			// we ensure that this materialization occurs only in the right resource scope.
+			// As accessing to VisualState and VisualTransition properties (Storyboard and Setters) may trigger the materialization of the VisualState,
+			// we ensure that this materialization occurs only in the right resource scope AND theme context.
 			// Note: the "current" should have already been materialized.
+			//
+			// The theme push is still needed because ResourceDictionary.GetActiveThemeDictionary()
+			// uses the global theme stack to select the correct Light/Dark sub-dictionary.
 			(Storyboard transition, Storyboard animation, SetterBaseCollection setters) current, target;
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			var needsMaterializationThemePush = false;
+			if (element is FrameworkElement materializationFe)
+			{
+				var effectiveTheme = materializationFe.GetTheme();
+				if (effectiveTheme != Theme.None)
+				{
+					var themeKey = Theming.GetBaseValue(effectiveTheme) == Theme.Light ? "Light" : "Dark";
+					ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
+					needsMaterializationThemePush = true;
+				}
+			}
+#endif
+
 			try
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
@@ -255,6 +272,13 @@ namespace Microsoft.UI.Xaml
 			finally
 			{
 				ResourceResolver.PopScope();
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				if (needsMaterializationThemePush)
+				{
+					ResourceDictionary.PopRequestedThemeForSubTree();
+				}
+#endif
 			}
 
 			// Stops running animations (transition or state's storyboard)
@@ -356,6 +380,22 @@ namespace Microsoft.UI.Xaml
 					return;
 				}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				// The theme push is still needed because ResourceDictionary.GetActiveThemeDictionary()
+				// uses the global theme stack to select the correct Light/Dark sub-dictionary.
+				var needsThemePush = false;
+				if (element is FrameworkElement fe)
+				{
+					var effectiveTheme = fe.GetTheme();
+					if (effectiveTheme != Theme.None)
+					{
+						var themeKey = Theming.GetBaseValue(effectiveTheme) == Theme.Light ? "Light" : "Dark";
+						ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
+						needsThemePush = true;
+					}
+				}
+#endif
+
 				try
 				{
 					// Setter.ApplyValue can resolve some theme resources.
@@ -377,6 +417,13 @@ namespace Microsoft.UI.Xaml
 				finally
 				{
 					ResourceResolver.PopScope();
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+					if (needsThemePush)
+					{
+						ResourceDictionary.PopRequestedThemeForSubTree();
+					}
+#endif
 				}
 
 			}

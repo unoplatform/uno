@@ -25,16 +25,6 @@ namespace Windows.Devices.Bluetooth.Advertisement
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisherStatus Status
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisementPublisherStatus BluetoothLEAdvertisementPublisherStatusChangedEventArgs.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothLEAdvertisementPublisherStatus%20BluetoothLEAdvertisementPublisherStatusChangedEventArgs.Status");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public short? SelectedTransmitPowerLevelInDBm
 		{
 			get
@@ -43,8 +33,18 @@ namespace Windows.Devices.Bluetooth.Advertisement
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisherStatusChangedEventArgs.Status.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisherStatus Status
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisementPublisherStatus BluetoothLEAdvertisementPublisherStatusChangedEventArgs.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothLEAdvertisementPublisherStatus%20BluetoothLEAdvertisementPublisherStatusChangedEventArgs.Status");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisherStatusChangedEventArgs.Error.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisherStatusChangedEventArgs.SelectedTransmitPowerLevelInDBm.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisherStatusChangedEventArgs.Status.get
 	}
 }

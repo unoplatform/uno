@@ -1,7 +1,4 @@
-﻿using System;
-using CoreAnimation;
-using CoreGraphics;
-using Foundation;
+﻿using Foundation;
 using UIKit;
 using Uno.UI.Runtime.Skia.AppleUIKit;
 
@@ -28,19 +25,13 @@ internal partial class TopViewLayer : UIView
 	private const string NaturalScrollingKey = "com.apple.swipescrolldirection";
 	private bool _isNaturalScrollingEnabled;
 	private NSObject? _userDefaultsObserver;
-
 	private void SetupScrollGestureRecognizer()
 	{
 		if (UIDevice.CurrentDevice.CheckSystemVersion(13, 4))
 		{
-			var scrollGesture = new UIPanGestureRecognizer(HandleScrollGesture)
-			{
-				AllowedScrollTypesMask = UIScrollTypeMask.All,
-				MaximumNumberOfTouches = 0,
-				MinimumNumberOfTouches = 0,
-				ShouldRecognizeSimultaneously = (recognizer, otherRecognizer) => true
-			};
-			AddGestureRecognizer(scrollGesture);
+			// Use two separate recognizers so each one already knows its scroll type
+			AddGestureRecognizer(CreateScrollGesture(UIScrollTypeMask.Continuous, isDiscrete: false));
+			AddGestureRecognizer(CreateScrollGesture(UIScrollTypeMask.Discrete, isDiscrete: true));
 
 			// Initialize natural scrolling setting
 			if (IsRunningOnMac())
@@ -53,6 +44,26 @@ internal partial class TopViewLayer : UIView
 				);
 			}
 		}
+	}
+
+	private UIPanGestureRecognizer CreateScrollGesture(UIScrollTypeMask scrollTypeMask, bool isDiscrete)
+	{
+		void HandleScrollGesture(UIPanGestureRecognizer gesture) =>
+			AppleUIKitCorePointerInputSource.Instance.HandleScrollFromGesture(this, gesture, _isNaturalScrollingEnabled, isDiscrete);
+		return new UIPanGestureRecognizer(HandleScrollGesture)
+		{
+			AllowedScrollTypesMask = scrollTypeMask,
+			MaximumNumberOfTouches = 0,
+			AllowedTouchTypes = [],
+			AllowedPressTypes = [],
+			CancelsTouchesInView = false,
+			DelaysTouchesBegan = false,
+			DelaysTouchesEnded = false,
+			ShouldReceivePress = (_, __) => false,
+			ShouldReceiveTouch = (_, __) => false,
+			ShouldReceiveEvent = (_, evt) => evt.Type == UIEventType.Scroll,
+			ShouldRecognizeSimultaneously = (recognizer, otherRecognizer) => true
+		};
 	}
 
 	private static bool IsRunningOnMac()
@@ -68,20 +79,6 @@ internal partial class TopViewLayer : UIView
 	{
 		var defaults = NSUserDefaults.StandardUserDefaults;
 		_isNaturalScrollingEnabled = defaults[NaturalScrollingKey] == null || defaults.BoolForKey(NaturalScrollingKey);
-	}
-
-	private void HandleScrollGesture(UIPanGestureRecognizer gesture)
-	{
-		var translation = gesture.TranslationInView(this);
-		var location = gesture.LocationInView(this);
-		var gestureState = gesture.State;
-
-		AppleUIKitCorePointerInputSource.Instance.HandleScrollFromGesture(this, translation, location, gestureState, _isNaturalScrollingEnabled);
-
-		if (gestureState == UIGestureRecognizerState.Changed)
-		{
-			gesture.SetTranslation(CGPoint.Empty, this);
-		}
 	}
 
 	private void RemoveObserver()

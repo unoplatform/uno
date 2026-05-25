@@ -20,7 +20,7 @@ namespace Windows.UI.Notifications
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.IAdaptiveNotificationContent.Kind.get
 		// Forced skipping of method Windows.UI.Notifications.IAdaptiveNotificationContent.Hints.get
+		// Forced skipping of method Windows.UI.Notifications.IAdaptiveNotificationContent.Kind.get
 	}
 }

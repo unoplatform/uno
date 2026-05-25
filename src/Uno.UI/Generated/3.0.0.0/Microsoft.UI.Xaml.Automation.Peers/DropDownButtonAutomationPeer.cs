@@ -11,9 +11,9 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property ExpandCollapseState
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.DropDownButtonAutomationPeer(Microsoft.UI.Xaml.Controls.DropDownButton)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.DropDownButtonAutomationPeer(Microsoft.UI.Xaml.Controls.DropDownButton)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.ExpandCollapseState.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.Collapse()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.Expand()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.DropDownButtonAutomationPeer.ExpandCollapseState.get
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 	}
 }

@@ -20,6 +20,16 @@ public partial class ToggleButtonAutomationPeer : ButtonBaseAutomationPeer, Prov
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.Button;
 
+	protected override object GetPatternCore(PatternInterface patternInterface)
+	{
+		if (patternInterface == PatternInterface.Toggle)
+		{
+			return this;
+		}
+
+		return base.GetPatternCore(patternInterface);
+	}
+
 	/// <summary>
 	/// Gets the toggle state of the control.
 	/// </summary>

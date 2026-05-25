@@ -67,7 +67,15 @@ public partial class BitmapIcon : IconElement, IThemeChangeAware
 
 	private void OnShowAsMonochromeChanged(bool value) => UpdateImageMonochromeColor();
 
-	private protected override void OnForegroundChanged(DependencyPropertyChangedEventArgs e) => UpdateImageMonochromeColor();
+	private protected override void OnForegroundChanged(DependencyPropertyChangedEventArgs e)
+	{
+		// When ShowAsMonochrome is false, the foreground color is not used
+		// for rendering the image, so there is no need to update.
+		if (ShowAsMonochrome)
+		{
+			UpdateImageMonochromeColor();
+		}
+	}
 
 	private void UpdateImageMonochromeColor()
 	{

@@ -150,7 +150,7 @@
     <comment>This text is used to show the number of items in the person picture badging area, when that number is  1. %1 is the contact name and %2 is the number of items.</comment>
   </data>
   <data name="BadgeItemTextOverride" xml:space="preserve">
-    <value>&lt;mrk mtype="seg" mid="1"&gt;%1!s!, %2!u!&lt;/mrk&gt; &lt;mrk mtype="seg" mid="2"&gt;%3!s!&lt;/mrk&gt;</value>
+    <value>%1!s!, %2!u! %3!s!</value>
     <comment>This format string is used for the automation name. It is 'Person Name, badgenumber badgetext', where badge text is a user specified string overriding 'item(s)'.</comment>
   </data>
   <data name="BadgeIcon" xml:space="preserve">
@@ -158,7 +158,7 @@
     <comment>This text is used with the badging glyph. %1 is the contact name.</comment>
   </data>
   <data name="BadgeIconTextOverride" xml:space="preserve">
-    <value>&lt;mrk mtype="seg" mid="3"&gt;%1!s!, %2!s!&lt;/mrk&gt;</value>
+    <value>%1!s!, %2!s!</value>
     <comment>This format string is used for the automation name. It is 'Person Name, badgetext', where badgetext is a user specified string like skype.</comment>
   </data>
   <data name="PersonName" xml:space="preserve">

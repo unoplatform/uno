@@ -10,20 +10,6 @@ namespace Microsoft.UI.Input.DragDrop
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Input.DragDrop.DragUIContentMode DragUIContentMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DragUIContentMode DragOperation.DragUIContentMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DragUIContentMode%20DragOperation.DragUIContentMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragOperation", "DragUIContentMode DragOperation.DragUIContentMode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.DataTransfer.DataPackageOperation AllowedOperations
 		{
 			get
@@ -46,11 +32,28 @@ namespace Microsoft.UI.Input.DragDrop
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.Data.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.AllowedOperations.set
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.AllowedOperations.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.DragUIContentMode.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.DragUIContentMode.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Input.DragDrop.DragUIContentMode DragUIContentMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DragUIContentMode DragOperation.DragUIContentMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DragUIContentMode%20DragOperation.DragUIContentMode");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragOperation", "DragUIContentMode DragOperation.DragUIContentMode");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public DragOperation()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragOperation", "DragOperation.DragOperation()");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.DragOperation()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetDragUIContentFromSoftwareBitmap(global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
@@ -79,14 +82,11 @@ namespace Microsoft.UI.Input.DragDrop
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragOperation", "void DragOperation.Dispose()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public DragOperation()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragOperation", "DragOperation.DragOperation()");
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.DragOperation()
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.AllowedOperations.get
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.AllowedOperations.set
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.Data.get
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.DragUIContentMode.get
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.DragUIContentMode.set
 		// Processing: System.IDisposable
 	}
 }

@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PipsPagerNameText" xml:space="preserve">
-    <value>Alat Kelui</value>
+    <value>Alat kelui</value>
     <comment>It's a control that is used with a window that does not have enough display area to show all of its content. The pager allows the user to navigate to content that is not currently in view.</comment>
   </data>
   <data name="PipsPagerNextPageButtonText" xml:space="preserve">

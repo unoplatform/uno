@@ -22,7 +22,7 @@ using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.Popups.Internal;
 using Windows.UI.ViewManagement;
-
+using DirectUI;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -93,6 +93,8 @@ namespace Microsoft.UI.Xaml
 			Current = this;
 			ApplicationLanguages.ApplyCulture();
 
+			BackButtonIntegration.Initialize();
+
 			InitializePartial();
 		}
 
@@ -149,13 +151,40 @@ namespace Microsoft.UI.Xaml
 
 		internal bool IsSuspended { get; set; }
 
-		private void InitializeSystemTheme()
+		internal void InitializeSystemTheme()
 		{
 			if (!IsThemeSetExplicitly)
 			{
 				// just cache the theme, but do not notify about a change unnecessarily
 				InternalRequestedTheme = GetSystemTheme();
 			}
+
+			// Force-sync ResourceDictionary's static Themes.Active with the application's
+			// resolved theme before any resource lookup can happen at startup.
+			//
+			// Themes.Active is normally updated as a side-effect of the InternalRequestedTheme
+			// setter (via UpdateRequestedThemesForResources). However, there are two startup
+			// paths that can leave Themes.Active at its static default ("Default") while
+			// Application.RequestedTheme reports a real theme:
+			//
+			//   1. App.xaml declares RequestedTheme="Dark" before this method runs.
+			//      SetExplicitRequestedTheme(Dark) -> SetRequestedTheme(Dark) sees that the
+			//      backing field already equals Dark (because _requestedTheme's field default
+			//      is ApplicationTheme.Dark) and short-circuits as a no-op, never invoking
+			//      the InternalRequestedTheme setter.
+			//
+			//   2. IsThemeSetExplicitly was already true when this method is reached, so the
+			//      `if (!IsThemeSetExplicitly)` block above is skipped and the setter never runs.
+			//
+			// In both cases, ThemeDictionary lookups performed while loading Application.Resources
+			// (and the first frames that reference ThemeResource keys) would hit GetActiveTheme()
+			// returning "Default", resolving against the wrong sub-dictionary. For a dictionary
+			// that only defines "Light" and "Dark" sub-dicts, this means the lookup misses
+			// entirely (and potentially poisons KeyNotFoundCache).
+			//
+			// This unconditional call guarantees Themes.Active is coherent with
+			// InternalRequestedTheme by the time the runtime starts consuming resources.
+			UpdateRequestedThemesForResources();
 		}
 
 		private ApplicationTheme InternalRequestedTheme
@@ -204,24 +233,6 @@ namespace Microsoft.UI.Xaml
 
 		internal bool IsThemeSetExplicitly { get; private set; }
 
-		internal void SyncRequestedThemeFromXamlRoot(XamlRoot xamlRoot)
-		{
-			if (xamlRoot is null)
-			{
-				throw new ArgumentNullException(nameof(xamlRoot));
-			}
-
-			// Sync the requested theme from the XamlRoot
-			// This is an ultra-naive implementation... but nonetheless enables the common use case of overriding the system theme for
-			// the entire visual tree (since Application.RequestedTheme cannot be set after launch)
-			// This will also explicitly change the Application.Current.RequestedTheme, which does not happen in case of UWP.
-			if (xamlRoot.Content is FrameworkElement fe)
-			{
-				var theme = fe.RequestedTheme;
-				SetExplicitRequestedTheme(Uno.UI.Extensions.ElementThemeExtensions.ToApplicationThemeOrDefault(theme));
-			}
-		}
-
 		internal void SetExplicitRequestedTheme(ApplicationTheme? explicitTheme)
 		{
 			// this flag makes sure the app will not respond to OS events
@@ -229,6 +240,23 @@ namespace Microsoft.UI.Xaml
 			var theme = explicitTheme ?? GetSystemTheme();
 			SetRequestedTheme(theme);
 		}
+
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+		internal void SyncRequestedThemeFromXamlRoot(XamlRoot xamlRoot)
+		{
+			if (xamlRoot is null)
+			{
+				throw new ArgumentNullException(nameof(xamlRoot));
+			}
+
+			if (xamlRoot.Content is FrameworkElement fe)
+			{
+				var theme = fe.RequestedTheme;
+				SetExplicitRequestedTheme(
+					Uno.UI.Extensions.ElementThemeExtensions.ToApplicationThemeOrDefault(theme));
+			}
+		}
+#endif
 
 		public ResourceDictionary Resources
 		{
@@ -506,6 +534,21 @@ namespace Microsoft.UI.Xaml
 						// Update theme bindings in system resources
 						ResourceResolver.UpdateSystemThemeBindings(updateReason);
 
+						// When the application theme changes, notify the visual tree to update
+						// stored element themes (UIElement._theme). PropagateResourcesChanged only
+						// updates theme bindings but not stored themes, which causes new elements
+						// entering the tree (via OnLoadingPartial) to inherit stale themes from
+						// their parent.
+#if UNO_HAS_ENHANCED_LIFECYCLE
+						if ((updateReason & ResourceUpdateReason.ThemeResource) != 0)
+						{
+							var theme = InternalRequestedTheme == ApplicationTheme.Dark ? Theme.Dark : Theme.Light;
+							var forceRefresh = (updateReason & ResourceUpdateReason.HotReload) != 0;
+							var rootFe = root as FrameworkElement ?? contentRoot.XamlRoot.Content as FrameworkElement;
+							rootFe?.NotifyThemeChanged(theme, forceRefresh);
+						}
+#endif
+
 						PropagateResourcesChanged(root, updateReason);
 					}
 
@@ -537,6 +580,17 @@ namespace Microsoft.UI.Xaml
 			// Update ThemeResource references that have changed
 			if (instance is FrameworkElement fe)
 			{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				// If element has explicit RequestedTheme and this is a theme change,
+				// skip it - its subtree is managed by its own theme context and
+				// will be updated via NotifyThemeChanged, not by propagation.
+				if ((updateReason & ResourceUpdateReason.ThemeResource) != 0 &&
+					fe.RequestedTheme != ElementTheme.Default)
+				{
+					return;
+				}
+#endif
+
 				fe.UpdateThemeBindings(updateReason);
 			}
 

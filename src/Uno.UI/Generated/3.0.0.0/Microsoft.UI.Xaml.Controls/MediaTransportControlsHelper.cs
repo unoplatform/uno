@@ -9,8 +9,8 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class MediaTransportControlsHelper
 	{
 		// Skipping already declared property DropoutOrderProperty
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper.DropoutOrderProperty.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper.GetDropoutOrder(Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper.SetDropoutOrder(Microsoft.UI.Xaml.UIElement, int?)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MediaTransportControlsHelper.DropoutOrderProperty.get
 	}
 }

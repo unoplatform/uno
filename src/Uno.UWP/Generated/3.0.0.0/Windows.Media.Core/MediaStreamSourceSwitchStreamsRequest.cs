@@ -33,8 +33,6 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest.OldStreamDescriptor.get
-		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest.NewStreamDescriptor.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestDeferral GetDeferral()
@@ -42,5 +40,7 @@ namespace Windows.Media.Core
 			throw new global::System.NotImplementedException("The member MediaStreamSourceSwitchStreamsRequestDeferral MediaStreamSourceSwitchStreamsRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaStreamSourceSwitchStreamsRequestDeferral%20MediaStreamSourceSwitchStreamsRequest.GetDeferral%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest.NewStreamDescriptor.get
+		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest.OldStreamDescriptor.get
 	}
 }

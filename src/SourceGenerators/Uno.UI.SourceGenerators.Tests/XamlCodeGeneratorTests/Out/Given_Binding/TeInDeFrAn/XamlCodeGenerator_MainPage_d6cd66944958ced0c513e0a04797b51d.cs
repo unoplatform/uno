@@ -50,42 +50,46 @@ namespace TestRepro
 			base.IsParsing = true;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.StackPanel
-			{
-				IsParsing = true,
-				// Source 0\MainPage.xaml (Line 10:3)
-				Children = 
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.StackPanel
 				{
-					new global::Microsoft.UI.Xaml.Controls.TextBox
+					IsParsing = true,
+					// Source 0\MainPage.xaml (Line 10:3)
+					Children = 
 					{
-						IsParsing = true,
-						// Source 0\MainPage.xaml (Line 11:4)
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.TextBox
+							{
+								IsParsing = true,
+								// Source 0\MainPage.xaml (Line 11:4)
+							}
+							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+							{
+							/* _isTopLevelDictionary:False */
+							__that._component_0 = __p1;
+							__p1.SetBinding(
+								global::Microsoft.UI.Xaml.Controls.TextBox.TextProperty,
+								new Microsoft.UI.Xaml.Data.Binding()
+								{
+									Mode = global::Microsoft.UI.Xaml.Data.BindingMode.TwoWay,
+								}
+									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime MyFooInterface.Name*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.MyFooInterface.Name)) : (false, default), (___ctx, __value) => { if(___ctx is global::TestRepro.MainPage ___tctx) ___tctx.MyFooInterface.Name = (string)global::Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(string), __value); } , new [] {"MyFooInterface.Name"}))
+							);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+							__p1.CreationComplete();
+							}
+							))
+						)
+						,
 					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-					{
-					/* _isTopLevelDictionary:False */
-					__that._component_0 = __p1;
-					__p1.SetBinding(
-						global::Microsoft.UI.Xaml.Controls.TextBox.TextProperty,
-						new Microsoft.UI.Xaml.Data.Binding()
-						{
-							Mode = global::Microsoft.UI.Xaml.Data.BindingMode.TwoWay,
-						}
-							.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime MyFooInterface.Name*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.MyFooInterface.Name)) : (false, default), (___ctx, __value) => { if(___ctx is global::TestRepro.MainPage ___tctx) ___tctx.MyFooInterface.Name = (string)global::Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(string), __value); } , new [] {"MyFooInterface.Name"}))
-					);
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-					__p1.CreationComplete();
-					}
-					))
-					,
 				}
-			}
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
-			{
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-			__p1.CreationComplete();
-			}
-			))
+				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+				{
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+				__p1.CreationComplete();
+				}
+				))
+			)
 			;
 			
 			this

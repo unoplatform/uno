@@ -23,7 +23,6 @@ namespace Windows.Devices.Lights.Effects
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapRequestedEventArgs.SinceStarted.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void UpdateBitmap(global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
@@ -31,5 +30,6 @@ namespace Windows.Devices.Lights.Effects
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBitmapRequestedEventArgs", "void LampArrayBitmapRequestedEventArgs.UpdateBitmap(SoftwareBitmap bitmap)");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapRequestedEventArgs.SinceStarted.get
 	}
 }

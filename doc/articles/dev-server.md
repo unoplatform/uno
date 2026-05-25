@@ -40,12 +40,19 @@ You can manage the Dev Server from the command line using the dotnet tool `Uno.D
 - `uno-devserver disco`: Inspect the environment — see [Diagnostics (disco)](xref:Uno.Features.DevServerDisco)
 - `uno-devserver cleanup`: Terminate stale Dev Server processes
 - `uno-devserver login`: Open the Uno Platform settings application
+- `uno-devserver mcp status [<client>]`: Inspect Uno MCP registration state across supported clients
+- `uno-devserver mcp install <client> | --all-ides`: Register the Uno MCP entries for a supported client (or all detected clients)
+- `uno-devserver mcp uninstall <client> | --all-ides`: Remove the Uno MCP entries for a supported client (or all detected clients)
+
+  These commands accept additional flags: `--workspace`, `--channel`, `--tool-version`, `--servers`, `--all-scopes`, `--dry-run`, `--json`. When the target agent provides a CLI (Claude Code, Codex, Gemini), `mcp install` delegates to the agent's own `mcp add` command automatically, falling back to file-based registration when the CLI is not available. See [The Uno Platform MCPs — Command reference](xref:Uno.Features.Uno.MCPs) for details.
 - `--mcp-app`: Run an MCP proxy mode for integration with MCP-based tooling
 - `--port | -p <int>`: Optional port value for MCP proxy mode
 - `--mcp-wait-tools-list`: Wait for the upstream Uno App tools to become available before responding to clients. Use this when working with MCP agents that do not react to `tools/list_changed` (for example, Codex or Claude Code).
-- `--force-roots-fallback`: Skip the MCP `roots` handshake and expose the `uno_app_set_roots` tool so agents that cannot send workspace roots can still initialize (required for Google Antigravity).
-- `--force-generate-tool-cache`: Immediately request the Uno App tool list once the Dev Server is online and persist it to the local cache. Use this to prime CI environments or agents that expect a tools cache before they can call `list_tools`.
-- `--solution-dir <path>`: Explicit solution directory Uno.DevServer should monitor. Useful when starting the DevServer manually (e.g., CI agents) or when priming tools via `--force-generate-tool-cache`. Defaults to the current working directory when omitted.
+- `--force-roots-fallback`: Legacy explicit override. The DevServer auto-detects when the client does not advertise the MCP roots capability and exposes the `uno_app_initialize` tool automatically, so this flag is rarely needed.
+- `--force-generate-tool-cache`: Deprecated (no-op). Kept for backward compatibility.
+- `--solution-dir <path>`: Explicit solution directory Uno.DevServer should monitor. Useful when starting the DevServer manually (e.g., CI agents). Defaults to the current working directory when omitted.
+
+For more information about Uno MCP registration, native-client alternatives, and supported MCP workflows, see [The Uno Platform MCPs](xref:Uno.Features.Uno.MCPs).
 
 ## Hot Reload
 
@@ -118,3 +125,11 @@ The Dev Server enables Hot Reload for a faster inner loop:
        ![Level output drop-down](Assets/features/hotreload/rider-output-level-trace.png)
 
 ---
+
+## See also
+
+- [The Uno Platform MCPs](xref:Uno.Features.Uno.MCPs) — how to register, inspect, and uninstall Uno MCP entries across supported agents.
+- [Diagnostics (disco)](xref:Uno.Features.DevServerDisco) — inspect your environment and tool resolution.
+- [Supported agents and features](xref:Uno.GetStarted#supported-agents-features) — per-agent capability summary.
+- Per-agent setup guides: [Claude Code](xref:Uno.GetStarted.AI.Claude), [Codex CLI](xref:Uno.GetStarted.AI.Codex), [Cursor](xref:Uno.GetStarted.AI.Cursor), [GitHub Copilot CLI](xref:Uno.GetStarted.AI.CopilotCLI), [Google Antigravity](xref:Uno.GetStarted.AI.GoogleAntigravity).
+- [Troubleshooting AI Agents](xref:Uno.UI.CommonIssues.AIAgents).

@@ -15,20 +15,6 @@ namespace Windows.UI.Input.Inking
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Input.Inking.InkInputRightDragAction RightDragAction
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member InkInputRightDragAction InkInputProcessingConfiguration.RightDragAction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkInputRightDragAction%20InkInputProcessingConfiguration.RightDragAction");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkInputProcessingConfiguration", "InkInputRightDragAction InkInputProcessingConfiguration.RightDragAction");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.Inking.InkInputProcessingMode Mode
 		{
 			get
@@ -38,6 +24,20 @@ namespace Windows.UI.Input.Inking
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkInputProcessingConfiguration", "InkInputProcessingMode InkInputProcessingConfiguration.Mode");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Input.Inking.InkInputRightDragAction RightDragAction
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member InkInputRightDragAction InkInputProcessingConfiguration.RightDragAction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkInputRightDragAction%20InkInputProcessingConfiguration.RightDragAction");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkInputProcessingConfiguration", "InkInputRightDragAction InkInputProcessingConfiguration.RightDragAction");
 			}
 		}
 #endif

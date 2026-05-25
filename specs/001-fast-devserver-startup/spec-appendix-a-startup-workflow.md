@@ -38,10 +38,9 @@ flowchart TD
     L --> M[dotnet --version subprocess]
     M --> N[Resolve Host executable path]
     N --> O[DevServerMonitor.StartProcess]
-    O --> P[Launch Host with --command start<br/>Process 2: Controller]
-    P --> Q[AmbientRegistry check]
-    Q --> R[.csproj.user generation]
-    R --> S[Spawn Host server<br/>Process 3: Server]
+    O --> P[CLI: AmbientRegistry check<br/>+ IDE channel rebind]
+    P --> Q[CLI: .csproj.user generation]
+    Q --> S[Launch Host directly<br/>Process 2: Server]
     S --> T[AddIns.Discover<br/>2x dotnet build]
     T --> U[Assembly loading]
     U --> V[Kestrel start + /mcp mapped]
@@ -51,7 +50,6 @@ flowchart TD
     Y --> Z[MCP Client receives tools]
 
     style T fill:#ff6b6b,stroke:#333,color:#fff
-    style P fill:#ffa94d,stroke:#333,color:#fff
     style S fill:#ffa94d,stroke:#333,color:#fff
     style M fill:#ffd43b,stroke:#333
 ```
@@ -66,8 +64,7 @@ sequenceDiagram
     participant CLI as uno-devserver CLI
     participant Monitor as DevServerMonitor
     participant Locator as UnoToolsLocator
-    participant Controller as Host (Controller)
-    participant Server as Host (Server)
+    participant Server as Host (Direct)
     participant MSBuild as dotnet build
 
     Note over CLI: T=0ms — Process start
@@ -99,15 +96,11 @@ sequenceDiagram
 
     Note over Monitor: T=~3.5s — Host launch
 
-    Monitor->>Controller: Process.Start(--command start, --httpPort, --ppid)
+    Monitor->>Monitor: AmbientRegistry check (CLI-side)
+    Monitor->>Monitor: CsprojUserGenerator.SetCsprojUserPort()
+    Monitor->>Server: Process.Start(--httpPort, --ideChannel, --addins)
 
-    Note over Controller: T=~5s — Controller .NET cold start
-
-    Controller->>Controller: AmbientRegistry check
-    Controller->>Controller: CsprojUserGenerator.SetCsprojUserPort()
-    Controller->>Server: Process.Start(--httpPort)
-
-    Note over Server: T=~6.5s — Server .NET cold start
+    Note over Server: T=~5s — Host .NET cold start
 
     Server->>Server: WebApplication.CreateBuilder()
     Server->>Server: ConfigureAddIns(solution)
@@ -158,13 +151,7 @@ graph LR
         A3 --> A5[DevServerMonitor]
     end
 
-    subgraph "Process 2: Controller (~1.5s cold start)"
-        B1[Parse --command start] --> B2[AmbientRegistry]
-        B2 --> B3[CsprojUser gen]
-        B3 --> B4[Spawn server]
-    end
-
-    subgraph "Process 3: Server (~1.5s cold start)"
+    subgraph "Process 2: Host Direct (~1.5s cold start)"
         C1[WebApp builder] --> C2[ConfigureAddIns]
         C2 --> C3[AddIns.Discover]
         C3 --> C4["dotnet build #1 (TFM)"]
@@ -173,8 +160,7 @@ graph LR
         C6 --> C7[Kestrel start]
     end
 
-    A5 -->|"launches"| B1
-    B4 -->|"launches"| C1
+    A5 -->|"launches directly"| C1
     C7 -->|"HTTP /mcp"| A4
 
     style C3 fill:#ff6b6b,stroke:#333,color:#fff
@@ -182,7 +168,7 @@ graph LR
     style C5 fill:#ff6b6b,stroke:#333,color:#fff
 ```
 
-**Overhead of 3-process chain**: Each .NET process cold start adds ~1.5s. The controller process (Process 2) adds no value in MCP mode — its responsibilities (AmbientRegistry, port allocation, .csproj.user) are either unnecessary or already handled by the CLI.
+**Overhead reduction**: The controller process has been eliminated from the CLI `start` path. Its responsibilities (AmbientRegistry check, port allocation, .csproj.user generation) are now handled by the CLI's `StartCommandHandler` before launching the Host, saving ~1.5s of .NET cold start overhead. The chain is now 2-process: CLI → Host (direct).
 
 ---
 
@@ -315,11 +301,11 @@ flowchart LR
     subgraph "McpProxy internals"
         D[WithListToolsHandler] --> E{Upstream connected?}
         E -->|Yes| F[Forward to upstream]
-        E -->|No, roots fallback| G[Return cached tools + set_roots]
+        E -->|No, roots fallback| G[Return initialize + meta-tools]
         E -->|No, normal| H[Return empty]
 
-        I[WithCallToolHandler] --> J{Is set_roots?}
-        J -->|Yes| K[Process roots locally]
+        I[WithCallToolHandler] --> J{Is initialize/meta-tool?}
+        J -->|Yes| K[Process locally or forward via meta-tool]
         J -->|No| L[Forward to upstream]
     end
 ```
@@ -330,7 +316,6 @@ flowchart LR
 sequenceDiagram
     participant Client as MCP Client
     participant Proxy as McpProxy
-    participant Cache as ToolCacheFile
     participant Upstream as McpClientProxy
 
     Client->>Proxy: tools/list
@@ -350,16 +335,15 @@ sequenceDiagram
     alt Upstream connected
         Proxy->>Upstream: ListToolsAsync()
         Upstream-->>Proxy: Tool[]
-        Proxy->>Cache: PersistToolCacheIfNeeded(tools)
         Proxy-->>Client: tools
     else Roots fallback, no upstream
-        Proxy->>Cache: GetCachedTools()
-        Cache-->>Proxy: cached Tool[]
-        Proxy-->>Client: [set_roots] + cached tools
-    else No upstream, no cache
+        Proxy-->>Client: [uno_app_initialize] + meta-tools (uno_discover_tools, uno_execute_tool)
+    else No upstream
         Proxy-->>Client: empty tools
     end
 ```
+
+> **Note**: The tool cache (`tools-cache.json`) has been removed. The meta-tools `uno_discover_tools` and `uno_execute_tool` now provide a stable compatibility mechanism to discover and call upstream tools throughout the session, even as `tools/list_changed` updates the direct tool set.
 
 ### Clients Without `list_changed` Support
 
@@ -415,7 +399,7 @@ sequenceDiagram
 
     Note over Monitor: Skip controller, launch directly
 
-    Monitor->>Server: Process.Start(--httpPort, --ppid, --addins)
+    Monitor->>Server: Process.Start(--httpPort, --ppid, --addins, --ideChannel)
 
     Note over Server: T=~1.7s — Server cold start
 
@@ -449,7 +433,7 @@ gantt
     dateFormat X
     axisFormat %ss
 
-    section Current (~37s)
+    section Legacy with controller (~37s)
     CLI cold start           :a1, 0, 1500
     SDK discovery            :a2, after a1, 2000
     Launch controller        :a3, after a2, 100
@@ -462,7 +446,7 @@ gantt
     Assembly loading         :a10, after a9, 500
     Kestrel + connect        :a11, after a10, 2000
 
-    section Phase 0+1b (~5s)
+    section Current: direct launch (~5s)
     CLI cold start           :b1, 0, 1500
     SDK + addin resolution   :b2, after b1, 200
     Launch server directly   :b3, after b2, 100
@@ -482,13 +466,12 @@ gantt
 
 ## 7. Proposed Workflow: Phase 1a+2 (Instant MCP Start + R2R)
 
-> **Maps to spec phases**: Phase 1a (instant MCP start, cached tools, structured errors) + Phase 2 (ReadyToRun compilation). This workflow shows the end-state where MCP tools are served from cache in < 1s.
+> **Maps to spec phases**: Phase 1a (instant MCP start, meta-tools, structured errors) + Phase 2 (ReadyToRun compilation). This workflow shows the end-state where MCP tools are served in < 1s via bridge tools and meta-tools.
 
 ```mermaid
 sequenceDiagram
     participant Client as MCP Client
     participant CLI as uno-devserver CLI
-    participant Cache as ToolCacheFile
     participant Health as HealthResource
     participant Monitor as DevServerMonitor
     participant Server as Host (Server)
@@ -503,12 +486,10 @@ sequenceDiagram
     CLI->>Health: Status = Initializing
     Client->>CLI: tools/list
 
-    alt Cached tools available
-        CLI->>Cache: GetCachedTools()
-        Cache-->>CLI: 12 cached tools
-        CLI-->>Client: 12 tools (instant!)
-    else No cache
-        CLI-->>Client: [set_roots tool only]
+    alt Upstream connected
+        CLI-->>Client: upstream tools
+    else No upstream yet (roots fallback)
+        CLI-->>Client: [uno_app_initialize + meta-tools]
     end
 
     Note over CLI: T=~100ms — Client has tools
@@ -694,7 +675,7 @@ Both layers are self-discovering — no hardcoded package names. A new add-in pa
 ### CLI Entry Point
 
 **`CliManager.RunMcpProxyAsync()`** (`src/Uno.UI.DevServer.Cli/CliManager.cs:176-242`):
-- Parses MCP-specific flags: `--port`, `--mcp-wait-tools-list`, `--force-roots-fallback`, `--force-generate-tool-cache`
+- Parses MCP-specific flags: `--port`, `--mcp-wait-tools-list`, `--force-roots-fallback`, `--force-generate-tool-cache` (deprecated no-op)
 - Delegates to `McpProxy.RunAsync()`
 
 ### MCP Proxy
@@ -715,8 +696,9 @@ Both layers are self-discovering — no hardcoded package names. A new add-in pa
 - Scans for `.sln`/`.slnx` files in the working directory
 - Resolves host executable via `UnoToolsLocator.ResolveHostExecutableAsync()`
 - Allocates TCP port via `EnsureTcpPort()`
-- Launches host with `--command start` via `StartProcess()`
-- Polls `WaitForServerReadyAsync()` up to 30 attempts
+- Launches host in direct mode (no `--command`) via `StartProcess()`, passing all args including `--ideChannel`
+- Polls `WaitForServerReadyAsync()` up to 30 attempts, returning a `ReadinessProbeResult` (Ready, ProcessExited, ServerRespondedNoMcp, TimedOut)
+- On `ProcessExited`, attempts AmbientRegistry fallback to adopt an existing server on a different port
 
 ### Upstream MCP Client
 
@@ -739,10 +721,6 @@ Both layers are self-discovering — no hardcoded package names. A new add-in pa
 - Registers services via `AddFromAttributes()`
 - Stores `AddInsStatus` singleton
 
-### Tool Cache
+### Tool Cache (Removed)
 
-**`ToolCacheFile`** (`src/Uno.UI.DevServer.Cli/Mcp/ToolCacheFile.cs`):
-- Persists tool definitions to `%LocalAppData%\Uno Platform\uno.devserver\tools-cache.json`
-- Validates with SHA256 checksum and version number
-- Used by `--force-roots-fallback` and `--force-generate-tool-cache` modes
-- Phase 1a makes this cache the primary source for instant tool list responses
+The `ToolCacheFile` (`tools-cache.json`) has been removed. There is no more file persistence for tool definitions (`IsToolCacheEnabled`, `PersistToolCacheIfNeeded`, `RefreshCachedToolsFromUpstreamAsync` no longer exist). The meta-tools `uno_discover_tools` (returns upstream tools with full schemas) and `uno_execute_tool` (forwards a tool call to the upstream by name) replace the cache as a stable compatibility mechanism while the direct tool set changes during the session.

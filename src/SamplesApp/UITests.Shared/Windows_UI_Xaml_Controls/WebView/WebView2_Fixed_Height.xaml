@@ -2,13 +2,13 @@
     x:Class="UITests.Windows_UI_Xaml_Controls.WebView.WebView2_Fixed_Height"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.WebView"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.WebView"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
     <Grid>
-		<WebView2 Source="https://platform.uno/" Height="400" />
-	</Grid>
+        <WebView2 Height="400" Source="https://platform.uno/" />
+    </Grid>
 </Page>

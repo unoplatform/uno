@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Background
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTriggerResult.Trigger.get
 		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTriggerResult.Error.get
+		// Forced skipping of method Windows.ApplicationModel.Background.GattServiceProviderTriggerResult.Trigger.get
 	}
 }

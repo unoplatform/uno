@@ -8,17 +8,17 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class InsetClip : global::Microsoft.UI.Composition.CompositionClip
 	{
-		// Skipping already declared property TopInset
-		// Skipping already declared property RightInset
-		// Skipping already declared property LeftInset
 		// Skipping already declared property BottomInset
-		// Forced skipping of method Microsoft.UI.Composition.InsetClip.TopInset.set
+		// Skipping already declared property LeftInset
+		// Skipping already declared property RightInset
+		// Skipping already declared property TopInset
 		// Forced skipping of method Microsoft.UI.Composition.InsetClip.BottomInset.get
+		// Forced skipping of method Microsoft.UI.Composition.InsetClip.BottomInset.set
 		// Forced skipping of method Microsoft.UI.Composition.InsetClip.LeftInset.get
 		// Forced skipping of method Microsoft.UI.Composition.InsetClip.LeftInset.set
 		// Forced skipping of method Microsoft.UI.Composition.InsetClip.RightInset.get
 		// Forced skipping of method Microsoft.UI.Composition.InsetClip.RightInset.set
 		// Forced skipping of method Microsoft.UI.Composition.InsetClip.TopInset.get
-		// Forced skipping of method Microsoft.UI.Composition.InsetClip.BottomInset.set
+		// Forced skipping of method Microsoft.UI.Composition.InsetClip.TopInset.set
 	}
 }

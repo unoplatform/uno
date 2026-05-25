@@ -8,22 +8,51 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-    <StackPanel Padding="12" Spacing="8">
-        <TextBox Text="{x:Bind Model.Text, Mode=TwoWay}" AcceptsReturn="True" />
-        <Button Command="{x:Bind Model.CopyCommand}">Copy to clipboard</Button>
-        <Button Command="{x:Bind Model.CopyHtmlCommand}">Copy HTML to clipboard</Button>
-        <Button Command="{x:Bind Model.CopyImageCommand}">Copy sample image to clipboard</Button>
-        <Button Command="{x:Bind Model.PasteTextCommand}">Paste text from clipboard</Button>
-        <Button Command="{x:Bind Model.PasteHtmlCommand}">Paste HTML from clipboard</Button>
-        <Button Command="{x:Bind Model.PasteStorageItemsCommand}">Paste files from clipboard</Button>
-        <Button Command="{x:Bind Model.PasteImageCommand}">Paste image from clipboard</Button>
-        <Button Command="{x:Bind Model.ClearCommand}">Clear clipboard</Button>
-        <Button Command="{x:Bind Model.FlushCommand}">Flush clipboard</Button>
-        <ToggleButton Command="{x:Bind Model.ToggleContentChangedCommand}" IsChecked="{x:Bind Model.IsObservingContentChanged, Mode=OneWay}">Observe ContentChanged</ToggleButton>
-        <TextBlock>
-            <Run FontWeight="Bold">Last content change:</Run>
-            <Run Text="{x:Bind Model.LastContentChangedDate, Mode=OneWay}" />
-        </TextBlock>
-        <Image Source="{x:Bind Model.Bitmap, Mode=OneWay}" x:Name="image" />
-    </StackPanel>
+    <ScrollView HorizontalScrollMode="Disabled" VerticalScrollMode="Auto">
+        <StackPanel Padding="12" Spacing="20">
+            <TextBox AcceptsReturn="True" Text="{x:Bind Model.Text, Mode=TwoWay}" />
+
+            <!--  Copying  -->
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="Copy to clipboard:" />
+                <Button Command="{x:Bind Model.CopyCommand}">Text</Button>
+                <Button Command="{x:Bind Model.CopyHtmlCommand}">HTML</Button>
+                <Button Command="{x:Bind Model.CopyImageCommand}">Sample image</Button>
+            </StackPanel>
+
+            <!--  Pasting  -->
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="Paste from clipboard:" />
+                <Button Command="{x:Bind Model.PasteTextCommand}">Text</Button>
+                <Button Command="{x:Bind Model.PasteHtmlCommand}">HTML</Button>
+                <Button Command="{x:Bind Model.PasteStorageItemsCommand}">Files</Button>
+                <Button Command="{x:Bind Model.PasteImageCommand}">Image</Button>
+            </StackPanel>
+
+            <!--  Utils  -->
+            <StackPanel Spacing="8">
+                <Button Command="{x:Bind Model.ListAvailableFormatsCommand}">List AvailableFormats</Button>
+                <Button Command="{x:Bind Model.ClearCommand}">Clear clipboard</Button>
+                <Button Command="{x:Bind Model.FlushCommand}">Flush clipboard</Button>
+                <ToggleButton Command="{x:Bind Model.ToggleContentChangedCommand}" IsChecked="{x:Bind Model.IsObservingContentChanged, Mode=OneWay}">
+                    Observe ContentChanged
+                </ToggleButton>
+            </StackPanel>
+
+            <!--  Output  -->
+            <StackPanel Spacing="8">
+                <TextBlock FontWeight="Bold" Text="Last observed change:" />
+                <TextBlock Text="{x:Bind Model.LastContentChangedDate, Mode=OneWay}" />
+
+                <TextBlock FontWeight="Bold" Text="Status:" />
+                <TextBlock Text="{x:Bind Model.StatusText, Mode=OneWay}" />
+
+                <TextBlock FontWeight="Bold" Text="Pasted Content:" />
+                <TextBlock Text="{x:Bind Model.PastedContent, Mode=OneWay}" />
+                <Image x:Name="image" Source="{x:Bind Model.Bitmap, Mode=OneWay}" />
+            </StackPanel>
+
+        </StackPanel>
+
+    </ScrollView>
 </Page>

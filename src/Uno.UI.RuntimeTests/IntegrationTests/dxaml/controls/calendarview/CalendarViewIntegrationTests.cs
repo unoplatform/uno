@@ -32,6 +32,7 @@ using Uno.UI.RuntimeTests;
 namespace Microsoft.UI.Xaml.Tests.Enterprise
 {
 	[TestClass]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public partial class CalendarViewIntegrationTests : BaseDxamlTestClass
 	{
 
@@ -144,6 +145,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task TestSelection()
 		{
 			TestCleanupWrapper cleanup;
@@ -750,6 +752,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task TestViewMode()
 		{
 			TestCleanupWrapper cleanup;
@@ -1664,6 +1667,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 #if __APPLE_UIKIT__ || __ANDROID__ || __SKIA__
 		[Ignore("UNO TODO - This test is failing on iOS/macOS/Android/Skia")]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task CalendarPanelLayoutTestStretchTest()
 		{
 			TestCleanupWrapper cleanup;
@@ -4299,6 +4303,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task CanChangeStyle()
 		{
 			TestCleanupWrapper cleanup;
@@ -5159,8 +5164,8 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 
 			LOG_OUTPUT("Open the flyout to initially realize all of the CalendarView items.");
-			FlyoutHelper.OpenFlyout<Flyout>(flyout, flyoutButton, FlyoutOpenMethod.Programmatic_ShowAt);
-			FlyoutHelper.HideFlyout<Flyout>(flyout);
+			await FlyoutHelper.OpenFlyout<Flyout>(flyout, flyoutButton, FlyoutOpenMethod.Programmatic_ShowAt);
+			await FlyoutHelper.HideFlyout<Flyout>(flyout);
 
 			await RunOnUIThread(() =>
 			{
@@ -5170,7 +5175,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			});
 
 			LOG_OUTPUT("Open the flyout again. The items should have changed to the new foreground color.");
-			FlyoutHelper.OpenFlyout<Flyout>(flyout, flyoutButton, FlyoutOpenMethod.Programmatic_ShowAt);
+			await FlyoutHelper.OpenFlyout<Flyout>(flyout, flyoutButton, FlyoutOpenMethod.Programmatic_ShowAt);
 
 			await RunOnUIThread(() =>
 			{
@@ -5182,7 +5187,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				VERIFY_ARE_EQUAL(newColor, textBlockColor);
 			});
 
-			FlyoutHelper.HideFlyout<Flyout>(flyout);
+			await FlyoutHelper.HideFlyout<Flyout>(flyout);
 		}
 
 		// we have 128 timezones so far, split them into small parts so the test won't take too long.

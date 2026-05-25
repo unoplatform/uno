@@ -574,5 +574,9 @@
 		<file src="uno.winui.runtime-replace.targets" target="buildTransitive\uap10.0.19041" />
 
 		<file src="..\..\src\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" target="buildTransitive" />
+
+		<!-- WinAppSDK code-behind generator (loaded conditionally by uno.winui.winappsdk.targets) -->
+		<file src="..\..\src\SourceGenerators\Uno.UI.SourceGenerators.WinAppSDK\Bin\Release\netstandard2.0\Uno.UI.SourceGenerators.WinAppSDK.dll" target="buildTransitive\Uno.UI.SourceGenerators.WinAppSDK" />
+		<file src="..\..\src\SourceGenerators\Uno.UI.SourceGenerators.WinAppSDK\Bin\Release\netstandard2.0\Uno.UI.SourceGenerators.WinAppSDK.pdb" target="buildTransitive\Uno.UI.SourceGenerators.WinAppSDK" />
 	</files>
 </package>

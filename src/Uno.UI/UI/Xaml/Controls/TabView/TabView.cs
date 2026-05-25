@@ -1539,8 +1539,7 @@ public partial class TabView : Control
 			{
 				return vector.Count;
 			}
-			else
-			if (itemsSource is IEnumerable iterable)
+			else if (itemsSource is IEnumerable iterable)
 			{
 				var i = 0;
 				foreach (var o in iterable)
@@ -1806,8 +1805,7 @@ public partial class TabView : Control
 				});
 			}
 		}
-		else
-		if (m_inputNonClientPointerSource != null)
+		else if (m_inputNonClientPointerSource != null)
 		{
 			m_enteringMoveSizeToken.Disposable = null;
 			m_enteredMoveSizeToken.Disposable = null;
@@ -2143,8 +2141,7 @@ public partial class TabView : Control
 				index = tabIndex + 1;
 			}
 		}
-		else
-		if (otherTabView.GetItemCount() > 0)
+		else if (otherTabView.GetItemCount() > 0)
 		{
 			// If there was no tab, under the cursor, then that suggests we want to insert the tab either at the very beginning or at the very end.
 			// We'll first check whether the screen position is to the left of the bounds of the first tab.  If so, we'll set the insertion position

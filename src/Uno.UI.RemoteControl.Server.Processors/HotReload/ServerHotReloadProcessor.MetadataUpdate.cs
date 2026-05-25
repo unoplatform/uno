@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -185,7 +186,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			if (properties.Remove("TargetFramework", out var targetFramework))
 			{
 				properties["UnoHotReloadTargetFramework"] = targetFramework;
-				properties["TargetFrameworks"] = targetFramework;
 			}
 
 			var (workspace, watch) = await CompilationWorkspaceProvider.CreateWorkspaceAsync(
@@ -401,53 +401,62 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 				for (var i = 0; i < updates.Length; i++)
 				{
+					var update = updates[i];
+					var moduleId = update.ModuleId.ToString();
+					var metadataDelta = Convert.ToBase64String(update.MetadataDelta.AsSpan());
+					var ilDelta = Convert.ToBase64String(update.ILDelta.AsSpan());
+					var pdbDelta = Convert.ToBase64String(update.PdbDelta.AsSpan());
+					var updatedTypes = Convert.ToBase64String(GetLengthPrefixedArray(update.UpdatedTypes));
+
+					// if the app is running from VSCode with the mono debugger attached
 					if (_useHotReloadThruDebugger)
 					{
+						// send metadataDelta, ilDelta and pdbDelta thru the IDE channel to be applied by the debugger
 						if (!await _remoteControlServer.TrySendMessageToIDEAsync(
 							new Uno.UI.RemoteControl.Messaging.IdeChannel.HotReloadThruDebuggerIdeMessage(
-								updates[i].ModuleId.ToString(),
-								Convert.ToBase64String(updates[i].MetadataDelta.ToArray()),
-								Convert.ToBase64String(updates[i].ILDelta.ToArray()),
-								Convert.ToBase64String(updates[i].PdbDelta.ToArray())
+								moduleId,
+								metadataDelta,
+								ilDelta,
+								pdbDelta
 							),
 							ct))
 						{
 							throw new InvalidOperationException("No active connection with the IDE to send update thru debugger.");
 						}
-					}
-					else
-					{
-						var updateTypesWriterStream = new MemoryStream();
-						var updateTypesWriter = new BinaryWriter(updateTypesWriterStream);
-						WriteIntArray(updateTypesWriter, updates[i].UpdatedTypes.ToArray());
-
+						// send the updatedTypes thru the regular hot reload channel to notify the app about the changes
 						await _remoteControlServer.SendFrame(
 							new AssemblyDeltaReload
 							{
 								FilePaths = files,
-								ModuleId = updates[i].ModuleId.ToString(),
-								PdbDelta = Convert.ToBase64String(updates[i].PdbDelta.ToArray()),
-								ILDelta = Convert.ToBase64String(updates[i].ILDelta.ToArray()),
-								MetadataDelta = Convert.ToBase64String(updates[i].MetadataDelta.ToArray()),
-								UpdatedTypes = Convert.ToBase64String(updateTypesWriterStream.ToArray()),
+								ModuleId = moduleId,
+								UpdatedTypes = updatedTypes,
+							});
+					}
+					else
+					{
+						await _remoteControlServer.SendFrame(
+							new AssemblyDeltaReload
+							{
+								FilePaths = files,
+								ModuleId = moduleId,
+								PdbDelta = pdbDelta,
+								ILDelta = ilDelta,
+								MetadataDelta = metadataDelta,
+								UpdatedTypes = updatedTypes,
 							});
 					}
 				}
 			}
 
-			static void WriteIntArray(BinaryWriter binaryWriter, int[] values)
+			static byte[] GetLengthPrefixedArray(ImmutableArray<int> values)
 			{
-				if (values is null)
+				var result = new byte[sizeof(int) /* length */ + values.Length * sizeof(int)];
+				BinaryPrimitives.WriteInt32LittleEndian(result.AsSpan(0), values.Length);
+				for (var i = 0; i < values.Length; i++)
 				{
-					binaryWriter.Write(0);
-					return;
+					BinaryPrimitives.WriteInt32LittleEndian(result.AsSpan((i + 1) * sizeof(int)), values[i]);
 				}
-
-				binaryWriter.Write(values.Length);
-				foreach (var value in values)
-				{
-					binaryWriter.Write(value);
-				}
+				return result;
 			}
 		}
 

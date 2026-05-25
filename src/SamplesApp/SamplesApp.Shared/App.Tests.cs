@@ -101,8 +101,8 @@ partial class App
 
 	private static Dictionary<string, string> ParseArgs(string args)
 		=> args.Split('&').ToDictionary(
-			p => p.Split('=').First(),
-			p => p.Split('=').LastOrDefault() ?? ""
+			p => p.Split('=', 2).First(),
+			p => p.Split('=', 2).Length > 1 ? p.Split('=', 2)[1] : ""
 		);
 
 #if __WASM__

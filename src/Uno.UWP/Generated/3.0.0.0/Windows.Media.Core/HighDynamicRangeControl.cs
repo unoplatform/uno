@@ -27,7 +27,7 @@ namespace Windows.Media.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.HighDynamicRangeControl.Enabled.set
 		// Forced skipping of method Windows.Media.Core.HighDynamicRangeControl.Enabled.get
+		// Forced skipping of method Windows.Media.Core.HighDynamicRangeControl.Enabled.set
 	}
 }

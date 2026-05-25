@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Android.OS;
+using Android.Views;
 using AndroidX.Core.View.Accessibility;
 using AndroidX.CustomView.Widget;
 using Java.Lang;
@@ -19,7 +20,7 @@ namespace Uno.UI.Runtime.Skia.Android;
 
 internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 {
-	private readonly UnoSKCanvasView _host;
+	private readonly View _host;
 	private UIElement? _rootElement;
 	private ConditionalWeakTable<DependencyObject, object> _cwtElementToId = new();
 	private Dictionary<int, DependencyObject?> _idToElement = new(); // TODO: This will leak.
@@ -28,7 +29,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	internal UIElement? RootElement => _rootElement ??= Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement;
 
-	public UnoExploreByTouchHelper(UnoSKCanvasView host) : base(host)
+	public UnoExploreByTouchHelper(View host) : base(host)
 	{
 		_host = host;
 	}

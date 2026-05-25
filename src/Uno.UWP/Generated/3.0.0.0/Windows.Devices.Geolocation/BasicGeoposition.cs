@@ -9,6 +9,14 @@ namespace Windows.Devices.Geolocation
 	public partial struct BasicGeoposition
 	{
 		// Forced skipping of method Windows.Devices.Geolocation.BasicGeoposition.BasicGeoposition()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public BasicGeoposition(double _Latitude, double _Longitude, double _Altitude)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.BasicGeoposition", "BasicGeoposition.BasicGeoposition(double _Latitude, double _Longitude, double _Altitude)");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Geolocation.BasicGeoposition.BasicGeoposition(double, double, double)
 		// Skipping already declared field Windows.Devices.Geolocation.BasicGeoposition.Latitude
 		// Skipping already declared field Windows.Devices.Geolocation.BasicGeoposition.Longitude
 		// Skipping already declared field Windows.Devices.Geolocation.BasicGeoposition.Altitude

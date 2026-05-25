@@ -25,42 +25,26 @@ namespace Windows.UI.Input.Inking.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Core.CoreCursor PointerCursor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreCursor CoreInkIndependentInputSource.PointerCursor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreCursor%20CoreInkIndependentInputSource.PointerCursor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource", "CoreCursor CoreInkIndependentInputSource.PointerCursor");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerEntering.add
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerEntering.remove
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerHovering.add
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerHovering.remove
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerExiting.add
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerExiting.remove
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerPressing.add
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerPressing.remove
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerMoving.add
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerMoving.remove
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerReleasing.add
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerReleasing.remove
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerLost.add
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerLost.remove
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.InkPresenter.get
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerCursor.get
-		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerCursor.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource Create(global::Windows.UI.Input.Inking.InkPresenter inkPresenter)
 		{
 			throw new global::System.NotImplementedException("The member CoreInkIndependentInputSource CoreInkIndependentInputSource.Create(InkPresenter inkPresenter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreInkIndependentInputSource%20CoreInkIndependentInputSource.Create%28InkPresenter%20inkPresenter%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerEntering.add
+		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerEntering.remove
+		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerExiting.add
+		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerExiting.remove
+		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerHovering.add
+		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerHovering.remove
+		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerLost.add
+		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerLost.remove
+		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerMoving.add
+		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerMoving.remove
+		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerPressing.add
+		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerPressing.remove
+		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerReleasing.add
+		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerReleasing.remove
+		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.InkPresenter.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource, global::Windows.UI.Core.PointerEventArgs> PointerEntering

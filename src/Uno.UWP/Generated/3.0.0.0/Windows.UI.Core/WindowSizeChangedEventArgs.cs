@@ -10,9 +10,9 @@ namespace Windows.UI.Core
 	{
 		// Skipping already declared property Handled
 		// Skipping already declared property Size
-		// Forced skipping of method Windows.UI.Core.WindowSizeChangedEventArgs.Size.get
 		// Forced skipping of method Windows.UI.Core.WindowSizeChangedEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Core.WindowSizeChangedEventArgs.Handled.set
+		// Forced skipping of method Windows.UI.Core.WindowSizeChangedEventArgs.Size.get
 		// Processing: Windows.UI.Core.ICoreWindowEventArgs
 	}
 }

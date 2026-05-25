@@ -15,6 +15,16 @@ namespace Windows.ApplicationModel
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string RequiredGroupName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PackageContentGroup.RequiredGroupName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PackageContentGroup.RequiredGroupName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsRequired
 		{
 			get
@@ -53,20 +63,10 @@ namespace Windows.ApplicationModel
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string RequiredGroupName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PackageContentGroup.RequiredGroupName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PackageContentGroup.RequiredGroupName");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.PackageContentGroup.Package.get
-		// Forced skipping of method Windows.ApplicationModel.PackageContentGroup.Name.get
-		// Forced skipping of method Windows.ApplicationModel.PackageContentGroup.State.get
-		// Forced skipping of method Windows.ApplicationModel.PackageContentGroup.IsRequired.get
 		// Forced skipping of method Windows.ApplicationModel.PackageContentGroup.RequiredGroupName.get
+		// Forced skipping of method Windows.ApplicationModel.PackageContentGroup.IsRequired.get
+		// Forced skipping of method Windows.ApplicationModel.PackageContentGroup.Name.get
+		// Forced skipping of method Windows.ApplicationModel.PackageContentGroup.Package.get
+		// Forced skipping of method Windows.ApplicationModel.PackageContentGroup.State.get
 	}
 }

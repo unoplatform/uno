@@ -15,20 +15,6 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float LuxPercentage
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float LightSensorDataThreshold.LuxPercentage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20LightSensorDataThreshold.LuxPercentage");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.LightSensorDataThreshold", "float LightSensorDataThreshold.LuxPercentage");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public float AbsoluteLux
 		{
 			get
@@ -41,9 +27,23 @@ namespace Windows.Devices.Sensors
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.LuxPercentage.get
-		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.LuxPercentage.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float LuxPercentage
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float LightSensorDataThreshold.LuxPercentage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20LightSensorDataThreshold.LuxPercentage");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.LightSensorDataThreshold", "float LightSensorDataThreshold.LuxPercentage");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.AbsoluteLux.get
 		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.AbsoluteLux.set
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.LuxPercentage.get
+		// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.LuxPercentage.set
 	}
 }

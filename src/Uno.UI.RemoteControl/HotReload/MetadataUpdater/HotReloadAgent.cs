@@ -225,13 +225,15 @@ internal sealed class HotReloadAgent : IDisposable
 			var cachedDeltas = _deltas.GetOrAdd(item.ModuleId, static _ => new());
 			cachedDeltas.Add(item);
 		}
+	}
 
+	public void ApplyUpdatedTypes(IReadOnlyList<UpdateDelta> deltas)
+	{
 		try
 		{
 			// Defer discovering metadata update handlers until after hot reload deltas have been applied.
 			// This should give enough opportunity for AppDomain.GetAssemblies() to be sufficiently populated.
-			_handlerActions ??= GetMetadataUpdateHandlerActions();
-			var handlerActions = _handlerActions;
+			var handlerActions = _handlerActions ??= GetMetadataUpdateHandlerActions();
 
 			Type[]? updatedTypes = GetMetadataUpdateTypes(deltas);
 

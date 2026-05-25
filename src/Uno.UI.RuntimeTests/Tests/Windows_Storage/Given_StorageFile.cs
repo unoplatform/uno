@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams;
 using Windows.Storage;
 
@@ -59,6 +60,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_OpenRead()
 		{
 			var path = GetRandomFilePath();
@@ -78,6 +80,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Open_Read()
 		{
 			var path = GetRandomFilePath();
@@ -97,6 +100,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Open_ReadWrite()
 		{
 			var path = GetRandomFilePath();
@@ -108,6 +112,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Open_Read_AndGetInputStream()
 		{
 			var path = GetRandomFilePath();
@@ -118,6 +123,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Open_Read_AndGetOutputStream()
 		{
 			var path = GetRandomFilePath();
@@ -127,6 +133,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Open_ReadWrite_AndGetInputStream()
 		{
 			var path = GetRandomFilePath();
@@ -137,6 +144,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Open_ReadWrite_AndGetOutputStream()
 		{
 			var path = GetRandomFilePath();
@@ -147,6 +155,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_CloneStream_Then_PositionAreNotShared()
 		{
 			var path = GetRandomFilePath();
@@ -342,6 +351,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Open_Multiple_Reads_Single_Write()
 		{
 			var uri = new Uri($"ms-appx:///Assets/Asset With Spaces.svg");
@@ -395,6 +405,42 @@ namespace Uno.UI.RuntimeTests.Tests
 			await file2.CopyAsync(ApplicationData.Current.LocalFolder, "When_Copy_Saf_uno_logo.png", NameCollisionOption.ReplaceExisting);
 		}
 #endif
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_GetFileFromPath_With_Spaces_OpenAsync_Returns_Content()
+		{
+			var folder = ApplicationData.Current.LocalFolder;
+			var fileName = "test file with spaces.txt";
+			var expectedContent = "hello world";
+
+			var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+			await FileIO.WriteTextAsync(file, expectedContent);
+
+			try
+			{
+				// Simulate the portal URI → path conversion that X11 pickers perform.
+				// The xdg-desktop-portal returns file:// URIs where spaces are %20-encoded.
+				var fileUri = new Uri(file.Path);
+				Assert.IsTrue(fileUri.AbsoluteUri.Contains("%20"), "URI should contain percent-encoded spaces");
+
+				// Uri.LocalPath decodes %20 → space; Uri.AbsolutePath does not.
+				var decodedPath = fileUri.LocalPath;
+				Assert.IsFalse(decodedPath.Contains("%20"), "LocalPath should decode percent-encoded characters");
+
+				var storageFile = await StorageFile.GetFileFromPathAsync(decodedPath);
+				using var stream = await storageFile.OpenStreamForReadAsync();
+				Assert.IsTrue(stream.Length > 0, "Stream from file with spaces in path should not be empty");
+
+				using var reader = new StreamReader(stream);
+				var content = await reader.ReadToEndAsync();
+				Assert.AreEqual(expectedContent, content);
+			}
+			finally
+			{
+				await file.DeleteAsync();
+			}
+		}
 
 		private string GetRandomFilePath()
 			=> Path.Combine(ApplicationData.Current.LocalFolder.Path, $"{Guid.NewGuid()}.txt");

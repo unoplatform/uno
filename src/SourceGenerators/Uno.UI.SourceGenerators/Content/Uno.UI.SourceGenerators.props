@@ -111,13 +111,17 @@
 		<CompilerVisibleProperty Include="IncludeXamlNamespacesProperty" />
 		<CompilerVisibleProperty Include="XamlGeneratorAnalyzerSuppressionsProperty" />
 		<CompilerVisibleProperty Include="UnoEnableXamlFuzzyMatching" />
+		<CompilerVisibleProperty Include="UnoEnableImplicitXamlNamespaces" />
+		<CompilerVisibleProperty Include="UnoGlobalXamlNamespaceUri" />
 		<CompilerVisibleProperty Include="UnoXamlResourcesTrimming"/>
 		<CompilerVisibleProperty Include="BaseIntermediateOutputPath"/>
 		<CompilerVisibleProperty Include="AssemblyName"/>
 
 		<CompilerVisibleProperty Include="UnoDefaultFont" />
+		<CompilerVisibleProperty Include="UnoGenerateCodeBehind" />
 
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="UnoGenerateCodeBehind" />
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Link" />
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="TargetPath" />
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="FullPath" />

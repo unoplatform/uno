@@ -21,6 +21,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		private const float PixelIncertitude = 2;
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Rotate()
 		{
 			const string colored = "#FF0000";
@@ -56,6 +57,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Translate()
 		{
 			const string colored = "#FF8000";
@@ -78,6 +80,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Skew()
 		{
 			const string colored = "#FFFF00";
@@ -102,6 +105,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Scale()
 		{
 			const string colored = "#008000";
@@ -128,6 +132,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Composite()
 		{
 			const string colored = "#0000FF";
@@ -159,6 +164,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		}
 
 		[Test]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Group()
 		{
 			const string colored = "#A000C0";

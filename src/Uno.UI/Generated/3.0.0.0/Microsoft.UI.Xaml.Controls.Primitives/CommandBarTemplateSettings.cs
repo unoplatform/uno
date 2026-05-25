@@ -21,16 +21,16 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property OverflowContentMinWidth
 		// Skipping already declared property OverflowContentMinimalYTranslation
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.ContentHeight.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.OverflowContentClipRect.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.OverflowContentMinWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.OverflowContentMaxWidth.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.OverflowContentMaxHeight.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.OverflowContentHorizontalOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.OverflowContentHeight.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.NegativeOverflowContentHeight.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.EffectiveOverflowButtonVisibility.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.NegativeOverflowContentHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.OverflowContentClipRect.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.OverflowContentCompactYTranslation.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.OverflowContentMinimalYTranslation.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.OverflowContentHeight.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.OverflowContentHiddenYTranslation.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.OverflowContentHorizontalOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.OverflowContentMaxHeight.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.OverflowContentMaxWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.OverflowContentMinWidth.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.OverflowContentMinimalYTranslation.get
 	}
 }

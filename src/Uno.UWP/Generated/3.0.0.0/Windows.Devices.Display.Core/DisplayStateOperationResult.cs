@@ -33,7 +33,7 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayStateOperationResult.Status.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayStateOperationResult.ExtendedErrorCode.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayStateOperationResult.Status.get
 	}
 }

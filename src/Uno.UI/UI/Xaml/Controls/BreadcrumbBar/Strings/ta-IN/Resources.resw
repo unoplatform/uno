@@ -122,7 +122,7 @@
     <comment>The automation name for the BreadcrumbBar ellipsis button.</comment>
   </data>
   <data name="BreadcrumbBarItemLocalizedControlType" xml:space="preserve">
-    <value>மேலதிகச்செலுத்தல்பட்டி உருப்படி</value>
+    <value>ப்ரெட்க்ரம்ப் பட்டி உருப்படி</value>
     <comment>A simple description of the control for UIA</comment>
   </data>
 </root>

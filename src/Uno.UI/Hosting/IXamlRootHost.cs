@@ -9,4 +9,9 @@ internal interface IXamlRootHost
 	UIElement? RootElement { get; }
 
 	void InvalidateRender();
+
+	/// <summary>
+	/// Resigns native first responder
+	/// </summary>
+	void ResignNativeFocus() { }
 }

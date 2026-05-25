@@ -6,14 +6,14 @@
 
 using System;
 using System.Collections.Generic;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
-using Windows.ApplicationModel.Resources;
-using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core.Scaling;
 using Windows.Devices.Input;
+using Uno;
+using Windows.Foundation;
 
 namespace DirectUI
 {
@@ -107,6 +107,8 @@ namespace DirectUI
 			// OnUWPWindowSizeChanged();
 		}
 
+		internal static bool IsWinRTDndOperationInProgress() => false; // TODO Uno: Not implemented for now
+
 		internal bool IsKeyboardPresent
 		{
 			get
@@ -115,5 +117,10 @@ namespace DirectUI
 				return _keyboardCapabilities.KeyboardPresent != 0;
 			}
 		}
+
+		internal bool BackButtonSupported =>
+			OperatingSystem.IsAndroid() ||
+			OperatingSystem.IsBrowser() ||
+			WinRTFeatureConfiguration.DebugOptions.ForceEnableBackButtonIntegration;
 	}
 }

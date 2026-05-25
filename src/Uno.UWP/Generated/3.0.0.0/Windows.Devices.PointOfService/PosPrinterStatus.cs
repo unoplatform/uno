@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterStatus.StatusKind.get
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterStatus.ExtendedStatus.get
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterStatus.StatusKind.get
 	}
 }

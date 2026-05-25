@@ -154,19 +154,19 @@
     <comment>The formatted string read by narrator when the InfoBar opens: "{Severity level}, {Title} {Message}"</comment>
   </data>
   <data name="InfoBarSeverityErrorName" xml:space="preserve">
-    <value>Informazio-mezua, errore larria</value>
+    <value>Informazio-mezua, larritasun errorea</value>
     <comment>Name used to announce severity error to users.</comment>
   </data>
   <data name="InfoBarSeverityInformationalName" xml:space="preserve">
-    <value>Informazio-mezua, informazio larria</value>
+    <value>Informazio-mezua, informazio larritasuna</value>
     <comment>Name used to announce severity informational to users.</comment>
   </data>
   <data name="InfoBarSeveritySuccessName" xml:space="preserve">
-    <value>Informazio-mezua, arrakasta larria</value>
+    <value>Informazio-mezua, larritasun arrakasta</value>
     <comment>Name used to announce severity success to users.</comment>
   </data>
   <data name="InfoBarSeverityWarningName" xml:space="preserve">
-    <value>Informazio-mezua, abisu larria</value>
+    <value>Informazio-mezua, larritasun abisua</value>
     <comment>Name used to announce severity warning to users.</comment>
   </data>
 </root>

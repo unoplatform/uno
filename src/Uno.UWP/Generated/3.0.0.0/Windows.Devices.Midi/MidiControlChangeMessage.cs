@@ -17,10 +17,10 @@ namespace Windows.Devices.Midi
 		// Skipping already declared method Windows.Devices.Midi.MidiControlChangeMessage.MidiControlChangeMessage(byte, byte, byte)
 		// Forced skipping of method Windows.Devices.Midi.MidiControlChangeMessage.MidiControlChangeMessage(byte, byte, byte)
 		// Forced skipping of method Windows.Devices.Midi.MidiControlChangeMessage.Channel.get
-		// Forced skipping of method Windows.Devices.Midi.MidiControlChangeMessage.Controller.get
 		// Forced skipping of method Windows.Devices.Midi.MidiControlChangeMessage.ControlValue.get
-		// Forced skipping of method Windows.Devices.Midi.MidiControlChangeMessage.Timestamp.get
+		// Forced skipping of method Windows.Devices.Midi.MidiControlChangeMessage.Controller.get
 		// Forced skipping of method Windows.Devices.Midi.MidiControlChangeMessage.RawData.get
+		// Forced skipping of method Windows.Devices.Midi.MidiControlChangeMessage.Timestamp.get
 		// Forced skipping of method Windows.Devices.Midi.MidiControlChangeMessage.Type.get
 		// Processing: Windows.Devices.Midi.IMidiMessage
 	}

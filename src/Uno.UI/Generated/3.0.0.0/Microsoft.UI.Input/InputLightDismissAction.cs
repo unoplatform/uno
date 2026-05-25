@@ -8,9 +8,9 @@ namespace Microsoft.UI.Input
 #endif
 	public partial class InputLightDismissAction : global::Microsoft.UI.Input.InputObject
 	{
+		// Skipping already declared method Microsoft.UI.Input.InputLightDismissAction.GetForWindowId(Microsoft.UI.WindowId)
 		// Forced skipping of method Microsoft.UI.Input.InputLightDismissAction.Dismissed.add
 		// Forced skipping of method Microsoft.UI.Input.InputLightDismissAction.Dismissed.remove
-		// Skipping already declared method Microsoft.UI.Input.InputLightDismissAction.GetForWindowId(Microsoft.UI.WindowId)
 		// Skipping already declared event Microsoft.UI.Input.InputLightDismissAction.Dismissed
 	}
 }

@@ -22,14 +22,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Tmds.DBus.Protocol" Version="0.90.2" />
-		<PackageReference Include="Tmds.DBus.Generator" Version="0.90.2" />
+		<PackageReference Include="Tmds.DBus.Protocol" Version="0.92.0" />
+		<PackageReference Include="Tmds.DBus.Generator" Version="0.92.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<AdditionalFiles Include="dbus-interfaces/org.freedesktop.portal.FileChooser.xml" Namespace="Uno.WinUI.Runtime.Skia.X11.DBus" GenerateDBusTypes="true" />
 		<AdditionalFiles Include="dbus-interfaces/org.freedesktop.portal.Request.xml" Namespace="Uno.WinUI.Runtime.Skia.X11.DBus" GenerateDBusTypes="true" />
 		<AdditionalFiles Include="dbus-interfaces/org.freedesktop.portal.Settings.xml" Namespace="Uno.WinUI.Runtime.Skia.X11.DBus" GenerateDBusTypes="true" />
+		<AdditionalFiles Include="dbus-interfaces/org.freedesktop.IBus.Portal.xml" Namespace="Uno.WinUI.Runtime.Skia.X11.DBus.IBus" GenerateDBusTypes="true" />
+		<AdditionalFiles Include="dbus-interfaces/org.fcitx.Fcitx.InputMethod1.xml" Namespace="Uno.WinUI.Runtime.Skia.X11.DBus.Fcitx" GenerateDBusTypes="true" />
+		<AdditionalFiles Include="dbus-interfaces/org.fcitx.Fcitx.InputContext1.xml" Namespace="Uno.WinUI.Runtime.Skia.X11.DBus.Fcitx" GenerateDBusTypes="true" />
+		<AdditionalFiles Include="dbus-interfaces/org.fcitx.Fcitx.InputMethod.xml" Namespace="Uno.WinUI.Runtime.Skia.X11.DBus.Fcitx" GenerateDBusTypes="true" />
+		<AdditionalFiles Include="dbus-interfaces/org.fcitx.Fcitx.InputContext.xml" Namespace="Uno.WinUI.Runtime.Skia.X11.DBus.Fcitx" GenerateDBusTypes="true" />
 	</ItemGroup>
 
 	<ItemGroup>

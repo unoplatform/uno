@@ -10,8 +10,8 @@ namespace Microsoft.UI.Xaml.Input
 	{
 		// Skipping already declared property CanExecute
 		// Skipping already declared property Parameter
-		// Forced skipping of method Microsoft.UI.Xaml.Input.CanExecuteRequestedEventArgs.Parameter.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.CanExecuteRequestedEventArgs.CanExecute.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.CanExecuteRequestedEventArgs.CanExecute.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.CanExecuteRequestedEventArgs.Parameter.get
 	}
 }

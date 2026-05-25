@@ -55,6 +55,10 @@ namespace Microsoft.UI.Xaml.Shapes
 			OnStrokeBrushChanged();
 			UpdateStrokeThickness();
 			UpdateStrokeDashArray();
+			UpdateStrokeCaps();
+			UpdateStrokeLineJoin();
+			UpdateStrokeMiterLimit();
+			UpdateStrokeDashOffset();
 		}
 
 		private void OnFillBrushChanged()
@@ -88,6 +92,42 @@ namespace Microsoft.UI.Xaml.Shapes
 		private void OnStrokeBrushChanged()
 		{
 			_shape.StrokeBrush = Stroke?.GetOrCreateCompositionBrush(Visual.Compositor);
+		}
+
+		private void UpdateStrokeCaps()
+		{
+			_shape.StrokeStartCap = (CompositionStrokeCap)StrokeStartLineCap;
+			_shape.StrokeEndCap = (CompositionStrokeCap)StrokeEndLineCap;
+			_shape.StrokeDashCap = (CompositionStrokeCap)StrokeDashCap;
+		}
+
+		private void UpdateStrokeLineJoin()
+		{
+			_shape.StrokeLineJoin = (CompositionStrokeLineJoin)StrokeLineJoin;
+		}
+
+		private void UpdateStrokeMiterLimit()
+		{
+			_shape.StrokeMiterLimit = (float)StrokeMiterLimit;
+		}
+
+		private void UpdateStrokeDashOffset()
+		{
+			_shape.StrokeDashOffset = (float)StrokeDashOffset;
+		}
+
+		/// <summary>
+		/// Returns a mask that represents the alpha channel of the shape as a CompositionBrush.
+		/// This brush can be used with CompositionMaskBrush or DropShadow.Mask to create shaped effects.
+		/// </summary>
+		/// <returns>A CompositionBrush representing the shape as an alpha mask.</returns>
+		public CompositionBrush GetAlphaMask()
+		{
+			var compositor = Compositor.GetSharedCompositor();
+			var surface = new AlphaMaskSurface(compositor, Visual);
+			var brush = compositor.CreateSurfaceBrush(surface);
+			brush.Stretch = CompositionStretch.None;
+			return brush;
 		}
 	}
 }

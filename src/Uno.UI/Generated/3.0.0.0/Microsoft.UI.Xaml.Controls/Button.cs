@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class Button : global::Microsoft.UI.Xaml.Controls.Primitives.ButtonBase
 	{
-		// Skipping already declared property Flyout
 		// Skipping already declared property FlyoutProperty
+		// Skipping already declared property Flyout
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Button.Button()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.Button()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.FlyoutProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.Flyout.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.Flyout.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Button.FlyoutProperty.get
 	}
 }

@@ -13,6 +13,13 @@ namespace Windows.System.Diagnostics.DevicePortal
 		{
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.System.Diagnostics.DevicePortal.DevicePortalConnection GetForAppServiceConnection(global::Windows.ApplicationModel.AppService.AppServiceConnection appServiceConnection)
+		{
+			throw new global::System.NotImplementedException("The member DevicePortalConnection DevicePortalConnection.GetForAppServiceConnection(AppServiceConnection appServiceConnection) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DevicePortalConnection%20DevicePortalConnection.GetForAppServiceConnection%28AppServiceConnection%20appServiceConnection%29");
+		}
+#endif
 		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnection.Closed.add
 		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnection.Closed.remove
 		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnection.RequestReceived.add
@@ -50,13 +57,6 @@ namespace Windows.System.Diagnostics.DevicePortal
 		public global::Windows.Networking.Sockets.ServerStreamWebSocket GetServerStreamWebSocketForRequest(global::Windows.Web.Http.HttpRequestMessage request, string protocol, uint outboundBufferSizeInBytes, bool noDelay)
 		{
 			throw new global::System.NotImplementedException("The member ServerStreamWebSocket DevicePortalConnection.GetServerStreamWebSocketForRequest(HttpRequestMessage request, string protocol, uint outboundBufferSizeInBytes, bool noDelay) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ServerStreamWebSocket%20DevicePortalConnection.GetServerStreamWebSocketForRequest%28HttpRequestMessage%20request%2C%20string%20protocol%2C%20uint%20outboundBufferSizeInBytes%2C%20bool%20noDelay%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.System.Diagnostics.DevicePortal.DevicePortalConnection GetForAppServiceConnection(global::Windows.ApplicationModel.AppService.AppServiceConnection appServiceConnection)
-		{
-			throw new global::System.NotImplementedException("The member DevicePortalConnection DevicePortalConnection.GetForAppServiceConnection(AppServiceConnection appServiceConnection) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DevicePortalConnection%20DevicePortalConnection.GetForAppServiceConnection%28AppServiceConnection%20appServiceConnection%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

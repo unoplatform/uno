@@ -518,10 +518,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 			FillForward();
 
-			if (_dynamicSeedStart.HasValue && GetItemsEnd() <= ExtendedViewportEnd + extentAdjustment)
+			// FillForward may not have covered the full viewport, or the seed may sit mid-list
+			// leaving a blank gap above it — in both cases, FillBackward is needed.
+			if (_dynamicSeedStart.HasValue && (
+				(GetItemsEnd() <= ExtendedViewportEnd + extentAdjustment) ||
+				(GetItemsStart() > ExtendedViewportStart + extentAdjustment)
+			))
 			{
-				// if the FillForward didnt fully fill the current viewport,
-				// we may still need to a FillBackward, otherwise we risk having a leading blank space
 				FillBackward();
 			}
 

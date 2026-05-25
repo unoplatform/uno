@@ -50,334 +50,382 @@ namespace TestRepro
 			base.IsParsing = true;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.Grid
-			{
-				IsParsing = true,
-				Padding = new global::Microsoft.UI.Xaml.Thickness(16,16,16,16),
-				RowSpacing = 0d,
-				RowDefinitions = 
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.Grid
 				{
-					new global::Microsoft.UI.Xaml.Controls.RowDefinition
+					IsParsing = true,
+					Padding = new global::Microsoft.UI.Xaml.Thickness(16,16,16,16),
+					RowSpacing = 0d,
+					RowDefinitions = 
 					{
-						Height = new global::Microsoft.UI.Xaml.GridLength(56f, global::Microsoft.UI.Xaml.GridUnitType.Pixel),
-						// Source 0\MainPage.xaml (Line 6:8)
-					}
-					,
-					new global::Microsoft.UI.Xaml.Controls.RowDefinition
-					{
-						Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
-						// Source 0\MainPage.xaml (Line 7:8)
-					}
-					,
-				}
-				,
-				// Source 0\MainPage.xaml (Line 4:4)
-				Children = 
-				{
-					new global::Microsoft.UI.Xaml.Controls.Border
-					{
-						IsParsing = true,
-						VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Center,
-						CornerRadius = new Microsoft.UI.Xaml.CornerRadius(4,4,4,4),
-						Padding = new global::Microsoft.UI.Xaml.Thickness(12,12,12,12),
-						// Source 0\MainPage.xaml (Line 10:6)
-						Child = 
-						new global::Microsoft.UI.Xaml.Controls.Grid
-						{
-							IsParsing = true,
-							// Source 0\MainPage.xaml (Line 11:8)
-							Children = 
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.RowDefinition
 							{
-								new global::Microsoft.UI.Xaml.Controls.TextBlock
-								{
-									IsParsing = true,
-									Text = "Découvrir",
-									// Source 0\MainPage.xaml (Line 12:10)
-								}
-								.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
-								{
-								/* _isTopLevelDictionary:False */
-								__that._component_0 = __p1;
-								global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.Header.Title");
-								global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "TitleLargeTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-								global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-								__p1.CreationComplete();
-								}
-								))
-								,
+								Height = new global::Microsoft.UI.Xaml.GridLength(56f, global::Microsoft.UI.Xaml.GridUnitType.Pixel),
+								// Source 0\MainPage.xaml (Line 6:8)
 							}
-						}
-						.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
-						{
-						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-						__p1.CreationComplete();
-						}
-						))
-					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
-					{
-					/* _isTopLevelDictionary:False */
-					__that._component_1 = __p1;
-					global::Microsoft.UI.Xaml.Controls.Grid.SetRow(__p1, 0);
-					global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Border.BackgroundProperty, "SurfaceColor", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-					__p1.CreationComplete();
-					}
-					))
-					,
-					new global::Microsoft.UI.Xaml.Controls.Grid
-					{
-						IsParsing = true,
-						ColumnSpacing = 16d,
-						ColumnDefinitions = 
-						{
-							new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
-							{
-								Width = new global::Microsoft.UI.Xaml.GridLength(2f, global::Microsoft.UI.Xaml.GridUnitType.Star),
-								MinWidth = 320f,
-								// Source 0\MainPage.xaml (Line 18:10)
-							}
-							,
-							new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
-							{
-								Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
-								MinWidth = 280f,
-								// Source 0\MainPage.xaml (Line 19:10)
-							}
-							,
-						}
+						)
 						,
-						// Source 0\MainPage.xaml (Line 16:6)
-						Children = 
-						{
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.RowDefinition
+							{
+								Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
+								// Source 0\MainPage.xaml (Line 7:8)
+							}
+						)
+						,
+					}
+					,
+					// Source 0\MainPage.xaml (Line 4:4)
+					Children = 
+					{
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
 							new global::Microsoft.UI.Xaml.Controls.Border
 							{
 								IsParsing = true,
-								CornerRadius = new Microsoft.UI.Xaml.CornerRadius(8,8,8,8),
+								VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Center,
+								CornerRadius = new Microsoft.UI.Xaml.CornerRadius(4,4,4,4),
 								Padding = new global::Microsoft.UI.Xaml.Thickness(12,12,12,12),
-								BorderThickness = new global::Microsoft.UI.Xaml.Thickness(1,1,1,1),
-								Margin = new global::Microsoft.UI.Xaml.Thickness(0,0,0,0),
-								// Source 0\MainPage.xaml (Line 22:8)
+								// Source 0\MainPage.xaml (Line 10:6)
 								Child = 
-								new global::Microsoft.UI.Xaml.Controls.Grid
-								{
-									IsParsing = true,
-									RowDefinitions = 
+								global::MyProject.GlobalStaticResources.__PreserveProperties(
+									new global::Microsoft.UI.Xaml.Controls.Grid
 									{
-										new global::Microsoft.UI.Xaml.Controls.RowDefinition
+										IsParsing = true,
+										// Source 0\MainPage.xaml (Line 11:8)
+										Children = 
 										{
-											Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto),
-											// Source 0\MainPage.xaml (Line 25:14)
-										}
-										,
-										new global::Microsoft.UI.Xaml.Controls.RowDefinition
-										{
-											Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
-											// Source 0\MainPage.xaml (Line 26:14)
-										}
-										,
-									}
-									,
-									// Source 0\MainPage.xaml (Line 23:10)
-									Children = 
-									{
-										new global::Microsoft.UI.Xaml.Controls.StackPanel
-										{
-											IsParsing = true,
-											Orientation = global::Microsoft.UI.Xaml.Controls.Orientation.Horizontal,
-											Margin = new global::Microsoft.UI.Xaml.Thickness(0,0,0,12),
-											VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Center,
-											// Source 0\MainPage.xaml (Line 29:12)
-											Children = 
-											{
+											global::MyProject.GlobalStaticResources.__PreserveProperties(
 												new global::Microsoft.UI.Xaml.Controls.TextBlock
 												{
 													IsParsing = true,
-													Text = "Idées de voyage",
-													// Source 0\MainPage.xaml (Line 30:14)
+													Text = "Découvrir",
+													// Source 0\MainPage.xaml (Line 12:10)
 												}
 												.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 												{
 												/* _isTopLevelDictionary:False */
-												__that._component_2 = __p1;
-												global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.Ideas.Header");
-												global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "TitleTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+												__that._component_0 = __p1;
+												global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.Header.Title");
+												global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "TitleLargeTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
 												global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
 												__p1.CreationComplete();
 												}
 												))
-												,
-											}
-										}
-										.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
-										{
-										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-										__p1.CreationComplete();
-										}
-										))
-										,
-										new global::Microsoft.UI.Xaml.Controls.ListView
-										{
-											IsParsing = true,
-											HorizontalAlignment = global::Microsoft.UI.Xaml.HorizontalAlignment.Stretch,
-											VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Stretch,
-											ItemTemplate = 											new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_GriΞ1_GriΞ0_BorΞ0_GriΞ1_LisVie_IteTemΞ0_DatTem)
+											)
 											,
-											// Source 0\MainPage.xaml (Line 33:12)
 										}
-										.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler6)(__p1 => 
-										{
-										/* _isTopLevelDictionary:False */
-										__that._component_3 = __p1;
-										global::Microsoft.UI.Xaml.Controls.Grid.SetRow(__p1, 1);
-										__p1.SetBinding(
-											global::Microsoft.UI.Xaml.Controls.ListView.ItemsSourceProperty,
-											new Microsoft.UI.Xaml.Data.Binding()
-											{
-												Path = @"TravelIdeas",
-											}
-										);
-										global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.ListView.ItemContainerStyleProperty, "DefaultListViewItemStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-										__p1.CreationComplete();
-										}
-										))
-										,
 									}
-								}
-								.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
-								{
-								global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-								__p1.CreationComplete();
-								}
-								))
+									.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+									{
+									global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+									__p1.CreationComplete();
+									}
+									))
+								)
 							}
 							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 							{
 							/* _isTopLevelDictionary:False */
-							__that._component_4 = __p1;
-							global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 0);
+							__that._component_1 = __p1;
+							global::Microsoft.UI.Xaml.Controls.Grid.SetRow(__p1, 0);
 							global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Border.BackgroundProperty, "SurfaceColor", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-							global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Border.BorderBrushProperty, "OutlineColor", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
 							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
 							__p1.CreationComplete();
 							}
 							))
-							,
-							new global::Microsoft.UI.Xaml.Controls.Border
+						)
+						,
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.Grid
 							{
 								IsParsing = true,
-								CornerRadius = new Microsoft.UI.Xaml.CornerRadius(8,8,8,8),
-								Padding = new global::Microsoft.UI.Xaml.Thickness(12,12,12,12),
-								BorderThickness = new global::Microsoft.UI.Xaml.Thickness(1,1,1,1),
-								// Source 0\MainPage.xaml (Line 63:8)
-								Child = 
-								new global::Microsoft.UI.Xaml.Controls.Grid
+								ColumnSpacing = 16d,
+								ColumnDefinitions = 
 								{
-									IsParsing = true,
-									RowDefinitions = 
-									{
-										new global::Microsoft.UI.Xaml.Controls.RowDefinition
+									global::MyProject.GlobalStaticResources.__PreserveProperties(
+										new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
 										{
-											Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto),
-											// Source 0\MainPage.xaml (Line 66:14)
+											Width = new global::Microsoft.UI.Xaml.GridLength(2f, global::Microsoft.UI.Xaml.GridUnitType.Star),
+											MinWidth = 320f,
+											// Source 0\MainPage.xaml (Line 18:10)
 										}
-										,
-										new global::Microsoft.UI.Xaml.Controls.RowDefinition
-										{
-											Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
-											// Source 0\MainPage.xaml (Line 67:14)
-										}
-										,
-									}
+									)
 									,
-									// Source 0\MainPage.xaml (Line 64:10)
-									Children = 
-									{
-										new global::Microsoft.UI.Xaml.Controls.TextBlock
+									global::MyProject.GlobalStaticResources.__PreserveProperties(
+										new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
 										{
-											IsParsing = true,
-											Text = "Lieux sauvegardés",
-											Margin = new global::Microsoft.UI.Xaml.Thickness(0,0,0,12),
-											// Source 0\MainPage.xaml (Line 70:12)
+											Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
+											MinWidth = 280f,
+											// Source 0\MainPage.xaml (Line 19:10)
 										}
-										.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
-										{
-										/* _isTopLevelDictionary:False */
-										__that._component_5 = __p1;
-										global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.Saved.Header");
-										global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "TitleTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-										__p1.CreationComplete();
-										}
-										))
-										,
-										new global::Microsoft.UI.Xaml.Controls.ListView
-										{
-											IsParsing = true,
-											HorizontalAlignment = global::Microsoft.UI.Xaml.HorizontalAlignment.Stretch,
-											VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Stretch,
-											ItemTemplate = 											new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_GriΞ1_GriΞ1_BorΞ0_GriΞ1_LisVie_IteTemΞ0_DatTem)
-											,
-											// Source 0\MainPage.xaml (Line 72:12)
-										}
-										.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler6)(__p1 => 
-										{
-										/* _isTopLevelDictionary:False */
-										__that._component_6 = __p1;
-										global::Microsoft.UI.Xaml.Controls.Grid.SetRow(__p1, 1);
-										__p1.SetBinding(
-											global::Microsoft.UI.Xaml.Controls.ListView.ItemsSourceProperty,
-											new Microsoft.UI.Xaml.Data.Binding()
-											{
-												Path = @"SavedPlaces",
-											}
-										);
-										global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.ListView.ItemContainerStyleProperty, "DefaultListViewItemStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-										__p1.CreationComplete();
-										}
-										))
-										,
-									}
+									)
+									,
 								}
-								.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+								,
+								// Source 0\MainPage.xaml (Line 16:6)
+								Children = 
 								{
-								global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-								__p1.CreationComplete();
+									global::MyProject.GlobalStaticResources.__PreserveProperties(
+										new global::Microsoft.UI.Xaml.Controls.Border
+										{
+											IsParsing = true,
+											CornerRadius = new Microsoft.UI.Xaml.CornerRadius(8,8,8,8),
+											Padding = new global::Microsoft.UI.Xaml.Thickness(12,12,12,12),
+											BorderThickness = new global::Microsoft.UI.Xaml.Thickness(1,1,1,1),
+											Margin = new global::Microsoft.UI.Xaml.Thickness(0,0,0,0),
+											// Source 0\MainPage.xaml (Line 22:8)
+											Child = 
+											global::MyProject.GlobalStaticResources.__PreserveProperties(
+												new global::Microsoft.UI.Xaml.Controls.Grid
+												{
+													IsParsing = true,
+													RowDefinitions = 
+													{
+														global::MyProject.GlobalStaticResources.__PreserveProperties(
+															new global::Microsoft.UI.Xaml.Controls.RowDefinition
+															{
+																Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto),
+																// Source 0\MainPage.xaml (Line 25:14)
+															}
+														)
+														,
+														global::MyProject.GlobalStaticResources.__PreserveProperties(
+															new global::Microsoft.UI.Xaml.Controls.RowDefinition
+															{
+																Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
+																// Source 0\MainPage.xaml (Line 26:14)
+															}
+														)
+														,
+													}
+													,
+													// Source 0\MainPage.xaml (Line 23:10)
+													Children = 
+													{
+														global::MyProject.GlobalStaticResources.__PreserveProperties(
+															new global::Microsoft.UI.Xaml.Controls.StackPanel
+															{
+																IsParsing = true,
+																Orientation = global::Microsoft.UI.Xaml.Controls.Orientation.Horizontal,
+																Margin = new global::Microsoft.UI.Xaml.Thickness(0,0,0,12),
+																VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Center,
+																// Source 0\MainPage.xaml (Line 29:12)
+																Children = 
+																{
+																	global::MyProject.GlobalStaticResources.__PreserveProperties(
+																		new global::Microsoft.UI.Xaml.Controls.TextBlock
+																		{
+																			IsParsing = true,
+																			Text = "Idées de voyage",
+																			// Source 0\MainPage.xaml (Line 30:14)
+																		}
+																		.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+																		{
+																		/* _isTopLevelDictionary:False */
+																		__that._component_2 = __p1;
+																		global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.Ideas.Header");
+																		global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "TitleTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+																		global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+																		__p1.CreationComplete();
+																		}
+																		))
+																	)
+																	,
+																}
+															}
+															.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
+															{
+															global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+															__p1.CreationComplete();
+															}
+															))
+														)
+														,
+														global::MyProject.GlobalStaticResources.__PreserveProperties(
+															new global::Microsoft.UI.Xaml.Controls.ListView
+															{
+																IsParsing = true,
+																HorizontalAlignment = global::Microsoft.UI.Xaml.HorizontalAlignment.Stretch,
+																VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Stretch,
+																ItemTemplate = 																global::MyProject.GlobalStaticResources.__PreserveProperties(
+																	new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_GriΞ1_GriΞ0_BorΞ0_GriΞ1_LisVie_IteTemΞ0_DatTem)
+																)
+																,
+																// Source 0\MainPage.xaml (Line 33:12)
+															}
+															.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler6)(__p1 => 
+															{
+															/* _isTopLevelDictionary:False */
+															__that._component_3 = __p1;
+															global::Microsoft.UI.Xaml.Controls.Grid.SetRow(__p1, 1);
+															__p1.SetBinding(
+																global::Microsoft.UI.Xaml.Controls.ListView.ItemsSourceProperty,
+																new Microsoft.UI.Xaml.Data.Binding()
+																{
+																	Path = @"TravelIdeas",
+																}
+															);
+															global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.ListView.ItemContainerStyleProperty, "DefaultListViewItemStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+															global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+															__p1.CreationComplete();
+															}
+															))
+														)
+														,
+													}
+												}
+												.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+												{
+												global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+												__p1.CreationComplete();
+												}
+												))
+											)
+										}
+										.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+										{
+										/* _isTopLevelDictionary:False */
+										__that._component_4 = __p1;
+										global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 0);
+										global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Border.BackgroundProperty, "SurfaceColor", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+										global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Border.BorderBrushProperty, "OutlineColor", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+										__p1.CreationComplete();
+										}
+										))
+									)
+									,
+									global::MyProject.GlobalStaticResources.__PreserveProperties(
+										new global::Microsoft.UI.Xaml.Controls.Border
+										{
+											IsParsing = true,
+											CornerRadius = new Microsoft.UI.Xaml.CornerRadius(8,8,8,8),
+											Padding = new global::Microsoft.UI.Xaml.Thickness(12,12,12,12),
+											BorderThickness = new global::Microsoft.UI.Xaml.Thickness(1,1,1,1),
+											// Source 0\MainPage.xaml (Line 63:8)
+											Child = 
+											global::MyProject.GlobalStaticResources.__PreserveProperties(
+												new global::Microsoft.UI.Xaml.Controls.Grid
+												{
+													IsParsing = true,
+													RowDefinitions = 
+													{
+														global::MyProject.GlobalStaticResources.__PreserveProperties(
+															new global::Microsoft.UI.Xaml.Controls.RowDefinition
+															{
+																Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto),
+																// Source 0\MainPage.xaml (Line 66:14)
+															}
+														)
+														,
+														global::MyProject.GlobalStaticResources.__PreserveProperties(
+															new global::Microsoft.UI.Xaml.Controls.RowDefinition
+															{
+																Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
+																// Source 0\MainPage.xaml (Line 67:14)
+															}
+														)
+														,
+													}
+													,
+													// Source 0\MainPage.xaml (Line 64:10)
+													Children = 
+													{
+														global::MyProject.GlobalStaticResources.__PreserveProperties(
+															new global::Microsoft.UI.Xaml.Controls.TextBlock
+															{
+																IsParsing = true,
+																Text = "Lieux sauvegardés",
+																Margin = new global::Microsoft.UI.Xaml.Thickness(0,0,0,12),
+																// Source 0\MainPage.xaml (Line 70:12)
+															}
+															.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+															{
+															/* _isTopLevelDictionary:False */
+															__that._component_5 = __p1;
+															global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.Saved.Header");
+															global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "TitleTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+															global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+															__p1.CreationComplete();
+															}
+															))
+														)
+														,
+														global::MyProject.GlobalStaticResources.__PreserveProperties(
+															new global::Microsoft.UI.Xaml.Controls.ListView
+															{
+																IsParsing = true,
+																HorizontalAlignment = global::Microsoft.UI.Xaml.HorizontalAlignment.Stretch,
+																VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Stretch,
+																ItemTemplate = 																global::MyProject.GlobalStaticResources.__PreserveProperties(
+																	new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_GriΞ1_GriΞ1_BorΞ0_GriΞ1_LisVie_IteTemΞ0_DatTem)
+																)
+																,
+																// Source 0\MainPage.xaml (Line 72:12)
+															}
+															.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler6)(__p1 => 
+															{
+															/* _isTopLevelDictionary:False */
+															__that._component_6 = __p1;
+															global::Microsoft.UI.Xaml.Controls.Grid.SetRow(__p1, 1);
+															__p1.SetBinding(
+																global::Microsoft.UI.Xaml.Controls.ListView.ItemsSourceProperty,
+																new Microsoft.UI.Xaml.Data.Binding()
+																{
+																	Path = @"SavedPlaces",
+																}
+															);
+															global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.ListView.ItemContainerStyleProperty, "DefaultListViewItemStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+															global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+															__p1.CreationComplete();
+															}
+															))
+														)
+														,
+													}
+												}
+												.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+												{
+												global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+												__p1.CreationComplete();
+												}
+												))
+											)
+										}
+										.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+										{
+										/* _isTopLevelDictionary:False */
+										__that._component_7 = __p1;
+										global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 1);
+										global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Border.BackgroundProperty, "SurfaceColor", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+										global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Border.BorderBrushProperty, "OutlineColor", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+										__p1.CreationComplete();
+										}
+										))
+									)
+									,
 								}
-								))
 							}
-							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 							{
-							/* _isTopLevelDictionary:False */
-							__that._component_7 = __p1;
-							global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 1);
-							global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Border.BackgroundProperty, "SurfaceColor", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-							global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Border.BorderBrushProperty, "OutlineColor", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+							global::Microsoft.UI.Xaml.Controls.Grid.SetRow(__p1, 1);
 							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
 							__p1.CreationComplete();
 							}
 							))
-							,
-						}
+						)
+						,
 					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
-					{
-					global::Microsoft.UI.Xaml.Controls.Grid.SetRow(__p1, 1);
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-					__p1.CreationComplete();
-					}
-					))
-					,
 				}
-			}
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
-			{
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-			__p1.CreationComplete();
-			}
-			))
+				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+				{
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+				__p1.CreationComplete();
+				}
+				))
+			)
 			;
 			
 			this
@@ -444,185 +492,207 @@ namespace TestRepro
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;
 					this.__rootInstance = 
-					new global::Microsoft.UI.Xaml.Controls.Border
-					{
-						IsParsing = true,
-						CornerRadius = new Microsoft.UI.Xaml.CornerRadius(8,8,8,8),
-						Padding = new global::Microsoft.UI.Xaml.Thickness(12,12,12,12),
-						Margin = new global::Microsoft.UI.Xaml.Thickness(0,0,0,12),
-						BorderThickness = new global::Microsoft.UI.Xaml.Thickness(1,1,1,1),
-						Shadow = 						new global::Microsoft.UI.Xaml.Media.ThemeShadow
-						{
-							// Source 0\MainPage.xaml (Line 38:22)
-						}
-						,
-						// Source 0\MainPage.xaml (Line 36:18)
-						Child = 
-						new global::Microsoft.UI.Xaml.Controls.Grid
+					global::MyProject.GlobalStaticResources.__PreserveProperties(
+						new global::Microsoft.UI.Xaml.Controls.Border
 						{
 							IsParsing = true,
-							ColumnDefinitions = 
-							{
-								new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+							CornerRadius = new Microsoft.UI.Xaml.CornerRadius(8,8,8,8),
+							Padding = new global::Microsoft.UI.Xaml.Thickness(12,12,12,12),
+							Margin = new global::Microsoft.UI.Xaml.Thickness(0,0,0,12),
+							BorderThickness = new global::Microsoft.UI.Xaml.Thickness(1,1,1,1),
+							Shadow = 							global::MyProject.GlobalStaticResources.__PreserveProperties(
+								new global::Microsoft.UI.Xaml.Media.ThemeShadow
 								{
-									Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto),
-									// Source 0\MainPage.xaml (Line 42:24)
+									// Source 0\MainPage.xaml (Line 38:22)
 								}
-								,
-								new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
-								{
-									Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
-									// Source 0\MainPage.xaml (Line 43:24)
-								}
-								,
-							}
+							)
 							,
-							// Source 0\MainPage.xaml (Line 40:20)
-							Children = 
-							{
-								new global::Microsoft.UI.Xaml.Controls.Image
+							// Source 0\MainPage.xaml (Line 36:18)
+							Child = 
+							global::MyProject.GlobalStaticResources.__PreserveProperties(
+								new global::Microsoft.UI.Xaml.Controls.Grid
 								{
 									IsParsing = true,
-									Width = 72f,
-									Height = 72f,
-									Stretch = global::Microsoft.UI.Xaml.Media.Stretch.UniformToFill,
-									Margin = new global::Microsoft.UI.Xaml.Thickness(0,0,12,0),
-									// Source 0\MainPage.xaml (Line 46:22)
-								}
-								.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler8)(__p1 => 
-								{
-								global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 0);
-								__p1.SetBinding(
-									global::Microsoft.UI.Xaml.Controls.Image.SourceProperty,
-									new Microsoft.UI.Xaml.Data.Binding()
+									ColumnDefinitions = 
 									{
-										Path = @"imageUri",
+										global::MyProject.GlobalStaticResources.__PreserveProperties(
+											new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+											{
+												Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto),
+												// Source 0\MainPage.xaml (Line 42:24)
+											}
+										)
+										,
+										global::MyProject.GlobalStaticResources.__PreserveProperties(
+											new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+											{
+												Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
+												// Source 0\MainPage.xaml (Line 43:24)
+											}
+										)
+										,
 									}
-								);
-								global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-								__p1.CreationComplete();
-								}
-								))
-								,
-								new global::Microsoft.UI.Xaml.Controls.StackPanel
-								{
-									IsParsing = true,
-									VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Center,
-									// Source 0\MainPage.xaml (Line 48:22)
+									,
+									// Source 0\MainPage.xaml (Line 40:20)
 									Children = 
 									{
-										new global::Microsoft.UI.Xaml.Controls.TextBlock
-										{
-											IsParsing = true,
-											TextWrapping = global::Microsoft.UI.Xaml.TextWrapping.Wrap,
-											// Source 0\MainPage.xaml (Line 49:24)
-										}
-										.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
-										{
-										/* _isTopLevelDictionary:False */
-										__that._component_0 = __p1;
-										__p1.SetBinding(
-											global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
-											new Microsoft.UI.Xaml.Data.Binding()
+										global::MyProject.GlobalStaticResources.__PreserveProperties(
+											new global::Microsoft.UI.Xaml.Controls.Image
 											{
-												Path = @"title",
+												IsParsing = true,
+												Width = 72f,
+												Height = 72f,
+												Stretch = global::Microsoft.UI.Xaml.Media.Stretch.UniformToFill,
+												Margin = new global::Microsoft.UI.Xaml.Thickness(0,0,12,0),
+												// Source 0\MainPage.xaml (Line 46:22)
 											}
-										);
-										global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "SubtitleTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-										__p1.CreationComplete();
-										}
-										))
-										,
-										new global::Microsoft.UI.Xaml.Controls.TextBlock
-										{
-											IsParsing = true,
-											TextWrapping = global::Microsoft.UI.Xaml.TextWrapping.Wrap,
-											Margin = new global::Microsoft.UI.Xaml.Thickness(0,6,0,0),
-											// Source 0\MainPage.xaml (Line 50:24)
-										}
-										.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
-										{
-										/* _isTopLevelDictionary:False */
-										__that._component_1 = __p1;
-										__p1.SetBinding(
-											global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
-											new Microsoft.UI.Xaml.Data.Binding()
+											.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler8)(__p1 => 
 											{
-												Path = @"description",
-											}
-										);
-										global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "BodyTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-										__p1.CreationComplete();
-										}
-										))
-										,
-										new global::Microsoft.UI.Xaml.Controls.StackPanel
-										{
-											IsParsing = true,
-											Orientation = global::Microsoft.UI.Xaml.Controls.Orientation.Horizontal,
-											Margin = new global::Microsoft.UI.Xaml.Thickness(0,8,0,0),
-											// Source 0\MainPage.xaml (Line 51:24)
-											Children = 
-											{
-												new global::Microsoft.UI.Xaml.Controls.Button
+											global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 0);
+											__p1.SetBinding(
+												global::Microsoft.UI.Xaml.Controls.Image.SourceProperty,
+												new Microsoft.UI.Xaml.Data.Binding()
 												{
-													IsParsing = true,
-													Content = @"Explorer",
-													HorizontalAlignment = global::Microsoft.UI.Xaml.HorizontalAlignment.Left,
-													// Source 0\MainPage.xaml (Line 52:26)
+													Path = @"imageUri",
 												}
-												.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler9)(__p1 => 
-												{
-												/* _isTopLevelDictionary:False */
-												__that._component_2 = __p1;
-												global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.Ideas.Item.Explore");
-												global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.StyleProperty, "AccentButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-												global::Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(__p1, "Explore idea");
-												global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-												__p1.CreationComplete();
-												}
-												))
-												,
+											);
+											global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+											__p1.CreationComplete();
 											}
-										}
-										.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
-										{
-										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-										__p1.CreationComplete();
-										}
-										))
+											))
+										)
+										,
+										global::MyProject.GlobalStaticResources.__PreserveProperties(
+											new global::Microsoft.UI.Xaml.Controls.StackPanel
+											{
+												IsParsing = true,
+												VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Center,
+												// Source 0\MainPage.xaml (Line 48:22)
+												Children = 
+												{
+													global::MyProject.GlobalStaticResources.__PreserveProperties(
+														new global::Microsoft.UI.Xaml.Controls.TextBlock
+														{
+															IsParsing = true,
+															TextWrapping = global::Microsoft.UI.Xaml.TextWrapping.Wrap,
+															// Source 0\MainPage.xaml (Line 49:24)
+														}
+														.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+														{
+														/* _isTopLevelDictionary:False */
+														__that._component_0 = __p1;
+														__p1.SetBinding(
+															global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
+															new Microsoft.UI.Xaml.Data.Binding()
+															{
+																Path = @"title",
+															}
+														);
+														global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "SubtitleTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+														global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+														__p1.CreationComplete();
+														}
+														))
+													)
+													,
+													global::MyProject.GlobalStaticResources.__PreserveProperties(
+														new global::Microsoft.UI.Xaml.Controls.TextBlock
+														{
+															IsParsing = true,
+															TextWrapping = global::Microsoft.UI.Xaml.TextWrapping.Wrap,
+															Margin = new global::Microsoft.UI.Xaml.Thickness(0,6,0,0),
+															// Source 0\MainPage.xaml (Line 50:24)
+														}
+														.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+														{
+														/* _isTopLevelDictionary:False */
+														__that._component_1 = __p1;
+														__p1.SetBinding(
+															global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
+															new Microsoft.UI.Xaml.Data.Binding()
+															{
+																Path = @"description",
+															}
+														);
+														global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "BodyTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+														global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+														__p1.CreationComplete();
+														}
+														))
+													)
+													,
+													global::MyProject.GlobalStaticResources.__PreserveProperties(
+														new global::Microsoft.UI.Xaml.Controls.StackPanel
+														{
+															IsParsing = true,
+															Orientation = global::Microsoft.UI.Xaml.Controls.Orientation.Horizontal,
+															Margin = new global::Microsoft.UI.Xaml.Thickness(0,8,0,0),
+															// Source 0\MainPage.xaml (Line 51:24)
+															Children = 
+															{
+																global::MyProject.GlobalStaticResources.__PreserveProperties(
+																	new global::Microsoft.UI.Xaml.Controls.Button
+																	{
+																		IsParsing = true,
+																		Content = @"Explorer",
+																		HorizontalAlignment = global::Microsoft.UI.Xaml.HorizontalAlignment.Left,
+																		// Source 0\MainPage.xaml (Line 52:26)
+																	}
+																	.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler9)(__p1 => 
+																	{
+																	/* _isTopLevelDictionary:False */
+																	__that._component_2 = __p1;
+																	global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.Ideas.Item.Explore");
+																	global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.StyleProperty, "AccentButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+																	global::Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(__p1, "Explore idea");
+																	global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+																	__p1.CreationComplete();
+																	}
+																	))
+																)
+																,
+															}
+														}
+														.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
+														{
+														global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+														__p1.CreationComplete();
+														}
+														))
+													)
+													,
+												}
+											}
+											.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
+											{
+											global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 1);
+											global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+											__p1.CreationComplete();
+											}
+											))
+										)
 										,
 									}
 								}
-								.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
+								.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 								{
-								global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 1);
 								global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
 								__p1.CreationComplete();
 								}
 								))
-								,
-							}
+							)
 						}
-						.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+						.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 						{
+						/* _isTopLevelDictionary:False */
+						__that._component_3 = __p1;
+						global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Border.BackgroundProperty, "SurfaceVariantColor", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+						global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Border.BorderBrushProperty, "OutlineVariantColor", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
 						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
 						__p1.CreationComplete();
 						}
 						))
-					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
-					{
-					/* _isTopLevelDictionary:False */
-					__that._component_3 = __p1;
-					global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Border.BackgroundProperty, "SurfaceVariantColor", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-					global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Border.BorderBrushProperty, "OutlineVariantColor", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-					__p1.CreationComplete();
-					}
-					))
+					)
 					;
 					if (__rootInstance is FrameworkElement __fe)
 					{
@@ -695,176 +765,196 @@ namespace TestRepro
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;
 					this.__rootInstance = 
-					new global::Microsoft.UI.Xaml.Controls.Border
-					{
-						IsParsing = true,
-						CornerRadius = new Microsoft.UI.Xaml.CornerRadius(6,6,6,6),
-						Padding = new global::Microsoft.UI.Xaml.Thickness(8,8,8,8),
-						Margin = new global::Microsoft.UI.Xaml.Thickness(0,0,0,12),
-						BorderThickness = new global::Microsoft.UI.Xaml.Thickness(1,1,1,1),
-						// Source 0\MainPage.xaml (Line 75:18)
-						Child = 
-						new global::Microsoft.UI.Xaml.Controls.Grid
+					global::MyProject.GlobalStaticResources.__PreserveProperties(
+						new global::Microsoft.UI.Xaml.Controls.Border
 						{
 							IsParsing = true,
-							ColumnDefinitions = 
-							{
-								new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
-								{
-									Width = new global::Microsoft.UI.Xaml.GridLength(56f, global::Microsoft.UI.Xaml.GridUnitType.Pixel),
-									// Source 0\MainPage.xaml (Line 78:24)
-								}
-								,
-								new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
-								{
-									Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
-									// Source 0\MainPage.xaml (Line 79:24)
-								}
-								,
-								new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
-								{
-									Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto),
-									// Source 0\MainPage.xaml (Line 80:24)
-								}
-								,
-							}
-							,
-							// Source 0\MainPage.xaml (Line 76:20)
-							Children = 
-							{
-								new global::Microsoft.UI.Xaml.Controls.Image
+							CornerRadius = new Microsoft.UI.Xaml.CornerRadius(6,6,6,6),
+							Padding = new global::Microsoft.UI.Xaml.Thickness(8,8,8,8),
+							Margin = new global::Microsoft.UI.Xaml.Thickness(0,0,0,12),
+							BorderThickness = new global::Microsoft.UI.Xaml.Thickness(1,1,1,1),
+							// Source 0\MainPage.xaml (Line 75:18)
+							Child = 
+							global::MyProject.GlobalStaticResources.__PreserveProperties(
+								new global::Microsoft.UI.Xaml.Controls.Grid
 								{
 									IsParsing = true,
-									Width = 48f,
-									Height = 48f,
-									Stretch = global::Microsoft.UI.Xaml.Media.Stretch.Uniform,
-									VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Center,
-									HorizontalAlignment = global::Microsoft.UI.Xaml.HorizontalAlignment.Center,
-									// Source 0\MainPage.xaml (Line 83:22)
-								}
-								.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler8)(__p1 => 
-								{
-								global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 0);
-								__p1.SetBinding(
-									global::Microsoft.UI.Xaml.Controls.Image.SourceProperty,
-									new Microsoft.UI.Xaml.Data.Binding()
+									ColumnDefinitions = 
 									{
-										Path = @"imageUri",
+										global::MyProject.GlobalStaticResources.__PreserveProperties(
+											new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+											{
+												Width = new global::Microsoft.UI.Xaml.GridLength(56f, global::Microsoft.UI.Xaml.GridUnitType.Pixel),
+												// Source 0\MainPage.xaml (Line 78:24)
+											}
+										)
+										,
+										global::MyProject.GlobalStaticResources.__PreserveProperties(
+											new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+											{
+												Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
+												// Source 0\MainPage.xaml (Line 79:24)
+											}
+										)
+										,
+										global::MyProject.GlobalStaticResources.__PreserveProperties(
+											new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+											{
+												Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto),
+												// Source 0\MainPage.xaml (Line 80:24)
+											}
+										)
+										,
 									}
-								);
-								global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-								__p1.CreationComplete();
-								}
-								))
-								,
-								new global::Microsoft.UI.Xaml.Controls.StackPanel
-								{
-									IsParsing = true,
-									Margin = new global::Microsoft.UI.Xaml.Thickness(12,0,12,0),
-									VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Center,
-									// Source 0\MainPage.xaml (Line 85:22)
+									,
+									// Source 0\MainPage.xaml (Line 76:20)
 									Children = 
 									{
-										new global::Microsoft.UI.Xaml.Controls.TextBlock
-										{
-											IsParsing = true,
-											TextWrapping = global::Microsoft.UI.Xaml.TextWrapping.Wrap,
-											// Source 0\MainPage.xaml (Line 86:24)
-										}
-										.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
-										{
-										/* _isTopLevelDictionary:False */
-										__that._component_0 = __p1;
-										__p1.SetBinding(
-											global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
-											new Microsoft.UI.Xaml.Data.Binding()
+										global::MyProject.GlobalStaticResources.__PreserveProperties(
+											new global::Microsoft.UI.Xaml.Controls.Image
 											{
-												Path = @"name",
+												IsParsing = true,
+												Width = 48f,
+												Height = 48f,
+												Stretch = global::Microsoft.UI.Xaml.Media.Stretch.Uniform,
+												VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Center,
+												HorizontalAlignment = global::Microsoft.UI.Xaml.HorizontalAlignment.Center,
+												// Source 0\MainPage.xaml (Line 83:22)
 											}
-										);
-										global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "BodyStrongTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-										__p1.CreationComplete();
-										}
-										))
+											.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler8)(__p1 => 
+											{
+											global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 0);
+											__p1.SetBinding(
+												global::Microsoft.UI.Xaml.Controls.Image.SourceProperty,
+												new Microsoft.UI.Xaml.Data.Binding()
+												{
+													Path = @"imageUri",
+												}
+											);
+											global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+											__p1.CreationComplete();
+											}
+											))
+										)
 										,
-										new global::Microsoft.UI.Xaml.Controls.TextBlock
-										{
-											IsParsing = true,
-											TextWrapping = global::Microsoft.UI.Xaml.TextWrapping.Wrap,
-											Margin = new global::Microsoft.UI.Xaml.Thickness(0,4,0,0),
-											// Source 0\MainPage.xaml (Line 87:24)
-										}
-										.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
-										{
-										/* _isTopLevelDictionary:False */
-										__that._component_1 = __p1;
-										__p1.SetBinding(
-											global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
-											new Microsoft.UI.Xaml.Data.Binding()
+										global::MyProject.GlobalStaticResources.__PreserveProperties(
+											new global::Microsoft.UI.Xaml.Controls.StackPanel
 											{
-												Path = @"location",
+												IsParsing = true,
+												Margin = new global::Microsoft.UI.Xaml.Thickness(12,0,12,0),
+												VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Center,
+												// Source 0\MainPage.xaml (Line 85:22)
+												Children = 
+												{
+													global::MyProject.GlobalStaticResources.__PreserveProperties(
+														new global::Microsoft.UI.Xaml.Controls.TextBlock
+														{
+															IsParsing = true,
+															TextWrapping = global::Microsoft.UI.Xaml.TextWrapping.Wrap,
+															// Source 0\MainPage.xaml (Line 86:24)
+														}
+														.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+														{
+														/* _isTopLevelDictionary:False */
+														__that._component_0 = __p1;
+														__p1.SetBinding(
+															global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
+															new Microsoft.UI.Xaml.Data.Binding()
+															{
+																Path = @"name",
+															}
+														);
+														global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "BodyStrongTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+														global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+														__p1.CreationComplete();
+														}
+														))
+													)
+													,
+													global::MyProject.GlobalStaticResources.__PreserveProperties(
+														new global::Microsoft.UI.Xaml.Controls.TextBlock
+														{
+															IsParsing = true,
+															TextWrapping = global::Microsoft.UI.Xaml.TextWrapping.Wrap,
+															Margin = new global::Microsoft.UI.Xaml.Thickness(0,4,0,0),
+															// Source 0\MainPage.xaml (Line 87:24)
+														}
+														.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+														{
+														/* _isTopLevelDictionary:False */
+														__that._component_1 = __p1;
+														__p1.SetBinding(
+															global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
+															new Microsoft.UI.Xaml.Data.Binding()
+															{
+																Path = @"location",
+															}
+														);
+														global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "CaptionTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+														global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+														__p1.CreationComplete();
+														}
+														))
+													)
+													,
+												}
 											}
-										);
-										global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "CaptionTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-										__p1.CreationComplete();
-										}
-										))
+											.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
+											{
+											global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 1);
+											global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+											__p1.CreationComplete();
+											}
+											))
+										)
+										,
+										global::MyProject.GlobalStaticResources.__PreserveProperties(
+											new global::Microsoft.UI.Xaml.Controls.Button
+											{
+												IsParsing = true,
+												Content = @"Supprimer",
+												Margin = new global::Microsoft.UI.Xaml.Thickness(0,0,0,0),
+												Padding = new global::Microsoft.UI.Xaml.Thickness(8,4,8,4),
+												HorizontalAlignment = global::Microsoft.UI.Xaml.HorizontalAlignment.Right,
+												VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Center,
+												// Source 0\MainPage.xaml (Line 90:22)
+											}
+											.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler9)(__p1 => 
+											{
+											/* _isTopLevelDictionary:False */
+											__that._component_2 = __p1;
+											global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.Saved.Item.Remove");
+											global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 2);
+											global::Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(__p1, "Remove saved place");
+											global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.BackgroundProperty, "ErrorContainerColor", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+											global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.ForegroundProperty, "OnErrorContainerColor", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+											global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+											__p1.CreationComplete();
+											}
+											))
+										)
 										,
 									}
 								}
-								.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
+								.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 								{
-								global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 1);
 								global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
 								__p1.CreationComplete();
 								}
 								))
-								,
-								new global::Microsoft.UI.Xaml.Controls.Button
-								{
-									IsParsing = true,
-									Content = @"Supprimer",
-									Margin = new global::Microsoft.UI.Xaml.Thickness(0,0,0,0),
-									Padding = new global::Microsoft.UI.Xaml.Thickness(8,4,8,4),
-									HorizontalAlignment = global::Microsoft.UI.Xaml.HorizontalAlignment.Right,
-									VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Center,
-									// Source 0\MainPage.xaml (Line 90:22)
-								}
-								.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler9)(__p1 => 
-								{
-								/* _isTopLevelDictionary:False */
-								__that._component_2 = __p1;
-								global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.Saved.Item.Remove");
-								global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 2);
-								global::Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(__p1, "Remove saved place");
-								global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.BackgroundProperty, "ErrorContainerColor", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-								global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.ForegroundProperty, "OnErrorContainerColor", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-								global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-								__p1.CreationComplete();
-								}
-								))
-								,
-							}
+							)
 						}
-						.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+						.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 						{
+						/* _isTopLevelDictionary:False */
+						__that._component_3 = __p1;
+						global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Border.BackgroundProperty, "SurfaceVariantColor", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+						global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Border.BorderBrushProperty, "OutlineVariantColor", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
 						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
 						__p1.CreationComplete();
 						}
 						))
-					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
-					{
-					/* _isTopLevelDictionary:False */
-					__that._component_3 = __p1;
-					global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Border.BackgroundProperty, "SurfaceVariantColor", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-					global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Border.BorderBrushProperty, "OutlineVariantColor", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-					__p1.CreationComplete();
-					}
-					))
+					)
 					;
 					if (__rootInstance is FrameworkElement __fe)
 					{

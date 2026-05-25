@@ -12,9 +12,9 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.RightTappedRoutedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.RightTappedRoutedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.PointerDeviceType.get
+		// Skipping already declared method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.GetPosition(Microsoft.UI.Xaml.UIElement)
 		// Forced skipping of method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.Handled.set
-		// Skipping already declared method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.GetPosition(Microsoft.UI.Xaml.UIElement)
+		// Forced skipping of method Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs.PointerDeviceType.get
 	}
 }

@@ -1,27 +1,29 @@
 ﻿<Page
-	x:Class="UITests.Shared.Windows_UI_Xaml.Resources.XamlGlobalResources"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d"
-	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    x:Class="UITests.Shared.Windows_UI_Xaml.Resources.XamlGlobalResources"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
 
-	<Grid
-		Background="White"
-		BorderBrush="{StaticResource Pink_From_App_Xaml_Resources}"
-		BorderThickness="4"
-		Padding="2"
-		Margin="20"
-		VerticalAlignment="Center"
-		HorizontalAlignment="Center">
+    <Grid
+        Margin="20"
+        Padding="2"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Background="White"
+        BorderBrush="{StaticResource Pink_From_App_Xaml_Resources}"
+        BorderThickness="4">
 
-		<TextBlock
-			Style="{StaticResource Style_Pink_From_App_Xaml_Resources}"
-			TextWrapping="WrapWholeWords"
-			TextAlignment="Justify"
-			FontSize="55">This text should be rendered in PINK with a PINK border around it.</TextBlock>
+        <TextBlock
+            FontSize="55"
+            Style="{StaticResource Style_Pink_From_App_Xaml_Resources}"
+            TextAlignment="Justify"
+            TextWrapping="WrapWholeWords">
+            This text should be rendered in PINK with a PINK border around it.
+        </TextBlock>
 
-		<TextBox Style="{StaticResource CustomTextBox}" />
-	</Grid>
+        <TextBox Style="{StaticResource CustomTextBox}" />
+    </Grid>
 </Page>

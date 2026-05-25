@@ -54,8 +54,8 @@ namespace Windows.Media.Streaming.Adaptive
 		}
 #endif
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadStatistics.ContentBytesReceivedCount.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadStatistics.TimeToHeadersReceived.get
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadStatistics.TimeToFirstByteReceived.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadStatistics.TimeToHeadersReceived.get
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadStatistics.TimeToLastByteReceived.get
 	}
 }

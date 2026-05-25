@@ -15,6 +15,26 @@ namespace Windows.Devices.Bluetooth
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool AreClassicSecureConnectionsSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool BluetoothAdapter.AreClassicSecureConnectionsSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothAdapter.AreClassicSecureConnectionsSupported");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool AreLowEnergySecureConnectionsSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool BluetoothAdapter.AreLowEnergySecureConnectionsSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothAdapter.AreLowEnergySecureConnectionsSupported");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ulong BluetoothAddress
 		{
 			get
@@ -65,6 +85,16 @@ namespace Windows.Devices.Bluetooth
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsExtendedAdvertisingSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool BluetoothAdapter.IsExtendedAdvertisingSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothAdapter.IsExtendedAdvertisingSupported");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsLowEnergySupported
 		{
 			get
@@ -85,36 +115,6 @@ namespace Windows.Devices.Bluetooth
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AreClassicSecureConnectionsSupported
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool BluetoothAdapter.AreClassicSecureConnectionsSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothAdapter.AreClassicSecureConnectionsSupported");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AreLowEnergySecureConnectionsSupported
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool BluetoothAdapter.AreLowEnergySecureConnectionsSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothAdapter.AreLowEnergySecureConnectionsSupported");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsExtendedAdvertisingSupported
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool BluetoothAdapter.IsExtendedAdvertisingSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BluetoothAdapter.IsExtendedAdvertisingSupported");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint MaxAdvertisementDataLength
 		{
 			get
@@ -123,24 +123,6 @@ namespace Windows.Devices.Bluetooth
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.DeviceId.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.BluetoothAddress.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.IsClassicSupported.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.IsLowEnergySupported.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.IsPeripheralRoleSupported.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.IsCentralRoleSupported.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.IsAdvertisementOffloadSupported.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Radios.Radio> GetRadioAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Radio> BluetoothAdapter.GetRadioAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CRadio%3E%20BluetoothAdapter.GetRadioAsync%28%29");
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.AreClassicSecureConnectionsSupported.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.AreLowEnergySecureConnectionsSupported.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.IsExtendedAdvertisingSupported.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.MaxAdvertisementDataLength.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
@@ -162,5 +144,23 @@ namespace Windows.Devices.Bluetooth
 			throw new global::System.NotImplementedException("The member IAsyncOperation<BluetoothAdapter> BluetoothAdapter.GetDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBluetoothAdapter%3E%20BluetoothAdapter.GetDefaultAsync%28%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Radios.Radio> GetRadioAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<Radio> BluetoothAdapter.GetRadioAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CRadio%3E%20BluetoothAdapter.GetRadioAsync%28%29");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.AreClassicSecureConnectionsSupported.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.AreLowEnergySecureConnectionsSupported.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.BluetoothAddress.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.DeviceId.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.IsAdvertisementOffloadSupported.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.IsCentralRoleSupported.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.IsClassicSupported.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.IsExtendedAdvertisingSupported.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.IsLowEnergySupported.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.IsPeripheralRoleSupported.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.MaxAdvertisementDataLength.get
 	}
 }

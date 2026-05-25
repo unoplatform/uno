@@ -33,7 +33,7 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StorePackageUpdate.Package.get
 		// Forced skipping of method Windows.Services.Store.StorePackageUpdate.Mandatory.get
+		// Forced skipping of method Windows.Services.Store.StorePackageUpdate.Package.get
 	}
 }

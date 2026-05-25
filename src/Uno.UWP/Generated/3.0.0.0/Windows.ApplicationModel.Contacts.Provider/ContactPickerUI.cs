@@ -25,21 +25,21 @@ namespace Windows.ApplicationModel.Contacts.Provider
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Contacts.ContactSelectionMode SelectionMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ContactSelectionMode ContactPickerUI.SelectionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactSelectionMode%20ContactPickerUI.SelectionMode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Contacts.ContactFieldType> DesiredFieldsWithContactFieldType
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member IList<ContactFieldType> ContactPickerUI.DesiredFieldsWithContactFieldType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CContactFieldType%3E%20ContactPickerUI.DesiredFieldsWithContactFieldType");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Contacts.ContactSelectionMode SelectionMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ContactSelectionMode ContactPickerUI.SelectionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactSelectionMode%20ContactPickerUI.SelectionMode");
 			}
 		}
 #endif
@@ -64,8 +64,6 @@ namespace Windows.ApplicationModel.Contacts.Provider
 			throw new global::System.NotImplementedException("The member bool ContactPickerUI.ContainsContact(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContactPickerUI.ContainsContact%28string%20id%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.DesiredFields.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.SelectionMode.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.ContactRemoved.add
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.ContactRemoved.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -75,7 +73,9 @@ namespace Windows.ApplicationModel.Contacts.Provider
 			throw new global::System.NotImplementedException("The member AddContactResult ContactPickerUI.AddContact(Contact contact) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AddContactResult%20ContactPickerUI.AddContact%28Contact%20contact%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.DesiredFields.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.DesiredFieldsWithContactFieldType.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.Provider.ContactPickerUI.SelectionMode.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Contacts.Provider.ContactPickerUI, global::Windows.ApplicationModel.Contacts.Provider.ContactRemovedEventArgs> ContactRemoved

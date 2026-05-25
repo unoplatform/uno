@@ -4,7 +4,7 @@ Known limitations of the current DevServer architecture, documented during imple
 
 ---
 
-## L1. AmbientRegistry Reuse: Single IDEChannel Connection
+## L1. AmbientRegistry Reuse: Single Active IDEChannel
 
 **Phase**: 1b (Controller Bypass)
 **Date**: 2026-02-14
@@ -16,12 +16,22 @@ Phase 1b introduces reuse of existing DevServer instances via AmbientRegistry. W
 
 ### Limitation
 
-The Host only supports **a single IDEChannel connection** (named pipe) at a time (`IdeChannelServer.cs`, `maxNumberOfServerInstances: 1`). This means:
+The Host only supports **a single active IDEChannel connection** (named pipe) at a time (`IdeChannelServer.cs`, `maxNumberOfServerInstances: 1`). This means:
 
 | Scenario | Works? | Reason |
 |----------|:---:|--------|
 | IDE + MCP CLI on same solution | Yes | MCP uses HTTP (`/mcp`), not the named pipe |
-| IDE-A + IDE-B on same solution | No | Both need the IDEChannel pipe |
+| IDE-A + IDE-B on same solution | Partially | The Host can be reused, but only one active IDE channel can own the pipe at a time |
+
+### Current target behavior
+
+`uno.devserver start --ideChannel <id>` should **reuse** an already-running Host for the same solution and replace the active IDE channel in-place. This avoids killing a Host owned by another launcher while still letting a new IDE session attach.
+
+This is intentionally narrower than full multi-tenant support:
+
+- The Host remains **single-channel**
+- Rebinding the active channel is supported
+- Simultaneous pipe connections from multiple IDEs are still unsupported
 
 ### Liveness Monitoring
 
@@ -50,6 +60,36 @@ If any of these scenarios becomes real:
 
 ### Potential resolution
 
-- Make `IdeChannelServer` multi-connection (`maxNumberOfServerInstances > 1`)
+- Keep the current single-channel design, but allow **channel replacement** on an already-running Host
+- Later, if needed, make `IdeChannelServer` multi-connection (`maxNumberOfServerInstances > 1`)
 - Add per-IDE routing in `ApplicationLaunchMonitor` and processors
 - Isolate `AssemblyLoadContext` per IDE connection
+
+---
+
+## L2. AmbientRegistry Fallback: Same-Port Reuse Not Handled
+
+**Phase**: 1b (Controller Bypass)
+**Date**: 2026-04-02
+**File**: `src/Uno.UI.DevServer.Cli/Mcp/MonitorDecisions.cs`
+
+### Context
+
+When the controller detects an existing DevServer for the same solution, it exits with code 0. The monitor's readiness probe returns `ProcessExited` and attempts an AmbientRegistry fallback to adopt the existing server.
+
+### Limitation
+
+`ShouldAttemptAmbientFallback` requires `existingPort != currentPort`. When the controller reuses a server on the **same** port that was originally requested, the fallback finds nothing on a different port and treats it as a failure. The monitor then retries the full startup cycle instead of simply continuing with HTTP polling on the current port.
+
+### Impact
+
+In practice this is rare: the CLI allocates a random free port via `EnsureTcpPort()`, so collision with an IDE-launched server's port is unlikely. When it does happen, the monitor retries (up to `maxRetries`), adding unnecessary delay.
+
+### When to address
+
+When same-port reuse becomes observable in production (e.g., IDE and CLI configured with a fixed `--httpPort`).
+
+### Potential resolution
+
+- Inspect the controller's exit code: if exit code 0, continue with HTTP polling on the current port even without a different-port AmbientRegistry match
+- Or: allow `ShouldAttemptAmbientFallback` to match same-port entries when the spawned process exited cleanly (code 0)

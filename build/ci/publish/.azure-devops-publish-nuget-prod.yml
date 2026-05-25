@@ -15,8 +15,8 @@ jobs:
         # https://github.com/microsoft/azure-pipelines-tasks/issues/17207
         - task: DownloadPipelineArtifact@2
           inputs:
-            artifactName: 'NuGet_Packages'
-            targetPath: '$(Pipeline.Workspace)/NuGet_Packages'
+            artifactName: 'nuget-packages'
+            targetPath: '$(Pipeline.Workspace)/nuget-packages'
           displayName: Download artifacts
 
         - template: ../templates/nuget-publish-public.yml

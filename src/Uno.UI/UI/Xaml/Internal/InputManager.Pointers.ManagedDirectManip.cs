@@ -52,6 +52,8 @@ partial class InputManager
 		// This unified ordered list is required to make sure, in case of conflicting manipulations kinds, it's the top most recognizer that is able to start first.
 		private readonly PointerTypePseudoDictionary<Queue<IGestureRecognizer>> _gestureRecognizers = new();
 
+		private UIElement? _pendingDirectManipulationCancelRequester;
+
 		internal void RegisterDirectManipulationHandler(PointerIdentifier pointer, IDirectManipulationHandler handler)
 			=> RegisterDirectManipulationHandlerCore(pointer, handler);
 
@@ -68,6 +70,10 @@ partial class InputManager
 			var manipulation = _directManipulations.Get(pointer);
 			if (manipulation is null)
 			{
+				// Stop any inertial DMs sharing this handler to prevent dual-DM coexistence
+				// where old inertial deltas fight the new manipulation's direction.
+				_directManipulations.CompleteInertialForHandler(handler);
+
 				manipulation = new DirectManipulation(this, _directManipulations, pointer);
 
 				_directManipulations.Add(manipulation);
@@ -122,6 +128,8 @@ partial class InputManager
 		/// </summary>
 		internal bool CancelDirectManipulations(UIElement requestingElement)
 		{
+			_pendingDirectManipulationCancelRequester ??= requestingElement;
+
 			var cancelled = false;
 			foreach (var manipulation in _directManipulations)
 			{
@@ -164,6 +172,8 @@ partial class InputManager
 
 		private bool BeforePressTryRedirectToManipulations(Windows.UI.Core.PointerEventArgs args)
 		{
+			_pendingDirectManipulationCancelRequester = null;
+
 			// First we scavenge all manipulations that are no longer active
 			_directManipulations.Scavenge();
 
@@ -195,6 +205,12 @@ partial class InputManager
 				{
 					recognizer.ProcessDown(args);
 				}
+			}
+
+			if (_pendingDirectManipulationCancelRequester is { } requester)
+			{
+				CancelDirectManipulations(requester);
+				_pendingDirectManipulationCancelRequester = null;
 			}
 		}
 

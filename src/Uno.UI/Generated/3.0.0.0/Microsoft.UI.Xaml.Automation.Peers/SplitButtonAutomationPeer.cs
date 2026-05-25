@@ -11,10 +11,10 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property ExpandCollapseState
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SplitButtonAutomationPeer.SplitButtonAutomationPeer(Microsoft.UI.Xaml.Controls.SplitButton)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SplitButtonAutomationPeer.SplitButtonAutomationPeer(Microsoft.UI.Xaml.Controls.SplitButton)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SplitButtonAutomationPeer.ExpandCollapseState.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SplitButtonAutomationPeer.Collapse()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SplitButtonAutomationPeer.Expand()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SplitButtonAutomationPeer.Invoke()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SplitButtonAutomationPeer.ExpandCollapseState.get
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IInvokeProvider
 	}

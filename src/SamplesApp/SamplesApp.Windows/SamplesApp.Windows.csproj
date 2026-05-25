@@ -14,9 +14,13 @@
 		
 		<!-- Disabled because of https://github.com/dotnet/sdk/issues/43680#issuecomment-2401193028 -->
 		<CsWinRTAotOptimizerEnabled>false</CsWinRTAotOptimizerEnabled>
+		
+		<!-- MSIX Packaging settings - signing is configured via CI -->
+		<AppxPackageSigningEnabled>true</AppxPackageSigningEnabled>
+		<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+		<AppxAutoIncrementPackageRevision>false</AppxAutoIncrementPackageRevision>
+		<GenerateAppxPackageOnBuild>false</GenerateAppxPackageOnBuild>
 	</PropertyGroup>
-
-	<Import Project="../../targetframework-override.props" />
 
 	<ItemGroup>
 		<Content Include="Assets\SplashScreen.scale-200.png" />
@@ -46,6 +50,7 @@
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.72.1" />
 
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260101001" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.7175" />
 		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>
 
@@ -80,7 +85,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Windows.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" AdditionalProperties="BuildGraphics3DGLForWindows=true" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Windows.csproj">
 			<Project>{2569663d-293a-4a1d-bb84-aa8c7b4b7f92}</Project>
 			<Name>Uno.UI.MSAL</Name>

@@ -10,6 +10,14 @@ namespace Windows.Gaming.Input.Custom
 	{
 		// Forced skipping of method Windows.Gaming.Input.Custom.GipFirmwareUpdateProgress.GipFirmwareUpdateProgress()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public GipFirmwareUpdateProgress(double _PercentCompleted, uint _CurrentComponentId)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Custom.GipFirmwareUpdateProgress", "GipFirmwareUpdateProgress.GipFirmwareUpdateProgress(double _PercentCompleted, uint _CurrentComponentId)");
+		}
+#endif
+		// Forced skipping of method Windows.Gaming.Input.Custom.GipFirmwareUpdateProgress.GipFirmwareUpdateProgress(double, uint)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public double PercentCompleted;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

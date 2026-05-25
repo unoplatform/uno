@@ -55,6 +55,16 @@ namespace Windows.ApplicationModel
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsPartiallyStaged
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool PackageStatus.IsPartiallyStaged is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PackageStatus.IsPartiallyStaged");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool LicenseIssue
 		{
 			get
@@ -125,32 +135,22 @@ namespace Windows.ApplicationModel
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsPartiallyStaged
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool PackageStatus.IsPartiallyStaged is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PackageStatus.IsPartiallyStaged");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool VerifyIsOK()
 		{
 			throw new global::System.NotImplementedException("The member bool PackageStatus.VerifyIsOK() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PackageStatus.VerifyIsOK%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.PackageStatus.NotAvailable.get
-		// Forced skipping of method Windows.ApplicationModel.PackageStatus.PackageOffline.get
 		// Forced skipping of method Windows.ApplicationModel.PackageStatus.DataOffline.get
+		// Forced skipping of method Windows.ApplicationModel.PackageStatus.DependencyIssue.get
+		// Forced skipping of method Windows.ApplicationModel.PackageStatus.DeploymentInProgress.get
 		// Forced skipping of method Windows.ApplicationModel.PackageStatus.Disabled.get
-		// Forced skipping of method Windows.ApplicationModel.PackageStatus.NeedsRemediation.get
+		// Forced skipping of method Windows.ApplicationModel.PackageStatus.IsPartiallyStaged.get
 		// Forced skipping of method Windows.ApplicationModel.PackageStatus.LicenseIssue.get
 		// Forced skipping of method Windows.ApplicationModel.PackageStatus.Modified.get
-		// Forced skipping of method Windows.ApplicationModel.PackageStatus.Tampered.get
-		// Forced skipping of method Windows.ApplicationModel.PackageStatus.DependencyIssue.get
+		// Forced skipping of method Windows.ApplicationModel.PackageStatus.NeedsRemediation.get
+		// Forced skipping of method Windows.ApplicationModel.PackageStatus.NotAvailable.get
+		// Forced skipping of method Windows.ApplicationModel.PackageStatus.PackageOffline.get
 		// Forced skipping of method Windows.ApplicationModel.PackageStatus.Servicing.get
-		// Forced skipping of method Windows.ApplicationModel.PackageStatus.DeploymentInProgress.get
-		// Forced skipping of method Windows.ApplicationModel.PackageStatus.IsPartiallyStaged.get
+		// Forced skipping of method Windows.ApplicationModel.PackageStatus.Tampered.get
 	}
 }

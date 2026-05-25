@@ -15,6 +15,13 @@ namespace Windows.Devices.Input
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Devices.Input.PenButtonListener GetDefault()
+		{
+			throw new global::System.NotImplementedException("The member PenButtonListener PenButtonListener.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PenButtonListener%20PenButtonListener.GetDefault%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsSupported()
 		{
 			throw new global::System.NotImplementedException("The member bool PenButtonListener.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PenButtonListener.IsSupported%28%29");
@@ -28,13 +35,6 @@ namespace Windows.Devices.Input
 		// Forced skipping of method Windows.Devices.Input.PenButtonListener.TailButtonDoubleClicked.remove
 		// Forced skipping of method Windows.Devices.Input.PenButtonListener.TailButtonLongPressed.add
 		// Forced skipping of method Windows.Devices.Input.PenButtonListener.TailButtonLongPressed.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Devices.Input.PenButtonListener GetDefault()
-		{
-			throw new global::System.NotImplementedException("The member PenButtonListener PenButtonListener.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PenButtonListener%20PenButtonListener.GetDefault%28%29");
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.PenButtonListener, object> IsSupportedChanged

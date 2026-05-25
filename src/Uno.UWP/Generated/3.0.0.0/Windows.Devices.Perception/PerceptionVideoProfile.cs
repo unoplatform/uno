@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -64,11 +63,6 @@ namespace Windows.Devices.Perception
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionVideoProfile.BitmapPixelFormat.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionVideoProfile.BitmapAlphaMode.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionVideoProfile.Width.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionVideoProfile.Height.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionVideoProfile.FrameDuration.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsEqual(global::Windows.Devices.Perception.PerceptionVideoProfile other)
@@ -76,5 +70,10 @@ namespace Windows.Devices.Perception
 			throw new global::System.NotImplementedException("The member bool PerceptionVideoProfile.IsEqual(PerceptionVideoProfile other) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PerceptionVideoProfile.IsEqual%28PerceptionVideoProfile%20other%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionVideoProfile.BitmapAlphaMode.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionVideoProfile.BitmapPixelFormat.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionVideoProfile.FrameDuration.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionVideoProfile.Height.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionVideoProfile.Width.get
 	}
 }

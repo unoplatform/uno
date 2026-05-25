@@ -50,36 +50,40 @@ namespace TestRepro
 			base.IsParsing = true;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.Grid
-			{
-				IsParsing = true,
-				// Source 0\MainPage.xaml (Line 6:3)
-				Children = 
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.Grid
 				{
-					new global::Microsoft.UI.Xaml.Controls.NavigationView
+					IsParsing = true,
+					// Source 0\MainPage.xaml (Line 6:3)
+					Children = 
 					{
-						IsParsing = true,
-						IsBackButtonVisible = global::Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible.Collapsed,
-						IsPaneToggleButtonVisible = false,
-						IsSettingsVisible = false,
-						PaneDisplayMode = global::Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Left,
-						// Source 0\MainPage.xaml (Line 8:4)
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.NavigationView
+							{
+								IsParsing = true,
+								IsBackButtonVisible = global::Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible.Collapsed,
+								IsPaneToggleButtonVisible = false,
+								IsSettingsVisible = false,
+								PaneDisplayMode = global::Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Left,
+								// Source 0\MainPage.xaml (Line 8:4)
+							}
+							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+							{
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+							__p1.CreationComplete();
+							}
+							))
+						)
+						,
 					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-					{
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-					__p1.CreationComplete();
-					}
-					))
-					,
 				}
-			}
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
-			{
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-			__p1.CreationComplete();
-			}
-			))
+				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+				{
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+				__p1.CreationComplete();
+				}
+				))
+			)
 			;
 			
 			this

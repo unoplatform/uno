@@ -46,8 +46,8 @@ namespace Windows.UI.ApplicationSettings
 		}
 #endif
 		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.WebAccountCommand(Windows.Security.Credentials.WebAccount, Windows.UI.ApplicationSettings.WebAccountCommandInvokedHandler, Windows.UI.ApplicationSettings.SupportedWebAccountActions)
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.WebAccount.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.Invoked.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.Actions.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.Invoked.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.WebAccount.get
 	}
 }

@@ -33,9 +33,9 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionCommitBatch.IsActive.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionCommitBatch.Completed.add
 		// Forced skipping of method Microsoft.UI.Composition.CompositionCommitBatch.Completed.remove
+		// Forced skipping of method Microsoft.UI.Composition.CompositionCommitBatch.IsActive.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionCommitBatch.IsEnded.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

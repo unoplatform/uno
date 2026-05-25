@@ -34,7 +34,6 @@ namespace Windows.System.RemoteSystems
 		}
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.RemoteSystemSessionMessageChannel(Windows.System.RemoteSystems.RemoteSystemSession, string, Windows.System.RemoteSystems.RemoteSystemSessionMessageChannelReliability)
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.Session.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> BroadcastValueSetAsync(global::Windows.Foundation.Collections.ValueSet messageData)
@@ -58,6 +57,7 @@ namespace Windows.System.RemoteSystems
 #endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.ValueSetReceived.add
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.ValueSetReceived.remove
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.Session.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel, global::Windows.System.RemoteSystems.RemoteSystemSessionValueSetReceivedEventArgs> ValueSetReceived

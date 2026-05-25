@@ -11,8 +11,8 @@ namespace Microsoft.UI.Xaml.Input
 		// Skipping already declared property Handled
 		// Skipping already declared method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.ContextRequestedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.ContextRequestedEventArgs()
+		// Skipping already declared method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.TryGetPosition(Microsoft.UI.Xaml.UIElement, out Windows.Foundation.Point)
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.Handled.set
-		// Skipping already declared method Microsoft.UI.Xaml.Input.ContextRequestedEventArgs.TryGetPosition(Microsoft.UI.Xaml.UIElement, out Windows.Foundation.Point)
 	}
 }

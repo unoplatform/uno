@@ -19,9 +19,11 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 
 	protected override object GetPatternCore(PatternInterface patternInterface)
 	{
+		// WinUI: First check base (container/generated patterns).
+		// Only try our own patterns if base returns null.
 		var spPatternProvider = base.GetPatternCore(patternInterface);
 
-		if (spPatternProvider is not { })
+		if (spPatternProvider is not null)
 		{
 			return spPatternProvider;
 		}
@@ -40,13 +42,12 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 				return this;
 			}
 		}
-		else
-		if (patternInterface == PatternInterface.ScrollItem)
+		else if (patternInterface == PatternInterface.ScrollItem)
 		{
 			return this;
 		}
 
-		return spPatternProvider;
+		return null;
 	}
 
 	/// <summary>

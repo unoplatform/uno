@@ -64,6 +64,52 @@ namespace Microsoft.UI.Xaml
 		private InputCursor _protectedCursor;
 		private SerialDisposable _disposedEventDisposable = new();
 
+		/// <summary>
+		/// Internal theme state for this element. Matches WinUI's m_theme field in CDependencyObject.
+		/// </summary>
+		private Theme _theme = Theme.None;
+
+		// WinUI stores fIsProcessingEnterLeave (bit 15) and fIsProcessingThemeWalk (bit 16)
+		// in a DependencyObjectBitFields uint on CDependencyObject (corep.h:224-348).
+		[Flags]
+		private enum UIElementFlag : uint
+		{
+			IsProcessingEnterLeave = 1 << 15, // WinUI CDependencyObject bit 15
+			IsProcessingThemeWalk = 1 << 16,  // WinUI CDependencyObject bit 16
+		}
+
+		private UIElementFlag _uiElementFlags;
+
+		/// <summary>
+		/// Gets the current theme value for this element.
+		/// </summary>
+		internal Theme GetTheme() => _theme;
+
+		/// <summary>
+		/// Sets the theme value for this element.
+		/// </summary>
+		internal void SetTheme(Theme theme) => _theme = theme;
+
+		/// <summary>
+		/// Gets whether this element is currently processing a theme walk.
+		/// </summary>
+		internal bool IsProcessingThemeWalk => (_uiElementFlags & UIElementFlag.IsProcessingThemeWalk) != 0;
+
+		/// <summary>
+		/// Sets whether this element is currently processing a theme walk.
+		/// </summary>
+		internal void SetIsProcessingThemeWalk(bool value)
+		{
+			if (value)
+			{
+				_uiElementFlags |= UIElementFlag.IsProcessingThemeWalk;
+			}
+			else
+			{
+				_uiElementFlags &= ~UIElementFlag.IsProcessingThemeWalk;
+			}
+		}
+
 		public Size DesiredSize => Visibility == Visibility.Visible && HasLayoutStorage ? m_desiredSize : default;
 
 		//private protected virtual void PrepareState()
@@ -608,12 +654,12 @@ namespace Microsoft.UI.Xaml
 			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 		}
 
-		[NotImplemented]
-		protected virtual AutomationPeer OnCreateAutomationPeer() => new AutomationPeer();
-
-		internal AutomationPeer OnCreateAutomationPeerInternal() => OnCreateAutomationPeer();
-
 #nullable enable
+		protected virtual AutomationPeer? OnCreateAutomationPeer() => null;
+
+		internal AutomationPeer? OnCreateAutomationPeerInternal() => OnCreateAutomationPeer();
+
+
 		internal static Matrix3x2 GetTransform(UIElement from, UIElement? to)
 		{
 			if (from == to || !from.IsInLiveTree || (to is { IsVisualTreeRoot: false, IsInLiveTree: false }))
@@ -791,16 +837,55 @@ namespace Microsoft.UI.Xaml
 
 		private protected virtual void OnContextFlyoutChanged(FlyoutBase oldValue, FlyoutBase newValue)
 		{
+#if HAS_UNO // TODO: Uno specific - WinUI handles this in EnterEffectiveValue/LeaveEffectiveValue
+			// because ContextFlyout is marked IsVisualTreeProperty. Remove this block when Uno's DP
+			// system implements EnterEffectiveValue/LeaveEffectiveValue for IsVisualTreeProperty properties.
+			// Remove this workaround when https://github.com/unoplatform/uno/issues/22949 is implemented.
+			if (IsInLiveTree)
+			{
+				// Mirror WinUI's LeaveEffectiveValue → RemoveParent + Leave for old value,
+				// then EnterEffectiveValue → AddParent + Enter for new value.
+				if (oldValue is not null && ReferenceEquals(oldValue.GetParent(), this))
+				{
+					oldValue.SetParent(null);
+				}
+
+				// WinUI nulls out the VisualTree pointer for shared FlyoutBase (Bug 19548424).
+				oldValue?.Leave(null, new LeaveParams { IsForKeyboardAccelerator = true, VisualTree = null });
+
+				newValue?.SetParent(this);
+				newValue?.Enter(null, new EnterParams { IsForKeyboardAccelerator = true, VisualTree = null });
+			}
+#endif
+
 			if (newValue != null)
 			{
 				// Enable gesture recognition for context menu (RightTap for mouse/pen, Hold for touch).
 				// This ensures the GestureRecognizer is created and configured to detect these gestures,
 				// which then raise ContextRequested via ContextMenuProcessor.
 				EnableContextMenuGestures();
+
+				// Propagate VisualTree to the flyout (matches WinUI IsVisualTreeProperty behavior
+				// where EnterEffectiveValue calls Enter on the new value).
+				if (this.GetVisualTree() is { } visualTree)
+				{
+					newValue.SetVisualTree(visualTree);
+				}
 			}
 		}
 
 		partial void EnableContextMenuGestures();
+
+		/// <summary>
+		/// Enables gesture recognition for context menu (RightTap for mouse/pen, Hold for touch).
+		/// This ensures the GestureRecognizer is created and configured to detect these gestures,
+		/// which then raise ContextRequested via ContextMenuProcessor.
+		/// </summary>
+		/// <remarks>
+		/// This method is useful for text controls like TextBlock that get their default ContextFlyout
+		/// via GetDefaultValue (which doesn't trigger OnContextFlyoutChanged).
+		/// </remarks>
+		private protected void EnsureContextMenuGesturesEnabled() => EnableContextMenuGestures();
 
 		internal bool IsRenderingSuspended { get; set; }
 

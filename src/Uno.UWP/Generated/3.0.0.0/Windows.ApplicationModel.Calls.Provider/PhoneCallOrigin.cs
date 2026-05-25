@@ -10,15 +10,15 @@ namespace Windows.ApplicationModel.Calls.Provider
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Location
+		public string Category
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneCallOrigin.Location is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneCallOrigin.Location");
+				throw new global::System.NotImplementedException("The member string PhoneCallOrigin.Category is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneCallOrigin.Category");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin", "string PhoneCallOrigin.Location");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin", "string PhoneCallOrigin.Category");
 			}
 		}
 #endif
@@ -33,20 +33,6 @@ namespace Windows.ApplicationModel.Calls.Provider
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin", "string PhoneCallOrigin.CategoryDescription");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Category
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PhoneCallOrigin.Category is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneCallOrigin.Category");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin", "string PhoneCallOrigin.Category");
 			}
 		}
 #endif
@@ -80,6 +66,20 @@ namespace Windows.ApplicationModel.Calls.Provider
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Location
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PhoneCallOrigin.Location is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneCallOrigin.Location");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin", "string PhoneCallOrigin.Location");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PhoneCallOrigin()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin", "PhoneCallOrigin.PhoneCallOrigin()");
@@ -90,11 +90,11 @@ namespace Windows.ApplicationModel.Calls.Provider
 		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.Category.set
 		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.CategoryDescription.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.CategoryDescription.set
-		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.Location.get
-		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.Location.set
 		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.DisplayName.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.DisplayName.set
 		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.DisplayPicture.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.DisplayPicture.set
+		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.Location.get
+		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin.Location.set
 	}
 }

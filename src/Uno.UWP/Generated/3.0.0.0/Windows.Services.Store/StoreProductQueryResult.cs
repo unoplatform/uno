@@ -33,7 +33,7 @@ namespace Windows.Services.Store
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreProductQueryResult.Products.get
 		// Forced skipping of method Windows.Services.Store.StoreProductQueryResult.ExtendedError.get
+		// Forced skipping of method Windows.Services.Store.StoreProductQueryResult.Products.get
 	}
 }

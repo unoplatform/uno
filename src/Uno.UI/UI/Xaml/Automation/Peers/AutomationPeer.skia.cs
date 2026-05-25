@@ -26,6 +26,10 @@ partial class AutomationPeer
 
 	public void RaisePropertyChangedEvent(AutomationProperty automationProperty, object oldValue, object newValue)
 	{
-		AutomationPeerListener?.NotifyPropertyChangedEvent(this, automationProperty, oldValue, newValue);
+		var listener = AutomationPeerListener;
+		if (listener is not null && listener.ListenerExistsHelper(AutomationEvents.PropertyChanged))
+		{
+			listener.NotifyPropertyChangedEvent(this, automationProperty, oldValue, newValue);
+		}
 	}
 }

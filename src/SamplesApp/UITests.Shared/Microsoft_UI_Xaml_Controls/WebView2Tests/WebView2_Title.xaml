@@ -5,8 +5,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.WebView2Tests"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
- 	xmlns:not_win="http://uno.ui/not_win"
-	xmlns:mux="using:Microsoft.UI.Xaml.Controls"
+    xmlns:mux="using:Microsoft.UI.Xaml.Controls"
+    xmlns:not_win="http://uno.ui/not_win"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d not_win">
 

@@ -46,7 +46,8 @@ jobs:
       flattenFolders: false
 
   - pwsh: |
-      $artifactName = "uitests-android-nativeaot-skia-build-$env:XAML_FLAVOR_BUILD-attempt$env:SYSTEM_JOBATTEMPT"
+      $artifactName = "samplesapp-android-skia-nativeaot"
+      if ([int]$env:SYSTEM_JOBATTEMPT -gt 1) { $artifactName += "-attempt$env:SYSTEM_JOBATTEMPT" }
       Write-Host "Publishing Android NativeAOT artifact: $artifactName"
       Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName]$artifactName"
       Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName;isOutput=true]$artifactName"
@@ -65,5 +66,5 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)/logs
-      ArtifactName: skia-samples-app-binlog
+      ArtifactName: samplesapp-android-skia-nativeaot-logs
       ArtifactType: Container

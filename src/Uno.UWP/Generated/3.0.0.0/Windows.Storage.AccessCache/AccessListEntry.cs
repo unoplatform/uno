@@ -10,6 +10,14 @@ namespace Windows.Storage.AccessCache
 	{
 		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntry.AccessListEntry()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public AccessListEntry(string _Token, string _Metadata)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.AccessCache.AccessListEntry", "AccessListEntry.AccessListEntry(string _Token, string _Metadata)");
+		}
+#endif
+		// Forced skipping of method Windows.Storage.AccessCache.AccessListEntry.AccessListEntry(string, string)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public string Token;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

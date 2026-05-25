@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class PowerEase : global::Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase
 	{
-		// Skipping already declared property Power
 		// Skipping already declared property PowerProperty
+		// Skipping already declared property Power
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.PowerEase.PowerEase()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PowerEase.PowerEase()
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PowerEase.PowerProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PowerEase.Power.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PowerEase.Power.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.PowerEase.PowerProperty.get
 	}
 }

@@ -20,6 +20,7 @@ public class Given_Panel
 {
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Overriding_Measure_Arrange()
 	{
 		var grid = (Grid)XamlReader.Load(

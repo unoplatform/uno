@@ -8,17 +8,17 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class ColorKeyFrame : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Skipping already declared property Value
-		// Skipping already declared property KeyTime
 		// Skipping already declared property KeyTimeProperty
 		// Skipping already declared property ValueProperty
+		// Skipping already declared property KeyTime
+		// Skipping already declared property Value
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.ColorKeyFrame()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.ColorKeyFrame()
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.Value.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.Value.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.KeyTimeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.ValueProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.KeyTime.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.KeyTime.set
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.ValueProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.KeyTimeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.Value.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame.Value.set
 	}
 }

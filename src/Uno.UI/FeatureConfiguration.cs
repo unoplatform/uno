@@ -70,6 +70,14 @@ namespace Uno.UI
 			/// Note: This is incompatible with the way accessibility works on UWP.
 			/// </remarks>
 			public static bool UseSimpleAccessibility { get; set; }
+
+			/// <summary>
+			/// When set to <c>true</c>, enables the accessibility semantic tree automatically
+			/// on WebAssembly without requiring user interaction with the "Enable Accessibility" button.
+			/// This is similar to Flutter's <c>SemanticsBinding.instance.ensureSemantics()</c>.
+			/// Set this in your application startup before the host is built. The default value is <c>false</c>.
+			/// </summary>
+			public static bool AutoEnableAccessibility { get; set; }
 		}
 
 		public static class ComboBox
@@ -222,6 +230,20 @@ namespace Uno.UI
 			/// </summary>
 			public static float? MaximumTextScaleFactor { get; set; }
 #endif
+
+			/// <summary>
+			/// (Skia only)
+			/// Overrides the font fallback mechanism used to resolve typefaces for codepoints
+			/// that the requested font family cannot render. When <c>null</c> (the default),
+			/// the platform-registered service is used.
+			/// </summary>
+			/// <remarks>
+			/// Customers wanting to keep the built-in coverage but change how font bytes are obtained
+			/// (e.g. to avoid CORS restrictions on WebAssembly) typically supply a
+			/// <see cref="Microsoft.UI.Xaml.Documents.TextFormatting.CoverageTableFontFallbackService"/>
+			/// constructed with their own coverage table and stream provider.
+			/// </remarks>
+			public static Microsoft.UI.Xaml.Documents.TextFormatting.IFontFallbackService FallbackService { get; set; }
 		}
 
 		public static class FrameworkElement
@@ -552,6 +574,15 @@ namespace Uno.UI
 			/// This option must be set on application startup before the cache is initialized.
 			/// </summary>
 			public static int JavaStringCachedCapacity { get; set; } = 1000;
+
+			/// <summary>
+			/// On Skia targets, determines if the TextBlock should render whitespace characters.
+			/// There's usually no effect between toggling this flag on and off, but it can have
+			/// an effect when the font used to draw the TextBlock doesn't have a glyph for the
+			/// whitespace characters, in which case disabling this flag will prevent the TextBlock
+			/// from rendering the font's "replacement character" symbol (e.g. �) instead of just a white space.
+			/// </summary>
+			public static bool RenderWhiteSpace { get; set; }
 		}
 
 		public static class TextBox
@@ -575,6 +606,18 @@ namespace Uno.UI
 			/// This is currently a skia-only feature.
 			/// </summary>
 			public static List<(Stream dictionary, Stream affixes)> CustomSpellCheckDictionaries { get; set; }
+
+			/// <summary>
+			/// When set to <see langword="true"/>, disables the floating number pad popover that iOS 26
+			/// introduced for <c>UITextField</c> when a numeric keyboard is used on iPad (by setting
+			/// <c>UITextField.allowsNumberPadPopover</c> to <see langword="false"/>).
+			/// Defaults to <see langword="false"/> (native iOS 26 behavior is preserved).
+			/// </summary>
+			/// <remarks>
+			/// This is currently an iOS Skia-only feature and has no effect on other platforms or
+			/// on iOS versions prior to 26.
+			/// </remarks>
+			public static bool DisableNumberPadPopover { get; set; }
 
 #if __ANDROID__
 			/// <summary>
@@ -909,9 +952,30 @@ namespace Uno.UI
 			public static bool? UseOpenGLOnWin32 { get; set; }
 
 			/// <summary>
+			/// Determines if Vulkan rendering should be enabled on the X11 target.
+			/// When true, attempts to use Vulkan for hardware-accelerated rendering. Falls back to
+			/// OpenGL (or software rendering) if Vulkan is unavailable.
+			/// </summary>
+			public static bool UseVulkanOnX11 { get; set; }
+
+			/// <summary>
+			/// Determines if Vulkan rendering should be enabled on the Win32 target.
+			/// When true, attempts to use Vulkan for hardware-accelerated rendering. Falls back to
+			/// OpenGL (or software rendering) if Vulkan is unavailable.
+			/// </summary>
+			public static bool UseVulkanOnWin32 { get; set; }
+
+			/// <summary>
 			/// Determines if OpenGL rendering should be enabled on the Android target when using the skia renderer.
 			/// </summary>
 			public static bool UseOpenGLOnSkiaAndroid { get; set; } = true;
+
+			/// <summary>
+			/// Determines if Vulkan rendering should be enabled on the Android target when using the skia renderer.
+			/// When true, attempts to use Vulkan for hardware-accelerated rendering. Falls back to OpenGL ES
+			/// (or software rendering) if Vulkan is unavailable.
+			/// </summary>
+			public static bool UseVulkanOnSkiaAndroid { get; set; }
 
 			/// <summary>
 			/// Enables certain optimizations that skip rendering some subtrees

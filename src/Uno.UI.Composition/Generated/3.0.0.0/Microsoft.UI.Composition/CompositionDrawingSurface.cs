@@ -9,11 +9,6 @@ namespace Microsoft.UI.Composition
 	public partial class CompositionDrawingSurface : global::Microsoft.UI.Composition.CompositionObject, global::Microsoft.UI.Composition.ICompositionSurface
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal CompositionDrawingSurface()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Graphics.DirectX.DirectXAlphaMode AlphaMode
 		{
@@ -53,7 +48,6 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionDrawingSurface.Size.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Resize(global::Windows.Graphics.SizeInt32 sizePixels)
@@ -75,16 +69,6 @@ namespace Microsoft.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionDrawingSurface", "void CompositionDrawingSurface.Scroll(PointInt32 offset, RectInt32 scrollRect)");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionDrawingSurface.AlphaMode.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionDrawingSurface.SizeInt32.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionDrawingSurface.PixelFormat.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void ScrollWithClip(global::Windows.Graphics.PointInt32 offset, global::Windows.Graphics.RectInt32 clipRect, global::Windows.Graphics.RectInt32 scrollRect)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionDrawingSurface", "void CompositionDrawingSurface.ScrollWithClip(PointInt32 offset, RectInt32 clipRect, RectInt32 scrollRect)");
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ScrollWithClip(global::Windows.Graphics.PointInt32 offset, global::Windows.Graphics.RectInt32 clipRect)
@@ -92,6 +76,17 @@ namespace Microsoft.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionDrawingSurface", "void CompositionDrawingSurface.ScrollWithClip(PointInt32 offset, RectInt32 clipRect)");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void ScrollWithClip(global::Windows.Graphics.PointInt32 offset, global::Windows.Graphics.RectInt32 clipRect, global::Windows.Graphics.RectInt32 scrollRect)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionDrawingSurface", "void CompositionDrawingSurface.ScrollWithClip(PointInt32 offset, RectInt32 clipRect, RectInt32 scrollRect)");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Composition.CompositionDrawingSurface.AlphaMode.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionDrawingSurface.PixelFormat.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionDrawingSurface.Size.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionDrawingSurface.SizeInt32.get
 		// Processing: Microsoft.UI.Composition.ICompositionSurface
 	}
 }

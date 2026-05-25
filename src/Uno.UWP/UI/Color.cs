@@ -69,6 +69,8 @@ namespace Windows.UI
 
 		public override string ToString() => ToString(null, null);
 
+		public string ToString(IFormatProvider provider) => ToString(null, provider);
+
 		public static bool operator ==(Color color1, Color color2) => color1.Equals(color2);
 
 		public static bool operator !=(Color color1, Color color2) => !color1.Equals(color2);

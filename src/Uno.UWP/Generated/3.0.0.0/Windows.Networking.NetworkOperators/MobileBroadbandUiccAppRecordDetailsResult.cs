@@ -73,11 +73,11 @@ namespace Windows.Networking.NetworkOperators
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.Status.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.Kind.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.ReadAccessCondition.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.RecordCount.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.RecordSize.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.ReadAccessCondition.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.Status.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.WriteAccessCondition.get
 	}
 }

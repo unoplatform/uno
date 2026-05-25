@@ -33,7 +33,7 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.ProxyConfiguration.ProxyUris.get
 		// Forced skipping of method Windows.Networking.Connectivity.ProxyConfiguration.CanConnectDirectly.get
+		// Forced skipping of method Windows.Networking.Connectivity.ProxyConfiguration.ProxyUris.get
 	}
 }

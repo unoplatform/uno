@@ -15,6 +15,16 @@ namespace Windows.Devices.Input.Preview
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Input.Preview.GazePointPreview CurrentPoint
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member GazePointPreview GazeExitedPreviewEventArgs.CurrentPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GazePointPreview%20GazeExitedPreviewEventArgs.CurrentPoint");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool Handled
 		{
 			get
@@ -27,18 +37,8 @@ namespace Windows.Devices.Input.Preview
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Input.Preview.GazePointPreview CurrentPoint
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member GazePointPreview GazeExitedPreviewEventArgs.CurrentPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GazePointPreview%20GazeExitedPreviewEventArgs.CurrentPoint");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeExitedPreviewEventArgs.CurrentPoint.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeExitedPreviewEventArgs.Handled.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeExitedPreviewEventArgs.Handled.set
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeExitedPreviewEventArgs.CurrentPoint.get
 	}
 }

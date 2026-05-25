@@ -2,54 +2,57 @@
     x:Class="UITests.Microsoft_UI_Xaml_Controls.ProgressRing.WinUIProgressRing_CustomSources"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.ProgressRing"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.ProgressRing"
+    xmlns:lottie="using:CommunityToolkit.WinUI.Lottie"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-	xmlns:lottie="using:CommunityToolkit.WinUI.Lottie"
-	xmlns:not_win="http://uno.ui/not_win"
-    mc:Ignorable="d not_win"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-	<Page.Resources>
-		<lottie:LottieVisualSource UriSource="ms-appx:///Assets/Animations/squirrel.json" x:Key="SquirrelAnimation"/>
-		<lottie:LottieVisualSource UriSource="ms-appx:///Assets/Animations/acrobat.json" x:Key="AcrobatAnimation"/>
-	</Page.Resources>
-	<StackPanel Margin="50">
-		<TextBlock Text="Determinate to Indeterminate"/>
-		<muxc:ProgressRing IsActive="True"
-						   not_win:DeterminateSource="{StaticResource SquirrelAnimation}"
-						   IsIndeterminate="{Binding IsChecked, ElementName=isIndeterminate}"
-						   not_win:IndeterminateSource="{StaticResource SquirrelAnimation}"/>
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:not_win="http://uno.ui/not_win"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d not_win">
+    <Page.Resources>
+        <lottie:LottieVisualSource x:Key="SquirrelAnimation" UriSource="ms-appx:///Assets/Animations/squirrel.json" />
+        <lottie:LottieVisualSource x:Key="AcrobatAnimation" UriSource="ms-appx:///Assets/Animations/acrobat.json" />
+    </Page.Resources>
+    <StackPanel Margin="50">
+        <TextBlock Text="Determinate to Indeterminate" />
+        <muxc:ProgressRing
+            not_win:DeterminateSource="{StaticResource SquirrelAnimation}"
+            not_win:IndeterminateSource="{StaticResource SquirrelAnimation}"
+            IsActive="True"
+            IsIndeterminate="{Binding IsChecked, ElementName=isIndeterminate}" />
 
-		<muxc:ProgressRing IsActive="True"
-						   not_win:DeterminateSource="{StaticResource AcrobatAnimation}"
-						   IsIndeterminate="{Binding IsChecked, ElementName=isIndeterminate}"
-						   not_win:IndeterminateSource="{StaticResource AcrobatAnimation}"/>
-		<ToggleButton x:Name="isIndeterminate">IsIndeterminate</ToggleButton>
+        <muxc:ProgressRing
+            not_win:DeterminateSource="{StaticResource AcrobatAnimation}"
+            not_win:IndeterminateSource="{StaticResource AcrobatAnimation}"
+            IsActive="True"
+            IsIndeterminate="{Binding IsChecked, ElementName=isIndeterminate}" />
+        <ToggleButton x:Name="isIndeterminate">IsIndeterminate</ToggleButton>
 
-		<TextBlock Text="Indeterminate"/>
-		<muxc:ProgressRing IsActive="True"
-						   not_win:IndeterminateSource="{StaticResource SquirrelAnimation}"/>
-		<muxc:ProgressRing IsActive="True"
-						   not_win:IndeterminateSource="{StaticResource AcrobatAnimation}"/>
-		<TextBlock Text="Determinate"/>
-		<muxc:ProgressRing IsIndeterminate="False"
-						   IsActive="True"
-						   not_win:DeterminateSource="{StaticResource SquirrelAnimation}"
-						    Value="{Binding Value, ElementName=progressSlider}"
-							Minimum="0"
-							Maximum="100"/>
-		<muxc:ProgressRing IsIndeterminate="False"
-						   IsActive="True"
-						   not_win:DeterminateSource="{StaticResource AcrobatAnimation}"
-						   Value="{Binding Value, ElementName=progressSlider}"
-							Minimum="0"
-							Maximum="100"/>
-		<Slider x:Name="progressSlider"
-					Minimum="0"
-					Maximum="100"
-					HorizontalAlignment="Left"
-					Width="250"
-					Margin="0,10" />
-	</StackPanel>
+        <TextBlock Text="Indeterminate" />
+        <muxc:ProgressRing not_win:IndeterminateSource="{StaticResource SquirrelAnimation}" IsActive="True" />
+        <muxc:ProgressRing not_win:IndeterminateSource="{StaticResource AcrobatAnimation}" IsActive="True" />
+        <TextBlock Text="Determinate" />
+        <muxc:ProgressRing
+            not_win:DeterminateSource="{StaticResource SquirrelAnimation}"
+            IsActive="True"
+            IsIndeterminate="False"
+            Maximum="100"
+            Minimum="0"
+            Value="{Binding Value, ElementName=progressSlider}" />
+        <muxc:ProgressRing
+            not_win:DeterminateSource="{StaticResource AcrobatAnimation}"
+            IsActive="True"
+            IsIndeterminate="False"
+            Maximum="100"
+            Minimum="0"
+            Value="{Binding Value, ElementName=progressSlider}" />
+        <Slider
+            x:Name="progressSlider"
+            Width="250"
+            Margin="0,10"
+            HorizontalAlignment="Left"
+            Maximum="100"
+            Minimum="0" />
+    </StackPanel>
 </Page>

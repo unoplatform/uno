@@ -32,8 +32,11 @@ namespace Microsoft.UI.Xaml
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public partial class ApplicationActivity : Controls.NativePage
 	{
-		private static UnoSKCanvasView? _skCanvasView;
+		private static IUnoSkiaRenderView? _renderView;
+		private static View? _renderViewAsView;
 		private static ClippedRelativeLayout? _nativeLayerHost;
+
+		internal static IUnoSkiaRenderView? RenderView => _renderView;
 
 		private InputPane _inputPane;
 
@@ -121,8 +124,8 @@ namespace Microsoft.UI.Xaml
 
 				this.SetContentView(RelativeLayout);
 
-				// Ensure the SKCanvasView is reset
-				_skCanvasView?.ResetRendererContext();
+				// Ensure the render view is reset
+				_renderView?.ResetRendererContext();
 
 				var winUIWindow = Microsoft.UI.Xaml.Window.CurrentSafe ?? Microsoft.UI.Xaml.Window.InitialWindow;
 				if (winUIWindow?.RootElement is { } root)
@@ -173,7 +176,7 @@ namespace Microsoft.UI.Xaml
 				nativelyHandled = base.DispatchTouchEvent(ev);
 			}
 
-			_skCanvasView?.GetLocationInWindow(_locationInWindow);
+			_renderViewAsView?.GetLocationInWindow(_locationInWindow);
 			AndroidCorePointerInputSource.Instance.OnNativeMotionEvent(ev, _locationInWindow, nativelyHandled);
 
 			// As the AndroidCorePointerInputSource can dispatch event asynchronously, we always return true to prevent the system from dispatching the event
@@ -200,7 +203,7 @@ namespace Microsoft.UI.Xaml
 				nativelyHandled = base.DispatchTouchEvent(ev);
 			}
 
-			_skCanvasView?.GetLocationInWindow(_locationInWindow);
+			_renderViewAsView?.GetLocationInWindow(_locationInWindow);
 			AndroidCorePointerInputSource.Instance.OnNativeMotionEvent(ev, _locationInWindow, nativelyHandled);
 
 			// As the AndroidCorePointerInputSource can dispatch event asynchronously, we always return true to prevent the system from dispatching the event
@@ -277,11 +280,12 @@ namespace Microsoft.UI.Xaml
 					ViewGroup.LayoutParams.MatchParent,
 					ViewGroup.LayoutParams.MatchParent);
 
-				_skCanvasView = new UnoSKCanvasView(this);
-				_skCanvasView.LayoutParameters = new ViewGroup.LayoutParams(
+				_renderView = CreateRenderView();
+				_renderViewAsView = (View)_renderView;
+				_renderViewAsView.LayoutParameters = new ViewGroup.LayoutParams(
 					ViewGroup.LayoutParams.MatchParent,
 					ViewGroup.LayoutParams.MatchParent);
-				RelativeLayout.AddView(_skCanvasView);
+				RelativeLayout.AddView(_renderViewAsView);
 
 				_nativeLayerHost = new ClippedRelativeLayout(this);
 				_nativeLayerHost.LayoutParameters = new ViewGroup.LayoutParams(
@@ -291,9 +295,36 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		private IUnoSkiaRenderView CreateRenderView()
+		{
+			if (FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid)
+			{
+				if (!PackageManager?.HasSystemFeature(PackageManager.FeatureVulkanHardwareLevel) ?? true)
+				{
+					typeof(ApplicationActivity).Log().Warn($"Device does not support Vulkan. Falling back to OpenGL ES.");
+				}
+				else
+				{
+					try
+					{
+						return new UnoSKVulkanView(this);
+					}
+					catch (Exception ex)
+					{
+						if (typeof(ApplicationActivity).Log().IsEnabled(LogLevel.Warning))
+						{
+							typeof(ApplicationActivity).Log().Warn($"Vulkan rendering not available: {ex.Message}. Falling back to OpenGL ES.");
+						}
+					}
+				}
+			}
+
+			return new UnoSKCanvasView(this);
+		}
+
 		internal void InvalidateRender()
 		{
-			_skCanvasView?.InvalidateRender();
+			_renderView?.InvalidateRender();
 			RelativeLayout.Invalidate();
 		}
 

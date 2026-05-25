@@ -45,5 +45,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 																							 isEnabledByDefault: true,
 																							 description: "Resource Generation Failed."
 																							);
+		public static readonly DiagnosticDescriptor InvalidXClassRule = new DiagnosticDescriptor(
+#pragma warning disable RS2008 // Enable analyzer release tracking
+																							 "UXAML0004",
+#pragma warning restore RS2008 // Enable analyzer release tracking
+																							 "Invalid x:Class Value",
+																							 "{0}",
+																							 XamlCategory,
+																							 DiagnosticSeverity.Warning,
+																							 isEnabledByDefault: true,
+																							 description: "The x:Class attribute value is malformed and must include a namespace."
+																							);
+
+		public static readonly DiagnosticDescriptor AmbiguousGlobalTypeRule = new DiagnosticDescriptor(
+#pragma warning disable RS2008 // Enable analyzer release tracking
+																							 "UXAML0005",
+#pragma warning restore RS2008 // Enable analyzer release tracking
+																							 "Ambiguous Global XAML Type",
+																							 "{0}",
+																							 XamlCategory,
+																							 DiagnosticSeverity.Error,
+																							 isEnabledByDefault: true,
+																							 description: "A type name used without an explicit xmlns prefix was found in multiple global namespaces. Use an explicit xmlns prefix to disambiguate."
+																							);
 	}
 }

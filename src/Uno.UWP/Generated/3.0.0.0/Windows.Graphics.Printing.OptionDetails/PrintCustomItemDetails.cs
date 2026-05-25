@@ -37,8 +37,8 @@ namespace Windows.Graphics.Printing.OptionDetails
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails.ItemId.get
-		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails.ItemDisplayName.set
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails.ItemDisplayName.get
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails.ItemDisplayName.set
+		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomItemDetails.ItemId.get
 	}
 }

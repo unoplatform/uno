@@ -33,8 +33,6 @@ namespace Windows.ApplicationModel.Store.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.DeliveryOptimizationSettings.DownloadMode.get
-		// Forced skipping of method Windows.ApplicationModel.Store.Preview.DeliveryOptimizationSettings.DownloadModeSource.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Store.Preview.DeliveryOptimizationSettings GetCurrentSettings()
@@ -42,5 +40,7 @@ namespace Windows.ApplicationModel.Store.Preview
 			throw new global::System.NotImplementedException("The member DeliveryOptimizationSettings DeliveryOptimizationSettings.GetCurrentSettings() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeliveryOptimizationSettings%20DeliveryOptimizationSettings.GetCurrentSettings%28%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.DeliveryOptimizationSettings.DownloadMode.get
+		// Forced skipping of method Windows.ApplicationModel.Store.Preview.DeliveryOptimizationSettings.DownloadModeSource.get
 	}
 }

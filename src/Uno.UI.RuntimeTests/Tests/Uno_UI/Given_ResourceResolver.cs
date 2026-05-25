@@ -73,6 +73,7 @@ public class Given_ResourceResolver
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Resolving_Parent_Local_Resources_With_NativeViews()
 	{
 		var setup = new Resolve_Parent_Resources();

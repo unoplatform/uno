@@ -10,6 +10,14 @@ namespace Windows.Networking.BackgroundTransfer
 	{
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloadProgress.BackgroundDownloadProgress()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public BackgroundDownloadProgress(ulong _BytesReceived, ulong _TotalBytesToReceive, global::Windows.Networking.BackgroundTransfer.BackgroundTransferStatus _Status, bool _HasResponseChanged, bool _HasRestarted)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundDownloadProgress", "BackgroundDownloadProgress.BackgroundDownloadProgress(ulong _BytesReceived, ulong _TotalBytesToReceive, BackgroundTransferStatus _Status, bool _HasResponseChanged, bool _HasRestarted)");
+		}
+#endif
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloadProgress.BackgroundDownloadProgress(ulong, ulong, Windows.Networking.BackgroundTransfer.BackgroundTransferStatus, bool, bool)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public ulong BytesReceived;
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

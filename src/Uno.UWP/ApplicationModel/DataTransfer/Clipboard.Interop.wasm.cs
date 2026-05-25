@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices.JavaScript;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
 
 namespace __Windows.ApplicationModel.DataTransfer
@@ -20,6 +20,12 @@ namespace __Windows.ApplicationModel.DataTransfer
 
 			[JSImport($"{JsType}.setHtml")]
 			internal static partial Task SetHtmlAsync(string html, string text);
+
+			[JSImport($"{JsType}.getImage")]
+			internal static partial Task<string> GetImageAsync();
+
+			[JSImport($"{JsType}.setImage")]
+			internal static partial Task SetImageAsync(string base64, string mimeType);
 
 			[JSImport($"{JsType}.startContentChanged")]
 			internal static partial void StartContentChanged();

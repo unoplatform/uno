@@ -129,6 +129,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_SetChildTemplateUsingVisualState()
 		{
 			var parent = (Button)XamlReader.Load(_when_SetChildTemplateUsingVisualState);
@@ -172,6 +173,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Refresh_Setter_BindingOnInvocation()
 		{
 			var SUT = new When_Refresh_Setter_BindingOnInvocation();
@@ -304,6 +306,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Refresh_Setter_BindingOnInvocation_ElementName()
 		{
 			var SUT = new When_Refresh_Setter_BindingOnInvocation_ElementName();
@@ -500,6 +503,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				typeof(FlipView),
 				typeof(FlipViewItem),
 				typeof(FlyoutPresenter),
+				typeof(GroupItem),
 				typeof(Frame),
 				typeof(Microsoft.UI.Xaml.Controls.GridView),
 				typeof(GridViewHeaderItem),
@@ -516,6 +520,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				typeof(MenuFlyoutPresenter),
 				typeof(MenuFlyoutSeparator),
 				typeof(MenuFlyoutSubItem),
+				typeof(SplitMenuFlyoutItem),
 				typeof(NavigationViewItemBase),
 				typeof(Page),
 				typeof(PasswordBox),
@@ -555,8 +560,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			StringBuilder nonWinUI = new StringBuilder();
 			foreach (var controlInstance in allControlTypes.Select(t => Activator.CreateInstance(t) as Control))
 			{
-				Assert.AreEqual(url, controlInstance.DefaultStyleResourceUri);
-				Assert.IsNotNull(Style.GetDefaultStyleForInstance(controlInstance, controlInstance.GetType()));
+				Assert.AreEqual(url, controlInstance.DefaultStyleResourceUri, $"DefaultStyleResourceUri mismatch for {controlInstance.GetType()}");
+				Assert.IsNotNull(Style.GetDefaultStyleForInstance(controlInstance, controlInstance.GetType()), $"Default style not found for {controlInstance.GetType()}");
 			}
 		}
 #endif
@@ -605,6 +610,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21469")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_DefaultStyleResourceUri_And_Derived_Control()
 		{
 			var SUT = XamlHelper.LoadXaml<Grid>("""

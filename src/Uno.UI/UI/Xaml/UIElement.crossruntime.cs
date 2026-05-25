@@ -57,6 +57,13 @@ namespace Microsoft.UI.Xaml
 			IsLoading = false;
 			IsLoaded = true;
 
+			// Propagate VisualTree to ContextFlyout (matches WinUI UIElement::EnterImpl
+			// which calls Enter on the ContextFlyout when entering the tree).
+			if (ContextFlyout is { } contextFlyout && this.GetVisualTree() is { } visualTree)
+			{
+				contextFlyout.SetVisualTree(visualTree);
+			}
+
 			OnFwEltLoaded();
 			UpdateHitTest();
 		}
@@ -118,9 +125,22 @@ namespace Microsoft.UI.Xaml
 		private void ChildEnter(UIElement child, EnterParams @params)
 		{
 			// Uno TODO: WinUI has much more complex logic than this.
+			// WinUI's CDOCollection::ChildEnter always calls child->Enter() (the outer Enter),
+			// which calls SetVisualTree. We call EnterImpl directly for live children here,
+			// so we must call SetVisualTree explicitly to match WinUI behavior.
 			if (@params.IsLive)
 			{
+				if (@params.VisualTree is not null)
+				{
+					child.SetVisualTree(@params.VisualTree);
+				}
+
 				child.EnterImpl(@params, this.Depth + 1);
+			}
+			else if (@params.IsForKeyboardAccelerator)
+			{
+				// Dead enter to propagate keyboard accelerator registration through the subtree.
+				child.Enter(@params, int.MinValue);
 			}
 		}
 #endif

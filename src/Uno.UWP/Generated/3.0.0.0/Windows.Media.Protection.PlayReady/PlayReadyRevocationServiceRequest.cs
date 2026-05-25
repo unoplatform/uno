@@ -10,11 +10,35 @@ namespace Windows.Media.Protection.PlayReady
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ChallengeCustomData
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PlayReadyRevocationServiceRequest.ChallengeCustomData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PlayReadyRevocationServiceRequest.ChallengeCustomData");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest", "string PlayReadyRevocationServiceRequest.ChallengeCustomData");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Guid ProtectionSystem
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member Guid PlayReadyRevocationServiceRequest.ProtectionSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyRevocationServiceRequest.ProtectionSystem");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ResponseCustomData
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string PlayReadyRevocationServiceRequest.ResponseCustomData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PlayReadyRevocationServiceRequest.ResponseCustomData");
 			}
 		}
 #endif
@@ -44,41 +68,12 @@ namespace Windows.Media.Protection.PlayReady
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ChallengeCustomData
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PlayReadyRevocationServiceRequest.ChallengeCustomData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PlayReadyRevocationServiceRequest.ChallengeCustomData");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest", "string PlayReadyRevocationServiceRequest.ChallengeCustomData");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ResponseCustomData
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PlayReadyRevocationServiceRequest.ResponseCustomData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PlayReadyRevocationServiceRequest.ResponseCustomData");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PlayReadyRevocationServiceRequest()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest", "PlayReadyRevocationServiceRequest.PlayReadyRevocationServiceRequest()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest.PlayReadyRevocationServiceRequest()
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest.Uri.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest.Uri.set
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest.ResponseCustomData.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest.ChallengeCustomData.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest.ChallengeCustomData.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction BeginServiceRequest()
@@ -107,8 +102,13 @@ namespace Windows.Media.Protection.PlayReady
 			throw new global::System.NotImplementedException("The member Exception PlayReadyRevocationServiceRequest.ProcessManualEnablingResponse(byte[] responseBytes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20PlayReadyRevocationServiceRequest.ProcessManualEnablingResponse%28byte%5B%5D%20responseBytes%29");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest.ChallengeCustomData.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest.ChallengeCustomData.set
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest.ProtectionSystem.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest.ResponseCustomData.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest.Type.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest.Uri.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyRevocationServiceRequest.Uri.set
 		// Processing: Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest
 		// Processing: Windows.Media.Protection.IMediaProtectionServiceRequest
 	}

@@ -33,7 +33,8 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.OptionalReferencePhotoCapturedEventArgs.Frame.get
+		// Forced skipping of method Windows.Media.Capture.OptionalReferencePhotoCapturedEventArgs.~OptionalReferencePhotoCapturedEventArgs()
 		// Forced skipping of method Windows.Media.Capture.OptionalReferencePhotoCapturedEventArgs.Context.get
+		// Forced skipping of method Windows.Media.Capture.OptionalReferencePhotoCapturedEventArgs.Frame.get
 	}
 }

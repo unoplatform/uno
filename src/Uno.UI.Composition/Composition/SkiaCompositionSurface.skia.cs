@@ -57,46 +57,23 @@ namespace Microsoft.UI.Composition
 		{
 			using var stream = new SKManagedStream(imageStream);
 
-			if (targetWidth is int actualTargetWidth && targetHeight is int actualTargetHeight)
+			try
 			{
-				using var codec = SKCodec.Create(stream);
-
-				var bitmap = new SKBitmap(actualTargetWidth, actualTargetHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
-
-				var result = codec.GetPixels(bitmap.Info, bitmap.GetPixels());
-
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug($"Image load result {result}");
-				}
-
-				if (result == SKCodecResult.Success)
-				{
-					SetFrameProviderAndOnFrameChanged(FrameProviderFactory.Create(SKImage.FromBitmap(bitmap)), null);
-				}
-
-				return (result == SKCodecResult.Success || result == SKCodecResult.IncompleteInput, result);
-			}
-			else
-			{
-				try
-				{
-					var onFrameChanged = () => NativeDispatcher.Main.Enqueue(() => OnPropertyChanged(nameof(Image), isSubPropertyChange: false), NativeDispatcherPriority.High);
-					if (!FrameProviderFactory.TryCreate(stream, onFrameChanged, out var provider))
-					{
-						SetFrameProviderAndOnFrameChanged(null, null);
-						return (false, "Failed to decode image");
-					}
-
-					SetFrameProviderAndOnFrameChanged(provider, onFrameChanged);
-					GC.KeepAlive(onFrameChanged);
-					return (true, "Success");
-				}
-				catch (Exception e)
+				var onFrameChanged = () => NativeDispatcher.Main.Enqueue(() => OnPropertyChanged(nameof(Image), isSubPropertyChange: false), NativeDispatcherPriority.High);
+				if (!FrameProviderFactory.TryCreate(stream, onFrameChanged, targetWidth, targetHeight, out var provider))
 				{
 					SetFrameProviderAndOnFrameChanged(null, null);
-					return (false, e.Message);
+					return (false, "Failed to decode image");
 				}
+
+				SetFrameProviderAndOnFrameChanged(provider, onFrameChanged);
+				GC.KeepAlive(onFrameChanged);
+				return (true, "Success");
+			}
+			catch (Exception e)
+			{
+				SetFrameProviderAndOnFrameChanged(null, null);
+				return (false, e.Message);
 			}
 		}
 

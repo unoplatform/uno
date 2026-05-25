@@ -160,6 +160,9 @@ namespace Microsoft.UI.Xaml
 		public bool Remove(object key)
 		{
 			var keyToRemove = new ResourceKey(key);
+
+			// MUX: CResourceDictionary::RemoveKey invalidates the theme walk cache for this key.
+			ThemeWalkResourceCache.Instance.RemoveCacheEntry(keyToRemove);
 #if __SKIA__ || __WASM__ || __ANDROID__
 			if (_values.TryGetValue(keyToRemove, out var value))
 			{
@@ -208,7 +211,7 @@ namespace Microsoft.UI.Xaml
 		{
 			return _values.ContainsKey(resourceKey)
 			|| ContainsKeyMerged(resourceKey)
-			|| ContainsKeyTheme(resourceKey, Themes.Active)
+			|| ContainsKeyTheme(resourceKey, GetActiveTheme())
 			|| (shouldCheckSystem && !IsSystemDictionary && ResourceResolver.ContainsKeySystem(resourceKey));
 		}
 
@@ -263,7 +266,7 @@ namespace Microsoft.UI.Xaml
 				return true;
 			}
 
-			if (GetActiveThemeDictionary(Themes.Active) is { } activeThemeDictionary
+			if (GetActiveThemeDictionary(GetActiveTheme()) is { } activeThemeDictionary
 				&& activeThemeDictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
 			{
 				return true;
@@ -279,6 +282,102 @@ namespace Microsoft.UI.Xaml
 				KeyNotFoundCache.Add(resourceKey);
 			}
 
+			return false;
+		}
+
+		/// <summary>
+		/// Tries to get a value and also returns the providing ResourceDictionary.
+		/// </summary>
+		/// <remarks>
+		/// MUX Reference: CResourceDictionary::GetKeyForResourceResolutionNoRef + ResolveThemeResource
+		/// The providing dictionary is the one that should be pinned for theme resource re-resolution.
+		/// Critical: when a value is found in a theme sub-dictionary (via GetActiveThemeDictionary),
+		/// the providing dictionary is THIS dictionary (the one owning ThemeDictionaries), not the
+		/// inner theme sub-dictionary. This ensures re-querying on theme change automatically picks
+		/// the new theme's sub-dictionary.
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal bool TryGetValue(in ResourceKey resourceKey, out object value, out ResourceDictionary providingDictionary, bool shouldCheckSystem)
+		{
+			bool useKeysNotFoundCache = resourceKey.ShouldFilter;
+			var modifiedKey = resourceKey;
+
+			if (useKeysNotFoundCache)
+			{
+				if (!shouldCheckSystem && KeyNotFoundCache.Contains(resourceKey))
+				{
+					value = null;
+					providingDictionary = null;
+					return false;
+				}
+
+				modifiedKey = modifiedKey with { ShouldFilter = false };
+			}
+
+			if (_values.TryGetValue(modifiedKey, out value))
+			{
+				if (value is SpecialValue)
+				{
+					TryMaterializeLazy(resourceKey, ref value);
+					TryResolveAlias(ref value);
+				}
+
+#if DEBUG && DEBUG_SET_RESOURCE_SOURCE
+				TryApplySource(value, resourceKey);
+#endif
+				providingDictionary = this;
+				return true;
+			}
+
+			if (GetFromMerged(modifiedKey, out value, out providingDictionary))
+			{
+				return true;
+			}
+
+			// When found via theme dictionary, pin THIS dictionary (the owner of ThemeDictionaries),
+			// not the inner theme sub-dictionary. This is critical for correct theme switching.
+			if (GetActiveThemeDictionary(GetActiveTheme()) is { } activeThemeDictionary
+				&& activeThemeDictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+			{
+				providingDictionary = this;
+				return true;
+			}
+
+			if (shouldCheckSystem && !IsSystemDictionary)
+			{
+				if (ResourceResolver.TrySystemResourceRetrieval(modifiedKey, out value))
+				{
+					// System resources are always available at top-level;
+					// no need to pin a specific dictionary -- RefreshValue()
+					// will fall back to TryTopLevelRetrieval.
+					providingDictionary = null;
+					return true;
+				}
+			}
+
+			if (useKeysNotFoundCache && !shouldCheckSystem)
+			{
+				KeyNotFoundCache.Add(resourceKey);
+			}
+
+			providingDictionary = null;
+			return false;
+		}
+
+		private bool GetFromMerged(in ResourceKey resourceKey, out object value, out ResourceDictionary providingDictionary)
+		{
+			var count = _mergedDictionaries.Count;
+
+			for (int i = count - 1; i >= 0; i--)
+			{
+				if (_mergedDictionaries[i].TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false))
+				{
+					return true;
+				}
+			}
+
+			value = null;
+			providingDictionary = null;
 			return false;
 		}
 
@@ -306,6 +405,10 @@ namespace Microsoft.UI.Xaml
 			{
 				throw new ArgumentException("An entry with the same key already exists.");
 			}
+
+			// MUX: CResourceDictionary::AddKey invalidates the theme walk cache for this key
+			// because a new resource can shadow entries from other dictionaries in the lookup chain.
+			ThemeWalkResourceCache.Instance.RemoveCacheEntry(resourceKey);
 
 			if (value is WeakResourceInitializer lazyResourceInitializer)
 			{
@@ -545,6 +648,76 @@ namespace Microsoft.UI.Xaml
 		public global::System.Collections.Generic.ICollection<object> Keys
 			=> _values.Keys.Select(k => ConvertKey(k)).ToList();
 
+		/// <summary>
+		/// Enumerates key-value pairs without materializing lazy entries.
+		/// Lazy or alias entries are resolved transiently (the resolved value is returned
+		/// but NOT stored back to the dictionary, preserving theme-aware re-resolution).
+		/// </summary>
+		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+		public IEnumerable<KeyValuePair<object, object>> GetKeyValuePairsNonMaterialized()
+		{
+			// Snapshot entries to avoid InvalidOperationException if an initializer
+			// causes _values to mutate during enumeration.
+			var snapshot = new List<KeyValuePair<SpecializedResourceDictionary.ResourceKey, object>>(_values.Count);
+			foreach (var kvp in _values)
+			{
+				snapshot.Add(kvp);
+			}
+
+			foreach (var kvp in snapshot)
+			{
+				var value = kvp.Value;
+				if (value is LazyInitializer lazyInitializer)
+				{
+					// Resolve lazily but do NOT store back — preserves re-resolution capability
+					bool pushedScope = false;
+					bool pushedSource = false;
+
+					try
+					{
+						bool hasEmptyCurrentScope = lazyInitializer.CurrentScope.Sources.IsEmpty;
+						if (!hasEmptyCurrentScope)
+						{
+							ResourceResolver.PushNewScope(lazyInitializer.CurrentScope);
+							pushedScope = true;
+						}
+
+						if (!FeatureConfiguration.ResourceDictionary.IncludeUnreferencedDictionaries)
+						{
+							ResourceResolver.PushSourceToScope(this);
+							pushedSource = true;
+						}
+
+						value = lazyInitializer.Initializer();
+					}
+					catch
+					{
+						value = null;
+					}
+					finally
+					{
+						if (pushedSource)
+						{
+							ResourceResolver.PopSourceFromScope();
+						}
+
+						if (pushedScope)
+						{
+							ResourceResolver.PopScope();
+						}
+					}
+				}
+
+				if (value is StaticResourceAliasRedirect alias)
+				{
+					ResourceResolver.ResolveResourceStatic(alias.ResourceKey, out var target, alias.ParseContext);
+					value = target;
+				}
+
+				yield return new KeyValuePair<object, object>(ConvertKey(kvp.Key), value);
+			}
+		}
+
 		private static object ConvertKey(ResourceKey resourceKey)
 			=> resourceKey.TypeKey ?? (object)resourceKey.Key;
 
@@ -713,7 +886,13 @@ namespace Microsoft.UI.Xaml
 
 		internal static object GetStaticResourceAliasPassthrough(string resourceKey, XamlParseContext parseContext) => new StaticResourceAliasRedirect(resourceKey, parseContext);
 
-		internal static ResourceKey GetActiveTheme() => Themes.Active;
+		internal static ResourceKey GetActiveTheme() => Themes.RequestedThemeForSubTree;
+
+		internal static void PushRequestedThemeForSubTree(ResourceKey theme)
+			=> Themes.PushRequestedThemeForSubTree(theme);
+
+		internal static void PopRequestedThemeForSubTree()
+			=> Themes.PopRequestedThemeForSubTree();
 
 		internal static void SetActiveTheme(SpecializedResourceDictionary.ResourceKey key)
 			=> Themes.Active = key;
@@ -761,8 +940,38 @@ namespace Microsoft.UI.Xaml
 		private static class Themes
 		{
 			public static SpecializedResourceDictionary.ResourceKey Light { get; } = "Light";
+			public static SpecializedResourceDictionary.ResourceKey Dark { get; } = "Dark";
 			public static SpecializedResourceDictionary.ResourceKey Default { get; } = "Default";
 			public static SpecializedResourceDictionary.ResourceKey Active { get; set; } = Default;
+
+			// Stack for element-level theme context (matching WinUI's m_requestedThemeForSubTree pattern)
+			private static readonly Stack<SpecializedResourceDictionary.ResourceKey> _requestedThemeForSubTree = new();
+
+			/// <summary>
+			/// Gets the currently active theme for resource lookups.
+			/// If an element has pushed its theme onto the stack, that theme is used.
+			/// Otherwise, falls back to the application's active theme.
+			/// </summary>
+			public static SpecializedResourceDictionary.ResourceKey RequestedThemeForSubTree =>
+				_requestedThemeForSubTree.Count > 0 ? _requestedThemeForSubTree.Peek() : Active;
+
+			/// <summary>
+			/// Pushes a theme onto the stack for the current element's subtree processing.
+			/// </summary>
+			public static void PushRequestedThemeForSubTree(SpecializedResourceDictionary.ResourceKey theme)
+				=> _requestedThemeForSubTree.Push(theme);
+
+			/// <summary>
+			/// Pops the theme from the stack after processing an element's subtree.
+			/// </summary>
+			public static void PopRequestedThemeForSubTree()
+			{
+				Debug.Assert(_requestedThemeForSubTree.Count > 0, "PopRequestedThemeForSubTree called with empty stack");
+				if (_requestedThemeForSubTree.Count > 0)
+				{
+					_requestedThemeForSubTree.Pop();
+				}
+			}
 		}
 	}
 }

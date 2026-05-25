@@ -274,6 +274,9 @@ namespace Microsoft.UI.Xaml
 				// algorithm is doing its layout properly.
 				parent.InvalidateMeasure();
 			}
+
+			// Notify UIA clients that IsOffscreen (and potentially other properties) may have changed.
+			CachedAutomationPeer?.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: true);
 		}
 
 		partial void OnRenderTransformSet()

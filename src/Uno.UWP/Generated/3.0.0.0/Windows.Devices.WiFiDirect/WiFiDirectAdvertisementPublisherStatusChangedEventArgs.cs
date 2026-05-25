@@ -33,7 +33,7 @@ namespace Windows.Devices.WiFiDirect
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisementPublisherStatusChangedEventArgs.Status.get
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisementPublisherStatusChangedEventArgs.Error.get
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectAdvertisementPublisherStatusChangedEventArgs.Status.get
 	}
 }

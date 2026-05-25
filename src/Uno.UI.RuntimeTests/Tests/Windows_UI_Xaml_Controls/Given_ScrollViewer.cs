@@ -50,6 +50,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ScrollViewer_Resized()
 		{
 			var content = new Border
@@ -108,6 +109,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Presenter_Doesnt_Take_Up_All_Space()
 		{
 			const int ContentWidth = 700;
@@ -812,6 +814,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		// Both iOS and macOS animation were disabled and will be fixed under uno-private#1788
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.IOS | RuntimeTestPlatforms.SkiaMacOS)] // uno-private#1740 changed the way mouse wheel events are processed on iOS and macOS: Not using animations
 		public async Task When_LotOfWheelEvents_Then_IgnoreIrrelevant()
 		{
 			// This test make sure than when using a "free wheel" mouse or a touch-pad (which both produces a lot of events),
@@ -863,9 +867,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if NETFX_CORE
-		[Ignore("KeyboardHelper doesn't work on Windows")]
-#endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Space_Already_Handled()
 		{
 			var lv = new ListView
@@ -1190,6 +1192,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ChangeView_Offset()
 		{
 			const double offset = 100;
@@ -1970,6 +1973,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		// Both iOS and macOS animation were disabled and will be fixed under uno-private#1788
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.IOS | RuntimeTestPlatforms.SkiaMacOS)] // uno-private#1740 changed the way mouse wheel events are processed on iOS and macOS: Not processing them as discrete events
 		public async Task When_ViewChanged_From_MouseWheel()
 		{
 			// setup is a 100x100 ScrollViewer with a 2000px tall Border
@@ -2018,5 +2023,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			CollectionAssert.AreEqual(new bool[] { true, false, true, false }, sequence);
 		}
 #endif
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_TouchFlickOnNonScrollable_Then_InertiaDoesNotAssert()
+		{
+			// Repro: flicking on a ScrollViewer that has nothing to scroll
+			// triggers inertia in the GestureRecognizer, but no handler claims it.
+			// This used to cause a Debug.Assert failure.
+			var sut = new ScrollViewer
+			{
+				Width = 200,
+				Height = 400,
+				IsScrollInertiaEnabled = true,
+				Content = new Border
+				{
+					Width = 180,
+					Height = 100, // Smaller than SV → nothing to scroll
+					Background = new SolidColorBrush(Colors.DeepPink),
+				}
+			};
+
+			var center = (await UITestHelper.Load(sut)).GetCenter();
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			Assert.AreEqual(0d, sut.VerticalOffset);
+			Assert.AreEqual(0d, sut.ScrollableHeight, "Content is smaller than viewport, nothing to scroll");
+
+			// Fast flick down (drag upward) — should trigger inertia in the gesture recognizer
+			finger.Drag(
+				from: center,
+				to: new(center.X, center.Y - 200),
+				steps: 1,
+				stepOffsetInMilliseconds: 1);
+
+			// Wait for inertia to run and complete (or be stopped)
+			await UITestHelper.WaitForIdle();
+
+			// The scroll offset should remain 0 — there's nothing to scroll
+			Assert.AreEqual(0d, sut.VerticalOffset, "Should not have scrolled");
+		}
 	}
 }

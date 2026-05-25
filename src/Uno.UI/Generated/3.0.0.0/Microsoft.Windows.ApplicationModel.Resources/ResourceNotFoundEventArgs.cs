@@ -33,8 +33,6 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs.Context.get
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs.Name.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetResolvedCandidate(global::Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate candidate)
@@ -42,5 +40,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs", "void ResourceNotFoundEventArgs.SetResolvedCandidate(ResourceCandidate candidate)");
 		}
 #endif
+		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs.Context.get
+		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs.Name.get
 	}
 }

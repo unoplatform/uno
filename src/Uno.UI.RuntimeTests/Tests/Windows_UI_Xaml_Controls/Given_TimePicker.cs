@@ -23,6 +23,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public class Given_TimePicker
 	{
 #if HAS_UNO
@@ -58,6 +59,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22207")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_12HourClock_Should_Display_12_Instead_Of_0()
 		{
 			var timePicker = new TimePicker();
@@ -324,7 +326,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/15263")]
 		public async Task When_App_Theme_Dark_Native_Flyout_Theme()
 		{
-			using var _ = ThemeHelper.UseDarkTheme();
+			// Native iOS TimePicker reads CoreApplication.RequestedTheme for
+			// OverrideUserInterfaceStyle, so application-level theme is needed.
+			using var _ = ThemeHelper.UseApplicationDarkTheme();
 			await When_Native_Flyout_Theme(UIKit.UIUserInterfaceStyle.Dark);
 		}
 

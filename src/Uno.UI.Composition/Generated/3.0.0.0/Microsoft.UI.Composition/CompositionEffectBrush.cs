@@ -8,7 +8,7 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionEffectBrush : global::Microsoft.UI.Composition.CompositionBrush
 	{
-		// Skipping already declared method Microsoft.UI.Composition.CompositionEffectBrush.SetSourceParameter(string, Microsoft.UI.Composition.CompositionBrush)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionEffectBrush.GetSourceParameter(string)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionEffectBrush.SetSourceParameter(string, Microsoft.UI.Composition.CompositionBrush)
 	}
 }

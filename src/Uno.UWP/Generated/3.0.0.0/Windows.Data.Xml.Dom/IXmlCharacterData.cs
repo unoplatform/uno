@@ -10,13 +10,13 @@ namespace Windows.Data.Xml.Dom
 	{
 		// Skipping already declared property Data
 		// Skipping already declared property Length
-		// Forced skipping of method Windows.Data.Xml.Dom.IXmlCharacterData.Data.get
-		// Forced skipping of method Windows.Data.Xml.Dom.IXmlCharacterData.Data.set
-		// Forced skipping of method Windows.Data.Xml.Dom.IXmlCharacterData.Length.get
 		// Skipping already declared method Windows.Data.Xml.Dom.IXmlCharacterData.SubstringData(uint, uint)
 		// Skipping already declared method Windows.Data.Xml.Dom.IXmlCharacterData.AppendData(string)
 		// Skipping already declared method Windows.Data.Xml.Dom.IXmlCharacterData.InsertData(uint, string)
 		// Skipping already declared method Windows.Data.Xml.Dom.IXmlCharacterData.DeleteData(uint, uint)
 		// Skipping already declared method Windows.Data.Xml.Dom.IXmlCharacterData.ReplaceData(uint, uint, string)
+		// Forced skipping of method Windows.Data.Xml.Dom.IXmlCharacterData.Data.get
+		// Forced skipping of method Windows.Data.Xml.Dom.IXmlCharacterData.Data.set
+		// Forced skipping of method Windows.Data.Xml.Dom.IXmlCharacterData.Length.get
 	}
 }

@@ -5,11 +5,9 @@ jobs:
 
 - job: UITests_Screenshots_Compare
   displayName: 'UI Tests Screenshots Comparison'
-  
+
   timeoutInMinutes: 90
   cancelTimeoutInMinutes: 0
-  
-  condition: or(succeeded(), and(failed(), ge(variables['System.StageAttempt'], 5)))
 
   pool: ${{ parameters.poolName }}
 
@@ -21,24 +19,46 @@ jobs:
   - checkout: self
     clean: true
 
+  - powershell: |
+      $headers = @{ Authorization = "Bearer $(System.AccessToken)" }
+      $uri = "$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_apis/build/builds/$(Build.BuildId)/artifacts?api-version=7.1"
+      try {
+        $artifacts = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
+        $already = $artifacts.value | Where-Object { $_.name -eq 'screenshot-diff-results' }
+        if ($already) {
+          Write-Host "Screenshot comparison already ran in this build - skipping."
+          Write-Host "##vso[task.setvariable variable=SkipComparison]true"
+        } else {
+          Write-Host "Screenshot comparison has not run yet - proceeding."
+          Write-Host "##vso[task.setvariable variable=SkipComparison]false"
+        }
+      } catch {
+        Write-Host "Artifact probe failed ($($_.Exception.Message)); running comparison."
+        Write-Host "##vso[task.setvariable variable=SkipComparison]false"
+      }
+    displayName: Check if screenshot comparison already ran
+    env:
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+
   - template: ../templates/dotnet-install.yml
 
   - powershell: |
       dotnet build -c Release src/Uno.UI.TestComparer/Uno.UI.TestComparer.csproj /bl:$(build.artifactstagingdirectory)/test-comparer.binlog
     displayName: Build Test Comparer
+    condition: and(succeeded(), ne(variables['SkipComparison'], 'true'))
 
   - script: |
-      src\Uno.UI.TestComparer\bin\Release\Uno.UI.TestComparer.exe "azdo" --pat="$(UITestsCompare_PAT)" --base-path="$(COMPARE_WORKDIR)" --source-branch="%GIT_SOURCEBRANCH%" --target-branch="%GIT_TARGETBRANCH%" --artifact-name="uitests-results" --artifact-inner-path="uitests-results\screenshots" --definition-name="$(Build.DefinitionName)" --project-name="$(System.TeamProject)" --server-uri="$(System.TeamFoundationCollectionUri)" --current-build="$(Build.BuildId)" --run-limit="2" --github-pat="$(CommentsGitHubPAT)" --source-repository="$(system.pullRequest.sourceRepositoryUri)" --github-pr-id="$(system.pullRequest.pullRequestNumber)"
+      src\Uno.UI.TestComparer\bin\Release\Uno.UI.TestComparer.exe "azdo" --pat="$(UITestsCompare_PAT)" --base-path="$(COMPARE_WORKDIR)" --source-branch="%GIT_SOURCEBRANCH%" --target-branch="%GIT_TARGETBRANCH%" --artifact-name="screenshot-tests-results" --artifact-inner-path="screenshot-tests-results\screenshots" --definition-name="$(Build.DefinitionName)" --project-name="$(System.TeamProject)" --server-uri="$(System.TeamFoundationCollectionUri)" --current-build="$(Build.BuildId)" --run-limit="2" --github-pat="$(CommentsGitHubPAT)" --source-repository="$(system.pullRequest.sourceRepositoryUri)" --github-pr-id="$(system.pullRequest.pullRequestNumber)"
 
     env:
       GIT_TARGETBRANCH: "$(System.PullRequest.TargetBranch)"
       GIT_SOURCEBRANCH: "$(Build.SourceBranch)"
 
     displayName: 'Compare UI Tests screenshots'
-    condition: and(eq(variables['Build.Repository.Provider'], 'GitHub'), not(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature')))
+    condition: and(succeeded(), ne(variables['SkipComparison'], 'true'), eq(variables['Build.Repository.Provider'], 'GitHub'), not(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature')))
 
   - task: PublishTestResults@2
-    condition: always()
+    condition: and(always(), ne(variables['SkipComparison'], 'true'))
     inputs:
       testResultsFiles: '$(COMPARE_WORKDIR)\*.xml'
       testRunTitle: 'Screenshots Compare Test Run'
@@ -51,11 +71,12 @@ jobs:
       includeRootFolder: true
       archiveType: 'zip'
       archiveFile: '$(Build.ArtifactStagingDirectory)/snapshot-compare-results-$(Build.BuildId).zip'
-    condition: not(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature'))
+    condition: and(succeeded(), ne(variables['SkipComparison'], 'true'), not(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature')))
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
+    condition: and(succeeded(), ne(variables['SkipComparison'], 'true'))
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: uitests-compare-results
+      ArtifactName: screenshot-diff-results
       ArtifactType: Container

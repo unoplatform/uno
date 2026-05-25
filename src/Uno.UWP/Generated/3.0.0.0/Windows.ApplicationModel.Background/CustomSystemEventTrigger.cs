@@ -36,8 +36,8 @@ namespace Windows.ApplicationModel.Background
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.CustomSystemEventTrigger.CustomSystemEventTrigger(string, Windows.ApplicationModel.Background.CustomSystemEventTriggerRecurrence)
-		// Forced skipping of method Windows.ApplicationModel.Background.CustomSystemEventTrigger.TriggerId.get
 		// Forced skipping of method Windows.ApplicationModel.Background.CustomSystemEventTrigger.Recurrence.get
+		// Forced skipping of method Windows.ApplicationModel.Background.CustomSystemEventTrigger.TriggerId.get
 		// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger
 	}
 }

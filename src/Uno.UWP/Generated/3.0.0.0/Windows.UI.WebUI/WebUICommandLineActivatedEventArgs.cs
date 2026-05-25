@@ -15,11 +15,31 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ActivatedOperation WebUICommandLineActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUICommandLineActivatedEventArgs.ActivatedOperation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member ActivationKind WebUICommandLineActivatedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivationKind%20WebUICommandLineActivatedEventArgs.Kind");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Activation.CommandLineActivationOperation Operation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CommandLineActivationOperation WebUICommandLineActivatedEventArgs.Operation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CommandLineActivationOperation%20WebUICommandLineActivatedEventArgs.Operation");
 			}
 		}
 #endif
@@ -53,32 +73,12 @@ namespace Windows.UI.WebUI
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Activation.CommandLineActivationOperation Operation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CommandLineActivationOperation WebUICommandLineActivatedEventArgs.Operation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CommandLineActivationOperation%20WebUICommandLineActivatedEventArgs.Operation");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.WebUI.ActivatedOperation ActivatedOperation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUICommandLineActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivatedOperation%20WebUICommandLineActivatedEventArgs.ActivatedOperation");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.UI.WebUI.WebUICommandLineActivatedEventArgs.Operation.get
+		// Forced skipping of method Windows.UI.WebUI.WebUICommandLineActivatedEventArgs.ActivatedOperation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUICommandLineActivatedEventArgs.Kind.get
+		// Forced skipping of method Windows.UI.WebUI.WebUICommandLineActivatedEventArgs.Operation.get
 		// Forced skipping of method Windows.UI.WebUI.WebUICommandLineActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.UI.WebUI.WebUICommandLineActivatedEventArgs.SplashScreen.get
 		// Forced skipping of method Windows.UI.WebUI.WebUICommandLineActivatedEventArgs.User.get
-		// Forced skipping of method Windows.UI.WebUI.WebUICommandLineActivatedEventArgs.ActivatedOperation.get
 		// Processing: Windows.ApplicationModel.Activation.ICommandLineActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser

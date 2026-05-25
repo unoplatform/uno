@@ -132,6 +132,10 @@ namespace Windows.UI.ViewManagement
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.StatusBar", "double StatusBar.BackgroundOpacity");
 			}
 		}
+
+		[global::Uno.NotImplemented]
+		public StatusBarProgressIndicator ProgressIndicator
+			=> throw new global::System.NotImplementedException("The member StatusBarProgressIndicator StatusBar.ProgressIndicator is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StatusBarProgressIndicator%20StatusBar.ProgressIndicator");
 	}
 }
 #endif

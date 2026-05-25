@@ -15,43 +15,15 @@ namespace Windows.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float RoughnessFactor
+		public global::System.Numerics.Vector4 BaseColorFactor
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SceneMetallicRoughnessMaterial.RoughnessFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SceneMetallicRoughnessMaterial.RoughnessFactor");
+				throw new global::System.NotImplementedException("The member Vector4 SceneMetallicRoughnessMaterial.BaseColorFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector4%20SceneMetallicRoughnessMaterial.BaseColorFactor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "float SceneMetallicRoughnessMaterial.RoughnessFactor");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.Scenes.SceneMaterialInput MetallicRoughnessInput
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SceneMaterialInput SceneMetallicRoughnessMaterial.MetallicRoughnessInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneMaterialInput%20SceneMetallicRoughnessMaterial.MetallicRoughnessInput");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "SceneMaterialInput SceneMetallicRoughnessMaterial.MetallicRoughnessInput");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float MetallicFactor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float SceneMetallicRoughnessMaterial.MetallicFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SceneMetallicRoughnessMaterial.MetallicFactor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "float SceneMetallicRoughnessMaterial.MetallicFactor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "Vector4 SceneMetallicRoughnessMaterial.BaseColorFactor");
 			}
 		}
 #endif
@@ -71,28 +43,46 @@ namespace Windows.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector4 BaseColorFactor
+		public float MetallicFactor
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector4 SceneMetallicRoughnessMaterial.BaseColorFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector4%20SceneMetallicRoughnessMaterial.BaseColorFactor");
+				throw new global::System.NotImplementedException("The member float SceneMetallicRoughnessMaterial.MetallicFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SceneMetallicRoughnessMaterial.MetallicFactor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "Vector4 SceneMetallicRoughnessMaterial.BaseColorFactor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "float SceneMetallicRoughnessMaterial.MetallicFactor");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.BaseColorInput.get
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.BaseColorInput.set
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.BaseColorFactor.get
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.BaseColorFactor.set
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.MetallicFactor.get
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.MetallicFactor.set
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.MetallicRoughnessInput.get
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.MetallicRoughnessInput.set
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.RoughnessFactor.get
-		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.RoughnessFactor.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Composition.Scenes.SceneMaterialInput MetallicRoughnessInput
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SceneMaterialInput SceneMetallicRoughnessMaterial.MetallicRoughnessInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneMaterialInput%20SceneMetallicRoughnessMaterial.MetallicRoughnessInput");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "SceneMaterialInput SceneMetallicRoughnessMaterial.MetallicRoughnessInput");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float RoughnessFactor
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float SceneMetallicRoughnessMaterial.RoughnessFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SceneMetallicRoughnessMaterial.RoughnessFactor");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial", "float SceneMetallicRoughnessMaterial.RoughnessFactor");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial Create(global::Windows.UI.Composition.Compositor compositor)
@@ -100,5 +90,15 @@ namespace Windows.UI.Composition.Scenes
 			throw new global::System.NotImplementedException("The member SceneMetallicRoughnessMaterial SceneMetallicRoughnessMaterial.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneMetallicRoughnessMaterial%20SceneMetallicRoughnessMaterial.Create%28Compositor%20compositor%29");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.BaseColorFactor.get
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.BaseColorFactor.set
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.BaseColorInput.get
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.BaseColorInput.set
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.MetallicFactor.get
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.MetallicFactor.set
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.MetallicRoughnessInput.get
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.MetallicRoughnessInput.set
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.RoughnessFactor.get
+		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.RoughnessFactor.set
 	}
 }

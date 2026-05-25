@@ -296,13 +296,20 @@ namespace Uno.UI
 		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 		internal static void ApplyResource(DependencyObject owner, DependencyProperty property, SpecializedResourceDictionary.ResourceKey specializedKey, ResourceUpdateReason updateReason, object context, DependencyPropertyValuePrecedences? precedence)
 		{
+			var isThemeResource = (updateReason & ResourceUpdateReason.ThemeResource) != 0;
+
 			// If the invocation comes from XAML and from theme resources, resolution
 			// must happen lazily, done through walking the visual tree.
 			var immediateResolution =
 				(updateReason & ResourceUpdateReason.XamlParser) != 0
-				&& (updateReason & ResourceUpdateReason.ThemeResource) != 0;
+				&& isThemeResource;
 
-			// Set initial value based on statically-available top-level resources.
+			var effectivePrecedence = precedence ?? DependencyPropertyValuePrecedences.Local;
+
+			// Set the initial value from statically-available top-level resources.
+			// This uses the 3-parameter TryStaticRetrieval overload, which does not capture
+			// the providing ResourceDictionary. For theme resources, dictionary pinning is
+			// deferred until the load-time re-resolution path.
 			if (!immediateResolution && TryStaticRetrieval(specializedKey, context, out var value))
 			{
 				owner.SetValue(property, BindingPropertyHelper.Convert(property.Type, value), precedence);
@@ -310,14 +317,69 @@ namespace Uno.UI
 				// If it's {StaticResource Foo} and we managed to resolve it at parse-time, then we don't want to update it again (per UWP).
 				updateReason &= ~ResourceUpdateReason.StaticResourceLoading;
 
+				if (isThemeResource)
+				{
+					// Create ThemeResourceReference without pinned dictionary for now.
+					// The providing dictionary will be captured during the first
+					// _resourceBindings resolution at load time (via the re-pin logic
+					// in InnerUpdateResourceBindingsUnsafe).
+					var themeRef = new ThemeResourceReference(
+						specializedKey, null, value, isResolved: true, context,
+						updateReason, effectivePrecedence);
+					(owner as IDependencyObjectStoreProvider)?.Store.SetThemeResourceBinding(property, themeRef);
+
+					// Also register a ResourceBinding for the initial tree-walk resolution
+					// at load time, which will also pin the providing dictionary.
+					(owner as IDependencyObjectStoreProvider)?.Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
+					return;
+				}
+
 				if (updateReason == ResourceUpdateReason.None)
 				{
 					// If there's no other reason, don't create a resource binding.
 					return;
 				}
+
+				// Non-theme persistent binding (HotReload) -- use old path
+				(owner as IDependencyObjectStoreProvider)?.Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
+				return;
 			}
 
-			(owner as IDependencyObjectStoreProvider).Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
+			if (isThemeResource)
+			{
+				// Couldn't resolve yet (deferred until loading). Create a ThemeResourceReference
+				// without a pinned dictionary -- it will be resolved via tree-walk at load time.
+				var themeRef = new ThemeResourceReference(
+					specializedKey, null, null, isResolved: false, context,
+					updateReason, effectivePrecedence);
+				(owner as IDependencyObjectStoreProvider)?.Store.SetThemeResourceBinding(property, themeRef);
+			}
+
+			// Also register in the old ResourceBinding path to ensure deferred resolution
+			// on loading still works. The _resourceBindings path handles the initial tree-walk
+			// resolution, and the _themeResources path handles efficient theme-change re-resolution.
+			(owner as IDependencyObjectStoreProvider)?.Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
+		}
+
+		/// <summary>
+		/// Apply a pre-existing <see cref="ThemeResourceReference"/> from a Setter to a target DependencyObject.
+		/// </summary>
+		/// <remarks>
+		/// MUX Reference: When a Style setter with PreserveThemeResourceExtension is applied to a control,
+		/// the stored CThemeResource is used to create a live binding on the target element.
+		/// </remarks>
+		internal static void ApplyThemeResource(DependencyObject owner, DependencyProperty property, ThemeResourceReference themeRef, DependencyPropertyValuePrecedences? precedence)
+		{
+			var effectivePrecedence = precedence ?? themeRef.Precedence;
+
+			// Resolve current value from the pinned dictionary
+			var value = themeRef.RefreshValue(owner);
+			// MUX Reference: Theming.cpp:385-393 — SetValue uses baseValueSource (resolved precedence)
+			owner.SetValue(property, BindingPropertyHelper.Convert(property.Type, value), effectivePrecedence);
+
+			// Clone the reference for the target DO (with target's precedence, sharing pinned dictionary)
+			var targetRef = themeRef.CloneForTarget(effectivePrecedence);
+			(owner as IDependencyObjectStoreProvider)?.Store.SetThemeResourceBinding(property, targetRef);
 		}
 
 		/// <summary>
@@ -333,7 +395,7 @@ namespace Uno.UI
 		/// </returns>
 		internal static bool ApplyVisualStateSetter(SpecializedResourceDictionary.ResourceKey resourceKey, object context, BindingPath bindingPath, DependencyPropertyValuePrecedences precedence, ResourceUpdateReason updateReason)
 		{
-			if (TryVisualTreeRetrieval(resourceKey, context, out var value)
+			if (TryVisualTreeRetrieval(resourceKey, context, out var value, out var providingDictionary)
 				&& bindingPath.DataContext != null)
 			{
 				var property = DependencyProperty.GetProperty(bindingPath.DataContext.GetType(), bindingPath.LeafPropertyName);
@@ -341,7 +403,20 @@ namespace Uno.UI
 				{
 					// Set current resource value
 					bindingPath.Value = value;
+
+					if ((updateReason & ResourceUpdateReason.ThemeResource) != 0)
+					{
+						// Use pinned-dictionary path for theme resources
+						var themeRef = new ThemeResourceReference(
+							resourceKey, providingDictionary, value, isResolved: true, context,
+							updateReason, precedence, bindingPath);
+						provider.Store.SetThemeResourceBinding(property, themeRef);
+					}
+
+					// Always register ResourceBinding for re-pin at load time and
+					// HotReload support, matching the dual-registration in ApplyResource.
 					provider.Store.SetResourceBinding(property, resourceKey, updateReason, context, precedence, bindingPath);
+
 					return true;
 				}
 			}
@@ -350,10 +425,9 @@ namespace Uno.UI
 		}
 
 		/// <summary>
-		/// Try to retrieve a resource using the visual tree determined
-		/// from the immediate scope.
+		/// Try to retrieve a resource from the visual tree, also returning the providing dictionary.
 		/// </summary>
-		private static bool TryVisualTreeRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
+		private static bool TryVisualTreeRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value, out ResourceDictionary providingDictionary)
 		{
 			var scope = CurrentScope.Sources.FirstOrDefault();
 
@@ -365,7 +439,7 @@ namespace Uno.UI
 				{
 					foreach (var dict in dictionaries)
 					{
-						if (dict.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+						if (dict.TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false))
 						{
 							return true;
 						}
@@ -373,13 +447,16 @@ namespace Uno.UI
 				}
 			}
 
-			var topLevel = TryTopLevelRetrieval(resourceKey, context, out value);
+			var topLevel = TryTopLevelRetrieval(resourceKey, context, out value, out providingDictionary);
 			if (!topLevel && _log.IsEnabled(LogLevel.Warning))
 			{
 				_log.LogWarning($"Couldn't statically resolve resource {resourceKey.Key}");
 			}
 			return topLevel;
 		}
+
+		// Old TryVisualTreeRetrieval overload removed - replaced by the overload
+		// that also returns the providing dictionary for theme resource pinning.
 
 		/// <summary>
 		/// Try to retrieve a resource statically (at parse time). This will check resources in 'xaml scope' first, then top-level resources.
@@ -425,6 +502,63 @@ namespace Uno.UI
 			return (Application.Current?.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false) ?? false)
 				|| TryAssemblyResourceRetrieval(resourceKey, context, out value)
 				|| TrySystemResourceRetrieval(resourceKey, out value);
+		}
+
+		/// <summary>
+		/// Try to retrieve a resource statically, also returning the providing dictionary for theme resource pinning.
+		/// </summary>
+		internal static bool TryStaticRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value, out ResourceDictionary providingDictionary)
+		{
+			var sourcesEnumerator = CurrentScope.Sources.GetEnumerator();
+
+			while (sourcesEnumerator.MoveNext())
+			{
+				var source = sourcesEnumerator.Current;
+
+				var dictionary = (source.Target as FrameworkElement)?.TryGetResources()
+					?? source.Target as ResourceDictionary;
+
+				if (dictionary?.TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false) == true)
+				{
+					return true;
+				}
+			}
+
+			var topLevel = TryTopLevelRetrieval(resourceKey, context, out value, out providingDictionary);
+			if (!topLevel && _log.IsEnabled(LogLevel.Warning))
+			{
+				_log.LogWarning($"Couldn't statically resolve resource {resourceKey.Key}");
+			}
+			return topLevel;
+		}
+
+		/// <summary>
+		/// Try to retrieve a resource from top-level resources, also returning the providing dictionary.
+		/// </summary>
+		internal static bool TryTopLevelRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value, out ResourceDictionary providingDictionary)
+		{
+			value = null;
+			providingDictionary = null;
+
+			if (Application.Current?.Resources.TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false) ?? false)
+			{
+				return true;
+			}
+
+			// Assembly and system resources don't need pinning -- RefreshValue will fall back to TryTopLevelRetrieval
+			if (TryAssemblyResourceRetrieval(resourceKey, context, out value))
+			{
+				providingDictionary = null;
+				return true;
+			}
+
+			if (TrySystemResourceRetrieval(resourceKey, out value))
+			{
+				providingDictionary = null;
+				return true;
+			}
+
+			return false;
 		}
 
 		/// <summary>

@@ -11,12 +11,10 @@ namespace Windows.Devices.Input
 
 		internal static PointerDevice For(PointerDeviceType type)
 		{
-#if DEBUG
 			if (WinRTFeatureConfiguration.DebugOptions.SimulateTouch)
 			{
 				type = PointerDeviceType.Touch;
 			}
-#endif
 
 			// We cache them as we don't implement any other properties than the PointerDeviceType
 			// but this is probably not really valid...

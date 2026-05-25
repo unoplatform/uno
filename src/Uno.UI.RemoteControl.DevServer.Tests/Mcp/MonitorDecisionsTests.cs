@@ -104,7 +104,7 @@ public class MonitorDecisionsTests
 	[Description("Junie clients have Roots capability but not ListChanged — should still be detected")]
 	public void DetermineClientSupportsRoots_WhenRootsPresent_ReturnsTrue()
 	{
-		MonitorDecisions.DetermineClientSupportsRoots(forceRootsFallback: false, rootsCapabilityPresent: true)
+		MonitorDecisions.DetermineClientSupportsRoots(rootsCapabilityPresent: true)
 			.Should().BeTrue("Junie clients have Roots but not ListChanged");
 	}
 
@@ -112,15 +112,7 @@ public class MonitorDecisionsTests
 	[Description("When no Roots capability, should return false")]
 	public void DetermineClientSupportsRoots_WhenRootsAbsent_ReturnsFalse()
 	{
-		MonitorDecisions.DetermineClientSupportsRoots(forceRootsFallback: false, rootsCapabilityPresent: false)
-			.Should().BeFalse();
-	}
-
-	[TestMethod]
-	[Description("ForceRootsFallback overrides even when Roots capability is present")]
-	public void DetermineClientSupportsRoots_WhenForceRootsFallback_AlwaysFalse()
-	{
-		MonitorDecisions.DetermineClientSupportsRoots(forceRootsFallback: true, rootsCapabilityPresent: true)
+		MonitorDecisions.DetermineClientSupportsRoots(rootsCapabilityPresent: false)
 			.Should().BeFalse();
 	}
 
@@ -224,5 +216,21 @@ public class MonitorDecisionsTests
 	public void ShouldShortCircuitReadiness_WhenProcessNull_ReturnsFalse()
 	{
 		MonitorDecisions.ShouldShortCircuitReadiness(null).Should().BeFalse();
+	}
+
+	// -------------------------------------------------------------------
+	// ReadinessProbeResult — enum coverage
+	// -------------------------------------------------------------------
+
+	[TestMethod]
+	[Description("ReadinessProbeResult contains all expected probe outcomes")]
+	public void ReadinessProbeResult_HasExpectedValues()
+	{
+		var values = Enum.GetValues<MonitorDecisions.ReadinessProbeResult>();
+
+		values.Should().Contain(MonitorDecisions.ReadinessProbeResult.Ready);
+		values.Should().Contain(MonitorDecisions.ReadinessProbeResult.ProcessExited);
+		values.Should().Contain(MonitorDecisions.ReadinessProbeResult.ServerRespondedNoMcp);
+		values.Should().Contain(MonitorDecisions.ReadinessProbeResult.TimedOut);
 	}
 }

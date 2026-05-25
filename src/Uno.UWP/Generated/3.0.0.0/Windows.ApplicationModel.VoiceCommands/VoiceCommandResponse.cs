@@ -15,29 +15,11 @@ namespace Windows.ApplicationModel.VoiceCommands
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage RepeatMessage
+		public static uint MaxSupportedVoiceCommandContentTiles
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VoiceCommandUserMessage VoiceCommandResponse.RepeatMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoiceCommandUserMessage%20VoiceCommandResponse.RepeatMessage");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "VoiceCommandUserMessage VoiceCommandResponse.RepeatMessage");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage Message
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member VoiceCommandUserMessage VoiceCommandResponse.Message is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoiceCommandUserMessage%20VoiceCommandResponse.Message");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "VoiceCommandUserMessage VoiceCommandResponse.Message");
+				throw new global::System.NotImplementedException("The member uint VoiceCommandResponse.MaxSupportedVoiceCommandContentTiles is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20VoiceCommandResponse.MaxSupportedVoiceCommandContentTiles");
 			}
 		}
 #endif
@@ -57,6 +39,34 @@ namespace Windows.ApplicationModel.VoiceCommands
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage Message
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member VoiceCommandUserMessage VoiceCommandResponse.Message is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoiceCommandUserMessage%20VoiceCommandResponse.Message");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "VoiceCommandUserMessage VoiceCommandResponse.Message");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage RepeatMessage
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member VoiceCommandUserMessage VoiceCommandResponse.RepeatMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoiceCommandUserMessage%20VoiceCommandResponse.RepeatMessage");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse", "VoiceCommandUserMessage VoiceCommandResponse.RepeatMessage");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile> VoiceCommandContentTiles
 		{
 			get
@@ -65,24 +75,6 @@ namespace Windows.ApplicationModel.VoiceCommands
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static uint MaxSupportedVoiceCommandContentTiles
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint VoiceCommandResponse.MaxSupportedVoiceCommandContentTiles is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20VoiceCommandResponse.MaxSupportedVoiceCommandContentTiles");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.Message.get
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.Message.set
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.RepeatMessage.get
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.RepeatMessage.set
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.AppLaunchArgument.get
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.AppLaunchArgument.set
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.VoiceCommandContentTiles.get
-		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.MaxSupportedVoiceCommandContentTiles.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse CreateResponse(global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage userMessage)
@@ -111,5 +103,13 @@ namespace Windows.ApplicationModel.VoiceCommands
 			throw new global::System.NotImplementedException("The member VoiceCommandResponse VoiceCommandResponse.CreateResponseForPrompt(VoiceCommandUserMessage message, VoiceCommandUserMessage repeatMessage, IEnumerable<VoiceCommandContentTile> contentTiles) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoiceCommandResponse%20VoiceCommandResponse.CreateResponseForPrompt%28VoiceCommandUserMessage%20message%2C%20VoiceCommandUserMessage%20repeatMessage%2C%20IEnumerable%3CVoiceCommandContentTile%3E%20contentTiles%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.MaxSupportedVoiceCommandContentTiles.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.AppLaunchArgument.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.AppLaunchArgument.set
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.Message.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.Message.set
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.RepeatMessage.get
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.RepeatMessage.set
+		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandResponse.VoiceCommandContentTiles.get
 	}
 }

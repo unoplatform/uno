@@ -44,7 +44,7 @@ namespace Windows.Media.Capture.Frames
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.Frames.InfraredMediaFrame.FrameReference.get
-		// Forced skipping of method Windows.Media.Capture.Frames.InfraredMediaFrame.VideoMediaFrame.get
 		// Forced skipping of method Windows.Media.Capture.Frames.InfraredMediaFrame.IsIlluminated.get
+		// Forced skipping of method Windows.Media.Capture.Frames.InfraredMediaFrame.VideoMediaFrame.get
 	}
 }

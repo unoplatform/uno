@@ -53,10 +53,6 @@ namespace Windows.Devices.Input.Preview
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDevicePreview.Id.get
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDevicePreview.CanTrackEyes.get
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDevicePreview.CanTrackHead.get
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeDevicePreview.ConfigurationState.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> RequestCalibrationAsync()
@@ -78,5 +74,9 @@ namespace Windows.Devices.Input.Preview
 			throw new global::System.NotImplementedException("The member IReadOnlyList<HidBooleanControlDescription> GazeDevicePreview.GetBooleanControlDescriptions(ushort usagePage, ushort usageId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CHidBooleanControlDescription%3E%20GazeDevicePreview.GetBooleanControlDescriptions%28ushort%20usagePage%2C%20ushort%20usageId%29");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeDevicePreview.CanTrackEyes.get
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeDevicePreview.CanTrackHead.get
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeDevicePreview.ConfigurationState.get
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeDevicePreview.Id.get
 	}
 }

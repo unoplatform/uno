@@ -8,8 +8,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class KeySpline : global::Microsoft.UI.Xaml.DependencyObject
 	{
-		// Skipping already declared property ControlPoint2
 		// Skipping already declared property ControlPoint1
+		// Skipping already declared property ControlPoint2
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.KeySpline.KeySpline()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeySpline.KeySpline()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.KeySpline.ControlPoint1.get

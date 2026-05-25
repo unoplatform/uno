@@ -424,10 +424,24 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// to prevent incorrect re-selection.
 			if (pEventArgs.IsIntermediate)
 			{
-				// For intermediate events, balance immediately to keep items visible during fast scrolling
+				// For intermediate events, balance immediately to keep items visible during fast scrolling.
+				// Suppress selection changes so that SelectionChanged only fires on the final
+				// ViewChanged event. Without this, keyboard-driven animated scrolls can raise
+				// SelectionChanged from an intermediate scroll position, causing callers that
+				// react to SelectionChanged (e.g., LoopingSelectorHelper.SelectItemByIndex) to
+				// proceed before the animation settles, leading to accumulated scroll drift.
 				if (!_isWithinScrollChange && !_isWithinArrangeOverride)
 				{
-					Balance(false);
+					var prevSkip = _skipSelectionChangeUntilFinalViewChanged;
+					_skipSelectionChangeUntilFinalViewChanged = true;
+					try
+					{
+						Balance(false);
+					}
+					finally
+					{
+						_skipSelectionChangeUntilFinalViewChanged = prevSkip;
+					}
 				}
 			}
 			else

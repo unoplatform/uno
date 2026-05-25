@@ -13,8 +13,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property VerticalChange
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.DragCompletedEventArgs(double, double, bool)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.DragCompletedEventArgs(double, double, bool)
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.Canceled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.HorizontalChange.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.VerticalChange.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.DragCompletedEventArgs.Canceled.get
 	}
 }

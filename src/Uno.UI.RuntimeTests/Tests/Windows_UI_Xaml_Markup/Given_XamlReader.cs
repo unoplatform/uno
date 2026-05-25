@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Shapes;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Markup;
+using XamlParseException = Uno.Xaml.XamlParseException;
 using static Private.Infrastructure.TestServices;
 using System.Threading.Tasks;
 using Uno.Disposables;

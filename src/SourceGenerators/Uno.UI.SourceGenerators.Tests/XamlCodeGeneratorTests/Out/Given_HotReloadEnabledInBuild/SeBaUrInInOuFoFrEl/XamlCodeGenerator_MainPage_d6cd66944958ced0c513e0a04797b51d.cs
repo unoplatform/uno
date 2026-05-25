@@ -50,25 +50,29 @@ namespace TestRepro
 			base.IsParsing = true;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.Grid
-			{
-				IsParsing = true,
-				// Source 0\MainPage.xaml (Line 8:3)
-				Children = 
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.Grid
 				{
-					new global::Microsoft.UI.Xaml.Controls.TextBlock
+					IsParsing = true,
+					// Source 0\MainPage.xaml (Line 8:3)
+					Children = 
 					{
-						IsParsing = true,
-						Text = "Hello, world!",
-						Margin = new global::Microsoft.UI.Xaml.Thickness(20),
-						FontSize = 30d,
-						// Source 0\MainPage.xaml (Line 9:4)
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.TextBlock
+							{
+								IsParsing = true,
+								Text = "Hello, world!",
+								Margin = new global::Microsoft.UI.Xaml.Thickness(20),
+								FontSize = 30d,
+								// Source 0\MainPage.xaml (Line 9:4)
+							}
+							.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_GriΞ0_TexBlo)
+						)
+						,
 					}
-					.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_GriΞ0_TexBlo)
-					,
 				}
-			}
-			.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_Gri)
+				.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_Gri)
+			)
 			;
 			
 			this

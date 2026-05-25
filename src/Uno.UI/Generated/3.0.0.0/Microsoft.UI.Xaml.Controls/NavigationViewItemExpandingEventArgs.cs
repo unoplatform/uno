@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared property ExpandingItem
 		// Skipping already declared property ExpandingItemContainer
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemExpandingEventArgs.ExpandingItemContainer.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemExpandingEventArgs.ExpandingItem.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewItemExpandingEventArgs.ExpandingItemContainer.get
 	}
 }

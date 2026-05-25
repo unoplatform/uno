@@ -34,7 +34,15 @@ public partial class RangeBase : Control
 		{
 			return null;
 		}
+
+		// winui: used to control fall through, unhandled ones (not Value,Min,Max) goes to parent handler CControl::SetValue, and so on...
 		//bool wasHandled = false;
+
+		// Uno: the coercion `Value`(ValueProperty) in the set `Minimum` and set `Maximum` is commented out,
+		// because when it occurs we are still within the DOS::ApplyCoercion and the actual value of min/max
+		// is NOT YET committed. This means that the SetValue(ValueProperty,...) will hit
+		// this `SetRangeBaseValue` coerce impl again and clamp the value within [oldMin, oldMax].
+		// As a workaround, we will re-apply the value coercion in RangeBase::OnRangeChanged when min/max updates are fully committed.
 
 		if (property == ValueProperty)
 		{
@@ -63,11 +71,11 @@ public partial class RangeBase : Control
 				// CControl::SetValue(args));
 
 				// update value
-				var newValue = CoerceValueBetween(m_uncoercedValue, newMin, max);
-				if (newValue != Value)
-				{
-					SetValue(ValueProperty, newValue);
-				}
+				//var newValue = CoerceValueBetween(m_uncoercedValue, newMin, max);
+				//if (newValue != Value)
+				//{
+				//	SetValue(ValueProperty, newValue);
+				//}
 			}
 			else
 			{
@@ -81,11 +89,11 @@ public partial class RangeBase : Control
 				}
 
 				// set value
-				var newValue = CoerceValueBetween(m_uncoercedValue, newMin, max);
-				if (newValue != Value)
-				{
-					SetValue(ValueProperty, newValue);
-				}
+				//var newValue = CoerceValueBetween(m_uncoercedValue, newMin, max);
+				//if (newValue != Value)
+				//{
+				//	SetValue(ValueProperty, newValue);
+				//}
 
 				// set minimum
 				// CControl::SetValue(args));
@@ -108,11 +116,11 @@ public partial class RangeBase : Control
 				// CControl::SetValue(args));
 
 				// set value
-				var newValue = CoerceValueBetween(m_uncoercedValue, min, newMax);
-				if (newValue != Value)
-				{
-					SetValue(ValueProperty, newValue);
-				}
+				//var newValue = CoerceValueBetween(m_uncoercedValue, min, newMax);
+				//if (newValue != Value)
+				//{
+				//	SetValue(ValueProperty, newValue);
+				//}
 			}
 			else
 			{
@@ -122,11 +130,11 @@ public partial class RangeBase : Control
 				newMax = Math.Max(newMax, min);
 
 				// coerce and set value
-				var newValue = CoerceValueBetween(m_uncoercedValue, min, newMax);
-				if (newValue != Value)
-				{
-					SetValue(ValueProperty, newValue);
-				}
+				//var newValue = CoerceValueBetween(m_uncoercedValue, min, newMax);
+				//if (newValue != Value)
+				//{
+				//	SetValue(ValueProperty, newValue);
+				//}
 
 				// set maximum
 				// SetMaximum(newMax);

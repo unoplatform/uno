@@ -46,13 +46,13 @@ public static partial class WinRTFeatureConfiguration
 	}
 #endif
 
-#if DEBUG
 	internal static class DebugOptions
 	{
 		/// <summary>
 		/// Adjusts all PointerPoint instances as if they were of type Touch.
 		/// </summary>
 		public static bool SimulateTouch { get; set; }
+
+		internal static bool ForceEnableBackButtonIntegration { get; set; }
 	}
-#endif
 }

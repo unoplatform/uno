@@ -33,7 +33,7 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePairingResult.Status.get
 		// Forced skipping of method Windows.Devices.Enumeration.DevicePairingResult.ProtectionLevelUsed.get
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePairingResult.Status.get
 	}
 }

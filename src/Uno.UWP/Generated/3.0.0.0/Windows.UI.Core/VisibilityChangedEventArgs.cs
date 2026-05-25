@@ -10,9 +10,9 @@ namespace Windows.UI.Core
 	{
 		// Skipping already declared property Handled
 		// Skipping already declared property Visible
-		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.Visible.get
 		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.Handled.set
+		// Forced skipping of method Windows.UI.Core.VisibilityChangedEventArgs.Visible.get
 		// Processing: Windows.UI.Core.ICoreWindowEventArgs
 	}
 }

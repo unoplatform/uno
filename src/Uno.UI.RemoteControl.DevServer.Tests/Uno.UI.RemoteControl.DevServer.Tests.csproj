@@ -16,7 +16,7 @@
 		<PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
 		<PackageReference Include="Microsoft.VisualStudio.SolutionPersistence" Version="1.0.52" />
 		<PackageReference Include="StreamJsonRpc" Version="2.17.11" />
-		<PackageReference Include="ModelContextProtocol" Version="0.8.0-preview.1" />
+		<PackageReference Include="ModelContextProtocol" Version="1.1.0" />
 		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.1.1">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -27,6 +27,8 @@
 		<!-- Link sources directly so unit tests can compile without directly referencing the project output -->
 		<Compile Include="..\Uno.UI.RemoteControl.Server\AppLaunch\ApplicationLaunchMonitor.cs" Link="AppLaunch\ApplicationLaunchMonitor.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.VS\AppLaunch\VsAppLaunchStateService.cs" Link="AppLaunch\VsAppLaunchStateService.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.VS\Helpers\DevServerHostDiscovery.cs" Link="Helpers\DevServerHostDiscovery.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.VS\Helpers\DiscoveredDevServer.cs" Link="Helpers\DiscoveredDevServer.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\BannerHelper.cs" Link="Helpers\BannerHelper.cs" />
 
 		<!-- Reuse the AssemblyInfoReader implementation from the VS project to avoid duplication -->
@@ -40,6 +42,16 @@
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\NuGetCacheHelper.cs" Link="Helpers\NuGetCacheHelper.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\ProjectAssetsParser.cs" Link="Helpers\ProjectAssetsParser.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\DiscoveryInfo.cs" Link="Helpers\DiscoveryInfo.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\ProcessChainEntry.cs" Link="Helpers\ProcessChainEntry.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\SolutionFileFinder.cs" Link="Helpers\SolutionFileFinder.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\ISolutionFileFinder.cs" Link="Helpers\ISolutionFileFinder.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\GlobalJsonLocator.cs" Link="Helpers\GlobalJsonLocator.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\IWorkspaceResolver.cs" Link="Helpers\IWorkspaceResolver.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\PathComparison.cs" Link="Helpers\PathComparison.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\WorkspaceResolver.cs" Link="Helpers\WorkspaceResolver.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\HealthReportFormatter.cs" Link="Helpers\HealthReportFormatter.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\AssemblyVersionHelper.cs" Link="Helpers\AssemblyVersionHelper.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\DevServerProcessHelper.cs" Link="Helpers\DevServerProcessHelper.cs" />
 
 		<!-- Link MCP sources for unit testing -->
 		<!-- TODO: MCP tests that only depend on CLI types should be migrated to Uno.UI.DevServer.Cli.Tests -->
@@ -47,13 +59,22 @@
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\ConnectionState.cs" Link="Mcp\ConnectionState.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\DiscoveryIssueMapper.cs" Link="Mcp\DiscoveryIssueMapper.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\HealthReport.cs" Link="Mcp\HealthReport.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\HealthReportFactory.cs" Link="Mcp\HealthReportFactory.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\McpJsonUtilities.cs" Link="Mcp\McpJsonUtilities.cs" />
 
 		<!-- Link ConfigurationExtensions for add-in value parsing tests -->
 		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\ConfigurationExtensions.cs" Link="Helpers\ConfigurationExtensions.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.Host\IDEChannel\IIdeChannelManager.cs" Link="IDEChannel\IIdeChannelManager.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.Host\IDEChannel\IdeChannelServer.cs" Link="IDEChannel\IdeChannelServer.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.Host\IDEChannel\IdeMessageSerializer.cs" Link="IDEChannel\IdeMessageSerializer.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.Host\IDEChannel\IdeChannelServerOptions.cs" Link="IDEChannel\IdeChannelServerOptions.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.Messaging\IdeChannel\IIdeChannelServer.cs" Link="IDEChannel\IIdeChannelServer.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.Messaging\IDEChannel\IdeMessageEnvelope.cs" Link="IDEChannel\IdeMessageEnvelope.cs" />
+
 
 		<!-- Link AmbientRegistry and CsprojUserGenerator for controller bypass testing -->
 		<Compile Include="..\Uno.UI.RemoteControl.Host\AmbientRegistry.cs" Link="Mcp\AmbientRegistry.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.Host\AmbientRegistry.Diagnostics.cs" Link="Mcp\AmbientRegistry.Diagnostics.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.Host\Helpers\CsprojUserGenerator.cs" Link="Helpers\CsprojUserGenerator.cs" />
 	</ItemGroup>
 

@@ -15,6 +15,16 @@ namespace Windows.Devices.Sensors.Custom
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan? PerformanceCount
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan? CustomSensorReading.PerformanceCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20CustomSensorReading.PerformanceCount");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyDictionary<string, object> Properties
 		{
 			get
@@ -33,18 +43,8 @@ namespace Windows.Devices.Sensors.Custom
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan? PerformanceCount
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan? CustomSensorReading.PerformanceCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20CustomSensorReading.PerformanceCount");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensorReading.Timestamp.get
-		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensorReading.Properties.get
 		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensorReading.PerformanceCount.get
+		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensorReading.Properties.get
+		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensorReading.Timestamp.get
 	}
 }

@@ -103,14 +103,14 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.AdditionalSecurityInformation.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.CardAuthenticationData.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.CardAuthenticationDataLength.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.CardType.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.Properties.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.Track1.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.Track2.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.Track3.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.Track4.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.Properties.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.CardAuthenticationData.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.CardAuthenticationDataLength.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderReport.AdditionalSecurityInformation.get
 	}
 }

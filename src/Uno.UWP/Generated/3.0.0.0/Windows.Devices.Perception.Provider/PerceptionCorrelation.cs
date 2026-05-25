@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception.Provider
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -47,8 +46,8 @@ namespace Windows.Devices.Perception.Provider
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.PerceptionCorrelation(string, System.Numerics.Vector3, System.Numerics.Quaternion)
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.TargetId.get
-		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.Position.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.Orientation.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.Position.get
+		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionCorrelation.TargetId.get
 	}
 }

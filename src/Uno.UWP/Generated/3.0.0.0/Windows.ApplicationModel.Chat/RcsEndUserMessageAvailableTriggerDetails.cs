@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails.Title.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails.Text.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableTriggerDetails.Title.get
 	}
 }

@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Input
 	{
 		// Skipping already declared property CorrelationId
 		// Skipping already declared property NewFocusedElement
-		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManagerGotFocusEventArgs.NewFocusedElement.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManagerGotFocusEventArgs.CorrelationId.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.FocusManagerGotFocusEventArgs.NewFocusedElement.get
 	}
 }

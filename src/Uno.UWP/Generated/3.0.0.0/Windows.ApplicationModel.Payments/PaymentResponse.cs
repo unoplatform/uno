@@ -73,12 +73,6 @@ namespace Windows.ApplicationModel.Payments
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentResponse.PaymentToken.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentResponse.ShippingOption.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentResponse.ShippingAddress.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentResponse.PayerEmail.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentResponse.PayerName.get
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentResponse.PayerPhoneNumber.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction CompleteAsync(global::Windows.ApplicationModel.Payments.PaymentRequestCompletionStatus status)
@@ -86,5 +80,11 @@ namespace Windows.ApplicationModel.Payments
 			throw new global::System.NotImplementedException("The member IAsyncAction PaymentResponse.CompleteAsync(PaymentRequestCompletionStatus status) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20PaymentResponse.CompleteAsync%28PaymentRequestCompletionStatus%20status%29");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentResponse.PayerEmail.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentResponse.PayerName.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentResponse.PayerPhoneNumber.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentResponse.PaymentToken.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentResponse.ShippingAddress.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentResponse.ShippingOption.get
 	}
 }

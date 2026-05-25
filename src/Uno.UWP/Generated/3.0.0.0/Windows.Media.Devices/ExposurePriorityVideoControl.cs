@@ -37,8 +37,8 @@ namespace Windows.Media.Devices
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.Supported.get
 		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.Enabled.get
 		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.Enabled.set
+		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.Supported.get
 	}
 }

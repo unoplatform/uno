@@ -8,11 +8,11 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 #endif
 	public partial class GattReadResult
 	{
+		// Skipping already declared property ProtocolError
 		// Skipping already declared property Status
 		// Skipping already declared property Value
-		// Skipping already declared property ProtocolError
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult.ProtocolError.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult.Status.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult.Value.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult.ProtocolError.get
 	}
 }

@@ -6,14 +6,25 @@ This file provides guidance to AI Agents when working with code in this reposito
 
 Uno Platform is an open-source .NET UI cross-platform framework for building .NET applications from a single codebase using the WinUI 3 API. It targets Web (WebAssembly), Desktop (Windows, macOS, Linux via Skia), and Mobile (iOS, tvOS, Android).
 
-**Reference these instructions first**. Use specialized agents for deep dives:
+**Reference these instructions first**. Use Claude Code skills (preferred) or specialized agents for deep dives:
+
+#### Claude Code Skills (invoke via `/skill-name`)
+
+| Skill | Command | Use For |
+|-------|---------|---------|
+| Add Sample | `/add-sample` | Creating SamplesApp sample pages with correct registration |
+| Runtime Tests | `/runtime-tests` | Building and running Uno runtime tests (Skia Desktop/WASM) |
+| WinUI Porting | `/winui-port` | Porting WinUI C++ code to Uno Platform C# |
+| WinUI Runtime Tests | `/winui-runtime-tests` | Running runtime tests against native WinUI on Windows |
+
+#### Specialized Agent Files (for deep reference)
 
 | Agent | File | Use For |
 |-------|------|---------|
 | DependencyProperty | `.github/agents/dependency-property-agent.md` | Adding/modifying DependencyProperties |
 | Source Generators | `.github/agents/source-generators-agent.md` | XAML/DependencyObject generator work |
-| Runtime Tests | `.github/agents/runtime-tests-agent.md` | Creating and running runtime tests |
-| WinUI Porting | `.github/agents/winui-porting-agent.md` | Porting WinUI C++ code to C# |
+| Runtime Tests | `.github/agents/runtime-tests-agent.md` | Runtime test patterns and helpers reference |
+| WinUI Porting | `.github/agents/winui-porting-agent.md` | WinUI porting rules deep reference |
 | DevServer CLI | `.github/agents/devserver-agent.md` | DevServer CLI/Host build, test, MCP proxy |
 
 ---
@@ -141,6 +152,24 @@ Auto-generated stubs marked with `[Uno.NotImplemented]` allow compilation but wa
 
 ## Development Workflow
 
+### Public Documentation and Spec References (MANDATORY)
+
+When editing specifications, documentation, or other repo-tracked design artifacts intended to be shareable:
+
+1. **Do not reference private artifacts** from the document.
+   - Do not link to private issues, private pull requests, private boards, private docs, or private repositories.
+   - If related work is tracked privately, mention it only in generic terms.
+
+2. **Public specs are source-of-truth documents**.
+   - Public or repo-local specs may be referenced by private trackers.
+   - Private trackers must not be required to understand the public spec.
+
+3. **Keep the dependency direction one-way**.
+   - Allowed: private issues/PRs referencing a public spec in this repo.
+   - Not allowed: a public spec in this repo referencing a private issue/PR/doc as normative context.
+
+4. **If implementation follow-up exists in private repos**, describe it as alignment or downstream tracking work without identifiers or URLs.
+
 ### Root-Cause First Debugging Protocol (MANDATORY)
 
 When fixing crashes, rendering issues, or selection/indexing bugs,
@@ -226,8 +255,10 @@ Run these after making changes:
 
 1. **Build**: `dotnet build Uno.UI-UnitTests-only.slnf --no-restore`
 2. **Unit tests**: `dotnet test Uno.UI/Uno.UI.Tests.csproj --no-build`
-3. **Runtime tests** (UI changes): See [runtime tests agent](.github/agents/runtime-tests-agent.md)
-4. **Sample app** (visual changes): `cd src/SamplesApp/SamplesApp.Wasm && dotnet run`
+3. **Runtime tests** (UI changes): Use `/runtime-tests` skill (Skia Desktop default, pass test class/method name as argument)
+4. **WinUI parity** (validate against native WinUI): Use `/winui-runtime-tests` skill
+5. **Sample app** (visual changes): `cd src/SamplesApp/SamplesApp.Wasm && dotnet run`
+6. **XAML formatting** (SamplesApp changes): `dotnet xstyler -d src/SamplesApp -r`
 
 ### SamplesApp: Register XAML files (CRITICAL)
 
@@ -251,7 +282,8 @@ Sample creation checklist:
 1. Create your sample XAML and code-behind under an appropriate folder in `UITests.Shared`.
 2. Add the `[Uno.UI.Samples.Controls.Sample]` attribute to the code-behind class.
 3. Register the XAML and code-behind in `UITests.Shared.projitems` (see XML above).
-4. Build and run `SamplesApp` to verify the sample appears.
+4. Format XAML: `dotnet xstyler -f src/SamplesApp/UITests.Shared/YourFolder/YourSample.xaml`
+5. Build and run `SamplesApp` to verify the sample appears.
 
 Theming guideline (brief): prefer `{ThemeResource}` for backgrounds/foregrounds so samples work in light and dark themes.
 
@@ -262,12 +294,7 @@ Add tests to `Uno.UI.RuntimeTests`. Key helpers:
 - `await WindowHelper.WaitForLoaded(element)` - Wait for load
 - `await WindowHelper.WaitForIdle()` - Wait for UI to settle
 
-**Run tests headlessly:**
-```bash
-dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net10.0
-cd src/SamplesApp/SamplesApp.Skia.Generic/bin/Release/net10.0
-dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
-```
+**To build and run tests, use the `/runtime-tests` skill.** It handles build, filter encoding, execution, and result parsing for both Skia Desktop and WASM.
 
 See `.github/agents/runtime-tests-agent.md` for detailed patterns.
 
@@ -322,6 +349,27 @@ public MyType MyProperty
 - **Braces**: Always use, even for single-line conditionals
 - **Indentation**: Tabs (configured in .editorconfig)
 - **Extension methods**: In `[TypeName]Extensions.cs`, mark `internal`
+
+### XAML Formatting (SamplesApp)
+
+XAML files under `src/SamplesApp/` are formatted using [XamlStyler](https://github.com/Xavalon/XamlStyler).
+Configuration is in `src/SamplesApp/Settings.XamlStyler`.
+
+```bash
+# One-time setup (restore tools after cloning)
+dotnet tool restore
+
+# Format all SamplesApp XAML files
+dotnet xstyler -d src/SamplesApp -r
+
+# Format a single file
+dotnet xstyler -f src/SamplesApp/UITests.Shared/MyFile.xaml
+
+# Check without modifying (CI mode)
+dotnet xstyler -d src/SamplesApp -r -p
+```
+
+A GitHub Actions workflow enforces formatting on PRs that touch SamplesApp XAML files.
 
 ### Implementing New WinUI Features
 

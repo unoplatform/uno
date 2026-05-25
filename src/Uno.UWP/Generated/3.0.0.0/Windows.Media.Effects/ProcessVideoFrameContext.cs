@@ -33,6 +33,7 @@ namespace Windows.Media.Effects
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.Effects.ProcessVideoFrameContext.~ProcessVideoFrameContext()
 		// Forced skipping of method Windows.Media.Effects.ProcessVideoFrameContext.InputFrame.get
 		// Forced skipping of method Windows.Media.Effects.ProcessVideoFrameContext.OutputFrame.get
 	}

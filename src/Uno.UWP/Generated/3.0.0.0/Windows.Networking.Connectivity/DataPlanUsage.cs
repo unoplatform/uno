@@ -33,7 +33,7 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.DataPlanUsage.MegabytesUsed.get
 		// Forced skipping of method Windows.Networking.Connectivity.DataPlanUsage.LastSyncTime.get
+		// Forced skipping of method Windows.Networking.Connectivity.DataPlanUsage.MegabytesUsed.get
 	}
 }

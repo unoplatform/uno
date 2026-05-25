@@ -13,6 +13,7 @@ namespace Windows.Graphics.Imaging
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapBuffer.~BitmapBuffer()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int GetPlaneCount()

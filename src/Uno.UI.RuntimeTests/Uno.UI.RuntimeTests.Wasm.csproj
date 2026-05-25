@@ -11,6 +11,7 @@
 		<RootNamespace>Uno.UI.RuntimeTests</RootNamespace>
 
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
+		<UnoEnableImplicitXamlNamespaces>true</UnoEnableImplicitXamlNamespaces>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
 		<NoWarn>$(NoWarn);CS1998</NoWarn>

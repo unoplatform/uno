@@ -16,13 +16,13 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared property KnobCurrentToOnOffset
 		// Skipping already declared property KnobOffToOnOffset
 		// Skipping already declared property KnobOnToOffOffset
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings.KnobCurrentToOnOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings.KnobCurrentToOffOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings.KnobOnToOffOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings.KnobOffToOnOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings.CurtainCurrentToOnOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings.CurtainCurrentToOffOffset.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings.CurtainOnToOffOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings.CurtainCurrentToOnOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings.CurtainOffToOnOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings.CurtainOnToOffOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings.KnobCurrentToOffOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings.KnobCurrentToOnOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings.KnobOffToOnOffset.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings.KnobOnToOffOffset.get
 	}
 }

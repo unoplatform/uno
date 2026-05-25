@@ -33,7 +33,7 @@ namespace Windows.Storage.Search
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails.Folder.get
 		// Forced skipping of method Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails.ChangeTracker.get
+		// Forced skipping of method Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails.Folder.get
 	}
 }

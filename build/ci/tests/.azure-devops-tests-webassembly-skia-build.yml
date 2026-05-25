@@ -43,7 +43,8 @@ jobs:
     displayName: Build Wasm Skia Head
 
   - pwsh: |
-      $artifactName = "skia-browserwasm-samples-app-$env:XAML_FLAVOR_BUILD-attempt$env:SYSTEM_JOBATTEMPT"
+      $artifactName = "samplesapp-wasm-skia"
+      if ([int]$env:SYSTEM_JOBATTEMPT -gt 1) { $artifactName += "-attempt$env:SYSTEM_JOBATTEMPT" }
       Write-Host "Publishing Samples App artifact: $artifactName"
       Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName]$artifactName"
       Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName;isOutput=true]$artifactName"
@@ -62,5 +63,5 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)/logs
-      ArtifactName: skia-samples-app-binlog
+      ArtifactName: samplesapp-wasm-skia-logs
       ArtifactType: Container

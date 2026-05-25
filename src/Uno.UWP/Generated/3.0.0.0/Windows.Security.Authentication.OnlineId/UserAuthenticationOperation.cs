@@ -15,6 +15,20 @@ namespace Windows.Security.Authentication.OnlineId
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.AsyncOperationCompletedHandler<global::Windows.Security.Authentication.OnlineId.UserIdentity> Completed
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AsyncOperationCompletedHandler<UserIdentity> UserAuthenticationOperation.Completed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AsyncOperationCompletedHandler%3CUserIdentity%3E%20UserAuthenticationOperation.Completed");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.OnlineId.UserAuthenticationOperation", "AsyncOperationCompletedHandler<UserIdentity> UserAuthenticationOperation.Completed");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Exception ErrorCode
 		{
 			get
@@ -45,30 +59,11 @@ namespace Windows.Security.Authentication.OnlineId
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.AsyncOperationCompletedHandler<global::Windows.Security.Authentication.OnlineId.UserIdentity> Completed
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AsyncOperationCompletedHandler<UserIdentity> UserAuthenticationOperation.Completed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AsyncOperationCompletedHandler%3CUserIdentity%3E%20UserAuthenticationOperation.Completed");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.OnlineId.UserAuthenticationOperation", "AsyncOperationCompletedHandler<UserIdentity> UserAuthenticationOperation.Completed");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserAuthenticationOperation.Completed.set
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserAuthenticationOperation.Completed.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Authentication.OnlineId.UserIdentity GetResults()
 		{
 			throw new global::System.NotImplementedException("The member UserIdentity UserAuthenticationOperation.GetResults() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserIdentity%20UserAuthenticationOperation.GetResults%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserAuthenticationOperation.Id.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserAuthenticationOperation.Status.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserAuthenticationOperation.ErrorCode.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Cancel()
@@ -83,6 +78,11 @@ namespace Windows.Security.Authentication.OnlineId
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.OnlineId.UserAuthenticationOperation", "void UserAuthenticationOperation.Close()");
 		}
 #endif
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserAuthenticationOperation.Completed.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserAuthenticationOperation.Completed.set
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserAuthenticationOperation.ErrorCode.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserAuthenticationOperation.Id.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserAuthenticationOperation.Status.get
 		// Processing: Windows.Foundation.IAsyncOperation<Windows.Security.Authentication.OnlineId.UserIdentity>
 		// Processing: Windows.Foundation.IAsyncInfo
 	}

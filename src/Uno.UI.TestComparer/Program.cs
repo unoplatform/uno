@@ -87,7 +87,7 @@ namespace Umbrella.UI.TestComparer
 				var artifactsBasePath = Path.Combine(basePath, "artifacts");
 				var results = new List<CompareResult>();
 
-				foreach (var platform in GetValidPlatforms(artifactsBasePath))
+				foreach (var platform in GetValidPlatforms(artifactsBasePath, artifactInnerBasePath))
 				{
 					var result = ProcessFiles(basePath, artifactsBasePath, artifacts, artifactInnerBasePath, platform, currentBuild.ToString());
 					results.Add(result);
@@ -141,13 +141,19 @@ namespace Umbrella.UI.TestComparer
 			}
 		}
 
-		private static IEnumerable<string> GetValidPlatforms(string artifactsBasePath)
+		private static IEnumerable<string> GetValidPlatforms(string artifactsBasePath, string artifactsInnerBasePath)
 		{
 			IEnumerable<string> GetAllPlatforms()
 			{
 				foreach (var toplevel in Directory.GetDirectories(artifactsBasePath, "*", SearchOption.TopDirectoryOnly))
 				{
-					foreach (var platform in Directory.GetDirectories(Path.Combine(toplevel, "uitests-results\\screenshots")))
+					var platformsRoot = Path.Combine(toplevel, artifactsInnerBasePath);
+					if (!Directory.Exists(platformsRoot))
+					{
+						continue;
+					}
+
+					foreach (var platform in Directory.GetDirectories(platformsRoot))
 					{
 						yield return Path.GetFileName(platform);
 					}

@@ -14,7 +14,6 @@ namespace Windows.Media.Audio
 			get;
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.IAudioInputNode.OutgoingConnections.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void AddOutgoingConnection(global::Windows.Media.Audio.IAudioNode destination);
 #endif
@@ -24,5 +23,6 @@ namespace Windows.Media.Audio
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void RemoveOutgoingConnection(global::Windows.Media.Audio.IAudioNode destination);
 #endif
+		// Forced skipping of method Windows.Media.Audio.IAudioInputNode.OutgoingConnections.get
 	}
 }

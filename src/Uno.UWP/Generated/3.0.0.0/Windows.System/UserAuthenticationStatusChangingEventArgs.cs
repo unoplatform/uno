@@ -50,8 +50,8 @@ namespace Windows.System
 			throw new global::System.NotImplementedException("The member UserAuthenticationStatusChangeDeferral UserAuthenticationStatusChangingEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserAuthenticationStatusChangeDeferral%20UserAuthenticationStatusChangingEventArgs.GetDeferral%28%29");
 		}
 #endif
-		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.User.get
-		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.NewStatus.get
 		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.CurrentStatus.get
+		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.NewStatus.get
+		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.User.get
 	}
 }

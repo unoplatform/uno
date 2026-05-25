@@ -51,18 +51,14 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 	protected async override Task InitializeAsync()
 	{
 		NativeMethods.PersistBootstrapperLoader();
-		CompositionTarget.Rendering += OnCompositionTargetOnRendering;
-		void OnCompositionTargetOnRendering(object? sender, object o)
-		{
-			NativeMethods.RemoveLoading();
-			CompositionTarget.Rendering -= OnCompositionTargetOnRendering;
-		}
 
 		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension!);
 		ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new BrowserPointerInputSource());
 		ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoKeyboardInputSource), o => new BrowserKeyboardInputSource());
 		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new WebAssemblyWindowFactoryExtension(this));
 		ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new BrowserInvisibleTextBoxViewExtension(o));
+		ApiExtensibility.Register(typeof(IImeTextBoxExtension), _ => WasmImeTextBoxExtension.Instance);
+		ApiExtensibility.Register(typeof(ITextBoxNotificationsProviderSingleton), _ => BrowserSkiaTextBoxNotificationsProviderSingleton.Instance);
 		ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new BrowserNativeElementHostingExtension(o));
 		ApiExtensibility.Register<MediaPlayer>(typeof(IMediaPlayerExtension), o => new BrowserMediaPlayerExtension(o));
 		ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new BrowserMediaPlayerPresenterExtension(o));
@@ -118,6 +114,8 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 		_renderer?.InvalidateRender();
 		Window.CurrentSafe!.RootElement?.XamlRoot?.InvalidateOverlays();
 	}
+
+	internal void RemoveSplashScreen() => NativeMethods.RemoveLoading();
 
 	UIElement? IXamlRootHost.RootElement => Window.CurrentSafe!.RootElement;
 

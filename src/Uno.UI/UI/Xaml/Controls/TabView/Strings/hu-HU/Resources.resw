@@ -145,4 +145,8 @@
     <value>Lapok listájának görgetése előre</value>
     <comment>Tooltip for the tab list scroll increase button.</comment>
   </data>
+  <data name="TabViewNewTabAddedNotification" xml:space="preserve">
+    <value>Új lap hozzáadva.</value>
+    <comment>String read by Narrator when a new tab is added.</comment>
+  </data>
 </root>

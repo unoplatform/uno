@@ -37,8 +37,8 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusRequestedEventArgs.Reason.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusRequestedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusRequestedEventArgs.Handled.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusRequestedEventArgs.Reason.get
 	}
 }

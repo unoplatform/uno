@@ -9,8 +9,13 @@ namespace Windows.UI.Composition
 	public partial class CompositionAnimation : global::Windows.UI.Composition.CompositionObject, global::Windows.UI.Composition.ICompositionAnimationBase
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal CompositionAnimation()
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Composition.InitialValueExpressionCollection InitialValueExpressions
 		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member InitialValueExpressionCollection CompositionAnimation.InitialValueExpressions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InitialValueExpressionCollection%20CompositionAnimation.InitialValueExpressions");
+			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -24,16 +29,6 @@ namespace Windows.UI.Composition
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionAnimation", "string CompositionAnimation.Target");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.InitialValueExpressionCollection InitialValueExpressions
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member InitialValueExpressionCollection CompositionAnimation.InitialValueExpressions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InitialValueExpressionCollection%20CompositionAnimation.InitialValueExpressions");
 			}
 		}
 #endif
@@ -121,9 +116,6 @@ namespace Windows.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionAnimation", "void CompositionAnimation.SetBooleanParameter(string key, bool value)");
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionAnimation.Target.get
-		// Forced skipping of method Windows.UI.Composition.CompositionAnimation.Target.set
-		// Forced skipping of method Windows.UI.Composition.CompositionAnimation.InitialValueExpressions.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetExpressionReferenceParameter(string parameterName, global::Windows.UI.Composition.IAnimationObject source)
@@ -131,6 +123,9 @@ namespace Windows.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionAnimation", "void CompositionAnimation.SetExpressionReferenceParameter(string parameterName, IAnimationObject source)");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.CompositionAnimation.InitialValueExpressions.get
+		// Forced skipping of method Windows.UI.Composition.CompositionAnimation.Target.get
+		// Forced skipping of method Windows.UI.Composition.CompositionAnimation.Target.set
 		// Processing: Windows.UI.Composition.ICompositionAnimationBase
 	}
 }

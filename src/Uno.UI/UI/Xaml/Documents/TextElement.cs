@@ -345,10 +345,9 @@ namespace Microsoft.UI.Xaml.Documents
 			return null;
 		}
 
-		//UNO TODO: Implement GetAccessKeyScopeOwner on TextElement
 		internal DependencyObject GetAccessKeyScopeOwner()
 		{
-			return null;
+			return (DependencyObject)GetValue(AccessKeyScopeOwnerProperty);
 		}
 #endif
 

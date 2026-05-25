@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A1B2C3D42F01A00100000001 /* UNOAccessibility.h in Headers */ = {isa = PBXBuildFile; fileRef = A1B2C3D42F01A00100000002 /* UNOAccessibility.h */; };
+		A1B2C3D42F01A00100000003 /* UNOAccessibility.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D42F01A00100000004 /* UNOAccessibility.m */; };
 		43BC95F62E618E5400902390 /* MouseButtons.h in Headers */ = {isa = PBXBuildFile; fileRef = 43BC95F52E618E4700902390 /* MouseButtons.h */; };
 		43BC95FA2E618F0900902390 /* MouseButtons.m in Sources */ = {isa = PBXBuildFile; fileRef = 43BC95F92E618F0900902390 /* MouseButtons.m */; };
 		D116C63E2AC79876004B975F /* UNOCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = D116C63D2AC79876004B975F /* UNOCursor.m */; };
@@ -27,6 +29,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A1B2C3D42F01A00100000002 /* UNOAccessibility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNOAccessibility.h; sourceTree = "<group>"; };
+		A1B2C3D42F01A00100000004 /* UNOAccessibility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNOAccessibility.m; sourceTree = "<group>"; };
 		43BC95F52E618E4700902390 /* MouseButtons.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MouseButtons.h; sourceTree = "<group>"; };
 		43BC95F92E618F0900902390 /* MouseButtons.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MouseButtons.m; sourceTree = "<group>"; };
 		D116C63C2AC793C0004B975F /* UNOCursor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNOCursor.h; sourceTree = "<group>"; };
@@ -96,6 +100,8 @@
 		D1F248A72A67288B008A609E /* UnoNativeMac */ = {
 			isa = PBXGroup;
 			children = (
+				A1B2C3D42F01A00100000002 /* UNOAccessibility.h */,
+				A1B2C3D42F01A00100000004 /* UNOAccessibility.m */,
 				43BC95F92E618F0900902390 /* MouseButtons.m */,
 				43BC95F52E618E4700902390 /* MouseButtons.h */,
 				D11A81682D09F05400B3C0A5 /* UNOMediaPlayer.h */,
@@ -130,6 +136,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1B2C3D42F01A00100000001 /* UNOAccessibility.h in Headers */,
 				D11A81672CF523B900B3C0A5 /* UNOWebView.h in Headers */,
 				D11A81692D09F05B00B3C0A5 /* UNOMediaPlayer.h in Headers */,
 				D1F248A92A67288B008A609E /* UnoNativeMac.h in Headers */,
@@ -195,6 +202,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1B2C3D42F01A00100000003 /* UNOAccessibility.m in Sources */,
 				D1CC768D2ABA1337002A44F0 /* UNOPickers.m in Sources */,
 				D1FE7A2B2B75C8C300ACFC76 /* UNOSoftView.m in Sources */,
 				D1A0651E2A7066F700101BE6 /* UNOMetalViewDelegate.m in Sources */,
