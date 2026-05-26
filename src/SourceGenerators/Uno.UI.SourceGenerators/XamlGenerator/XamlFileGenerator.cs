@@ -4409,13 +4409,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					? contextFunction.Properties
 					: ImmutableArray<string>.Empty;
 
-				var formattedPaths = propertyPaths
+				var filteredPaths = propertyPaths
 					.Where(p => !p.StartsWith("global::", StringComparison.Ordinal))  // Don't include paths that start with global:: (e.g. Enums)
+					.ToArray();
+
+				var formattedPaths = filteredPaths
 					.Select(p => $"\"{p.Replace("\"", "\\\"")}\"");
 
-				var pathsArray = formattedPaths.Any()
+				var pathsArray = filteredPaths.Length > 0
 					? ", new [] {" + string.Join(", ", formattedPaths) + "}"
 					: "";
+
+				// Emit compiled (reflection-free) per-segment getters when possible (matching WinUI's compiled
+				// binding). Falls back to reflective path resolution when getters can't be emitted for all paths.
+				var gettersArray = "";
+				if (filteredPaths.Length > 0 && TryBuildXBindPropertyPathGetters(filteredPaths, dataTypeSymbol) is { } gettersLiteral)
+				{
+					gettersArray = ", " + gettersLiteral;
+				}
 
 				string buildBindBack()
 				{
@@ -4460,7 +4471,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				return $".BindingApply(___b => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType).GetFullyQualifiedTypeIncludingGlobal()} ___tctx ? ({contextFunction.Expression}) : (false, default), {buildBindBack()} {pathsArray}))";
+				return $".BindingApply(___b => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType).GetFullyQualifiedTypeIncludingGlobal()} ___tctx ? ({contextFunction.Expression}) : (false, default), {buildBindBack()} {pathsArray}{gettersArray}))";
 			}
 			else
 			{
@@ -4542,15 +4553,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					? rewrittenRValue.Properties
 					: ImmutableArray<string>.Empty;
 
-				var formattedPaths = propertyPaths
+				var filteredPaths = propertyPaths
 					.Where(p => !p.StartsWith("global::", StringComparison.Ordinal))  // Don't include paths that start with global:: (e.g. Enums)
+					.ToArray();
+
+				var formattedPaths = filteredPaths
 					.Select(p => $"\"{p.Replace("\"", "\\\"")}\"");
 
-				var pathsArray = formattedPaths.Any()
+				var pathsArray = filteredPaths.Length > 0
 					? ", new [] {" + string.Join(", ", formattedPaths) + "}"
 					: "";
 
-				return $".BindingApply({sourceInstance}, (___b, ___t) =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}))";
+				// Emit compiled (reflection-free) per-segment getters when possible (matching WinUI's compiled
+				// binding). Falls back to reflective path resolution when getters can't be emitted for all paths.
+				var gettersArray = "";
+				if (filteredPaths.Length > 0 && TryBuildXBindPropertyPathGetters(filteredPaths, xBindSymbol) is { } gettersLiteral)
+				{
+					gettersArray = ", " + gettersLiteral;
+				}
+
+				return $".BindingApply({sourceInstance}, (___b, ___t) =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}{gettersArray}))";
 			}
 		}
 
@@ -4608,6 +4630,86 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			return currentType;
+		}
+
+		/// <summary>
+		/// Builds the compiled per-segment getters literal (a <c>Func&lt;object, object&gt;[][]</c>) for the
+		/// given x:Bind property paths, so that change tracking resolves members via declared-type member
+		/// access instead of reflection (matching WinUI's compiled binding). Returns <c>null</c> to fall back
+		/// to reflective path resolution when getters can't be emitted for every path (e.g. indexer/cast
+		/// shapes, x:Name element fields, or members whose type can't be resolved at generation time).
+		/// See <see cref="Microsoft.UI.Xaml.Data.Binding.XBindPropertyPathGetters"/>.
+		/// </summary>
+		private string? TryBuildXBindPropertyPathGetters(IReadOnlyList<string> propertyPaths, INamedTypeSymbol? rootType)
+		{
+			if (propertyPaths.Count == 0)
+			{
+				return null;
+			}
+
+			var pathGetters = new List<string>(propertyPaths.Count);
+			foreach (var path in propertyPaths)
+			{
+				if (TryBuildXBindSinglePathGetters(path, rootType) is not { } getters)
+				{
+					// If we can't emit getters for any single path, fall back to reflection for the whole
+					// binding to keep the runtime ValueType-gate handling simple (all-or-nothing per binding).
+					return null;
+				}
+
+				pathGetters.Add(getters);
+			}
+
+			return "new global::System.Func<object, object>[][] { " + string.Join(", ", pathGetters) + " }";
+		}
+
+		private string? TryBuildXBindSinglePathGetters(string propertyPath, INamedTypeSymbol? rootType)
+		{
+			ITypeSymbol? currentType = rootType
+				?? _xClassName?.Symbol
+				?? (Generation.AutoGeneratedCodeBehindFiles.TryGetValue(_fileDefinition.UniqueID, out var autoGenType) ? autoGenType : null);
+
+			if (currentType is null)
+			{
+				return null;
+			}
+
+			var parts = propertyPath.Split('.');
+			var getters = new List<string>(parts.Length);
+
+			for (int i = 0; i < parts.Length; i++)
+			{
+				var part = parts[i];
+
+				// Indexers, casts and other non-trivial shapes are not yet emitted as compiled getters.
+				if (part.IndexOf('[') >= 0 || part.IndexOf('(') >= 0)
+				{
+					return null;
+				}
+
+				// Cast `o` to the declared type at this level and access the member directly. This mirrors
+				// exactly what the compiled value selector does, so it compiles whenever that does, and uses
+				// the declared (possibly interface) type rather than the runtime concrete type.
+				getters.Add($"static (object o) => (({currentType.GetFullyQualifiedTypeIncludingGlobal()})o).{part}");
+
+				if (currentType.TryGetPropertyOrFieldType(part) is { } partType)
+				{
+					currentType = partType;
+				}
+				else if (TryFindThirdPartyType(currentType, part, out var thirdPartyType))
+				{
+					currentType = thirdPartyType;
+				}
+				else
+				{
+					// Can't resolve the segment type at generation time (e.g. an x:Name element field whose
+					// backing field is itself source-generated, or an unsupported member). Fall back to
+					// reflection for this path.
+					return null;
+				}
+			}
+
+			return "new global::System.Func<object, object>[] { " + string.Join(", ", getters) + " }";
 		}
 
 		private bool TryFindThirdPartyType(
