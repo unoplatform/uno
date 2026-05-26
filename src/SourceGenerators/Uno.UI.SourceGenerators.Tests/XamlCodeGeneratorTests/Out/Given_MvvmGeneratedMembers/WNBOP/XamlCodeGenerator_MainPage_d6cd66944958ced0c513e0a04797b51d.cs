@@ -75,7 +75,7 @@ namespace TestRepro
 								{
 									Mode = global::Microsoft.UI.Xaml.Data.BindingMode.TwoWay,
 								}
-									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ViewModel.SubModel.IsEnabled*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.ViewModel.SubModel.IsEnabled)) : (false, default), (___ctx, __value) => { if(___ctx is global::TestRepro.MainPage ___tctx) ___tctx.ViewModel.SubModel.IsEnabled = (bool)global::Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(bool), __value); } , new [] {"ViewModel.SubModel.IsEnabled"}))
+									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ViewModel.SubModel.IsEnabled*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.ViewModel.SubModel.IsEnabled)) : (false, default), (___ctx, __value) => { if(___ctx is global::TestRepro.MainPage ___tctx) ___tctx.ViewModel.SubModel.IsEnabled = (bool)global::Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(bool), __value); } , new [] {"ViewModel.SubModel.IsEnabled"}, new global::System.Func<object, object>[][] { new global::System.Func<object, object>[] { static (object o) => ((global::TestRepro.MainPage)o).ViewModel, static (object o) => ((global::TestRepro.MyViewModel)o).SubModel, static (object o) => ((global::TestRepro.MySubViewModel)o).IsEnabled } }))
 							);
 							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
 							__p1.CreationComplete();

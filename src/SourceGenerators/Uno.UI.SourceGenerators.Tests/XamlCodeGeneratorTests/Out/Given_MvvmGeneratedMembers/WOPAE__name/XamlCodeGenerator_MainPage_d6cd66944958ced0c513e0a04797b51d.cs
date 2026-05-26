@@ -97,7 +97,7 @@ namespace TestRepro
 								{
 									Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
 								}
-									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ViewModel.Name.ToUpper()*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.ViewModel.Name.ToUpper())) : (false, default), null , new [] {"ViewModel.Name"}))
+									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ViewModel.Name.ToUpper()*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.ViewModel.Name.ToUpper())) : (false, default), null , new [] {"ViewModel.Name"}, new global::System.Func<object, object>[][] { new global::System.Func<object, object>[] { static (object o) => ((global::TestRepro.MainPage)o).ViewModel, static (object o) => ((global::TestRepro.MyViewModel)o).Name } }))
 							);
 							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
 							__p1.CreationComplete();
@@ -121,7 +121,7 @@ namespace TestRepro
 								{
 									Mode = global::Microsoft.UI.Xaml.Data.BindingMode.TwoWay,
 								}
-									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ViewModel.Name.ToUpper()*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.ViewModel.Name.ToUpper())) : (false, default), (___tctx, __value) => ViewModel.MyBindBack((string)__value) , new [] {"ViewModel.Name"}))
+									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ViewModel.Name.ToUpper()*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.ViewModel.Name.ToUpper())) : (false, default), (___tctx, __value) => ViewModel.MyBindBack((string)__value) , new [] {"ViewModel.Name"}, new global::System.Func<object, object>[][] { new global::System.Func<object, object>[] { static (object o) => ((global::TestRepro.MainPage)o).ViewModel, static (object o) => ((global::TestRepro.MyViewModel)o).Name } }))
 							);
 							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
 							__p1.CreationComplete();

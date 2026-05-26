@@ -78,7 +78,7 @@ namespace TestRepro
 							{
 								Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
 							}
-								.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime InnerText*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? (TryGetInstance_xBind_1(___tctx, out var bindResult1) ? (true, bindResult1) : (false, default)) : (false, default), null , new [] {"InnerText"}))
+								.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime InnerText*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? (TryGetInstance_xBind_1(___tctx, out var bindResult1) ? (true, bindResult1) : (false, default)) : (false, default), null , new [] {"InnerText"}, new global::System.Func<object, object>[][] { new global::System.Func<object, object>[] { static (object o) => ((global::TestRepro.MainPage)o).InnerText } }))
 						);
 						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
 						__p1.CreationComplete();
