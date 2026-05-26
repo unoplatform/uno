@@ -294,8 +294,10 @@ namespace Microsoft.UI.Xaml
 		// Phase 3 (D3, Mechanism 1) — theme-aware leaf lookup.
 		// The Light/Dark theme sub-dictionary is selected by the explicitly-passed <paramref name="themeKey"/>
 		// (the resolving owner's effective theme) instead of the process-global GetActiveTheme(). The
-		// parameterless overload above forwards GetActiveTheme() so callers that have not yet been migrated
-		// to thread the owner theme keep their current behavior during the migration. MUX: this matches
+		// parameterless overload above forwards GetActiveTheme() (== the app/OS base theme): post-Phase-4 that
+		// is the *permanent* fallback for owner-less / app-level lookups — e.g. the public
+		// Resources.TryGetValue(key, out value), which has no resolving element — not a transitional shim
+		// (architecture.md §6, "Themes.Active is retained, but demoted"). MUX: this matches
 		// SetThemeResourceBinding pushing the owner's own m_theme before resolving (Theming.cpp:368-376) —
 		// here the theme travels as a parameter rather than via the ambient slot (architecture.md §6).
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
