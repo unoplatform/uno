@@ -14,7 +14,7 @@ One phase per session, strictly in order. Scenario labels S1–S5 are defined in
 - [x] **Phase 4** — Remove the 11 band-aid pushes + delete the global stack
 - [x] **Phase 5** — Popup/Flyout logical-parent inheritance + flyout `ActualTheme` forwarding (D5, D6)
 - [x] **Phase 6** — Application/OS/custom-theme/high-contrast precedence (D7, D8)
-- [ ] **Phase 7** — Native (Android/iOS) theme scope: OS + application theme only (element theme out of scope)
+- [x] **Phase 7** — Native (Android/iOS) theme scope: OS + application theme only (element theme out of scope)
 - [ ] **Phase 8** — Full validation, WinUI parity, cleanup, docs
 
 ## Evidence log
@@ -261,6 +261,65 @@ One phase per session, strictly in order. Scenario labels S1–S5 are defined in
     probe app per the test comments). Commits: `feat(theming): ditch app-level custom-theme axis (D7)`;
     `feat(theming): compose high-contrast with base theme (D8)`; `test(theming): cover custom-theme ditch and
     high-contrast selection`; plus this docs commit.
+
+- **Phase 7 — DONE.** Confirmed and documented that native (Android/iOS, non-enhanced-lifecycle) targets
+  support **OS + application theme only**; element-level theming stays a Skia/WASM (`UNO_HAS_ENHANCED_LIFECYCLE`)
+  feature and is intentionally **not** ported to the native view hierarchy. No new native theme code; this is a
+  verification + documentation phase.
+  - **Gate audit (every `UNO_HAS_ENHANCED_LIFECYCLE` theme block from Phases 1–5).** The new element-theme
+    *establishment* machinery is all enhanced-lifecycle-gated and never compiles/runs on native:
+    `DependencyObject_EnterImpl` → `Store.EstablishThemeAtEnter()` is inside the `#if UNO_HAS_ENHANCED_LIFECYCLE`
+    block (`UIElement.mux.cs:852-1991`), and `EstablishThemeAtEnter` has **exactly one caller** (that gated
+    site); `ClearThemeStateOnUnloaded` (D4) is `#if UNO_HAS_ENHANCED_LIFECYCLE` (called only from the gated
+    `OnUnloadedPartial`); `OnLoadingPartial`'s theme block is the `#if` arm, the native `#else`
+    (`SyncRootRequestedTheme` + `ApplyStyles` + `UpdateResourceBindings`) is **unchanged**; `Popup`
+    open-time push removed (was inside `#if`, native never had it) and `Popup.NotifyThemeChangedCore`
+    override stays gated. `ApplyStyleWithThemeContext` collapsed both arms to plain `ApplyStyleCore`
+    (native already did exactly that).
+  - **Shared resolution leaf is platform-neutral, and on native it falls back to the app/OS theme.**
+    `DependencyObjectStore.Theming.cs` (D1/D3), `ThemeResolution.cs`, `ResourceDictionary` theme-key threading,
+    `ThemeResourceReference.RefreshValue(Theme)` compile on all heads (the leaf has no `#if`). On native,
+    because `EstablishThemeAtEnter` never runs, `_theme` is only ever set by the `NotifyThemeChangedCore` walk
+    (which is **not** newly gated — it ran on native before via push/pop and runs now via `SetTheme` + the
+    owner-theme leaf). When no per-object theme is established, `ResolveOwnerTheme` walks to the app base theme
+    (`Application.Current.ActualElementTheme`) — **net-identical to the old `GetActiveTheme()`/`Themes.Active`
+    for the OS+app scenario** (the band-aid stack was always empty on native). So native theme resolution is
+    behavior-preserved.
+  - **One intentional native change (made in Phase 5, reconfirmed here): `FlyoutBase.ForwardThemeToPresenter`
+    is a `#else` no-op on native** (the legacy element-`RequestedTheme` walk that *did* run on native was
+    removed); the field `m_isFlyoutPresenterRequestedThemeOverridden` is now `#if`-gated too. A native
+    flyout follows the application/OS theme (presenter keeps its default/inherited theme; normal
+    `{ThemeResource}` resolution + `Popup.UpdateThemeBindings`). Documented at the site.
+  - **Band-aid removals (Phase 4) are native-safe.** #6/#7 (VisualStateGroup) and #8 (BindingHelper) pushes
+    were `#if`-gated → native never pushed → removal is native-neutral. #5 (FrameworkTemplate), #9 (Hyperlink),
+    #10 (animation keyframes), #11 (focus visual) pushes were *not* gated, but were no-ops on native whenever
+    no element theme is established (the OS+app norm), so their replacement by owner-theme threading preserves
+    the native OS+app result. The deleted global-stack API has **zero** live references in `src` (only the §B
+    reflection guard names it, to assert it stays gone).
+  - **Tests native-excluded.** All 12 `Given_Theme_Materialization` methods (incl. T4/T5) carry
+    `[PlatformCondition(Exclude, NativeAndroid | NativeIOS)]`; `Given_ElementTheme` keeps its **class-level**
+    native exclusion. Element-level theme repros do not run on Android/iOS by design.
+  - **Stale in-code comments corrected (so future work doesn't re-attempt native element theming):**
+    `UIElement.mux.cs` (was "native attach is wired in Phase 7" → now states native is OS+app only by design);
+    `Given_Theme_Materialization.cs` class comment (was "popup/flyout first-open tests run on iOS/Android" →
+    now states each element-theme test is per-method native-excluded). Added a **"Platform support for
+    element-level theming"** section to the public `doc/articles/features/working-with-themes.md` (app/OS theme
+    universal; element-level `RequestedTheme` sub-tree theming on Windows/WASM/Skia; native Android/iOS = OS+app
+    theme only).
+  - **Validation.** *Code review:* gate audit above — native path unchanged except the intentional Phase 5
+    FlyoutBase no-op. *Compile:* `Uno.UI.netcoremobile` built for **net10.0-android** (Release,
+    `UnoFastDevBuild`) = **0 errors** (22 pre-existing `BG8C00` Android-binding warnings, unrelated) and
+    **net10.0-ios** = **0 errors, 0 warnings**. So no element-theme machinery breaks native compilation and the
+    deleted stack has no leftover native references. *Runtime:* on-device/emulator Android+iOS OS/app theme
+    switching was **not** executed in this environment (no device/emulator available) — maintainers should run
+    the SamplesApp on an Android device/emulator and an iOS simulator and toggle the OS theme to confirm OS+app
+    switching is unchanged; the native-applicable theming tests (element-theme suites excluded) run via
+    `/runtime-tests` on the native heads. Commit: `docs(theming): scope native to OS + application theme
+    (element theme is Skia/WASM only)`.
+  - **Known follow-up (not Phase 7):** `working-with-themes.md` still shows the now-`[Obsolete]` no-op
+    `ApplicationHelper.RequestedCustomTheme` in the "Change the app theme at startup" example (Phase 6 ditched
+    the custom-theme axis). Replacing it with `Application.RequestedTheme` has WinUI-ordering nuances — left for
+    a Phase 6/8 docs follow-up.
 
 ---
 
