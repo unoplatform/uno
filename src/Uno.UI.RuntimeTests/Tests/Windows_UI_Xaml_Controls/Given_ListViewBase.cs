@@ -1585,8 +1585,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		// Flaky on Skia Android - https://github.com/unoplatform/uno/issues/9080
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)]
 #if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
 #endif
@@ -1622,7 +1620,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = container;
 			await WindowHelper.WaitForIdle();
 
-			ScrollTo(list, 1000000); // Scroll to end
+			var scroll = list.FindFirstDescendant<ScrollViewer>();
+			Assert.IsNotNull(scroll);
+
+			// Scroll to end without animation: an animated scroll sweeps through every intermediate offset,
+			// re-realizing and re-binding containers on each animation frame. The number of frames varies by
+			// platform (Skia Android/macOS step through more frames than Win32), which made the materialization
+			// count non-deterministic and flaky. A non-animated scroll jumps straight to the target in a single
+			// layout pass, matching what this test means to measure (steady-state recycling efficiency).
+			scroll.ChangeView(null, 1000000, null, disableAnimation: true); // Scroll to end
 
 			await WindowHelper.WaitForIdle();
 
@@ -2143,14 +2149,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			dataContextChanged.Should().BeLessThan(5, $"dataContextChanged {dataContextChanged}");
 
-			ScrollTo(list, scroll.ExtentHeight / 2); // Scroll to middle
+			// Scroll without animation: an animated scroll sweeps through every intermediate offset, re-realizing
+			// and re-binding containers on each animation frame. The number of frames varies by platform (Skia
+			// Android/macOS step through more frames than Win32), which pushed materialized/dataContextChanged
+			// past the bounds and made this test flaky. A non-animated scroll jumps straight to the target in a
+			// single layout pass, so the counts reflect steady-state recycling efficiency this test means to measure.
+			scroll.ChangeView(null, scroll.ExtentHeight / 2, null, disableAnimation: true); // Scroll to middle
 
 			await WindowHelper.WaitForIdle();
 
 			materialized.Should().BeLessThan(8, $"materialized {materialized}");
 			dataContextChanged.Should().BeLessThan(10, $"dataContextChanged {dataContextChanged}");
 
-			ScrollTo(list, scroll.ExtentHeight / 4); // Scroll to Quarter
+			scroll.ChangeView(null, scroll.ExtentHeight / 4, null, disableAnimation: true); // Scroll to Quarter
 
 			await WindowHelper.WaitForIdle();
 
@@ -2218,8 +2229,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		// Flaky on Skia Android - https://github.com/unoplatform/uno/issues/9080
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)]
 #if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
 #endif
@@ -2269,7 +2278,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				if (scrollTo is { } voffset)
 				{
-					ScrollTo(list, voffset);
+					// Scroll without animation: an animated scroll sweeps through every intermediate offset,
+					// re-realizing and re-binding containers on each animation frame. The number of frames varies
+					// by platform (Skia Android/macOS step through more frames than Win32), which pushed
+					// materialized/dataContextChanged past the computed bounds and made this test flaky. A
+					// non-animated scroll jumps straight to the target in a single layout pass, so the counts match
+					// the effective-viewport realization this test computes its expectations from.
+					scroll.ChangeView(null, voffset, null, disableAnimation: true);
 				}
 
 				await WindowHelper.WaitForIdle();
@@ -4566,20 +4581,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var setup = CreateSetup();
 
 			await UITestHelper.Load(setup);
-			await Task.Delay(1000);
+			await WindowHelper.WaitForIdle();
 
 			SetSelectedItem(source.ElementAt(50));
-			await WindowHelper.WaitForIdle();
-			await Task.Delay(1000);
 
 			var lv = setup as ListView ?? setup.FindFirstDescendant<ListView>(); // get the LV itself, or the TabListView within TabView used for header
 			var sv = lv.FindFirstDescendant<ScrollViewer>();
-			var container = lv.ContainerFromIndex(50) as ContentControl;
 
-			var offset = container.TransformToVisual(lv).TransformPoint(default);
-			var (offsetStart, vpExtent) = setup is TabView
-				? (offset.X, sv.ViewportWidth) // horizontal
-				: (offset.Y, sv.ViewportHeight); // vertical
+			double offsetStart = double.NaN, vpExtent = double.NaN;
+			(double offset, double extent) GetOffsetWithinViewport()
+			{
+				var container = lv.ContainerFromIndex(50) as ContentControl;
+				var offset = container.TransformToVisual(lv).TransformPoint(default);
+				return setup is TabView
+					? (offset.X, sv.ViewportWidth) // horizontal
+					: (offset.Y, sv.ViewportHeight); // vertical
+			}
+
+			// Bringing the selected item into view scrolls and realizes container#50 asynchronously; this lands
+			// slower under Wasm CI than a single WaitForIdle can cover, so poll for the container to be realized
+			// and brought within the viewport instead of reading after one idle pass. WaitFor throws on timeout,
+			// so a genuine bring-into-view failure still fails the test rather than being masked.
+			await UITestHelper.WaitFor(
+				() =>
+				{
+					if (lv.ContainerFromIndex(50) is not ContentControl)
+					{
+						return false;
+					}
+
+					(offsetStart, vpExtent) = GetOffsetWithinViewport();
+					return 0 <= offsetStart && offsetStart <= vpExtent;
+				},
+				timeoutMS: 2000,
+				"timed out waiting for container#50 to be brought into view");
 
 			Assert.IsTrue(0 <= offsetStart && offsetStart <= vpExtent, $"Container#50 should be within viewport: 0 <= {offsetStart} <= {vpExtent}");
 
@@ -4934,7 +4969,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await Task.Delay(10);
 			AddItem($"Item 3", select: true);
 
-			await UITestHelper.WaitForIdle();
+			// Selecting a freshly added item brings it into view and realizes its container asynchronously;
+			// this settles slower under Wasm CI than a single WaitForIdle can cover, so poll for all 3 containers
+			// to materialize. WaitFor throws on timeout, so the regression guarded by #17695 (missing items in the
+			// viewport) still fails the test rather than being masked.
+			await UITestHelper.WaitFor(
+				() => sut.MaterializedContainers.Count() == 3,
+				timeoutMS: 2000,
+				"timed out waiting for the 3 freshly added items to be materialized");
 
 			var tree = sut.TreeGraph();
 #if !__ANDROID__
