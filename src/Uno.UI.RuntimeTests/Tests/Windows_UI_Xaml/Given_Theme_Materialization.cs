@@ -80,6 +80,23 @@ public class Given_Theme_Materialization
 	private static Color? ForegroundOf(object element)
 		=> (element as TextBlock)?.Foreground is SolidColorBrush b ? b.Color : null;
 
+	// Builds an app-level ResourceDictionary carrying the sentinel ThemeDictionaries.
+	// Used by the popup/flyout/runtime-add repros (T4/T5/T6) which reference {ThemeResource SentinelBrush}
+	// on an element loaded via XamlReader.Load that is either standalone (T6) or whose key is in its own
+	// (not-yet-processed) Resources (T4/T5). Native WinUI's XamlReader.Load resolves {ThemeResource}
+	// EAGERLY at parse against the available scope (app + system resources) — unlike Uno, which defers to
+	// load — so the sentinel must be reachable at parse, i.e. registered at the application level. Putting
+	// it in Application.Resources makes the snippet parse on WinUI; the per-element theme still selects the
+	// Light vs Dark sentinel at resolution (the island is Light), so the assertions are unchanged.
+	private static ResourceDictionary BuildSentinelAppResources()
+		=> (ResourceDictionary)XamlReader.Load(
+			$$"""
+			<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				{{SentinelDictsXaml}}
+			</ResourceDictionary>
+			""");
+
 	// ---- T1 — S1: virtualized list item in a Light island under a Dark ambient resolves Light ----
 
 	[TestMethod]
@@ -268,6 +285,8 @@ public class Given_Theme_Materialization
 		// not just ActualTheme, and that first-open == second-open.
 		// Excluded on native: element-level theme inheritance is a Skia/WASM feature — native targets
 		// support OS + application theme only (the flyout follows the app/OS theme there).
+		// Sentinel at app level so {ThemeResource SentinelBrush} resolves at XamlReader.Load parse on WinUI.
+		using var _appSentinel = StyleHelper.UseAppLevelResources(BuildSentinelAppResources());
 #if HAS_UNO
 		using var _ = ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Dark);
 		await WindowHelper.WaitForIdle();
@@ -332,6 +351,8 @@ public class Given_Theme_Materialization
 		// opener island's Light theme on the FIRST open under a Dark ambient.
 		// Excluded on native: element-level theme inheritance is a Skia/WASM feature — native targets
 		// support OS + application theme only (the popup child follows the app/OS theme there).
+		// Sentinel at app level so {ThemeResource SentinelBrush} resolves at XamlReader.Load parse on WinUI.
+		using var _appSentinel = StyleHelper.UseAppLevelResources(BuildSentinelAppResources());
 #if HAS_UNO
 		using var _ = ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Dark);
 		await WindowHelper.WaitForIdle();
@@ -384,6 +405,9 @@ public class Given_Theme_Materialization
 		// S5. A control created and added at runtime into an already-loaded RequestedTheme="Light"
 		// parent must resolve the Light sentinel under a Dark ambient. Also covers D1: a non-FE
 		// DependencyObject ({ThemeResource} on a Brush/DO) resolves the subtree theme.
+		// Sentinel at app level so {ThemeResource SentinelBrush} on the runtime-added (standalone-parsed)
+		// element resolves at XamlReader.Load parse on WinUI (which resolves ThemeResources eagerly).
+		using var _appSentinel = StyleHelper.UseAppLevelResources(BuildSentinelAppResources());
 #if HAS_UNO
 		using var _ = ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Dark);
 		await WindowHelper.WaitForIdle();
