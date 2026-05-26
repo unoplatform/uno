@@ -242,14 +242,13 @@ namespace Microsoft.UI.Xaml
 			var targetValues = (state, transition: FindTransition(currentValues.state?.Name, state?.Name));
 
 			// As accessing to VisualState and VisualTransition properties (Storyboard and Setters) may trigger the materialization of the VisualState,
-			// we ensure that this materialization occurs only in the right resource scope AND theme context.
+			// we ensure that this materialization occurs only in the right resource scope.
 			// Note: the "current" should have already been materialized.
 			//
-			// The theme push is still needed because ResourceDictionary.GetActiveThemeDictionary()
-			// uses the global theme stack to select the correct Light/Dark sub-dictionary.
-			(Storyboard transition, Storyboard animation, SetterBaseCollection setters) current, target;
 			// D3 (Mechanism 1): VisualState Storyboards/Setters materialized here resolve {ThemeResource}
-			// against the element's own theme, threaded through the resolution chain — no global theme push.
+			// against the element's own theme, threaded through the resolution chain — no global theme push
+			// (the Phase 4 push that used to wrap this block is gone).
+			(Storyboard transition, Storyboard animation, SetterBaseCollection setters) current, target;
 			try
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
