@@ -43,8 +43,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 /// - The outer region is themed <c>RequestedTheme="Dark"</c> so the test also exercises a real
 ///   "Light island inside a Dark region" boundary on native WinUI (where the Uno-only ambient
 ///   override compiles out and the app is Light by default) — keeping the test a valid oracle.
-/// - This class intentionally does NOT inherit <see cref="Given_ElementTheme"/>'s
-///   native-platform exclusion, so the popup/flyout first-open tests (S4) run on iOS/Android.
+/// - This class intentionally does NOT inherit <see cref="Given_ElementTheme"/>'s class-level
+///   native exclusion; instead every element-level theme test is excluded on native per-method
+///   (<c>[PlatformCondition(Exclude, NativeAndroid | NativeIOS)]</c>). Element-level theming
+///   (incl. the popup/flyout first-open tests T4/T5) is a Skia/WASM feature — native targets
+///   support OS + application theme only (plan.md Phase 7) — so these repros do not apply to
+///   iOS/Android. The per-method form (vs a blanket class exclusion) keeps each test's native
+///   scope explicit at the test site.
 /// </summary>
 [TestClass]
 [RunsOnUIThread]

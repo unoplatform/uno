@@ -74,6 +74,14 @@ public class MainPage : Page
 }
 ```
 
+## Platform support for element-level theming
+
+The **application theme** and the **OS theme** (Light, Dark, and High Contrast) are honored on every target: Windows, WebAssembly, Skia-rendered desktop and mobile, and native Android and iOS.
+
+**Element-level theming** — setting `FrameworkElement.RequestedTheme` on a sub-tree so that part of the app uses a different theme than the rest — is fully supported on **Windows**, **WebAssembly**, and **Skia-rendered** targets. There, the theme of an element is established as it enters the visual tree (inherited from its logical parent), so content created at runtime — virtualized list/grid items, popup and flyout content on first open, and controls added after load — resolves the correct element theme immediately.
+
+On **native Android and iOS** targets (the UIKit / Android-view heads), the framework supports the **OS and application theme only**; per-element `RequestedTheme` theming of a sub-tree is intentionally out of scope. Content on those targets follows the application/OS theme. If your app relies on theming a sub-tree independently of the rest of the UI, use a Skia-rendered head on mobile.
+
 ## Change the app theme at runtime
 
 The [`SystemThemeHelper.SetApplicationTheme`](https://github.com/unoplatform/uno.toolkit.ui/blob/main/src/Uno.Toolkit.UI/Helpers/SystemThemeHelper.cs) method from `Uno.Toolkit.UI` can also be used to support an in-app toggle for dark mode. For example, you could add a toggle button to your app's settings page that allows the user to switch between light and dark modes. The following code snippet shows how to implement this:
