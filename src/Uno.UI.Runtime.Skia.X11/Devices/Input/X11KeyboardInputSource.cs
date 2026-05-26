@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Core;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
@@ -285,16 +286,31 @@ internal class X11KeyboardInputSource : IUnoKeyboardInputSource
 		DispatchKeyEvent(keyEvent, pressed, keySym, symbols);
 	}
 
-	private void DispatchKeyEvent(XKeyEvent keyEvent, bool pressed, nint keySym, string? symbols)
+	private unsafe void DispatchKeyEvent(XKeyEvent keyEvent, bool pressed, nint keySym, string? symbols)
 	{
+		// XLookupString/Xutf8LookupString returns a modifier-aware keySym, so e.g. Shift+0
+		// gives XK_parenright instead of XK_0. Since VirtualKey should represent the physical key
+		// (matching WM_KEYDOWN wParam on Windows), fall back to the unshifted keySym when the
+		// modifier-aware one has no entry in the mapping table.
+		var virtualKey = X11KeyTransform.VirtualKeyFromKeySym(keySym);
+		if (virtualKey == VirtualKey.None && (keyEvent.state & XModifierMask.ShiftMask) != 0)
+		{
+			// XKeyEvent is a struct, so this copy is safe to mutate independently of keyEvent.
+			var unshiftedKeyEvent = keyEvent;
+			unshiftedKeyEvent.state &= ~XModifierMask.ShiftMask;
+			// Pass num_bytes=0 because we only need the keySym output, not the translated string.
+			XLib.XLookupString(ref unshiftedKeyEvent, null, 0, out var baseKeySym, IntPtr.Zero);
+			virtualKey = X11KeyTransform.VirtualKeyFromKeySym(baseKeySym);
+		}
+
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Trace($"Dispatching {(pressed ? "KeyDown" : "KeyUp")}: vk={X11KeyTransform.VirtualKeyFromKeySym(keySym)} unicodeKey={(symbols?.Length > 0 ? symbols[0].ToString() : "null")}");
+			this.Log().Trace($"Dispatching {(pressed ? "KeyDown" : "KeyUp")}: vk={virtualKey} unicodeKey={(symbols?.Length > 0 ? symbols[0].ToString() : "null")}");
 		}
 
 		var args = new KeyEventArgs(
 			"keyboard",
-			X11KeyTransform.VirtualKeyFromKeySym(keySym),
+			virtualKey,
 			X11XamlRootHost.XModifierMaskToVirtualKeyModifiers(keyEvent.state),
 			new CorePhysicalKeyStatus
 			{
