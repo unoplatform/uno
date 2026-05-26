@@ -307,10 +307,9 @@ namespace Uno.UI
 			var effectivePrecedence = precedence ?? DependencyPropertyValuePrecedences.Local;
 
 			// Set the initial value from statically-available top-level resources.
-			// This uses the 3-parameter TryStaticRetrieval overload, which does not capture
-			// the providing ResourceDictionary. For theme resources, dictionary pinning is
-			// deferred until the load-time re-resolution path.
-			if (!immediateResolution && TryStaticRetrieval(specializedKey, context, out var value))
+			// For theme resources we use the overload that also returns the providing
+			// ResourceDictionary, so it can be pinned on the ThemeResourceReference (see below).
+			if (!immediateResolution && TryStaticRetrieval(specializedKey, context, out var value, out var providingDictionary))
 			{
 				owner.SetValue(property, BindingPropertyHelper.Convert(property.Type, value), precedence);
 
@@ -319,17 +318,28 @@ namespace Uno.UI
 
 				if (isThemeResource)
 				{
-					// Create ThemeResourceReference without pinned dictionary for now.
-					// The providing dictionary will be captured during the first
-					// _resourceBindings resolution at load time (via the re-pin logic
-					// in InnerUpdateResourceBindingsUnsafe).
+					// Pin the providing dictionary on the theme reference immediately.
+					//
+					// MUX Reference: CThemeResource always retains its source dictionary
+					// (ThemeResource.h m_pThemeResourceDictionary), set when the value is first
+					// resolved, so RefreshValue() can re-select the correct theme sub-dictionary
+					// on every theme change.
+					//
+					// Capturing the dictionary here (rather than deferring to the load-time
+					// _resourceBindings walk) is required for content that is reparented out of
+					// its declaring resource scope before/while loading — popup/flyout/tooltip/
+					// menu content lives in a separate PopupRoot branch, so the load-time ancestor
+					// walk can't reach the dictionary that declared the resource. Without the pin,
+					// RefreshValue() falls back to the stale parse-time value resolved against the
+					// ambient theme instead of the element's own inherited ActualTheme.
 					var themeRef = new ThemeResourceReference(
-						specializedKey, null, value, isResolved: true, context,
+						specializedKey, providingDictionary, value, isResolved: true, context,
 						updateReason, effectivePrecedence);
 					(owner as IDependencyObjectStoreProvider)?.Store.SetThemeResourceBinding(property, themeRef);
 
 					// Also register a ResourceBinding for the initial tree-walk resolution
-					// at load time, which will also pin the providing dictionary.
+					// at load time, which will also re-pin the providing dictionary if a closer
+					// ancestor scope shadows the resource.
 					(owner as IDependencyObjectStoreProvider)?.Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
 					return;
 				}
