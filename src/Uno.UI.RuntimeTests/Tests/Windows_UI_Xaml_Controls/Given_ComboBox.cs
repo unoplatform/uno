@@ -1329,6 +1329,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var origin = sv.VerticalOffset;
 			var destination = origin + sv.ViewportHeight * 2;
 			sv.ChangeView(null, verticalOffset: destination, null, disableAnimation: true);
+			// ChangeView is async on SkiaWasm: the VerticalOffset update is applied on the next render pass,
+			// so poll until the offset settles rather than relying on a single WaitForIdle.
+			await UITestHelper.WaitFor(() => Math.Abs(destination - sv.VerticalOffset) < 1.0, timeoutMS: 2000, $"Expect sv.VerticalOffset to be near {destination:0.##}, got: {sv.VerticalOffset:0.##}");
 			await UITestHelper.WaitForIdle();
 			Assert.IsLessThan(1.0, Math.Abs(destination - sv.VerticalOffset), $"Expect sv.VerticalOffset to be near {destination:0.##}, got: {sv.VerticalOffset:0.##}");
 
@@ -1468,6 +1471,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(source[^3], sut.SelectedItem, "SelectedItem should be the 3rd last");
 
 			var sv = sut.ItemsPanelRoot.FindFirstAncestorOrThrow<ScrollViewer>();
+			// Container realization after scroll-into-view is async on SkiaWasm: the virtualizing panel
+			// realizes the container on the next layout pass after the scroll settles.
+			await UITestHelper.WaitFor(() => sut.ContainerFromIndex(sut.SelectedIndex) is FrameworkElement, timeoutMS: 2000, "timed out waiting on the selected container to be realized");
 			var cbi = sut.ContainerFromIndex(sut.SelectedIndex) as FrameworkElement;
 			Assert.IsNotNull(cbi, "Selected container should not be null");
 
