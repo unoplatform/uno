@@ -14,11 +14,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CameraCaptureUIVideoCaptureSettings.AllowTrimming is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CameraCaptureUIVideoCaptureSettings.AllowTrimming");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings", "AllowTrimming");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings", "bool CameraCaptureUIVideoCaptureSettings.AllowTrimming");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings", "AllowTrimming");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float CameraCaptureUIVideoCaptureSettings.MaxDurationInSeconds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20CameraCaptureUIVideoCaptureSettings.MaxDurationInSeconds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings", "MaxDurationInSeconds");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings", "float CameraCaptureUIVideoCaptureSettings.MaxDurationInSeconds");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings", "MaxDurationInSeconds");
 			}
 		}
 #endif
@@ -43,11 +43,11 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CameraCaptureUIMaxVideoResolution CameraCaptureUIVideoCaptureSettings.MaxResolution is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CameraCaptureUIMaxVideoResolution%20CameraCaptureUIVideoCaptureSettings.MaxResolution");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings", "MaxResolution");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings", "CameraCaptureUIMaxVideoResolution CameraCaptureUIVideoCaptureSettings.MaxResolution");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.CameraCaptureUIVideoCaptureSettings", "MaxResolution");
 			}
 		}
 #endif

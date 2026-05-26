@@ -13,7 +13,7 @@ namespace Windows.Perception.People
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public JointPose(global::System.Numerics.Quaternion _Orientation, global::System.Numerics.Vector3 _Position, float _Radius, global::Windows.Perception.People.JointPoseAccuracy _Accuracy)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.People.JointPose", "JointPose.JointPose(Quaternion _Orientation, Vector3 _Position, float _Radius, JointPoseAccuracy _Accuracy)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.People.JointPose", "JointPose(Quaternion _Orientation, Vector3 _Position, float _Radius, JointPoseAccuracy _Accuracy)");
 		}
 #endif
 		// Forced skipping of method Windows.Perception.People.JointPose.JointPose(System.Numerics.Quaternion, System.Numerics.Vector3, float, Windows.Perception.People.JointPoseAccuracy)

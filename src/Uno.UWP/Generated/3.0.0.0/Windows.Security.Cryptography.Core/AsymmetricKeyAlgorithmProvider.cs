@@ -19,7 +19,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AsymmetricKeyAlgorithmProvider.AlgorithmName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AsymmetricKeyAlgorithmProvider.AlgorithmName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider", "AlgorithmName");
 			}
 		}
 #endif
@@ -27,56 +27,56 @@ namespace Windows.Security.Cryptography.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider OpenAlgorithm(string algorithm)
 		{
-			throw new global::System.NotImplementedException("The member AsymmetricKeyAlgorithmProvider AsymmetricKeyAlgorithmProvider.OpenAlgorithm(string algorithm) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AsymmetricKeyAlgorithmProvider%20AsymmetricKeyAlgorithmProvider.OpenAlgorithm%28string%20algorithm%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider", "OpenAlgorithm(string algorithm)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Cryptography.Core.CryptographicKey CreateKeyPair(uint keySize)
 		{
-			throw new global::System.NotImplementedException("The member CryptographicKey AsymmetricKeyAlgorithmProvider.CreateKeyPair(uint keySize) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CryptographicKey%20AsymmetricKeyAlgorithmProvider.CreateKeyPair%28uint%20keySize%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider", "CreateKeyPair(uint keySize)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Cryptography.Core.CryptographicKey ImportKeyPair(global::Windows.Storage.Streams.IBuffer keyBlob)
 		{
-			throw new global::System.NotImplementedException("The member CryptographicKey AsymmetricKeyAlgorithmProvider.ImportKeyPair(IBuffer keyBlob) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CryptographicKey%20AsymmetricKeyAlgorithmProvider.ImportKeyPair%28IBuffer%20keyBlob%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider", "ImportKeyPair(IBuffer keyBlob)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Cryptography.Core.CryptographicKey ImportKeyPair(global::Windows.Storage.Streams.IBuffer keyBlob, global::Windows.Security.Cryptography.Core.CryptographicPrivateKeyBlobType BlobType)
 		{
-			throw new global::System.NotImplementedException("The member CryptographicKey AsymmetricKeyAlgorithmProvider.ImportKeyPair(IBuffer keyBlob, CryptographicPrivateKeyBlobType BlobType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CryptographicKey%20AsymmetricKeyAlgorithmProvider.ImportKeyPair%28IBuffer%20keyBlob%2C%20CryptographicPrivateKeyBlobType%20BlobType%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider", "ImportKeyPair(IBuffer keyBlob, CryptographicPrivateKeyBlobType BlobType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Cryptography.Core.CryptographicKey ImportPublicKey(global::Windows.Storage.Streams.IBuffer keyBlob)
 		{
-			throw new global::System.NotImplementedException("The member CryptographicKey AsymmetricKeyAlgorithmProvider.ImportPublicKey(IBuffer keyBlob) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CryptographicKey%20AsymmetricKeyAlgorithmProvider.ImportPublicKey%28IBuffer%20keyBlob%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider", "ImportPublicKey(IBuffer keyBlob)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Cryptography.Core.CryptographicKey ImportPublicKey(global::Windows.Storage.Streams.IBuffer keyBlob, global::Windows.Security.Cryptography.Core.CryptographicPublicKeyBlobType BlobType)
 		{
-			throw new global::System.NotImplementedException("The member CryptographicKey AsymmetricKeyAlgorithmProvider.ImportPublicKey(IBuffer keyBlob, CryptographicPublicKeyBlobType BlobType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CryptographicKey%20AsymmetricKeyAlgorithmProvider.ImportPublicKey%28IBuffer%20keyBlob%2C%20CryptographicPublicKeyBlobType%20BlobType%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider", "ImportPublicKey(IBuffer keyBlob, CryptographicPublicKeyBlobType BlobType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Cryptography.Core.CryptographicKey CreateKeyPairWithCurveName(string curveName)
 		{
-			throw new global::System.NotImplementedException("The member CryptographicKey AsymmetricKeyAlgorithmProvider.CreateKeyPairWithCurveName(string curveName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CryptographicKey%20AsymmetricKeyAlgorithmProvider.CreateKeyPairWithCurveName%28string%20curveName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider", "CreateKeyPairWithCurveName(string curveName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Cryptography.Core.CryptographicKey CreateKeyPairWithCurveParameters(byte[] parameters)
 		{
-			throw new global::System.NotImplementedException("The member CryptographicKey AsymmetricKeyAlgorithmProvider.CreateKeyPairWithCurveParameters(byte[] parameters) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CryptographicKey%20AsymmetricKeyAlgorithmProvider.CreateKeyPairWithCurveParameters%28byte%5B%5D%20parameters%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider", "CreateKeyPairWithCurveParameters(byte[] parameters)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Core.AsymmetricKeyAlgorithmProvider.AlgorithmName.get

@@ -19,7 +19,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhotoImportSelectionChangedEventArgs.IsSelectionEmpty is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PhotoImportSelectionChangedEventArgs.IsSelectionEmpty");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportSelectionChangedEventArgs", "IsSelectionEmpty");
 			}
 		}
 #endif

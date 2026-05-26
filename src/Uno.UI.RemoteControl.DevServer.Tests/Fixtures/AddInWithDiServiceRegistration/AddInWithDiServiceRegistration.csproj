@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<!--
+		Test fixture for Uno.UI.RemoteControl.DevServer.Tests.
+
+		Validates the end-to-end DI integration path for add-ins loaded into the
+		shared AddInLoadContext:
+
+		1. [ServiceCollectionExtension] attribute scan and ctor activation — proves
+		   IServiceCollection bridges to the host's instance (Type identity preserved).
+
+		2. IHostedService — add-in registers a hosted service that the ASP.NET Core
+		   host must start, proving IHostedService bridges to the host's instance.
+
+		3. IServiceProvider cross-ALC type lookup — the hosted service resolves add-in-
+		   defined types (ITestToken) from the shared IServiceProvider, proving
+		   ServiceDescriptors survive the ALC boundary intact.
+
+		Intentionally targets net9.0 (lower than the host's net10.0 TFM) with
+		matching-version PackageReferences so its compiled AssemblyRefs embed at the
+		net9.0 major. EnableDynamicLoading=true emits a self-contained .deps.json so
+		AddInLoadContext's AssemblyDependencyResolver has a real per-add-in graph.
+	-->
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+		<EnableDynamicLoading>true</EnableDynamicLoading>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.0" />
+	</ItemGroup>
+
+</Project>

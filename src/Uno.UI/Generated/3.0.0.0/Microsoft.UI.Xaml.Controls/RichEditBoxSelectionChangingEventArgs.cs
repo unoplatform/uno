@@ -19,11 +19,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RichEditBoxSelectionChangingEventArgs.Cancel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RichEditBoxSelectionChangingEventArgs.Cancel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs", "Cancel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs", "bool RichEditBoxSelectionChangingEventArgs.Cancel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs", "Cancel");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int RichEditBoxSelectionChangingEventArgs.SelectionLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20RichEditBoxSelectionChangingEventArgs.SelectionLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs", "SelectionLength");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int RichEditBoxSelectionChangingEventArgs.SelectionStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20RichEditBoxSelectionChangingEventArgs.SelectionStart");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs", "SelectionStart");
 			}
 		}
 #endif

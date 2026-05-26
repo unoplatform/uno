@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset AppBroadcastStreamVideoHeader.AbsoluteTimestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20AppBroadcastStreamVideoHeader.AbsoluteTimestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamVideoHeader", "AbsoluteTimestamp");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan AppBroadcastStreamVideoHeader.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20AppBroadcastStreamVideoHeader.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamVideoHeader", "Duration");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AppBroadcastStreamVideoHeader.FrameId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20AppBroadcastStreamVideoHeader.FrameId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamVideoHeader", "FrameId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppBroadcastStreamVideoHeader.HasDiscontinuity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppBroadcastStreamVideoHeader.HasDiscontinuity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamVideoHeader", "HasDiscontinuity");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppBroadcastStreamVideoHeader.IsKeyFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppBroadcastStreamVideoHeader.IsKeyFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamVideoHeader", "IsKeyFrame");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan AppBroadcastStreamVideoHeader.RelativeTimestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20AppBroadcastStreamVideoHeader.RelativeTimestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppBroadcastStreamVideoHeader", "RelativeTimestamp");
 			}
 		}
 #endif

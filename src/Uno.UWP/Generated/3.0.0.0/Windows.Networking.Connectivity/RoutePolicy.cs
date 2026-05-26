@@ -14,7 +14,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ConnectionProfile RoutePolicy.ConnectionProfile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ConnectionProfile%20RoutePolicy.ConnectionProfile");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.RoutePolicy", "ConnectionProfile");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName RoutePolicy.HostName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20RoutePolicy.HostName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.RoutePolicy", "HostName");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DomainNameType RoutePolicy.HostNameType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DomainNameType%20RoutePolicy.HostNameType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.RoutePolicy", "HostNameType");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Networking.Connectivity
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public RoutePolicy(global::Windows.Networking.Connectivity.ConnectionProfile connectionProfile, global::Windows.Networking.HostName hostName, global::Windows.Networking.DomainNameType type)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.RoutePolicy", "RoutePolicy.RoutePolicy(ConnectionProfile connectionProfile, HostName hostName, DomainNameType type)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.RoutePolicy", "RoutePolicy(ConnectionProfile connectionProfile, HostName hostName, DomainNameType type)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Connectivity.RoutePolicy.RoutePolicy(Windows.Networking.Connectivity.ConnectionProfile, Windows.Networking.HostName, Windows.Networking.DomainNameType)

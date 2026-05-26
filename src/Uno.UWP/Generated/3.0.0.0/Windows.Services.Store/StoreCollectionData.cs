@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset StoreCollectionData.AcquiredDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20StoreCollectionData.AcquiredDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreCollectionData", "AcquiredDate");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreCollectionData.CampaignId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreCollectionData.CampaignId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreCollectionData", "CampaignId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreCollectionData.DeveloperOfferId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreCollectionData.DeveloperOfferId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreCollectionData", "DeveloperOfferId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset StoreCollectionData.EndDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20StoreCollectionData.EndDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreCollectionData", "EndDate");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreCollectionData.ExtendedJsonData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreCollectionData.ExtendedJsonData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreCollectionData", "ExtendedJsonData");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StoreCollectionData.IsTrial is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreCollectionData.IsTrial");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreCollectionData", "IsTrial");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset StoreCollectionData.StartDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20StoreCollectionData.StartDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreCollectionData", "StartDate");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan StoreCollectionData.TrialTimeRemaining is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20StoreCollectionData.TrialTimeRemaining");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreCollectionData", "TrialTimeRemaining");
 			}
 		}
 #endif

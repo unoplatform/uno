@@ -51,9 +51,6 @@ The `.desktop` filename MUST conform to the [Desktop File](https://specification
 
 If you wish, you can generate a default snap manifest and desktop file by running the command above, then tweak them.
 
-> [!NOTE]
-> .NET 9 publishing and cross-publishing are not supported as of Uno 5.5, we will support .NET 9 publishing soon.
-
 #### CI Restrictions
 
 When building in a CI environment, security restrictions may prevent LXD and Multipass from running properly.

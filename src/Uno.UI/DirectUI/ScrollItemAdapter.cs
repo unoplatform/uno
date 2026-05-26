@@ -4,10 +4,11 @@
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
 
 namespace DirectUI;
 
-internal class ScrollItemAdapter
+internal class ScrollItemAdapter : IScrollItemProvider
 {
 	private FrameworkElementAutomationPeer m_automationPeer;
 	public ScrollItemAdapter(FrameworkElementAutomationPeer automationPeer)
@@ -17,22 +18,12 @@ internal class ScrollItemAdapter
 
 	public void ScrollIntoView()
 	{
-		if (m_automationPeer is FrameworkElementAutomationPeer automationPeer)
+		if (m_automationPeer?.Owner is UIElement owner)
 		{
-			if (automationPeer.Owner is UIElement owner)
+			owner.StartBringIntoView(new Microsoft.UI.Xaml.BringIntoViewOptions
 			{
-				//UNO TODO: Properly implement ScrollIntoView on ScrollItemAdapter
-
-				//var rect = new Windows.Foundation.Rect();
-				//var size = owner.GetRenderSize();
-
-				//rect.X = 0;
-				//rect.Y = 0;
-				//rect.Width = size.Width;
-				//rect.Height = size.Height;
-
-				//owner.BringIntoView(rect, true /*forceIntoView*/, false /*useAnimation*/, false /*skipDuringManipulation*/);
-			}
+				AnimationDesired = false
+			});
 		}
 	}
 }

@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentCurrencyAmount PaymentShippingOption.Amount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentCurrencyAmount%20PaymentShippingOption.Amount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentShippingOption", "Amount");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentShippingOption", "PaymentCurrencyAmount PaymentShippingOption.Amount");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentShippingOption", "Amount");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PaymentShippingOption.IsSelected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PaymentShippingOption.IsSelected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentShippingOption", "IsSelected");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentShippingOption", "bool PaymentShippingOption.IsSelected");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentShippingOption", "IsSelected");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentShippingOption.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentShippingOption.Label");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentShippingOption", "Label");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentShippingOption", "string PaymentShippingOption.Label");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentShippingOption", "Label");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentShippingOption.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentShippingOption.Tag");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentShippingOption", "Tag");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentShippingOption", "string PaymentShippingOption.Tag");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentShippingOption", "Tag");
 			}
 		}
 #endif
@@ -68,7 +68,7 @@ namespace Windows.ApplicationModel.Payments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaymentShippingOption(string label, global::Windows.ApplicationModel.Payments.PaymentCurrencyAmount amount)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentShippingOption", "PaymentShippingOption.PaymentShippingOption(string label, PaymentCurrencyAmount amount)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentShippingOption", "PaymentShippingOption(string label, PaymentCurrencyAmount amount)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.PaymentShippingOption(string, Windows.ApplicationModel.Payments.PaymentCurrencyAmount)
@@ -76,7 +76,7 @@ namespace Windows.ApplicationModel.Payments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaymentShippingOption(string label, global::Windows.ApplicationModel.Payments.PaymentCurrencyAmount amount, bool selected)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentShippingOption", "PaymentShippingOption.PaymentShippingOption(string label, PaymentCurrencyAmount amount, bool selected)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentShippingOption", "PaymentShippingOption(string label, PaymentCurrencyAmount amount, bool selected)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.PaymentShippingOption(string, Windows.ApplicationModel.Payments.PaymentCurrencyAmount, bool)
@@ -84,7 +84,7 @@ namespace Windows.ApplicationModel.Payments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaymentShippingOption(string label, global::Windows.ApplicationModel.Payments.PaymentCurrencyAmount amount, bool selected, string tag)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentShippingOption", "PaymentShippingOption.PaymentShippingOption(string label, PaymentCurrencyAmount amount, bool selected, string tag)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentShippingOption", "PaymentShippingOption(string label, PaymentCurrencyAmount amount, bool selected, string tag)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentShippingOption.PaymentShippingOption(string, Windows.ApplicationModel.Payments.PaymentCurrencyAmount, bool, string)

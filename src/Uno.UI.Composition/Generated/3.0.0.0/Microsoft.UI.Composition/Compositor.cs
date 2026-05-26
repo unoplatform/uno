@@ -14,7 +14,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float Compositor.MaxGlobalPlaybackRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20Compositor.MaxGlobalPlaybackRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "MaxGlobalPlaybackRate");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float Compositor.MinGlobalPlaybackRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20Compositor.MinGlobalPlaybackRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "MinGlobalPlaybackRate");
 			}
 		}
 #endif
@@ -34,11 +34,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Compositor.Comment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Compositor.Comment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "Comment");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Compositor", "string Compositor.Comment");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Compositor", "Comment");
 			}
 		}
 #endif
@@ -48,7 +48,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DispatcherQueue Compositor.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherQueue%20Compositor.DispatcherQueue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "DispatcherQueue");
 			}
 		}
 #endif
@@ -58,11 +58,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float Compositor.GlobalPlaybackRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20Compositor.GlobalPlaybackRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "GlobalPlaybackRate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Compositor", "float Compositor.GlobalPlaybackRate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Compositor", "GlobalPlaybackRate");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Microsoft.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.ColorKeyFrameAnimation CreateColorKeyFrameAnimation()
 		{
-			throw new global::System.NotImplementedException("The member ColorKeyFrameAnimation Compositor.CreateColorKeyFrameAnimation() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ColorKeyFrameAnimation%20Compositor.CreateColorKeyFrameAnimation%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateColorKeyFrameAnimation()");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateColorBrush()
@@ -93,7 +93,7 @@ namespace Microsoft.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.QuaternionKeyFrameAnimation CreateQuaternionKeyFrameAnimation()
 		{
-			throw new global::System.NotImplementedException("The member QuaternionKeyFrameAnimation Compositor.CreateQuaternionKeyFrameAnimation() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=QuaternionKeyFrameAnimation%20Compositor.CreateQuaternionKeyFrameAnimation%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateQuaternionKeyFrameAnimation()");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateScalarKeyFrameAnimation()
@@ -108,21 +108,21 @@ namespace Microsoft.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.CompositionCommitBatch GetCommitBatch(global::Microsoft.UI.Composition.CompositionBatchTypes batchType)
 		{
-			throw new global::System.NotImplementedException("The member CompositionCommitBatch Compositor.GetCommitBatch(CompositionBatchTypes batchType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionCommitBatch%20Compositor.GetCommitBatch%28CompositionBatchTypes%20batchType%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "GetCommitBatch(CompositionBatchTypes batchType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.AmbientLight CreateAmbientLight()
 		{
-			throw new global::System.NotImplementedException("The member AmbientLight Compositor.CreateAmbientLight() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AmbientLight%20Compositor.CreateAmbientLight%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateAmbientLight()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.CompositionAnimationGroup CreateAnimationGroup()
 		{
-			throw new global::System.NotImplementedException("The member CompositionAnimationGroup Compositor.CreateAnimationGroup() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionAnimationGroup%20Compositor.CreateAnimationGroup%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateAnimationGroup()");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateBackdropBrush()
@@ -130,28 +130,28 @@ namespace Microsoft.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.DistantLight CreateDistantLight()
 		{
-			throw new global::System.NotImplementedException("The member DistantLight Compositor.CreateDistantLight() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DistantLight%20Compositor.CreateDistantLight%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateDistantLight()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.DropShadow CreateDropShadow()
 		{
-			throw new global::System.NotImplementedException("The member DropShadow Compositor.CreateDropShadow() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DropShadow%20Compositor.CreateDropShadow%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateDropShadow()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.ImplicitAnimationCollection CreateImplicitAnimationCollection()
 		{
-			throw new global::System.NotImplementedException("The member ImplicitAnimationCollection Compositor.CreateImplicitAnimationCollection() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ImplicitAnimationCollection%20Compositor.CreateImplicitAnimationCollection%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateImplicitAnimationCollection()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.LayerVisual CreateLayerVisual()
 		{
-			throw new global::System.NotImplementedException("The member LayerVisual Compositor.CreateLayerVisual() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LayerVisual%20Compositor.CreateLayerVisual%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateLayerVisual()");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateMaskBrush()
@@ -160,14 +160,14 @@ namespace Microsoft.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.PointLight CreatePointLight()
 		{
-			throw new global::System.NotImplementedException("The member PointLight Compositor.CreatePointLight() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointLight%20Compositor.CreatePointLight%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreatePointLight()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.SpotLight CreateSpotLight()
 		{
-			throw new global::System.NotImplementedException("The member SpotLight Compositor.CreateSpotLight() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpotLight%20Compositor.CreateSpotLight%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateSpotLight()");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateStepEasingFunction()
@@ -179,49 +179,49 @@ namespace Microsoft.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.SpringScalarNaturalMotionAnimation CreateSpringScalarAnimation()
 		{
-			throw new global::System.NotImplementedException("The member SpringScalarNaturalMotionAnimation Compositor.CreateSpringScalarAnimation() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpringScalarNaturalMotionAnimation%20Compositor.CreateSpringScalarAnimation%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateSpringScalarAnimation()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.SpringVector2NaturalMotionAnimation CreateSpringVector2Animation()
 		{
-			throw new global::System.NotImplementedException("The member SpringVector2NaturalMotionAnimation Compositor.CreateSpringVector2Animation() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpringVector2NaturalMotionAnimation%20Compositor.CreateSpringVector2Animation%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateSpringVector2Animation()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation CreateSpringVector3Animation()
 		{
-			throw new global::System.NotImplementedException("The member SpringVector3NaturalMotionAnimation Compositor.CreateSpringVector3Animation() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpringVector3NaturalMotionAnimation%20Compositor.CreateSpringVector3Animation%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateSpringVector3Animation()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.BounceScalarNaturalMotionAnimation CreateBounceScalarAnimation()
 		{
-			throw new global::System.NotImplementedException("The member BounceScalarNaturalMotionAnimation Compositor.CreateBounceScalarAnimation() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BounceScalarNaturalMotionAnimation%20Compositor.CreateBounceScalarAnimation%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateBounceScalarAnimation()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.BounceVector2NaturalMotionAnimation CreateBounceVector2Animation()
 		{
-			throw new global::System.NotImplementedException("The member BounceVector2NaturalMotionAnimation Compositor.CreateBounceVector2Animation() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BounceVector2NaturalMotionAnimation%20Compositor.CreateBounceVector2Animation%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateBounceVector2Animation()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.BounceVector3NaturalMotionAnimation CreateBounceVector3Animation()
 		{
-			throw new global::System.NotImplementedException("The member BounceVector3NaturalMotionAnimation Compositor.CreateBounceVector3Animation() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BounceVector3NaturalMotionAnimation%20Compositor.CreateBounceVector3Animation%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateBounceVector3Animation()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.CompositionContainerShape CreateContainerShape()
 		{
-			throw new global::System.NotImplementedException("The member CompositionContainerShape Compositor.CreateContainerShape() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionContainerShape%20Compositor.CreateContainerShape%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateContainerShape()");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateEllipseGeometry()
@@ -232,7 +232,7 @@ namespace Microsoft.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.PathKeyFrameAnimation CreatePathKeyFrameAnimation()
 		{
-			throw new global::System.NotImplementedException("The member PathKeyFrameAnimation Compositor.CreatePathKeyFrameAnimation() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PathKeyFrameAnimation%20Compositor.CreatePathKeyFrameAnimation%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreatePathKeyFrameAnimation()");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateRectangleGeometry()
@@ -245,7 +245,7 @@ namespace Microsoft.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RequestCommitAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction Compositor.RequestCommitAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20Compositor.RequestCommitAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "RequestCommitAsync()");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateGeometricClip()
@@ -256,14 +256,14 @@ namespace Microsoft.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.BooleanKeyFrameAnimation CreateBooleanKeyFrameAnimation()
 		{
-			throw new global::System.NotImplementedException("The member BooleanKeyFrameAnimation Compositor.CreateBooleanKeyFrameAnimation() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BooleanKeyFrameAnimation%20Compositor.CreateBooleanKeyFrameAnimation%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateBooleanKeyFrameAnimation()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.AnimationPropertyInfo CreateAnimationPropertyInfo()
 		{
-			throw new global::System.NotImplementedException("The member AnimationPropertyInfo Compositor.CreateAnimationPropertyInfo() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AnimationPropertyInfo%20Compositor.CreateAnimationPropertyInfo%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateAnimationPropertyInfo()");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateRectangleClip()
@@ -273,21 +273,21 @@ namespace Microsoft.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.CompositionProjectedShadowCaster CreateProjectedShadowCaster()
 		{
-			throw new global::System.NotImplementedException("The member CompositionProjectedShadowCaster Compositor.CreateProjectedShadowCaster() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionProjectedShadowCaster%20Compositor.CreateProjectedShadowCaster%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateProjectedShadowCaster()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.CompositionProjectedShadow CreateProjectedShadow()
 		{
-			throw new global::System.NotImplementedException("The member CompositionProjectedShadow Compositor.CreateProjectedShadow() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionProjectedShadow%20Compositor.CreateProjectedShadow%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateProjectedShadow()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.CompositionProjectedShadowReceiver CreateProjectedShadowReceiver()
 		{
-			throw new global::System.NotImplementedException("The member CompositionProjectedShadowReceiver Compositor.CreateProjectedShadowReceiver() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionProjectedShadowReceiver%20Compositor.CreateProjectedShadowReceiver%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateProjectedShadowReceiver()");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateRadialGradientBrush()
@@ -296,14 +296,14 @@ namespace Microsoft.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.AnimationController CreateAnimationController()
 		{
-			throw new global::System.NotImplementedException("The member AnimationController Compositor.CreateAnimationController() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AnimationController%20Compositor.CreateAnimationController%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateAnimationController()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Compositor", "void Compositor.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Compositor", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Compositor.Comment.get

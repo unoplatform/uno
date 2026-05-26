@@ -19,11 +19,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AnnotatedScrollBarScrollingEventArgs.Cancel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AnnotatedScrollBarScrollingEventArgs.Cancel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs", "Cancel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs", "bool AnnotatedScrollBarScrollingEventArgs.Cancel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs", "Cancel");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AnnotatedScrollBarScrollingEventArgs.ScrollOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AnnotatedScrollBarScrollingEventArgs.ScrollOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs", "ScrollOffset");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AnnotatedScrollBarScrollingEventKind AnnotatedScrollBarScrollingEventArgs.ScrollingEventKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AnnotatedScrollBarScrollingEventKind%20AnnotatedScrollBarScrollingEventArgs.ScrollingEventKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.AnnotatedScrollBarScrollingEventArgs", "ScrollingEventKind");
 			}
 		}
 #endif

@@ -19,14 +19,14 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData> GetManufacturerDataByCompanyId(ushort companyId)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<BluetoothLEManufacturerData> BluetoothLEAdvertisement.GetManufacturerDataByCompanyId(ushort companyId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CBluetoothLEManufacturerData%3E%20BluetoothLEAdvertisement.GetManufacturerDataByCompanyId%28ushort%20companyId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisement", "GetManufacturerDataByCompanyId(ushort companyId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection> GetSectionsByType(byte type)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<BluetoothLEAdvertisementDataSection> BluetoothLEAdvertisement.GetSectionsByType(byte type) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CBluetoothLEAdvertisementDataSection%3E%20BluetoothLEAdvertisement.GetSectionsByType%28byte%20type%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisement", "GetSectionsByType(byte type)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisement.DataSections.get

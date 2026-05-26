@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorePackageUpdateState StorePackageUpdateResult.OverallState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorePackageUpdateState%20StorePackageUpdateResult.OverallState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePackageUpdateResult", "OverallState");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<StorePackageUpdateStatus> StorePackageUpdateResult.StorePackageUpdateStatuses is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CStorePackageUpdateStatus%3E%20StorePackageUpdateResult.StorePackageUpdateStatuses");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePackageUpdateResult", "StorePackageUpdateStatuses");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<StoreQueueItem> StorePackageUpdateResult.StoreQueueItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CStoreQueueItem%3E%20StorePackageUpdateResult.StoreQueueItems");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePackageUpdateResult", "StoreQueueItems");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothError GattRequestStateChangedEventArgs.Error is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothError%20GattRequestStateChangedEventArgs.Error");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattRequestStateChangedEventArgs", "Error");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattRequestState GattRequestStateChangedEventArgs.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattRequestState%20GattRequestStateChangedEventArgs.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattRequestStateChangedEventArgs", "State");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SmsDeviceMessageStore.MaxMessages is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20SmsDeviceMessageStore.MaxMessages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDeviceMessageStore", "MaxMessages");
 			}
 		}
 #endif
@@ -27,28 +27,28 @@ namespace Windows.Devices.Sms
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DeleteMessageAsync(uint messageId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction SmsDeviceMessageStore.DeleteMessageAsync(uint messageId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SmsDeviceMessageStore.DeleteMessageAsync%28uint%20messageId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDeviceMessageStore", "DeleteMessageAsync(uint messageId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction DeleteMessagesAsync(global::Windows.Devices.Sms.SmsMessageFilter messageFilter)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction SmsDeviceMessageStore.DeleteMessagesAsync(SmsMessageFilter messageFilter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SmsDeviceMessageStore.DeleteMessagesAsync%28SmsMessageFilter%20messageFilter%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDeviceMessageStore", "DeleteMessagesAsync(SmsMessageFilter messageFilter)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sms.ISmsMessage> GetMessageAsync(uint messageId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ISmsMessage> SmsDeviceMessageStore.GetMessageAsync(uint messageId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CISmsMessage%3E%20SmsDeviceMessageStore.GetMessageAsync%28uint%20messageId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDeviceMessageStore", "GetMessageAsync(uint messageId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sms.ISmsMessage>, int> GetMessagesAsync(global::Windows.Devices.Sms.SmsMessageFilter messageFilter)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<IReadOnlyList<ISmsMessage>, int> SmsDeviceMessageStore.GetMessagesAsync(SmsMessageFilter messageFilter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CIReadOnlyList%3CISmsMessage%3E%2C%20int%3E%20SmsDeviceMessageStore.GetMessagesAsync%28SmsMessageFilter%20messageFilter%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsDeviceMessageStore", "GetMessagesAsync(SmsMessageFilter messageFilter)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsDeviceMessageStore.MaxMessages.get

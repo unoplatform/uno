@@ -14,11 +14,11 @@ namespace Microsoft.UI.Xaml.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point ManipulationPivot.Center is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20ManipulationPivot.Center");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Input.ManipulationPivot", "Center");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Input.ManipulationPivot", "Point ManipulationPivot.Center");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Input.ManipulationPivot", "Center");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Microsoft.UI.Xaml.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ManipulationPivot.Radius is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ManipulationPivot.Radius");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Input.ManipulationPivot", "Radius");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Input.ManipulationPivot", "double ManipulationPivot.Radius");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Input.ManipulationPivot", "Radius");
 			}
 		}
 #endif
@@ -40,7 +40,7 @@ namespace Microsoft.UI.Xaml.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ManipulationPivot()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Input.ManipulationPivot", "ManipulationPivot.ManipulationPivot()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Input.ManipulationPivot", "ManipulationPivot()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.ManipulationPivot()
@@ -48,7 +48,7 @@ namespace Microsoft.UI.Xaml.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ManipulationPivot(global::Windows.Foundation.Point center, double radius)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Input.ManipulationPivot", "ManipulationPivot.ManipulationPivot(Point center, double radius)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Input.ManipulationPivot", "ManipulationPivot(Point center, double radius)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationPivot.ManipulationPivot(Windows.Foundation.Point, double)

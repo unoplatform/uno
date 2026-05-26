@@ -34,6 +34,7 @@ internal class Win32RawElementProvider :
 	private readonly nint _hwnd;
 	private readonly int _runtimeId;
 	private readonly bool _isRoot;
+	private readonly bool _isVirtualPeer;
 	private readonly Win32Accessibility _accessibility;
 	private readonly WeakReference<AutomationPeer>? _representedPeer;
 	private IList<AutomationPeer>? _cachedAutomationChildren;
@@ -47,11 +48,13 @@ internal class Win32RawElementProvider :
 		nint hwnd,
 		bool isRoot,
 		Win32Accessibility accessibility,
-		AutomationPeer? representedPeer = null)
+		AutomationPeer? representedPeer = null,
+		bool isVirtualPeer = false)
 	{
 		_owner = owner;
 		_hwnd = hwnd;
 		_isRoot = isRoot;
+		_isVirtualPeer = isVirtualPeer;
 		_accessibility = accessibility;
 		_representedPeer = representedPeer is not null ? new WeakReference<AutomationPeer>(representedPeer) : null;
 		_runtimeId = _nextRuntimeId++;
@@ -113,6 +116,69 @@ internal class Win32RawElementProvider :
 				Win32UIAutomationInterop.UIA_TablePatternId
 					when peer.GetPattern(PatternInterface.Table) is ITableProvider table
 					=> new UiaTableProviderWrapper(table, _accessibility),
+				Win32UIAutomationInterop.UIA_WindowPatternId
+					when peer.GetPattern(PatternInterface.Window) is IWindowProvider window
+					=> new UiaWindowProviderWrapper(window),
+				Win32UIAutomationInterop.UIA_TransformPatternId
+					when peer.GetPattern(PatternInterface.Transform) is ITransformProvider transform
+					=> new UiaTransformProviderWrapper(transform),
+				Win32UIAutomationInterop.UIA_DockPatternId
+					when peer.GetPattern(PatternInterface.Dock) is IDockProvider dock
+					=> new UiaDockProviderWrapper(dock),
+				Win32UIAutomationInterop.UIA_MultipleViewPatternId
+					when peer.GetPattern(PatternInterface.MultipleView) is IMultipleViewProvider multiView
+					=> new UiaMultipleViewProviderWrapper(multiView),
+				Win32UIAutomationInterop.UIA_TextPatternId
+					when peer.GetPattern(PatternInterface.Text) is ITextProvider text
+					=> new UiaTextProviderWrapper(text, _accessibility),
+				Win32UIAutomationInterop.UIA_TextPattern2Id
+					when peer.GetPattern(PatternInterface.Text2) is ITextProvider2 text2
+					=> new UiaTextProvider2Wrapper(text2, _accessibility),
+				Win32UIAutomationInterop.UIA_TextEditPatternId
+					when peer.GetPattern(PatternInterface.TextEdit) is ITextEditProvider textEdit
+					=> new UiaTextEditProviderWrapper(textEdit, _accessibility),
+				Win32UIAutomationInterop.UIA_ItemContainerPatternId
+					when peer.GetPattern(PatternInterface.ItemContainer) is IItemContainerProvider itemContainer
+					=> new UiaItemContainerProviderWrapper(itemContainer, _accessibility),
+				Win32UIAutomationInterop.UIA_VirtualizedItemPatternId
+					when peer.GetPattern(PatternInterface.VirtualizedItem) is IVirtualizedItemProvider virtualizedItem
+					=> new UiaVirtualizedItemProviderWrapper(virtualizedItem),
+				Win32UIAutomationInterop.UIA_TableItemPatternId
+					when peer.GetPattern(PatternInterface.TableItem) is ITableItemProvider tableItem
+					=> new UiaTableItemProviderWrapper(tableItem, _accessibility),
+				Win32UIAutomationInterop.UIA_TextChildPatternId
+					when peer.GetPattern(PatternInterface.TextChild) is ITextChildProvider textChild
+					=> new UiaTextChildProviderWrapper(textChild, _accessibility),
+				Win32UIAutomationInterop.UIA_AnnotationPatternId
+					when peer.GetPattern(PatternInterface.Annotation) is IAnnotationProvider annotation
+					=> new UiaAnnotationProviderWrapper(annotation, _accessibility),
+				Win32UIAutomationInterop.UIA_DragPatternId
+					when peer.GetPattern(PatternInterface.Drag) is IDragProvider drag
+					=> new UiaDragProviderWrapper(drag, _accessibility),
+				Win32UIAutomationInterop.UIA_DropTargetPatternId
+					when peer.GetPattern(PatternInterface.DropTarget) is IDropTargetProvider dropTarget
+					=> new UiaDropTargetProviderWrapper(dropTarget),
+				Win32UIAutomationInterop.UIA_ObjectModelPatternId
+					when peer.GetPattern(PatternInterface.ObjectModel) is IObjectModelProvider objectModel
+					=> new UiaObjectModelProviderWrapper(objectModel),
+				Win32UIAutomationInterop.UIA_SpreadsheetPatternId
+					when peer.GetPattern(PatternInterface.Spreadsheet) is ISpreadsheetProvider spreadsheet
+					=> new UiaSpreadsheetProviderWrapper(spreadsheet, _accessibility),
+				Win32UIAutomationInterop.UIA_SpreadsheetItemPatternId
+					when peer.GetPattern(PatternInterface.SpreadsheetItem) is ISpreadsheetItemProvider spreadsheetItem
+					=> new UiaSpreadsheetItemProviderWrapper(spreadsheetItem, _accessibility),
+				Win32UIAutomationInterop.UIA_StylesPatternId
+					when peer.GetPattern(PatternInterface.Styles) is IStylesProvider styles
+					=> new UiaStylesProviderWrapper(styles),
+				Win32UIAutomationInterop.UIA_SynchronizedInputPatternId
+					when peer.GetPattern(PatternInterface.SynchronizedInput) is ISynchronizedInputProvider synchronizedInput
+					=> new UiaSynchronizedInputProviderWrapper(synchronizedInput),
+				Win32UIAutomationInterop.UIA_CustomNavigationPatternId
+					when peer.GetPattern(PatternInterface.CustomNavigation) is ICustomNavigationProvider customNavigation
+					=> new UiaCustomNavigationProviderWrapper(customNavigation, _accessibility),
+				Win32UIAutomationInterop.UIA_TransformPattern2Id
+					when peer.GetPattern(PatternInterface.Transform2) is ITransformProvider2 transform2
+					=> new UiaTransformProvider2Wrapper(transform2),
 				_ => null,
 			};
 
@@ -171,19 +237,19 @@ internal class Win32RawElementProvider :
 				Win32UIAutomationInterop.UIA_AccessKeyPropertyId => GetNonEmpty(peer?.GetAccessKey()),
 				Win32UIAutomationInterop.UIA_ItemTypePropertyId => GetNonEmpty(peer?.GetItemType()),
 				Win32UIAutomationInterop.UIA_ItemStatusPropertyId => GetNonEmpty(peer?.GetItemStatus()),
-				Win32UIAutomationInterop.UIA_FullDescriptionPropertyId => GetNonEmpty(AutomationProperties.GetFullDescription(_owner)),
+				Win32UIAutomationInterop.UIA_FullDescriptionPropertyId => _isVirtualPeer ? null : GetNonEmpty(AutomationProperties.GetFullDescription(_owner)),
 
 				// Semantics
-				Win32UIAutomationInterop.UIA_HeadingLevelPropertyId => MapHeadingLevel(AutomationProperties.GetHeadingLevel(_owner)),
-				Win32UIAutomationInterop.UIA_LandmarkTypePropertyId => MapLandmarkType(AutomationProperties.GetLandmarkType(_owner)),
-				Win32UIAutomationInterop.UIA_LocalizedLandmarkTypePropertyId => GetNonEmpty(AutomationProperties.GetLocalizedLandmarkType(_owner)),
-				Win32UIAutomationInterop.UIA_LiveSettingPropertyId => (int)AutomationProperties.GetLiveSetting(_owner),
+				Win32UIAutomationInterop.UIA_HeadingLevelPropertyId => _isVirtualPeer ? null : MapHeadingLevel(AutomationProperties.GetHeadingLevel(_owner)),
+				Win32UIAutomationInterop.UIA_LandmarkTypePropertyId => _isVirtualPeer ? null : MapLandmarkType(AutomationProperties.GetLandmarkType(_owner)),
+				Win32UIAutomationInterop.UIA_LocalizedLandmarkTypePropertyId => _isVirtualPeer ? null : GetNonEmpty(AutomationProperties.GetLocalizedLandmarkType(_owner)),
+				Win32UIAutomationInterop.UIA_LiveSettingPropertyId => _isVirtualPeer ? 0 : (int)AutomationProperties.GetLiveSetting(_owner),
 				Win32UIAutomationInterop.UIA_OrientationPropertyId => MapOrientation(peer),
 
 				// Position in group
-				Win32UIAutomationInterop.UIA_PositionInSetPropertyId => GetPositiveOrNull(peer?.GetPositionInSet() ?? AutomationProperties.GetPositionInSet(_owner)),
-				Win32UIAutomationInterop.UIA_SizeOfSetPropertyId => GetPositiveOrNull(peer?.GetSizeOfSet() ?? AutomationProperties.GetSizeOfSet(_owner)),
-				Win32UIAutomationInterop.UIA_LevelPropertyId => GetPositiveOrNull(peer?.GetLevel() ?? AutomationProperties.GetLevel(_owner)),
+				Win32UIAutomationInterop.UIA_PositionInSetPropertyId => GetPositiveOrNull(peer?.GetPositionInSet() ?? (_isVirtualPeer ? 0 : AutomationProperties.GetPositionInSet(_owner))),
+				Win32UIAutomationInterop.UIA_SizeOfSetPropertyId => GetPositiveOrNull(peer?.GetSizeOfSet() ?? (_isVirtualPeer ? 0 : AutomationProperties.GetSizeOfSet(_owner))),
+				Win32UIAutomationInterop.UIA_LevelPropertyId => GetPositiveOrNull(peer?.GetLevel() ?? (_isVirtualPeer ? 0 : AutomationProperties.GetLevel(_owner))),
 
 				// Form validation
 				Win32UIAutomationInterop.UIA_IsDataValidForFormPropertyId => peer?.IsDataValidForForm() ?? true,
@@ -235,9 +301,9 @@ internal class Win32RawElementProvider :
 			{
 				var hr = Win32UIAutomationInterop.UiaHostProviderFromHwnd(_hwnd, out var hostProvider);
 
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Debug($"[UIA] HostRawElementProvider: hwnd=0x{_hwnd:X}, hr=0x{hr:X}, hostProvider={(hostProvider is not null ? "present" : "NULL")}");
+					this.Log().Trace($"[UIA] HostRawElementProvider: hwnd=0x{_hwnd:X}, hr=0x{hr:X}, hostProvider={(hostProvider is not null ? "present" : "NULL")}");
 				}
 
 				return hostProvider;
@@ -262,12 +328,12 @@ internal class Win32RawElementProvider :
 				_ => null,
 			};
 
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
 				var targetDesc = result is Win32RawElementProvider targetProvider
 					? targetProvider.DescribeElement()
 					: "(null)";
-				this.Log().Debug($"[UIA] Navigate({direction}) on {DescribeElement()} → {targetDesc}");
+				this.Log().Trace($"[UIA] Navigate({direction}) on {DescribeElement()} → {targetDesc}");
 			}
 
 			return result;
@@ -293,23 +359,40 @@ internal class Win32RawElementProvider :
 		{
 			try
 			{
-				var visual = _owner.Visual;
-				var size = visual.Size;
+				Windows.Foundation.Rect logicalRect;
 
-				// Compute the full element-to-root transform, then transform the
-				// local rect to get the axis-aligned bounding box in window coords.
-				// This correctly handles rotation, scale, and skew transforms.
-				var transform = UIElement.GetTransform(from: _owner, to: null);
-				var localRect = new Windows.Foundation.Rect(0, 0, size.X, size.Y);
-				var logicalRect = transform.Transform(localRect);
-
-				// Clip to ancestor scroll/clip regions so Narrator doesn't report
-				// bounds for content that is scrolled out of view.
-				logicalRect = ClipToAncestors(_owner, logicalRect);
-
-				if (logicalRect.Width <= 0 || logicalRect.Height <= 0)
+				if (_isVirtualPeer && RepresentedPeer is { } virtualPeer)
 				{
-					return default;
+					// Virtual peers (e.g. DataGridItemAutomationPeer) share their
+					// UIElement owner with other peers. The peer overrides
+					// GetBoundingRectangleCore to delegate to the actual visual
+					// element (e.g. the DataGridRow), so use the peer's bounds.
+					logicalRect = virtualPeer.GetBoundingRectangle();
+					if (logicalRect.Width <= 0 || logicalRect.Height <= 0)
+					{
+						return default;
+					}
+				}
+				else
+				{
+					var visual = _owner.Visual;
+					var size = visual.Size;
+
+					// Compute the full element-to-root transform, then transform the
+					// local rect to get the axis-aligned bounding box in window coords.
+					// This correctly handles rotation, scale, and skew transforms.
+					var transform = UIElement.GetTransform(from: _owner, to: null);
+					var localRect = new Windows.Foundation.Rect(0, 0, size.X, size.Y);
+					logicalRect = transform.Transform(localRect);
+
+					// Clip to ancestor scroll/clip regions so Narrator doesn't report
+					// bounds for content that is scrolled out of view.
+					logicalRect = ClipToAncestors(_owner, logicalRect);
+
+					if (logicalRect.Width <= 0 || logicalRect.Height <= 0)
+					{
+						return default;
+					}
 				}
 
 				// Convert logical pixels to physical screen coordinates
@@ -366,12 +449,22 @@ internal class Win32RawElementProvider :
 	{
 		try
 		{
-			var result = FindDeepestProviderAtPoint(x, y) ?? this;
+			var deepest = FindDeepestProviderAtPoint(x, y) ?? this;
 
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			// If the deepest hit lives anywhere inside a ControlTemplate (its
+			// visual chain crosses an element whose TemplatedParent is set), return
+			// the outermost owning control instead. Matches WinUI behavior where
+			// hit-testing addresses the user-facing control (TextBox/Button), not
+			// the inner template parts. Walking the visual tree (not just
+			// TemplatedParent directly) covers the case where a ContentPresenter
+			// synthesizes a TextBlock for string content — that TextBlock has no
+			// TemplatedParent of its own, but its visual parent does.
+			var result = WalkUpToContainingControl(deepest, x, y);
+
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				var desc = result is Win32RawElementProvider p ? p.DescribeElement() : "self";
-				this.Log().Debug($"[UIA] ElementProviderFromPoint({x:F0}, {y:F0}) → {desc}");
+				var resultDesc = result is Win32RawElementProvider rp ? rp.DescribeElement() : "self";
+				this.Log().Trace($"[UIA] ElementProviderFromPoint({x:F0}, {y:F0}) → {resultDesc}");
 			}
 
 			return result;
@@ -386,6 +479,82 @@ internal class Win32RawElementProvider :
 		}
 	}
 
+	/// <summary>
+	/// Walks the visual ancestors of <paramref name="provider"/>'s owner. If any
+	/// ancestor (including the owner itself) has a templated parent (i.e. it lives
+	/// inside that control's ControlTemplate), return the outermost such templated
+	/// parent so UIA clients see the control, not its template parts.
+	/// </summary>
+	/// <remarks>
+	/// Reads the templated parent via the internal weak-reference store
+	/// (<see cref="DependencyObjectExtensions.GetTemplatedParent"/>) rather than
+	/// the generated <c>TemplatedParent</c> DependencyProperty. Uno's template
+	/// instantiation code (<c>FrameworkTemplatePool</c>, <c>XamlObjectBuilder</c>,
+	/// <c>ContentPresenter</c>) only populates the weak-reference store; the DP
+	/// remains unset, so reading <c>fe.TemplatedParent</c> directly always returns
+	/// null and the walk-up would never trigger.
+	/// </remarks>
+	private IRawElementProviderFragment WalkUpToContainingControl(
+		IRawElementProviderFragment provider, double screenX, double screenY)
+	{
+		if (provider is not Win32RawElementProvider current || current._isRoot)
+		{
+			return provider;
+		}
+
+		// (1) If the deepest hit is already a user-level Control (TP=null AND is Control),
+		// don't promote — we're at the user-facing widget. This avoids walking past a
+		// hit RadioButton/Button/etc. up into its container's template chrome.
+		if (current._owner is Control && current._owner.GetTemplatedParent() is null)
+		{
+			return current;
+		}
+
+		// (2) Walk visual ancestors looking for the FIRST element with a TemplatedParent.
+		// That element is part of some control's template; its TemplatedParent is the
+		// control we should address. Required because some inner rendering elements
+		// (e.g. the DisplayBlock TextBlock inside a TextBox's template) have TP=null
+		// themselves but live inside a TP-bearing visual subtree.
+		DependencyObject? walker = current._owner;
+		UIElement? final = null;
+		var iter = 0;
+		while (walker is not null && iter++ < 64)
+		{
+			if (walker.GetTemplatedParent() is UIElement tpElement)
+			{
+				final = tpElement;
+				break;
+			}
+			walker = VisualTreeHelper.GetParent(walker);
+		}
+
+		if (final is null)
+		{
+			return current;
+		}
+
+		// (3) Follow the TemplatedParent chain from `final` upward. This handles nested
+		// templates like ImplicitTextBlock → ContentPresenter → RadioButton, where each
+		// jump moves us out one nesting level.
+		iter = 0;
+		while (iter++ < 64)
+		{
+			if (final.GetTemplatedParent() is not UIElement tpElement)
+			{
+				break;
+			}
+			final = tpElement;
+		}
+
+		var tpProv = _accessibility.GetOrCreateProvider(final);
+		if (tpProv is null || !tpProv.ContainsPoint(screenX, screenY))
+		{
+			return current;
+		}
+
+		return tpProv;
+	}
+
 	public IRawElementProviderFragment? GetFocus()
 	{
 		try
@@ -393,9 +562,9 @@ internal class Win32RawElementProvider :
 			var xamlRoot = _owner.XamlRoot;
 			if (xamlRoot is null)
 			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Debug($"[UIA] GetFocus: XamlRoot is null on {DescribeElement()}");
+					this.Log().Trace($"[UIA] GetFocus: XamlRoot is null on {DescribeElement()}");
 				}
 				return null;
 			}
@@ -471,7 +640,7 @@ internal class Win32RawElementProvider :
 			result = children.Count > 0 ? children : null;
 		}
 
-		if (this.Log().IsEnabled(LogLevel.Debug))
+		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
 			var count = result?.Count ?? 0;
 			var peerDesc = peer?.GetType().Name ?? "none";
@@ -489,7 +658,7 @@ internal class Win32RawElementProvider :
 				}
 				childNames = $" [{string.Join(", ", names)}]";
 			}
-			this.Log().Debug($"[UIA] GetAutomationChildren on {DescribeElement()} (peer={peerDesc}) → {count} children{childNames}");
+			this.Log().Trace($"[UIA] GetAutomationChildren on {DescribeElement()} (peer={peerDesc}) → {count} children{childNames}");
 		}
 
 		_cachedAutomationChildren = result;
@@ -530,24 +699,35 @@ internal class Win32RawElementProvider :
 
 	private IRawElementProviderFragment? GetFirstChild()
 	{
-		var children = GetAutomationChildren();
-		if (children is null || children.Count == 0)
+		// The HWND root must expose the outer synthetic pane as its only child,
+		// matching WinAppSDK's window → pane → pane → content structure. The
+		// inner pane forwards back into GetFirstChildCore to walk the user
+		// content normally.
+		if (_isRoot)
 		{
-			return null;
+			return _accessibility.OuterPane;
 		}
 
-		for (var i = 0; i < children.Count; i++)
-		{
-			var provider = _accessibility.GetProviderForPeer(children[i], resolveEventsSource: true);
-			if (provider is not null && !ReferenceEquals(provider, this))
-			{
-				return provider;
-			}
-		}
-		return null;
+		return GetFirstChildCore();
 	}
 
 	private IRawElementProviderFragment? GetLastChild()
+	{
+		if (_isRoot)
+		{
+			return _accessibility.OuterPane;
+		}
+
+		return GetLastChildCore();
+	}
+
+	/// <summary>
+	/// Performs the actual first-child resolution against the automation peer
+	/// tree (bypassing the synthetic-pane interception applied at the root).
+	/// Called directly by the inner synthetic pane to forward child queries
+	/// into the user content.
+	/// </summary>
+	internal IRawElementProviderFragment? GetFirstChildCore()
 	{
 		var children = GetAutomationChildren();
 		if (children is null || children.Count == 0)
@@ -555,12 +735,56 @@ internal class Win32RawElementProvider :
 			return null;
 		}
 
+		HashSet<Win32RawElementProvider>? ancestors = null;
+		for (var i = 0; i < children.Count; i++)
+		{
+			var provider = _accessibility.GetProviderForPeer(children[i], resolveEventsSource: true);
+			if (provider is not null)
+			{
+				ancestors ??= BuildAncestorSet();
+				if (!ancestors.Contains(provider))
+				{
+					return provider;
+				}
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn(
+						$"[UIA] Cycle detected: skipping child {provider.DescribeElement()} " +
+						$"(runtimeId={provider._runtimeId}) of {DescribeElement()} — it is an ancestor");
+				}
+			}
+		}
+		return null;
+	}
+
+	/// <summary>
+	/// Performs the actual last-child resolution. See <see cref="GetFirstChildCore"/>.
+	/// </summary>
+	internal IRawElementProviderFragment? GetLastChildCore()
+	{
+		var children = GetAutomationChildren();
+		if (children is null || children.Count == 0)
+		{
+			return null;
+		}
+
+		HashSet<Win32RawElementProvider>? ancestors = null;
 		for (var i = children.Count - 1; i >= 0; i--)
 		{
 			var provider = _accessibility.GetProviderForPeer(children[i], resolveEventsSource: true);
-			if (provider is not null && !ReferenceEquals(provider, this))
+			if (provider is not null)
 			{
-				return provider;
+				ancestors ??= BuildAncestorSet();
+				if (!ancestors.Contains(provider))
+				{
+					return provider;
+				}
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn(
+						$"[UIA] Cycle detected: skipping child {provider.DescribeElement()} " +
+						$"(runtimeId={provider._runtimeId}) of {DescribeElement()} — it is an ancestor");
+				}
 			}
 		}
 		return null;
@@ -568,7 +792,10 @@ internal class Win32RawElementProvider :
 
 	private IRawElementProviderFragment? GetNextSibling()
 	{
-		var parentProvider = FindParentProvider();
+		// Walk siblings via the real (non-synthetic) parent so this logic stays
+		// in the user-content tree. The synthetic panes have a single child each,
+		// so an element whose real parent is the root has no UIA siblings anyway.
+		var parentProvider = FindRealParentProvider();
 		if (parentProvider is null)
 		{
 			return null;
@@ -582,15 +809,20 @@ internal class Win32RawElementProvider :
 
 		var myPeer = GetAutomationPeer();
 		var foundSelf = false;
+		HashSet<Win32RawElementProvider>? ancestors = null;
 
 		for (var i = 0; i < siblings.Count; i++)
 		{
 			if (foundSelf)
 			{
 				var provider = _accessibility.GetProviderForPeer(siblings[i], resolveEventsSource: true);
-				if (provider is not null && !ReferenceEquals(provider, this))
+				if (provider is not null)
 				{
-					return provider;
+					ancestors ??= BuildAncestorSet();
+					if (!ancestors.Contains(provider))
+					{
+						return provider;
+					}
 				}
 			}
 			else if (IsSamePeer(siblings[i], myPeer))
@@ -603,7 +835,9 @@ internal class Win32RawElementProvider :
 
 	private IRawElementProviderFragment? GetPreviousSibling()
 	{
-		var parentProvider = FindParentProvider();
+		// See GetNextSibling — walk via the real parent so synthetic panes
+		// remain invisible to sibling navigation.
+		var parentProvider = FindRealParentProvider();
 		if (parentProvider is null)
 		{
 			return null;
@@ -617,6 +851,7 @@ internal class Win32RawElementProvider :
 
 		var myPeer = GetAutomationPeer();
 		Win32RawElementProvider? previous = null;
+		HashSet<Win32RawElementProvider>? ancestors = null;
 
 		for (var i = 0; i < siblings.Count; i++)
 		{
@@ -625,12 +860,47 @@ internal class Win32RawElementProvider :
 				return previous;
 			}
 			var provider = _accessibility.GetProviderForPeer(siblings[i], resolveEventsSource: true);
-			if (provider is not null && !ReferenceEquals(provider, this))
+			if (provider is not null)
 			{
-				previous = provider;
+				ancestors ??= BuildAncestorSet();
+				if (!ancestors.Contains(provider))
+				{
+					previous = provider;
+				}
 			}
 		}
 		return null;
+	}
+
+	/// <summary>
+	/// Builds a set containing this provider and all its ancestors in the UIA tree.
+	/// Used by child/sibling navigation to detect and break cycles where a descendant
+	/// peer resolves to an ancestor's provider (e.g. WCT DataGrid whose
+	/// DataGridRowsPresenterAutomationPeer returns the DataGrid's canonical peer
+	/// as a child via CreatePeerForElement).
+	/// </summary>
+	private HashSet<Win32RawElementProvider> BuildAncestorSet()
+	{
+		// Walk the real provider chain only. Synthetic panes are intentionally
+		// excluded from cycle detection — they have no automation peer and
+		// cannot participate in WCT-style peer-tree cycles.
+		var ancestors = new HashSet<Win32RawElementProvider>(ReferenceEqualityComparer.Instance);
+		ancestors.Add(this);
+		var current = FindRealParentProvider();
+		var maxDepth = 200;
+		while (current is not null && maxDepth-- > 0)
+		{
+			if (!ancestors.Add(current))
+			{
+				break; // cycle in parent chain itself
+			}
+			if (current._isRoot)
+			{
+				break;
+			}
+			current = current.FindRealParentProvider();
+		}
+		return ancestors;
 	}
 
 	/// <summary>
@@ -641,7 +911,38 @@ internal class Win32RawElementProvider :
 	/// parent. Falls back to walking the visual tree if the peer tree doesn't
 	/// resolve to a provider.
 	/// </summary>
-	private Win32RawElementProvider? FindParentProvider()
+	/// <summary>
+	/// Returns the UIA parent for this provider, promoting the HWND root to
+	/// the inner synthetic pane so that <see cref="NavigateDirection.Parent"/>
+	/// chains walk window → outer pane → inner pane → user content (matches
+	/// WinAppSDK's content-island tree shape).
+	/// </summary>
+	private IRawElementProviderFragment? FindParentProvider()
+	{
+		var realParent = FindRealParentProvider();
+		if (realParent is null)
+		{
+			return null;
+		}
+
+		// Promote the HWND root to the inner synthetic pane so that the user
+		// content's parent chain walks into the synthesized pane structure
+		// rather than jumping straight to the window.
+		if (realParent._isRoot)
+		{
+			return _accessibility.InnerPane;
+		}
+
+		return realParent;
+	}
+
+	/// <summary>
+	/// Returns the real (non-synthetic) <see cref="Win32RawElementProvider"/>
+	/// parent, walking the automation peer tree with a visual-tree fallback.
+	/// Used by sibling navigation and cycle detection where synthetic panes
+	/// must remain invisible.
+	/// </summary>
+	private Win32RawElementProvider? FindRealParentProvider()
 	{
 		if (_isRoot)
 		{
@@ -709,7 +1010,10 @@ internal class Win32RawElementProvider :
 
 	/// <summary>
 	/// Compares two automation peers for identity. Uses reference equality first,
-	/// then falls back to checking if they wrap the same UIElement.
+	/// then falls back to checking if they wrap the same UIElement — but only
+	/// when both peers are the canonical (element-owned) peer. Virtual peers
+	/// (e.g., DataGridItemAutomationPeer) share the same UIElement owner and
+	/// must be compared by reference only.
 	/// </summary>
 	private static bool IsSamePeer(AutomationPeer? a, AutomationPeer? b)
 	{
@@ -723,11 +1027,18 @@ internal class Win32RawElementProvider :
 			return true;
 		}
 
-		// Fall back to comparing owner UIElements
+		// Fall back to comparing owner UIElements, but only when each
+		// peer IS the canonical peer for its owner. Skip the fallback
+		// when either peer is a "virtual" peer that shares its owner
+		// with other peers (e.g. DataGridItemAutomationPeer).
 		if (a is FrameworkElementAutomationPeer feapA
-			&& b is FrameworkElementAutomationPeer feapB)
+			&& b is FrameworkElementAutomationPeer feapB
+			&& ReferenceEquals(feapA.Owner, feapB.Owner))
 		{
-			return ReferenceEquals(feapA.Owner, feapB.Owner);
+			// Verify both are canonical for their shared owner
+			var canonicalPeer = feapA.Owner.GetOrCreateAutomationPeer();
+			return canonicalPeer is not null
+				&& (ReferenceEquals(a, canonicalPeer) || ReferenceEquals(b, canonicalPeer));
 		}
 
 		return false;
@@ -742,19 +1053,11 @@ internal class Win32RawElementProvider :
 	{
 		if (!visited.Add(this))
 		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().Debug($"[UIA] Hit-test cycle detected at {DescribeElement()}");
-			}
 			return null;
 		}
 
 		if (depth > MaxHitTestDepth)
 		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().Debug($"[UIA] Hit-test depth limit exceeded at {DescribeElement()}");
-			}
 			return null;
 		}
 
@@ -790,11 +1093,14 @@ internal class Win32RawElementProvider :
 
 	private IRawElementProviderSimple? GetLabeledByProvider(AutomationPeer? peer)
 	{
-		// Check AutomationProperties.LabeledBy attached property first
-		var labeledByElement = AutomationProperties.GetLabeledBy(_owner);
-		if (labeledByElement is UIElement labelElement)
+		if (!_isVirtualPeer)
 		{
-			return _accessibility.GetOrCreateProvider(labelElement);
+			// Check AutomationProperties.LabeledBy attached property first
+			var labeledByElement = AutomationProperties.GetLabeledBy(_owner);
+			if (labeledByElement is UIElement labelElement)
+			{
+				return _accessibility.GetOrCreateProvider(labelElement);
+			}
 		}
 
 		// Fall back to peer's GetLabeledBy()
@@ -820,12 +1126,16 @@ internal class Win32RawElementProvider :
 
 	private string? GetAutomationId(AutomationPeer? peer)
 	{
-		// Prefer the attached property, fall back to the peer
-		var id = AutomationProperties.GetAutomationId(_owner);
-		if (!string.IsNullOrEmpty(id))
+		if (!_isVirtualPeer)
 		{
-			return id;
+			// Prefer the attached property on the owner element, fall back to the peer
+			var id = AutomationProperties.GetAutomationId(_owner);
+			if (!string.IsNullOrEmpty(id))
+			{
+				return id;
+			}
 		}
+
 		return GetNonEmpty(peer?.GetAutomationId());
 	}
 
@@ -833,8 +1143,10 @@ internal class Win32RawElementProvider :
 	{
 		if (peer is null)
 		{
+			// The HWND root has no managed AutomationPeer; expose it to UIA as a Window so screen
+			// readers treat the Skia/Win32 host as a top-level window (matches WinUI behavior).
 			return _isRoot
-				? Win32UIAutomationInterop.UIA_PaneControlTypeId
+				? Win32UIAutomationInterop.UIA_WindowControlTypeId
 				: Win32UIAutomationInterop.UIA_CustomControlTypeId;
 		}
 
@@ -1082,6 +1394,27 @@ internal class Win32RawElementProvider :
 		Win32UIAutomationInterop.UIA_GridPatternId => "Grid",
 		Win32UIAutomationInterop.UIA_GridItemPatternId => "GridItem",
 		Win32UIAutomationInterop.UIA_TablePatternId => "Table",
+		Win32UIAutomationInterop.UIA_WindowPatternId => "Window",
+		Win32UIAutomationInterop.UIA_TransformPatternId => "Transform",
+		Win32UIAutomationInterop.UIA_DockPatternId => "Dock",
+		Win32UIAutomationInterop.UIA_MultipleViewPatternId => "MultipleView",
+		Win32UIAutomationInterop.UIA_TextPatternId => "Text",
+		Win32UIAutomationInterop.UIA_TextPattern2Id => "Text2",
+		Win32UIAutomationInterop.UIA_TextEditPatternId => "TextEdit",
+		Win32UIAutomationInterop.UIA_TextChildPatternId => "TextChild",
+		Win32UIAutomationInterop.UIA_ItemContainerPatternId => "ItemContainer",
+		Win32UIAutomationInterop.UIA_VirtualizedItemPatternId => "VirtualizedItem",
+		Win32UIAutomationInterop.UIA_TableItemPatternId => "TableItem",
+		Win32UIAutomationInterop.UIA_AnnotationPatternId => "Annotation",
+		Win32UIAutomationInterop.UIA_DragPatternId => "Drag",
+		Win32UIAutomationInterop.UIA_DropTargetPatternId => "DropTarget",
+		Win32UIAutomationInterop.UIA_ObjectModelPatternId => "ObjectModel",
+		Win32UIAutomationInterop.UIA_SpreadsheetPatternId => "Spreadsheet",
+		Win32UIAutomationInterop.UIA_SpreadsheetItemPatternId => "SpreadsheetItem",
+		Win32UIAutomationInterop.UIA_StylesPatternId => "Styles",
+		Win32UIAutomationInterop.UIA_SynchronizedInputPatternId => "SynchronizedInput",
+		Win32UIAutomationInterop.UIA_CustomNavigationPatternId => "CustomNavigation",
+		Win32UIAutomationInterop.UIA_TransformPattern2Id => "Transform2",
 		_ => $"Unknown({patternId})",
 	};
 

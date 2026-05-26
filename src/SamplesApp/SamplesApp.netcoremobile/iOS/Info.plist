@@ -47,6 +47,8 @@
 	<string>This app needs access to use your photo library.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app needs access to use your microphone.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>This app needs access to recognize your speech.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>This app needs access to add to your photo library.</string>
 	<key>NSMotionUsageDescription</key>

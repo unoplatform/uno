@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PosPrinterCapabilities.CanMapCharacterSet is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PosPrinterCapabilities.CanMapCharacterSet");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "CanMapCharacterSet");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PosPrinterCapabilities.DefaultCharacterSet is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PosPrinterCapabilities.DefaultCharacterSet");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "DefaultCharacterSet");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PosPrinterCapabilities.HasCoverSensor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PosPrinterCapabilities.HasCoverSensor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "HasCoverSensor");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PosPrinterCapabilities.IsStatisticsReportingSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PosPrinterCapabilities.IsStatisticsReportingSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "IsStatisticsReportingSupported");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PosPrinterCapabilities.IsStatisticsUpdatingSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PosPrinterCapabilities.IsStatisticsUpdatingSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "IsStatisticsUpdatingSupported");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PosPrinterCapabilities.IsTransactionSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PosPrinterCapabilities.IsTransactionSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "IsTransactionSupported");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member JournalPrinterCapabilities PosPrinterCapabilities.Journal is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=JournalPrinterCapabilities%20PosPrinterCapabilities.Journal");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "Journal");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UnifiedPosPowerReportingType PosPrinterCapabilities.PowerReportingType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UnifiedPosPowerReportingType%20PosPrinterCapabilities.PowerReportingType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "PowerReportingType");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ReceiptPrinterCapabilities PosPrinterCapabilities.Receipt is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ReceiptPrinterCapabilities%20PosPrinterCapabilities.Receipt");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "Receipt");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SlipPrinterCapabilities PosPrinterCapabilities.Slip is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SlipPrinterCapabilities%20PosPrinterCapabilities.Slip");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCapabilities", "Slip");
 			}
 		}
 #endif

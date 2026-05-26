@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VoiceCommandCompletionReason VoiceCommandCompletedEventArgs.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoiceCommandCompletionReason%20VoiceCommandCompletedEventArgs.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandCompletedEventArgs", "Reason");
 			}
 		}
 #endif

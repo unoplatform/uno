@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception StoreProductPagedQueryResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20StoreProductPagedQueryResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProductPagedQueryResult", "ExtendedError");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StoreProductPagedQueryResult.HasMoreResults is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreProductPagedQueryResult.HasMoreResults");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProductPagedQueryResult", "HasMoreResults");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, StoreProduct> StoreProductPagedQueryResult.Products is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20StoreProduct%3E%20StoreProductPagedQueryResult.Products");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProductPagedQueryResult", "Products");
 			}
 		}
 #endif
@@ -47,7 +47,7 @@ namespace Windows.Services.Store
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Store.StoreProductPagedQueryResult> GetNextAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StoreProductPagedQueryResult> StoreProductPagedQueryResult.GetNextAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStoreProductPagedQueryResult%3E%20StoreProductPagedQueryResult.GetNextAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreProductPagedQueryResult", "GetNextAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Services.Store.StoreProductPagedQueryResult.ExtendedError.get

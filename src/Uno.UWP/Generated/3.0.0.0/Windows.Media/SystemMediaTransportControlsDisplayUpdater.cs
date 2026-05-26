@@ -19,11 +19,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMediaTransportControlsDisplayUpdater.AppMediaId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SystemMediaTransportControlsDisplayUpdater.AppMediaId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "AppMediaId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "string SystemMediaTransportControlsDisplayUpdater.AppMediaId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "AppMediaId");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ImageDisplayProperties SystemMediaTransportControlsDisplayUpdater.ImageProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ImageDisplayProperties%20SystemMediaTransportControlsDisplayUpdater.ImageProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "ImageProperties");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MusicDisplayProperties SystemMediaTransportControlsDisplayUpdater.MusicProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MusicDisplayProperties%20SystemMediaTransportControlsDisplayUpdater.MusicProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "MusicProperties");
 			}
 		}
 #endif
@@ -53,11 +53,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RandomAccessStreamReference SystemMediaTransportControlsDisplayUpdater.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RandomAccessStreamReference%20SystemMediaTransportControlsDisplayUpdater.Thumbnail");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "Thumbnail");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "RandomAccessStreamReference SystemMediaTransportControlsDisplayUpdater.Thumbnail");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "Thumbnail");
 			}
 		}
 #endif
@@ -67,11 +67,11 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackType SystemMediaTransportControlsDisplayUpdater.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackType%20SystemMediaTransportControlsDisplayUpdater.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "Type");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "MediaPlaybackType SystemMediaTransportControlsDisplayUpdater.Type");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "Type");
 			}
 		}
 #endif
@@ -81,7 +81,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoDisplayProperties SystemMediaTransportControlsDisplayUpdater.VideoProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoDisplayProperties%20SystemMediaTransportControlsDisplayUpdater.VideoProperties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "VideoProperties");
 			}
 		}
 #endif
@@ -89,21 +89,21 @@ namespace Windows.Media
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> CopyFromFileAsync(global::Windows.Media.MediaPlaybackType type, global::Windows.Storage.StorageFile source)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SystemMediaTransportControlsDisplayUpdater.CopyFromFileAsync(MediaPlaybackType type, StorageFile source) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20SystemMediaTransportControlsDisplayUpdater.CopyFromFileAsync%28MediaPlaybackType%20type%2C%20StorageFile%20source%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "CopyFromFileAsync(MediaPlaybackType type, StorageFile source)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ClearAll()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "void SystemMediaTransportControlsDisplayUpdater.ClearAll()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "ClearAll()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Update()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "void SystemMediaTransportControlsDisplayUpdater.Update()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "Update()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.AppMediaId.get

@@ -19,7 +19,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayAdapterId DisplaySource.AdapterId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayAdapterId%20DisplaySource.AdapterId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplaySource", "AdapterId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint DisplaySource.SourceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20DisplaySource.SourceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplaySource", "SourceId");
 			}
 		}
 #endif
@@ -37,7 +37,7 @@ namespace Windows.Devices.Display.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IBuffer GetMetadata(global::System.Guid Key)
 		{
-			throw new global::System.NotImplementedException("The member IBuffer DisplaySource.GetMetadata(Guid Key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20DisplaySource.GetMetadata%28Guid%20Key%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplaySource", "GetMetadata(Guid Key)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.AdapterId.get

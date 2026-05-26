@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleName</key>
+	<string>SamplesApp.Skia.Generic</string>
+	<key>CFBundleDisplayName</key>
+	<string>Uno Samples (Skia)</string>
+	<key>CFBundleIdentifier</key>
+	<string>uno.platform.samplesapp.skia.generic</string>
+	<key>CFBundleExecutable</key>
+	<string>SamplesApp.Skia.Generic</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>10.15</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs access to use your microphone for speech recognition samples.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>This app needs access to recognize your speech for speech recognition samples.</string>
+</dict>
+</plist>

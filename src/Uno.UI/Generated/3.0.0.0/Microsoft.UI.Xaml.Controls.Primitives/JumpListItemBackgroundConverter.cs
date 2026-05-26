@@ -56,7 +56,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public JumpListItemBackgroundConverter() : base()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter", "JumpListItemBackgroundConverter.JumpListItemBackgroundConverter()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter", "JumpListItemBackgroundConverter()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.JumpListItemBackgroundConverter()
@@ -66,14 +66,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public object Convert(object value, global::System.Type targetType, object parameter, string language)
 		{
-			throw new global::System.NotImplementedException("The member object JumpListItemBackgroundConverter.Convert(object value, Type targetType, object parameter, string language) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20JumpListItemBackgroundConverter.Convert%28object%20value%2C%20Type%20targetType%2C%20object%20parameter%2C%20string%20language%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter", "Convert(object value, Type targetType, object parameter, string language)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public object ConvertBack(object value, global::System.Type targetType, object parameter, string language)
 		{
-			throw new global::System.NotImplementedException("The member object JumpListItemBackgroundConverter.ConvertBack(object value, Type targetType, object parameter, string language) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20JumpListItemBackgroundConverter.ConvertBack%28object%20value%2C%20Type%20targetType%2C%20object%20parameter%2C%20string%20language%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter", "ConvertBack(object value, Type targetType, object parameter, string language)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemBackgroundConverter.Disabled.get

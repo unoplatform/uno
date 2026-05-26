@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceCommandUserMessage.DisplayMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceCommandUserMessage.DisplayMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage", "DisplayMessage");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage", "string VoiceCommandUserMessage.DisplayMessage");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage", "DisplayMessage");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceCommandUserMessage.SpokenMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceCommandUserMessage.SpokenMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage", "SpokenMessage");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage", "string VoiceCommandUserMessage.SpokenMessage");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage", "SpokenMessage");
 			}
 		}
 #endif
@@ -40,7 +40,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VoiceCommandUserMessage()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage", "VoiceCommandUserMessage.VoiceCommandUserMessage()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage", "VoiceCommandUserMessage()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage.VoiceCommandUserMessage()

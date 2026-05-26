@@ -14,7 +14,7 @@ namespace Windows.Data.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WordsSegmenter.ResolvedLanguage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WordsSegmenter.ResolvedLanguage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.WordsSegmenter", "ResolvedLanguage");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.Data.Text
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WordsSegmenter(string language)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Text.WordsSegmenter", "WordsSegmenter.WordsSegmenter(string language)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Text.WordsSegmenter", "WordsSegmenter(string language)");
 		}
 #endif
 		// Forced skipping of method Windows.Data.Text.WordsSegmenter.WordsSegmenter(string)
@@ -30,21 +30,21 @@ namespace Windows.Data.Text
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Text.WordSegment GetTokenAt(string text, uint startIndex)
 		{
-			throw new global::System.NotImplementedException("The member WordSegment WordsSegmenter.GetTokenAt(string text, uint startIndex) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WordSegment%20WordsSegmenter.GetTokenAt%28string%20text%2C%20uint%20startIndex%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.WordsSegmenter", "GetTokenAt(string text, uint startIndex)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Data.Text.WordSegment> GetTokens(string text)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<WordSegment> WordsSegmenter.GetTokens(string text) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CWordSegment%3E%20WordsSegmenter.GetTokens%28string%20text%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Text.WordsSegmenter", "GetTokens(string text)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Tokenize(string text, uint startIndex, global::Windows.Data.Text.WordSegmentsTokenizingHandler handler)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Text.WordsSegmenter", "void WordsSegmenter.Tokenize(string text, uint startIndex, WordSegmentsTokenizingHandler handler)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Text.WordsSegmenter", "Tokenize(string text, uint startIndex, WordSegmentsTokenizingHandler handler)");
 		}
 #endif
 		// Forced skipping of method Windows.Data.Text.WordsSegmenter.ResolvedLanguage.get

@@ -1,6 +1,5 @@
 parameters:
   vmLinuxPool: ''
-  UNO_UWP_BUILD: ''
   XAML_FLAVOR_BUILD: ''
 
 jobs:

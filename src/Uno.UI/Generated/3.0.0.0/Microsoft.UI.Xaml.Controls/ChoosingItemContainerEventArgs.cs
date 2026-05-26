@@ -14,11 +14,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChoosingItemContainerEventArgs.IsContainerPrepared is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChoosingItemContainerEventArgs.IsContainerPrepared");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs", "IsContainerPrepared");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs", "bool ChoosingItemContainerEventArgs.IsContainerPrepared");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs", "IsContainerPrepared");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object ChoosingItemContainerEventArgs.Item is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ChoosingItemContainerEventArgs.Item");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs", "Item");
 			}
 		}
 #endif
@@ -38,11 +38,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SelectorItem ChoosingItemContainerEventArgs.ItemContainer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SelectorItem%20ChoosingItemContainerEventArgs.ItemContainer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs", "ItemContainer");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs", "SelectorItem ChoosingItemContainerEventArgs.ItemContainer");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs", "ItemContainer");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ChoosingItemContainerEventArgs.ItemIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ChoosingItemContainerEventArgs.ItemIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs", "ItemIndex");
 			}
 		}
 #endif
@@ -60,7 +60,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ChoosingItemContainerEventArgs()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs", "ChoosingItemContainerEventArgs.ChoosingItemContainerEventArgs()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs", "ChoosingItemContainerEventArgs()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.ChoosingItemContainerEventArgs()

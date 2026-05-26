@@ -14,7 +14,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoEffects.VideoStabilization is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoEffects.VideoStabilization");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.VideoEffects", "VideoStabilization");
 			}
 		}
 #endif

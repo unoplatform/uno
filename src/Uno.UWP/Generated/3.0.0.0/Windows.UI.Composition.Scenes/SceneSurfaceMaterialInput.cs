@@ -19,11 +19,11 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionBitmapInterpolationMode SceneSurfaceMaterialInput.BitmapInterpolationMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBitmapInterpolationMode%20SceneSurfaceMaterialInput.BitmapInterpolationMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneSurfaceMaterialInput", "BitmapInterpolationMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneSurfaceMaterialInput", "CompositionBitmapInterpolationMode SceneSurfaceMaterialInput.BitmapInterpolationMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneSurfaceMaterialInput", "BitmapInterpolationMode");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ICompositionSurface SceneSurfaceMaterialInput.Surface is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICompositionSurface%20SceneSurfaceMaterialInput.Surface");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneSurfaceMaterialInput", "Surface");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneSurfaceMaterialInput", "ICompositionSurface SceneSurfaceMaterialInput.Surface");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneSurfaceMaterialInput", "Surface");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneWrappingMode SceneSurfaceMaterialInput.WrappingUMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneWrappingMode%20SceneSurfaceMaterialInput.WrappingUMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneSurfaceMaterialInput", "WrappingUMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneSurfaceMaterialInput", "SceneWrappingMode SceneSurfaceMaterialInput.WrappingUMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneSurfaceMaterialInput", "WrappingUMode");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneWrappingMode SceneSurfaceMaterialInput.WrappingVMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneWrappingMode%20SceneSurfaceMaterialInput.WrappingVMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneSurfaceMaterialInput", "WrappingVMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneSurfaceMaterialInput", "SceneWrappingMode SceneSurfaceMaterialInput.WrappingVMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Scenes.SceneSurfaceMaterialInput", "WrappingVMode");
 			}
 		}
 #endif
@@ -73,7 +73,7 @@ namespace Windows.UI.Composition.Scenes
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Composition.Scenes.SceneSurfaceMaterialInput Create(global::Windows.UI.Composition.Compositor compositor)
 		{
-			throw new global::System.NotImplementedException("The member SceneSurfaceMaterialInput SceneSurfaceMaterialInput.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneSurfaceMaterialInput%20SceneSurfaceMaterialInput.Create%28Compositor%20compositor%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Scenes.SceneSurfaceMaterialInput", "Create(Compositor compositor)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Composition.Scenes.SceneSurfaceMaterialInput.BitmapInterpolationMode.get

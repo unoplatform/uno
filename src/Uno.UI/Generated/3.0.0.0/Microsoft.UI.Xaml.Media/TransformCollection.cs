@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TransformCollection.IsReadOnly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20TransformCollection.IsReadOnly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.TransformCollection", "IsReadOnly");
 			}
 		}
 #endif
@@ -36,7 +36,7 @@ namespace Microsoft.UI.Xaml.Media
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CopyTo(global::Microsoft.UI.Xaml.Media.Transform[] array, int arrayIndex)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.TransformCollection", "void TransformCollection.CopyTo(Transform[] array, int arrayIndex)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.TransformCollection", "CopyTo(Transform[] array, int arrayIndex)");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Media.TransformCollection.Remove(Microsoft.UI.Xaml.Media.Transform)

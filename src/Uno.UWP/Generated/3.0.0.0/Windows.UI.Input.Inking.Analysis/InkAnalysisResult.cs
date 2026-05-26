@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkAnalysisStatus InkAnalysisResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkAnalysisStatus%20InkAnalysisResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Analysis.InkAnalysisResult", "Status");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AcceleratorKeyEventArgs.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AcceleratorKeyEventArgs.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.AcceleratorKeyEventArgs", "DeviceId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreAcceleratorKeyEventType AcceleratorKeyEventArgs.EventType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreAcceleratorKeyEventType%20AcceleratorKeyEventArgs.EventType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.AcceleratorKeyEventArgs", "EventType");
 			}
 		}
 #endif
@@ -39,11 +39,11 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AcceleratorKeyEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AcceleratorKeyEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.AcceleratorKeyEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.AcceleratorKeyEventArgs", "bool AcceleratorKeyEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.AcceleratorKeyEventArgs", "Handled");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CorePhysicalKeyStatus AcceleratorKeyEventArgs.KeyStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CorePhysicalKeyStatus%20AcceleratorKeyEventArgs.KeyStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.AcceleratorKeyEventArgs", "KeyStatus");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKey AcceleratorKeyEventArgs.VirtualKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKey%20AcceleratorKeyEventArgs.VirtualKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.AcceleratorKeyEventArgs", "VirtualKey");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RichEditBoxTextChangingEventArgs.IsContentChanging is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RichEditBoxTextChangingEventArgs.IsContentChanging");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichEditBoxTextChangingEventArgs", "IsContentChanging");
 			}
 		}
 #endif

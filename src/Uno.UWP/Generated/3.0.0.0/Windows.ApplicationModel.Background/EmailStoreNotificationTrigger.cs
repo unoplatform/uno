@@ -12,7 +12,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public EmailStoreNotificationTrigger()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.EmailStoreNotificationTrigger", "EmailStoreNotificationTrigger.EmailStoreNotificationTrigger()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.EmailStoreNotificationTrigger", "EmailStoreNotificationTrigger()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.EmailStoreNotificationTrigger.EmailStoreNotificationTrigger()

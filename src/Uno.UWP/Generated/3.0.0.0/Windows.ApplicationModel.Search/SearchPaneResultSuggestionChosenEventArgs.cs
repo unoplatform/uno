@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SearchPaneResultSuggestionChosenEventArgs.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SearchPaneResultSuggestionChosenEventArgs.Tag");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.SearchPaneResultSuggestionChosenEventArgs", "Tag");
 			}
 		}
 #endif

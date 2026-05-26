@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Identity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EnterpriseKeyCredentialRegistrationInfo.KeyId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EnterpriseKeyCredentialRegistrationInfo.KeyId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo", "KeyId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.Identity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EnterpriseKeyCredentialRegistrationInfo.KeyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EnterpriseKeyCredentialRegistrationInfo.KeyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo", "KeyName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Security.Authentication.Identity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EnterpriseKeyCredentialRegistrationInfo.Subject is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EnterpriseKeyCredentialRegistrationInfo.Subject");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo", "Subject");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Security.Authentication.Identity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EnterpriseKeyCredentialRegistrationInfo.TenantId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EnterpriseKeyCredentialRegistrationInfo.TenantId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo", "TenantId");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Security.Authentication.Identity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EnterpriseKeyCredentialRegistrationInfo.TenantName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EnterpriseKeyCredentialRegistrationInfo.TenantName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.EnterpriseKeyCredentialRegistrationInfo", "TenantName");
 			}
 		}
 #endif

@@ -19,11 +19,11 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect ClosestInteractiveBoundsRequestedEventArgs.ClosestInteractiveBounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20ClosestInteractiveBoundsRequestedEventArgs.ClosestInteractiveBounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.ClosestInteractiveBoundsRequestedEventArgs", "ClosestInteractiveBounds");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.ClosestInteractiveBoundsRequestedEventArgs", "Rect ClosestInteractiveBoundsRequestedEventArgs.ClosestInteractiveBounds");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.ClosestInteractiveBoundsRequestedEventArgs", "ClosestInteractiveBounds");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point ClosestInteractiveBoundsRequestedEventArgs.PointerPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20ClosestInteractiveBoundsRequestedEventArgs.PointerPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.ClosestInteractiveBoundsRequestedEventArgs", "PointerPosition");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect ClosestInteractiveBoundsRequestedEventArgs.SearchBounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20ClosestInteractiveBoundsRequestedEventArgs.SearchBounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.ClosestInteractiveBoundsRequestedEventArgs", "SearchBounds");
 			}
 		}
 #endif

@@ -17,21 +17,21 @@ namespace Windows.UI.Input.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.Spatial.SpatialInteractionManager GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member SpatialInteractionManager SpatialInteractionManager.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialInteractionManager%20SpatialInteractionManager.GetForCurrentView%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionManager", "GetForCurrentView()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsSourceKindSupported(global::Windows.UI.Input.Spatial.SpatialInteractionSourceKind kind)
 		{
-			throw new global::System.NotImplementedException("The member bool SpatialInteractionManager.IsSourceKindSupported(SpatialInteractionSourceKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialInteractionManager.IsSourceKindSupported%28SpatialInteractionSourceKind%20kind%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionManager", "IsSourceKindSupported(SpatialInteractionSourceKind kind)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Input.Spatial.SpatialInteractionSourceState> GetDetectedSourcesAtTimestamp(global::Windows.Perception.PerceptionTimestamp timeStamp)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<SpatialInteractionSourceState> SpatialInteractionManager.GetDetectedSourcesAtTimestamp(PerceptionTimestamp timeStamp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CSpatialInteractionSourceState%3E%20SpatialInteractionManager.GetDetectedSourcesAtTimestamp%28PerceptionTimestamp%20timeStamp%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionManager", "GetDetectedSourcesAtTimestamp(PerceptionTimestamp timeStamp)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionManager.InteractionDetected.add
@@ -53,12 +53,12 @@ namespace Windows.UI.Input.Spatial
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event TypedEventHandler<SpatialInteractionManager, SpatialInteractionDetectedEventArgs> SpatialInteractionManager.InteractionDetected");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event InteractionDetected");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event TypedEventHandler<SpatialInteractionManager, SpatialInteractionDetectedEventArgs> SpatialInteractionManager.InteractionDetected");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event InteractionDetected");
 			}
 		}
 #endif
@@ -69,12 +69,12 @@ namespace Windows.UI.Input.Spatial
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event TypedEventHandler<SpatialInteractionManager, SpatialInteractionSourceEventArgs> SpatialInteractionManager.SourceDetected");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event SourceDetected");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event TypedEventHandler<SpatialInteractionManager, SpatialInteractionSourceEventArgs> SpatialInteractionManager.SourceDetected");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event SourceDetected");
 			}
 		}
 #endif
@@ -85,12 +85,12 @@ namespace Windows.UI.Input.Spatial
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event TypedEventHandler<SpatialInteractionManager, SpatialInteractionSourceEventArgs> SpatialInteractionManager.SourceLost");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event SourceLost");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event TypedEventHandler<SpatialInteractionManager, SpatialInteractionSourceEventArgs> SpatialInteractionManager.SourceLost");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event SourceLost");
 			}
 		}
 #endif
@@ -101,12 +101,12 @@ namespace Windows.UI.Input.Spatial
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event TypedEventHandler<SpatialInteractionManager, SpatialInteractionSourceEventArgs> SpatialInteractionManager.SourcePressed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event SourcePressed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event TypedEventHandler<SpatialInteractionManager, SpatialInteractionSourceEventArgs> SpatialInteractionManager.SourcePressed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event SourcePressed");
 			}
 		}
 #endif
@@ -117,12 +117,12 @@ namespace Windows.UI.Input.Spatial
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event TypedEventHandler<SpatialInteractionManager, SpatialInteractionSourceEventArgs> SpatialInteractionManager.SourceReleased");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event SourceReleased");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event TypedEventHandler<SpatialInteractionManager, SpatialInteractionSourceEventArgs> SpatialInteractionManager.SourceReleased");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event SourceReleased");
 			}
 		}
 #endif
@@ -133,12 +133,12 @@ namespace Windows.UI.Input.Spatial
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event TypedEventHandler<SpatialInteractionManager, SpatialInteractionSourceEventArgs> SpatialInteractionManager.SourceUpdated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event SourceUpdated");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event TypedEventHandler<SpatialInteractionManager, SpatialInteractionSourceEventArgs> SpatialInteractionManager.SourceUpdated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialInteractionManager", "event SourceUpdated");
 			}
 		}
 #endif

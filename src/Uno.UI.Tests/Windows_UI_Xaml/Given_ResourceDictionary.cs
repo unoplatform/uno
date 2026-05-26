@@ -31,6 +31,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_CreateWithCapacity_NegativeCapacity_Throws()
+		{
+			var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(
+				() => ResourceDictionary.CreateWithCapacity(-1));
+			Assert.AreEqual("initialCapacity", ex.ParamName);
+		}
+
+		[TestMethod]
 		public void When_Simple_Add_And_Retrieve()
 		{
 			var rd = new ResourceDictionary();

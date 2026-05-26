@@ -92,7 +92,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ToolTipTemplateSettings ToolTip.TemplateSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ToolTipTemplateSettings%20ToolTip.TemplateSettings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ToolTip", "TemplateSettings");
 			}
 		}
 #endif

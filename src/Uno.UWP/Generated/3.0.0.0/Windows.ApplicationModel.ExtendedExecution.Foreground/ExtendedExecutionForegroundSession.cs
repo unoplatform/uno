@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.ExtendedExecution.Foreground
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ExtendedExecutionForegroundSession.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ExtendedExecutionForegroundSession.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession", "Description");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession", "string ExtendedExecutionForegroundSession.Description");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession", "Description");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.ApplicationModel.ExtendedExecution.Foreground
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExtendedExecutionForegroundReason ExtendedExecutionForegroundSession.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ExtendedExecutionForegroundReason%20ExtendedExecutionForegroundSession.Reason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession", "Reason");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession", "ExtendedExecutionForegroundReason ExtendedExecutionForegroundSession.Reason");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession", "Reason");
 			}
 		}
 #endif
@@ -40,7 +40,7 @@ namespace Windows.ApplicationModel.ExtendedExecution.Foreground
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ExtendedExecutionForegroundSession()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession", "ExtendedExecutionForegroundSession.ExtendedExecutionForegroundSession()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession", "ExtendedExecutionForegroundSession()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.ExtendedExecutionForegroundSession()
@@ -48,7 +48,7 @@ namespace Windows.ApplicationModel.ExtendedExecution.Foreground
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundResult> RequestExtensionAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ExtendedExecutionForegroundResult> ExtendedExecutionForegroundSession.RequestExtensionAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CExtendedExecutionForegroundResult%3E%20ExtendedExecutionForegroundSession.RequestExtensionAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession", "RequestExtensionAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.Revoked.add
@@ -57,7 +57,7 @@ namespace Windows.ApplicationModel.ExtendedExecution.Foreground
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession", "void ExtendedExecutionForegroundSession.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession.Description.get
@@ -71,12 +71,12 @@ namespace Windows.ApplicationModel.ExtendedExecution.Foreground
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession", "event TypedEventHandler<object, ExtendedExecutionForegroundRevokedEventArgs> ExtendedExecutionForegroundSession.Revoked");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession", "event Revoked");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession", "event TypedEventHandler<object, ExtendedExecutionForegroundRevokedEventArgs> ExtendedExecutionForegroundSession.Revoked");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession", "event Revoked");
 			}
 		}
 #endif

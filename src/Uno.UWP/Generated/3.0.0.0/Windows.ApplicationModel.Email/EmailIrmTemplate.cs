@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailIrmTemplate.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailIrmTemplate.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailIrmTemplate", "Description");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailIrmTemplate", "string EmailIrmTemplate.Description");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailIrmTemplate", "Description");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailIrmTemplate.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailIrmTemplate.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailIrmTemplate", "Id");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailIrmTemplate", "string EmailIrmTemplate.Id");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailIrmTemplate", "Id");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailIrmTemplate.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailIrmTemplate.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailIrmTemplate", "Name");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailIrmTemplate", "string EmailIrmTemplate.Name");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailIrmTemplate", "Name");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.ApplicationModel.Email
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public EmailIrmTemplate()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailIrmTemplate", "EmailIrmTemplate.EmailIrmTemplate()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailIrmTemplate", "EmailIrmTemplate()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.EmailIrmTemplate()
@@ -62,7 +62,7 @@ namespace Windows.ApplicationModel.Email
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public EmailIrmTemplate(string id, string name, string description)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailIrmTemplate", "EmailIrmTemplate.EmailIrmTemplate(string id, string name, string description)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailIrmTemplate", "EmailIrmTemplate(string id, string name, string description)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailIrmTemplate.EmailIrmTemplate(string, string, string)

@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormat.BluetoothSigAssignedNumbers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormat.BluetoothSigAssignedNumbers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat", "BluetoothSigAssignedNumbers");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort GattPresentationFormat.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20GattPresentationFormat.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat", "Description");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int GattPresentationFormat.Exponent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20GattPresentationFormat.Exponent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat", "Exponent");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormat.FormatType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormat.FormatType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat", "FormatType");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte GattPresentationFormat.Namespace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20GattPresentationFormat.Namespace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat", "Namespace");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort GattPresentationFormat.Unit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20GattPresentationFormat.Unit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat", "Unit");
 			}
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat FromParts(byte formatType, int exponent, ushort unit, byte namespaceId, ushort description)
 		{
-			throw new global::System.NotImplementedException("The member GattPresentationFormat GattPresentationFormat.FromParts(byte formatType, int exponent, ushort unit, byte namespaceId, ushort description) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattPresentationFormat%20GattPresentationFormat.FromParts%28byte%20formatType%2C%20int%20exponent%2C%20ushort%20unit%2C%20byte%20namespaceId%2C%20ushort%20description%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat", "FromParts(byte formatType, int exponent, ushort unit, byte namespaceId, ushort description)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat.BluetoothSigAssignedNumbers.get

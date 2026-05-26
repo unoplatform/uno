@@ -19,11 +19,11 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float MagnetometerDataThreshold.XAxisMicroteslas is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20MagnetometerDataThreshold.XAxisMicroteslas");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.MagnetometerDataThreshold", "XAxisMicroteslas");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.MagnetometerDataThreshold", "float MagnetometerDataThreshold.XAxisMicroteslas");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.MagnetometerDataThreshold", "XAxisMicroteslas");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float MagnetometerDataThreshold.YAxisMicroteslas is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20MagnetometerDataThreshold.YAxisMicroteslas");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.MagnetometerDataThreshold", "YAxisMicroteslas");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.MagnetometerDataThreshold", "float MagnetometerDataThreshold.YAxisMicroteslas");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.MagnetometerDataThreshold", "YAxisMicroteslas");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float MagnetometerDataThreshold.ZAxisMicroteslas is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20MagnetometerDataThreshold.ZAxisMicroteslas");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.MagnetometerDataThreshold", "ZAxisMicroteslas");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.MagnetometerDataThreshold", "float MagnetometerDataThreshold.ZAxisMicroteslas");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.MagnetometerDataThreshold", "ZAxisMicroteslas");
 			}
 		}
 #endif

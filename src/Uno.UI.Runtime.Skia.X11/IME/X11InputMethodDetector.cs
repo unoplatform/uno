@@ -1,30 +1,28 @@
 using System;
-using Uno.Foundation.Logging;
+using System.Threading.Tasks;
 using Tmds.DBus.Protocol;
+using Uno.Foundation.Logging;
+using Uno.WinUI.Runtime.Skia.X11.DBus;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
 /// <summary>
-/// Detects the active input method framework from environment variables
-/// and creates the appropriate D-Bus IME client.
+/// Detects the active input method framework from environment variables and the
+/// running D-Bus services, and creates the appropriate D-Bus IME client.
 /// </summary>
 internal static class X11InputMethodDetector
 {
+	private const string IBusServiceName = "org.freedesktop.portal.IBus";
+	private const string Fcitx5ServiceName = "org.freedesktop.portal.Fcitx";
+	private const string Fcitx4ServiceName = "org.fcitx.Fcitx";
+
 	/// <summary>
 	/// Detect the active IME and create a D-Bus client for it.
 	/// Returns null if no D-Bus IME is available (XIM fallback should be used).
 	/// </summary>
-	public static IX11InputMethod? DetectAndCreate()
+	public static async Task<IX11InputMethod?> DetectAndCreateAsync()
 	{
 		var imName = DetectImeName();
-		if (imName is null)
-		{
-			if (typeof(X11InputMethodDetector).Log().IsEnabled(LogLevel.Debug))
-			{
-				typeof(X11InputMethodDetector).Log().Debug("No D-Bus IME detected from environment variables. Using XIM fallback.");
-			}
-			return null;
-		}
 
 		if (imName == "none")
 		{
@@ -41,25 +39,70 @@ internal static class X11InputMethodDetector
 		{
 			if (typeof(X11InputMethodDetector).Log().IsEnabled(LogLevel.Warning))
 			{
-				typeof(X11InputMethodDetector).Log().Warn($"D-Bus IME '{imName}' detected but no D-Bus session bus available. Using XIM fallback.");
+				typeof(X11InputMethodDetector).Log().Warn("No D-Bus session bus available. Using XIM fallback.");
 			}
 			return null;
 		}
 
+		// Build a prioritized list of candidates. Env-var-detected IME is preferred,
+		// but we still try the other family if its D-Bus service is the one actually
+		// running (e.g., env vars point to fcitx but only ibus-daemon is active).
+		var preferIBus = imName == "ibus";
+		var preferFcitx = imName is "fcitx" or "fcitx5";
+
+		var ibusAvailable = await ServiceHasOwnerAsync(sessionBus, IBusServiceName);
+		var fcitxAvailable = await ServiceHasOwnerAsync(sessionBus, Fcitx5ServiceName)
+			|| await ServiceHasOwnerAsync(sessionBus, Fcitx4ServiceName);
+
+		if (typeof(X11InputMethodDetector).Log().IsEnabled(LogLevel.Debug))
+		{
+			typeof(X11InputMethodDetector).Log().Debug(
+				$"IME D-Bus probe: envHint='{imName ?? "(none)"}' ibusAvailable={ibusAvailable} fcitxAvailable={fcitxAvailable}");
+		}
+
 		try
 		{
-			return imName switch
+			// Hint matches a running service → use it.
+			if (preferIBus && ibusAvailable)
 			{
-				"ibus" => CreateIBus(sessionBus),
-				"fcitx" or "fcitx5" => CreateFcitx(sessionBus),
-				_ => null
-			};
+				return CreateIBus(sessionBus);
+			}
+			if (preferFcitx && fcitxAvailable)
+			{
+				return CreateFcitx(sessionBus);
+			}
+
+			// Hint doesn't match anything running — fall back to whichever is actually up.
+			if (ibusAvailable)
+			{
+				if (typeof(X11InputMethodDetector).Log().IsEnabled(LogLevel.Information))
+				{
+					typeof(X11InputMethodDetector).Log().Info(
+						$"Env hint '{imName ?? "(none)"}' did not match a running D-Bus IME, falling back to IBus.");
+				}
+				return CreateIBus(sessionBus);
+			}
+			if (fcitxAvailable)
+			{
+				if (typeof(X11InputMethodDetector).Log().IsEnabled(LogLevel.Information))
+				{
+					typeof(X11InputMethodDetector).Log().Info(
+						$"Env hint '{imName ?? "(none)"}' did not match a running D-Bus IME, falling back to Fcitx.");
+				}
+				return CreateFcitx(sessionBus);
+			}
+
+			if (typeof(X11InputMethodDetector).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(X11InputMethodDetector).Log().Debug("No D-Bus IME service is running. Using XIM fallback.");
+			}
+			return null;
 		}
 		catch (Exception ex)
 		{
 			if (typeof(X11InputMethodDetector).Log().IsEnabled(LogLevel.Error))
 			{
-				typeof(X11InputMethodDetector).Log().Error($"Failed to create D-Bus IME client for '{imName}': {ex.Message}", ex);
+				typeof(X11InputMethodDetector).Log().Error($"Failed to create D-Bus IME client: {ex.Message}", ex);
 			}
 			return null;
 		}
@@ -100,6 +143,27 @@ internal static class X11InputMethodDetector
 		}
 
 		return null;
+	}
+
+	private static async Task<bool> ServiceHasOwnerAsync(string sessionBus, string serviceName)
+	{
+		try
+		{
+			using var connection = new DBusConnection(sessionBus);
+			await connection.ConnectAsync();
+
+			var service = new DBusService(connection, "org.freedesktop.DBus");
+			var dbus = service.CreateDBus("/org/freedesktop/DBus");
+			return await dbus.NameHasOwnerAsync(serviceName);
+		}
+		catch (Exception ex)
+		{
+			if (typeof(X11InputMethodDetector).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(X11InputMethodDetector).Log().Debug($"NameHasOwner probe for '{serviceName}' failed: {ex.Message}");
+			}
+			return false;
+		}
 	}
 
 	private static IX11InputMethod CreateIBus(string sessionBus)

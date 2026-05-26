@@ -12,7 +12,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ToastNotificationActionTrigger()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.ToastNotificationActionTrigger", "ToastNotificationActionTrigger.ToastNotificationActionTrigger()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.ToastNotificationActionTrigger", "ToastNotificationActionTrigger()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationActionTrigger.ToastNotificationActionTrigger()
@@ -20,7 +20,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ToastNotificationActionTrigger(string applicationId)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.ToastNotificationActionTrigger", "ToastNotificationActionTrigger.ToastNotificationActionTrigger(string applicationId)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.ToastNotificationActionTrigger", "ToastNotificationActionTrigger(string applicationId)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationActionTrigger.ToastNotificationActionTrigger(string)

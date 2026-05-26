@@ -14,11 +14,11 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppUriHandlerHost.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppUriHandlerHost.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerHost", "Name");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppUriHandlerHost", "string AppUriHandlerHost.Name");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppUriHandlerHost", "Name");
 			}
 		}
 #endif
@@ -26,7 +26,7 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AppUriHandlerHost()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppUriHandlerHost", "AppUriHandlerHost.AppUriHandlerHost()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppUriHandlerHost", "AppUriHandlerHost()");
 		}
 #endif
 		// Forced skipping of method Windows.System.AppUriHandlerHost.AppUriHandlerHost()
@@ -34,7 +34,7 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AppUriHandlerHost(string name)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppUriHandlerHost", "AppUriHandlerHost.AppUriHandlerHost(string name)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppUriHandlerHost", "AppUriHandlerHost(string name)");
 		}
 #endif
 		// Forced skipping of method Windows.System.AppUriHandlerHost.AppUriHandlerHost(string)

@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MediaPlaybackTimedMetadataTrackList.Count is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20MediaPlaybackTimedMetadataTrackList.Count");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList", "Count");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedMetadataTrack MediaPlaybackTimedMetadataTrackList.this[int index] is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedMetadataTrack%20MediaPlaybackTimedMetadataTrackList.this%5Bint%20index%5D");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList", "this[int index]");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Media.Core.TimedMetadataTrack> GetEnumerator()
 		{
-			throw new global::System.NotImplementedException("The member IEnumerator<TimedMetadataTrack> MediaPlaybackTimedMetadataTrackList.GetEnumerator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerator%3CTimedMetadataTrack%3E%20MediaPlaybackTimedMetadataTrackList.GetEnumerator%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList", "GetEnumerator()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.System.Collections.IEnumerable.GetEnumerator()
@@ -47,14 +47,14 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Playback.TimedMetadataTrackPresentationMode GetPresentationMode(uint index)
 		{
-			throw new global::System.NotImplementedException("The member TimedMetadataTrackPresentationMode MediaPlaybackTimedMetadataTrackList.GetPresentationMode(uint index) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedMetadataTrackPresentationMode%20MediaPlaybackTimedMetadataTrackList.GetPresentationMode%28uint%20index%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList", "GetPresentationMode(uint index)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetPresentationMode(uint index, global::Windows.Media.Playback.TimedMetadataTrackPresentationMode value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList", "void MediaPlaybackTimedMetadataTrackList.SetPresentationMode(uint index, TimedMetadataTrackPresentationMode value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList", "SetPresentationMode(uint index, TimedMetadataTrackPresentationMode value)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.PresentationModeChanged.add
@@ -67,12 +67,12 @@ namespace Windows.Media.Playback
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList", "event TypedEventHandler<MediaPlaybackTimedMetadataTrackList, TimedMetadataPresentationModeChangedEventArgs> MediaPlaybackTimedMetadataTrackList.PresentationModeChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList", "event PresentationModeChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList", "event TypedEventHandler<MediaPlaybackTimedMetadataTrackList, TimedMetadataPresentationModeChangedEventArgs> MediaPlaybackTimedMetadataTrackList.PresentationModeChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList", "event PresentationModeChanged");
 			}
 		}
 #endif

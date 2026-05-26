@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Windows.System;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
 using Uno.Extensions;
@@ -18,6 +19,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 [ContentProperty(Name = nameof(Child))]
 public partial class Popup
 {
+	protected override AutomationPeer OnCreateAutomationPeer()
+		=> new PopupAutomationPeer(this);
+
 	private IDisposable _renderTransformChangedRegistration;
 	private PopupPlacementMode _actualPlacement;
 

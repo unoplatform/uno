@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? UserDataTaskRecurrenceProperties.Day is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20UserDataTaskRecurrenceProperties.Day");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "Day");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "int? UserDataTaskRecurrenceProperties.Day");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "Day");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskDaysOfWeek? UserDataTaskRecurrenceProperties.DaysOfWeek is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskDaysOfWeek%3F%20UserDataTaskRecurrenceProperties.DaysOfWeek");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "DaysOfWeek");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "UserDataTaskDaysOfWeek? UserDataTaskRecurrenceProperties.DaysOfWeek");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "DaysOfWeek");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int UserDataTaskRecurrenceProperties.Interval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20UserDataTaskRecurrenceProperties.Interval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "Interval");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "int UserDataTaskRecurrenceProperties.Interval");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "Interval");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? UserDataTaskRecurrenceProperties.Month is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20UserDataTaskRecurrenceProperties.Month");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "Month");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "int? UserDataTaskRecurrenceProperties.Month");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "Month");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? UserDataTaskRecurrenceProperties.Occurrences is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20UserDataTaskRecurrenceProperties.Occurrences");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "Occurrences");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "int? UserDataTaskRecurrenceProperties.Occurrences");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "Occurrences");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskRecurrenceUnit UserDataTaskRecurrenceProperties.Unit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskRecurrenceUnit%20UserDataTaskRecurrenceProperties.Unit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "Unit");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "UserDataTaskRecurrenceUnit UserDataTaskRecurrenceProperties.Unit");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "Unit");
 			}
 		}
 #endif
@@ -98,11 +98,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? UserDataTaskRecurrenceProperties.Until is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20UserDataTaskRecurrenceProperties.Until");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "Until");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "DateTimeOffset? UserDataTaskRecurrenceProperties.Until");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "Until");
 			}
 		}
 #endif
@@ -112,11 +112,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskWeekOfMonth? UserDataTaskRecurrenceProperties.WeekOfMonth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskWeekOfMonth%3F%20UserDataTaskRecurrenceProperties.WeekOfMonth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "WeekOfMonth");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "UserDataTaskWeekOfMonth? UserDataTaskRecurrenceProperties.WeekOfMonth");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "WeekOfMonth");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public UserDataTaskRecurrenceProperties()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "UserDataTaskRecurrenceProperties.UserDataTaskRecurrenceProperties()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties", "UserDataTaskRecurrenceProperties()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceProperties.UserDataTaskRecurrenceProperties()

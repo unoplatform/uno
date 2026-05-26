@@ -10,7 +10,7 @@
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<Description>This package provides the platform support for Skia / X11 in Uno Platform projects.</Description>
 
-		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.X11</PackageId>
+		<PackageId>Uno.WinUI.Runtime.Skia.X11</PackageId>
 
 		<RootNamespace>Uno.WinUI.Runtime.Skia.X11</RootNamespace>
 
@@ -27,6 +27,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<AdditionalFiles Include="dbus-interfaces/org.freedesktop.DBus.xml" Namespace="Uno.WinUI.Runtime.Skia.X11.DBus" GenerateDBusTypes="true" />
 		<AdditionalFiles Include="dbus-interfaces/org.freedesktop.portal.FileChooser.xml" Namespace="Uno.WinUI.Runtime.Skia.X11.DBus" GenerateDBusTypes="true" />
 		<AdditionalFiles Include="dbus-interfaces/org.freedesktop.portal.Request.xml" Namespace="Uno.WinUI.Runtime.Skia.X11.DBus" GenerateDBusTypes="true" />
 		<AdditionalFiles Include="dbus-interfaces/org.freedesktop.portal.Settings.xml" Namespace="Uno.WinUI.Runtime.Skia.X11.DBus" GenerateDBusTypes="true" />
@@ -42,7 +43,7 @@
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" />
 		<PackageReference Include="HarfbuzzSharp" />
 		<PackageReference Include="SkiaSharp" />
-		<PackageReference Include="LibVLCSharp" Version="3.7.0" />
+		<PackageReference Include="LibVLCSharp" Version="3.9.7.1" />
 	</ItemGroup>
 
 	<ItemGroup>

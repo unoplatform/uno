@@ -19,7 +19,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CivicAddress.City is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CivicAddress.City");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.CivicAddress", "City");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CivicAddress.Country is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CivicAddress.Country");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.CivicAddress", "Country");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CivicAddress.PostalCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CivicAddress.PostalCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.CivicAddress", "PostalCode");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CivicAddress.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CivicAddress.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.CivicAddress", "State");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset CivicAddress.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20CivicAddress.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.CivicAddress", "Timestamp");
 			}
 		}
 #endif

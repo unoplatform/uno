@@ -523,15 +523,18 @@ namespace Microsoft.UI.Xaml
 				return value;
 			}
 
-			if (this == FrameworkElement.FocusVisualPrimaryBrushProperty &&
-				ResourceResolver.TryStaticRetrieval("SystemControlFocusVisualPrimaryBrush", null, out var primaryBrush))
+			// MUX Reference: DependencyProperty.cpp GetDefaultFocusVisualBrush — WinUI resolves
+			// the focus visual brush against `targetObject->GetTheme()` so an element with
+			// an explicit RequestedTheme (different from the app's) still gets brushes from
+			// its own theme dictionary. Mirror that here by pushing the element's effective
+			// theme onto the resource resolution stack.
+			if (this == FrameworkElement.FocusVisualPrimaryBrushProperty)
 			{
-				return primaryBrush;
+				return ResolveFocusVisualBrushDefault(referenceObject, "SystemControlFocusVisualPrimaryBrush");
 			}
-			else if (this == FrameworkElement.FocusVisualSecondaryBrushProperty &&
-				ResourceResolver.TryStaticRetrieval("SystemControlFocusVisualSecondaryBrush", null, out var secondaryBrush))
+			else if (this == FrameworkElement.FocusVisualSecondaryBrushProperty)
 			{
-				return secondaryBrush;
+				return ResolveFocusVisualBrushDefault(referenceObject, "SystemControlFocusVisualSecondaryBrush");
 			}
 
 			if (this == UIElement.IsTabStopProperty)
@@ -615,6 +618,68 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return _ownerTypeMetadata.DefaultValue;
+		}
+
+		// MUX Reference: microsoft-ui-xaml2/src/dxaml/xcp/core/core/elements/DependencyProperty.cpp
+		// lines 131-150 (GetDefaultFocusVisualBrush) and 309-345. WinUI passes
+		// `targetObject->GetTheme()` to the resource lookup so an element with
+		// an explicit RequestedTheme picks brushes from its own theme dictionary
+		// rather than the app's active theme.
+		private static object ResolveFocusVisualBrushDefault(DependencyObject referenceObject, string resourceKey)
+		{
+			var themeKey = GetEffectiveThemeKey(referenceObject);
+			var activeTheme = ResourceDictionary.GetActiveTheme();
+			var needsPush = themeKey is not null && !themeKey.Equals(activeTheme.Key);
+
+			if (needsPush)
+			{
+				ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
+			}
+
+			try
+			{
+				if (ResourceResolver.TryStaticRetrieval(resourceKey, null, out var brush))
+				{
+					return brush;
+				}
+			}
+			finally
+			{
+				if (needsPush)
+				{
+					ResourceDictionary.PopRequestedThemeForSubTree();
+				}
+			}
+
+			return null;
+		}
+
+		// Returns the base theme key ("Light"/"Dark") that applies to the element,
+		// mirroring FrameworkElement.ActualTheme's resolution: prefer the element's
+		// own _theme (set during the theme walk), then fall back to the application
+		// theme. Returns null when neither is available.
+		private static string GetEffectiveThemeKey(DependencyObject referenceObject)
+		{
+			if (referenceObject is UIElement element)
+			{
+				var baseTheme = Theming.GetBaseValue(element.GetTheme());
+				if (baseTheme == Theme.None)
+				{
+					baseTheme = Theming.FromElementTheme(
+						Application.Current?.ActualElementTheme ?? ElementTheme.Light);
+				}
+
+				if (baseTheme == Theme.Light)
+				{
+					return "Light";
+				}
+				if (baseTheme == Theme.Dark)
+				{
+					return "Dark";
+				}
+			}
+
+			return null;
 		}
 
 		public override int GetHashCode() => CachedHashCode;

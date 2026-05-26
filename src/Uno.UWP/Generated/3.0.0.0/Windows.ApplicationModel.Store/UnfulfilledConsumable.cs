@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UnfulfilledConsumable.OfferId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UnfulfilledConsumable.OfferId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.UnfulfilledConsumable", "OfferId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UnfulfilledConsumable.ProductId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UnfulfilledConsumable.ProductId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.UnfulfilledConsumable", "ProductId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid UnfulfilledConsumable.TransactionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20UnfulfilledConsumable.TransactionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.UnfulfilledConsumable", "TransactionId");
 			}
 		}
 #endif

@@ -28,12 +28,27 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	private readonly nint _hwnd;
 	private readonly DispatcherQueue _dispatcherQueue;
 	private readonly Win32RawElementProvider _rootProvider;
+	private readonly Win32SyntheticPaneProvider _outerPane;
+	private readonly Win32SyntheticPaneProvider _innerPane;
 	private readonly ConditionalWeakTable<UIElement, Win32RawElementProvider> _providers = new();
 	private readonly ConditionalWeakTable<AutomationPeer, Win32RawElementProvider> _peerProviders = new();
 	private readonly HashSet<Win32RawElementProvider> _pendingStructureChanges = new();
 	private bool _structureChangeFlushQueued;
 
 	internal Win32RawElementProvider? RootProvider => _rootProvider;
+
+	/// <summary>
+	/// The outer synthetic pane — represents WinAppSDK's DesktopChildSiteBridge
+	/// in the UIA tree. Sits between the HWND root and the inner pane.
+	/// </summary>
+	internal Win32SyntheticPaneProvider OuterPane => _outerPane;
+
+	/// <summary>
+	/// The inner synthetic pane — represents WinAppSDK's content-island host.
+	/// Its children resolve to the user's Xaml content (whatever the HWND
+	/// root's child-walk would have returned before the pane synthesis).
+	/// </summary>
+	internal Win32SyntheticPaneProvider InnerPane => _innerPane;
 
 	internal Win32Accessibility(nint hwnd, UIElement rootElement, DispatcherQueue dispatcherQueue)
 	{
@@ -53,6 +68,29 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		{
 			_peerProviders.AddOrUpdate(rootPeer, _rootProvider);
 		}
+
+		// Synthesize two intermediate pane providers (outer + inner) so the UIA
+		// tree matches WinAppSDK exactly: window → pane → pane → user content.
+		// The outer pane sits directly under the HWND root; the inner pane sits
+		// under the outer pane and forwards child queries to the root's normal
+		// peer-tree walk (via GetFirstChildCore / GetLastChildCore).
+		// Parents/children are resolved via delegates so the two panes can
+		// reference each other without a construction-order cycle.
+		_outerPane = new Win32SyntheticPaneProvider(
+			hwnd: _hwnd,
+			accessibility: this,
+			parentResolver: () => _rootProvider,
+			firstChildResolver: () => _innerPane,
+			lastChildResolver: () => _innerPane,
+			debugTag: "outer");
+
+		_innerPane = new Win32SyntheticPaneProvider(
+			hwnd: _hwnd,
+			accessibility: this,
+			parentResolver: () => _outerPane,
+			firstChildResolver: () => _rootProvider.GetFirstChildCore(),
+			lastChildResolver: () => _rootProvider.GetLastChildCore(),
+			debugTag: "inner");
 
 		if (this.Log().IsEnabled(LogLevel.Information))
 		{
@@ -157,6 +195,12 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 	private Win32RawElementProvider? GetOrCreateProviderForResolvedPeer(AutomationPeer resolvedPeer)
 	{
+		// Fast path: already have a provider keyed by this exact peer.
+		if (_peerProviders.TryGetValue(resolvedPeer, out var existingByPeer))
+		{
+			return existingByPeer;
+		}
+
 		if (!resolvedPeer.TryGetProviderOwner(out var element))
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
@@ -167,38 +211,59 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		}
 
 		var canonicalPeer = element.GetOrCreateAutomationPeer()?.ResolveProviderPeer(resolveEventsSource: true) ?? resolvedPeer;
-		if (!canonicalPeer.TryGetProviderOwner(out element))
+
+		if (ReferenceEquals(resolvedPeer, canonicalPeer))
 		{
+			// Normal path: peer is the canonical peer for its owner element.
+			if (!canonicalPeer.TryGetProviderOwner(out element))
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"[UIA] GetProviderForPeer: Canonical owner resolution failed for {canonicalPeer.GetType().Name}");
+				}
+				return null;
+			}
+
+			if (_providers.TryGetValue(element, out var existingByElement)
+				&& existingByElement.RepresentsPeer(canonicalPeer))
+			{
+				_peerProviders.AddOrUpdate(canonicalPeer, existingByElement);
+				return existingByElement;
+			}
+
+			if (_peerProviders.TryGetValue(canonicalPeer, out existingByPeer))
+			{
+				_providers.AddOrUpdate(element, existingByPeer);
+				return existingByPeer;
+			}
+
+			var provider = new Win32RawElementProvider(element, _hwnd, isRoot: false, this, canonicalPeer);
+			_providers.AddOrUpdate(element, provider);
+			_peerProviders.AddOrUpdate(canonicalPeer, provider);
+
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Debug($"[UIA] GetProviderForPeer: Canonical owner resolution failed for {canonicalPeer.GetType().Name}");
+				this.Log().Debug($"[UIA] Created provider for {provider.DescribeElement()} (peer={canonicalPeer.GetType().Name})");
 			}
-			return null;
-		}
 
-		if (_providers.TryGetValue(element, out var existingByElement)
-			&& existingByElement.RepresentsPeer(canonicalPeer))
+			return provider;
+		}
+		else
 		{
-			_peerProviders.AddOrUpdate(canonicalPeer, existingByElement);
-			return existingByElement;
+			// Virtual peer: shares its UIElement owner with other peers (e.g.,
+			// DataGridItemAutomationPeer whose Owner is the DataGrid, not the row).
+			// Create a provider keyed by this specific peer. Do NOT store in
+			// _providers since the element is shared with the canonical peer.
+			var provider = new Win32RawElementProvider(element, _hwnd, isRoot: false, this, resolvedPeer, isVirtualPeer: true);
+			_peerProviders.AddOrUpdate(resolvedPeer, provider);
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"[UIA] Created virtual provider for {provider.DescribeElement()} (peer={resolvedPeer.GetType().Name})");
+			}
+
+			return provider;
 		}
-
-		if (_peerProviders.TryGetValue(canonicalPeer, out var existingByPeer))
-		{
-			_providers.AddOrUpdate(element, existingByPeer);
-			return existingByPeer;
-		}
-
-		var provider = new Win32RawElementProvider(element, _hwnd, isRoot: false, this, canonicalPeer);
-		_providers.AddOrUpdate(element, provider);
-		_peerProviders.AddOrUpdate(canonicalPeer, provider);
-
-		if (this.Log().IsEnabled(LogLevel.Debug))
-		{
-			this.Log().Debug($"[UIA] Created provider for {provider.DescribeElement()} (peer={canonicalPeer.GetType().Name})");
-		}
-
-		return provider;
 	}
 
 	// ──────────────────────────────────────────────────────────────
@@ -637,6 +702,27 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
 					this.Log().Debug($"[UIA] UiaDisconnectProvider failed during dispose: {ex.Message}");
+				}
+			}
+		}
+
+		// Synthetic panes are not part of _providers (they wrap no UIElement),
+		// so they must be disconnected separately.
+		foreach (var pane in new IRawElementProviderSimple?[] { _outerPane, _innerPane })
+		{
+			if (pane is null)
+			{
+				continue;
+			}
+			try
+			{
+				_ = Win32UIAutomationInterop.UiaDisconnectProvider(pane);
+			}
+			catch (Exception ex)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"[UIA] UiaDisconnectProvider failed for synthetic pane during dispose: {ex.Message}");
 				}
 			}
 		}

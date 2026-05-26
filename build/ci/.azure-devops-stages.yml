@@ -60,7 +60,6 @@ stages:
   jobs:
   - template: build/.azure-devops-build-native.yml
     parameters:
-      UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
       macOSImageName: '$(macOSVMImage)'
  
@@ -74,7 +73,6 @@ stages:
   - template: build/.azure-devops-build-managed.yml
     parameters:
       poolName: '$(windowsScaledPool)'
-      UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
 
 - stage: packages_tests
@@ -104,6 +102,16 @@ stages:
     parameters:
       poolName: '$(windowsScaledPool)'
 
+- stage: addin_version_alignment
+  displayName: Tests - Add-in Version Alignment
+  dependsOn: []
+
+  jobs:
+
+  - template: tests/.azure-devops-tests-devserver-linux.yml
+    parameters:
+      poolName: '$(linuxScaledPool)'
+
 - stage: wasm_tests
   displayName: Tests - WebAssembly Native
   condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeWasm'], 'true')))
@@ -126,7 +134,6 @@ stages:
     poolName: '$(windowsScaledPool)'
     xCodeRootBuild: '$(xCodeRoot)'
     xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
-    UNO_UWP_BUILD: false
     XAML_FLAVOR_BUILD: WinUI
 
 - stage: android_tests

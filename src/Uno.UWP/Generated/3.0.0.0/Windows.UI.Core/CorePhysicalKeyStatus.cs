@@ -13,7 +13,7 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CorePhysicalKeyStatus(uint _RepeatCount, uint _ScanCode, bool _IsExtendedKey, bool _IsMenuKeyDown, bool _WasKeyDown, bool _IsKeyReleased)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CorePhysicalKeyStatus", "CorePhysicalKeyStatus.CorePhysicalKeyStatus(uint _RepeatCount, uint _ScanCode, bool _IsExtendedKey, bool _IsMenuKeyDown, bool _WasKeyDown, bool _IsKeyReleased)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CorePhysicalKeyStatus", "CorePhysicalKeyStatus(uint _RepeatCount, uint _ScanCode, bool _IsExtendedKey, bool _IsMenuKeyDown, bool _WasKeyDown, bool _IsKeyReleased)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.CorePhysicalKeyStatus.CorePhysicalKeyStatus(uint, uint, bool, bool, bool, bool)

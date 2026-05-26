@@ -12,21 +12,21 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryGetDataUnsafe(global::Windows.Storage.Streams.IBuffer buffer, out nint dataPtr)
 		{
-			throw new global::System.NotImplementedException("The member bool WindowsRuntimeMarshal.TryGetDataUnsafe(IBuffer? buffer, out nint dataPtr) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WindowsRuntimeMarshal.TryGetDataUnsafe%28IBuffer%3F%20buffer%2C%20out%20nint%20dataPtr%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeMarshal", "TryGetDataUnsafe(IBuffer? buffer, out nint dataPtr)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryGetDataUnsafe(global::Windows.Foundation.IMemoryBufferReference buffer, out nint dataPtr, out uint capacity)
 		{
-			throw new global::System.NotImplementedException("The member bool WindowsRuntimeMarshal.TryGetDataUnsafe(IMemoryBufferReference? buffer, out nint dataPtr, out uint capacity) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WindowsRuntimeMarshal.TryGetDataUnsafe%28IMemoryBufferReference%3F%20buffer%2C%20out%20nint%20dataPtr%2C%20out%20uint%20capacity%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeMarshal", "TryGetDataUnsafe(IMemoryBufferReference? buffer, out nint dataPtr, out uint capacity)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool TryGetArray(global::Windows.Storage.Streams.IBuffer buffer, out global::System.ArraySegment<byte> array)
 		{
-			throw new global::System.NotImplementedException("The member bool WindowsRuntimeMarshal.TryGetArray(IBuffer? buffer, out ArraySegment<byte> array) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WindowsRuntimeMarshal.TryGetArray%28IBuffer%3F%20buffer%2C%20out%20ArraySegment%3Cbyte%3E%20array%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.Runtime.InteropServices.WindowsRuntime.WindowsRuntimeMarshal", "TryGetArray(IBuffer? buffer, out ArraySegment<byte> array)");
 		}
 #endif
 	}

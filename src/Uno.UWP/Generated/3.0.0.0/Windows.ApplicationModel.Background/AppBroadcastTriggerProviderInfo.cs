@@ -19,11 +19,11 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppBroadcastTriggerProviderInfo.DisplayNameResource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppBroadcastTriggerProviderInfo.DisplayNameResource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo", "DisplayNameResource");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo", "string AppBroadcastTriggerProviderInfo.DisplayNameResource");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo", "DisplayNameResource");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppBroadcastTriggerProviderInfo.LogoResource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppBroadcastTriggerProviderInfo.LogoResource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo", "LogoResource");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo", "string AppBroadcastTriggerProviderInfo.LogoResource");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo", "LogoResource");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppBroadcastTriggerProviderInfo.MaxVideoBitrate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppBroadcastTriggerProviderInfo.MaxVideoBitrate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo", "MaxVideoBitrate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo", "uint AppBroadcastTriggerProviderInfo.MaxVideoBitrate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo", "MaxVideoBitrate");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppBroadcastTriggerProviderInfo.MaxVideoHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppBroadcastTriggerProviderInfo.MaxVideoHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo", "MaxVideoHeight");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo", "uint AppBroadcastTriggerProviderInfo.MaxVideoHeight");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo", "MaxVideoHeight");
 			}
 		}
 #endif
@@ -75,11 +75,11 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AppBroadcastTriggerProviderInfo.MaxVideoWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AppBroadcastTriggerProviderInfo.MaxVideoWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo", "MaxVideoWidth");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo", "uint AppBroadcastTriggerProviderInfo.MaxVideoWidth");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo", "MaxVideoWidth");
 			}
 		}
 #endif
@@ -89,11 +89,11 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan AppBroadcastTriggerProviderInfo.VideoKeyFrameInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20AppBroadcastTriggerProviderInfo.VideoKeyFrameInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo", "VideoKeyFrameInterval");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo", "TimeSpan AppBroadcastTriggerProviderInfo.VideoKeyFrameInterval");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.AppBroadcastTriggerProviderInfo", "VideoKeyFrameInterval");
 			}
 		}
 #endif

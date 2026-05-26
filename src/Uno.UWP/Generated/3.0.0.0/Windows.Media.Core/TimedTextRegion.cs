@@ -14,11 +14,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color TimedTextRegion.Background is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20TimedTextRegion.Background");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextRegion", "Background");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "Color TimedTextRegion.Background");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "Background");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextDisplayAlignment TimedTextRegion.DisplayAlignment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextDisplayAlignment%20TimedTextRegion.DisplayAlignment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextRegion", "DisplayAlignment");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "TimedTextDisplayAlignment TimedTextRegion.DisplayAlignment");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "DisplayAlignment");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextSize TimedTextRegion.Extent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextSize%20TimedTextRegion.Extent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextRegion", "Extent");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "TimedTextSize TimedTextRegion.Extent");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "Extent");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TimedTextRegion.IsOverflowClipped is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20TimedTextRegion.IsOverflowClipped");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextRegion", "IsOverflowClipped");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "bool TimedTextRegion.IsOverflowClipped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "IsOverflowClipped");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextDouble TimedTextRegion.LineHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextDouble%20TimedTextRegion.LineHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextRegion", "LineHeight");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "TimedTextDouble TimedTextRegion.LineHeight");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "LineHeight");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TimedTextRegion.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20TimedTextRegion.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextRegion", "Name");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "string TimedTextRegion.Name");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "Name");
 			}
 		}
 #endif
@@ -98,11 +98,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextPadding TimedTextRegion.Padding is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextPadding%20TimedTextRegion.Padding");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextRegion", "Padding");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "TimedTextPadding TimedTextRegion.Padding");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "Padding");
 			}
 		}
 #endif
@@ -112,11 +112,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextPoint TimedTextRegion.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextPoint%20TimedTextRegion.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextRegion", "Position");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "TimedTextPoint TimedTextRegion.Position");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "Position");
 			}
 		}
 #endif
@@ -126,11 +126,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextScrollMode TimedTextRegion.ScrollMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextScrollMode%20TimedTextRegion.ScrollMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextRegion", "ScrollMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "TimedTextScrollMode TimedTextRegion.ScrollMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "ScrollMode");
 			}
 		}
 #endif
@@ -140,11 +140,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextWrapping TimedTextRegion.TextWrapping is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextWrapping%20TimedTextRegion.TextWrapping");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextRegion", "TextWrapping");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "TimedTextWrapping TimedTextRegion.TextWrapping");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "TextWrapping");
 			}
 		}
 #endif
@@ -154,11 +154,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextWritingMode TimedTextRegion.WritingMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedTextWritingMode%20TimedTextRegion.WritingMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextRegion", "WritingMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "TimedTextWritingMode TimedTextRegion.WritingMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "WritingMode");
 			}
 		}
 #endif
@@ -168,11 +168,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int TimedTextRegion.ZIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20TimedTextRegion.ZIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextRegion", "ZIndex");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "int TimedTextRegion.ZIndex");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "ZIndex");
 			}
 		}
 #endif
@@ -180,7 +180,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public TimedTextRegion()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "TimedTextRegion.TimedTextRegion()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextRegion", "TimedTextRegion()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.TimedTextRegion.TimedTextRegion()

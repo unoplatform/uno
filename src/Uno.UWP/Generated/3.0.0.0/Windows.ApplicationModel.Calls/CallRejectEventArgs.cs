@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VoipPhoneCallRejectReason CallRejectEventArgs.RejectReason is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoipPhoneCallRejectReason%20CallRejectEventArgs.RejectReason");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.CallRejectEventArgs", "RejectReason");
 			}
 		}
 #endif

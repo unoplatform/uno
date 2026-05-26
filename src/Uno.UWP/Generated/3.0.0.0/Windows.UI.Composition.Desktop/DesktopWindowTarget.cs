@@ -19,7 +19,7 @@ namespace Windows.UI.Composition.Desktop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DesktopWindowTarget.IsTopmost is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DesktopWindowTarget.IsTopmost");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Desktop.DesktopWindowTarget", "IsTopmost");
 			}
 		}
 #endif

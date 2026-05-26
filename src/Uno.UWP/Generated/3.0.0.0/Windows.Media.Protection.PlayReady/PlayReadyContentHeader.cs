@@ -14,7 +14,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PlayReadyContentHeader.CustomAttributes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PlayReadyContentHeader.CustomAttributes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyContentHeader", "CustomAttributes");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlayReadyDecryptorSetup PlayReadyContentHeader.DecryptorSetup is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlayReadyDecryptorSetup%20PlayReadyContentHeader.DecryptorSetup");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyContentHeader", "DecryptorSetup");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyContentHeader.DomainServiceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyContentHeader.DomainServiceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyContentHeader", "DomainServiceId");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlayReadyEncryptionAlgorithm PlayReadyContentHeader.EncryptionType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlayReadyEncryptionAlgorithm%20PlayReadyContentHeader.EncryptionType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyContentHeader", "EncryptionType");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlayReadyContentHeader PlayReadyContentHeader.HeaderWithEmbeddedUpdates is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlayReadyContentHeader%20PlayReadyContentHeader.HeaderWithEmbeddedUpdates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyContentHeader", "HeaderWithEmbeddedUpdates");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyContentHeader.KeyId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyContentHeader.KeyId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyContentHeader", "KeyId");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PlayReadyContentHeader.KeyIdString is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PlayReadyContentHeader.KeyIdString");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyContentHeader", "KeyIdString");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string[] PlayReadyContentHeader.KeyIdStrings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%5B%5D%20PlayReadyContentHeader.KeyIdStrings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyContentHeader", "KeyIdStrings");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid[] PlayReadyContentHeader.KeyIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%5B%5D%20PlayReadyContentHeader.KeyIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyContentHeader", "KeyIds");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri PlayReadyContentHeader.LicenseAcquisitionUrl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20PlayReadyContentHeader.LicenseAcquisitionUrl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyContentHeader", "LicenseAcquisitionUrl");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri PlayReadyContentHeader.LicenseAcquisitionUserInterfaceUrl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20PlayReadyContentHeader.LicenseAcquisitionUserInterfaceUrl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyContentHeader", "LicenseAcquisitionUserInterfaceUrl");
 			}
 		}
 #endif
@@ -122,7 +122,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PlayReadyContentHeader(byte[] headerBytes, global::System.Uri licenseAcquisitionUrl, global::System.Uri licenseAcquisitionUserInterfaceUrl, string customAttributes, global::System.Guid domainServiceId)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyContentHeader", "PlayReadyContentHeader.PlayReadyContentHeader(byte[] headerBytes, Uri licenseAcquisitionUrl, Uri licenseAcquisitionUserInterfaceUrl, string customAttributes, Guid domainServiceId)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyContentHeader", "PlayReadyContentHeader(byte[] headerBytes, Uri licenseAcquisitionUrl, Uri licenseAcquisitionUserInterfaceUrl, string customAttributes, Guid domainServiceId)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.PlayReadyContentHeader(byte[], System.Uri, System.Uri, string, System.Guid)
@@ -130,7 +130,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PlayReadyContentHeader(global::System.Guid contentKeyId, string contentKeyIdString, global::Windows.Media.Protection.PlayReady.PlayReadyEncryptionAlgorithm contentEncryptionAlgorithm, global::System.Uri licenseAcquisitionUrl, global::System.Uri licenseAcquisitionUserInterfaceUrl, string customAttributes, global::System.Guid domainServiceId)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyContentHeader", "PlayReadyContentHeader.PlayReadyContentHeader(Guid contentKeyId, string contentKeyIdString, PlayReadyEncryptionAlgorithm contentEncryptionAlgorithm, Uri licenseAcquisitionUrl, Uri licenseAcquisitionUserInterfaceUrl, string customAttributes, Guid domainServiceId)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyContentHeader", "PlayReadyContentHeader(Guid contentKeyId, string contentKeyIdString, PlayReadyEncryptionAlgorithm contentEncryptionAlgorithm, Uri licenseAcquisitionUrl, Uri licenseAcquisitionUserInterfaceUrl, string customAttributes, Guid domainServiceId)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.PlayReadyContentHeader(System.Guid, string, Windows.Media.Protection.PlayReady.PlayReadyEncryptionAlgorithm, System.Uri, System.Uri, string, System.Guid)
@@ -138,7 +138,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PlayReadyContentHeader(byte[] headerBytes)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyContentHeader", "PlayReadyContentHeader.PlayReadyContentHeader(byte[] headerBytes)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyContentHeader", "PlayReadyContentHeader(byte[] headerBytes)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.PlayReadyContentHeader(byte[])
@@ -146,7 +146,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PlayReadyContentHeader(uint dwFlags, global::System.Guid[] contentKeyIds, string[] contentKeyIdStrings, global::Windows.Media.Protection.PlayReady.PlayReadyEncryptionAlgorithm contentEncryptionAlgorithm, global::System.Uri licenseAcquisitionUrl, global::System.Uri licenseAcquisitionUserInterfaceUrl, string customAttributes, global::System.Guid domainServiceId)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyContentHeader", "PlayReadyContentHeader.PlayReadyContentHeader(uint dwFlags, Guid[] contentKeyIds, string[] contentKeyIdStrings, PlayReadyEncryptionAlgorithm contentEncryptionAlgorithm, Uri licenseAcquisitionUrl, Uri licenseAcquisitionUserInterfaceUrl, string customAttributes, Guid domainServiceId)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyContentHeader", "PlayReadyContentHeader(uint dwFlags, Guid[] contentKeyIds, string[] contentKeyIdStrings, PlayReadyEncryptionAlgorithm contentEncryptionAlgorithm, Uri licenseAcquisitionUrl, Uri licenseAcquisitionUserInterfaceUrl, string customAttributes, Guid domainServiceId)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.PlayReadyContentHeader(uint, System.Guid[], string[], Windows.Media.Protection.PlayReady.PlayReadyEncryptionAlgorithm, System.Uri, System.Uri, string, System.Guid)
@@ -154,7 +154,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public byte[] GetSerializedHeader()
 		{
-			throw new global::System.NotImplementedException("The member byte[] PlayReadyContentHeader.GetSerializedHeader() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%5B%5D%20PlayReadyContentHeader.GetSerializedHeader%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyContentHeader", "GetSerializedHeader()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyContentHeader.CustomAttributes.get

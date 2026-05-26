@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UssdMessage UssdReply.Message is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UssdMessage%20UssdReply.Message");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.UssdReply", "Message");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UssdResultCode UssdReply.ResultCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UssdResultCode%20UssdReply.ResultCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.UssdReply", "ResultCode");
 			}
 		}
 #endif

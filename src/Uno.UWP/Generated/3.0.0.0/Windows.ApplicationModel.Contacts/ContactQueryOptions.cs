@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> ContactQueryOptions.AnnotationListIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20ContactQueryOptions.AnnotationListIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactQueryOptions", "AnnotationListIds");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> ContactQueryOptions.ContactListIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20ContactQueryOptions.ContactListIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactQueryOptions", "ContactListIds");
 			}
 		}
 #endif
@@ -35,11 +35,11 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactAnnotationOperations ContactQueryOptions.DesiredOperations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactAnnotationOperations%20ContactQueryOptions.DesiredOperations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactQueryOptions", "DesiredOperations");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryOptions", "ContactAnnotationOperations ContactQueryOptions.DesiredOperations");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryOptions", "DesiredOperations");
 			}
 		}
 #endif
@@ -49,11 +49,11 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContactQueryOptions.IncludeContactsFromHiddenLists is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContactQueryOptions.IncludeContactsFromHiddenLists");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactQueryOptions", "IncludeContactsFromHiddenLists");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryOptions", "bool ContactQueryOptions.IncludeContactsFromHiddenLists");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactQueryOptions", "IncludeContactsFromHiddenLists");
 			}
 		}
 #endif
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactQueryTextSearch ContactQueryOptions.TextSearch is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactQueryTextSearch%20ContactQueryOptions.TextSearch");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactQueryOptions", "TextSearch");
 			}
 		}
 #endif

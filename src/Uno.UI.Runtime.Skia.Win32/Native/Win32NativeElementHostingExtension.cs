@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -27,10 +26,9 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 {
 	private static readonly SKPoint[] _conicPoints = new SKPoint[32 * 3]; // 3 points per quad
 
-	// Tracks the desired Uno z-order of native child HWNDs per parent window so SetZIndex can place
-	// each child relative to its lower sibling deterministically, instead of depending on the caller
-	// invoking SetZIndex for every host in ascending order.
-	private static readonly Dictionary<nint, SortedDictionary<int, nint>> _childZOrderByParent = new();
+	// All currently-attached extensions across all hosts. Filtered by XamlRoot when we need
+	// to find a child's siblings to compute its z-order anchor.
+	private static readonly List<Win32NativeElementHostingExtension> _attached = new();
 
 	private readonly ContentPresenter _presenter;
 	private readonly SKPath _tempPath = new();
@@ -40,6 +38,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 	private string? _lastFinalSvgClipPath;
 	private HRGN _lastClipHrgn;
 	private bool _showWindowOnNextRender;
+	private int _zIndex;
 
 	public Win32NativeElementHostingExtension(ContentPresenter presenter)
 	{
@@ -104,6 +103,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			return;
 		}
 
+		_attached.Add(this);
 		((Win32WindowWrapper)XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).RenderingNegativePathReevaluated += OnRenderingNegativePathReevaluated;
 	}
 
@@ -150,7 +150,54 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			{
 				_showWindowOnNextRender = false;
 				_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
+
+				// SW_SHOWNORMAL restores the window using its saved WINDOWPLACEMENT.rcNormalPosition,
+				// which still holds the old screen coordinates from before re-parenting. Those coordinates
+				// are now misinterpreted as parent-relative, placing the window at the wrong position.
+				// Re-applying SetWindowPos after ShowWindow overrides that restoration.
+				var posSuccess = PInvoke.SetWindowPos(
+					(HWND)window.Hwnd,
+					HWND.Null,
+					(int)_lastArrangeRect.X,
+					(int)_lastArrangeRect.Y,
+					(int)_lastArrangeRect.Width,
+					(int)_lastArrangeRect.Height,
+					SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
+				if (!posSuccess)
+				{
+					this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
+				}
+				ApplyZOrder((HWND)window.Hwnd);
 			}
+		}
+	}
+
+	private void ApplyZOrder(HWND childHwnd)
+	{
+		// SetWindowPos's hWndInsertAfter is "the window to precede the positioned window in the
+		// Z order" — i.e., the one that ends up *above* us, not below us. Place the child just
+		// below the lowest-zIndex sibling that's still higher than us; if none, HWND_TOP puts us
+		// at the top of the chain.
+		Win32NativeElementHostingExtension? higher = null;
+		foreach (var ext in _attached)
+		{
+			if (ext._presenter.XamlRoot != _presenter.XamlRoot)
+			{
+				continue;
+			}
+			if (ext._zIndex > _zIndex && (higher is null || ext._zIndex < higher._zIndex))
+			{
+				higher = ext;
+			}
+		}
+
+		var insertAfter = higher is null
+			? default(HWND) // HWND_TOP
+			: (HWND)((Win32NativeWindow)higher._presenter.Content).Hwnd;
+
+		if (!PInvoke.SetWindowPos(childHwnd, insertAfter, 0, 0, 0, 0, SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE))
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} (z-order) failed: {Win32Helper.GetErrorMessage()}");
 		}
 	}
 
@@ -326,9 +373,6 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			throw new ArgumentException($"content is not a {nameof(Win32NativeWindow)} instance.", nameof(content));
 		}
 
-		var parentHwnd = (nint)Hwnd;
-		var childHwnd = window.Hwnd;
-
 		_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_HIDE);
 
 		var oldParent = PInvoke.SetParent((HWND)window.Hwnd, HWND.Null);
@@ -337,18 +381,9 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			this.LogError()?.Error($"{nameof(PInvoke.SetParent)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
-		if (_childZOrderByParent.TryGetValue(parentHwnd, out var siblings))
-		{
-			foreach (var staleKey in siblings.Where(pair => pair.Value == childHwnd).Select(pair => pair.Key).ToList())
-			{
-				siblings.Remove(staleKey);
-			}
-			if (siblings.Count == 0)
-			{
-				_childZOrderByParent.Remove(parentHwnd);
-			}
-		}
+		// WS_CHILD stays set across detach/re-attach cycles.
 
+		_attached.Remove(this);
 		((Win32WindowWrapper)XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).RenderingNegativePathReevaluated -= OnRenderingNegativePathReevaluated;
 	}
 
@@ -433,48 +468,10 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 	public void SetZIndex(object content, int zIndex)
 	{
-		if (content is not Win32NativeWindow window)
+		_zIndex = zIndex;
+		if (content is Win32NativeWindow window)
 		{
-			return;
-		}
-
-		var childHwnd = window.Hwnd;
-		var parentHwnd = (nint)Hwnd;
-
-		if (!_childZOrderByParent.TryGetValue(parentHwnd, out var siblings))
-		{
-			siblings = new SortedDictionary<int, nint>();
-			_childZOrderByParent[parentHwnd] = siblings;
-		}
-
-		// The child may have moved from a different z-index in a previous pass; drop any stale entry
-		// before recording the new one so the sibling lookup below stays consistent.
-		foreach (var staleKey in siblings.Where(pair => pair.Value == childHwnd).Select(pair => pair.Key).ToList())
-		{
-			siblings.Remove(staleKey);
-		}
-		siblings[zIndex] = childHwnd;
-
-		// Place the child immediately above the next-lower sibling we know about. If none exists
-		// (this is the lowest-known z-index under this parent), drop it to the bottom of the chain.
-		var hwndInsertAfter = new HWND(1); // HWND_BOTTOM
-		foreach (var pair in siblings.Reverse())
-		{
-			if (pair.Key < zIndex)
-			{
-				hwndInsertAfter = (HWND)pair.Value;
-				break;
-			}
-		}
-
-		var success = PInvoke.SetWindowPos(
-			(HWND)childHwnd,
-			hwndInsertAfter,
-			0, 0, 0, 0,
-			SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
-		if (!success)
-		{
-			this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} (z-order) failed: {Win32Helper.GetErrorMessage()}");
+			ApplyZOrder((HWND)window.Hwnd);
 		}
 	}
 }

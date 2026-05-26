@@ -14,7 +14,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AllJoynServiceInfoRemovedEventArgs.UniqueName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AllJoynServiceInfoRemovedEventArgs.UniqueName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynServiceInfoRemovedEventArgs", "UniqueName");
 			}
 		}
 #endif
@@ -22,7 +22,7 @@ namespace Windows.Devices.AllJoyn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AllJoynServiceInfoRemovedEventArgs(string uniqueName)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynServiceInfoRemovedEventArgs", "AllJoynServiceInfoRemovedEventArgs.AllJoynServiceInfoRemovedEventArgs(string uniqueName)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynServiceInfoRemovedEventArgs", "AllJoynServiceInfoRemovedEventArgs(string uniqueName)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynServiceInfoRemovedEventArgs.AllJoynServiceInfoRemovedEventArgs(string)

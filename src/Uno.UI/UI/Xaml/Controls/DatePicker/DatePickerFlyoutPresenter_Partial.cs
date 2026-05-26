@@ -484,22 +484,8 @@ namespace Microsoft.UI.Xaml.Controls
 			//_isInitializing = false;
 		}
 
-		// TODO - automation peering
-		//void OnCreateAutomationPeerImpl(
-		//		out xaml.Automation.Peers.IAutomationPeer returnValue)
-		//{
-
-		//	wrl.ComPtr<xaml_controls.DatePickerFlyoutPresenter> spThis(this);
-		//	wrl.ComPtr<xaml_controls.IDatePickerFlyoutPresenter> spThisAsIDatePickerFlyoutPresenter;
-		//	wrl.ComPtr<xaml_automation_peers.DatePickerFlyoutPresenterAutomationPeer>
-		//		spDatePickerFlyoutPresenterAutomationPeer;
-
-		//	spThis.As(spThisAsIDatePickerFlyoutPresenter);
-		//	(wrl.MakeAndInitialize<xaml_automation_peers.DatePickerFlyoutPresenterAutomationPeer>
-		//		(spDatePickerFlyoutPresenterAutomationPeer, spThisAsIDatePickerFlyoutPresenter));
-
-		//	spDatePickerFlyoutPresenterAutomationPeer.CopyTo(returnValue);
-		//}
+		protected override Microsoft.UI.Xaml.Automation.Peers.AutomationPeer OnCreateAutomationPeer()
+			=> new Microsoft.UI.Xaml.Automation.Peers.DatePickerFlyoutPresenterAutomationPeer(this);
 
 		void IDatePickerFlyoutPresenter.PullPropertiesFromOwner(DatePickerFlyout pOwner)
 		{

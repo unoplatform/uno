@@ -17,14 +17,14 @@ namespace Windows.Devices.Input.Preview
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Input.Preview.GazeInputSourcePreview GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member GazeInputSourcePreview GazeInputSourcePreview.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GazeInputSourcePreview%20GazeInputSourcePreview.GetForCurrentView%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazeInputSourcePreview", "GetForCurrentView()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Input.Preview.GazeDeviceWatcherPreview CreateWatcher()
 		{
-			throw new global::System.NotImplementedException("The member GazeDeviceWatcherPreview GazeInputSourcePreview.CreateWatcher() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GazeDeviceWatcherPreview%20GazeInputSourcePreview.CreateWatcher%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazeInputSourcePreview", "CreateWatcher()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeInputSourcePreview.GazeEntered.add
@@ -40,12 +40,12 @@ namespace Windows.Devices.Input.Preview
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.Preview.GazeInputSourcePreview", "event TypedEventHandler<GazeInputSourcePreview, GazeEnteredPreviewEventArgs> GazeInputSourcePreview.GazeEntered");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.Preview.GazeInputSourcePreview", "event GazeEntered");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.Preview.GazeInputSourcePreview", "event TypedEventHandler<GazeInputSourcePreview, GazeEnteredPreviewEventArgs> GazeInputSourcePreview.GazeEntered");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.Preview.GazeInputSourcePreview", "event GazeEntered");
 			}
 		}
 #endif
@@ -56,12 +56,12 @@ namespace Windows.Devices.Input.Preview
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.Preview.GazeInputSourcePreview", "event TypedEventHandler<GazeInputSourcePreview, GazeExitedPreviewEventArgs> GazeInputSourcePreview.GazeExited");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.Preview.GazeInputSourcePreview", "event GazeExited");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.Preview.GazeInputSourcePreview", "event TypedEventHandler<GazeInputSourcePreview, GazeExitedPreviewEventArgs> GazeInputSourcePreview.GazeExited");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.Preview.GazeInputSourcePreview", "event GazeExited");
 			}
 		}
 #endif
@@ -72,12 +72,12 @@ namespace Windows.Devices.Input.Preview
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.Preview.GazeInputSourcePreview", "event TypedEventHandler<GazeInputSourcePreview, GazeMovedPreviewEventArgs> GazeInputSourcePreview.GazeMoved");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.Preview.GazeInputSourcePreview", "event GazeMoved");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.Preview.GazeInputSourcePreview", "event TypedEventHandler<GazeInputSourcePreview, GazeMovedPreviewEventArgs> GazeInputSourcePreview.GazeMoved");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.Preview.GazeInputSourcePreview", "event GazeMoved");
 			}
 		}
 #endif

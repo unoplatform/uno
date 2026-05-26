@@ -224,15 +224,12 @@ namespace Uno.UI
 			/// </summary>
 			public static bool IgnoreTextScaleFactor { get; set; }
 
-#if __ANDROID__ || __APPLE_UIKIT__
 			/// <summary>
 			/// Allows the user to limit the scale factor without having to ignore it.
 			/// </summary>
 			public static float? MaximumTextScaleFactor { get; set; }
-#endif
 
 			/// <summary>
-			/// (Skia only)
 			/// Overrides the font fallback mechanism used to resolve typefaces for codepoints
 			/// that the requested font family cannot render. When <c>null</c> (the default),
 			/// the platform-registered service is used.
@@ -244,6 +241,13 @@ namespace Uno.UI
 			/// constructed with their own coverage table and stream provider.
 			/// </remarks>
 			public static Microsoft.UI.Xaml.Documents.TextFormatting.IFontFallbackService FallbackService { get; set; }
+
+			/// <summary>
+			/// Overrides the OS-reported text scale factor with a manual value.
+			/// When set, this value takes precedence over the OS-reported scale factor.
+			/// Useful for platforms without OS text scaling support (macOS, WASM, Linux FrameBuffer) or for testing.
+			/// </summary>
+			public static double? TextScaleFactor { get; set; }
 		}
 
 		public static class FrameworkElement
@@ -804,6 +808,25 @@ namespace Uno.UI
 
 		public static class WebView2
 		{
+			/// <summary>
+			/// Enables the platform-native developer tools for the <see cref="WebView2"/> control.
+			/// </summary>
+			/// <remarks>
+			/// <para>Defaults to <c>true</c> in DEBUG builds and <c>false</c> in RELEASE builds.</para>
+			/// <para>Per-platform behavior:</para>
+			/// <list type="bullet">
+			///   <item><description>Windows / Linux (Skia): toggles Chromium DevTools (right-click "Inspect" / F12).</description></item>
+			///   <item><description>iOS / Mac Catalyst / macOS: enables Safari Web Inspector against the <c>WKWebView</c> (requires iOS 16.4+, macOS 13.3+).</description></item>
+			///   <item><description>Android: enables Chrome DevTools remote debugging at <c>chrome://inspect</c>.</description></item>
+			///   <item><description>WebAssembly: no-op; use the host browser's developer tools.</description></item>
+			/// </list>
+			/// <para>Set this once during application startup before any <c>WebView2</c> is materialized.</para>
+			/// </remarks>
+			public static bool EnableDevTools { get; set; }
+#if DEBUG
+				= true;
+#endif
+
 #if __IOS__ || UNO_REFERENCE_API
 			/// <summary>
 			/// Sets whether the <see cref="WebView2"/> object is inspectable or not.
@@ -812,7 +835,12 @@ namespace Uno.UI
 			/// On iOS and Catalyst this means that developers can use the Safari Web Developers tools to debug apps with <see cref="WebView2"/>
 			/// Important: It will only work when the app runs in Debug mode.
 			/// </remarks>
-			public static bool IsInspectable { get; set; }
+			[System.Obsolete("Use " + nameof(EnableDevTools) + " instead. This cross-platform flag controls the same behavior on all targets.")]
+			public static bool IsInspectable
+			{
+				get => EnableDevTools;
+				set => EnableDevTools = value;
+			}
 #endif
 		}
 
@@ -1029,6 +1057,21 @@ namespace Uno.UI
 			/// If null (default) use Metal if available, otherwise fallback to Software rendering.
 			/// </summary>
 			public static bool? UseMetalOnMacOS { get; set; }
+		}
+
+		public static class ElementRefHandle
+		{
+			/// <summary>
+			/// Accessing the element ref handle registry must only happen on the UI thread.
+			/// By default, attempting to access it from a non-UI thread throws an
+			/// <see cref="InvalidOperationException"/>.
+			/// <para>
+			/// Setting this to <see langword="true"/> suppresses that exception.
+			/// This is intended only for unit-test environments where a real UI thread is not
+			/// available. Do not set this in production code.
+			/// </para>
+			/// </summary>
+			public static bool DisableThreadingCheck { get; internal set; }
 		}
 
 		public static class DependencyProperty

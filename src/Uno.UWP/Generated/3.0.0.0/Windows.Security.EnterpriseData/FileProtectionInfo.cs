@@ -19,7 +19,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string FileProtectionInfo.Identity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20FileProtectionInfo.Identity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.FileProtectionInfo", "Identity");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FileProtectionInfo.IsProtectWhileOpenSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FileProtectionInfo.IsProtectWhileOpenSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.FileProtectionInfo", "IsProtectWhileOpenSupported");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FileProtectionInfo.IsRoamable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FileProtectionInfo.IsRoamable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.FileProtectionInfo", "IsRoamable");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Security.EnterpriseData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FileProtectionStatus FileProtectionInfo.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileProtectionStatus%20FileProtectionInfo.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.FileProtectionInfo", "Status");
 			}
 		}
 #endif

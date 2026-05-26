@@ -19,7 +19,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MapRouteManeuver.EndHeading is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20MapRouteManeuver.EndHeading");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "EndHeading");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapRouteManeuver.ExitNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MapRouteManeuver.ExitNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "ExitNumber");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapRouteManeuver.InstructionText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MapRouteManeuver.InstructionText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "InstructionText");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MapRouteManeuverKind MapRouteManeuver.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MapRouteManeuverKind%20MapRouteManeuver.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "Kind");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MapRouteManeuver.LengthInMeters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20MapRouteManeuver.LengthInMeters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "LengthInMeters");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MapManeuverNotices MapRouteManeuver.ManeuverNotices is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MapManeuverNotices%20MapRouteManeuver.ManeuverNotices");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "ManeuverNotices");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MapRouteManeuver.StartHeading is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20MapRouteManeuver.StartHeading");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "StartHeading");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Geopoint MapRouteManeuver.StartingPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Geopoint%20MapRouteManeuver.StartingPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "StartingPoint");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapRouteManeuver.StreetName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MapRouteManeuver.StreetName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "StreetName");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ManeuverWarning> MapRouteManeuver.Warnings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CManeuverWarning%3E%20MapRouteManeuver.Warnings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteManeuver", "Warnings");
 			}
 		}
 #endif

@@ -14,11 +14,11 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color PdfPageRenderOptions.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20PdfPageRenderOptions.BackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPageRenderOptions", "BackgroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPageRenderOptions", "Color PdfPageRenderOptions.BackgroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPageRenderOptions", "BackgroundColor");
 			}
 		}
 #endif
@@ -28,11 +28,11 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PdfPageRenderOptions.BitmapEncoderId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PdfPageRenderOptions.BitmapEncoderId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPageRenderOptions", "BitmapEncoderId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPageRenderOptions", "Guid PdfPageRenderOptions.BitmapEncoderId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPageRenderOptions", "BitmapEncoderId");
 			}
 		}
 #endif
@@ -42,11 +42,11 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PdfPageRenderOptions.DestinationHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PdfPageRenderOptions.DestinationHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPageRenderOptions", "DestinationHeight");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPageRenderOptions", "uint PdfPageRenderOptions.DestinationHeight");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPageRenderOptions", "DestinationHeight");
 			}
 		}
 #endif
@@ -56,11 +56,11 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PdfPageRenderOptions.DestinationWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PdfPageRenderOptions.DestinationWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPageRenderOptions", "DestinationWidth");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPageRenderOptions", "uint PdfPageRenderOptions.DestinationWidth");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPageRenderOptions", "DestinationWidth");
 			}
 		}
 #endif
@@ -70,11 +70,11 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PdfPageRenderOptions.IsIgnoringHighContrast is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PdfPageRenderOptions.IsIgnoringHighContrast");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPageRenderOptions", "IsIgnoringHighContrast");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPageRenderOptions", "bool PdfPageRenderOptions.IsIgnoringHighContrast");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPageRenderOptions", "IsIgnoringHighContrast");
 			}
 		}
 #endif
@@ -84,11 +84,11 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect PdfPageRenderOptions.SourceRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20PdfPageRenderOptions.SourceRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPageRenderOptions", "SourceRect");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPageRenderOptions", "Rect PdfPageRenderOptions.SourceRect");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPageRenderOptions", "SourceRect");
 			}
 		}
 #endif
@@ -96,7 +96,7 @@ namespace Windows.Data.Pdf
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PdfPageRenderOptions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPageRenderOptions", "PdfPageRenderOptions.PdfPageRenderOptions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPageRenderOptions", "PdfPageRenderOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.PdfPageRenderOptions()

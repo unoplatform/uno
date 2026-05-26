@@ -19,7 +19,7 @@ namespace Windows.Devices.Input.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point? GazePointPreview.EyeGazePosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%3F%20GazePointPreview.EyeGazePosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazePointPreview", "EyeGazePosition");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Input.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point? GazePointPreview.HeadGazePosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%3F%20GazePointPreview.HeadGazePosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazePointPreview", "HeadGazePosition");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Input.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HidInputReport GazePointPreview.HidInputReport is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HidInputReport%20GazePointPreview.HidInputReport");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazePointPreview", "HidInputReport");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Input.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GazeDevicePreview GazePointPreview.SourceDevice is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GazeDevicePreview%20GazePointPreview.SourceDevice");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazePointPreview", "SourceDevice");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Input.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong GazePointPreview.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20GazePointPreview.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazePointPreview", "Timestamp");
 			}
 		}
 #endif

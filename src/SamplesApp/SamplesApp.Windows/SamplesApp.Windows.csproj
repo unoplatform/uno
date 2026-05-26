@@ -47,6 +47,7 @@
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 
 		<PackageReference Include="Microsoft.Graph" Version="5.56.0" />
+		<PackageReference Include="Microsoft.Kiota.Abstractions" Version="1.22.2" />
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.72.1" />
 
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260101001" />
@@ -104,10 +105,10 @@
 		<Compile Include="..\..\Uno.UI\Extensions\DependencyObjectExtensions.cs" Link="Uno.UI\Extensions\DependencyObjectExtensions.cs" />
 	</ItemGroup>
 
-	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" />
-	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
+	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.props" />
+	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.props" />
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" />
-	<Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
+	<Import Project="..\SamplesApp.Samples\SamplesApp.Samples.props" />
 	<Import Project="..\Benchmarks.Shared\Benchmarks.Shared.projitems" Label="Shared" />
 
 </Project>

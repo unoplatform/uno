@@ -19,7 +19,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect TouchHitTestingEventArgs.BoundingBox is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20TouchHitTestingEventArgs.BoundingBox");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.TouchHitTestingEventArgs", "BoundingBox");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TouchHitTestingEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20TouchHitTestingEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.TouchHitTestingEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.TouchHitTestingEventArgs", "bool TouchHitTestingEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.TouchHitTestingEventArgs", "Handled");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point TouchHitTestingEventArgs.Point is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20TouchHitTestingEventArgs.Point");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.TouchHitTestingEventArgs", "Point");
 			}
 		}
 #endif
@@ -53,11 +53,11 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreProximityEvaluation TouchHitTestingEventArgs.ProximityEvaluation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreProximityEvaluation%20TouchHitTestingEventArgs.ProximityEvaluation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.TouchHitTestingEventArgs", "ProximityEvaluation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.TouchHitTestingEventArgs", "CoreProximityEvaluation TouchHitTestingEventArgs.ProximityEvaluation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.TouchHitTestingEventArgs", "ProximityEvaluation");
 			}
 		}
 #endif
@@ -65,14 +65,14 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Core.CoreProximityEvaluation EvaluateProximity(global::Windows.Foundation.Rect controlBoundingBox)
 		{
-			throw new global::System.NotImplementedException("The member CoreProximityEvaluation TouchHitTestingEventArgs.EvaluateProximity(Rect controlBoundingBox) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreProximityEvaluation%20TouchHitTestingEventArgs.EvaluateProximity%28Rect%20controlBoundingBox%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.TouchHitTestingEventArgs", "EvaluateProximity(Rect controlBoundingBox)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Core.CoreProximityEvaluation EvaluateProximity(global::Windows.Foundation.Point[] controlVertices)
 		{
-			throw new global::System.NotImplementedException("The member CoreProximityEvaluation TouchHitTestingEventArgs.EvaluateProximity(Point[] controlVertices) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreProximityEvaluation%20TouchHitTestingEventArgs.EvaluateProximity%28Point%5B%5D%20controlVertices%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.TouchHitTestingEventArgs", "EvaluateProximity(Point[] controlVertices)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Core.TouchHitTestingEventArgs.BoundingBox.get

@@ -19,11 +19,11 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Visual RedirectVisual.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Visual%20RedirectVisual.Source");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.RedirectVisual", "Source");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.RedirectVisual", "Visual RedirectVisual.Source");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.RedirectVisual", "Source");
 			}
 		}
 #endif

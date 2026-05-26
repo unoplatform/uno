@@ -94,7 +94,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FlyoutBase.IsConstrainedToRootBounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FlyoutBase.IsConstrainedToRootBounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase", "IsConstrainedToRootBounds");
 			}
 		}
 #endif

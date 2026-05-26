@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member XmlDocument HotspotCredentialsAuthenticationResult.AuthenticationReplyXml is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XmlDocument%20HotspotCredentialsAuthenticationResult.AuthenticationReplyXml");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult", "AuthenticationReplyXml");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HotspotCredentialsAuthenticationResult.HasNetworkErrorOccurred is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HotspotCredentialsAuthenticationResult.HasNetworkErrorOccurred");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult", "HasNetworkErrorOccurred");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri HotspotCredentialsAuthenticationResult.LogoffUrl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20HotspotCredentialsAuthenticationResult.LogoffUrl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult", "LogoffUrl");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HotspotAuthenticationResponseCode HotspotCredentialsAuthenticationResult.ResponseCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HotspotAuthenticationResponseCode%20HotspotCredentialsAuthenticationResult.ResponseCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.HotspotCredentialsAuthenticationResult", "ResponseCode");
 			}
 		}
 #endif

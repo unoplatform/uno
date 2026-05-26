@@ -19,11 +19,11 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechAppendedSilence SpeechSynthesizerOptions.AppendedSilence is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechAppendedSilence%20SpeechSynthesizerOptions.AppendedSilence");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "AppendedSilence");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "SpeechAppendedSilence SpeechSynthesizerOptions.AppendedSilence");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "AppendedSilence");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double SpeechSynthesizerOptions.AudioPitch is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SpeechSynthesizerOptions.AudioPitch");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "AudioPitch");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "double SpeechSynthesizerOptions.AudioPitch");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "AudioPitch");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double SpeechSynthesizerOptions.AudioVolume is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SpeechSynthesizerOptions.AudioVolume");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "AudioVolume");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "double SpeechSynthesizerOptions.AudioVolume");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "AudioVolume");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpeechSynthesizerOptions.IncludeSentenceBoundaryMetadata is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpeechSynthesizerOptions.IncludeSentenceBoundaryMetadata");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "IncludeSentenceBoundaryMetadata");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "bool SpeechSynthesizerOptions.IncludeSentenceBoundaryMetadata");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "IncludeSentenceBoundaryMetadata");
 			}
 		}
 #endif
@@ -75,11 +75,11 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpeechSynthesizerOptions.IncludeWordBoundaryMetadata is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpeechSynthesizerOptions.IncludeWordBoundaryMetadata");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "IncludeWordBoundaryMetadata");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "bool SpeechSynthesizerOptions.IncludeWordBoundaryMetadata");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "IncludeWordBoundaryMetadata");
 			}
 		}
 #endif
@@ -89,11 +89,11 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechPunctuationSilence SpeechSynthesizerOptions.PunctuationSilence is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechPunctuationSilence%20SpeechSynthesizerOptions.PunctuationSilence");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "PunctuationSilence");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "SpeechPunctuationSilence SpeechSynthesizerOptions.PunctuationSilence");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "PunctuationSilence");
 			}
 		}
 #endif
@@ -103,11 +103,11 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double SpeechSynthesizerOptions.SpeakingRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SpeechSynthesizerOptions.SpeakingRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "SpeakingRate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "double SpeechSynthesizerOptions.SpeakingRate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "SpeakingRate");
 			}
 		}
 #endif

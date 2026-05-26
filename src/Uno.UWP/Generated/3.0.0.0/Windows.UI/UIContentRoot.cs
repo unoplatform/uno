@@ -19,7 +19,7 @@ namespace Windows.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UIContext UIContentRoot.UIContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UIContext%20UIContentRoot.UIContext");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.UIContentRoot", "UIContext");
 			}
 		}
 #endif

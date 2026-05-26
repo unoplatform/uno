@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MediaCaptureVideoProfileMediaDescription.FrameRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20MediaCaptureVideoProfileMediaDescription.FrameRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription", "FrameRate");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MediaCaptureVideoProfileMediaDescription.Height is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MediaCaptureVideoProfileMediaDescription.Height");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription", "Height");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaCaptureVideoProfileMediaDescription.IsHdrVideoSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaCaptureVideoProfileMediaDescription.IsHdrVideoSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription", "IsHdrVideoSupported");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaCaptureVideoProfileMediaDescription.IsVariablePhotoSequenceSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaCaptureVideoProfileMediaDescription.IsVariablePhotoSequenceSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription", "IsVariablePhotoSequenceSupported");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<Guid, object> MediaCaptureVideoProfileMediaDescription.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3CGuid%2C%20object%3E%20MediaCaptureVideoProfileMediaDescription.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription", "Properties");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaCaptureVideoProfileMediaDescription.Subtype is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaCaptureVideoProfileMediaDescription.Subtype");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription", "Subtype");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MediaCaptureVideoProfileMediaDescription.Width is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MediaCaptureVideoProfileMediaDescription.Width");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureVideoProfileMediaDescription", "Width");
 			}
 		}
 #endif

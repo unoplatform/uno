@@ -13,7 +13,7 @@ namespace Windows.Graphics.Imaging
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public BitmapPlaneDescription(int _StartIndex, int _Width, int _Height, int _Stride)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapPlaneDescription", "BitmapPlaneDescription.BitmapPlaneDescription(int _StartIndex, int _Width, int _Height, int _Stride)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapPlaneDescription", "BitmapPlaneDescription(int _StartIndex, int _Width, int _Height, int _Stride)");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapPlaneDescription.BitmapPlaneDescription(int, int, int, int)

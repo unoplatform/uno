@@ -19,7 +19,7 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<SyndicationAttribute> ServiceDocument.AttributeExtensions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CSyndicationAttribute%3E%20ServiceDocument.AttributeExtensions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ServiceDocument", "AttributeExtensions");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri ServiceDocument.BaseUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20ServiceDocument.BaseUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ServiceDocument", "BaseUri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.ServiceDocument", "Uri ServiceDocument.BaseUri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.ServiceDocument", "BaseUri");
 			}
 		}
 #endif
@@ -43,7 +43,7 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ISyndicationNode> ServiceDocument.ElementExtensions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CISyndicationNode%3E%20ServiceDocument.ElementExtensions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ServiceDocument", "ElementExtensions");
 			}
 		}
 #endif
@@ -53,11 +53,11 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ServiceDocument.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ServiceDocument.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ServiceDocument", "Language");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.ServiceDocument", "string ServiceDocument.Language");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.ServiceDocument", "Language");
 			}
 		}
 #endif
@@ -67,11 +67,11 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ServiceDocument.NodeName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ServiceDocument.NodeName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ServiceDocument", "NodeName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.ServiceDocument", "string ServiceDocument.NodeName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.ServiceDocument", "NodeName");
 			}
 		}
 #endif
@@ -81,11 +81,11 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ServiceDocument.NodeNamespace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ServiceDocument.NodeNamespace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ServiceDocument", "NodeNamespace");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.ServiceDocument", "string ServiceDocument.NodeNamespace");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.ServiceDocument", "NodeNamespace");
 			}
 		}
 #endif
@@ -95,11 +95,11 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ServiceDocument.NodeValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ServiceDocument.NodeValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ServiceDocument", "NodeValue");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.ServiceDocument", "string ServiceDocument.NodeValue");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.ServiceDocument", "NodeValue");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Web.AtomPub
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Workspace> ServiceDocument.Workspaces is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CWorkspace%3E%20ServiceDocument.Workspaces");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ServiceDocument", "Workspaces");
 			}
 		}
 #endif
@@ -117,7 +117,7 @@ namespace Windows.Web.AtomPub
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.XmlDocument GetXmlDocument(global::Windows.Web.Syndication.SyndicationFormat format)
 		{
-			throw new global::System.NotImplementedException("The member XmlDocument ServiceDocument.GetXmlDocument(SyndicationFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XmlDocument%20ServiceDocument.GetXmlDocument%28SyndicationFormat%20format%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.AtomPub.ServiceDocument", "GetXmlDocument(SyndicationFormat format)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.AtomPub.ServiceDocument.AttributeExtensions.get

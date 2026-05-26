@@ -19,7 +19,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbConfigurationDescriptor UsbConfiguration.ConfigurationDescriptor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbConfigurationDescriptor%20UsbConfiguration.ConfigurationDescriptor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbConfiguration", "ConfigurationDescriptor");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbDescriptor> UsbConfiguration.Descriptors is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CUsbDescriptor%3E%20UsbConfiguration.Descriptors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbConfiguration", "Descriptors");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbInterface> UsbConfiguration.UsbInterfaces is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CUsbInterface%3E%20UsbConfiguration.UsbInterfaces");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbConfiguration", "UsbInterfaces");
 			}
 		}
 #endif

@@ -21,5 +21,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return PlaceholderText ?? string.Empty;
 		}
+
+		protected override Automation.Peers.AutomationPeer OnCreateAutomationPeer()
+			=> new Automation.Peers.RichEditBoxAutomationPeer(this);
 	}
 }

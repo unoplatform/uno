@@ -19,11 +19,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color PointLight.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20PointLight.Color");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.PointLight", "Color");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "Color PointLight.Color");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "Color");
 			}
 		}
 #endif
@@ -33,11 +33,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float PointLight.ConstantAttenuation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20PointLight.ConstantAttenuation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.PointLight", "ConstantAttenuation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "float PointLight.ConstantAttenuation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "ConstantAttenuation");
 			}
 		}
 #endif
@@ -47,11 +47,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Visual PointLight.CoordinateSpace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Visual%20PointLight.CoordinateSpace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.PointLight", "CoordinateSpace");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "Visual PointLight.CoordinateSpace");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "CoordinateSpace");
 			}
 		}
 #endif
@@ -61,11 +61,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float PointLight.Intensity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20PointLight.Intensity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.PointLight", "Intensity");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "float PointLight.Intensity");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "Intensity");
 			}
 		}
 #endif
@@ -75,11 +75,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float PointLight.LinearAttenuation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20PointLight.LinearAttenuation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.PointLight", "LinearAttenuation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "float PointLight.LinearAttenuation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "LinearAttenuation");
 			}
 		}
 #endif
@@ -89,11 +89,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float PointLight.MaxAttenuationCutoff is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20PointLight.MaxAttenuationCutoff");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.PointLight", "MaxAttenuationCutoff");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "float PointLight.MaxAttenuationCutoff");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "MaxAttenuationCutoff");
 			}
 		}
 #endif
@@ -103,11 +103,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float PointLight.MinAttenuationCutoff is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20PointLight.MinAttenuationCutoff");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.PointLight", "MinAttenuationCutoff");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "float PointLight.MinAttenuationCutoff");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "MinAttenuationCutoff");
 			}
 		}
 #endif
@@ -117,11 +117,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 PointLight.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20PointLight.Offset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.PointLight", "Offset");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "Vector3 PointLight.Offset");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "Offset");
 			}
 		}
 #endif
@@ -131,11 +131,11 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float PointLight.QuadraticAttenuation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20PointLight.QuadraticAttenuation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.PointLight", "QuadraticAttenuation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "float PointLight.QuadraticAttenuation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "QuadraticAttenuation");
 			}
 		}
 #endif

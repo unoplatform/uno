@@ -510,6 +510,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				typeof(GridViewItem),
 				typeof(HyperlinkButton),
 				typeof(ItemsControl),
+				typeof(ListBox),
+				typeof(ListBoxItem),
 				typeof(Microsoft.UI.Xaml.Controls.ListView),
 				typeof(ListViewBaseHeaderItem),
 				typeof(Microsoft.UI.Xaml.Controls.ListViewHeaderItem),

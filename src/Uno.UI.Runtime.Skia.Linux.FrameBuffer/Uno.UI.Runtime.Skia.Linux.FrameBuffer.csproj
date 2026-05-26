@@ -11,7 +11,7 @@
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<Description>This package provides the platform support for Skia / Linux framebuffer in Uno Platform projects.</Description>
 
-		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Linux.FrameBuffer</PackageId>
+		<PackageId>Uno.WinUI.Runtime.Skia.Linux.FrameBuffer</PackageId>
 
 		<RootNamespace>Uno.WinUI.Runtime.Skia.Linux.FrameBuffer</RootNamespace>
 

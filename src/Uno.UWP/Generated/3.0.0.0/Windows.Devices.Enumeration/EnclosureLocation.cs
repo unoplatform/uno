@@ -19,7 +19,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EnclosureLocation.InDock is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EnclosureLocation.InDock");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.EnclosureLocation", "InDock");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EnclosureLocation.InLid is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EnclosureLocation.InLid");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.EnclosureLocation", "InLid");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Panel EnclosureLocation.Panel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Panel%20EnclosureLocation.Panel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.EnclosureLocation", "Panel");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint EnclosureLocation.RotationAngleInDegreesClockwise is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20EnclosureLocation.RotationAngleInDegreesClockwise");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.EnclosureLocation", "RotationAngleInDegreesClockwise");
 			}
 		}
 #endif

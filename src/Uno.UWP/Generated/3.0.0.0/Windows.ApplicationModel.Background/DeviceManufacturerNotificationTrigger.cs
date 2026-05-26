@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceManufacturerNotificationTrigger.OneShot is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceManufacturerNotificationTrigger.OneShot");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.DeviceManufacturerNotificationTrigger", "OneShot");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceManufacturerNotificationTrigger.TriggerQualifier is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceManufacturerNotificationTrigger.TriggerQualifier");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.DeviceManufacturerNotificationTrigger", "TriggerQualifier");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.ApplicationModel.Background
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DeviceManufacturerNotificationTrigger(string triggerQualifier, bool oneShot)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.DeviceManufacturerNotificationTrigger", "DeviceManufacturerNotificationTrigger.DeviceManufacturerNotificationTrigger(string triggerQualifier, bool oneShot)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.DeviceManufacturerNotificationTrigger", "DeviceManufacturerNotificationTrigger(string triggerQualifier, bool oneShot)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Background.DeviceManufacturerNotificationTrigger.DeviceManufacturerNotificationTrigger(string, bool)

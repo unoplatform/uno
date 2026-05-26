@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet StatelessAppServiceResponse.Message is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20StatelessAppServiceResponse.Message");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.StatelessAppServiceResponse", "Message");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StatelessAppServiceResponseStatus StatelessAppServiceResponse.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StatelessAppServiceResponseStatus%20StatelessAppServiceResponse.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.StatelessAppServiceResponse", "Status");
 			}
 		}
 #endif

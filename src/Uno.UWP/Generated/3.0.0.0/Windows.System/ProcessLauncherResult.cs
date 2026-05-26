@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ProcessLauncherResult.ExitCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ProcessLauncherResult.ExitCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.ProcessLauncherResult", "ExitCode");
 			}
 		}
 #endif

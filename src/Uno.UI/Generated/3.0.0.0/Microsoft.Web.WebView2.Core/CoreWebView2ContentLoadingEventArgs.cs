@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2ContentLoadingEventArgs.IsErrorPage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2ContentLoadingEventArgs.IsErrorPage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ContentLoadingEventArgs", "IsErrorPage");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong CoreWebView2ContentLoadingEventArgs.NavigationId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20CoreWebView2ContentLoadingEventArgs.NavigationId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ContentLoadingEventArgs", "NavigationId");
 			}
 		}
 #endif

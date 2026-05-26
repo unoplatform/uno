@@ -19,7 +19,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceUnpairingResultStatus DeviceUnpairingResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceUnpairingResultStatus%20DeviceUnpairingResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceUnpairingResult", "Status");
 			}
 		}
 #endif
