@@ -36,6 +36,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 #endif
 		[DataRow(Stretch.Uniform, true)]
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeUIKit)] // Flaky on UIKit - #9080
 		public async Task When_Stretch(Stretch stretch, bool useRectangle)
 		{
 			const string Redish = "#FFEB1C24";
