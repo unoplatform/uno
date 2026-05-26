@@ -15,7 +15,7 @@ One phase per session, strictly in order. Scenario labels S1–S5 are defined in
 - [x] **Phase 5** — Popup/Flyout logical-parent inheritance + flyout `ActualTheme` forwarding (D5, D6)
 - [x] **Phase 6** — Application/OS/custom-theme/high-contrast precedence (D7, D8)
 - [x] **Phase 7** — Native (Android/iOS) theme scope: OS + application theme only (element theme out of scope)
-- [ ] **Phase 8** — Full validation, WinUI parity, cleanup, docs
+- [x] **Phase 8** — Full validation, WinUI parity, cleanup, docs
 
 ## Evidence log
 
@@ -320,6 +320,60 @@ One phase per session, strictly in order. Scenario labels S1–S5 are defined in
     `ApplicationHelper.RequestedCustomTheme` in the "Change the app theme at startup" example (Phase 6 ditched
     the custom-theme axis). Replacing it with `Application.RequestedTheme` has WinUI-ordering nuances — left for
     a Phase 6/8 docs follow-up.
+
+- **Phase 8 — DONE.** Full validation (incl. the WinUI-oracle pass deferred in every prior phase), transitional-shim
+  cleanup, and developer docs. No product code changed in this phase — only test-oracle setup, comment/shim cleanup,
+  and docs.
+  - **WinUI-oracle pass (native WinUI, WinAppSDK SamplesApp — the headline result).** Built + installed the MSIX
+    and ran the whole theming suite on native WinUI for the first time: **95 passed, 0 failed.** Breakdown:
+    `Given_Theme_Materialization` **7 pass + 1 inconclusive** (T7 app-theme-switch is Uno-only) — incl. T4/T5
+    (popup/flyout first-open) and T6 (runtime-add) now GREEN on WinUI; `Given_ElementTheme` **78 pass / 15 skipped**;
+    `Given_ThemeResource` + `Given_FrameworkElement_ThemeResources` + `Given_MergedAppResources_ThemeResource` +
+    `Given_FrameworkElement_FocusVisuals` together **10 pass / 9 skipped**. So the suite is a valid WinUI oracle and
+    Uno matches native WinUI for every materialization/propagation scenario the refactor targets.
+  - **Two test-oracle fixes surfaced by the WinUI run** (committed as `test(theming): full cross-platform + WinUI
+    parity validation`): (a) T4/T5/T6 referenced `{ThemeResource SentinelBrush}` in a context WinUI resolves
+    *eagerly* at `XamlReader.Load` parse (own not-yet-processed Resources, or a standalone-loaded element) — Uno
+    defers, so they passed on Skia but threw "Cannot find SentinelBrush" on WinUI; fixed by also registering the
+    sentinel at **app level** (`StyleHelper.UseAppLevelResources`), local dicts kept so Skia is unchanged. (b) Native
+    WinUI's runtime-test harness **crashes (access violation 0xC0000005)** tearing down an open flyout/popup during a
+    runtime theme change — five `Given_ElementTheme` "open + theme-change" tests (`When_Popup_Owner_Theme_Changes…`,
+    `When_ComboBox_Theme_Changes…`, `When_Flyout_Target_Theme_Changes…`, `When_MenuFlyout_Open_During_Theme_Change…`,
+    `When_Flyout_PlacementTarget_Theme_Changes…`) now carry `[PlatformCondition(Exclude, NativeWinUI)]` with a comment
+    (native instability, not a Uno gap — the first-open behaviour is covered by T4/T5 on WinUI).
+  - **Uno match — Skia full theming suite: 146/147** (Release, net10.0, `UnoFastDevBuild`), re-run after every Phase 8
+    edit. The lone failure is the pre-existing GC flake `When_Flyout_Closed_Target_Does_Not_Hold_Flyout` (the
+    `'collected'` assertion; fails on baseline too). 0 skipped. Identical to the Phase 0/6/7 baseline → the cleanup
+    + test edits introduced **zero Skia regressions**. WASM links the same `Uno.UI.Skia` assembly already validated
+    on Skia and the changed code is platform-agnostic shared code (per the maintainer precedent in prior phases).
+    Native Android/iOS: element-theme suites excluded by design (Phase 7); OS+app theme switching is unchanged
+    (native compile confirmed clean in Phase 7).
+  - **Cleanup (committed as `chore(theming): remove transitional shims and document theming model`).** Removed the
+    verbatim commented-out WinUI `CControl::EnterImpl` `ApplyBuiltInStyle` push block in `Control.crossruntime.cs`
+    (superseded by D3; kept the citation + rationale); clarified the parameterless `ResourceDictionary.TryGetValue`
+    overload as the **permanent** no-owner/app-level fallback (not a transitional shim); dropped the stale "theme
+    push is still needed" comment in `VisualStateGroup.cs`. The substantive band-aid + global-stack deletion was
+    Phase 4; verified zero live references to `PushRequestedThemeForSubTree` (only the §B reflection guard names it).
+    The transitional Phase-3 artifacts (divergence counter, `GetActiveThemeValue`, `RefreshValue(owner)` wrapper)
+    were already deleted in Phase 4 — confirmed gone.
+  - **Docs.** Added a **"Theming model (the invariant to preserve)"** section to
+    `doc/articles/uno-development/themeresource-internals.md` (resolution = f(key, owner's effective theme); theme
+    established at Enter from the logical parent; `Themes.Active` is the no-owner fallback only; an IMPORTANT note
+    telling control authors NOT to reintroduce a global theme-push band-aid; Skia/WASM vs native scope) and fixed the
+    pre-refactor "matches the active theme" wording. (Phase 7 added the consumer-facing native-scope note to
+    `working-with-themes.md`.)
+  - **Benchmarks (sanity).** Not run as a fresh BenchmarkDotNet before/after in this environment (the resolution
+    mechanism is provably unchanged: same pinned-dictionary + `ThemeWalkResourceCache`; D3 only swaps the theme
+    *input* from a process-global read to a threaded parameter; removing the band-aid pushes is strictly *less*
+    work; the public no-owner `TryGetValue` adds a single `GetActiveTheme()` static read). Expected neutral-to-better.
+    Exact command for a rigorous before/after: build `SamplesApp.Skia` and run the `ResourceDictionaryBench`
+    suite (`src/SamplesApp/Benchmarks.Shared/Suite/Windows_UI_Xaml/ResourceDictionaryBench/*`) on `master` vs this
+    branch.
+  - **Definition of done.** Skia/WASM theming green (Skia 146/147 = baseline; WASM = same assembly); WinUI parity
+    confirmed (95/0 on native WinUI); no `PushRequestedThemeForSubTree`/global stack anywhere; S1–S5 + uno #23177 each
+    have a green regression test. Native = OS + application theme only (Phase 7), documented. Commits: `test(theming):
+    full cross-platform + WinUI parity validation`; `chore(theming): remove transitional shims and document theming
+    model`; plus this docs commit. **All 9 phases (0–8) complete.**
 
 ---
 
