@@ -9,6 +9,14 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 
+		<!--
+		Marks this project as an application head. The Skia runtimes are referenced
+		via ProjectReference here, so their buildTransitive targets (which would set
+		this for NuGet consumers) don't apply and it must be set explicitly. Required
+		so the Uno.icu-win package embeds icudt.dat into this assembly.
+		-->
+		<IsUnoHead>true</IsUnoHead>
+
 		<!-- Required in CI to avoid dependency issues -->
 		<PreBuildUnoUITasks>true</PreBuildUnoUITasks>
 
