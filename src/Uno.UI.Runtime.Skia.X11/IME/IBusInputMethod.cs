@@ -34,6 +34,8 @@ internal sealed class IBusInputMethod : IX11InputMethod
 
 	public bool IsEnabled => _isEnabled;
 
+	public Task InitTask { get; }
+
 	public event Action<string>? Commit;
 	public event Action<uint, uint, uint>? ForwardKey;
 	public event Action<string?, int>? PreeditChanged;
@@ -41,7 +43,7 @@ internal sealed class IBusInputMethod : IX11InputMethod
 	public IBusInputMethod(string sessionBusAddress)
 	{
 		_sessionBusAddress = sessionBusAddress;
-		_ = InitAsync();
+		InitTask = InitAsync();
 	}
 
 	private async Task InitAsync()
@@ -110,10 +112,9 @@ internal sealed class IBusInputMethod : IX11InputMethod
 		}
 		catch (DBusConnectionClosedException)
 		{
-			// IBus service disconnected — disable and fall back to XIM
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().Warn("IBus D-Bus connection lost. Falling back to XIM.");
+				this.Log().Warn("IBus D-Bus connection lost — IME will be disabled.");
 			}
 			_isEnabled = false;
 			return false;
