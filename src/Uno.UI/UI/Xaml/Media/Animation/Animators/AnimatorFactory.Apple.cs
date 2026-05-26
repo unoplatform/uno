@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Windows.Foundation;
 using Windows.UI;
 
 namespace Microsoft.UI.Xaml.Media.Animation
@@ -38,6 +39,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			// TODO: GPU-bound color animations - https://github.com/unoplatform/uno/issues/2947
 
 			return new ColorValueAnimator(startingValue, targetValue);
+		}
+
+		private static IValueAnimator CreatePoint(Timeline timeline, Point startingValue, Point targetValue)
+		{
+			return new FloatValueAnimator(0f, 1f);
 		}
 	}
 }

@@ -20,6 +20,19 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			_animationImplementation = new AnimationImplementation<float>(this);
 		}
 
+		/// <summary>
+		/// Returns 1 second for Automatic duration (WinUI NULL_DURATION_DEFAULT).
+		/// MUX: CAnimation::GetNaturalDuration returns 1.0f when Duration is not set.
+		/// </summary>
+		internal override TimeSpan GetCalculatedDuration()
+		{
+			if (Duration.Type == DurationType.Automatic)
+			{
+				return TimeSpan.FromSeconds(1);
+			}
+			return base.GetCalculatedDuration();
+		}
+
 		public double? By
 		{
 			get => (double?)GetValue(ByProperty);
@@ -75,21 +88,97 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		public static DependencyProperty EasingFunctionProperty { get; } =
 			DependencyProperty.Register("EasingFunction", typeof(IEasingFunction), typeof(DoubleAnimation), new FrameworkPropertyMetadata(null));
 
-		void ITimeline.Begin() => _animationImplementation.Begin();
+		void ITimeline.Begin()
+		{
+#if __SKIA__
+			if (IsParentStoryboardRegistered())
+			{
+				_isTimeManagerDriven = true;
+				// Reset timing state so the animation can complete and fire events again.
+				// MUX: CTimeline::OnBegin resets m_IsCompletedEventFired.
+				_tmCompletedEventFired = false;
+				_tmInitialized = false;
+				State = TimelineState.Active;
+				return;
+			}
+#endif
+			_animationImplementation.Begin();
+		}
 
-		void ITimeline.Stop() => _animationImplementation.Stop();
+		void ITimeline.Stop()
+		{
+#if __SKIA__
+			if (_isTimeManagerDriven)
+			{
+				_isTimeManagerDriven = false;
+				ResetTimeManagerState();
+				ClearValue();
+				State = TimelineState.Stopped;
+				return;
+			}
+#endif
+			_animationImplementation.Stop();
+		}
 
-		void ITimeline.Resume() => _animationImplementation.Resume();
+		void ITimeline.Resume()
+		{
+#if __SKIA__
+			if (_isTimeManagerDriven)
+			{
+				State = TimelineState.Active;
+				return;
+			}
+#endif
+			_animationImplementation.Resume();
+		}
 
-		void ITimeline.Pause() => _animationImplementation.Pause();
+		void ITimeline.Pause()
+		{
+#if __SKIA__
+			if (_isTimeManagerDriven)
+			{
+				State = TimelineState.Paused;
+				return;
+			}
+#endif
+			_animationImplementation.Pause();
+		}
 
 		void ITimeline.Seek(TimeSpan offset) => _animationImplementation.Seek(offset);
 
 		void ITimeline.SeekAlignedToLastTick(TimeSpan offset) => _animationImplementation.SeekAlignedToLastTick(offset);
 
-		void ITimeline.SkipToFill() => _animationImplementation.SkipToFill();
+		void ITimeline.SkipToFill()
+		{
+#if __SKIA__
+			if (_isTimeManagerDriven)
+			{
+				_isTimeManagerDriven = false;
+				ResetTimeManagerState();
+				// Apply final value.
+				var toValue = To.HasValue ? (float)To.Value : _tmToValue;
+				SetValue(toValue);
+				State = TimelineState.Filling;
+				OnCompleted();
+				return;
+			}
+#endif
+			_animationImplementation.SkipToFill();
+		}
 
-		void ITimeline.Deactivate() => _animationImplementation.Deactivate();
+		void ITimeline.Deactivate()
+		{
+#if __SKIA__
+			if (_isTimeManagerDriven)
+			{
+				_isTimeManagerDriven = false;
+				ResetTimeManagerState();
+				State = TimelineState.Stopped;
+				return;
+			}
+#endif
+			_animationImplementation.Deactivate();
+		}
 
 		/// <summary>
 		/// Dispose the Double animation.

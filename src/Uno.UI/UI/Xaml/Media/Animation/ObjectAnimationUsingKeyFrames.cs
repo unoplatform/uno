@@ -95,6 +95,15 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			State = TimelineState.Active;
 
+#if __SKIA__
+			PlayDeferred();
+#else
+			PlayImmediate();
+#endif
+		}
+
+		private void PlayImmediate()
+		{
 			// MUX Reference: CAnimation::GetAnimationBaseValue / ReadBaseValuesFromTargetOrHandoff
 			// Ensure keyframe theme resources are resolved with the target element's
 			// effective theme before playback begins. This is needed because keyframe
@@ -124,6 +133,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				);
 			}
 
+#if __SKIA__
+			CancelDeferredPlay();
+			StopTimeManagerDriven();
+#endif
 			// We explicitly call the Stop of the _frameScheduler before the Reset dispose it,
 			// so the EndReason will be Stopped instead of Aborted.
 			_frameScheduler?.Stop();
@@ -138,6 +151,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			{
 				return;
 			}
+
+#if __SKIA__
+			if (_isTimeManagerDriven)
+			{
+				State = TimelineState.Active;
+				return;
+			}
+#endif
 
 			if (_trace.IsEnabled)
 			{
@@ -158,6 +179,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			{
 				return;
 			}
+
+#if __SKIA__
+			if (_isTimeManagerDriven)
+			{
+				State = TimelineState.Paused;
+				return;
+			}
+#endif
 
 			if (_trace.IsEnabled)
 			{
@@ -185,10 +214,17 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		void ITimeline.SkipToFill()
 		{
+#if __SKIA__
+			CancelDeferredPlay();
+			StopTimeManagerDriven();
+#endif
 			// Set value to last keytime and set state to filling
 			_frameScheduler?.Dispose();
 			_frameScheduler = null;
 
+			// Read the final value directly from the last keyframe (not cached).
+			// This matches WinUI's tick-based value reading and supports the
+			// Begin(); SkipToFill(); pattern used by AppBar.UpdateTemplateSettings().
 			var fillFrame = KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).Last();
 
 			SetValue(fillFrame.Value);
@@ -197,6 +233,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		void ITimeline.Deactivate()
 		{
+#if __SKIA__
+			CancelDeferredPlay();
+			StopTimeManagerDriven();
+#endif
 			Reset();
 		}
 
