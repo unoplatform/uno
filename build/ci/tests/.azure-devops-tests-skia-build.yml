@@ -41,7 +41,7 @@ jobs:
       artifact: native-assets-macos
       path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
 
-  - powershell: dotnet msbuild src/SamplesApp/UnoIslandsSamplesApp.Skia.WPF/UnoIslandsSamplesApp.Skia.Wpf.csproj /r /m /p:UnoTargetFrameworkOverride=net9.0 /p:Configuration=Release /p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-wpf-islands.binlog
+  - powershell: dotnet msbuild src/SamplesApp/UnoIslandsSamplesApp.Skia.WPF/UnoIslandsSamplesApp.Skia.Wpf.csproj /r /m /p:UnoTargetFrameworkOverride=net10.0 /p:Configuration=Release /p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-wpf-islands.binlog
     displayName: Build WPF Islands Head
 
   - powershell: dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -p:UnoTargetFrameworkOverride=net10.0 -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true -f net10.0 /bl:$(build.artifactstagingdirectory)\logs\build-generic.binlog
@@ -58,7 +58,7 @@ jobs:
     displayName: 'Publish Wpf Islands Binaries'
     retryCountOnTaskFailure: 3
     inputs:
-      targetPath: $(Build.SourcesDirectory)\src\SamplesApp\UnoIslandsSamplesApp.Skia.WPF\bin\Release\net9.0-windows
+      targetPath: $(Build.SourcesDirectory)\src\SamplesApp\UnoIslandsSamplesApp.Skia.WPF\bin\Release\net10.0-windows
       artifactName: samplesapp-wpf-islands-skia
 
   - task: PublishBuildArtifacts@1

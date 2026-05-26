@@ -901,7 +901,7 @@ internal partial class NavigationHistory
 
 			if (strTransitionInfoType is not null)
 			{
-				var pTransitionInfoTypeInfo = Type.GetType(strTransitionInfoType);
+				var pTransitionInfoTypeInfo = GetType(strTransitionInfoType);
 				spTransitionInfo = (NavigationTransitionInfo)Activator.CreateInstance(pTransitionInfoTypeInfo);
 
 				// Read NavigationTransitionInfo.
@@ -936,5 +936,10 @@ internal partial class NavigationHistory
 			strDescriptor,
 			spParameterobject,
 			spTransitionInfo);
+
+		[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "`Uno.UI.SourceGenerators/BindableTypeProviders` / `BindableMetadata.g.cs` ensures the type exists.")]
+		[return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+		static Type GetType(string typeName)
+			=> Type.GetType(typeName);
 	}
 }

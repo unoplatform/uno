@@ -208,6 +208,7 @@ internal class TypeMapCollection
 		set => _mappings[key] = value;
 	}
 
+	[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Output must match Input, and since Input has annotations…")]
 	public bool TryGetValue(
 		[DynamicallyAccessedMembers(TypeMappings.TypeRequirements)]
 		Type key,

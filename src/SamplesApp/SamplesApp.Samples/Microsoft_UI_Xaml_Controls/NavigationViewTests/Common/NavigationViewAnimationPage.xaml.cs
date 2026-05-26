@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using MUXControlsTestApp.Utilities;
 using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml;
@@ -32,9 +33,15 @@ namespace MUXControlsTestApp
 				pageTag = "BlankPage1";
 			}
 			var pageName = "MUXControlsTestApp.NavigationView" + pageTag;
-			var pageType = Type.GetType(pageName);
+			var pageType = GetType(pageName);
 
 			ContentFrame.Navigate(pageType);
+
+			[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Within SamplesApp, `NavigationView*` is treated as [Bindable], and `Uno.UI.SourceGenerators/BindableTypeProviders` / `BindableMetadata.g.cs` ensures the type exists.")]
+			static Type GetType(string typeName)
+			{
+				return Type.GetType(typeName);
+			}
 		}
 
 		private void FlipOrientation_Click(object sender, RoutedEventArgs e)

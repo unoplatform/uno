@@ -36,10 +36,11 @@
 		<NetSkiaPreviousAndCurrent>$(NetPrevious);$(NetCurrent)</NetSkiaPreviousAndCurrent>
 		<NetReferencePreviousAndCurrent>$(NetPrevious);$(NetCurrent)</NetReferencePreviousAndCurrent>
 		<NetWinAppSDKPreviousAndCurrent>$(NetPreviousWinAppSDK);$(NetCurrentWinAppSDK)</NetWinAppSDKPreviousAndCurrent>
-		<NetUnitTests>$(NetPrevious)</NetUnitTests>
+		<NetUnitTests>$(NetCurrent)</NetUnitTests>
 
 		<!-- TODO: Rename this to NetWinUI or NetPreviousWinUI -->
 		<NetUWPOrWinUI>$(NetPrevious)-windows10.0.19041.0</NetUWPOrWinUI>
+		<NetCurrentUWPOrWinUI>$(NetCurrent)-windows10.0.19041.0</NetCurrentUWPOrWinUI>
 
 		<!-- MSTEST0001: Explicitly enable or disable tests parallelization -->
 		<NoWarn>$(NoWarn);MSTEST0001</NoWarn>

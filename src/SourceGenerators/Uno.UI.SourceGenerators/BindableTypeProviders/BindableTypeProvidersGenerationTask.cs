@@ -3,6 +3,7 @@
 using Uno.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.IO;
 using Microsoft.CodeAnalysis;
@@ -392,6 +393,13 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 								}
 								else
 								{
+									if (property.GetAttributes().Any(attr => attr.AttributeClass?.Name == "DynamicallyAccessedMembersAttribute"))
+									{
+										// 'value' argument does not satisfy 'DynamicallyAccessedMemberTypes.PublicParameterlessConstructor' in call to…
+										postWriter.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage(\"Trimming\", \"IL2026\")]");
+										// 'value' argument does not satisfy 'DynamicallyAccessedMemberTypes.PublicParameterlessConstructor' in call to…
+										postWriter.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage(\"Trimming\", \"IL2067\")]");
+									}
 									postWriter.AppendLineIndented($@"private static void Set{propertyName}(object instance, object value, global::Microsoft.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => (({ownerTypeName})instance).{propertyName} = ({propertyTypeName})value;");
 								}
 
