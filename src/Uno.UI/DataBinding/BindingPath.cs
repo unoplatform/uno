@@ -120,6 +120,23 @@ namespace Uno.UI.DataBinding
 		}
 
 		/// <summary>
+		/// Attaches compiled (reflection-free) per-segment getters emitted by the XAML source generator
+		/// for x:Bind. The getters are in chain order (head/first segment first) and there must be one per
+		/// segment. See <see cref="Microsoft.UI.Xaml.Data.Binding.XBindPropertyPathGetters"/>.
+		/// </summary>
+		internal void SetXBindCompiledGetters(Func<object, object>[] getters)
+		{
+			var item = _chain;
+			var i = 0;
+			while (item is not null && i < getters.Length)
+			{
+				item.SetXBindCompiledGetter(getters[i]);
+				item = item.Next;
+				i++;
+			}
+		}
+
+		/// <summary>
 		/// Returns a chain of items composing the currently databound path.
 		/// </summary>
 		/// <returns>An enumerable of binding items</returns>

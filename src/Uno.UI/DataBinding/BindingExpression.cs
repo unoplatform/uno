@@ -129,12 +129,21 @@ namespace Microsoft.UI.Xaml.Data
 
 			if (ParentBinding.XBindPropertyPaths != null)
 			{
-				_updateSources = ParentBinding
-					.XBindPropertyPaths
-					.Select(p => new BindingPath(path: p, fallbackValue: null, forAnimations: false, allowPrivateMembers: true)
+				var pathGetters = ParentBinding.XBindPropertyPathGetters;
+
+				var paths = ParentBinding.XBindPropertyPaths;
+				_updateSources = new BindingPath[paths.Length];
+				for (var i = 0; i < paths.Length; i++)
+				{
+					var bindingPath = new BindingPath(path: paths[i], fallbackValue: null, forAnimations: false, allowPrivateMembers: true);
+
+					if (pathGetters is not null && i < pathGetters.Length && pathGetters[i] is { } segmentGetters)
 					{
-					})
-					.ToArray();
+						bindingPath.SetXBindCompiledGetters(segmentGetters);
+					}
+
+					_updateSources[i] = bindingPath;
+				}
 			}
 
 			if (ParentBinding.ElementName != null)

@@ -220,14 +220,29 @@ namespace Microsoft.UI.Xaml.Data
 		/// </summary>
 		internal string[] XBindPropertyPaths { get; private set; }
 
+		/// <summary>
+		/// Compiled per-segment value getters for the paths in <see cref="XBindPropertyPaths"/>.
+		/// </summary>
+		/// <remarks>
+		/// When present, this is parallel to <see cref="XBindPropertyPaths"/>: the i-th entry holds the
+		/// getters for the i-th path, one getter per path segment (in chain order). Each getter takes the
+		/// instance at its level and returns the value of the segment using compiled, declared-type member
+		/// access (no reflection). This is emitted by the XAML source generator so that x:Bind change
+		/// tracking resolves members exactly like the compiled value selector, matching WinUI.
+		/// When null, the binding falls back to reflective path resolution (e.g. for XamlReader x:Bind or
+		/// expression shapes the generator can't emit getters for).
+		/// </remarks>
+		internal Func<object, object>[][] XBindPropertyPathGetters { get; private set; }
+
 		// Each of these values could be null and the Binding could still be an x:Bind, but they can't all be null
 		internal bool IsXBind => XBindSelector is not null || XBindPropertyPaths is not null || CompiledSource is not null || XBindBack is not null;
 
-		internal void SetBindingXBindProvider(object compiledSource, Func<object, (bool, object)> xBindSelector, Action<object, object> xBindBack, string[] propertyPaths = null)
+		internal void SetBindingXBindProvider(object compiledSource, Func<object, (bool, object)> xBindSelector, Action<object, object> xBindBack, string[] propertyPaths = null, Func<object, object>[][] propertyPathGetters = null)
 		{
 			CompiledSource = compiledSource;
 			XBindSelector = xBindSelector;
 			XBindPropertyPaths = propertyPaths;
+			XBindPropertyPathGetters = propertyPathGetters;
 			XBindBack = xBindBack;
 		}
 

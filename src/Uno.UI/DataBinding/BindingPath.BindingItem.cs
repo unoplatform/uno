@@ -20,6 +20,7 @@ namespace Uno.UI.DataBinding
 			private readonly SerialDisposable _propertyChanged = new SerialDisposable();
 			private readonly bool _forAnimations;
 			private ValueGetterHandler? _valueGetter;
+			private ValueGetterHandler? _xBindCompiledGetter;
 			private ValueGetterHandler? _substituteValueGetter;
 			private ValueSetterHandler? _valueSetter;
 			private ValueUnsetterHandler? _valueUnsetter;
@@ -90,6 +91,22 @@ namespace Uno.UI.DataBinding
 
 			public BindingPath? Path { get; set; }
 
+			/// <summary>
+			/// Sets a compiled (reflection-free) getter for this segment, emitted by the XAML source
+			/// generator for x:Bind. When set, the value of this segment is read through declared-type
+			/// member access instead of reflection. See <see cref="Data.Binding.XBindPropertyPathGetters"/>.
+			/// </summary>
+			internal void SetXBindCompiledGetter(Func<object, object> getter)
+				=> _xBindCompiledGetter = instance => getter(instance);
+
+			internal bool HasXBindCompiledGetter => _xBindCompiledGetter is not null;
+
+			// The leaf segment of a compiled x:Bind path: its value is provided by the compiled
+			// XBindSelector, so this item only needs to subscribe for change notifications — it must
+			// never invoke the source getter (which would be redundant and may have side effects, e.g.
+			// a DependencyProperty's CLR wrapper getter).
+			private bool IsXBindCompiledLeaf => _xBindCompiledGetter is not null && Next is null;
+
 			public object? Value
 			{
 				get
@@ -116,6 +133,22 @@ namespace Uno.UI.DataBinding
 			{
 				get
 				{
+					if (_xBindCompiledGetter is not null)
+					{
+						// x:Bind compiled getter: never resolve the type by reflection (it would fail for
+						// explicitly-implemented interface members, e.g. Count on an array typed as
+						// IReadOnlyList<T>) and never invoke the value getter just to obtain a type (the
+						// getter may have side effects, e.g. a DependencyProperty CLR wrapper).
+						// The reflective property type is only consumed in two places for these paths:
+						//  - the ValueType gate in BindingExpression, which only needs to know whether the
+						//    chain is resolved (i.e. the DataContext at this level is non-null), and
+						//  - INotifyCollectionChanged detection, which only applies to indexer access — and
+						//    the generator never emits compiled getters for indexer paths.
+						// So we return a non-null sentinel when resolved (gate-compatible, not INCC) and null
+						// otherwise, without ever invoking the getter.
+						return DataContext != null ? typeof(object) : null;
+					}
+
 					if (DataContext != null)
 					{
 						return BindingPropertyHelper.GetPropertyType(_dataContextType!, PropertyName, AllowPrivateMembers);
@@ -156,11 +189,20 @@ namespace Uno.UI.DataBinding
 
 					_propertyChanged.Disposable = SubscribeToPropertyChanged();
 
-					RaiseValueChanged(Value);
-
-					if (Next != null)
+					if (IsXBindCompiledLeaf)
 					{
-						Next.DataContext = Value;
+						// Don't read the leaf value (see IsXBindCompiledLeaf); just notify so the binding
+						// re-evaluates through the compiled selector.
+						RaiseValueChanged(null);
+					}
+					else
+					{
+						RaiseValueChanged(Value);
+
+						if (Next != null)
+						{
+							Next.DataContext = Value;
+						}
 					}
 				}
 				else
@@ -260,9 +302,19 @@ namespace Uno.UI.DataBinding
 
 			private void BuildValueGetter()
 			{
-				if (_valueGetter == null && _dataContextType != null)
+				if (_valueGetter == null)
 				{
-					_valueGetter = BindingPropertyHelper.GetValueGetter(_dataContextType, PropertyName, AllowPrivateMembers);
+					if (_xBindCompiledGetter is not null)
+					{
+						// x:Bind compiled getter: declared-type member access, no reflection.
+						// The cast inside the getter handles polymorphism, so it is valid regardless of
+						// the runtime type and does not need to be cleared on DataContext type changes.
+						_valueGetter = _xBindCompiledGetter;
+					}
+					else if (_dataContextType != null)
+					{
+						_valueGetter = BindingPropertyHelper.GetValueGetter(_dataContextType, PropertyName, AllowPrivateMembers);
+					}
 				}
 			}
 
@@ -377,10 +429,11 @@ namespace Uno.UI.DataBinding
 
 					if (handlerDisposable != null)
 					{
-						if (FeatureConfiguration.Binding.IgnoreINPCSameReferences)
+						if (FeatureConfiguration.Binding.IgnoreINPCSameReferences && !IsXBindCompiledLeaf)
 						{
 							// GetSourceValue calls into user code.
 							// Avoid this if PreviousValue isn't going to be used at all.
+							// For a compiled x:Bind leaf we must not call the source getter (see IsXBindCompiledLeaf).
 							valueHandler.PreviousValue = GetSourceValue();
 						}
 
@@ -489,7 +542,11 @@ namespace Uno.UI.DataBinding
 
 				public void NewValue()
 				{
-					var newValue = _owner.GetSourceValue();
+					// For a compiled x:Bind leaf the value is provided by the compiled XBindSelector, so we
+					// must not invoke the source getter here (it is redundant and may have side effects,
+					// e.g. a DependencyProperty CLR wrapper). We still raise the change so the binding
+					// re-evaluates through the selector.
+					var newValue = _owner.IsXBindCompiledLeaf ? null : _owner.GetSourceValue();
 
 					_owner.OnPropertyChanged(PreviousValue, newValue, shouldRaiseValueChanged: true);
 
