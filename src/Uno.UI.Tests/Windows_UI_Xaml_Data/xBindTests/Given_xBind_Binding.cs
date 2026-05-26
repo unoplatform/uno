@@ -1470,6 +1470,37 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
+		public void When_Interface_Member_Count_On_Array()
+		{
+			// Regression test for #22223: x:Bind to a member declared on an interface
+			// (IReadOnlyCollection<T>.Count) where the runtime value is an array, whose Count is an
+			// explicitly-implemented interface member. The compiled getter must access it via the
+			// declared interface type instead of reflecting on the concrete array type.
+			var SUT = new XBind_InterfaceMember();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("3", SUT.tbCount.Text);
+			Assert.AreEqual("2", SUT.tbNestedCount.Text);
+		}
+
+		[TestMethod]
+		public void When_Interface_Member_Count_Updates_On_PropertyChanged()
+		{
+			// Reassigning the interface-typed property must re-evaluate the .Count leaf, proving the
+			// compiled change-tracking getters preserve INotifyPropertyChanged subscription.
+			var SUT = new XBind_InterfaceMember();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("3", SUT.tbCount.Text);
+
+			SUT.VM.Items = new[] { 10, 20, 30, 40 };
+
+			Assert.AreEqual("4", SUT.tbCount.Text);
+		}
+
+		[TestMethod]
 		public void When_XBind_In_ResourceDictionary()
 		{
 			var SUT = new XBind_ResourceDictionary_Control();

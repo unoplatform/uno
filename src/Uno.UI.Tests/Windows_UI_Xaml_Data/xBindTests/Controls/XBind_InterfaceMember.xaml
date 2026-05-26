@@ -1,0 +1,18 @@
+<Page
+    x:Class="Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls.XBind_InterfaceMember"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <StackPanel>
+        <!-- Items is declared as IReadOnlyList<int> but is backed by an array, whose Count is an
+             explicitly-implemented interface member. This used to fail on Uno (reflection on the
+             concrete array type couldn't find a public Count). See issue #22223. -->
+        <TextBlock x:Name="tbCount" Text="{x:Bind VM.Items.Count, Mode=OneWay}" x:FieldModifier="public" />
+        <TextBlock x:Name="tbNestedCount" Text="{x:Bind VM.Child.Items.Count, Mode=OneWay}" x:FieldModifier="public" />
+    </StackPanel>
+</Page>

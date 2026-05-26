@@ -74,7 +74,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			var _MyProperty_Formatted_OneWay = SUT.FindName("_MyProperty_Formatted_OneWay") as TextBlock;
 			Assert.AreEqual("Formatted Initial", _MyProperty_Formatted_OneWay.Text);
 
-			Assert.AreEqual(7, data.MyPropertyGetCounter);
+			// Compiled x:Bind change tracking no longer redundantly reads the source property for the
+			// update-source path (the value is produced by the compiled selector). The two OneWay bindings
+			// therefore each invoke the getter once (via the selector) instead of twice. Was 7.
+			Assert.AreEqual(5, data.MyPropertyGetCounter);
 
 			data.MyProperty = "Other value";
 
@@ -84,7 +87,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual("OTHER VALUE", _MyProperty_Function_OneWay.Text);
 			Assert.AreEqual("Formatted Other value", _MyProperty_Formatted_OneWay.Text);
 
-			Assert.AreEqual(11, data.MyPropertyGetCounter);
+			// Each OneWay binding re-evaluates once via the selector on change (was twice). Was 11.
+			Assert.AreEqual(7, data.MyPropertyGetCounter);
 		}
 
 		[TestMethod]
@@ -111,7 +115,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			var _MyProperty_Formatted_OneWay = SUT.FindName("_MyProperty_Formatted_OneWay") as TextBlock;
 			Assert.AreEqual("Formatted Initial", _MyProperty_Formatted_OneWay.Text);
 
-			Assert.AreEqual(7, data.MyPropertyGetCounter);
+			// See When_Updated_Property: compiled x:Bind no longer redundantly reads the source for the
+			// update-source path, so the getter is invoked 5 times instead of 7.
+			Assert.AreEqual(5, data.MyPropertyGetCounter);
 
 			data.MyProperty = null;
 
@@ -122,7 +128,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			//Assert.IsNull(_MyProperty_Function_OneWay.Text);
 			Assert.AreEqual("Formatted ", _MyProperty_Formatted_OneWay.Text);
 
-			Assert.AreEqual(11, data.MyPropertyGetCounter);
+			// Each OneWay binding re-evaluates once via the selector on change (was twice). Was 11.
+			Assert.AreEqual(7, data.MyPropertyGetCounter);
 		}
 
 		[TestMethod]
