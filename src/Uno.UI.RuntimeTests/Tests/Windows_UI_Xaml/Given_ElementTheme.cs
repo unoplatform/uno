@@ -2010,6 +2010,10 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	// Native WinUI's runtime-test harness crashes (access violation, 0xC0000005) when a flyout/popup is
+	// open and the theme is changed at runtime — a native popup-teardown instability, not a Uno parity gap.
+	// First-open flyout/popup theme IS confirmed on WinUI via Given_Theme_Materialization T4/T5.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Popup_Owner_Theme_Changes_At_Runtime_Popup_Content_Updates()
 	{
 		// When a parent's RequestedTheme changes, open popup content should update.
@@ -2073,6 +2077,9 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	// Native WinUI harness crash (0xC0000005) on open-popup + runtime theme change — see the note on
+	// When_Popup_Owner_Theme_Changes_At_Runtime_Popup_Content_Updates. Native instability, not a parity gap.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ComboBox_Theme_Changes_At_Runtime_Dropdown_Updates()
 	{
 		// Simulates ThemeHelper.UseDarkTheme() scenario: root content theme changes
@@ -2134,6 +2141,9 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	// Native WinUI harness crash (0xC0000005, confirmed) on open-flyout + runtime theme change — see the
+	// note on When_Popup_Owner_Theme_Changes_At_Runtime_Popup_Content_Updates. Native instability, not a gap.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Flyout_Target_Theme_Changes_Flyout_Updates()
 	{
 		// MUX Reference: FlyoutBase hooks ActualThemeChanged on placement target
@@ -2747,6 +2757,9 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	// Native WinUI harness crash (0xC0000005) on open-menuflyout + runtime theme change — see the note on
+	// When_Popup_Owner_Theme_Changes_At_Runtime_Popup_Content_Updates. Native instability, not a parity gap.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_MenuFlyout_Open_During_Theme_Change_PointerOver_Updates()
 	{
 		// When a MenuFlyout is open and theme changes, items in PointerOver state
@@ -3432,6 +3445,9 @@ public class Given_ElementTheme
 #endif
 
 	[TestMethod]
+	// Native WinUI harness crash (0xC0000005, confirmed) on open-flyout + runtime theme change — see the
+	// note on When_Popup_Owner_Theme_Changes_At_Runtime_Popup_Content_Updates. Native instability, not a gap.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Flyout_PlacementTarget_Theme_Changes_Flyout_Updates()
 	{
 		// Gap: Open flyout, change placement target's ancestor theme,
