@@ -395,6 +395,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_Multiline_Wrapping_Word_Then_Space_Then_LongWord()
+		{
+			// Regression: "<short> <very long word>" with TextWrapping=Wrap must wrap inside
+			// the long word, not lay it out on a single overflowing line. Mirrors the
+			// Animated_View_With_Transformed_Ancestor sample.
+			var withoutPrefix = new TextBlock
+			{
+				Width = 100,
+				TextWrapping = TextWrapping.Wrap,
+				Text = "loooooooooooooooooooooooooooooooooooong"
+			};
+			WindowHelper.WindowContent = withoutPrefix;
+			await WindowHelper.WaitForLoaded(withoutPrefix);
+			await WindowHelper.WaitForIdle();
+			var heightWithoutPrefix = withoutPrefix.ActualHeight;
+
+			var withPrefix = new TextBlock
+			{
+				Width = 100,
+				TextWrapping = TextWrapping.Wrap,
+				Text = "a loooooooooooooooooooooooooooooooooooong"
+			};
+			WindowHelper.WindowContent = withPrefix;
+			await WindowHelper.WaitForLoaded(withPrefix);
+			await WindowHelper.WaitForIdle();
+			var heightWithPrefix = withPrefix.ActualHeight;
+
+			// Both layouts must split the long word; the prefixed one has one extra line for "a".
+			// Pre-fix bug: prefixed layout was 2 lines ("a " + overflowing long word) — strictly less.
+			Assert.IsTrue(
+				heightWithPrefix > heightWithoutPrefix,
+				$"Long word must wrap regardless of preceding short word. " +
+				$"with-prefix={heightWithPrefix}, without-prefix={heightWithoutPrefix}");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_Multiline_Wrapping_LeadingSpaces()
 		{
 			var SUT = new TextBlock
