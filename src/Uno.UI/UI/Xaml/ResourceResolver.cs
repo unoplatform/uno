@@ -306,6 +306,19 @@ namespace Uno.UI
 
 			var effectivePrecedence = precedence ?? DependencyPropertyValuePrecedences.Local;
 
+			// Push the owner's inherited theme onto the global subtree theme stack BEFORE
+			// running TryStaticRetrieval. Without this, the initial value is captured against
+			// `Themes.Active`, which represents the application/OS theme rather than the
+			// owner's inherited element-level theme. The mismatch hits any owner whose theme
+			// boundary differs from the application theme (e.g. a RequestedTheme=Light subtree
+			// inside an application that follows an OS=Dark setting), and is especially
+			// noticeable for non-UIElement owners (Microsoft.Xaml.Behaviors-style behaviours
+			// with ThemeResource-bound properties) which never participate in a later theme
+			// walk that would have a chance to refresh the value.
+			var pushedOwnerTheme = isThemeResource && Microsoft.UI.Xaml.Data.ThemeResourceReference.PushOwnerThemeIfDifferent(owner);
+			try
+			{
+
 			// Set the initial value from statically-available top-level resources.
 			// For theme resources we use the overload that also returns the providing
 			// ResourceDictionary, so it can be pinned on the ThemeResourceReference (see below).
@@ -369,6 +382,14 @@ namespace Uno.UI
 			// on loading still works. The _resourceBindings path handles the initial tree-walk
 			// resolution, and the _themeResources path handles efficient theme-change re-resolution.
 			(owner as IDependencyObjectStoreProvider)?.Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
+			}
+			finally
+			{
+				if (pushedOwnerTheme)
+				{
+					ResourceDictionary.PopRequestedThemeForSubTree();
+				}
+			}
 		}
 
 		/// <summary>

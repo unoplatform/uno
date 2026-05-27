@@ -87,6 +87,41 @@ The `FrameworkElement.UpdateThemeBindings()` method is virtual. In addition to u
 
 Some non-FrameworkElement types may also need to react to the theme change. This is supported by the `IThemeChangeAware` internal interface, whose `OnThemeChanged()` method is invoked after resource bindings are applied. For example, `Storyboard` implements this interface in order to re-apply long-running animations with the correct updated values.
 
+## Resolving against the owner's inherited theme (outside the theme walk)
+
+Each `ResourceDictionary` exposes one sub-dictionary per theme (Light / Dark / HighContrast / Default), and `dict.TryGetValue(key)` selects the sub-dictionary based on `Themes.Active` — the current top of the global `_requestedThemeForSubTree` stack. During a theme walk (`FrameworkElement.NotifyThemeChangedCore`), the element being processed pushes its own theme onto that stack before the descendant traversal runs, so descendant lookups happen against the right sub-dictionary.
+
+Theme-resource lookups also happen **outside** a theme walk, however:
+
+- **Parse-time** `ApplyResource` (initial value captured when XAML is first realized) — `Themes.Active` reflects the application/OS theme at that point, not the owner's inherited theme.
+- **`ThemeResourceReference.RefreshValue`** (deferred refresh from item-container generation, re-templating, animation key-frame application, or any code path that re-applies a pinned binding after load).
+- **`DependencyObjectStore.InnerUpdateResourceBindingsUnsafe`** (the `_resourceBindings` fallback path that complements `_themeResources` for `ThemeResource`-bound DPs, runs during Phase 2 of `UpdateAllThemeReferences`).
+
+When the application's theme differs from the owner's inherited element-level theme (e.g. `RequestedTheme="Light"` on a subtree inside an application that follows an OS=Dark setting), these out-of-walk lookups would otherwise select the wrong Light/Dark sub-dictionary. The visible symptom is a Light-pinned subtree resolving Dark values for its theme-bound properties after a deferred refresh.
+
+To preserve the invariant that a `ThemeResource` always resolves against the element's inherited `ActualTheme`, the three lookup sites above call `ThemeResourceReference.PushOwnerThemeIfDifferent(owner)` before the dictionary lookup and pop in a `finally` block. The helper:
+
+1. Walks the owner chain — visual parent → logical parent → templated parent — to find the nearest `UIElement` ancestor with a stored Light/Dark theme. The walk is depth-bounded as a guard against pathological/cyclic trees.
+2. Falls back to a hop to `AssociatedObject` (resolved via reflection, see below) when the chain ends at a non-`UIElement` `DependencyObject` such as a Microsoft.Xaml.Behaviors-style behavior.
+3. Compares the resolved theme to the current top of the stack and pushes only when they differ; the caller pops in `finally`.
+
+### Behavior-style hosts (non-UIElement DependencyObjects with ThemeResource-bound properties)
+
+A Microsoft.Xaml.Behaviors `Behavior<T>` is a `DependencyObject` that attaches to a `UIElement` via its `AssociatedObject` property. Behaviors can declare `DependencyProperty`s of their own and bind them to `{ThemeResource}` values in XAML, but they do not participate in the visual tree directly: their visual-tree parent is the `AssociatedObject`. The owner chain walk handles this case by reflecting for an `AssociatedObject` property on the behavior (using `BindingFlags.DeclaredOnly` and walking the type hierarchy, so the lookup is unambiguous when `Behavior<T>` shadows the non-generic base `Behavior.AssociatedObject`) and continuing the walk from there. Uno.UI does not take a hard dependency on `Microsoft.Xaml.Behaviors`; the reflection step is the integration point.
+
+### Theme-walk-time guard (no inversion during NotifyThemeChangedCore)
+
+`FrameworkElement.NotifyThemeChangedCore` is structured as:
+
+1. (step 2 in the implementation) **push** the NEW theme to the global stack.
+2. (step 4) call `UpdateThemeBindings` to re-resolve resource-bound properties.
+3. (step 5) `SetTheme(theme)` — persist the NEW theme onto the element so that descendants and event handlers observe it via `ActualTheme`.
+4. (step 6) propagate to children, then pop the stack in `finally`.
+
+This ordering means that during step 4, the element's stored `_theme` is still the **OLD** value (because `SetTheme` runs at step 5). If `PushOwnerThemeIfDifferent` were called from a lookup inside `UpdateThemeBindings` without a guard, it would read the chain's OLD `_theme`, see that it differs from the just-pushed NEW theme on the stack, and push the OLD theme back on top — overwriting the cascade's correct push and inverting the theme by exactly one toggle step.
+
+The guard avoids that: `PushOwnerThemeIfDifferent` is a no-op while any `UIElement` in the owner chain has `IsProcessingThemeWalk == true`. The cascade has already pushed the right theme, the lookup uses that, and the OLD `_theme` is correctly ignored. Outside a theme walk (parse-time, deferred refresh, post-walk re-resolution), the owner chain's `_theme` is consistent with the inherited theme and the push fires normally.
+
 ## Hot reload updates
 
 The ResourceBinding machinery is reused for supporting XAML Hot Reload on standalone ResourceDictionaries. When an application is run in debug with XAML Hot Reload enabled, ResourceBindings are created for all resources assignations, including StaticResource assignations. When a standalone ResourceDictionary XAML file is edited, the file is re-parsed and then an update is triggered in much the same way as if the active theme had changed, so that any modified resources will be reapplied.
