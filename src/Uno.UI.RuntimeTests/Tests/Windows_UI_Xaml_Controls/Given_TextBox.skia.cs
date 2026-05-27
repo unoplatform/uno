@@ -1575,6 +1575,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // Flaky on Skia WASM #9080
 		public async Task When_Chunk_DoubleTapHeld()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2832,6 +2833,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18371")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // Flaky on Skia WASM #9080
 		public async Task When_BeforeTextChanging_Resets_Selection_Direction()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();

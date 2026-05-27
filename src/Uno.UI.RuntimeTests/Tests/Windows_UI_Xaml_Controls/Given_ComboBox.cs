@@ -1426,11 +1426,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeWinUI)] // https://github.com/unoplatform/uno-private/issues/1297
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)] // https://github.com/unoplatform/uno-private/issues/1297, flaky on Skia WASM #9080
 		public Task When_ComboBox_ScrollIntoView_SelectedItem() => When_ComboBox_ScrollIntoView_Selection(viaIndex: false);
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeWinUI)] // https://github.com/unoplatform/uno-private/issues/1297
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)] // https://github.com/unoplatform/uno-private/issues/1297, flaky on Skia WASM #9080
 		public Task When_ComboBox_ScrollIntoView_SelectedIndex() => When_ComboBox_ScrollIntoView_Selection(viaIndex: true);
 
 		private async Task When_ComboBox_ScrollIntoView_Selection(bool viaIndex)

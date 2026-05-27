@@ -2105,6 +2105,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Skia)] // Especially flaky on all Skia targets #9080
 #if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
 #endif
