@@ -2235,6 +2235,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/475")]
 		public async Task When_Flyout_Opened_From_Inner_Light_Boundary_Resolves_Light_ThemeResource()
 		{
+#if HAS_UNO
+			// Pin the ambient OS theme to Dark so the leak reproduces deterministically regardless of the
+			// developer's OS theme (the application follows the system theme since it is not explicitly themed).
+			// On WinUI this override is compiled out; the explicit outer-Dark / inner-Light element boundary
+			// makes the flyout content Light there regardless of the OS theme.
+			using var _ = ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Dark);
+			await TestServices.WindowHelper.WaitForIdle();
+#endif
+
 			var root = (Border)XamlReader.Load(ThemeResourceInheritanceRootXaml);
 
 			TestServices.WindowHelper.WindowContent = root;

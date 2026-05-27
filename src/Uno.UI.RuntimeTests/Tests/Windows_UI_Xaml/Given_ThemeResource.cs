@@ -358,11 +358,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if HAS_UNO
 		// Regression: a subtree pinned to an explicit RequestedTheme that differs from the
 		// application/OS theme must resolve {ThemeResource} values against the subtree's
-		// theme, not against Themes.Active. This exercises the out-of-walk lookup paths
-		// (parse-time ApplyResource, RefreshValue, InnerUpdateResourceBindingsUnsafe).
-		// Without ThemeResourceReference.PushOwnerThemeIfDifferent, the parse-time lookup
-		// would select the Dark sub-dictionary because Themes.Active = Dark (the app theme),
-		// even though the Border's inherited ActualTheme is Light from its pinned ancestor.
+		// theme, not against Themes.Active. The {ThemeResource} is resolved at load against the
+		// owner's effective theme (Mechanism 1) from the pinned providing dictionary, so the
+		// Inner Border (which inherits Light from its pinned ancestor) selects the Light value
+		// even though Themes.Active is Dark (the app theme).
 		[TestMethod]
 		[RequiresFullWindow]
 		public async Task When_Light_Pinned_Subtree_Inside_Dark_App_Resolves_Light_ThemeResource()
