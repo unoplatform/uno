@@ -66,6 +66,30 @@
 		</Content>
 	</ItemGroup>
 
+	<!--
+		Include manifest-referenced assets (splash screens, tiles, icons, etc.) that live under
+		the Windows platform folder.
+
+		For non-WinAppSDK TFMs, Uno.DefaultItems.targets provides a project-wide `**\*.png` (and
+		other image formats) Content glob that picks these files up; `_IgnorePlatformFiles` in
+		Uno.Common.targets then strips out the folders for inactive platforms. That entire
+		ItemGroup is gated on `!$(IsWinAppSdk)`, so on WinAppSDK none of those globs run.
+		WinAppSDK's own default Content glob only covers `Assets/**`, leaving files placed in
+		`Platforms/Windows/` invisible to the packaging pipeline — the produced .msix ends up
+		with manifest references pointing at missing files.
+
+		This ItemGroup is the WinAppSDK-side equivalent: it includes the platform folder content
+		that the cross-platform Uno.DefaultItems globs would have picked up on other TFMs.
+	-->
+	<ItemGroup Condition=" '$(EnableDefaultUnoItems)' == 'true'
+	                       AND '$(WindowsProjectFolder)' != ''
+	                       AND Exists('$(WindowsProjectFolder)') ">
+		<Content Include="$(WindowsProjectFolder)**\*.*"
+		         Exclude="$(WindowsProjectFolder)**\*.cs;$(WindowsProjectFolder)**\*.xaml;$(WindowsProjectFolder)**\*.resw;$(WindowsProjectFolder)**\*.appxmanifest;$(WindowsProjectFolder)app.manifest;$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);@(Content);@(Page);@(ApplicationDefinition);@(EmbeddedResource);@(None);@(UnoImage);@(UnoIcon);@(UnoSplashScreen);@(UnoAsset)"
+		         CopyToOutputDirectory="PreserveNewest"
+		         IsDefaultItem="true" />
+	</ItemGroup>
+
 	<!-- Workaround to avoid including Project XBFs in the PRI file: https://github.com/microsoft/microsoft-ui-xaml/issues/8857 -->
 	<Import Project="winappsdk-workaround.targets"
 			Condition=" $(_IsUnoSingleProjectAndLegacy) != 'true' and '$(DisableWinUI8857_Workaround)' != 'true' "/>
