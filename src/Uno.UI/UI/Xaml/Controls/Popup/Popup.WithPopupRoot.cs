@@ -111,7 +111,27 @@ public partial class Popup
 				// After the popup is added to PopupRoot, propagate this popup's theme
 				// to its child. The child was just reparented under PopupRoot (which has
 				// Theme.None), so it needs the theme from its logical parent (this Popup).
+				//
+				// If this Popup itself doesn't yet have an inherited theme (it was created
+				// outside the visual tree, e.g. a TextCommandBarFlyout materialised on
+				// first long-press/double-tap and not yet visited by a theme walk), fall
+				// back to the logical anchor's theme — PlacementTarget for ShowAt-style
+				// flyouts, or AssociatedFlyout.Target as a secondary fallback. Without
+				// this, the child measures and renders one frame against Themes.Active
+				// (the application/OS theme), producing the visible mobile-context-menu
+				// flash on first open before the theme walk catches up.
 				var popupTheme = GetTheme();
+				if (popupTheme == Theme.None)
+				{
+					if (PlacementTarget is FrameworkElement placementTarget)
+					{
+						popupTheme = placementTarget.GetTheme();
+					}
+					else if (AssociatedFlyout?.Target is FrameworkElement flyoutAnchor)
+					{
+						popupTheme = flyoutAnchor.GetTheme();
+					}
+				}
 				if (popupTheme != Theme.None && Child is FrameworkElement feChild)
 				{
 					feChild.NotifyThemeChanged(popupTheme);
