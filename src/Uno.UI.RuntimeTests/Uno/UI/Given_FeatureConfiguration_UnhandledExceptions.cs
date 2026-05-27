@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if HAS_UNO // Exercises Uno-only APIs (FeatureConfiguration, SafeRaiseEvent, Uno.UI.Xaml.BindingHelper) absent from native WinUI.
+using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -203,3 +204,4 @@ public class Given_FeatureConfiguration_UnhandledExceptions
 		}
 	}
 }
+#endif
