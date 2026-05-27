@@ -2153,8 +2153,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Scroll without animation: an animated scroll sweeps through every intermediate offset, re-realizing
 			// and re-binding containers on each animation frame. The number of frames varies by platform (Skia
 			// Android/macOS step through more frames than Win32), which pushed materialized/dataContextChanged
-			// past the bounds and made this test flaky. A non-animated scroll jumps straight to the target in a
-			// single layout pass, so the counts reflect steady-state recycling efficiency this test means to measure.
+			// past the bounds. A non-animated scroll jumps straight to the target in a single layout pass, so the
+			// counts reflect the steady-state recycling efficiency this test means to measure. Note this reduced
+			// but did NOT fully eliminate the flakiness on Skia, which is why the test remains excluded on all
+			// Skia targets via the [PlatformCondition] above (#9080) pending a root-cause fix; the non-animated
+			// switch is what keeps it deterministic on the platforms where it still runs.
 			scroll.ChangeView(null, scroll.ExtentHeight / 2, null, disableAnimation: true); // Scroll to middle
 
 			await WindowHelper.WaitForIdle();
