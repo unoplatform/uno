@@ -64,17 +64,6 @@ namespace Microsoft.UI.Xaml
 		private InputCursor _protectedCursor;
 		private SerialDisposable _disposedEventDisposable = new();
 
-		// WinUI stores fIsProcessingEnterLeave (bit 15) in a DependencyObjectBitFields uint on
-		// CDependencyObject (corep.h:224-348; CDependencyObject.h:298). The per-object theme (m_theme) and
-		// the theme-walk bit (fIsProcessingThemeWalk, bit 16) now live on DependencyObjectStore, since WinUI
-		// carries them on every CDependencyObject — not just elements. See DependencyObjectStore.Theming.cs.
-		[Flags]
-		private enum UIElementFlag : uint
-		{
-			IsProcessingEnterLeave = 1 << 15, // WinUI CDependencyObject bit 15
-		}
-
-		private UIElementFlag _uiElementFlags;
 
 		/// <summary>
 		/// Gets the current theme value for this element.

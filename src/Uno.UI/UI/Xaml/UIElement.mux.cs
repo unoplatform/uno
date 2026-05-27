@@ -871,6 +871,18 @@ namespace Microsoft.UI.Xaml
 		}
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
+		// WinUI stores fIsProcessingEnterLeave (bit 15) in a DependencyObjectBitFields uint on
+		// CDependencyObject (corep.h:224-348; CDependencyObject.h:298). The per-object theme (m_theme) and
+		// the theme-walk bit (fIsProcessingThemeWalk, bit 16) now live on DependencyObjectStore, since WinUI
+		// carries them on every CDependencyObject — not just elements. See DependencyObjectStore.Theming.cs.
+		[Flags]
+		private enum UIElementFlag : uint
+		{
+			IsProcessingEnterLeave = 1 << 15, // WinUI CDependencyObject bit 15
+		}
+
+		private UIElementFlag _uiElementFlags;
+
 		// NOTE: This should actually be on DependencyObject, not UIElement.
 		// We'll be able to do it once DependencyObject is a class instead of an interface.
 		internal void Enter(EnterParams @params, int depth)

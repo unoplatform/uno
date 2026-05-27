@@ -483,37 +483,6 @@ namespace Uno.UI
 			return false;
 		}
 
-		/// <summary>
-		/// Try to retrieve a resource from the visual tree, also returning the providing dictionary.
-		/// </summary>
-		private static bool TryVisualTreeRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value, out ResourceDictionary providingDictionary)
-		{
-			var scope = CurrentScope.Sources.FirstOrDefault();
-
-			if (scope != null)
-			{
-				var dictionaries = (scope.Target as IDependencyObjectStoreProvider)?.Store.GetResourceDictionaries(true);
-
-				if (dictionaries != null)
-				{
-					foreach (var dict in dictionaries)
-					{
-						if (dict.TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false))
-						{
-							return true;
-						}
-					}
-				}
-			}
-
-			var topLevel = TryTopLevelRetrieval(resourceKey, context, out value, out providingDictionary);
-			if (!topLevel && _log.IsEnabled(LogLevel.Warning))
-			{
-				_log.LogWarning($"Couldn't statically resolve resource {resourceKey.Key}");
-			}
-			return topLevel;
-		}
-
 		// Theme-aware visual-tree retrieval: select the Light/Dark sub-dictionary (incl. StaticResource
 		// aliases) against the explicitly passed owner theme. Used by ApplyVisualStateSetter so a
 		// visual-state setter's {ThemeResource} resolves against the setter target's effective theme.

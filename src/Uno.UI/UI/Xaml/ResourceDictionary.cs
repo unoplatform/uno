@@ -437,9 +437,6 @@ namespace Microsoft.UI.Xaml
 			return false;
 		}
 
-		private bool GetFromMerged(in ResourceKey resourceKey, out object value, out ResourceDictionary providingDictionary)
-			=> GetFromMerged(resourceKey, GetActiveTheme(), out value, out providingDictionary);
-
 		// Thread the resolving owner's theme into the merged-dictionary recursion so merged dictionaries
 		// select the same theme sub-dictionary as the root lookup.
 		private bool GetFromMerged(in ResourceKey resourceKey, in ResourceKey themeKey, out object value, out ResourceDictionary providingDictionary)
@@ -589,9 +586,6 @@ namespace Microsoft.UI.Xaml
 
 			return false;
 		}
-
-		private bool GetFromMerged(in ResourceKey resourceKey, out object value)
-			=> GetFromMerged(resourceKey, GetActiveTheme(), out value);
 
 		// Theme-threaded merged-dictionary recursion (value-only variant).
 		private bool GetFromMerged(in ResourceKey resourceKey, in ResourceKey themeKey, out object value)
