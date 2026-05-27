@@ -31,7 +31,7 @@ public class Given_ElementRefHandle_Threading
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.NativeUIKit)]
 	public void When_GetOrCreate_FromBackgroundThread_Throws()
 	{
 		var registry = new ElementRefHandleRegistry();
