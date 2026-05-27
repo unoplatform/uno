@@ -4974,7 +4974,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// to materialize. WaitFor throws on timeout, so the regression guarded by #17695 (missing items in the
 			// viewport) still fails the test rather than being masked.
 			await UITestHelper.WaitFor(
+#if HAS_UNO
 				() => sut.MaterializedContainers.Count() == 3,
+#else
+				() => (sut.FindFirstDescendant<ItemsStackPanel>()?.Children.Count ?? 0) == 3,
+#endif
 				timeoutMS: 2000,
 				"timed out waiting for the 3 freshly added items to be materialized");
 
