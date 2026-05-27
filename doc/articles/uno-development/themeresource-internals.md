@@ -101,13 +101,12 @@ When the application's theme differs from the owner's inherited element-level th
 
 To preserve the invariant that a `ThemeResource` always resolves against the element's inherited `ActualTheme`, the three lookup sites above call `ThemeResourceReference.PushOwnerThemeIfDifferent(owner)` before the dictionary lookup and pop in a `finally` block. The helper:
 
-1. Walks the owner chain — visual parent → logical parent → templated parent — to find the nearest `UIElement` ancestor with a stored Light/Dark theme. The walk is depth-bounded as a guard against pathological/cyclic trees.
-2. Falls back to a hop to `AssociatedObject` (resolved via reflection, see below) when the chain ends at a non-`UIElement` `DependencyObject` such as a Microsoft.Xaml.Behaviors-style behavior.
-3. Compares the resolved theme to the current top of the stack and pushes only when they differ; the caller pops in `finally`.
+1. Walks the owner chain via `GetThemeResolutionParent` — for a `FrameworkElement`, the store parent (`Store.Parent`), then the logical `Parent`, then `TemplatedParent`; for any other `DependencyObject`, the store parent directly. The walk continues until it finds the nearest ancestor with a stored Light/Dark theme, and is depth-bounded as a guard against pathological/cyclic trees.
+2. Compares the resolved theme to the current top of the stack and pushes only when they differ; the caller pops in `finally`.
 
 ### Behavior-style hosts (non-UIElement DependencyObjects with ThemeResource-bound properties)
 
-A Microsoft.Xaml.Behaviors `Behavior<T>` is a `DependencyObject` that attaches to a `UIElement` via its `AssociatedObject` property. Behaviors can declare `DependencyProperty`s of their own and bind them to `{ThemeResource}` values in XAML, but they do not participate in the visual tree directly: their visual-tree parent is the `AssociatedObject`. The owner chain walk handles this case by reflecting for an `AssociatedObject` property on the behavior (using `BindingFlags.DeclaredOnly` and walking the type hierarchy, so the lookup is unambiguous when `Behavior<T>` shadows the non-generic base `Behavior.AssociatedObject`) and continuing the walk from there. Uno.UI does not take a hard dependency on `Microsoft.Xaml.Behaviors`; the reflection step is the integration point.
+A Microsoft.Xaml.Behaviors `Behavior<T>` is a `DependencyObject` that attaches to a `UIElement` via its `AssociatedObject` property. Behaviors can declare `DependencyProperty`s of their own and bind them to `{ThemeResource}` values in XAML, but they do not participate in the visual tree directly: their visual-tree parent is the `AssociatedObject`. The owner chain walk handles this case without reflection: when a behavior is added through a `DependencyObjectCollection`-backed property (the `Interaction.Behaviors` attachment mechanism), Uno already wires the behavior's `DependencyObjectStore.Parent` to its host element — the same chain that powers `{Binding}` DataContext inheritance and `ResourceDictionary` resolution. Walking `Store.Parent` reaches the host element directly, so Uno.UI does not need to reflect over `AssociatedObject` and takes no dependency on `Microsoft.Xaml.Behaviors`.
 
 ### Theme-walk-time guard (no inversion during NotifyThemeChangedCore)
 
