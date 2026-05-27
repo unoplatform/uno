@@ -231,11 +231,10 @@ public partial class FrameworkElement
 		var oldBaseForEvent = oldTheme == Theme.None ? appBaseTheme : oldBase;
 		bool effectiveThemeChanged = oldBaseForEvent != newBase || forceRefresh;
 
-		// D3 (Mechanism 1): the {ThemeResource} resolution leaf now keys on the owner's own theme
-		// (DependencyObjectStore.UpdateThemeReference → ResolveOwnerTheme), threaded as a parameter through the
-		// whole chain (dictionary, merged, system/assembly, and StaticResource aliases). No global theme push is
-		// needed: SetTheme below makes ResolveOwnerTheme(this) return the new theme for the in-walk resolution,
-		// exactly as WinUI's orchestrator-set ambient slot would (Theming.cpp:155).
+		// The {ThemeResource} resolution leaf keys on the owner's own theme
+		// (DependencyObjectStore.UpdateThemeReference → ResolveOwnerTheme). SetTheme below makes
+		// ResolveOwnerTheme(this) return the new theme for the in-walk resolution, exactly as WinUI's
+		// orchestrator-set ambient slot would (Theming.cpp:155).
 
 		// 3. FREEZE inherited properties first (MUX Reference: framework.cpp line 3301-3307)
 		if (RequestedTheme != ElementTheme.Default)
@@ -265,13 +264,11 @@ public partial class FrameworkElement
 			}
 		}
 
-		// 4. Persist theme BEFORE resolving theme resources.
-		//    D3 (Mechanism 1): {ThemeResource} resolution now keys on the owner's own _theme via
-		//    ThemeResolution.ResolveOwnerTheme (DependencyObjectStore.UpdateThemeReference), so _theme
-		//    must already hold the NEW theme when UpdateThemeBindings resolves below — otherwise the
-		//    walk would re-resolve against the OLD theme. oldTheme and oldBase were captured at the top of
-		//    this method, and PropagateThemeToChildren forwards the passed `theme` parameter, so persisting
-		//    here is safe. MUX Reference: Theming.cpp line 155 sets m_theme.
+		// 4. Persist theme BEFORE resolving theme resources. {ThemeResource} resolution keys on the
+		//    owner's own _theme (ResolveOwnerTheme), so _theme must already hold the NEW theme when
+		//    UpdateThemeBindings resolves below — otherwise the walk re-resolves against the OLD theme.
+		//    PropagateThemeToChildren forwards the passed `theme`, so persisting here is safe.
+		//    MUX Reference: Theming.cpp line 155 sets m_theme.
 		SetTheme(theme);
 
 		// 5. Update theme resources via pinned-dictionary path (resolves against the just-set _theme)
@@ -426,9 +423,8 @@ public partial class FrameworkElement
 				}
 			}
 
-			// Resolve the theme's default text foreground brush against the element's OWN theme (D3,
-			// Mechanism 1): pass the theme key into the lookup instead of pushing it onto the global stack.
-			// MUX: CFrameworkElement::NotifyThemeChangedForInheritedProperties resolves the default text
+			// Resolve the theme's default text foreground brush against the element's own theme. MUX:
+			// CFrameworkElement::NotifyThemeChangedForInheritedProperties resolves the default text
 			// foreground from the element's theme (framework.cpp:3401-3492).
 			var themeKey = ResourceDictionary.GetThemeKey(theme);
 			var brush = (Brush)ResourceResolver.ResolveTopLevelResource(
@@ -503,30 +499,23 @@ public partial class FrameworkElement
 	/// brush from leaking to elements loaded later under the same parent.
 	/// </summary>
 	/// <remarks>
-	/// MUX Reference: CDependencyObject keeps m_theme across Leave; it is re-established (or
-	/// overridden by a different ancestor theme) when the element re-enters the tree via the
-	/// EnterImpl theme block (depends.cpp:1023-1048), ported to
-	/// <see cref="DependencyObjectStore.EstablishThemeAtEnter"/>. So unlike earlier Uno behavior,
-	/// this method intentionally does <b>not</b> reset the per-object theme (D4) — see the note below.
+	/// MUX Reference: CDependencyObject keeps m_theme across Leave; it is re-established (or overridden
+	/// by a different ancestor theme) when the element re-enters the tree via the EnterImpl theme block
+	/// (depends.cpp:1023-1048), ported to <see cref="DependencyObjectStore.EstablishThemeAtEnter"/>. So
+	/// this method clears only the inherited foreground brush and intentionally does <b>not</b> reset _theme.
 	/// </remarks>
 	private void ClearThemeStateOnUnloaded()
 	{
-		// Clear inherited theme foreground when leaving the tree to prevent stale values from
-		// leaking to elements loaded later under the same parent (e.g., between runtime tests).
-		// This is foreground hygiene only and is independent of the per-object theme: elements with
-		// explicit RequestedTheme (_isForegroundFrozen) keep their brush because they own the theme
-		// boundary, and on re-Enter the correct foreground is re-pulled (NotifyThemeChanged when the
-		// parent theme differs, or OnLoadingPartial's parent-foreground pull otherwise).
+		// Clear the inherited theme foreground to prevent stale values from leaking to elements loaded
+		// later under the same parent (e.g., between runtime tests). Elements with explicit RequestedTheme
+		// (_isForegroundFrozen) keep their brush; on re-Enter the correct foreground is re-pulled.
 		if (!_isForegroundFrozen)
 		{
 			_themeForeground = null;
 		}
 
-		// D4: the per-object theme (_theme) is intentionally NOT cleared here. WinUI does not reset
-		// m_theme on Leave; the theme persists and re-Enter re-themes from the (possibly different)
-		// inheritance parent (DependencyObjectStore.EstablishThemeAtEnter, ported from
-		// CDependencyObject::EnterImpl, depends.cpp:1023-1048). Clearing it on unload made a recycled
-		// element resolve the global ambient on reload instead of its island theme (scenario S2).
+		// _theme is intentionally NOT cleared here (see remarks): clearing it on unload made a recycled
+		// element resolve the global ambient on reload instead of its island theme.
 	}
 #endif
 

@@ -10,25 +10,19 @@ public class ApplicationHelper
 	private static string _requestedCustomTheme;
 
 	/// <summary>
-	/// This property is obsolete. The app-level custom-theme axis has been removed to align with WinUI,
-	/// which has no custom-theme-name concept — the application theme is strictly Light or Dark. Setting
-	/// this property is now a no-op and no longer selects a custom <c>ThemeDictionaries</c> entry.
+	/// Obsolete and now a no-op. The app-level custom-theme axis has been removed to align with WinUI,
+	/// which has no custom-theme-name concept — the application theme is strictly Light or Dark.
 	/// </summary>
 	/// <remarks>
-	/// Migration: provide a custom/brand palette via a merged <see cref="ResourceDictionary"/> that
-	/// overrides specific brush/color keys on top of the standard Light/Dark theme dictionaries, rather
-	/// than inventing a new theme name. To switch the application between the standard themes, set
-	/// <see cref="Application.RequestedTheme"/> (before the application resources are loaded). A
-	/// <c>"Light"</c>/<c>"Dark"</c> custom name continues to resolve as the corresponding standard theme.
-	/// See <c>specs/theming-winui-alignment/custom-theme.md</c> (Phase 6, Option B).
+	/// To provide a custom/brand palette, merge a <see cref="ResourceDictionary"/> that overrides specific
+	/// brush/color keys on top of the standard Light/Dark theme dictionaries; to switch between the standard
+	/// themes, set <see cref="Application.RequestedTheme"/>.
 	/// </remarks>
-	[Obsolete("The app-level custom-theme axis has been removed (it has no WinUI equivalent and cannot compose with element-level theming). Setting RequestedCustomTheme is now a no-op. Provide a custom palette via merged ResourceDictionaries that override specific brush/color keys on top of the Light/Dark theme dictionaries, and use Application.RequestedTheme to switch between the standard themes.")]
+	[Obsolete("RequestedCustomTheme is now a no-op (the custom-theme axis has no WinUI equivalent). Provide a custom palette via merged ResourceDictionaries and use Application.RequestedTheme to switch themes.")]
 	public static string RequestedCustomTheme
 	{
 		get => _requestedCustomTheme;
-		// No-op: the value is retained for source compatibility (it round-trips), but it no longer keys a
-		// custom ThemeDictionaries entry — Themes.Active is strictly Light/Dark (+ high contrast, composed
-		// at the resolution leaf). See Application.UpdateRequestedThemesForResources.
+		// Retained for source compatibility (the value round-trips) but no longer selects a theme.
 		set => _requestedCustomTheme = value;
 	}
 

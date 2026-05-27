@@ -55,10 +55,9 @@ namespace Uno.UI.Xaml
 		{
 			if (instance is IDependencyObjectStoreProvider provider)
 			{
-				// D3 (Mechanism 1): {ThemeResource} resolution keys on the owner's own theme, threaded as a
-				// parameter through the resolution chain (the Phase 2 _resourceBindings tree-walk in
-				// DependencyObjectStore.UpdateResourceBindings computes ResolveOwnerTheme(owner)). Deferred /
-				// unpinned refs therefore resolve against the owner theme without the former global theme push.
+				// {ThemeResource} resolution keys on the owner's own theme: the _resourceBindings tree-walk in
+				// DependencyObjectStore.UpdateResourceBindings computes ResolveOwnerTheme(owner) and threads it
+				// through the resolution chain, so deferred/unpinned refs resolve against the owner's theme.
 				provider.Store.ApplyElementNameBindings();
 				provider.Store.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading, resourceContextProvider);
 			}

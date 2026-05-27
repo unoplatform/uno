@@ -24,12 +24,10 @@ namespace Microsoft.UI.Xaml;
 /// to different values depending on the theme. WinUI's theme is the BASE value (Theming::GetBaseValue),
 /// set on the cache by CCoreServices::SetRequestedThemeForSubTree → SetSubTreeTheme (xcpcore.cpp:7903-7905).
 ///
-/// Phase 3 (D3, Mechanism 1): Uno keys on the same (Dict, Theme, Key) tuple, with the value held as a
-/// ManagedWeakReference (== xref::weakref_ptr). The one mechanism difference from WinUI is that the
-/// owner's effective theme is threaded in as a method parameter rather than read from a stored
-/// m_subTreeTheme ambient — consistent with the rest of the resolution leaf (architecture.md §6), which
-/// avoids reintroducing process-global mutable theme state. Behavior is identical: the cached theme is
-/// the same base value WinUI would have stored.
+/// Uno keys on the same (Dict, Theme, Key) tuple, with the value held as a ManagedWeakReference
+/// (== xref::weakref_ptr). The one difference from WinUI: the owner's effective theme is threaded in as a
+/// method parameter rather than read from a stored m_subTreeTheme ambient, avoiding process-global mutable
+/// theme state. The cached theme is the same base value WinUI would store, so behavior is identical.
 /// </remarks>
 internal sealed class ThemeWalkResourceCache
 {
@@ -44,9 +42,8 @@ internal sealed class ThemeWalkResourceCache
 	// xstring_ptr); the value is xref::weakref_ptr<CDependencyObject>. The Theme is the BASE value
 	// (Theming::GetBaseValue), as stored by CCoreServices::SetRequestedThemeForSubTree (xcpcore.cpp:7903).
 	// ResourceDictionary uses reference equality (default for classes). We use ManagedWeakReference for the
-	// value to match xref::weakref_ptr — the cache must not extend object lifetimes.
-	// Phase 3 (D3, Mechanism 1): the theme slot is the per-object Theme (base value) threaded in by the
-	// caller, replacing the prior "Light"/"Dark" ResourceKey read from the process-global GetActiveTheme().
+	// value to match xref::weakref_ptr — the cache must not extend object lifetimes. The Theme slot is the
+	// per-object Theme (base value) threaded in by the caller.
 	private readonly Dictionary<(ResourceDictionary Dict, Theme Theme, SpecializedResourceDictionary.ResourceKey Key), ManagedWeakReference> _cache = new();
 
 	private bool _isCachingThemeResources;
@@ -103,9 +100,9 @@ internal sealed class ThemeWalkResourceCache
 	/// <remarks>
 	/// MUX Reference: ThemeWalkResourceCache::TryGetCachedResource() (ThemeWalkResourceCache.cpp:50-74).
 	/// WinUI guards with if (m_isCachingThemeResources) and uses weakref_ptr::lock_noref, matching on
-	/// (dictionary, m_subTreeTheme, resourceKey). Phase 3 (Mechanism 1): the subtree theme is threaded in
-	/// as <paramref name="theme"/> (the resolving owner's effective theme) instead of read from a stored
-	/// ambient, then normalized to its base value to match WinUI's m_subTreeTheme (xcpcore.cpp:7903).
+	/// (dictionary, m_subTreeTheme, resourceKey). The subtree theme is threaded in as
+	/// <paramref name="theme"/> (the resolving owner's effective theme), then normalized to its base
+	/// value to match WinUI's m_subTreeTheme (xcpcore.cpp:7903).
 	/// </remarks>
 	public bool TryGetCachedValue(ResourceDictionary dictionary, SpecializedResourceDictionary.ResourceKey key, Theme theme, out object? value)
 	{
@@ -135,8 +132,8 @@ internal sealed class ThemeWalkResourceCache
 	/// <remarks>
 	/// MUX Reference: ThemeWalkResourceCache::AddCachedResource() (ThemeWalkResourceCache.cpp:76-98).
 	/// WinUI guards with if (m_isCachingThemeResources) and stores a weakref_ptr, keying by
-	/// (dictionary, m_subTreeTheme, resourceKey). Phase 3 (Mechanism 1): the subtree theme is threaded in
-	/// as <paramref name="theme"/> and normalized to its base value, matching WinUI's m_subTreeTheme.
+	/// (dictionary, m_subTreeTheme, resourceKey). The subtree theme is threaded in as
+	/// <paramref name="theme"/> and normalized to its base value, matching WinUI's m_subTreeTheme.
 	/// </remarks>
 	public void CacheValue(ResourceDictionary dictionary, SpecializedResourceDictionary.ResourceKey key, Theme theme, object? value)
 	{

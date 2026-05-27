@@ -232,11 +232,10 @@ namespace Microsoft.UI.Xaml.Documents
 
 		internal void SetCurrentForeground()
 		{
-			// Resolve the pointer-state foreground brushes against the containing element's OWN effective
-			// theme (D3, Mechanism 1): pass the theme key into the lookup instead of pushing it onto the
-			// global stack. MUX: Hyperlink.cpp UpdateForegroundColor resolves via
-			// GetContext()->LookupThemeResource(theme, ...) using the element's theme. On platforms without
-			// an established per-object theme, ResolveOwnerTheme falls back to the app theme, as before.
+			// Resolve the pointer-state foreground brushes against the containing element's own effective
+			// theme. MUX: Hyperlink.cpp UpdateForegroundColor resolves via
+			// GetContext()->LookupThemeResource(theme, ...) using the element's theme. When no per-object
+			// theme is established, ResolveOwnerTheme falls back to the app theme.
 			var ownerThemeKey = ResourceDictionary.GetThemeKey(
 				ThemeResolution.ResolveOwnerTheme(GetContainingFrameworkElement()));
 

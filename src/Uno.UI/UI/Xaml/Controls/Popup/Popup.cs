@@ -157,11 +157,10 @@ public partial class Popup
 		PopupPanel?.InvalidateMeasure();
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
-	// MUX Reference: Popup.cpp CPopup::NotifyThemeChangedCore (lines 3589-3610)
+	// MUX Reference: Popup.cpp CPopup::NotifyThemeChangedCore (lines 3589-3610).
 	// Popup's Child is reparented to PopupRoot's visual tree, so the normal PropagateThemeToChildren walk
-	// won't reach it. We must explicitly propagate a *runtime* theme change to the (logical) child here.
-	// Element-level theme propagation is a Skia/WASM (enhanced-lifecycle) feature — native targets support
-	// OS + application theme only — so this override stays gated and native theming is left unchanged.
+	// won't reach it; we explicitly propagate a runtime theme change to the logical child here. Element-level
+	// theme propagation is Skia/WASM-only, so this override stays gated (native is OS + application theme).
 	private protected override void NotifyThemeChangedCore(Theme theme, bool forceRefresh)
 	{
 		base.NotifyThemeChangedCore(theme, forceRefresh);

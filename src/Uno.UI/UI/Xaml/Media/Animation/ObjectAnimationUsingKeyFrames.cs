@@ -333,11 +333,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return;
 			}
 
-			// Resolve each keyframe's {ThemeResource} values against the TARGET element's effective theme
-			// (D3, Mechanism 1): pass the target element as the resolution owner so UpdateThemeReference keys
-			// on ResolveOwnerTheme(targetElement) instead of pushing the theme onto the global stack. For an
-			// HighContrast-only theme (no Light/Dark base) there was no push, so resolve against the app theme
-			// as before (full HC composition is Phase 6 / D8).
+			// Resolve each keyframe's {ThemeResource} values against the target element's effective theme:
+			// pass the target element as the resolution owner so UpdateThemeReference keys on
+			// ResolveOwnerTheme(targetElement). For a HighContrast-only theme (no Light/Dark base) there is
+			// no owner theme, so resolve against the app theme (owner == null).
 			DependencyObject owner = Theming.GetBaseValue(effectiveTheme) == Theme.None ? null : targetElement;
 			foreach (var keyFrame in KeyFrames)
 			{

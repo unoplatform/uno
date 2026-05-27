@@ -35,9 +35,9 @@ public partial class DependencyObjectStore
 	//
 	// In WinUI every CDependencyObject — not just elements — carries a resolved theme, established
 	// at tree Enter (depends.cpp:1023-1048) and inherited from its (logical) inheritance parent.
-	// In Uno this previously lived on UIElement only (the D1 discrepancy); it now lives on the store
-	// that every DependencyObject owns, so non-UIElement DOs (brushes, setters, storyboards) also
-	// carry a theme. UIElement/FrameworkElement keep GetTheme()/SetTheme() as thin forwarders here.
+	// In Uno it lives on the store that every DependencyObject owns, so non-UIElement DOs (brushes,
+	// setters, storyboards) also carry a theme; UIElement/FrameworkElement keep GetTheme()/SetTheme()
+	// as thin forwarders here.
 	private Theme _theme = Theme.None;
 
 	/// <summary>
@@ -55,10 +55,8 @@ public partial class DependencyObjectStore
 	//   XUINT32 fIsProcessingThemeWalk : 1;  // bit 16
 	//   "Indicates whether the DO is currently processing themes. It is used to prevent stack
 	//    overflows caused by cycles."
-	// WinUI packs this with other lifecycle bits in a DependencyObjectBitFields uint
-	// (corep.h:224-348), on every CDependencyObject — so it lives here on the store.
-	// (fIsProcessingEnterLeave, bit 15, currently still lives on UIElement; it can move here when
-	// Enter/Leave is generalized to every DO in a later phase.)
+	// WinUI packs this with other lifecycle bits on every CDependencyObject (corep.h:224-348), so it
+	// lives here on the store.
 	private bool _isProcessingThemeWalk;
 
 	/// <summary>
@@ -83,20 +81,15 @@ public partial class DependencyObjectStore
 	/// <remarks>
 	/// MUX Reference: CDependencyObject::EnterImpl theme block — depends.cpp:1023-1048.
 	///
-	/// This is the D2 step. It runs for every <see cref="DependencyObject"/> going live so that
-	/// <see cref="GetTheme"/> is reliably non-<see cref="Theme.None"/> at the first {ThemeResource}
-	/// resolution — the precondition that lets resolution key on the owner's own theme (D3) rather than
-	/// a process-global ambient. WinUI hosts this on CDependencyObject; Uno hosts it here on the
-	/// <see cref="DependencyObjectStore"/> that every DO owns (and that carries <c>_theme</c> since D1),
-	/// invoked from the enhanced-lifecycle Enter walk (UIElement.Enter → DependencyObject_EnterImpl).
+	/// Runs for every <see cref="DependencyObject"/> going live so that <see cref="GetTheme"/> is reliably
+	/// non-<see cref="Theme.None"/> at the first {ThemeResource} resolution — the precondition that lets
+	/// resolution key on the owner's own theme rather than a process-global ambient. WinUI hosts this on
+	/// CDependencyObject; Uno hosts it on the <see cref="DependencyObjectStore"/> that every DO owns,
+	/// invoked from the enhanced-lifecycle Enter walk.
 	///
-	/// Ordering: the Enter walk runs synchronously when the element is attached
-	/// (UIElement.AddChild → ChildEnter → EnterImpl), which is before the first measure pass that raises
-	/// Loading (FrameworkElement.OnLoadingPartial → RaiseLoadingEventIfNeeded). {ThemeResource} refs
-	/// created by <c>ResourceResolver.ApplyResource</c> at parse time are deferred and first resolved at
-	/// load (OnLoadingPartial → UpdateThemeBindings(ResolvedOnLoading) → _resourceBindings tree walk), by
-	/// which point the theme established here is already in place. So theme establishment precedes the
-	/// first theme-ref resolution at load.
+	/// The Enter walk runs synchronously on attach (UIElement.AddChild → ChildEnter → EnterImpl), before the
+	/// first measure pass raises Loading — at which point deferred {ThemeResource} refs are first resolved
+	/// (OnLoadingPartial → UpdateThemeBindings → _resourceBindings walk). So the theme is in place first.
 	/// </remarks>
 	internal void EstablishThemeAtEnter()
 	{
@@ -104,12 +97,10 @@ public partial class DependencyObjectStore
 
 		// MUX: depends.cpp:1026-1037 — a FrameworkElement inherits from its *logical* inheritance parent
 		// (GetInheritanceParentInternal(fLogicalParent=TRUE), framework.cpp:3097-3130) "so popups and
-		// flyouts inherit theme changes"; other DOs use the (visual) parent (GetParentInternal(false)).
-		// (D5) In Uno the logical inheritance parent is FrameworkElement.Parent (LogicalParentOverride ??
-		// Store.Parent): a Popup sets its Child's LogicalParentOverride to itself (Popup.Base.cs
-		// OnChildChangedPartial), so the content follows the theme of the opener rather than the
-		// PopupRoot it is visually reparented under. For non-FrameworkElement DOs (brushes, setters,
-		// storyboards) there is no logical-parent override, so the store's inheritance Parent is used.
+		// flyouts inherit theme changes"; other DOs use the visual parent. In Uno the logical inheritance
+		// parent is FrameworkElement.Parent (LogicalParentOverride ?? Store.Parent): a Popup sets its
+		// Child's LogicalParentOverride to itself, so the content follows the opener's theme rather than the
+		// PopupRoot it is visually reparented under. Non-FrameworkElement DOs use the store's Parent.
 		var parent = owner is FrameworkElement frameworkElementOwner
 			? frameworkElementOwner.Parent
 			: Parent as DependencyObject;
@@ -266,10 +257,10 @@ public partial class DependencyObjectStore
 			object? newValue = null;
 			bool resolved = false;
 
-			// D3 (Mechanism 1): compute the owner's effective theme ONCE here — the single centralized
-			// "use the owner's theme" choke point, the analog of WinUI's SetThemeResourceBinding pushing
-			// this->m_theme before resolving (Theming.cpp:368-376). Both the Phase A ancestor walk and the
-			// Phase B pinned-dict refresh resolve against this theme instead of the process-global ambient.
+			// Compute the owner's effective theme ONCE here — the centralized "use the owner's theme" choke
+			// point, the analog of WinUI's SetThemeResourceBinding pushing this->m_theme before resolving
+			// (Theming.cpp:368-376). Both the ancestor walk and the pinned-dict refresh below resolve
+			// against this theme.
 			var ownerTheme = ThemeResolution.ResolveOwnerTheme(owner);
 			var ownerThemeKey = ResourceDictionary.GetThemeKey(ownerTheme);
 
@@ -565,12 +556,10 @@ public partial class DependencyObjectStore
 		{
 			dictionariesInScope ??= GetResourceDictionaries(includeAppResources: false, resourceContextProvider, containingDictionary).ToArray();
 
-			// D3 (Mechanism 1): resolve deferred/unpinned {ThemeResource} (and theme-sensitive
-			// {StaticResource}) bindings against the OWNER's effective theme instead of the process-global
-			// active theme. This is the same owner theme the choke point UpdateThemeReference uses; threading
-			// it here replaces the band-aid theme push that used to wrap this load-time tree walk
-			// (architecture.md §5 #1/#3/#8) with an equivalent parameter — no global mutable state. For a
-			// non-FrameworkElement owner, the injected FE resource context supplies the theme.
+			// Resolve deferred/unpinned {ThemeResource} (and theme-sensitive {StaticResource}) bindings
+			// against the OWNER's effective theme — the same owner theme the UpdateThemeReference choke point
+			// uses, threaded in as a parameter. For a non-FrameworkElement owner, the injected FE resource
+			// context supplies the theme.
 			var themeOwner = ActualInstance as FrameworkElement ?? resourceContextProvider ?? ActualInstance;
 			var ownerTheme = ThemeResolution.ResolveOwnerTheme(themeOwner);
 
@@ -621,8 +610,8 @@ public partial class DependencyObjectStore
 			return;
 		}
 
-		// D3 (Mechanism 1): select the Light/Dark sub-dictionary by the owner's effective theme passed from
-		// UpdateResourceBindings, not the process-global active theme — replaces the band-aid push.
+		// Select the Light/Dark sub-dictionary by the owner's effective theme passed from
+		// UpdateResourceBindings, not the process-global active theme.
 		var ownerThemeKey = ResourceDictionary.GetThemeKey(ownerTheme);
 
 		// Note: we intentionally do NOT skip theme resource bindings here even though

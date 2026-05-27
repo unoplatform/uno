@@ -31,11 +31,10 @@ internal static partial class SystemThemeHelper
 
 	/// <summary>
 	/// Gets whether the OS high-contrast accessibility feature is currently active. High contrast is an
-	/// OS/app-global dimension orthogonal to the Light/Dark base theme (it is OR-ed onto the base theme,
-	/// matching WinUI's <c>FrameworkTheming::GetTheme</c>). Sourced from
-	/// <see cref="Uno.WinRTFeatureConfiguration.Accessibility.HighContrast"/>, which is settable — so it
-	/// doubles as the deterministic override hook for runtime tests and as the value real per-platform
-	/// detection writes into. The default is <c>false</c> (high contrast off).
+	/// OS/app-global dimension OR-ed onto the Light/Dark base theme (matching WinUI's
+	/// <c>FrameworkTheming::GetTheme</c>). Sourced from
+	/// <see cref="Uno.WinRTFeatureConfiguration.Accessibility.HighContrast"/>, which is settable, so it also
+	/// serves as the override hook for runtime tests. Defaults to <c>false</c>.
 	/// </summary>
 	internal static bool IsHighContrast => Uno.WinRTFeatureConfiguration.Accessibility.HighContrast;
 
@@ -59,15 +58,10 @@ internal static partial class SystemThemeHelper
 
 			_systemThemeOverride = value;
 
-			// Setting the override is an explicit "force the system theme" action, so notify
-			// observers UNCONDITIONALLY. We deliberately do NOT gate on _lastSystemTheme the way
-			// RefreshSystemTheme() does (that path is for polling the real OS): _lastSystemTheme
-			// tracks the last OS-notified theme and can legitimately desync from the application's
-			// current theme — e.g. after a test sets an explicit app theme via
-			// SetExplicitRequestedTheme and then restores it. A conditional raise would then find
-			// cached == new and skip, leaving the application on a stale theme (the cause of
-			// in-suite test flakiness). Re-asserting here makes the override reliable regardless of
-			// prior state.
+			// Setting the override forces the system theme, so notify observers unconditionally — unlike
+			// RefreshSystemTheme (which gates on _lastSystemTheme for OS polling). _lastSystemTheme can
+			// legitimately desync from the app's current theme (e.g. after a test sets then restores an
+			// explicit app theme), so a conditional raise could skip and leave a stale theme (test flakiness).
 			_lastSystemTheme = EffectiveSystemTheme;
 			RaiseSystemThemeChanged();
 		}

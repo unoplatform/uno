@@ -245,9 +245,8 @@ namespace Microsoft.UI.Xaml
 			// we ensure that this materialization occurs only in the right resource scope.
 			// Note: the "current" should have already been materialized.
 			//
-			// D3 (Mechanism 1): VisualState Storyboards/Setters materialized here resolve {ThemeResource}
-			// against the element's own theme, threaded through the resolution chain — no global theme push
-			// (the Phase 4 push that used to wrap this block is gone).
+			// VisualState Storyboards/Setters materialized here resolve {ThemeResource} against the
+			// element's own theme via ResolveOwnerTheme.
 			(Storyboard transition, Storyboard animation, SetterBaseCollection setters) current, target;
 			try
 			{
@@ -360,9 +359,8 @@ namespace Microsoft.UI.Xaml
 					return;
 				}
 
-				// D3 (Mechanism 1): Setter.ApplyValue resolves {ThemeResource} setters against the element's own
-				// theme (ResourceResolver.ApplyThemeResource → ResolveOwnerTheme), threaded as a parameter — no
-				// global theme push needed.
+				// Setter.ApplyValue resolves {ThemeResource} setters against the element's own theme
+				// (ResourceResolver.ApplyThemeResource → ResolveOwnerTheme).
 				try
 				{
 					// Setter.ApplyValue can resolve some theme resources.
