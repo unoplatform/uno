@@ -345,5 +345,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				"After hot reload, brush should be updated to Blue even for ThemeResource-only bindings");
 		}
 #endif
+
+#if HAS_UNO
+		// Regression: a subtree pinned to an explicit RequestedTheme that differs from the
+		// application/OS theme must resolve {ThemeResource} values against the subtree's
+		// theme, not against Themes.Active. This exercises the out-of-walk lookup paths
+		// (parse-time ApplyResource, RefreshValue, InnerUpdateResourceBindingsUnsafe).
+		// Without ThemeResourceReference.PushOwnerThemeIfDifferent, the parse-time lookup
+		// would select the Dark sub-dictionary because Themes.Active = Dark (the app theme),
+		// even though the Border's inherited ActualTheme is Light from its pinned ancestor.
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_Light_Pinned_Subtree_Inside_Dark_App_Resolves_Light_ThemeResource()
+		{
+			using var _ = ThemeHelper.UseApplicationDarkTheme();
+
+			var resources = new ResourceDictionary();
+			resources.ThemeDictionaries["Light"] = new ResourceDictionary
+			{
+				["OwnerThemePushTestBrush"] = new SolidColorBrush(Colors.LightYellow),
+			};
+			resources.ThemeDictionaries["Dark"] = new ResourceDictionary
+			{
+				["OwnerThemePushTestBrush"] = new SolidColorBrush(Colors.DarkSlateBlue),
+			};
+			Application.Current.Resources.MergedDictionaries.Add(resources);
+
+			try
+			{
+				var lightPinnedRoot = (Border)XamlReader.Load(
+					"""
+					<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+							RequestedTheme="Light"
+							Width="150" Height="150">
+						<Border x:Name="Inner" Background="{ThemeResource OwnerThemePushTestBrush}" />
+					</Border>
+					""");
+
+				WindowHelper.WindowContent = lightPinnedRoot;
+				await WindowHelper.WaitForLoaded(lightPinnedRoot);
+
+				var inner = (Border)lightPinnedRoot.FindName("Inner");
+				var brush = inner.Background as SolidColorBrush;
+				Assert.IsNotNull(brush, "Background brush should be resolved");
+				Assert.AreEqual(
+					Colors.LightYellow,
+					brush.Color,
+					"Inner Border inherits Light from the pinned ancestor; the {ThemeResource} must " +
+					"resolve from the Light sub-dictionary, not from Themes.Active (Dark).");
+			}
+			finally
+			{
+				Application.Current.Resources.MergedDictionaries.Remove(resources);
+			}
+		}
+#endif
 	}
 }
