@@ -184,12 +184,11 @@ namespace Microsoft.UI.Xaml
 		/// <returns>A new instance of the template</returns>
 		View? IFrameworkTemplateInternal.LoadContent(DependencyObject? templatedParent)
 		{
-			// D3 (Mechanism 1): {ThemeResource} bindings in the template resolve against the OWNER's own theme,
-			// threaded as a parameter through the resolution chain (ApplyResource → UpdateThemeReference →
-			// ResolveOwnerTheme). Template parts are not yet entered at build time (GetTheme() == None), so they
-			// resolve the app theme here and are re-themed when each part enters the live tree
-			// (DependencyObjectStore.EstablishThemeAtEnter, ported from CDependencyObject::EnterImpl
-			// depends.cpp:1023-1048). No global theme push is needed.
+			// {ThemeResource} bindings in the template resolve against the owner's own theme
+			// (ApplyResource → UpdateThemeReference → ResolveOwnerTheme). Template parts are not yet entered
+			// at build time (GetTheme() == None), so they resolve the app theme here and are re-themed when
+			// each part enters the live tree (DependencyObjectStore.EstablishThemeAtEnter, ported from
+			// CDependencyObject::EnterImpl depends.cpp:1023-1048).
 			try
 			{
 				ResourceResolver.PushNewScope(_xamlScope);

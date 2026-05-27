@@ -94,8 +94,8 @@ internal sealed class ThemeResourceReference
 	/// </summary>
 	/// <param name="ownerTheme">
 	/// The effective theme of the DependencyObject that owns this binding, computed once by the caller
-	/// (DependencyObjectStore.UpdateThemeReference via ThemeResolution.ResolveOwnerTheme). This replaces the
-	/// process-global active theme as the input that selects the Light/Dark sub-dictionary (D3, Mechanism 1).
+	/// (DependencyObjectStore.UpdateThemeReference via ThemeResolution.ResolveOwnerTheme). Selects the
+	/// Light/Dark sub-dictionary.
 	/// </param>
 	/// <param name="cache">Optional per-walk cache to avoid redundant dictionary lookups.</param>
 	/// <returns>The resolved value for the owner's theme.</returns>

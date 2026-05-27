@@ -423,13 +423,9 @@ namespace Microsoft.UI.Xaml
 #if UNO_HAS_ENHANCED_LIFECYCLE
 			// Theme establishment/inheritance happens earlier, at tree Enter, for every DO
 			// (DependencyObjectStore.EstablishThemeAtEnter, ported from CDependencyObject::EnterImpl
-			// depends.cpp:1023-1048). The Enter walk runs synchronously on attach — before this Loading pass —
-			// so GetTheme() is already established here. The duplicate inherit / explicit-RequestedTheme block
-			// that used to live here was removed (D2); the Enter step subsumes it.
-			//
-			// D3 (Mechanism 1): {ThemeResource} resolution keys on the owner's own theme, threaded as a
-			// parameter through the whole resolution chain (DependencyObjectStore.UpdateThemeReference →
-			// ResolveOwnerTheme), so no global theme push is needed here.
+			// depends.cpp:1023-1048). The Enter walk runs synchronously on attach — before this Loading
+			// pass — so GetTheme() is already established here, and {ThemeResource} resolution keys on the
+			// owner's own theme (UpdateThemeReference → ResolveOwnerTheme).
 			var effectiveTheme = GetTheme();
 
 			// Apply active style and default style when we enter the visual tree.
@@ -684,11 +680,10 @@ namespace Microsoft.UI.Xaml
 		private void ApplyStyleWithThemeContext(Style oldStyle, Style newStyle, DependencyPropertyValuePrecedences precedence)
 		{
 			// MUX Reference: CFrameworkElement::OnStyleChanged -> InvalidateProperty chain.
-			// D3 (Mechanism 1): ThemeResource setters in the style resolve against the element's OWN theme,
-			// threaded as a parameter through the resolution chain (ApplyResource → UpdateThemeReference, and
-			// Setter ThemeResources via ResourceResolver.ApplyThemeResource → ResolveOwnerTheme). So no global
-			// theme push is needed when the style is applied — neither at initial load nor on a code-behind
-			// style change (which previously had no theme context and leaked the app theme).
+			// ThemeResource setters in the style resolve against the element's own theme, threaded through
+			// the resolution chain (ApplyResource → UpdateThemeReference, and Setter ThemeResources via
+			// ResourceResolver.ApplyThemeResource → ResolveOwnerTheme) — at initial load and on a
+			// code-behind style change alike.
 			ApplyStyleCore(oldStyle, newStyle, precedence);
 		}
 

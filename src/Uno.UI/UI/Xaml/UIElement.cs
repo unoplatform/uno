@@ -65,10 +65,9 @@ namespace Microsoft.UI.Xaml
 		private SerialDisposable _disposedEventDisposable = new();
 
 		// WinUI stores fIsProcessingEnterLeave (bit 15) in a DependencyObjectBitFields uint on
-		// CDependencyObject (corep.h:224-348; CDependencyObject.h:298). The per-object theme
-		// (m_theme) and the theme-walk bit (fIsProcessingThemeWalk, bit 16) now live on
-		// DependencyObjectStore, since WinUI carries them on every CDependencyObject — not just
-		// elements (the D1 discrepancy). See DependencyObjectStore.Theming.cs.
+		// CDependencyObject (corep.h:224-348; CDependencyObject.h:298). The per-object theme (m_theme) and
+		// the theme-walk bit (fIsProcessingThemeWalk, bit 16) now live on DependencyObjectStore, since WinUI
+		// carries them on every CDependencyObject — not just elements. See DependencyObjectStore.Theming.cs.
 		[Flags]
 		private enum UIElementFlag : uint
 		{

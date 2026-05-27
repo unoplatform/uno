@@ -21,11 +21,10 @@ namespace Microsoft.UI.Xaml;
 /// falling back to the application/OS base theme.
 /// </summary>
 /// <remarks>
-/// Phase 1 (D1) note: this helper is added now so the per-object theme is queryable on every DO, but
-/// it is intentionally <b>not</b> wired into {ThemeResource} resolution yet — that happens in Phase 3
-/// (D3), where <see cref="DependencyObjectStore"/>.UpdateThemeReference computes the owner theme once
-/// and threads it into the resolution leaf (architecture.md §6, Mechanism 1). Until then resolution
-/// still uses the global active-theme stack, so behavior is unchanged.
+/// This is the single source of truth for an owner's resolution theme: the resolution choke point
+/// (<see cref="DependencyObjectStore"/>.UpdateThemeReference) computes it once and threads it into the
+/// resolution leaf, so {ThemeResource} resolution keys on the owner's own theme rather than a
+/// process-global ambient.
 /// </remarks>
 internal static class ThemeResolution
 {
@@ -37,8 +36,8 @@ internal static class ThemeResolution
 	/// </summary>
 	internal static Theme ResolveOwnerTheme(DependencyObject? owner)
 	{
-		// High contrast is an OS/app-global dimension OR-ed onto the base theme (architecture.md §3:
-		// effective theme = base | highContrast; MUX FrameworkTheming::GetTheme, FrameworkTheming.cpp:123).
+		// High contrast is an OS/app-global dimension OR-ed onto the base theme (effective theme =
+		// base | highContrast; MUX FrameworkTheming::GetTheme, FrameworkTheming.cpp:123).
 		var highContrast = GetApplicationHighContrastTheme();
 
 		// MUX: depends.cpp:1023-1048 — a DO's theme is established at Enter from its (logical)

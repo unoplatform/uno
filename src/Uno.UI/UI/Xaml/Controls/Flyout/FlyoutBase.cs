@@ -51,9 +51,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private readonly SerialDisposable _sizeChangedDisposable = new SerialDisposable();
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
-		// MUX Reference: FlyoutBase_partial.h m_isFlyoutPresenterRequestedThemeOverridden
-		// Element-level theme forwarding is a Skia/WASM (enhanced-lifecycle) feature only — native flyouts
-		// follow the application/OS theme — so this flag is gated with ForwardThemeToPresenter.
+		// MUX Reference: FlyoutBase_partial.h m_isFlyoutPresenterRequestedThemeOverridden.
+		// Element-level theme forwarding is a Skia/WASM-only feature (native flyouts follow the
+		// application/OS theme), so this flag is gated alongside ForwardThemeToPresenter.
 		private bool m_isFlyoutPresenterRequestedThemeOverridden;
 #endif
 
@@ -755,11 +755,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			ForwardThemeToPresenter();
 		}
 
-		// MUX Reference: FlyoutBase_partial.cpp ForwardThemeToPresenter (lines 1534-1592)
+		// MUX Reference: FlyoutBase_partial.cpp ForwardThemeToPresenter (lines 1534-1592).
 		// Forwards the placement target's theme to the presenter and popup so the flyout matches the region
-		// it was opened from. Element-level theme forwarding is a Skia/WASM (enhanced-lifecycle) feature only;
-		// native targets support OS + application theme (plan.md Phase 7), so on native this is a no-op and the
-		// flyout follows the application/OS theme.
+		// it was opened from. Element-level theme forwarding is Skia/WASM-only; native targets support
+		// OS + application theme, so on native this is a no-op and the flyout follows the app/OS theme.
 		private void ForwardThemeToPresenter()
 		{
 #if UNO_HAS_ENHANCED_LIFECYCLE
@@ -768,9 +767,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				return;
 			}
 
-			// Only override if presenter's RequestedTheme hasn't been explicitly set, or was previously
-			// overridden by us — preserve an explicitly-set presenter theme.
-			// MUX: m_isFlyoutPresenterRequestedThemeOverridden (FlyoutBase_partial.cpp:1542-1545).
+			// Preserve an explicitly-set presenter theme: only override when RequestedTheme is Default or
+			// was previously overridden by us (MUX: m_isFlyoutPresenterRequestedThemeOverridden,
+			// FlyoutBase_partial.cpp:1542-1545).
 			var presenterTheme = presenter.RequestedTheme;
 			var isDefault = presenterTheme == ElementTheme.Default;
 			if (!isDefault && !m_isFlyoutPresenterRequestedThemeOverridden)
@@ -778,11 +777,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				return;
 			}
 
-			// (D6) Forward the placement target's *effective* ActualTheme (its own, inherited, or app/OS
-			// base) — always Light/Dark. Unlike WinUI's literal walk for the nearest explicit RequestedTheme
-			// (which relies on logical-parent inheritance + ActualTheme's app fallback to cover app-themed
-			// content), reading ActualTheme directly themes a flyout opened over app-themed content correctly
-			// on the FIRST open and keys on the per-object theme established at Enter (D2).
+			// Forward the placement target's effective ActualTheme (its own, inherited, or app/OS base) —
+			// always Light/Dark. Unlike WinUI's walk for the nearest explicit RequestedTheme, reading
+			// ActualTheme directly also themes a flyout opened over app-themed content correctly on first open.
 			var requestedTheme = target.ActualTheme;
 
 			if (requestedTheme != presenterTheme)
@@ -794,11 +791,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// Also set the popup's theme for SystemBackdrop support (FlyoutBase_partial.cpp:1586-1588).
 			_popup.RequestedTheme = requestedTheme;
 #else
-			// Native: pure OS + application theme. We intentionally do NOT forward any element-level theme to
-			// the flyout — element-level theming is a Skia/WASM feature. The presenter keeps its default
-			// (inherited) theme, so the flyout content follows the application/OS theme via the normal
-			// {ThemeResource} resolution (the owner theme falls back to the app theme) plus the
-			// Popup.UpdateThemeBindings propagation path. No-op by design.
+			// Native: OS + application theme only. We intentionally do not forward any element-level theme;
+			// the presenter keeps its inherited theme, so the flyout content follows the application/OS theme
+			// via the normal {ThemeResource} resolution and the Popup.UpdateThemeBindings propagation path.
 #endif
 		}
 

@@ -1137,13 +1137,11 @@ namespace Microsoft.UI.Xaml
 			//}
 
 			// MUX: depends.cpp:1023-1048 — establish this object's theme from its (logical) inheritance
-			// parent now that it is live, before any {ThemeResource} resolves (D2). The logic lives on
-			// DependencyObjectStore (the CDependencyObject analog that carries _theme since D1); it is
-			// invoked here from the enhanced-lifecycle Enter walk. Element-level theming — the per-object
-			// theme established at Enter — is a Skia/WASM (UNO_HAS_ENHANCED_LIFECYCLE) feature by design:
-			// native (Android/iOS) targets support OS + application theme only and are intentionally NOT
-			// given this Enter establishment (plan.md Phase 7). This whole Enter walk is gated by
-			// UNO_HAS_ENHANCED_LIFECYCLE, so it never compiles into the native view hierarchy.
+			// parent now that it is live, before any {ThemeResource} resolves. The logic lives on
+			// DependencyObjectStore (the CDependencyObject analog that carries _theme); it is invoked here
+			// from the enhanced-lifecycle Enter walk. Element-level theming is a Skia/WASM
+			// (UNO_HAS_ENHANCED_LIFECYCLE) feature; native targets support OS + application theme only and
+			// intentionally skip this Enter establishment.
 			if (IsActiveInVisualTree)
 			{
 				((IDependencyObjectStoreProvider)this).Store.EstablishThemeAtEnter();

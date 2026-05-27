@@ -639,17 +639,9 @@ namespace Microsoft.UI.Xaml
 		// rather than the app's active theme.
 		private static object ResolveFocusVisualBrushDefault(DependencyObject referenceObject, string resourceKey)
 		{
-			// Resolve the focus-visual default brush against the target's OWN effective theme (D3,
-			// Mechanism 1): pass the theme key into the lookup instead of pushing it onto the global
-			// stack. Matches CDependencyProperty::GetDefaultFocusVisualBrush resolving against
-			// targetObject->GetTheme() (DependencyProperty.cpp:131-150, 309-345).
-			// Port of CDependencyProperty::GetDefaultFocusVisualBrush (microsoft-ui-xaml2
-			// DependencyProperty.cpp:309-353): resolve the focus-visual brush against the target element's OWN
-			// effective theme (targetObject->GetTheme()), not the app/ambient theme. WinUI threads the theme
-			// through the entire resolution via core->LookupThemeResource(theme, key); Uno threads it as the
-			// themeKey parameter, which now also follows the {StaticResource} alias
-			// (SystemControlFocusVisualPrimaryBrush → FocusStrokeColorOuterBrush) into the matching theme
-			// sub-dictionary, so the resolved brush carries the element theme's color.
+			// themeKey also follows the {StaticResource} alias (SystemControlFocusVisualPrimaryBrush →
+			// FocusStrokeColorOuterBrush) into the matching theme sub-dictionary, so the resolved brush
+			// carries the element theme's color.
 			var themeKey = ResourceDictionary.GetThemeKey(ThemeResolution.ResolveOwnerTheme(referenceObject));
 			if (ResourceResolver.TryStaticRetrieval(resourceKey, themeKey, null, out var brush))
 			{
