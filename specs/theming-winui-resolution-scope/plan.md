@@ -269,3 +269,56 @@ document.
 | Theme toggled after popup open; initial-theme refresh gating | Phase 3 (R3/R5) | Phase 3 |
 | Foreground freeze / HC / non-FE owner | Phase 4 (R4/R6/R7/R8/R9) | Phase 4 |
 | Malformed + OS-dependent repros | Phase 0 (test hygiene) | Phase 0 |
+
+---
+
+## Validated implementation findings (current branch)
+
+Executed on Skia Desktop with the red-before/green-after protocol. **R1 (Phase 1) is the core fix; the remaining
+phases were verified to need no production code** (the resolution layer is already WinUI-aligned), except one
+out-of-scope follow-up.
+
+| Phase / item | Outcome | Notes |
+|---|---|---|
+| **Phase 0** | Done | Fixed the malformed `Given_ThemeResource` repro (missing `xmlns:x`) and de-flaked the OS-dependent `When_Flyout_Opened_From_Inner_Light_Boundary` repro (pin ambient Dark `#if HAS_UNO`). |
+| **Phase 1 (R1)** | **Done — fixes all 5 popup repros** | `ApplyResource` pins the providing dictionary at resolution. Core theming suite 147/148; the 1 failure is the pre-existing, expected GC test `When_Flyout_Closed_Target_Does_Not_Hold_Flyout` (unrelated — that flyout content has no `{ThemeResource}`, so R1 cannot affect it). |
+| **Phase 2 (R2)** | **No code needed** | Uno's `GetResourceDictionaries` walks the **logical** parent (`fe.Parent`), not WinUI's **visual** `PopupRoot`, so inline `<Popup>` content already reaches its declaration site and flyouts are covered by the R1 pin. WinUI's `GetParentFollowPopups` exists to escape `PopupRoot` — a problem Uno's logical-parent walk does not have. Added two green regression guards (`When_Inline_Popup_Opened_Resolves_DeclarationSite_ThemeResource`, `When_Flyout_Target_Theme_Toggled_While_Open_Updates_ThemeResource`). |
+| **Phase 3 (R3/R5)** | **No code needed (perf/fidelity only)** | The missing `IsValueFromInitialTheme` guard only suppresses a redundant refresh that returns the identical value; the `IsLoaded`-vs-`IsActive` timing difference self-corrects at `OnLoadingPartial`'s `UpdateThemeBindings`. No scenario produces a wrong value → no red-able behavioral test. Left unchanged. |
+| **Phase 4 / R7** (foreground freeze in popups) | **Already correct** | Flyout sets `presenter.RequestedTheme`, so the freeze resolves `DefaultTextForegroundThemeBrush` against the owner theme and reaches popup content. (Optional parity guard not added — it would pass.) |
+| **Phase 4 / R9** (non-FE owner) | **Already correct + covered** | `When_ThemeResource_On_NonFE_DependencyObject_Inside_Themed_Subtree_Resolves_Correctly` passes after R1. |
+| **Phase 4 / R8** (high contrast) | **Split** | HC active *before* load is correct and already tested (`When_HighContrast_Active_Selects_HighContrast_Dictionary`). **Runtime HC *toggle* is a known follow-up (out of this spec's resolution-scope lane)** — see below. |
+| **Phase 5** | Skia validation done; **native WinUI oracle (`/winui-runtime-tests`) pending** | The repros encode observed WinUI behavior ("fails on Skia, passes on native WinUI"); a confirming oracle run is the remaining validation. |
+
+### Known follow-up (deferred — out of this spec's scope)
+
+**Runtime high-contrast toggle does not refresh already-resolved `{ThemeResource}` values.** `Application` wires
+`SystemThemeHelper.SystemThemeChanged` to a tree-wide refresh (`Application.cs:344`) but does **not** subscribe to
+`AccessibilitySettings.HighContrastChanged`; the gap is acknowledged in `ResourceDictionary.cs:663-665`. WinUI fires
+a theme change on HC toggle that re-resolves all theme resources. Red-able test (Uno fails today; WinUI behavior is
+the oracle): under app Light, load a Border `Background="{ThemeResource Sentinel}"` (ThemeDictionaries Light=Green,
+HighContrast=Red); assert Green; set `Uno.WinRTFeatureConfiguration.Accessibility.HighContrast = true`; assert Red
+(Uno stays Green today). Fix: subscribe `HighContrastChanged` in `Application` to the same refresh path as
+`OnSystemThemeChanged`. Tracked separately from this resolution-scope effort.
+
+### When Popup/PopupRoot parenting is realigned (future work)
+
+The Phase 2 "no `GetParentFollowPopups` needed" finding is **contingent on Uno's current popup model**, where
+`GetResourceDictionaries` walks the **logical** parent (`fe.Parent`) and a `Popup`'s child has
+`LogicalParentOverride = Popup` (so inline popups reach their declaration site without a `PopupRoot` hop). If
+Popup/PopupRoot handling is realigned toward WinUI's model (popup content resolved through its **visual** parent =
+`PopupRoot`), then:
+
+- **R2 (`GetParentFollowPopups`) becomes necessary** so the runtime resource-dictionary walk and the
+  inheritance-parent walk (`ResolveOwnerTheme` / `EstablishThemeAtEnter`) can escape `PopupRoot` back to the opener.
+  Revisit Phase 2 at that point.
+- **R1's parse-time providing-dictionary pin is parent-tree-independent** (captured from the lexical parse scope, not
+  the runtime tree), so `{ThemeResource}` *resolution* stays correct across the realignment. The realignment's main
+  theming risk is to theme *inheritance* (how popup content acquires `ActualTheme`) — which the guards below assert.
+
+**Guards that protect the realignment** (each asserts both `ActualTheme` inheritance **and** the resolved
+`{ThemeResource}` color for popup-hosted content): the five popup repros (`Given_Flyout` / `Given_MenuFlyout` /
+`Given_ToolTip` `*_Light_Under_Dark_App`, `Given_ListViewBase` after-tab-navigation), the two Phase 2 guards
+(`When_Inline_Popup_Opened_Resolves_DeclarationSite_ThemeResource`,
+`When_Flyout_Target_Theme_Toggled_While_Open_Updates_ThemeResource`), plus `Given_ElementTheme`'s popup/flyout theme
+propagation tests. Re-run the full theming filter (see "Global conventions") after the realignment; any inheritance or
+resolution regression surfaces as a wrong `ActualTheme` or a wrong sentinel color.
