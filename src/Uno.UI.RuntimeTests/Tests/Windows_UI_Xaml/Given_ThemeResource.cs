@@ -376,6 +376,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				var lightPinnedRoot = (Border)XamlReader.Load(
 					"""
 					<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+							xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 							RequestedTheme="Light"
 							Width="150" Height="150">
 						<Border x:Name="Inner" Background="{ThemeResource OwnerThemePushTestBrush}" />
@@ -400,5 +401,103 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 #endif
+
+#if HAS_UNO
+		// Regression for the reflection-free owner-theme walk: a non-UIElement DependencyObject
+		// (a Microsoft.Xaml.Behaviors-style behaviour) whose {ThemeResource}-bound property is
+		// resolved OUTSIDE any theme walk must pick up its host element's inherited theme, reached
+		// purely through DependencyObjectStore.Parent. The behaviour is attached the same way
+		// Interaction.Behaviors does it — via a DependencyObjectCollection whose parent is the host —
+		// so ThemeResourceReference.GetThemeResolutionParent follows Store.Parent up to the
+		// Light-pinned Border without reflecting for an "AssociatedObject" property.
+		//
+		// Before the reflection was removed, ResolveInheritedBaseTheme could only hop to a property
+		// literally named "AssociatedObject"; a behaviour without one (like this fake) dead-ended,
+		// no Light theme was pushed, and the lookup resolved against Themes.Active (Dark).
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_NonFE_Behaviour_Inside_Light_Pinned_Subtree_Resolves_Light_ThemeResource()
+		{
+			using var _ = ThemeHelper.UseApplicationDarkTheme();
+
+			var lightPinnedRoot = new Border
+			{
+				RequestedTheme = ElementTheme.Light,
+				Width = 150,
+				Height = 150,
+			};
+
+			var borderResources = new ResourceDictionary();
+			borderResources.ThemeDictionaries["Light"] = new ResourceDictionary
+			{
+				["OwnerThemePushTestBrush"] = new SolidColorBrush(Colors.LightYellow),
+			};
+			borderResources.ThemeDictionaries["Dark"] = new ResourceDictionary
+			{
+				["OwnerThemePushTestBrush"] = new SolidColorBrush(Colors.DarkSlateBlue),
+			};
+			lightPinnedRoot.Resources = borderResources;
+
+			WindowHelper.WindowContent = lightPinnedRoot;
+			await WindowHelper.WaitForLoaded(lightPinnedRoot);
+
+			// Attach the behaviour the way Interaction.Behaviors does: a DependencyObjectCollection
+			// whose parent is the host element. Adding the behaviour wires its Store.Parent to the
+			// host (DependencyObjectCollection.OnAdded -> SetParent(collection.GetParent() ?? collection)).
+			var behavior = new FakeThemeBehavior();
+			var behaviorCollection = new DependencyObjectCollection(lightPinnedRoot);
+			behaviorCollection.Add(behavior);
+
+			Assert.AreSame(
+				lightPinnedRoot,
+				behavior.GetParent(),
+				"Behaviour's Store.Parent should be wired to the host element, like Interaction.Behaviors.");
+
+			// Register a {ThemeResource}-style binding on the behaviour's property (mirrors how a
+			// library-compiled {ThemeResource} binding is set up) and resolve it out of any theme walk.
+			var resourceKey = new SpecializedResourceDictionary.ResourceKey("OwnerThemePushTestBrush");
+			var store = ((IDependencyObjectStoreProvider)behavior).Store;
+			store.SetResourceBinding(
+				FakeThemeBehavior.TestBrushProperty,
+				resourceKey,
+				ResourceUpdateReason.ThemeResource,
+				context: null,
+				precedence: null,
+				setterBindingPath: null);
+
+			store.UpdateResourceBindings(
+				ResourceUpdateReason.ThemeResource,
+				resourceContextProvider: lightPinnedRoot);
+
+			var brush = behavior.TestBrush as SolidColorBrush;
+			Assert.IsNotNull(brush, "Behaviour's TestBrush should be resolved");
+			Assert.AreEqual(
+				Colors.LightYellow,
+				brush.Color,
+				"The behaviour inherits Light from its host element via Store.Parent; the {ThemeResource} " +
+				"must resolve from the Light sub-dictionary, not from Themes.Active (Dark).");
+		}
+#endif
 	}
+
+#if HAS_UNO
+	// Minimal stand-in for a Microsoft.Xaml.Behaviors-style behaviour: a non-UIElement
+	// DependencyObject carrying a {ThemeResource}-bindable property. It deliberately has no
+	// "AssociatedObject" property — theme resolution must reach its host purely through
+	// DependencyObjectStore.Parent (wired by the Interaction.Behaviors DependencyObjectCollection).
+	public partial class FakeThemeBehavior : DependencyObject
+	{
+		public static readonly DependencyProperty TestBrushProperty = DependencyProperty.Register(
+			nameof(TestBrush),
+			typeof(Brush),
+			typeof(FakeThemeBehavior),
+			new PropertyMetadata(null));
+
+		public Brush TestBrush
+		{
+			get => (Brush)GetValue(TestBrushProperty);
+			set => SetValue(TestBrushProperty, value);
+		}
+	}
+#endif
 }
