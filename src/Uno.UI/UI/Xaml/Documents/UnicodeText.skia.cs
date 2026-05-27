@@ -360,14 +360,24 @@ internal readonly partial struct UnicodeText : IParsedText
 						maxHeightFontDetailsInChunkUnderTest = currentClusterBreak.Value.fontDetails;
 					}
 
-					if (currentLineEnd == -1 && textWrapping is TextWrapping.Wrap && lineWidth + chunkUnderTestWidth - chunkUnderTestTrailingSpaceWidth > availableSize.Width)
+					if (textWrapping is TextWrapping.Wrap && chunkUnderTestWidth - chunkUnderTestTrailingSpaceWidth > availableSize.Width)
 					{
+						// The chunk being built can't fit on an empty line on its own — we have to break mid-chunk.
+						// If it can fit on a line, then it will be moved as a whole to the next line during the
+						// line breaking opportunity check below.
+						if (currentLineEnd != -1)
+						{
+							// If anything is already committed on the current line, flush it first so the chunk starts on a fresh line.
+							var (currentLineH, currentLineB) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, maxHeightFontDetailsInCurrentLine!, lines.Count == 0, false);
+							lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, currentLineEnd, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, currentLineClusterLast!, lineWidth, lineWidthWithoutTrailingSpaces, currentLineH, currentLineB));
+						}
+
 						float width;
 						float widthWithoutTrailingSpaces;
 						FontDetails fontDetails;
 						int end;
 						LinkedListNode<Cluster> clusterLast;
-						if (oldValues.maxHeightFontDetailsInChunkUnderTest is null) // this cluster is the only cluster in the line
+						if (oldValues.maxHeightFontDetailsInChunkUnderTest is null) // this cluster is the only cluster in the chunk
 						{
 							width = chunkUnderTestWidth;
 							widthWithoutTrailingSpaces = chunkUnderTestWidth - chunkUnderTestTrailingSpaceWidth;
