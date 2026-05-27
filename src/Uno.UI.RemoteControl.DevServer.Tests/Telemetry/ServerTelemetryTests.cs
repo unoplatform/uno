@@ -9,6 +9,8 @@ public class TelemetryServerTests : TelemetryTestBase
 	public static void ClassInitialize(TestContext context) => GlobalClassInitialize<TelemetryServerTests>(context);
 
 	[TestMethod]
+	[Retry(2, MillisecondsDelayBetweenRetries = 1000)]
+	[Description("Intermittent: random port binding may collide or the host process may take longer to start on CI")]
 	public async Task Telemetry_Server_LogsConnectionEvents()
 	{
 		var solution = SolutionHelper;
@@ -56,6 +58,8 @@ public class TelemetryServerTests : TelemetryTestBase
 	}
 
 	[TestMethod]
+	[Retry(2, MillisecondsDelayBetweenRetries = 1000)]
+	[Description("Intermittent: random port binding may collide or the host process may take longer to start on CI")]
 	public async Task Telemetry_FileTelemetry_AppliesEventsPrefix()
 	{
 		var solution = SolutionHelper;
