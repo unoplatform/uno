@@ -510,6 +510,10 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		for (var c = 0; c < count; c++)
 		{
 			XVisualInfo* visual_ = GlxInterface.glXGetVisualFromFBConfig(display, ptr[c]);
+			if (visual_ == null)
+			{
+				continue;
+			}
 			if (visual_->depth == 32) // 24bit color + 8bit stencil as requested above
 			{
 				bestFbc = ptr[c];
@@ -518,17 +522,26 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			}
 		}
 
-		if (visual == null)
+		// bestFbc and visual are always set together, but guard both: passing a null FBConfig to
+		// glXCreateNewContext is what produces the "Value in failed request: 0x0" BadValue.
+		if (visual == null || bestFbc == IntPtr.Zero)
 		{
-			throw new InvalidOperationException("Could not create correct visual window.\n");
+			throw new InvalidOperationException("Could not find a suitable GLX framebuffer config / visual.");
 		}
 
-		IntPtr context = GlxInterface.glXCreateNewContext(display, bestFbc, GlxConsts.GLX_RGBA_TYPE, IntPtr.Zero, /* True */ 1);
-		if (context == IntPtr.Zero)
+		// glXCreateNewContext allocates the context XID client-side and returns a non-null handle even
+		// when the server rejects the request, so the failure only surfaces as an asynchronous X error.
+		// Trap it (instead of letting Xlib abort the process) so the caller can fall back to another backend.
+		IntPtr context;
+		using (var errorTrap = X11Helper.TrapErrors())
 		{
-			throw new InvalidOperationException($"{nameof(GlxInterface.glXCreateNewContext)} failed and returned a null context.\n");
+			context = GlxInterface.glXCreateNewContext(display, bestFbc, GlxConsts.GLX_RGBA_TYPE, IntPtr.Zero, /* True */ 1);
+			if (errorTrap.SyncAndHasError(display) || context == IntPtr.Zero)
+			{
+				throw new InvalidOperationException(
+					$"{nameof(GlxInterface.glXCreateNewContext)} failed ({(context == IntPtr.Zero ? "returned a null context" : "X protocol error: " + errorTrap.ErrorText)}).");
+			}
 		}
-		_ = XLib.XSync(display, false);
 
 		XSetWindowAttributes attribs = default;
 		// Setting the colormap here is necessary, otherwise we get a GLX error on some environments. cf. https://github.com/unoplatform/uno/issues/21285
