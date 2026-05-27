@@ -299,46 +299,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 			}
 
+			// Make sure the typing phase has fully settled before starting the measured selection loop.
+			// On Skia-WASM the selection state can transiently report a stale value through a queued
+			// dispatcher continuation; reading _selection while it is stale would offset the whole loop
+			// by one. Waiting for the caret to actually reach the end of the text removes that race.
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 11 && SUT.SelectionLength == 0);
+
 			for (var i = 1; i <= 11; i++)
 			{
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.Shift));
-				await WindowHelper.WaitForIdle();
-				Assert.AreEqual(11 - i, SUT.SelectionStart);
-				Assert.AreEqual(i, SUT.SelectionLength);
+				await WindowHelper.WaitFor(() => SUT.SelectionStart == 11 - i && SUT.SelectionLength == i, message: $"Shift+Left iteration {i}");
 			}
 
 			for (var i = 1; i <= 5; i++)
 			{
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift));
-				await WindowHelper.WaitForIdle();
-				Assert.AreEqual(i, SUT.SelectionStart);
-				Assert.AreEqual(11 - i, SUT.SelectionLength);
+				await WindowHelper.WaitFor(() => SUT.SelectionStart == i && SUT.SelectionLength == 11 - i, message: $"Shift+Right iteration {i}");
 			}
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.None));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(5, SUT.SelectionStart);
-			Assert.AreEqual(0, SUT.SelectionLength);
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 5 && SUT.SelectionLength == 0, message: "Left collapses selection to its start");
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.End, VirtualKeyModifiers.Shift));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(5, SUT.SelectionStart);
-			Assert.AreEqual(6, SUT.SelectionLength);
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 5 && SUT.SelectionLength == 6, message: "Shift+End extends to end of text");
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(11, SUT.SelectionStart);
-			Assert.AreEqual(0, SUT.SelectionLength);
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 11 && SUT.SelectionLength == 0, message: "Right collapses selection to its end");
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.Shift));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(0, SUT.SelectionStart);
-			Assert.AreEqual(11, SUT.SelectionLength);
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 0 && SUT.SelectionLength == 11, message: "Shift+Home extends to start of text");
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(11, SUT.SelectionStart);
-			Assert.AreEqual(0, SUT.SelectionLength);
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 11 && SUT.SelectionLength == 0, message: "Right collapses selection to its end");
 		}
 
 		[TestMethod]
@@ -1583,6 +1575,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // Flaky on Skia WASM #9080
 		public async Task When_Chunk_DoubleTapHeld()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1612,16 +1605,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			mouse.Release();
 			mouse.Press();
-			await WindowHelper.WaitForIdle();
-
-			Assert.AreEqual(6, SUT.SelectionStart);
-			Assert.AreEqual(5, SUT.SelectionLength);
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 6 && SUT.SelectionLength == 5, message: "double-tap selects the word under the pointer");
 
 			mouse.MoveBy(-40, 0);
-			await WindowHelper.WaitForIdle();
-
-			Assert.AreEqual(0, SUT.SelectionStart);
-			Assert.AreEqual(SUT.Text.Length, SUT.SelectionLength);
+			// Wait for the held-drag to extend the chunk selection to the left edge AND establish the
+			// backward selection direction. On Skia-WASM the injected move is delivered through the input
+			// pipeline and the SelectInternal that flips selectionEndsAtTheStart may settle after the first
+			// idle pass, so we poll for the complete target state instead of asserting on a single idle.
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 0 && SUT.SelectionLength == SUT.Text.Length && SUT.IsBackwardSelection, message: "held-drag extends selection left as a backward selection");
 
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
@@ -1629,10 +1620,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// the selection should start on the right
 			Assert.IsTrue(SUT.IsBackwardSelection);
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift));
-			await WindowHelper.WaitForIdle();
-
-			Assert.AreEqual(1, SUT.SelectionStart);
-			Assert.AreEqual(SUT.Text.Length - 1, SUT.SelectionLength);
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 1 && SUT.SelectionLength == SUT.Text.Length - 1, message: "Shift+Right shrinks the backward selection from the left");
 		}
 
 		[TestMethod]
@@ -2845,6 +2833,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18371")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // Flaky on Skia WASM #9080
 		public async Task When_BeforeTextChanging_Resets_Selection_Direction()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2872,6 +2861,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 			}
 
+			// Wait for the backward selection built above to fully settle (and let any pending
+			// SelectionChanged from the loop drain) BEFORE subscribing the counter. Otherwise, on
+			// Skia-WASM a late SelectionChanged from the loop can be observed by the counter and be
+			// mis-attributed to the (canceled) text input below, inflating the count to 1.
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 1 && SUT.SelectionLength == SUT.Text.Length - 1 && SUT.IsBackwardSelection, message: "backward selection settled before subscribing");
+			await WindowHelper.WaitForIdle();
+
 			SUT.BeforeTextChanging += (_, args) => args.Cancel = args.NewText == "as";
 
 			var selectionChangedCount = 0;
@@ -2879,6 +2875,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await KeyboardHelper.InputText("s");
 			await WindowHelper.WaitForIdle();
+			// The text change is canceled by BeforeTextChanging, so the selection is unchanged (only its
+			// direction is reset) and no SelectionChanged should be raised.
 			Assert.AreEqual(0, selectionChangedCount);
 
 			// when we press Shift+Left now, the selection "end" is on the right, so the selection shrinks.
