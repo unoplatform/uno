@@ -486,6 +486,141 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				"must resolve from the Light sub-dictionary, not from Themes.Active (Dark).");
 		}
 #endif
+		// === Resolution-scope (popup) regression guards — see specs/theming-winui-resolution-scope ===
+
+		// R1: an inline <Popup> declared under a RequestedTheme="Light" boundary, opened so its content is
+		// hosted in the PopupRoot, must resolve a {ThemeResource} declared in the boundary's local
+		// ThemeDictionaries against the content's inherited Light theme — not the application/OS (Dark) theme.
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_Inline_Popup_Opened_Resolves_DeclarationSite_ThemeResource()
+		{
+#if HAS_UNO
+			using var darkApp = ThemeHelper.UseApplicationDarkTheme();
+			await WindowHelper.WaitForIdle();
+#endif
+			var root = (Border)XamlReader.Load(
+				"""
+				<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives"
+						RequestedTheme="Light">
+					<Border.Resources>
+						<ResourceDictionary>
+							<ResourceDictionary.ThemeDictionaries>
+								<ResourceDictionary x:Key="Light">
+									<SolidColorBrush x:Key="InlinePopupBrush" Color="Green" />
+								</ResourceDictionary>
+								<ResourceDictionary x:Key="Dark">
+									<SolidColorBrush x:Key="InlinePopupBrush" Color="Red" />
+								</ResourceDictionary>
+							</ResourceDictionary.ThemeDictionaries>
+						</ResourceDictionary>
+					</Border.Resources>
+					<primitives:Popup x:Name="popup">
+						<Border x:Name="popupContent"
+								Width="50"
+								Height="50"
+								Background="{ThemeResource InlinePopupBrush}" />
+					</primitives:Popup>
+				</Border>
+				""");
+
+			WindowHelper.WindowContent = root;
+			await WindowHelper.WaitForLoaded(root);
+
+			var popup = (Microsoft.UI.Xaml.Controls.Primitives.Popup)root.FindName("popup");
+			var popupContent = (Border)root.FindName("popupContent");
+
+			try
+			{
+				popup.IsOpen = true;
+				await WindowHelper.WaitForLoaded(popupContent);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(ElementTheme.Light, popupContent.ActualTheme,
+					"Inline popup content should inherit Light from its declaration site.");
+
+				var brush = popupContent.Background as SolidColorBrush;
+				Assert.IsNotNull(brush, "Popup content background should be a SolidColorBrush.");
+				Assert.AreEqual(Colors.Green, brush.Color,
+					$"Inline popup content has ActualTheme=Light, so its {{ThemeResource}} must resolve to the " +
+					$"Light value (Green), but it is {brush.Color}.");
+			}
+			finally
+			{
+				popup.IsOpen = false;
+			}
+		}
+
+		// R1: re-resolving open popup content after the placement target's theme toggles at runtime must follow
+		// the new theme (the pinned providing dictionary re-selects the new sub-dictionary on RefreshValue).
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_Flyout_Target_Theme_Toggled_While_Open_Updates_ThemeResource()
+		{
+#if HAS_UNO
+			using var darkApp = ThemeHelper.UseApplicationDarkTheme();
+			await WindowHelper.WaitForIdle();
+#endif
+			var host = (Border)XamlReader.Load(
+				"""
+				<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						RequestedTheme="Light">
+					<Border.Resources>
+						<ResourceDictionary>
+							<ResourceDictionary.ThemeDictionaries>
+								<ResourceDictionary x:Key="Light">
+									<SolidColorBrush x:Key="ToggleBrush" Color="Green" />
+								</ResourceDictionary>
+								<ResourceDictionary x:Key="Dark">
+									<SolidColorBrush x:Key="ToggleBrush" Color="Red" />
+								</ResourceDictionary>
+							</ResourceDictionary.ThemeDictionaries>
+						</ResourceDictionary>
+					</Border.Resources>
+					<Button x:Name="btn" Content="Open">
+						<Button.Flyout>
+							<Flyout>
+								<Border x:Name="flyoutContent"
+										Width="50"
+										Height="50"
+										Background="{ThemeResource ToggleBrush}" />
+							</Flyout>
+						</Button.Flyout>
+					</Button>
+				</Border>
+				""");
+
+			WindowHelper.WindowContent = host;
+			await WindowHelper.WaitForLoaded(host);
+
+			var button = (Button)host.FindName("btn");
+			var flyout = (Flyout)button.Flyout;
+
+			try
+			{
+				flyout.ShowAt(button);
+				await WindowHelper.WaitForIdle();
+				var flyoutContent = (Border)flyout.Content;
+				await WindowHelper.WaitForLoaded(flyoutContent);
+
+				Assert.AreEqual(Colors.Green, (flyoutContent.Background as SolidColorBrush)?.Color,
+					"Flyout content should first resolve the host's Light value (Green).");
+
+				host.RequestedTheme = ElementTheme.Dark;
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(Colors.Red, (flyoutContent.Background as SolidColorBrush)?.Color,
+					"After toggling the host (placement target) to Dark while open, the flyout content " +
+					"{ThemeResource} must follow to the Dark value (Red).");
+			}
+			finally
+			{
+				flyout.Hide();
+			}
+		}
 	}
 
 #if HAS_UNO
