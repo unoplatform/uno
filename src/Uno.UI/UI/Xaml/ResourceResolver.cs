@@ -362,7 +362,15 @@ namespace Uno.UI
 			// This uses the 3-parameter TryStaticRetrieval overload, which does not capture
 			// the providing ResourceDictionary. For theme resources, dictionary pinning is
 			// deferred until the load-time re-resolution path.
-			if (!immediateResolution && TryStaticRetrieval(specializedKey, context, out var value))
+			// R1 (resolution scope): resolve the initial value AND capture the providing dictionary, mirroring
+			// WinUI's CThemeResource::SetInitialValueAndTargetDictionary (ThemeResource.cpp:39-51). For a
+			// {ThemeResource} the providing dictionary is pinned into the ThemeResourceReference so RefreshValue
+			// can re-resolve from it after the element is reparented (e.g. popup/flyout/tooltip content moved under
+			// PopupRoot), where the load-time visual-tree walk can no longer reach the opener's local
+			// ThemeDictionaries. ResourceDictionary.TryGetValue returns the dictionary that OWNS the
+			// ThemeDictionaries (not the Light/Dark sub-dictionary — see ResourceDictionary.cs:394-401), so a later
+			// theme change re-selects the correct sub-dictionary on re-query.
+			if (!immediateResolution && TryStaticRetrieval(specializedKey, context, out var value, out var providingDictionary))
 			{
 				owner.SetValue(property, BindingPropertyHelper.Convert(property.Type, value), precedence);
 
@@ -371,12 +379,12 @@ namespace Uno.UI
 
 				if (isThemeResource)
 				{
-					// Create ThemeResourceReference without pinned dictionary for now.
-					// The providing dictionary will be captured during the first
-					// _resourceBindings resolution at load time (via the re-pin logic
-					// in InnerUpdateResourceBindingsUnsafe).
+					// Pin the providing dictionary captured above (R1). The _resourceBindings tree-walk at load
+					// time may also re-pin it for in-tree content, but parse-time pinning is what lets reparented
+					// (popup/flyout/tooltip) content re-resolve a locally-declared {ThemeResource} from the opener's
+					// dictionary, since its load-time walk dead-ends at the PopupRoot.
 					var themeRef = new ThemeResourceReference(
-						specializedKey, null, value, isResolved: true, context,
+						specializedKey, providingDictionary, value, isResolved: true, context,
 						updateReason, effectivePrecedence);
 					(owner as IDependencyObjectStoreProvider)?.Store.SetThemeResourceBinding(property, themeRef);
 
