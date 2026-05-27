@@ -481,4 +481,159 @@ public partial class Given_Parser
 
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	public async Task When_WMC0907_xNameless_xLoad()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page
+					x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+					<TextBlock x:Load="False" />
+				</Page>
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } };
+
+		test.ExpectedDiagnostics.AddRange(
+		[
+			DiagnosticResult.CompilerError("UXAML0001")
+				.WithSpan("C:/Project/0/MainPage.xaml", 6, 3, 6, 3)
+				.WithArguments("Element must have x:Name attribute specified since it uses x:Load."),
+		]);
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_WMC0913_xLoad_Root_Element()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page
+					x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					
+					x:Load="False" />
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } };
+
+		test.ExpectedDiagnostics.AddRange(
+		[
+			DiagnosticResult.CompilerError("UXAML0001")
+				.WithSpan("C:/Project/0/MainPage.xaml", 1, 2, 1, 2)
+				.WithArguments("x:Load cannot be used on the root of a Page, User Control or DataTemplate, or direct children of a Resource Dictionary, and can only be used on elements of type UIElement or FlyoutBase"),
+		]);
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_WMC0913_xLoad_DataTemplate_Root()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page
+					x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+					<ContentControl>
+						<ContentControl.ContentTemplate>
+							<DataTemplate>
+								<Border x:Name="RootBorder" x:Load="False" />
+							</DataTemplate>
+						</ContentControl.ContentTemplate>
+					</ContentControl>
+
+				</Page>
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } };
+
+		test.ExpectedDiagnostics.AddRange(
+		[
+			DiagnosticResult.CompilerError("UXAML0001")
+
+				.WithSpan("C:/Project/0/MainPage.xaml", 9, 6, 9, 6)
+				.WithArguments("x:Load cannot be used on the root of a Page, User Control or DataTemplate, or direct children of a Resource Dictionary, and can only be used on elements of type UIElement or FlyoutBase"),
+		]);
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_WMC0913_xLoad_ExplicitResDict_Root()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MyRD.xaml",
+				"""
+				<ResourceDictionary
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+					<Border x:Key="MyKey" x:Name="MyName" x:Load="False" />
+
+				</ResourceDictionary>
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { string.Empty } } };
+
+		test.ExpectedDiagnostics.AddRange(
+		[
+			DiagnosticResult.CompilerError("UXAML0001")
+				.WithSpan("C:/Project/0/MyRD.xaml", 5, 3, 5, 3)
+				.WithArguments("x:Load cannot be used on the root of a Page, User Control or DataTemplate, or direct children of a Resource Dictionary, and can only be used on elements of type UIElement or FlyoutBase"),
+		]);
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_WMC0913_xLoad_ImplicitResDict_Root()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page
+					x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+					<Page.Resources>
+						<Border x:Key="MyKey" x:Name="MyName" x:Load="False" />
+					</Page.Resources>
+
+				</Page>
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } };
+
+		test.ExpectedDiagnostics.AddRange(
+		[
+			DiagnosticResult.CompilerError("UXAML0001")
+				.WithSpan("C:/Project/0/MainPage.xaml", 7, 4, 7, 4)
+				.WithArguments("x:Load cannot be used on the root of a Page, User Control or DataTemplate, or direct children of a Resource Dictionary, and can only be used on elements of type UIElement or FlyoutBase"),
+		]);
+
+		await test.RunAsync();
+	}
 }

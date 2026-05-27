@@ -8,13 +8,13 @@ using Verify = XamlSourceGeneratorVerifier;
 [TestClass]
 public partial class Given_Parser
 {
-	private static string EmptyCodeBehind(string className) =>
+	private static string EmptyCodeBehind(string className, string baseType = "Page") =>
 		$$"""
 		using Microsoft.UI.Xaml.Controls;
 
 		namespace TestRepro
 		{
-			public sealed partial class {{className}} : Page
+			public sealed partial class {{className}} : {{baseType}}
 			{
 				public {{className}}()
 				{
@@ -24,7 +24,7 @@ public partial class Given_Parser
 		}
 		""";
 
-	private static readonly string _emptyCodeBehind = EmptyCodeBehind("MainPage");
+	private static readonly string _emptyCodeBehind = EmptyCodeBehind("MainPage", "Page");
 
 	[TestMethod]
 	public async Task When_Event_Handler()
