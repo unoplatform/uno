@@ -220,20 +220,7 @@ internal sealed class ThemeResourceReference
 				return true;
 			}
 
-			DependencyObject? next = null;
-			if (current is FrameworkElement fe)
-			{
-				next = fe.GetParent() as DependencyObject ?? fe.Parent;
-				if (next is null && fe.TemplatedParent is DependencyObject tp)
-				{
-					next = tp;
-				}
-			}
-			else
-			{
-				next = GetAssociatedObject(current);
-			}
-
+			var next = GetThemeResolutionParent(current);
 			if (next is null)
 			{
 				break;
@@ -247,15 +234,9 @@ internal sealed class ThemeResourceReference
 
 	private static Theme ResolveInheritedBaseTheme(DependencyObject? owner)
 	{
-		// Walk the parent chain from the owner upwards, returning the first stored
-		// Light/Dark theme we find. Falls back to TemplatedParent when the chain runs
-		// out of visual-tree parents (control-template internals that are being
-		// materialised but not yet attached to their templated owner). For non-UIElement
-		// DependencyObjects that participate in the visual tree only via an
-		// AssociatedObject (Microsoft.Xaml.Behaviors-style behaviours that have a
-		// ThemeResource-bound property), the walk hops to AssociatedObject and continues
-		// from there — without this, the dictionary lookup for the behaviour's bound
-		// property falls back to Themes.Active and resolves against the wrong theme.
+		// Walk up from the owner, returning the first stored Light/Dark theme we find.
+		// Parent resolution (including the non-UIElement behaviour case) is handled by
+		// GetThemeResolutionParent.
 		var current = owner;
 		var depth = 0;
 		while (current is not null && depth < 80)
@@ -270,26 +251,7 @@ internal sealed class ThemeResourceReference
 				}
 			}
 
-			DependencyObject? next = null;
-			if (current is FrameworkElement fe)
-			{
-				next = fe.GetParent() as DependencyObject ?? fe.Parent;
-				if (next is null && fe.TemplatedParent is DependencyObject tp)
-				{
-					next = tp;
-				}
-			}
-			else
-			{
-				// Non-UIElement DependencyObject (e.g. Microsoft.Xaml.Behaviors Behavior,
-				// trigger, condition). Reflect for an "AssociatedObject" of type
-				// DependencyObject so behaviours attached to a visual element can resolve
-				// theme resources against that element's inherited theme. Reflected
-				// rather than statically referenced so Uno.UI does not take a hard
-				// dependency on Microsoft.Xaml.Behaviors.
-				next = GetAssociatedObject(current);
-			}
-
+			var next = GetThemeResolutionParent(current);
 			if (next is null)
 			{
 				break;
@@ -301,29 +263,34 @@ internal sealed class ThemeResourceReference
 		return Theme.None;
 	}
 
-	private static DependencyObject? GetAssociatedObject(DependencyObject source)
+	// Resolves the next ancestor to consider when walking up the tree for theme resolution.
+	//
+	// For FrameworkElements we prefer the store parent (DependencyObjectStore.Parent), then
+	// fall back to the publicly-visible logical Parent and finally the TemplatedParent. The
+	// latter two can legitimately differ from the store parent (see
+	// FrameworkElement.LogicalParentOverride / VisualParent) and cover control-template
+	// internals that are being materialised before they are attached to their templated owner.
+	//
+	// For any other DependencyObject we follow the store parent directly. Non-UIElement
+	// DependencyObjects participate in the tree exclusively through Store.Parent: a
+	// Microsoft.Xaml.Behaviors-style behaviour added through an Interaction.Behaviors
+	// (DependencyObjectCollection) attached property has its Store.Parent wired to the host
+	// element by DependencyObjectCollection.OnAdded / DependencyObjectStore.UpdateAutoParent —
+	// the same chain that already powers {Binding} DataContext inheritance and ResourceDictionary
+	// resolution (GetResourceDictionaries walks these parents via VisualTreeHelper.GetParent,
+	// which itself resolves to Store.Parent on Skia/WASM). Following Store.Parent therefore
+	// reaches the same host element the old reflected "AssociatedObject" hop did, without taking
+	// a hard dependency on, or reflecting against, Microsoft.Xaml.Behaviors.
+	private static DependencyObject? GetThemeResolutionParent(DependencyObject current)
 	{
-		// Walk the type hierarchy and pick the first "AssociatedObject" property declared on
-		// any level. Using DeclaredOnly avoids AmbiguousMatchException when a generic subclass
-		// shadows the base property (Microsoft.Xaml.Behaviors' Behavior<T> declares
-		// AssociatedObject : T while base Behavior declares AssociatedObject : DependencyObject).
-		// The most-derived declaration takes priority because it returns the more specific type,
-		// which is what callers want; both return values are convertible to DependencyObject.
-		const global::System.Reflection.BindingFlags flags =
-			global::System.Reflection.BindingFlags.Instance
-			| global::System.Reflection.BindingFlags.Public
-			| global::System.Reflection.BindingFlags.DeclaredOnly;
-
-		for (var t = source.GetType(); t is not null; t = t.BaseType)
+		if (current is FrameworkElement fe)
 		{
-			var prop = t.GetProperty("AssociatedObject", flags);
-			if (prop is not null)
-			{
-				return prop.GetValue(source) as DependencyObject;
-			}
+			return fe.GetParent() as DependencyObject
+				?? fe.Parent
+				?? fe.TemplatedParent as DependencyObject;
 		}
 
-		return null;
+		return current.GetParent() as DependencyObject;
 	}
 
 	/// <summary>
