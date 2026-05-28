@@ -22,8 +22,7 @@ using Uno.WinUI.Graphics3DGL;
 
 namespace UITests.Shared.Windows_UI_Composition
 {
-	[Sample("Microsoft.UI.Composition")]
-	public class RotatingCubeGlCanvasElement() : GLCanvasElement(() => App.MainWindow)
+	public class GLCanvasElement_RotatingCubeElement() : GLCanvasElement(() => App.MainWindow)
 	{
 		private static BufferObject<float> _vbo;
 		private static BufferObject<uint> _ebo;

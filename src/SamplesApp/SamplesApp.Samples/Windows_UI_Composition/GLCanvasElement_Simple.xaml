@@ -14,9 +14,9 @@
     mc:Ignorable="d skia not_win">
 
     <Grid>
-        <skia:SimpleTriangleGlCanvasElement />
+        <skia:GLCanvasElement_SimpleTriangleElement />
         <win:Grid>
-            <local:SimpleTriangleGlCanvasElement />
+            <local:GLCanvasElement_SimpleTriangleElement />
         </win:Grid>
         <not_win:Grid>
             <not_skia:TextBlock Text="This sample is only supported on skia and WinUI." />
