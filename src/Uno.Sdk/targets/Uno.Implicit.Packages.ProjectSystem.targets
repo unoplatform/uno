@@ -122,6 +122,20 @@
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Uno.targets"
 		Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == ''" />
 
+	<!--
+		WinAppSdk-only library mode: when DisableImplicitUnoWinAppSdkPackages is set, strip the base
+		(unconditionally-injected) Uno.* implicit packages on the Windows TFM. UnoFeatures-driven
+		packages (Toolkit, Material, Cupertino, Extensions, Graphics2DSK, etc.) are intentionally
+		left in place — opting into a UnoFeature is treated as an explicit intent to include that
+		package even when this property is set.
+	-->
+	<ItemGroup Condition=" '$(DisableImplicitUnoWinAppSdkPackages)' == 'true' AND $(TargetFramework.Contains('windows10')) ">
+		<_UnoProjectSystemPackageReference Remove="Uno.WinUI" />
+		<_UnoProjectSystemPackageReference Remove="Uno.Resizetizer" />
+		<_UnoProjectSystemPackageReference Remove="Uno.Sdk.Extras" />
+		<_UnoProjectSystemPackageReference Remove="Uno.Settings.DevServer" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="@(_UnoProjectSystemPackageReference)" Exclude="@(PackageReference)" />
 	</ItemGroup>

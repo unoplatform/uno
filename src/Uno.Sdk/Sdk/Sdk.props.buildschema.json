@@ -95,6 +95,10 @@
 			"description": "Disables the extra targets from being loaded which implicitly add NuGet packages.",
 			"type": "bool"
 		},
+		"DisableImplicitUnoWinAppSdkPackages": {
+			"description": "When set to true on a library, prevents the Uno.Sdk from implicitly adding the base Uno.* package references (Uno.WinUI, Uno.Resizetizer, Uno.Sdk.Extras, Uno.Settings.DevServer) on the Windows App SDK (net*-windows10*) target framework. UnoFeatures-driven packages (Toolkit, Material, Extensions, ...) still flow as usual. Use for WinUI libraries cross-targeted to Uno that want to avoid leaking Uno.WinUI as a transitive dependency to WinAppSdk consumers or to compile to a strong-named assembly on Windows.",
+			"type": "bool"
+		},
 		"DisableImplicitUnoNamespaces": {
 			"description": "Disables implicit namespaces that come specifically from the Uno.Sdk.",
 			"type": "bool"

@@ -190,6 +190,45 @@ to your `Directory.Build.props` file or `csproj` file. You will be then able to 
 
 > [!NOTE]
 > When disabling Implicit Uno Packages it is recommended that you use the `$(UnoVersion)` to set the version of the core Uno packages that are versioned with the SDK as the SDK requires `Uno.WinUI` to be the same version as the SDK to ensure proper compatibility.
+>
+> For the narrower scenario of a library that is essentially a *WinUI library* that also happens to support Uno cross-targets — and that should not leak `Uno.WinUI` to WinAppSdk-only consumers, or needs a strong-named output on Windows — see the [WinAppSdk-only libraries](#winappsdk-only-libraries) section below.
+
+## WinAppSdk-only libraries
+
+When you author a library that is *only* a WinUI library on the Windows App SDK target (and uses the rest of the `Uno.Sdk` solely for cross-platform target frameworks), you may want the Windows build to contain no implicit Uno dependencies. Two common motivations:
+
+- Avoid leaking `Uno.WinUI` (~100 MB) as a transitive NuGet dependency to consumers that only target the Windows App SDK.
+- Strong-name the Windows-targeted assembly. `Uno.WinUI` is not strong-named, so a referencing assembly cannot be strong-named either.
+
+Enable this with:
+
+```xml
+<DisableImplicitUnoWinAppSdkPackages>true</DisableImplicitUnoWinAppSdkPackages>
+```
+
+When set, `Uno.Sdk` stops adding the following implicit package references on the `net*-windows10*` target framework:
+
+- `Uno.WinUI` (also removes the bundled `Uno.UI.Toolkit.dll` it ships under `lib/net*-windows10.0.19041.0/`)
+- `Uno.Resizetizer`
+- `Uno.Sdk.Extras`
+- `Uno.Settings.DevServer`
+
+The property is intentionally scoped:
+
+- It only takes effect on the Windows App SDK target framework. Other targets (Android, iOS, Skia Desktop, WebAssembly, …) are unaffected, so the cross-platform side of your library still uses `Uno.WinUI` and the rest of the Uno stack.
+- Packages added through `UnoFeatures` (Toolkit, Material, Cupertino, Simple, csharpmarkup, prism, maps, foldable, skia/Graphics2DSK, glcanvas, mvvm, dsp, Uno.Extensions.*, …) are *not* stripped. Opting into a `UnoFeatures` value is treated as an explicit request for that package, even when this property is set.
+- Non-Uno implicit packages (`Microsoft.WindowsAppSDK`, `Microsoft.Windows.SDK.BuildTools`, `CommunityToolkit.Mvvm`, `SkiaSharp.Views.WinUI`, …) keep flowing as usual.
+
+If you still need one of the stripped packages on Windows for a specific reason, add it back explicitly:
+
+```xml
+<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+    <PackageReference Include="Uno.Resizetizer" Version="$(UnoResizetizerVersion)" PrivateAssets="all" />
+</ItemGroup>
+```
+
+> [!NOTE]
+> This property is aimed at libraries (`IsPackable=true`). Application heads typically need the implicit Uno packages on Windows to run, so setting this on a head project is not recommended.
 
 ## Supported OS Platform versions
 
