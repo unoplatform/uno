@@ -811,7 +811,10 @@ public class Given_InputManager
 		var secondScrollDelta = 100;
 		finger.Drag(from: bounds.GetCenter(), to: bounds.GetCenter().Offset(y: -secondScrollDelta), steps: 1, stepOffsetInMilliseconds: 3000);
 
-		sv.VerticalOffset.Should().BeApproximately(currentOffset + secondScrollDelta, precision: 2, because: "second press should have stop inertia and then the slow scroll have been applied");
+		// The second (slow, no-inertia) scroll absorbs the ~10px start threshold (dead-zone) on
+		// recognition and does not recover it, so it applies secondScrollDelta - threshold px (see #20473).
+		const double startThreshold = 10;
+		sv.VerticalOffset.Should().BeApproximately(currentOffset + secondScrollDelta - startThreshold, precision: 2, because: "second press should have stop inertia and then the slow scroll (minus the start threshold) have been applied");
 	}
 
 	[TestMethod]
@@ -946,20 +949,22 @@ public class Given_InputManager
 		using var finger2 = injector.GetFinger(id: 83);
 		finger2.Press(sv2.GetAbsoluteBounds().GetCenter());
 
-		// Start scrolling on both fingers
+		// Start scrolling on both fingers.
+		// Note: touch scrolling absorbs the ~10px start threshold (dead-zone) on recognition and does
+		// not recover it, so a drag of N px scrolls N - threshold px (see #20473).
 		finger1.MoveBy(y: -200);
 		finger2.MoveBy(y: -100);
 
-		sv1.VerticalOffset.Should().BeApproximately(200, precision: 2, because: "first finger should have scrolled the first ScrollViewer");
-		sv2.VerticalOffset.Should().BeApproximately(100, precision: 2, because: "second finger should have scrolled the second ScrollViewer");
+		sv1.VerticalOffset.Should().BeApproximately(190, precision: 2, because: "first finger should have scrolled the first ScrollViewer (minus the start threshold)");
+		sv2.VerticalOffset.Should().BeApproximately(90, precision: 2, because: "second finger should have scrolled the second ScrollViewer (minus the start threshold)");
 
 		// Release first finger and validate that first finger is still scrolling
 		finger1.Release();
 		finger2.MoveBy(y: -100);
 		finger2.Release();
 
-		sv1.VerticalOffset.Should().BeApproximately(200, precision: 2, because: "first ScrollViewer should not have been affected by second finger");
-		sv2.VerticalOffset.Should().BeApproximately(200, precision: 2, because: "second finger should still be scrolling the second ScrollViewer after first finger release");
+		sv1.VerticalOffset.Should().BeApproximately(190, precision: 2, because: "first ScrollViewer should not have been affected by second finger");
+		sv2.VerticalOffset.Should().BeApproximately(190, precision: 2, because: "second finger should still be scrolling the second ScrollViewer after first finger release");
 	}
 
 	[TestMethod]
@@ -1015,20 +1020,22 @@ public class Given_InputManager
 		using var finger2 = injector.GetFinger(id: 83);
 		finger2.Press(sv2.GetAbsoluteBounds().GetCenter());
 
-		// Start scrolling on both fingers
+		// Start scrolling on both fingers.
+		// Note: touch scrolling absorbs the ~10px start threshold (dead-zone) on recognition and does
+		// not recover it, so a drag of N px scrolls N - threshold px (see #20473).
 		finger1.MoveBy(y: -100);
 		finger2.MoveBy(y: -200);
 
-		sv1.VerticalOffset.Should().BeApproximately(100, precision: 2, because: "first finger should have scrolled the first ScrollViewer");
-		sv2.VerticalOffset.Should().BeApproximately(200, precision: 2, because: "second finger should have scrolled the second ScrollViewer");
+		sv1.VerticalOffset.Should().BeApproximately(90, precision: 2, because: "first finger should have scrolled the first ScrollViewer (minus the start threshold)");
+		sv2.VerticalOffset.Should().BeApproximately(190, precision: 2, because: "second finger should have scrolled the second ScrollViewer (minus the start threshold)");
 
 		// Release second finger and validate that first finger is still scrolling
 		finger2.Release();
 		finger1.MoveBy(y: -100);
 		finger1.Release();
 
-		sv1.VerticalOffset.Should().BeApproximately(200, precision: 2, because: "first finger should still be scrolling the first ScrollViewer after second finger release");
-		sv2.VerticalOffset.Should().BeApproximately(200, precision: 2, because: "second ScrollViewer should not have been affected by first finger");
+		sv1.VerticalOffset.Should().BeApproximately(190, precision: 2, because: "first finger should still be scrolling the first ScrollViewer after second finger release");
+		sv2.VerticalOffset.Should().BeApproximately(190, precision: 2, because: "second ScrollViewer should not have been affected by first finger");
 	}
 
 	[TestMethod]
@@ -1251,7 +1258,9 @@ public class Given_InputManager
 
 		await UITestHelper.WaitForIdle();
 
-		sv2.VerticalOffset.Should().BeApproximately(100, precision: 2);
+		// Touch scrolling absorbs the ~10px start threshold (dead-zone) on recognition and does not
+		// recover it, so a 100px drag scrolls 100 - threshold px (see #20473).
+		sv2.VerticalOffset.Should().BeApproximately(90, precision: 2);
 		starting.Should().Be(1, because: "pointer should have reached the element, giving it the opportunity to init the manipulation");
 		started.Should().Be(0, because: "pointer should have been grabbed by the direct manipulation before the manipulation started on the element");
 		delta.Should().Be(0);

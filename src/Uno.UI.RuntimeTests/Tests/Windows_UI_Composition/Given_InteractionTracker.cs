@@ -235,7 +235,7 @@ public partial class Given_InteractionTracker
 
 		Assert.AreEqual(
 			TrackerLogsConstructingHelper.GetInteractingStateEntered(
-				trackerPosition: new(-50.0f, 0.0f, 0.0f),
+				trackerPosition: new(-40.0f, 0.0f, 0.0f),
 				requestId: 0),
 			helper.Current);
 
@@ -247,16 +247,16 @@ public partial class Given_InteractionTracker
 
 		Assert.AreEqual(
 			TrackerLogsConstructingHelper.GetValuesChanged(
-				trackerPosition: new(-50.0f, 0.0f, 0.0f),
+				trackerPosition: new(-40.0f, 0.0f, 0.0f),
 				requestId: 0,
-				argsPosition: new(-50.0f, 0.0f, 0.0f)),
+				argsPosition: new(-40.0f, 0.0f, 0.0f)),
 			helper.Current);
 
 		helper.Advance();
 
 		Assert.AreEqual(
 			TrackerLogsConstructingHelper.GetIdleStateEntered(
-				trackerPosition: new(-50.0f, 0.0f, 0.0f),
+				trackerPosition: new(-40.0f, 0.0f, 0.0f),
 				requestId: 0),
 			helper.Current);
 

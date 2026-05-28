@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Devices.Input;
-using Windows.Foundation;
-using Windows.UI.Input;
 using AwesomeAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Disposables;
-using Point = Windows.Foundation.Point;
+using Windows.Devices.Input;
+using Windows.Foundation;
+using Windows.UI.Input;
 using static Uno.UI.Tests.Windows_UI_Input.GestureRecognizerTestExtensions;
+using Point = Windows.Foundation.Point;
 
 namespace Uno.UI.Tests.Windows_UI_Input
 {
@@ -378,7 +378,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
 			var result = new ManipulationRecorder(sut);
-			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
+			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX; // exactly the threshold: the whole crossing move IS the absorbed dead-zone (see #20473)
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25 + 1, 25);
@@ -427,11 +427,44 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20473")]
+		public void Manipulation_Begin_AbsorbsOnlyThreshold_NotWholeCrossingMove()
+		{
+			// Regression test for #20473: a SINGLE coarse pointer move that jumps well past the start
+			// threshold must absorb ONLY the threshold "dead-zone" — the movement beyond it must NOT be
+			// lost. Otherwise scrolling/panning feels sticky when pointer moves are delivered in large or
+			// coalesced chunks (the whole first chunk would be swallowed instead of just the dead-zone).
+			// This guards against the absorbed amount being dependent on the pointer-move granularity.
+
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
+			var result = new ManipulationRecorder(sut);
+			var threshold = GestureRecognizer.Manipulation.StartTouch.TranslateX;
+			var bigJump = threshold + 40; // single move that overshoots the threshold by a large margin
+			var postRecognitionMove = 10;
+
+			sut.ProcessDownEvent(25, 25);
+			sut.ProcessMoveEvent(25 + bigJump, 25); // one big move: crosses the threshold, fires Started ONLY
+			sut.ProcessMoveEvent(25 + bigJump + postRecognitionMove, 25); // next move carries the deferred overshoot
+
+			result.ShouldBe(
+				v => v.Starting(),
+				v => v.Started().At(25, 25).WithEmptyCumulative(),
+				// Only the 'threshold' dead-zone is absorbed silently; the overshoot beyond the threshold
+				// (bigJump - threshold = 40) is NOT lost - it flows into the NEXT move's reported Delta,
+				// together with that move's own incremental movement.
+				v => v.Delta()
+					.At(25 + bigJump + postRecognitionMove, 25)
+					.WithDelta(bigJump - threshold + postRecognitionMove, 0)
+					.WithCumulative(bigJump + postRecognitionMove, 0)
+			);
+		}
+
+		[TestMethod]
 		public void Manipulation_End()
 		{
 			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
 			var result = new ManipulationRecorder(sut);
-			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
+			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX; // exactly the threshold: the whole crossing move IS the absorbed dead-zone (see #20473)
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25 + step, 25); // Threshold crossing fires only Started; no immediate Delta (see #20473).
@@ -449,7 +482,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
 			var result = new ManipulationRecorder(sut);
-			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
+			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX; // exactly the threshold: the whole crossing move IS the absorbed dead-zone (see #20473)
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25 + step, 25); // Threshold crossing fires only Started; first reported Delta starts at the next move (see #20473).
@@ -470,8 +503,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationTranslateX };
 			var result = new ManipulationRecorder(sut);
-			var stepX = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
-			var stepY = GestureRecognizer.Manipulation.StartTouch.TranslateY + 1;
+			var stepX = GestureRecognizer.Manipulation.StartTouch.TranslateX; // exactly the threshold: the crossing move IS the absorbed dead-zone (see #20473)
+			var stepY = GestureRecognizer.Manipulation.StartTouch.TranslateY;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25, 25 + stepY); // Invalid move that should NOT cause the started
@@ -493,8 +526,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationTranslateY };
 			var result = new ManipulationRecorder(sut);
-			var stepX = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
-			var stepY = GestureRecognizer.Manipulation.StartTouch.TranslateY + 1;
+			var stepX = GestureRecognizer.Manipulation.StartTouch.TranslateX; // exactly the threshold: the crossing move IS the absorbed dead-zone (see #20473)
+			var stepY = GestureRecognizer.Manipulation.StartTouch.TranslateY;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25 + stepX, 25); // Invalid move that should NOT cause the started
@@ -516,8 +549,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationTranslateX };
 			var result = new ManipulationRecorder(sut);
-			var stepX = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
-			var stepY = GestureRecognizer.Manipulation.StartTouch.TranslateY + 1;
+			var stepX = GestureRecognizer.Manipulation.StartTouch.TranslateX; // exactly the threshold: the crossing move IS the absorbed dead-zone (see #20473)
+			var stepY = GestureRecognizer.Manipulation.StartTouch.TranslateY;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25, 25 + stepY); // Invalid move that should NOT cause the started
@@ -539,8 +572,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationTranslateY };
 			var result = new ManipulationRecorder(sut);
-			var stepX = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
-			var stepY = GestureRecognizer.Manipulation.StartTouch.TranslateY + 1;
+			var stepX = GestureRecognizer.Manipulation.StartTouch.TranslateX; // exactly the threshold: the crossing move IS the absorbed dead-zone (see #20473)
+			var stepY = GestureRecognizer.Manipulation.StartTouch.TranslateY;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25 - stepX, 25); // Invalid move that should NOT cause the started

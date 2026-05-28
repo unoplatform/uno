@@ -7,12 +7,12 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Numerics;
-using Windows.Devices.Input;
-using Windows.Foundation;
-using Windows.System;
 using Uno;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Windows.Devices.Input;
+using Windows.Foundation;
+using Windows.System;
 using CollectionExtensions = Uno.Extensions.CollectionExtensions;
 
 #if IS_UNO_UI_PROJECT
@@ -386,14 +386,28 @@ namespace Windows.UI.Input
 
 						ApplyRailing(ref changeSet);
 
-						// Absorb the threshold-crossing translation into the commit history WITHOUT firing
-						// ManipulationUpdated. This way the next pointer move produces a delta computed from
-						// the recognition point (cumulative tracking from the press point is preserved, but
-						// the threshold pixels are NOT recovered in the first reported delta).
-						// This matches WinUI and native iOS: scrolling/panning starts at the finger position
-						// at the moment the gesture is recognized, with no visible jump of the
-						// threshold (~15 px for touch) pixels at the start of the manipulation (see #20473).
-						CommitChanges(changeSet);
+						// Absorb ONLY the start-threshold ("dead-zone") portion of the translation into the
+						// commit history WITHOUT firing ManipulationUpdated — the threshold pixels are NOT
+						// recovered as a visible jump (see #20473). Any movement BEYOND the threshold that
+						// happened within this same pointer move is intentionally left uncommitted, so it
+						// flows naturally into the NEXT pointer move's reported Delta. This keeps the
+						// absorbed amount bounded by the threshold regardless of how coarsely the pointer
+						// moves are sampled or coalesced (so a single large/coalesced move never swallows
+						// more than the dead-zone), and preserves the original "no Updated between Started
+						// and the next move" semantics that downstream handlers rely on (e.g. nested
+						// ScrollViewers chaining inertia, RefreshContainer pull recognition).
+						// Cumulative keeps tracking from the press point; this matches WinUI / native iOS
+						// where scrolling/panning starts at the finger position at the moment of recognition.
+						var thresholdDelta = new ManipulationDelta
+						{
+							Translation = new(
+								ClampMagnitude(changeSet.Delta.Translation.X, _startThresholds.TranslateX),
+								ClampMagnitude(changeSet.Delta.Translation.Y, _startThresholds.TranslateY)),
+							Rotation = changeSet.Delta.Rotation,
+							Scale = changeSet.Delta.Scale,
+							Expansion = changeSet.Delta.Expansion
+						};
+						CommitChanges(changeSet with { Delta = thresholdDelta });
 						break;
 
 					case ManipulationStatus.Started when pointerRemoved && InertiaProcessor.TryStart(this, ref _inertia, changeSet):
@@ -497,6 +511,11 @@ namespace Windows.UI.Input
 			{
 				_head = new(_head.SumOfDelta.Add(changeSet.Delta), changeSet.Timestamp, changeSet.ActivePointerCount);
 			}
+
+			// Clamps a signed value to ±limit while preserving its sign.
+			// Used to absorb only the start-threshold "dead-zone" of the recognition move (see #20473).
+			private static double ClampMagnitude(double value, double limit)
+				=> Math.Sign(value) * Math.Min(Math.Abs(value), limit);
 
 			private void ApplyRailing(ref ManipulationChangeSet changeSet)
 			{
