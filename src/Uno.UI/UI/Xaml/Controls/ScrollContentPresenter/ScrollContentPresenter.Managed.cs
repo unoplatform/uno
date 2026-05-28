@@ -678,19 +678,25 @@ namespace Microsoft.UI.Xaml.Controls
 
 			public bool IsValid(ScrollDirection direction)
 			{
-				if (direction.HasFlag(ScrollDirection.Up) && Up < 0)
+				// Sub-pixel scroll room is FP noise from layout (e.g. ExtentHeight - ViewportHeight rarely
+				// lines up exactly with VerticalOffset after ChangeView-to-end). A direction is only
+				// considered scrollable if there is at least 1 px of room, otherwise an SV that has
+				// reached its scroll boundary would incorrectly claim inertia from a parent SV in a
+				// nested-chain scenario.
+				const double SubPixelTolerance = 1.0;
+				if (direction.HasFlag(ScrollDirection.Up) && Up < -SubPixelTolerance)
 				{
 					return true;
 				}
-				if (direction.HasFlag(ScrollDirection.Down) && Down > 0)
+				if (direction.HasFlag(ScrollDirection.Down) && Down > SubPixelTolerance)
 				{
 					return true;
 				}
-				if (direction.HasFlag(ScrollDirection.Left) && Left < 0)
+				if (direction.HasFlag(ScrollDirection.Left) && Left < -SubPixelTolerance)
 				{
 					return true;
 				}
-				if (direction.HasFlag(ScrollDirection.Right) && Right > 0)
+				if (direction.HasFlag(ScrollDirection.Right) && Right > SubPixelTolerance)
 				{
 					return true;
 				}

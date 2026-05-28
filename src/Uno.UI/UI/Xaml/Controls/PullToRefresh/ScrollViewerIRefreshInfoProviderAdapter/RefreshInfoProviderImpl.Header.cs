@@ -23,6 +23,12 @@ internal partial class RefreshInfoProviderImpl
 	private CompositionPropertySet? m_compositionProperties = null;
 	private string m_interactionRatioCompositionProperty = "InteractionRatio";
 	private double m_executionRatio = DEFAULT_EXECUTION_RATIO;
+	// The last interactionRatio for which InteractionRatioChanged actually fired (i.e. wasn't throttled).
+	// Tracked so the throttle in RaiseInteractionRatioChanged can detect crossings of executionRatio
+	// and force a notification when the pointer sequence jumps across the threshold without landing in
+	// the ±ALWAYS_RAISE_INTERACTION_RATIO_TOLERANCE band — otherwise the visualizer's Pending state
+	// is never reached, breaking pull-to-refresh.
+	private double m_lastFiredInteractionRatio = 0.0;
 	private bool m_peeking = false;
 
 	public event TypedEventHandler<IRefreshInfoProvider, object> IsInteractingForRefreshChanged;

@@ -3,10 +3,10 @@
 // MUX Reference RefreshInfoProviderImpl.cpp, commit de78834
 
 using System;
-using Microsoft.UI.Xaml.Controls;
-using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.Interactions;
+using Microsoft.UI.Xaml.Controls;
+using Windows.Foundation;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Private.Controls;
@@ -144,13 +144,23 @@ internal partial class RefreshInfoProviderImpl : IRefreshInfoProvider, IInteract
 
 		m_compositionProperties.InsertScalar(m_interactionRatioCompositionProperty, (float)(interactionRatio));
 
-		if (m_interactionRatioChangedCount == 0 || AreClose(interactionRatio, 0.0) || AreClose(interactionRatio, m_executionRatio))
+		// Also always fire when the ratio crosses the executionRatio in either direction since the last
+		// fired event. The "AreClose to executionRatio" condition only catches values WITHIN
+		// ±ALWAYS_RAISE_INTERACTION_RATIO_TOLERANCE of the threshold; a coarse pointer sequence whose
+		// ratios jump from <executionRatio to >executionRatio without landing in that band would never
+		// notify the visualizer, leaving its state stuck on the wrong side of the trigger and
+		// suppressing pull-to-refresh.
+		var crossesExecutionRatio =
+			(m_lastFiredInteractionRatio < m_executionRatio) != (interactionRatio < m_executionRatio);
+
+		if (m_interactionRatioChangedCount == 0 || AreClose(interactionRatio, 0.0) || AreClose(interactionRatio, m_executionRatio) || crossesExecutionRatio)
 		{
 			if (InteractionRatioChanged is not null)
 			{
 				var interactionRatioChangedArgs = new RefreshInteractionRatioChangedEventArgs(interactionRatio);
 				InteractionRatioChanged?.Invoke(this, interactionRatioChangedArgs);
 			}
+			m_lastFiredInteractionRatio = interactionRatio;
 			m_interactionRatioChangedCount = 1;
 		}
 		else if (m_interactionRatioChangedCount >= RAISE_INTERACTION_RATIO_CHANGED_FREQUENCY)
