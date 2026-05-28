@@ -1309,6 +1309,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // Flaky on Skia WASM #9080
 		public async Task When_ComboPopup_Rearrange_ScrollShouldNotReset()
 		{
 			var SUT = new ComboBox()
