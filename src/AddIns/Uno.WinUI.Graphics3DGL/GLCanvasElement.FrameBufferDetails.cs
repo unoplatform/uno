@@ -36,7 +36,7 @@ public abstract partial class GLCanvasElement
 				_renderBuffer = gl.GenRenderbuffer();
 				gl.BindRenderbuffer(GLEnum.Renderbuffer, _renderBuffer);
 				{
-					gl.RenderbufferStorage(GLEnum.Renderbuffer, InternalFormat.Depth24Stencil8, (uint)renderSize.Width, (uint)renderSize.Width);
+					gl.RenderbufferStorage(GLEnum.Renderbuffer, InternalFormat.Depth24Stencil8, (uint)renderSize.Width, (uint)renderSize.Height);
 					gl.FramebufferRenderbuffer(GLEnum.Framebuffer, GLEnum.DepthStencilAttachment,
 						GLEnum.Renderbuffer, _renderBuffer);
 				}

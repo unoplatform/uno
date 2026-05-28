@@ -34,7 +34,8 @@ namespace Uno.WinUI.Graphics3DGL;
 /// </summary>
 /// <remarks>
 /// This is only available on WinUI and on skia-based targets running with hardware acceleration.
-/// This is currently only available on the WPF and X11 targets (and WinUI).
+/// This is currently available on the WPF, Win32, X11, macOS, and WebAssembly Skia targets (and WinUI).
+/// On WebAssembly an offscreen WebGL 2.0 context is used (with a WebGL 1.0 fallback).
 /// </remarks>
 public abstract partial class GLCanvasElement : Grid, INativeContext
 {
