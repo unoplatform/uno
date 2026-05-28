@@ -12,20 +12,19 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
+using Uno.Extensions;
+using Uno.UI.RuntimeTests.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.Toolkit.Extensions;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.ViewManagement;
-using Uno.Extensions;
-using Uno.UI.RuntimeTests.Extensions;
-using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Toolkit.Extensions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.UI.Toolkit.DevTools.Input;
-
 using static Private.Infrastructure.TestServices;
 using Disposable = Uno.Disposables.Disposable;
 using ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresenter;
@@ -1496,6 +1495,93 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Release();
 
 			events.Should().BeEquivalentTo("enter", "pressed", "release", "exited");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11)] // Touch input injection is flaky on Skia X11
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_TouchScrollFinished_Then_NextTap_FiresClick()
+		{
+			// Issue #22246: after a touch scroll completes (the scroll has visibly stopped —
+			// either via boundary clamp or because the inertia velocity decayed below the pixel
+			// grid), the first tap on an interactive child was being swallowed by the still-
+			// running inertial DirectManipulation. Users had to tap twice.
+			//
+			// Taps DURING visible inertia must still be muted (existing iOS-style "tap stops the
+			// scroll" behavior in When_DirectManipulationInertial_Then_AllSubsequentEventsIgnored);
+			// this test only covers the post-gesture window where the user perceives the scroll
+			// as having stopped.
+			var sv = new ScrollViewer
+			{
+				Width = 200,
+				Height = 300,
+				IsScrollInertiaEnabled = true,
+				Content = new Border
+				{
+					Width = 200,
+					Height = 4000, // Enough to allow scrolling; small enough that inertia clamps at boundary fast.
+					Background = new SolidColorBrush(Colors.LightGreen)
+				}
+			};
+
+			var clicks = 0;
+			var button = new Button
+			{
+				Content = "Tap me",
+				Width = 120,
+				Height = 40,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Margin = new Thickness(8)
+			};
+			button.Click += (_, _) => clicks++;
+
+			// Place the button inside the same Grid cell as the SV. This puts it inside the
+			// ScrollContentPresenter's geometric bounds (which is what
+			// DirectManipulation.CanAddPointerAt checks) while keeping it the topmost hit-test
+			// target at its position. Its absolute position is independent of the scroll offset,
+			// so the test doesn't have to compute where the button ends up after the scroll.
+			var sut = new Grid { Children = { sv, button } };
+			await UITestHelper.Load(sut);
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			// Touch-drag inside the SV (well clear of the button overlay in the top-left corner)
+			// with a high velocity so inertia kicks in.
+			var svBounds = sv.GetAbsoluteBounds();
+			finger.Drag(
+				from: new Point(svBounds.X + svBounds.Width - 30, svBounds.Y + svBounds.Height - 20),
+				to: new Point(svBounds.X + svBounds.Width - 30, svBounds.Y + 20),
+				steps: 1,
+				stepOffsetInMilliseconds: 1);
+
+			// Wait until the visible scroll has settled — the user's scenario is "the scroll has
+			// visibly stopped, now I tap". Inertia clamps at the boundary on its very first tick
+			// for such a high injected velocity; without the fix the DM stays in Inertial for the
+			// full ~95s of velocity decay anyway, which is what swallows the tap below.
+			double previousOffset = -1;
+			for (var i = 0; i < 100; i++)
+			{
+				await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+				await Task.Delay(50); // Give the composition-timer-driven inertia processor real wall time to tick.
+				if (Math.Abs(sv.VerticalOffset - previousOffset) < 0.5)
+				{
+					break;
+				}
+				previousOffset = sv.VerticalOffset;
+			}
+
+			finger.Tap(button.GetAbsoluteBounds().GetCenter());
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, clicks, $"First tap after the touch scroll has visibly stopped should fire exactly one click. svBounds={sv.GetAbsoluteBounds()}, buttonBounds={button.GetAbsoluteBounds()}, finalVerticalOffset={sv.VerticalOffset}");
 		}
 
 		[TestMethod]
