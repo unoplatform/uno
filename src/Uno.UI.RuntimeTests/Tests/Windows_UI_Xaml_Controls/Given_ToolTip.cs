@@ -535,8 +535,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// value — so the label renders with the wrong theme's color (e.g. a light-on-light
 		// foreground that is invisible).
 		//
-		// The OS-vs-app mismatch is simulated deterministically by pinning the application theme to
-		// Dark and placing a host that pins RequestedTheme=Light. The host's ToolTip presents a
+		// The OS-vs-app mismatch is reproduced on Uno by pinning the application theme to Dark
+		// (ThemeHelper.UseApplicationDarkTheme, #if HAS_UNO — it relies on the Uno-internal
+		// SetExplicitRequestedTheme) and placing a host that pins RequestedTheme=Light. On native WinUI
+		// the app-theme pin is unavailable, so the test runs as a Light-host baseline confirming the
+		// WinUI-correct value (Green); WinUI never exhibits the regression, so it still validates the
+		// behavior the Uno fix must match. The host's ToolTip presents a
 		// TextBlock whose Foreground is {ThemeResource LabelForegroundBrush}, declared inline in the
 		// same XAML so it parses inside the host's resource scope (a standalone XamlReader.Load of a
 		// {ThemeResource} fragment throws on WinUI). ToolTip content is hosted in the PopupRoot,
@@ -548,9 +552,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// {ThemeResource} against the global/application active theme (Dark), evaluating to the Dark
 		// sentinel (Red), despite the label's ActualTheme correctly being Light.
 		//
-		// The assertion is on a single robust scenario (Light host under Dark app) where the
+		// The assertion is on a single robust scenario (Light host, app pinned Dark on Uno) where the
 		// element's ActualTheme is verifiably Light but the resolved brush value reveals which theme
-		// the {ThemeResource} was resolved against. Runs identically on Skia Desktop and native WinUI.
+		// the {ThemeResource} was resolved against. The expected value (Green) is identical on Skia
+		// Desktop and native WinUI; only the app-level mismatch differs (forced Dark on Uno, default on
+		// WinUI, as noted above).
 		// ---------------------------------------------------------------------------
 
 		// One XAML document: a RequestedTheme=Light host whose Resources declare a theme-keyed sentinel

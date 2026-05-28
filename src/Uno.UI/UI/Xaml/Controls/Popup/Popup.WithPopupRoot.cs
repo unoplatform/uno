@@ -1,14 +1,16 @@
-﻿using Uno.Extensions;
-using Uno.Disposables;
-using Uno.Foundation.Logging;
+﻿using System;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using System;
 using Microsoft.UI.Xaml.Media;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Dispatching;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
+using Windows.Foundation.Collections;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
-using Uno.UI.Dispatching;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -135,6 +137,26 @@ public partial class Popup
 				if (popupTheme != Theme.None && Child is FrameworkElement feChild)
 				{
 					feChild.NotifyThemeChanged(popupTheme);
+
+					// Some flyouts host their items in logical-only collections (Items,
+					// PrimaryCommands, SecondaryCommands) rather than as visual children
+					// of the popup.Child. Those items are still in the parse-time
+					// resource scope and have {ThemeResource} bindings on Foreground,
+					// Icon, etc., but they're NOT under the presenter's visual tree at
+					// this point — the presenter has not yet applied its template, and
+					// container materialisation happens during the upcoming layout pass.
+					// The feChild.NotifyThemeChanged above walks visual descendants only,
+					// so it never reaches them, and they render the first frame with the
+					// brush they resolved against the application's global active theme
+					// at XAML parse time (e.g. Dark while the popup itself is Light).
+					// Notify each logical item directly so its theme bindings re-resolve
+					// against the popup's theme before the first measure / render.
+					// NotifyThemeChanged honours each item's own RequestedTheme override
+					// and short-circuits on no-op, so this is safe for items that are
+					// already correct, and the items still participate normally in the
+					// subsequent template-driven theme walk once they enter the visual
+					// tree.
+					NotifyLogicalFlyoutItems(AssociatedFlyout, popupTheme);
 				}
 #endif
 
@@ -219,4 +241,46 @@ public partial class Popup
 			}
 		}
 	}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+	// Notify flyout items that live in logical-only collections (MenuFlyout.Items,
+	// CommandBarFlyout.PrimaryCommands / SecondaryCommands) of the popup's theme so
+	// they re-resolve their {ThemeResource} bindings before the first measure.
+	// See the long-form comment at the call site for the full rationale.
+	private static void NotifyLogicalFlyoutItems(FlyoutBase flyout, Theme popupTheme)
+	{
+		switch (flyout)
+		{
+			case MenuFlyout menuFlyout when menuFlyout.Items is { } menuItems:
+				foreach (var item in menuItems)
+				{
+					if (item is FrameworkElement feItem)
+					{
+						feItem.NotifyThemeChanged(popupTheme);
+					}
+				}
+				break;
+			case CommandBarFlyout commandBarFlyout:
+				NotifyCommandBarElements(commandBarFlyout.PrimaryCommands, popupTheme);
+				NotifyCommandBarElements(commandBarFlyout.SecondaryCommands, popupTheme);
+				break;
+		}
+	}
+
+	private static void NotifyCommandBarElements(IObservableVector<ICommandBarElement> commands, Theme popupTheme)
+	{
+		if (commands is null)
+		{
+			return;
+		}
+
+		foreach (var command in commands)
+		{
+			if (command is FrameworkElement feCommand)
+			{
+				feCommand.NotifyThemeChanged(popupTheme);
+			}
+		}
+	}
+#endif
 }
