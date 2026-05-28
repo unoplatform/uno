@@ -105,10 +105,10 @@ Starting from Uno Platform 5.2, in project or class libraries using the `Uno.Sdk
 * `*.wasm.cs` is built only for `net10.0-browserwasm`
 * `*.browserwasm.cs` is built only for `net10.0-browserwasm`
 * `*.desktop.cs` is built only for `net10.0-desktop`
-* `*.iOS.cs` is built only for `net10.0-ios` and `net10.0-maccatalyst`
+* `*.iOS.cs` is built only for `net10.0-ios`
 * `*.tvOS.cs` is built only for `net10.0-tvos`
-* `*.UIKit.cs` is built only for `net10.0-ios` and `net10.0-maccatalyst` and `net10.0-tvos`
-* `*.Apple.cs` is built only for `net10.0-ios` and `net10.0-maccatalyst` and `net10.0-tvos`
+* `*.UIKit.cs` is built only for `net10.0-ios` and `net10.0-tvos`
+* `*.Apple.cs` is built only for `net10.0-ios` and `net10.0-tvos`
 * `*.Android.cs` is built only for `net10.0-android`
 * `*.WinAppSDK.cs` is built only for `net10.0-windows10` (eg. `net10.0-windows10.0.22621`)
 
