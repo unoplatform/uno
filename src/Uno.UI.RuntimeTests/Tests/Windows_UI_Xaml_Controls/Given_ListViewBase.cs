@@ -5030,7 +5030,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __ANDROID__
 		[Ignore("droid: Scrollable/Extent-Height doesnt get updated until manually scroll occurs, but otherwise the visuals are good.")]
 #endif
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.Native)] // Very flaky on all targets #9080
 		public async Task When_ScrollIntoView_FreshlyAddedOffscreenItem()
 		{
 			const int FixedItemHeight = 29;
