@@ -4,12 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Windows.Devices.Input;
+using Windows.Foundation;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
-using Windows.Devices.Input;
-using Windows.Foundation;
 using _PointerEventArgs = Windows.UI.Core.PointerEventArgs;
 
 namespace Uno.UI.Xaml.Core;
@@ -57,6 +57,7 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 	private readonly PointerIdentifier _originalPointer; // The original pointer that started the manipulation. Valid only when _state is States.Preparing, might have changed for all other states.
 	private readonly GestureRecognizer _recognizer;
 
+	private bool _isResuming;
 	private GestureSettings _settings;
 	private Windows.UI.Core.PointerEventArgs? _currentPointerArgs;
 
@@ -167,38 +168,44 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 
 		Debug.Assert(_state is not States.Completed, "Inactive manipulation should have been scavenged prior trying to continue/resume.");
 
-		// A press arriving while we are in inertia stops the scroll. Unlike the previous behavior
-		// — which "resumed" the manipulation and consumed the press — we now let the press bubble
-		// through the visual tree so a tap activates the element underneath. This matches WinUI's
-		// native DirectManipulation, where tapping during inertia both stops the scroll and clicks
-		// the target. Capturing the press meant the first tap after a touch scroll was swallowed
-		// for the entire duration of the inertia (issue #22246).
-		//
-		// If the user actually wants to keep dragging instead of tapping, the press still flows
-		// to ScrollContentPresenter's PointerPressed handler, which registers a fresh
-		// DirectManipulation. Movement past the manipulation threshold then engages the standard
-		// tap-vs-drag arbitration and CancelPointer clears any transient pressed visual state on
-		// the underlying element — exactly like for any other touch-drag.
-		//
-		// We only stop inertia when the press lands on the same target as the inertia handler;
-		// taps elsewhere on the screen must not interrupt an ongoing scroll.
+		// There are 2 cases where a manipulation can process a down event:
+		//		* Single touch: inertial
+		//		* Multi touch: multiples pinches (to zoom) with the release of only one pointer **NOT SUPPORTED**
+
+		// Note: We can resume an inertial manip ONLY if the inertial handler accepts it ... usually it will be when the pressed pointer is again on the target element.
 		if (_inertiaHandler?.CanAddPointerAt(args.CurrentPoint.Position) ?? false)
 		{
 			Debug.Assert(_state is States.Inertial);
 
-			using var _ = WithCurrent(args);
-			_recognizer.CompleteGesture();
+			// Pointer is again above the element which currently handles the inertia, we can resume the direct manipulation.
+			_isResuming = true;
+			try
+			{
+				// For now we do not support multi-touch direct-manipulations, so we complete the previous manipulation and start a new one.
+				// This has be changed to support pinch to zoom.
+				using var _ = WithCurrent(args);
+				_recognizer.CompleteGesture();
+				_recognizer.ProcessDownEvent(args.CurrentPoint); // Starts a new manipulation (in starting state for now).
+			}
+			finally
+			{
+				_isResuming = false;
+			}
+
+			return true;
 		}
-		else if (_state is States.Inertial)
+		// "continue" multi-touch: else if(lastActiveHandler.IsInBoundsForResume())
+		else
 		{
-			Trace?.Invoke($"[DirectManipulation] [{args.CurrentPoint.Pointer}] CanAddPointerAt returned false during inertia in TryProcessDown — a new DM may be created.");
+			if (_state is States.Inertial)
+			{
+				Trace?.Invoke($"[DirectManipulation] [{args.CurrentPoint.Pointer}] CanAddPointerAt returned false during inertia in TryProcessDown — a new DM may be created.");
+			}
+
+			// Pointer is out-of-range, let continue normal processing (and potentially start another direct-manipulation).
+
+			return false;
 		}
-
-		// Note: Multi-touch direct manipulations (e.g. pinch-to-zoom on the same target while
-		// inertia is running) are not currently supported. Such a press will create a separate
-		// DirectManipulation through the normal PointerPressed bubbling path.
-
-		return false;
 	}
 
 	/// <inheritdoc />
@@ -500,6 +507,11 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 
 	private void OnDirectManipulationCompleted(GestureRecognizer recognizer, ManipulationCompletedEventArgs args)
 	{
+		if (_isResuming) // Possible only when cancelled during inertia, cf. TryProcessDown
+		{
+			return;
+		}
+
 		Trace?.Invoke($"[DirectManipulation] [{args.Pointers[0]}] Completed @={args.Position.ToDebugString()}");
 
 		_state = States.Completed;
