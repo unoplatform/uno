@@ -26,17 +26,21 @@ internal class Win32NativeWebViewProvider(CoreWebView2 owner) : INativeWebViewPr
 {
 	public INativeWebView CreateNativeWebView(ContentPresenter contentPresenter)
 	{
+		const string assemblyName =
+#if NET10_0_OR_GREATER
+			"WebView2";
+#else
+			"Microsoft.Web.WebView2.Core";
+#endif
+
 		try
 		{
-#if NET10_0_OR_GREATER
-			Assembly.Load("WebView2");
-#else
-			Assembly.Load("Microsoft.Web.WebView2.Core");
-#endif
+			// .NET 10+ NativeAOT uses WebView2Aot ("WebView2"), while earlier targets load Microsoft.Web.WebView2.Core.
+			Assembly.Load(assemblyName);
 		}
 		catch (Exception)
 		{
-			typeof(Win32Host).LogError()?.Error($"Failed to load WebView dependencies needed for WebView support. Make sure that WebView is included in the project's UnoFeatures. For more details, see https://aka.platform.uno/webview2 and https://aka.platform.uno/using-uno-sdk.");
+			typeof(Win32Host).LogError()?.Error($"Failed to load {assemblyName} needed for WebView support. Make sure that WebView is included in the project's UnoFeatures. For more details, see https://aka.platform.uno/webview2 and https://aka.platform.uno/using-uno-sdk.");
 			return null!;
 		}
 #if NET10_0_OR_GREATER

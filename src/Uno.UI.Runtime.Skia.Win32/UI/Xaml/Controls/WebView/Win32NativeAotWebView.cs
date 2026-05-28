@@ -1,5 +1,7 @@
 #if NET10_0_OR_GREATER
+// Intentionally suppress formatting diagnostics in this file while we keep the generated-like COM interop layout stable.
 #pragma warning disable IDE0055
+// This code path bridges source-generated COM interfaces into Microsoft.Web.WebView2 wrappers at runtime.
 #pragma warning disable SYSLIB1099
 extern alias mswebview2;
 using System;
@@ -52,7 +54,7 @@ try
 WebView2Utilities.Initialize(Assembly.GetEntryAssembly());
 var userDataFolder = Path.Combine(ApplicationData.Current.LocalFolder.Path, "WebView2");
 
-WebView2.Functions.CreateCoreWebView2EnvironmentWithOptions(default, PWSTR.From(userDataFolder), null!,
+WebView2.Functions.CreateCoreWebView2EnvironmentWithOptions(default, PWSTR.From(userDataFolder), null!, // no custom options needed
 new WebView2.Utilities.CoreWebView2CreateCoreWebView2EnvironmentCompletedHandler((errorCode, environment) =>
 {
 if (errorCode.IsError)
