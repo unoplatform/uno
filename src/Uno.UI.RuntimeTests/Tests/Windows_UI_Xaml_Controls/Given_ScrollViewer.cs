@@ -12,20 +12,19 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
+using Uno.Extensions;
+using Uno.UI.RuntimeTests.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.Toolkit.Extensions;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.ViewManagement;
-using Uno.Extensions;
-using Uno.UI.RuntimeTests.Extensions;
-using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Toolkit.Extensions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.UI.Toolkit.DevTools.Input;
-
 using static Private.Infrastructure.TestServices;
 using Disposable = Uno.Disposables.Disposable;
 using ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresenter;
@@ -1496,6 +1495,74 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Release();
 
 			events.Should().BeEquivalentTo("enter", "pressed", "release", "exited");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11)] // Touch input injection is flaky on Skia X11
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_TouchScrollWithInertia_Then_TapOnButtonOverlay_FiresClick()
+		{
+			// Issue #22246: tapping an interactive child while a touch-scroll inertia is still
+			// running used to be swallowed by the inertial DirectManipulation — the user had to
+			// tap twice. The fix lets the press bubble through the visual tree (and stops the
+			// inertia as a side effect), matching WinUI's native DirectManipulation, so a single
+			// tap activates the underlying element.
+			var sv = new ScrollViewer
+			{
+				Width = 256,
+				Height = 256,
+				IsScrollInertiaEnabled = true,
+				Content = new Border
+				{
+					Width = 256,
+					Height = 4192, // Tall enough to allow inertia to keep running for the duration of the test.
+					Background = new SolidColorBrush(Colors.LightGreen)
+				}
+			};
+
+			var clicks = 0;
+			var button = new Button
+			{
+				Content = "Tap me",
+				Width = 100,
+				Height = 32,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Margin = new Thickness(8)
+			};
+			button.Click += (_, _) => clicks++;
+
+			// The button overlays the ScrollViewer in the same Grid cell. This puts the button
+			// inside the ScrollContentPresenter's geometric bounds (which is what
+			// DirectManipulation.CanAddPointerAt checks) while keeping it the topmost hit-test
+			// target at its position. Without the fix, the inertial DM captures the tap.
+			var sut = new Grid { Children = { sv, button } };
+			await UITestHelper.Load(sut);
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			var svBounds = sv.GetAbsoluteBounds();
+			// Drag inside the ScrollViewer, well clear of the button overlay (which is in the
+			// top-left corner). A single-step drag with a 1ms offset yields a high velocity so
+			// inertia is guaranteed to be running when the tap is injected next.
+			finger.Drag(
+				from: new Point(svBounds.X + svBounds.Width - 30, svBounds.Y + svBounds.Height - 20),
+				to: new Point(svBounds.X + svBounds.Width - 30, svBounds.Y + 20),
+				steps: 1,
+				stepOffsetInMilliseconds: 1);
+
+			// Inertia is still running. Tap the button — without the fix this is swallowed.
+			finger.Tap(button.GetAbsoluteBounds().GetCenter());
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, clicks, "Tap on button overlay during scroll inertia should fire exactly one click.");
 		}
 
 		[TestMethod]
