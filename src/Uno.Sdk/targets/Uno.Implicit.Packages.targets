@@ -69,6 +69,7 @@
 				MicrosoftLoggingVersion="$(MicrosoftLoggingVersion)"
 				WinAppSdkVersion="$(WinAppSdkVersion)"
 				WinAppSdkBuildToolsVersion="$(WinAppSdkBuildToolsVersion)"
+				WinAppSdkBuildToolsWinAppVersion="$(WinAppSdkBuildToolsWinAppVersion)"
 				UnoCoreLoggingSingletonVersion="$(UnoCoreLoggingSingletonVersion)"
 				UnoDspTasksVersion="$(UnoDspTasksVersion)"
 				CommunityToolkitMvvmVersion="$(CommunityToolkitMvvmVersion)"
