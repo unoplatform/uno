@@ -54,6 +54,15 @@
 			<Pack>true</Pack>
 			<PackagePath>build</PackagePath>
 		</Content>
+		<Content Include="build/native/*.*">
+			<Pack>true</Pack>
+			<PackagePath>build/native</PackagePath>
+		</Content>
+		<!--
+			.cs files under build/native are injected into the consuming app's compilation by the
+			framework's .targets file; they belong in the head assembly, not the framework library.
+		-->
+		<Compile Remove="build/native/**/*.cs" />
 	</ItemGroup>
 
 	<!-- Typescript setup -->
