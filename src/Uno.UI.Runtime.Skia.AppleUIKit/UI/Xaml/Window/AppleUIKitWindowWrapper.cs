@@ -60,10 +60,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		UIKeyboard.Notifications.ObserveWillHide(OnKeyboardWillHide);
 #endif
 
-#if __MACCATALYST__
-		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
-#endif
-
 		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
 		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
 		DispatchDpiChanged();
