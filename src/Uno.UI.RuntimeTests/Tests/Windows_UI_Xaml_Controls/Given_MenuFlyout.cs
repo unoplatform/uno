@@ -517,8 +517,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// result (correct inherited theme, wrong resolved value) that renders the menu with the wrong
 		// styling on open.
 		//
-		// The OS-vs-app mismatch is simulated deterministically by pinning the application theme to Dark
-		// and placing a host that pins RequestedTheme=Light. The host's Resources declare the theme-keyed
+		// The OS-vs-app mismatch is reproduced on Uno by pinning the application theme to Dark
+		// (ThemeHelper.UseApplicationDarkTheme, #if HAS_UNO — it relies on the Uno-internal
+		// SetExplicitRequestedTheme) and placing a host that pins RequestedTheme=Light. On native WinUI
+		// the app-theme pin is unavailable, so the test runs as a Light-host baseline confirming the
+		// WinUI-correct value (Green); WinUI never exhibits the regression, so it still validates the
+		// behavior the Uno fix must match. The host's Resources declare the theme-keyed
 		// sentinel brush (Light=Green, Dark=Red). The flyout/menu content references that brush via
 		// {ThemeResource}, declared inline in the SAME XAML so it parses inside the host's resource scope
 		// (a standalone XamlReader.Load of a {ThemeResource} fragment throws on WinUI). The flyout content
@@ -528,8 +532,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// inherited theme (Light), so the brush evaluates to the Light sentinel (Green) — even though the
 		// application theme is Dark. Uno regression: the popup-presented content resolves the
 		// {ThemeResource} against the global/application active theme (Dark), evaluating to the Dark
-		// sentinel (Red), despite the content's ActualTheme correctly being Light. Runs identically on
-		// Skia Desktop and native WinUI.
+		// sentinel (Red), despite the content's ActualTheme correctly being Light. The expected value
+		// (Green) is identical on Skia Desktop and native WinUI; only the app-level mismatch differs
+		// (forced Dark on Uno, default on WinUI, as noted above).
 		// ---------------------------------------------------------------------------
 		private static Color? GetThemeResourceForegroundColor(TextBlock textBlock)
 			=> (textBlock.Foreground as SolidColorBrush)?.Color;
@@ -690,6 +695,132 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			finally
 			{
+				flyout.Hide();
+#if HAS_UNO
+				VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot);
+#endif
+			}
+		}
+
+		// ------------------------------------------------------------------
+		// Scenario C — MenuFlyout first-open flash. Same Light-under-Dark-app
+		// setup as Scenario B, but verifies the menu item's Foreground is
+		// already correct at the moment the popup enters the visual tree —
+		// before the first measure/render — so the user does not see one
+		// frame of wrong-theme text on first open. The previous fix (Popup
+		// falls back to anchor theme on first open) corrects the final state
+		// but only via an async corrective theme walk that fires AFTER the
+		// item has rendered once with the parse-time {ThemeResource} value;
+		// against a Dark application theme that resolves to the Dark sentinel
+		// (Red), producing the visible flash the user reported in #480.
+		//
+		// Note: the item's parse-time Foreground IS legitimately Red because
+		// XAML parses {ThemeResource MenuItemBrush} before any subtree theme
+		// context is available, so the lookup falls back to the application's
+		// global active theme. That pre-tree state is not user-visible (the
+		// item is not in any visual tree yet), so this test does not assert
+		// on it; it only asserts that by the time the popup is in the tree
+		// — the synchronous return point of ShowAt — the Foreground already
+		// holds the Light sentinel (Green), and stays Green afterwards.
+		// ------------------------------------------------------------------
+		[TestMethod]
+		[RequiresFullWindow]
+		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/480")]
+		public async Task When_MenuFlyout_Opens_First_Time_Foreground_Should_Not_Flash_Wrong_Theme()
+		{
+#if HAS_UNO
+			using var darkApp = ThemeHelper.UseApplicationDarkTheme();
+			await WindowHelper.WaitForIdle();
+#endif
+
+			var host = (Border)XamlReader.Load(
+				"""
+				<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						RequestedTheme="Light">
+					<Border.Resources>
+						<ResourceDictionary>
+							<ResourceDictionary.ThemeDictionaries>
+								<ResourceDictionary x:Key="Light">
+									<SolidColorBrush x:Key="MenuItemBrush" Color="Green" />
+								</ResourceDictionary>
+								<ResourceDictionary x:Key="Dark">
+									<SolidColorBrush x:Key="MenuItemBrush" Color="Red" />
+								</ResourceDictionary>
+							</ResourceDictionary.ThemeDictionaries>
+						</ResourceDictionary>
+					</Border.Resources>
+					<Button x:Name="Owner" Content="Owner">
+						<Button.Flyout>
+							<MenuFlyout>
+								<MenuFlyoutItem x:Name="MenuItem" Text="Item"
+										Foreground="{ThemeResource MenuItemBrush}" />
+							</MenuFlyout>
+						</Button.Flyout>
+					</Button>
+				</Border>
+				""");
+
+			var owner = (Button)host.FindName("Owner");
+			var flyout = (MenuFlyout)owner.Flyout;
+			var item = (MenuFlyoutItem)host.FindName("MenuItem");
+
+			// Capture every Foreground value the menu item takes from the moment the
+			// popup is opened, both via snapshot at each lifecycle checkpoint and via
+			// property-change callback for anything in between. Visible checkpoints
+			// (from after-show-sync onwards) appearing as the Dark sentinel (Red)
+			// would mean the popup rendered one frame with the wrong-theme brush.
+			var observed = new List<(string Checkpoint, Color? Color)>();
+			void Snapshot(string checkpoint)
+				=> observed.Add((checkpoint, (item.Foreground as SolidColorBrush)?.Color));
+
+			var root = new Border { Child = host };
+			WindowHelper.WindowContent = root;
+			await WindowHelper.WaitForLoaded(root);
+
+			var token = item.RegisterPropertyChangedCallback(
+				Control.ForegroundProperty,
+				(s, dp) => Snapshot("callback"));
+
+			try
+			{
+				// IMPORTANT: ShowAt's synchronous tail puts the popup in the visual
+				// tree and is the last code path that runs before the first measure /
+				// render of the menu. The Foreground at this point is what the user
+				// sees on the first frame; if it is Red here, the flash is real.
+				flyout.ShowAt(owner);
+				Snapshot("after-show-sync");
+
+				await WindowHelper.WaitForIdle();
+				Snapshot("after-first-idle");
+
+				await WindowHelper.WaitForLoaded(item);
+				Snapshot("after-item-loaded");
+
+				await WindowHelper.WaitForIdle();
+				Snapshot("after-second-idle");
+
+				// Final state must be the Light sentinel — confirms the existing fix
+				// converges, so any Red below is a transient flash, not a final regression.
+				Assert.AreEqual(ElementTheme.Light, item.ActualTheme,
+					"Menu item should inherit the owner's Light theme.");
+				Assert.AreEqual(Colors.Green, (item.Foreground as SolidColorBrush)?.Color,
+					"Final menu item Foreground must be the Light sentinel (Green).");
+
+				// Visible checkpoints only — pre-show observations are not user-visible
+				// because the item is not in any rendered tree before ShowAt.
+				var visibleCheckpoints = observed.Where(o => o.Checkpoint != "callback").ToList();
+				var visibleRed = visibleCheckpoints.Where(o => o.Color == Colors.Red).ToList();
+				Assert.AreEqual(0, visibleRed.Count,
+					$"Menu item Foreground was the Dark sentinel (Red) at user-visible " +
+					$"checkpoint(s) {string.Join(", ", visibleRed.Select(c => c.Checkpoint))}, " +
+					$"producing the visible first-open flash before the corrective theme walk " +
+					$"converged. All observations (checkpoint → color): " +
+					$"[{string.Join(", ", observed.Select(o => $"{o.Checkpoint}={o.Color}"))}]");
+			}
+			finally
+			{
+				item.UnregisterPropertyChangedCallback(Control.ForegroundProperty, token);
 				flyout.Hide();
 #if HAS_UNO
 				VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot);

@@ -1,11 +1,15 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
+using Windows.UI;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -83,4 +87,115 @@ public class Given_CommandBarFlyout
 		Assert.AreEqual(Visibility.Visible, commandBar.CommandBarTemplateSettings.EffectiveOverflowButtonVisibility);
 	}
 #endif
+
+	// ------------------------------------------------------------------
+	// CommandBarFlyout first-open flash — kahua-private #480.
+	//
+	// Mirrors Given_MenuFlyout's Scenario C for CommandBarFlyout / TextCommandBarFlyout
+	// (used by the TextBox edit context menu — Cut / Copy / Paste — where the user
+	// originally reported the visible flash). The flyout's PrimaryCommands /
+	// SecondaryCommands are logical-only at popup-open time — they have not yet been
+	// reparented under the presenter's visual tree, which doesn't happen until the
+	// upcoming layout pass templates the CommandBarFlyoutCommandBar. Any
+	// {ThemeResource} brush resolved against the application's global active theme
+	// at XAML parse time would otherwise render one frame with the wrong-theme
+	// brush before the corrective theme walk converges. This test verifies the
+	// command's Foreground is already correct at the synchronous return point of
+	// ShowAt (the last instruction before the first measure / render).
+	// ------------------------------------------------------------------
+	[TestMethod]
+	[RequiresFullWindow]
+	[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/480")]
+	public async Task When_CommandBarFlyout_Opens_First_Time_Foreground_Should_Not_Flash_Wrong_Theme()
+	{
+#if HAS_UNO
+		using var darkApp = ThemeHelper.UseApplicationDarkTheme();
+		await TestServices.WindowHelper.WaitForIdle();
+#endif
+
+		var host = (Border)XamlReader.Load(
+			"""
+			<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					RequestedTheme="Light">
+				<Border.Resources>
+					<ResourceDictionary>
+						<ResourceDictionary.ThemeDictionaries>
+							<ResourceDictionary x:Key="Light">
+								<SolidColorBrush x:Key="MenuItemBrush" Color="Green" />
+							</ResourceDictionary>
+							<ResourceDictionary x:Key="Dark">
+								<SolidColorBrush x:Key="MenuItemBrush" Color="Red" />
+							</ResourceDictionary>
+						</ResourceDictionary.ThemeDictionaries>
+					</ResourceDictionary>
+				</Border.Resources>
+				<Button x:Name="Owner" Content="Owner">
+					<Button.Flyout>
+						<CommandBarFlyout>
+							<CommandBarFlyout.PrimaryCommands>
+								<AppBarButton x:Name="Command" Label="Item"
+										Foreground="{ThemeResource MenuItemBrush}" />
+							</CommandBarFlyout.PrimaryCommands>
+						</CommandBarFlyout>
+					</Button.Flyout>
+				</Button>
+			</Border>
+			""");
+
+		var owner = (Button)host.FindName("Owner");
+		var flyout = (CommandBarFlyout)owner.Flyout;
+		// AppBarButton inside CommandBarFlyout.PrimaryCommands doesn't share the
+		// host's namescope, so reach it through the collection directly.
+		var command = (AppBarButton)flyout.PrimaryCommands[0];
+
+		var observed = new List<(string Checkpoint, Color? Color)>();
+		void Snapshot(string checkpoint)
+			=> observed.Add((checkpoint, (command.Foreground as SolidColorBrush)?.Color));
+
+		var root = new Border { Child = host };
+		TestServices.WindowHelper.WindowContent = root;
+		await TestServices.WindowHelper.WaitForLoaded(root);
+
+		var token = command.RegisterPropertyChangedCallback(
+			Control.ForegroundProperty,
+			(s, dp) => Snapshot("callback"));
+
+		try
+		{
+			flyout.ShowAt(owner);
+			Snapshot("after-show-sync");
+
+			await TestServices.WindowHelper.WaitForIdle();
+			Snapshot("after-first-idle");
+
+			await TestServices.WindowHelper.WaitForLoaded(command);
+			Snapshot("after-command-loaded");
+
+			await TestServices.WindowHelper.WaitForIdle();
+			Snapshot("after-second-idle");
+
+			Assert.AreEqual(ElementTheme.Light, command.ActualTheme,
+				"AppBarButton should inherit the owner's Light theme.");
+			Assert.AreEqual(Colors.Green, (command.Foreground as SolidColorBrush)?.Color,
+				"Final AppBarButton Foreground must be the Light sentinel (Green).");
+
+			var visibleCheckpoints = observed.Where(o => o.Checkpoint != "callback").ToList();
+			var visibleRed = visibleCheckpoints.Where(o => o.Color == Colors.Red).ToList();
+			Assert.AreEqual(0, visibleRed.Count,
+				$"AppBarButton Foreground was the Dark sentinel (Red) at user-visible " +
+				$"checkpoint(s) {string.Join(", ", visibleRed.Select(c => c.Checkpoint))}, " +
+				$"producing the visible first-open flash before the corrective theme walk " +
+				$"converged. All observations (checkpoint → color): " +
+				$"[{string.Join(", ", observed.Select(o => $"{o.Checkpoint}={o.Color}"))}]");
+		}
+		finally
+		{
+			command.UnregisterPropertyChangedCallback(Control.ForegroundProperty, token);
+			flyout.Hide();
+#if HAS_UNO
+			VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+#endif
+		}
+	}
 }
