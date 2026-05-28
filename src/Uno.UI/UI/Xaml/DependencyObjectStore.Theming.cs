@@ -91,7 +91,7 @@ public partial class DependencyObjectStore
 	/// first measure pass raises Loading — at which point deferred {ThemeResource} refs are first resolved
 	/// (OnLoadingPartial → UpdateThemeBindings → _resourceBindings walk). So the theme is in place first.
 	/// </remarks>
-	internal void EstablishThemeAtEnter()
+	internal void EstablishThemeAtEnter(DependencyObjectStore? inheritFromCaller = null)
 	{
 		var owner = ActualInstance;
 
@@ -106,8 +106,24 @@ public partial class DependencyObjectStore
 			: Parent as DependencyObject;
 		var parentTheme = (parent as IDependencyObjectStoreProvider)?.Store.GetTheme() ?? Theme.None;
 
-		// MUX: depends.cpp:1039-1047
-		if (parent is not null && parentTheme != Theme.None && parentTheme != _theme)
+		// Fallback: when a DP-property Enter walk reaches a DO whose Store.Parent / LogicalParentOverride
+		// isn't set yet (e.g. ContentControl.Content carries no LogicalChild flag, so a CommandBarFlyoutCommandBar
+		// assigned as FlyoutPresenter.Content has no logical parent at this point) we use the DP-owner the
+		// walk arrived through as the inheritance source. This mirrors WinUI's InheritanceContext —
+		// CDependencyObject::SetInheritanceContext sets the property owner as the inherited context when
+		// the value goes live (depends.cpp ::EnterImpl + AddParent), and the theme block at depends.cpp:1026
+		// then walks that context. Uno hasn't ported per-DP InheritanceContext yet (see Uno issue #22949
+		// referenced in UIElement.mux.cs:1245), so this argument carries the same data point.
+		if (parentTheme == Theme.None && inheritFromCaller is not null)
+		{
+			parentTheme = inheritFromCaller.GetTheme();
+		}
+
+		// MUX: depends.cpp:1039-1047. Note: the WinUI check is `pParent && ...`, but in Uno the fallback
+		// above can supply a non-None parentTheme through inheritFromCaller without an actual `parent`
+		// object (Content-style DPs that don't propagate Store.Parent). Gate the inherit branch on
+		// parentTheme alone — parent is only consulted for the lookup, not as a precondition.
+		if (parentTheme != Theme.None && parentTheme != _theme)
 		{
 			if (owner is FrameworkElement frameworkElement)
 			{
@@ -128,6 +144,148 @@ public partial class DependencyObjectStore
 			// MUX: depends.cpp:1046 — update theme references to account for the new ancestor theme
 			// dictionaries now reachable from this position in the tree.
 			UpdateAllThemeReferences(owner, cache: null);
+		}
+
+		// MUX: depends.cpp:993-1010 — CDependencyObject::EnterImpl walks "Enter properties" (DPs tagged
+		// CEnterDependencyProperty / IsVisualTreeProperty in WinUI metadata: Button.Flyout, MenuFlyout.Items,
+		// CommandBar.PrimaryCommands / SecondaryCommands, Popup.Child, etc.) and recursively calls Enter on
+		// each DO value, whose own EnterImpl runs the depends.cpp:1023-1048 theme block above. That recursion
+		// is what carries theme into logical-only collections — items in MenuFlyout.Items or AppBarButtons in
+		// CommandBar.PrimaryCommands — at the moment the *opener* (e.g. a Button) enters the live tree, well
+		// before any popup opens.
+		//
+		// Uno's metadata has no per-DP Enter flag and no separate CEnterDependencyProperty list, so we walk
+		// every property value the store carries and trigger each non-active DO's own EstablishThemeAtEnter
+		// here. UIElements already live in the visual tree are skipped — UIElement.EnterImpl
+		// (UIElement.mux.cs:1136-1139) calls EstablishThemeAtEnter on them from the visual Enter path, so
+		// re-entering through a parent's DP-walk would only repeat the work the visual walk already did.
+		PropagateThemeEnterToDPPropertyValues();
+	}
+
+	private bool _isPropagatingThemeEnter;
+
+	/// <summary>
+	/// Recursively triggers <see cref="EstablishThemeAtEnter"/> on every <see cref="DependencyObject"/>
+	/// reachable through this object's DP property values, skipping UIElements already active in the
+	/// visual tree.
+	/// </summary>
+	/// <remarks>
+	/// MUX Reference: CDependencyObject::EnterImpl property walk (depends.cpp:993-1010 + EnterSparseProperties).
+	///
+	/// WinUI tags DPs as <c>CEnterDependencyProperty</c> in metadata and EnterImpl recursively calls Enter
+	/// on each tagged DP's DO value. Each child's own EnterImpl then runs depends.cpp:1023-1048, inheriting
+	/// theme from its (logical) inheritance parent. The result is that — by the time the parent's Enter
+	/// finishes — every DO reachable through DP properties (including logical-only collections like
+	/// MenuFlyout.Items or CommandBar.PrimaryCommands) carries the correct inherited theme.
+	///
+	/// Uno's DP metadata has no Enter flag, so we walk every property value and propagate Enter via
+	/// EstablishThemeAtEnter on each non-active DO. The walk is theme-only — name registration, keyboard
+	/// accelerators, and IsVisualTreeProperty parenting are handled by their own Uno-specific paths
+	/// (UIElement.mux.cs ContextFlyout block + KeyboardAcceleratorFlyoutItemEnter); this walk only carries
+	/// the depends.cpp:1023-1048 theme block, which is the part PR #23325's EstablishThemeAtEnter already
+	/// implements per-DO. Adding the property walk here lifts that per-DO theme establishment up into a
+	/// recursive logical-tree walk, matching what WinUI's recursive Enter achieves.
+	///
+	/// Filters mirror WinUI's <c>ShouldNotifyPropertyOfThemeChange</c> back-reference list (Theming.cpp:60-75):
+	/// CommandParameter properties hold the command source (often the parent VM), and walking them would
+	/// recurse *up* the logical tree. The general DataContext property is skipped for the same reason.
+	/// </remarks>
+	private void PropagateThemeEnterToDPPropertyValues()
+	{
+		if (_isPropagatingThemeEnter)
+		{
+			return;
+		}
+
+		_isPropagatingThemeEnter = true;
+		try
+		{
+			foreach (var propertyDetail in _properties.GetAllDetails())
+			{
+				if (propertyDetail == null
+					|| propertyDetail == _properties.DataContextPropertyDetails)
+				{
+					continue;
+				}
+
+				// MUX: Theming.cpp:60-75 — back-reference properties (CommandParameter) hold references
+				// up the logical tree. Excluding them keeps Enter walking *down*.
+				var property = propertyDetail.Property;
+				if (property == ButtonBase.CommandParameterProperty
+					|| property == MenuFlyoutItem.CommandParameterProperty)
+				{
+					continue;
+				}
+
+				var propertyValue = GetValue(propertyDetail);
+
+				// Theme the DO value itself before iterating any child collection it carries. Items in
+				// a DependencyObjectCollection inherit their theme from their Store.Parent — the
+				// collection — so the collection's _theme must be Light/Dark before each item's
+				// EstablishThemeAtEnter reads it.
+				if (propertyValue is DependencyObject dependencyObject)
+				{
+					EstablishThemeAtEnterOnPropertyValue(dependencyObject, this);
+				}
+
+				// Framework DO-collections come in two shapes:
+				//   (1) DependencyObjectCollectionBase subclasses (MenuFlyoutItemBaseCollection,
+				//       DependencyObjectCollection<T>, etc.) — themselves DOs, items are DOs
+				//   (2) Plain IObservableVector<TInterface> implementations that are NOT DOs
+				//       (CommandBarElementCollection : IObservableVector<ICommandBarElement>) — the
+				//       collection is not a DO, but the items still are
+				// Both must yield to the Enter walk. We can't gate by "value is DependencyObject"
+				// (excludes shape 2) and can't gate by IEnumerable<DependencyObject> (excludes shape
+				// 2 because the element-type interface doesn't derive from DependencyObject). Iterate
+				// any non-string IEnumerable and filter per item — only items that are themselves
+				// DependencyObjects participate in the walk.
+				if (propertyValue is IEnumerable enumerable && propertyValue is not string)
+				{
+					foreach (var innerValue in enumerable)
+					{
+						if (innerValue is DependencyObject innerDependencyObject)
+						{
+							EstablishThemeAtEnterOnPropertyValue(innerDependencyObject, this);
+						}
+					}
+				}
+
+				if (propertyValue is IAdditionalChildrenProvider additional)
+				{
+					foreach (var innerValue in additional.GetAdditionalChildObjects())
+					{
+						EstablishThemeAtEnterOnPropertyValue(innerValue, this);
+					}
+				}
+			}
+		}
+		finally
+		{
+			_isPropagatingThemeEnter = false;
+		}
+	}
+
+	/// <summary>
+	/// Calls <see cref="EstablishThemeAtEnter"/> on a DP-property DO value unless the value is a UIElement
+	/// already active in the visual tree (it will be reached by the visual-tree Enter walk instead).
+	/// </summary>
+	/// <remarks>
+	/// MUX Reference: Theming.cpp:218 — "Any DependencyObject property that happens to be a UIElement in the
+	/// visual tree is skipped... they are covered anyways via a full traversal of the live visual tree
+	/// starting from the root and going recursive in CUIElement::NotifyThemeChangedCore."
+	/// In Uno, the same skip is enforced by checking <see cref="UIElement.IsActiveInVisualTree"/>, set by
+	/// UIElement.mux.cs's EnterImpl when the element enters the live tree.
+	/// </remarks>
+	private static void EstablishThemeAtEnterOnPropertyValue(DependencyObject dependencyObject, DependencyObjectStore caller)
+	{
+		if (dependencyObject is UIElement uiElement && uiElement.IsActiveInVisualTree)
+		{
+			return;
+		}
+
+		if (dependencyObject is IDependencyObjectStoreProvider storeProvider)
+		{
+			storeProvider.Store.EstablishThemeAtEnter(inheritFromCaller: caller);
 		}
 	}
 
