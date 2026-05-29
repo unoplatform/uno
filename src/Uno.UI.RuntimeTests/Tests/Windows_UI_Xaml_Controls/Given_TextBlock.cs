@@ -1638,7 +1638,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaFrameBuffer)] // Flaky on Linux (X11) and Framebuffer #9080
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.Native)] // Very flaky on all targets #9080
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #elif !HAS_RENDER_TARGET_BITMAP

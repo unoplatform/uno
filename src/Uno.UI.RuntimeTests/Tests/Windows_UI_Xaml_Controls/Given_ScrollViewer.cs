@@ -1885,7 +1885,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// test-timing race (the parent does not advance even when waiting for the inertia to settle), so
 		// it cannot be stabilized by waiting alone. Re-enable once child->parent inertia chaining is
 		// reliable under injected pointers.
-		[Ignore("Chained inertia is not forwarded from a clamped non-scrollable child ScrollViewer to its parent under injected pointer input (deterministic on Skia WASM and Skia Desktop). Re-enable when child->parent inertia chaining is reliable.")]
+		[Ignore("Chained inertia is not forwarded from a clamped non-scrollable child ScrollViewer to its parent under injected pointer input (deterministic on Skia WASM and Skia Desktop). Tracked in #9080. Re-enable when child->parent inertia chaining is reliable.")]
 		public async Task When_TouchScrollDownWithInertiaOnNonScrollable_Then_ParentReceiveInertia()
 		{
 			ScrollViewer parent, child;

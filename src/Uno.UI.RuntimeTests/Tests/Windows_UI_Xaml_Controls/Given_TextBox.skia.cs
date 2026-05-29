@@ -303,34 +303,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// On Skia-WASM the selection state can transiently report a stale value through a queued
 			// dispatcher continuation; reading _selection while it is stale would offset the whole loop
 			// by one. Waiting for the caret to actually reach the end of the text removes that race.
-			await WindowHelper.WaitFor(() => SUT.SelectionStart == 11 && SUT.SelectionLength == 0);
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 11 && SUT.SelectionLength == 0, message: "caret settled at end of text (expected Start=11, Length=0)");
 
 			for (var i = 1; i <= 11; i++)
 			{
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.Shift));
-				await WindowHelper.WaitFor(() => SUT.SelectionStart == 11 - i && SUT.SelectionLength == i, message: $"Shift+Left iteration {i}");
+				await WindowHelper.WaitFor(() => SUT.SelectionStart == 11 - i && SUT.SelectionLength == i, message: $"Shift+Left iteration {i} (expected Start={11 - i}, Length={i})");
 			}
 
 			for (var i = 1; i <= 5; i++)
 			{
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift));
-				await WindowHelper.WaitFor(() => SUT.SelectionStart == i && SUT.SelectionLength == 11 - i, message: $"Shift+Right iteration {i}");
+				await WindowHelper.WaitFor(() => SUT.SelectionStart == i && SUT.SelectionLength == 11 - i, message: $"Shift+Right iteration {i} (expected Start={i}, Length={11 - i})");
 			}
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.None));
-			await WindowHelper.WaitFor(() => SUT.SelectionStart == 5 && SUT.SelectionLength == 0, message: "Left collapses selection to its start");
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 5 && SUT.SelectionLength == 0, message: "Left collapses selection to its start (expected Start=5, Length=0)");
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.End, VirtualKeyModifiers.Shift));
-			await WindowHelper.WaitFor(() => SUT.SelectionStart == 5 && SUT.SelectionLength == 6, message: "Shift+End extends to end of text");
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 5 && SUT.SelectionLength == 6, message: "Shift+End extends to end of text (expected Start=5, Length=6)");
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
-			await WindowHelper.WaitFor(() => SUT.SelectionStart == 11 && SUT.SelectionLength == 0, message: "Right collapses selection to its end");
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 11 && SUT.SelectionLength == 0, message: "Right collapses selection to its end (expected Start=11, Length=0)");
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.Shift));
-			await WindowHelper.WaitFor(() => SUT.SelectionStart == 0 && SUT.SelectionLength == 11, message: "Shift+Home extends to start of text");
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 0 && SUT.SelectionLength == 11, message: "Shift+Home extends to start of text (expected Start=0, Length=11)");
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
-			await WindowHelper.WaitFor(() => SUT.SelectionStart == 11 && SUT.SelectionLength == 0, message: "Right collapses selection to its end");
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 11 && SUT.SelectionLength == 0, message: "Right collapses selection to its end (expected Start=11, Length=0)");
 		}
 
 		[TestMethod]
@@ -1605,14 +1605,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			mouse.Release();
 			mouse.Press();
-			await WindowHelper.WaitFor(() => SUT.SelectionStart == 6 && SUT.SelectionLength == 5, message: "double-tap selects the word under the pointer");
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 6 && SUT.SelectionLength == 5, message: "double-tap selects the word under the pointer (expected Start=6, Length=5)");
 
 			mouse.MoveBy(-40, 0);
 			// Wait for the held-drag to extend the chunk selection to the left edge AND establish the
 			// backward selection direction. On Skia-WASM the injected move is delivered through the input
 			// pipeline and the SelectInternal that flips selectionEndsAtTheStart may settle after the first
 			// idle pass, so we poll for the complete target state instead of asserting on a single idle.
-			await WindowHelper.WaitFor(() => SUT.SelectionStart == 0 && SUT.SelectionLength == SUT.Text.Length && SUT.IsBackwardSelection, message: "held-drag extends selection left as a backward selection");
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 0 && SUT.SelectionLength == SUT.Text.Length && SUT.IsBackwardSelection, message: $"held-drag extends selection left as a backward selection (expected Start=0, Length={SUT.Text.Length}, IsBackward=true)");
 
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
@@ -1620,7 +1620,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// the selection should start on the right
 			Assert.IsTrue(SUT.IsBackwardSelection);
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift));
-			await WindowHelper.WaitFor(() => SUT.SelectionStart == 1 && SUT.SelectionLength == SUT.Text.Length - 1, message: "Shift+Right shrinks the backward selection from the left");
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 1 && SUT.SelectionLength == SUT.Text.Length - 1, message: $"Shift+Right shrinks the backward selection from the left (expected Start=1, Length={SUT.Text.Length - 1})");
 		}
 
 		[TestMethod]
@@ -2865,7 +2865,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// SelectionChanged from the loop drain) BEFORE subscribing the counter. Otherwise, on
 			// Skia-WASM a late SelectionChanged from the loop can be observed by the counter and be
 			// mis-attributed to the (canceled) text input below, inflating the count to 1.
-			await WindowHelper.WaitFor(() => SUT.SelectionStart == 1 && SUT.SelectionLength == SUT.Text.Length - 1 && SUT.IsBackwardSelection, message: "backward selection settled before subscribing");
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 1 && SUT.SelectionLength == SUT.Text.Length - 1 && SUT.IsBackwardSelection, message: $"backward selection settled before subscribing (expected Start=1, Length={SUT.Text.Length - 1}, IsBackward=true)");
 			await WindowHelper.WaitForIdle();
 
 			SUT.BeforeTextChanging += (_, args) => args.Cancel = args.NewText == "as";

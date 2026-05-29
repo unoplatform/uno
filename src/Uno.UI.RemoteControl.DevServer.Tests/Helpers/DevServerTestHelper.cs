@@ -105,19 +105,19 @@ public sealed class DevServerTestHelper : IAsyncDisposable
 	/// Starts the dev server.
 	/// </summary>
 	/// <param name="ct">Cancellation token to cancel the operation.</param>
-	/// <param name="timeout">
-	/// The timeout in milliseconds to wait for the server to start. Default is 60 seconds.
-	/// The host cold-start (JIT + solution parse + add-in load) is highly sensitive to machine
-	/// load: it completes in a few seconds on an idle box but has been measured well past 30s
-	/// when the CI agent is saturated running the full unit-test solution filter in parallel.
-	/// A 30s window made the startup-detection loop give up before the host surfaced its
-	/// "Now listening on" indicator, returning false and producing the intermittent
-	/// "Dev server not started" failure. 60s keeps the detection window comfortably above the
-	/// observed worst case while still being bounded by the caller's <paramref name="ct"/>.
-	/// </param>
+	/// <param name="timeout">The timeout in milliseconds to wait for the server to start. Default is 60 seconds (see remarks).</param>
 	/// <param name="extraArgs"></param>
 	/// <returns>True if the server started successfully, false otherwise.</returns>
 	/// <exception cref="OperationCanceledException">Thrown when the operation is cancelled.</exception>
+	/// <remarks>
+	/// The default 60s timeout exists because the host cold-start (JIT + solution parse + add-in load) is
+	/// highly sensitive to machine load: it completes in a few seconds on an idle box but has been measured
+	/// well past 30s when the CI agent is saturated running the full unit-test solution filter in parallel.
+	/// A 30s window made the startup-detection loop give up before the host surfaced its "Now listening on"
+	/// indicator, returning false and producing the intermittent "Dev server not started" failure. 60s keeps
+	/// the detection window comfortably above the observed worst case while still being bounded by the
+	/// caller's <paramref name="ct"/>.
+	/// </remarks>
 	public async Task<bool> StartAsync(CancellationToken ct, int timeout = 60000, string? extraArgs = null)
 	{
 		// Use semaphore to prevent race conditions with concurrent start/stop calls

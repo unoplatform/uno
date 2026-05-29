@@ -9,8 +9,11 @@ public class TelemetryServerTests : TelemetryTestBase
 	public static void ClassInitialize(TestContext context) => GlobalClassInitialize<TelemetryServerTests>(context);
 
 	[TestMethod]
+	// Root cause is addressed by the per-call Random.Shared port allocation (GetRandomPort) and the 60s
+	// StartAsync detection window. [Retry(2)] is retained only as defensive hardening against the irreducible
+	// process-startup variance of spawning an external host on a saturated CI agent; it is not the fix itself.
 	[Retry(2, MillisecondsDelayBetweenRetries = 1000)]
-	[Description("Intermittent: random port binding may collide or the host process may take longer to start on CI")]
+	[Description("Spawns an external dev-server host; root cause fixed via Random.Shared port + 60s startup window. Retry retained as defensive hardening against residual CI startup variance.")]
 	public async Task Telemetry_Server_LogsConnectionEvents()
 	{
 		var solution = SolutionHelper;
@@ -58,8 +61,11 @@ public class TelemetryServerTests : TelemetryTestBase
 	}
 
 	[TestMethod]
+	// Root cause is addressed by the per-call Random.Shared port allocation (GetRandomPort) and the 60s
+	// StartAsync detection window. [Retry(2)] is retained only as defensive hardening against the irreducible
+	// process-startup variance of spawning an external host on a saturated CI agent; it is not the fix itself.
 	[Retry(2, MillisecondsDelayBetweenRetries = 1000)]
-	[Description("Intermittent: random port binding may collide or the host process may take longer to start on CI")]
+	[Description("Spawns an external dev-server host; root cause fixed via Random.Shared port + 60s startup window. Retry retained as defensive hardening against residual CI startup variance.")]
 	public async Task Telemetry_FileTelemetry_AppliesEventsPrefix()
 	{
 		var solution = SolutionHelper;
