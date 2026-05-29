@@ -58,7 +58,7 @@ namespace TestRepro
 						new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_ConCon_ConTemΞ0_DatTem)
 					)
 					,
-					// Source 0\MainPage.xaml (Line 6:3)
+					// Source 0\MainPage.xaml (Line 4:3)
 				}
 				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 				{
@@ -122,7 +122,7 @@ namespace TestRepro
 						{
 							IsParsing = true,
 							Name = "RootBorder",
-							// Source 0\MainPage.xaml (Line 9:6)
+							// Source 0\MainPage.xaml (Line 7:6)
 						}
 						.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 						{

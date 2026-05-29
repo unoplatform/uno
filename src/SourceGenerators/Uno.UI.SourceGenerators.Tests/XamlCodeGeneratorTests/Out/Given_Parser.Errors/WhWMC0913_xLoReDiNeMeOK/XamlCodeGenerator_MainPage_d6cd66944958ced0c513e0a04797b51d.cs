@@ -48,19 +48,41 @@ namespace TestRepro
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			Resources["MyKey"] = 
+			Resources["TestButtonResource"] = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
-				new global::Microsoft.UI.Xaml.Controls.Border
+				new global::Microsoft.UI.Xaml.Controls.Button
 				{
 					IsParsing = true,
-					Name = "MyName",
 					// Source 0\MainPage.xaml (Line 5:4)
+					Content = 
+					global::MyProject.GlobalStaticResources.__PreserveProperties(
+						new Microsoft.UI.Xaml.ElementStub( () => 
+						new global::Microsoft.UI.Xaml.Controls.Border
+						{
+							IsParsing = true,
+							Name = "NestedMember",
+							// Source 0\MainPage.xaml (Line 6:5)
+						}
+						.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+						{
+						__nameScope.RegisterName("NestedMember", __p1);
+						__that.NestedMember = __p1;
+						// Load False
+						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+						__p1.CreationComplete();
+						}
+						))
+						)						.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+						{
+						__p1.Name = "NestedMember";
+						_NestedMemberSubject.ElementInstance = __p1;
+						}
+						))
+					)
+					,
 				}
-				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 				{
-				__nameScope.RegisterName("MyName", __p1);
-				__that.MyName = __p1;
-				// Load False
 				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
 				__p1.CreationComplete();
 				}
@@ -71,14 +93,14 @@ namespace TestRepro
 			;
 			
 			this
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 			{
 			// Source 0\MainPage.xaml (Line 1:2)
 			
 			// [WARNING] C:/Project/0/MainPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}
 			))
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 			{
 			// Class TestRepro.MainPage
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
@@ -88,23 +110,13 @@ namespace TestRepro
 			;
 			OnInitializeCompleted();
 
-			// Force materialization of x:Name resources, which will assign them to named property field.
-			object _ = null;
-			// Source 0\MainPage.xaml (Line 5:4)
-			Resources.TryGetValue("MyName", out _);
-			Loading += __UpdateNamedResources;
 		}
 		partial void OnInitializeCompleted();
-		private void __UpdateNamedResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _NestedMemberSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private global::Microsoft.UI.Xaml.Controls.Border NestedMember
 		{
-			MyName.UpdateResourceBindings();
-		}
-
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _MyNameSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		private global::Microsoft.UI.Xaml.Controls.Border MyName
-		{
-			get => (global::Microsoft.UI.Xaml.Controls.Border)_MyNameSubject.ElementInstance;
-			set => _MyNameSubject.ElementInstance = value;
+			get => (global::Microsoft.UI.Xaml.Controls.Border)_NestedMemberSubject.ElementInstance;
+			set => _NestedMemberSubject.ElementInstance = value;
 		}
 	}
 }
@@ -119,9 +131,23 @@ namespace MyProject
 			handler(instance);
 			return instance;
 		}
-		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Controls.Page instance);
+		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.ElementStub instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler1 handler)
+		public static global::Microsoft.UI.Xaml.ElementStub MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.ElementStub instance, XamlApplyHandler1 handler)
+		{
+			handler(instance);
+			return instance;
+		}
+		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.Controls.Button instance);
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public static global::Microsoft.UI.Xaml.Controls.Button MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Button instance, XamlApplyHandler2 handler)
+		{
+			handler(instance);
+			return instance;
+		}
+		public delegate void XamlApplyHandler3(global::Microsoft.UI.Xaml.Controls.Page instance);
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler3 handler)
 		{
 			handler(instance);
 			return instance;

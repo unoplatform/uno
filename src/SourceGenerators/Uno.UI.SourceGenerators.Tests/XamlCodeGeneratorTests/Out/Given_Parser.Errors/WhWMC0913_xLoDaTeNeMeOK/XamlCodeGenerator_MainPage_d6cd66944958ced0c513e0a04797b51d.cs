@@ -49,32 +49,17 @@ namespace TestRepro
 			var __that = this;
 			base.IsParsing = true;
 			// Source 0\MainPage.xaml (Line 1:2)
-			base.Content = 
-			global::MyProject.GlobalStaticResources.__PreserveProperties(
-				new global::Microsoft.UI.Xaml.Controls.TextBlock
-				{
-					IsParsing = true,
-					// Source 0\MainPage.xaml (Line 4:3)
-				}
-				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-				{
-				// Load False
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-				__p1.CreationComplete();
-				}
-				))
-			)
 			;
 			
 			this
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 			{
 			// Source 0\MainPage.xaml (Line 1:2)
 			
 			// [WARNING] C:/Project/0/MainPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}
 			))
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 			{
 			// Class TestRepro.MainPage
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
@@ -92,16 +77,9 @@ namespace MyProject
 {
 	static class MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions
 	{
-		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.TextBlock instance);
+		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.Page instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.TextBlock MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.TextBlock instance, XamlApplyHandler0 handler)
-		{
-			handler(instance);
-			return instance;
-		}
-		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Controls.Page instance);
-		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler1 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;

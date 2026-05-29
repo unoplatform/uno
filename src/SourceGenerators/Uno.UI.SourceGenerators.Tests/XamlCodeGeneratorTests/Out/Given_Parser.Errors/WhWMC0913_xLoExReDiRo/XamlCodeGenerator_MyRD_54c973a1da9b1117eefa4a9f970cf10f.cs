@@ -85,7 +85,7 @@ namespace MyProject
 							{
 								IsParsing = true,
 								Name = "MyName",
-								// Source 0\MyRD.xaml (Line 5:3)
+								// Source 0\MyRD.xaml (Line 5:4)
 							}
 							.MyRD_54c973a1da9b1117eefa4a9f970cf10f_XamlApply((MyRD_54c973a1da9b1117eefa4a9f970cf10fXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 							{
