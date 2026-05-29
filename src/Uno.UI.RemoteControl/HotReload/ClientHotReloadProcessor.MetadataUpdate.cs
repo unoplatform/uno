@@ -709,8 +709,12 @@ partial class ClientHotReloadProcessor
 
 
 #if !(WINUI || WINAPPSDK || WINDOWS_UWP)
-			// Then find over updated types to find the ones that are implementing IXamlResourceDictionaryProvider
-			List<Uri> updatedDictionaries = new();
+			// Collect the source of every resource dictionary rebuilt by this metadata update.
+			// The generated GlobalStaticResources nested types implement IXamlResourceDictionaryProvider
+			// and advertise their source in "local resource" form (ms-resource:///Files/Foo.xaml), whereas
+			// the live merged dictionaries reference the same file via ms-appx:///Foo.xaml — so the source
+			// is stored as a normalized, scheme-independent key for comparison.
+			var updatedSources = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
 			foreach (var updatedType in updatedTypes)
 			{
@@ -718,7 +722,7 @@ partial class ClientHotReloadProcessor
 				{
 					if (_log.IsEnabled(LogLevel.Trace))
 					{
-						_log.Debug($"Updating resources for {updatedType}");
+						_log.Trace($"Updating resources for {updatedType}");
 					}
 
 					// This assumes that we're using an explicit implementation of IXamlResourceDictionaryProvider, which
@@ -731,39 +735,79 @@ partial class ClientHotReloadProcessor
 						if (getMethod.Invoke(null, null) is IXamlResourceDictionaryProvider provider
 							&& provider.GetResourceDictionary() is { Source: not null } dictionary)
 						{
-							updatedDictionaries.Add(dictionary.Source);
+							updatedSources.Add(NormalizeResourceDictionarySource(dictionary.Source));
 						}
 					}
 				}
 			}
 
-			// Traverse the current app's tree to replace dictionaries matching the source property
-			// with the updated ones.
-			UpdateResourceDictionaries(updatedDictionaries, Application.Current.Resources);
+			if (updatedSources.Count > 0)
+			{
+				// Recursively refresh every source-backed dictionary in the merged-dictionary graph whose
+				// source was rebuilt by this update — wherever it sits, including dictionaries nested inside
+				// typed ResourceDictionary subclasses (e.g. a SimpleTheme/BaseTheme theme referencing an
+				// override file via ColorOverrideSource).
+				UpdateResourceDictionaries(updatedSources, Application.Current.Resources);
 
-			// Force the app reevaluate global resources changes
-			Application.Current.UpdateResourceBindingsForHotReload();
+				// Force the app reevaluate global resources changes
+				Application.Current.UpdateResourceBindingsForHotReload();
+			}
 #endif
 		}
 	}
 
 #if !(WINUI || WINAPPSDK || WINDOWS_UWP)
 	/// <summary>
-	/// Refreshes ResourceDictionary instances that have been detected as updated
+	/// Recursively refreshes every source-backed <see cref="ResourceDictionary"/> reachable through
+	/// <see cref="ResourceDictionary.MergedDictionaries"/> whose source was rebuilt by the current
+	/// metadata update.
 	/// </summary>
-	/// <param name="updatedDictionaries"></param>
-	/// <param name="root"></param>
-	private static void UpdateResourceDictionaries(List<Uri> updatedDictionaries, ResourceDictionary root)
+	/// <remarks>
+	/// Matching is done on a normalized source key (see <see cref="NormalizeResourceDictionarySource"/>):
+	/// a rebuilt dictionary advertises its source in "local resource" form (<c>ms-resource:///Files/Foo.xaml</c>)
+	/// while the live merged entry usually references the same file as <c>ms-appx:///Foo.xaml</c>. The walk
+	/// recurses into every entry — including typed subclasses such as theme dictionaries — so nested
+	/// overrides are reached, but only the matched entry is reloaded via <c>RefreshMergedDictionary</c>.
+	/// A typed subclass is therefore never replaced unless its own source file was the one edited.
+	/// </remarks>
+	private static void UpdateResourceDictionaries(HashSet<string> updatedSources, ResourceDictionary root)
 	{
-		var dictionariesToRefresh = root
-			.MergedDictionaries
-			.Where(merged => updatedDictionaries.Any(d => d == merged.Source))
-			.ToArray();
-
-		foreach (var merged in dictionariesToRefresh)
+		// Snapshot first: RefreshMergedDictionary mutates MergedDictionaries (it replaces the entry at its index).
+		foreach (var merged in root.MergedDictionaries.ToArray())
 		{
-			root.RefreshMergedDictionary(merged);
+			if (merged.Source is { } source
+				&& updatedSources.Contains(NormalizeResourceDictionarySource(source)))
+			{
+				root.RefreshMergedDictionary(merged);
+			}
 		}
+
+		foreach (var merged in root.MergedDictionaries)
+		{
+			UpdateResourceDictionaries(updatedSources, merged);
+		}
+	}
+
+	/// <summary>
+	/// Normalizes a resource dictionary source URI to a scheme-independent key so that the
+	/// <c>ms-resource:///Files/</c> form advertised by a rebuilt dictionary and the <c>ms-appx:///</c>
+	/// form held by a live merged entry compare equal when they point at the same file.
+	/// </summary>
+	private static string NormalizeResourceDictionarySource(Uri source)
+	{
+		var value = source.OriginalString;
+
+		if (value.StartsWith(Uno.UI.Xaml.XamlFilePathHelper.LocalResourcePrefix, StringComparison.OrdinalIgnoreCase))
+		{
+			return value.Substring(Uno.UI.Xaml.XamlFilePathHelper.LocalResourcePrefix.Length);
+		}
+
+		if (value.StartsWith(Uno.UI.Xaml.XamlFilePathHelper.AppXIdentifier, StringComparison.OrdinalIgnoreCase))
+		{
+			return value.Substring(Uno.UI.Xaml.XamlFilePathHelper.AppXIdentifier.Length);
+		}
+
+		return value;
 	}
 #endif
 
