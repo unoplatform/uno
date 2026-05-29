@@ -25,6 +25,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private static readonly ObjectPool<SKPath> _pathPool = new(() => new SKPath());
 	private static readonly SKPath _spareRenderPath = new SKPath();
 
+	private static readonly SKPath _spareShadowPath = new SKPath();
+
+	// Scratch list used only inside the analytic-shadow silhouette walker. Each visit calls
+	// TryAddShadowPaths into this list, drains it, and Clear()s before recursing into children, so a
+	// single static instance is safe.
+	private static readonly List<(SKPath path, float alpha)> _spareShadowContributions = new();
+
 	private static readonly IPrivateSessionFactory _factory = new PaintingSession.SessionFactory();
 	private static readonly List<Visual> s_emptyList = new List<Visual>();
 
@@ -112,6 +119,18 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// only be true when we really have something to paint (and that painting needs to be updated).
 	/// </summary>
 	internal virtual bool CanPaint() => false;
+
+	/// <summary>
+	/// When true, this visual guarantees that everything <em>it itself</em> paints stays inside
+	/// <c>(0, 0, Size.X, Size.Y)</c> in its local coordinates. This is a per-visual guarantee, not a
+	/// statement about the subtree — descendants may still paint anywhere. The analytic drop-shadow
+	/// walker uses it solely to decide whether <em>this visual's own</em> <c>TryAddShadowPaths</c> call
+	/// can be skipped (when Size is inside the opaque silhouette), and does not propagate Size as a clip
+	/// to children. Default <c>false</c>: a <see cref="Visual"/> is allowed to paint anywhere in WinUI
+	/// semantics, so we don't assume the bounds constrain it. Subclasses that genuinely respect their
+	/// Size opt in.
+	/// </summary>
+	internal virtual bool PaintsWithinOwnSize => false;
 
 	// this is for effect brushes that apply an effect on an already-drawn area, so these need to be painted every frame.
 	internal virtual bool RequiresRepaintOnEveryFrame => false;
@@ -372,7 +391,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				canvas.ClipPath(preClip, antialias: true);
 			}
 
-			if (ShadowState is null)
+			if (ShadowState is null || TryRenderAnalyticShadow(canvas, ShadowState))
 			{
 				PaintStep(this, session);
 				PostPaintingClipStep(this, canvas);
@@ -612,6 +631,252 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	/// <param name="session">The drawing session to use.</param>
 	internal virtual void Paint(in PaintingSession session) { }
+
+	private protected virtual bool TryAddShadowPaths(List<(SKPath path, float alpha)> output) => !CanPaint();
+
+	private bool TryRenderAnalyticShadow(SKCanvas canvas, ShadowState shadow)
+	{
+		var rootMatrix = TotalMatrix.ToSKMatrix();
+		if (!rootMatrix.TryInvert(out var inverseRoot))
+		{
+			return false;
+		}
+
+		using var accumulator = new ShadowPathAccumulator();
+		if (!WalkShadowSilhouette(this, this, in inverseRoot, ancestorClipInRoot: null, 1f, accumulator))
+		{
+			return false;
+		}
+
+		var totalRegions = accumulator.Count;
+		if (totalRegions == 0)
+		{
+			return true; // nothing to cast a shadow from; analytic path succeeded vacuously
+		}
+
+		var sigma = shadow.SigmaX;
+		using var maskFilter = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, sigma);
+		var shadowSKColor = shadow.Color.ToSKColor();
+
+		canvas.Save();
+		canvas.Translate(shadow.Dx, shadow.Dy);
+
+		var pathYScale = 1f;
+		if (!shadow.SigmaX.Equals(shadow.SigmaY) && !shadow.SigmaX.Equals(0f))
+		{
+			// SKMaskFilter only supports a single sigma. To get anisotropic device-space blur (SigmaX, SigmaY)
+			// we exploit respectCTM=true: the user-space sigma is multiplied by |CTM scale| per axis. So we
+			// pick sigma = SigmaX, apply canvas.Scale(1, SigmaY/SigmaX), and pre-scale each region's path by
+			// (1, SigmaX/SigmaY) to cancel the visual stretch — the geometry lands at original coordinates
+			// while the blur becomes (SigmaX, SigmaY) in device pixels. When sigmas are equal (the common
+			// SetElevation case) we skip the scaling entirely.
+			var sy_over_sx = shadow.SigmaY / shadow.SigmaX;
+			canvas.Scale(1f, sy_over_sx);
+			pathYScale = 1f / sy_over_sx;
+		}
+
+		if (totalRegions > 1)
+		{
+			// Isolate accumulation so Plus blend sums region contributions without polluting the canvas
+			// behind the shadow.
+			canvas.SaveLayer();
+			if (accumulator.OpaqueSilhouette is { } opaque)
+			{
+				DrawRegionShadow(canvas, opaque, 1f, shadowSKColor, maskFilter, useAdditive: true, pathYScale);
+			}
+			foreach (var (path, alpha) in accumulator.Regions)
+			{
+				DrawRegionShadow(canvas, path, alpha, shadowSKColor, maskFilter, useAdditive: true, pathYScale);
+			}
+			canvas.Restore();
+		}
+		else
+		{
+			// avoiding the SaveLayer was measured to be a significant perf win for the common case of a single region
+			if (accumulator.OpaqueSilhouette is { } opaque)
+			{
+				DrawRegionShadow(canvas, opaque, 1f, shadowSKColor, maskFilter, useAdditive: false, pathYScale);
+			}
+			else
+			{
+				var (path, alpha) = accumulator.Regions[0];
+				DrawRegionShadow(canvas, path, alpha, shadowSKColor, maskFilter, useAdditive: false, pathYScale);
+			}
+		}
+
+		canvas.Restore();
+		return true;
+
+		static void DrawRegionShadow(SKCanvas canvas, SKPath path, float alpha, SKColor shadowColor, SKMaskFilter? maskFilter, bool useAdditive, float pathYScale)
+		{
+			using var paint = new SKPaint
+			{
+				IsAntialias = true,
+				Color = shadowColor.WithAlpha((byte)(shadowColor.Alpha * alpha)),
+				MaskFilter = maskFilter,
+				BlendMode = useAdditive ? SKBlendMode.Plus : SKBlendMode.SrcOver,
+			};
+
+			if (pathYScale.Equals(1f))
+			{
+				canvas.DrawPath(path, paint);
+			}
+			else
+			{
+				// Cancel the canvas Y-scale on the geometry so the shape lands at its original
+				// position; the canvas scale only affects the mask blur's per-axis sigma.
+				var scratch = _spareShadowPath;
+				scratch.Rewind();
+				path.Transform(SKMatrix.CreateScale(1f, pathYScale), scratch);
+				canvas.DrawPath(scratch, paint);
+			}
+		}
+	}
+
+	private static bool WalkShadowSilhouette(
+		Visual visual,
+		Visual shadowRoot,
+		in SKMatrix inverseRootMatrix,
+		SKPath? ancestorClipInRoot,
+		float opacityChain,
+		ShadowPathAccumulator accumulator)
+	{
+		var scratch = _spareShadowContributions;
+		if (visual.Opacity == 0f || !visual.IsVisible)
+		{
+			return true;
+		}
+		// A self-shadowed descendant renders its own drop shadow; including its silhouette in the ancestor
+		// would double-cast.
+		if (visual != shadowRoot && visual.ShadowState is not null)
+		{
+			return true;
+		}
+
+		var visualMatrix = visual.TotalMatrix.ToSKMatrix();
+		var toRoot = SKMatrix.Concat(inverseRootMatrix, visualMatrix);
+
+		var clipPath = _pathPool.Allocate();
+		using var clipPathDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), clipPath);
+		clipPath.Rewind();
+
+		var hasClip = TryPopulateEffectiveClipInRoot(visual, in toRoot, clipPath);
+
+		// Intersect with the accumulated ancestor clip. After this block hasClip is unconditionally true.
+		if (ancestorClipInRoot is not null)
+		{
+			if (hasClip)
+			{
+				clipPath.Op(ancestorClipInRoot, SKPathOp.Intersect, clipPath);
+			}
+			else
+			{
+				clipPath.AddPath(ancestorClipInRoot);
+			}
+			hasClip = true;
+		}
+
+		// Skip optimization (scoped to THIS visual, not the subtree): if the visual's own painting is
+		// guaranteed to land inside the opaque silhouette, we can skip its TryAddShadowPaths call.
+		// PaintsWithinOwnSize lets Size act as an upper bound on its painting (intersected with the
+		// effective clip). When that's not available we fall back to the effective clip itself, which is
+		// a sound upper bound when present. Either way, this only short-circuits THIS visual's
+		// contribution — children are still walked, because the Size bound is per-visual, not per-subtree.
+		var canSkipOwnContribution = false;
+		if (visual is { PaintsWithinOwnSize: true, Size: { X: > 0, Y: > 0 } size })
+		{
+			var sizeCandidate = _spareShadowPath;
+			sizeCandidate.Rewind();
+			sizeCandidate.AddRect(new SKRect(0, 0, size.X, size.Y));
+			sizeCandidate.Transform(toRoot);
+			if (hasClip)
+			{
+				sizeCandidate.Op(clipPath, SKPathOp.Intersect, sizeCandidate);
+			}
+			canSkipOwnContribution = accumulator.IsFullyCovered(sizeCandidate);
+		}
+		else if (hasClip)
+		{
+			canSkipOwnContribution = accumulator.IsFullyCovered(clipPath);
+		}
+
+		var combinedOpacity = opacityChain * visual.Opacity;
+
+		if (!canSkipOwnContribution)
+		{
+			// scratch is always empty on entry — the previous visit clears it before recursing.
+			if (!visual.TryAddShadowPaths(scratch))
+			{
+				return false;
+			}
+
+			foreach (var (path, alpha) in scratch)
+			{
+				var transformed = _spareShadowPath;
+				transformed.Rewind();
+				path.Transform(toRoot, transformed);
+
+				if (hasClip)
+				{
+					if (transformed.Op(clipPath, SKPathOp.Intersect, transformed) && !transformed.IsEmpty)
+					{
+						accumulator.Add(transformed, alpha * combinedOpacity);
+					}
+				}
+				else
+				{
+					accumulator.Add(transformed, alpha * combinedOpacity);
+				}
+
+				path.Dispose();
+			}
+			scratch.Clear();
+		}
+
+		// Apply the post-painting clip to derive the clip for children. We can mutate clipPath in place —
+		// its previous value (the visual's own clip) is no longer needed past this point.
+		var postClipLocal = visual.GetPostPaintingClipping();
+		if (postClipLocal is not null)
+		{
+			var postClipInRoot = _spareShadowPath;
+			postClipInRoot.Rewind();
+			postClipLocal.Transform(toRoot, postClipInRoot);
+
+			if (hasClip)
+			{
+				clipPath.Op(postClipInRoot, SKPathOp.Intersect, clipPath);
+			}
+			else
+			{
+				clipPath.AddPath(postClipInRoot);
+			}
+			hasClip = true;
+		}
+
+		SKPath? childClipInRoot = hasClip ? clipPath : null;
+
+		foreach (var child in visual.GetChildrenInRenderOrder())
+		{
+			if (!WalkShadowSilhouette(child, shadowRoot, in inverseRootMatrix, childClipInRoot, combinedOpacity, accumulator))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private static bool TryPopulateEffectiveClipInRoot(Visual visual, in SKMatrix toRoot, SKPath dst)
+	{
+		var preClipLocal = _spareShadowPath;
+		preClipLocal.Rewind();
+		if (visual.GetPrePaintingClipping(preClipLocal))
+		{
+			preClipLocal.Transform(toRoot, dst);
+			return true;
+		}
+		return false;
+	}
 
 	private Vector3 GetTotalOffset()
 	{

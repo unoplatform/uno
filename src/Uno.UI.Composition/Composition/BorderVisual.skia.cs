@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 using Windows.Foundation;
@@ -376,11 +377,172 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		(BorderBrush?.CanPaint() ?? false) ||
 		base.CanPaint();
 
+	// The background fill and border ring both live inside (0, 0, Size.X, Size.Y) by construction.
+	internal override bool PaintsWithinOwnSize => true;
+
 	internal override bool RequiresRepaintOnEveryFrame => (_backgroundBrush?.RequiresRepaintOnEveryFrame ?? false) || (_borderBrush?.RequiresRepaintOnEveryFrame ?? false);
 
 	internal override bool HitTest(Point point)
 	{
 		UpdatePathsAndCornerClip();
 		return (_borderShape?.HitTest(point) ?? false) || (_backgroundShape?.HitTest(point) ?? false);
+	}
+
+	private protected override bool TryAddShadowPaths(List<(SKPath path, float alpha)> output)
+	{
+		if (_backgroundBrush is null && _borderBrush is null)
+		{
+			return true;
+		}
+
+		// Only solid-color brushes are describable analytically — any non-color brush (gradient, image,
+		// effect, surface) has a silhouette that can't be reduced to a finite tiling of constant-α paths.
+		var backgroundColorBrush = _backgroundBrush as CompositionColorBrush;
+		if (_backgroundBrush is not null && backgroundColorBrush is null)
+		{
+			return false;
+		}
+		var borderColorBrush = _borderBrush as CompositionColorBrush;
+		if (_borderBrush is not null && borderColorBrush is null)
+		{
+			return false;
+		}
+
+		var backgroundAlpha = backgroundColorBrush?.Color.A ?? (byte)0;
+		var borderAlpha = borderColorBrush?.Color.A ?? (byte)0;
+
+		if (backgroundAlpha == 0 && borderAlpha == 0)
+		{
+			return true; // both transparent — visually empty
+		}
+
+		if (Size.X <= 0 || Size.Y <= 0)
+		{
+			return true;
+		}
+
+		UpdatePathsAndCornerClip();
+
+		var outerArea = new SKRect(0, 0, Size.X, Size.Y);
+		var hasBorderThickness = _borderThickness.Left > 0
+			|| _borderThickness.Top > 0
+			|| _borderThickness.Right > 0
+			|| _borderThickness.Bottom > 0;
+		var hasBorder = borderAlpha > 0 && hasBorderThickness;
+		var fullCornerRadius = _cornerRadius.GetRadii(Size.ToSize(), _borderThickness);
+
+		if (!hasBorder)
+		{
+			// No border ring — only a background fill (possibly translucent).
+			if (backgroundAlpha == 0)
+			{
+				return true;
+			}
+
+			var useInnerForBg = _useInnerBorderBoundsAsAreaForBackground && hasBorderThickness;
+			var bgArea = useInnerForBg ? ComputeInnerArea(outerArea) : outerArea;
+			var bgRadii = useInnerForBg ? fullCornerRadius.Inner : fullCornerRadius.Outer;
+			output.Add((BuildRoundRectPath(bgArea, bgRadii), backgroundAlpha / 255f));
+			return true;
+		}
+
+		// Has an opaque-enough border ring. Contribute the ring (outer ∖ inner) first, then optionally
+		// the background. When alphas are equal the accumulator's MergeOpaque collapses them; when alphas
+		// differ (translucent background through an opaque ring, or vice versa) the Porter-Duff `over`
+		// math in the accumulator yields the correct multi-α tiling without us having to special-case it.
+		var innerArea = ComputeInnerArea(outerArea);
+		output.Add((BuildRoundRectRingPath(outerArea, fullCornerRadius.Outer, innerArea, fullCornerRadius.Inner), borderAlpha / 255f));
+
+		if (backgroundAlpha > 0)
+		{
+			SKRect bgArea;
+			NonUniformCornerRadius bgRadii;
+			if (_useInnerBorderBoundsAsAreaForBackground)
+			{
+				// Background covers the inner area only — no overlap with the ring.
+				bgArea = innerArea;
+				bgRadii = fullCornerRadius.Inner;
+			}
+			else
+			{
+				// Background covers the full outer area; the ring is drawn on top inside the outer.
+				// Contributing the outer rect makes the accumulator compute α_ring `over` α_bg in the
+				// overlap (the ring band) and just α_bg in the centre, which matches the rendered output.
+				bgArea = outerArea;
+				bgRadii = fullCornerRadius.Outer;
+			}
+			output.Add((BuildRoundRectPath(bgArea, bgRadii), backgroundAlpha / 255f));
+		}
+
+		return true;
+	}
+
+	private SKRect ComputeInnerArea(SKRect outerArea) => new(
+		(float)_borderThickness.Left,
+		(float)_borderThickness.Top,
+		outerArea.Right - (float)_borderThickness.Right,
+		outerArea.Bottom - (float)_borderThickness.Bottom);
+
+	private static SKPath BuildRoundRectPath(SKRect rect, NonUniformCornerRadius radii)
+	{
+		var path = new SKPath();
+		if (radii.IsEmpty)
+		{
+			path.AddRect(rect);
+		}
+		else
+		{
+			unsafe
+			{
+				var pts = stackalloc SKPoint[4];
+				radii.GetRadii(pts);
+				using var rr = new SKRoundRect();
+				UnoSkiaApi.sk_rrect_set_rect_radii(rr.Handle, &rect, pts);
+				path.AddRoundRect(rr);
+			}
+		}
+		return path;
+	}
+
+	private static SKPath BuildRoundRectRingPath(
+		SKRect outerRect,
+		NonUniformCornerRadius outerRadii,
+		SKRect innerRect,
+		NonUniformCornerRadius innerRadii)
+	{
+		// EvenOdd fill across the outer and inner contours yields the ring region (outer ∖ inner).
+		var path = new SKPath { FillType = SKPathFillType.EvenOdd };
+		unsafe
+		{
+			if (outerRadii.IsEmpty)
+			{
+				path.AddRect(outerRect);
+			}
+			else
+			{
+				var pts = stackalloc SKPoint[4];
+				outerRadii.GetRadii(pts);
+				using var rr = new SKRoundRect();
+				UnoSkiaApi.sk_rrect_set_rect_radii(rr.Handle, &outerRect, pts);
+				path.AddRoundRect(rr);
+			}
+
+			if (!innerRect.IsEmpty)
+			{
+				if (innerRadii.IsEmpty)
+				{
+					path.AddRect(innerRect);
+				}
+				else
+				{
+					var pts = stackalloc SKPoint[4];
+					innerRadii.GetRadii(pts);
+					using var rr = new SKRoundRect();
+					UnoSkiaApi.sk_rrect_set_rect_radii(rr.Handle, &innerRect, pts);
+					path.AddRoundRect(rr);
+				}
+			}
+		}
+		return path;
 	}
 }
