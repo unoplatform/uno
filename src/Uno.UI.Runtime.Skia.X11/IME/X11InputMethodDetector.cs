@@ -18,20 +18,17 @@ internal static class X11InputMethodDetector
 
 	/// <summary>
 	/// The detected and fully-connected D-Bus IME, or null if none is available.
-	/// Populated by <see cref="DetectAsync"/>; consumers (e.g. <see cref="X11KeyboardInputSource"/>)
-	/// read this synchronously after host initialization has completed.
+	/// Consumers (e.g. <see cref="X11KeyboardInputSource"/>) read this synchronously
+	/// after host initialization has completed.
 	/// </summary>
-	public static IX11InputMethod? DetectedInputMethod { get; private set; }
+	public static IX11InputMethod? DetectedInputMethod { get; internal set; }
 
 	/// <summary>
-	/// Runs detection and stores the result in <see cref="DetectedInputMethod"/>.
-	/// Awaited from <c>X11ApplicationHost.InitializeAsync</c> so detection completes
-	/// before any window is created.
+	/// Starts detection. X11ApplicationHost calls this once from a static field
+	/// initializer and stores the returned task; <c>InitializeAsync</c> later blocks
+	/// on the task's result to publish <see cref="DetectedInputMethod"/>.
 	/// </summary>
-	public static async Task DetectAsync()
-	{
-		DetectedInputMethod = await DetectAndCreateAsyncImpl();
-	}
+	public static Task<IX11InputMethod?> DetectAsync() => DetectAndCreateAsyncImpl();
 
 	private static async Task<IX11InputMethod?> DetectAndCreateAsyncImpl()
 	{
