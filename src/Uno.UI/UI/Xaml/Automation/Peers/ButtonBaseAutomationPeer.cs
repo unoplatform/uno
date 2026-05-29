@@ -24,8 +24,6 @@ public partial class ButtonBaseAutomationPeer : FrameworkElementAutomationPeer
 	{
 	}
 
-	protected override bool IsControlElementCore() => true;
-
 	protected override IList<AutomationPeer> GetChildrenCore()
 	{
 		var children = base.GetChildrenCore() ?? new List<AutomationPeer>();

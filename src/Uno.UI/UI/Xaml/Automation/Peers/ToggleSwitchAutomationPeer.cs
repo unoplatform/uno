@@ -40,7 +40,7 @@ public partial class ToggleSwitchAutomationPeer : FrameworkElementAutomationPeer
 	protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.Button;
 
 	protected override string GetLocalizedControlTypeCore() =>
-		DXamlCore.GetCurrentNoCreate()?.GetLocalizedResourceString(nameof(ToggleSwitch)) ?? base.GetLocalizedControlTypeCore();
+		DXamlCore.GetCurrentNoCreate()?.GetLocalizedResourceString("UIA_AP_TOGGLESWITCH") ?? base.GetLocalizedControlTypeCore();
 
 	protected override string GetNameCore()
 	{
