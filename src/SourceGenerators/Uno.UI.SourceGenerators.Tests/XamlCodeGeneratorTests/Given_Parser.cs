@@ -24,6 +24,14 @@ public partial class Given_Parser
 		}
 		""";
 
+	private static string MainPageXamlBoilerplate(string innerXaml) => $$"""
+		<Page x:Class="TestRepro.MainPage"
+			  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+		{{innerXaml}}
+		</Page>
+		""";
+
 	private static readonly string _emptyCodeBehind = EmptyCodeBehind("MainPage", "Page");
 
 	[TestMethod]

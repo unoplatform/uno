@@ -2,6 +2,7 @@
 // Uncomment the following line to write expected files to disk
 // Don't commit this line uncommented.
 // #define WRITE_EXPECTED
+// note: remember to chain `.AddGeneratedSources()` to the Verifier.Test
 #endif
 
 #if IS_CI && WRITE_EXPECTED
@@ -247,6 +248,13 @@ build_metadata.AdditionalFiles.SourceItemGroup = PRIResource
 				}
 
 				return (compilation, generatorDiagnostics);
+			}
+
+			public TestBase AddSource(string source)
+			{
+				TestState.Sources.Add(source);
+
+				return this;
 			}
 
 			public TestBase AddGeneratedSources()
