@@ -12,20 +12,19 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
+using Uno.Extensions;
+using Uno.UI.RuntimeTests.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.Toolkit.Extensions;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.ViewManagement;
-using Uno.Extensions;
-using Uno.UI.RuntimeTests.Extensions;
-using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Toolkit.Extensions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.UI.Toolkit.DevTools.Input;
-
 using static Private.Infrastructure.TestServices;
 using Disposable = Uno.Disposables.Disposable;
 using ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresenter;
@@ -1699,7 +1698,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.MoveTo(bounds.GetCenter().Offset(0, -50));
 			finger.Release();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(50, SUT.VerticalOffset);
+			// Touch scrolling absorbs at most the ~10px start threshold (dead-zone) on recognition and
+			// does not recover it (see #20473). The absorbed amount is bounded by the threshold but may
+			// be smaller when recognition fires via velocity before the cumulative reaches the threshold
+			// (depending on how the injector samples the move into steps). So a 50px drag scrolls in
+			// (drag - threshold, drag] px.
+			SUT.VerticalOffset.Should().BeInRange(40, 50, "a 50px touch drag scrolls between (drag - threshold) and drag pixels");
 		}
 
 		[TestMethod]
@@ -1878,14 +1882,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		// Disabled on all platforms: the chained inertia is not reliably forwarded from the (clamped)
-		// child ScrollViewer to the parent under injected pointer input, so the parent does not converge
-		// on its scrollable end (it stays at the drag distance). This reproduces deterministically on
-		// both Skia WASM and Skia Win32 Desktop and is a product/injection-environment behavior, not a
-		// test-timing race (the parent does not advance even when waiting for the inertia to settle), so
-		// it cannot be stabilized by waiting alone. Re-enable once child->parent inertia chaining is
-		// reliable under injected pointers.
-		[Ignore("Chained inertia is not forwarded from a clamped non-scrollable child ScrollViewer to its parent under injected pointer input (deterministic on Skia WASM and Skia Desktop). Re-enable when child->parent inertia chaining is reliable.")]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
 		public async Task When_TouchScrollDownWithInertiaOnNonScrollable_Then_ParentReceiveInertia()
 		{
 			ScrollViewer parent, child;
@@ -1934,13 +1935,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Press(center);
 			finger.MoveBy(0, -100, steps: 1, stepOffsetInMilliseconds: 1);
 
-			// At this point inertia not kicked-in yet
-			Assert.IsLessThan(1d, Math.Abs(100 - parent.VerticalOffset));
+			// At this point inertia not kicked-in yet.
+			// Touch scrolling absorbs the ~10px start threshold (dead-zone) on recognition and does not
+			// recover it, so a 100px drag scrolls 100 - threshold px (see #20473).
+			Assert.IsLessThan(1d, Math.Abs(90 - parent.VerticalOffset));
 
 			finger.Release();
 
-			// Wait for the inertia to run
-			await UITestHelper.WaitForRender();
+			// Wait for the inertia to run. Inertia is driven asynchronously via the composition timer
+			// (DispatcherQueueTimer ticks on CompositionTarget.Rendering) but does NOT register a
+			// CompositionAnimation, so Compositor.IsAnimating remains false — meaning neither
+			// WaitForRender() (one frame) nor WaitForIdle(waitForCompositionAnimations: true) actually
+			// wait for inertia to decelerate. Poll until the parent SV reaches its scroll limit
+			// (capped at 2s, well above the natural deceleration time at this velocity).
+			await UITestHelper.WaitFor(
+				() => Math.Abs(parentEndOffset - parent.VerticalOffset) < 1,
+				timeoutMS: 2000,
+				message: "parent SV did not receive enough inertia to reach its scroll end");
 			Assert.IsLessThan(1d, Math.Abs(parentEndOffset - parent.VerticalOffset));
 		}
 #endif
