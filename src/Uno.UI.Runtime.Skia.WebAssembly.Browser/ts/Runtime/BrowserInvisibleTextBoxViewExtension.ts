@@ -188,6 +188,15 @@
 					return;
 				}
 
+				// Allow Tab/Shift+Tab to propagate without preventDefault so the
+				// document-level BrowserKeyboardInputSource (and ultimately the browser)
+				// can handle focus navigation. Tab does not insert characters, so
+				// skipping preventDefault here is safe. Without this, focus gets
+				// trapped and can never depart the TextBox via keyboard.
+				if (ev.key === "Tab") {
+					return;
+				}
+
 				ev.preventDefault();
 			});
 
