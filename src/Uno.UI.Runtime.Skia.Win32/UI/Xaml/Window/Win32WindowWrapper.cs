@@ -214,15 +214,23 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
 	private static LRESULT WndProc(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
 	{
-		if (_wrapperForNextCreateWindow is { } wrapper)
+		try
 		{
-			_hwndToWrapper[hwnd] = _wrapperForNextCreateWindow;
+			if (_wrapperForNextCreateWindow is { } wrapper)
+			{
+				_hwndToWrapper[hwnd] = _wrapperForNextCreateWindow;
+			}
+			else if (!_hwndToWrapper.TryGetValue(hwnd, out wrapper))
+			{
+				throw new Exception($"{nameof(WndProc)} was fired on a {nameof(HWND)} before it was added to, or after it was removed from, {nameof(_hwndToWrapper)}.");
+			}
+			return wrapper.WndProcInner(hwnd, msg, wParam, lParam);
 		}
-		else if (!_hwndToWrapper.TryGetValue(hwnd, out wrapper))
+		catch (Exception e)
 		{
-			throw new Exception($"{nameof(WndProc)} was fired on a {nameof(HWND)} before it was added to, or after it was removed from, {nameof(_hwndToWrapper)}.");
+			typeof(Win32WindowWrapper).LogError()?.Error($"An unhandled exception was thrown while processing win32 message 0x{msg:X4}.", e);
+			return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
 		}
-		return wrapper.WndProcInner(hwnd, msg, wParam, lParam);
 	}
 
 	private unsafe LRESULT WndProcInner(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
