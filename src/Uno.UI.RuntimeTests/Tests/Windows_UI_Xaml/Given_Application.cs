@@ -10,12 +10,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public void When_Application_Is_Started_DispatcherShutdownMode_Defaults_To_OnLastWindowClose()
 		{
-		#if __SKIA__
+	#if __SKIA__
 			if (Application.Current.Host is null)
 			{
 				Assert.Inconclusive("Skia Islands use explicit shutdown semantics and are covered by other tests.");
 			}
-		#endif
+	#endif
 
 			Assert.AreEqual(DispatcherShutdownMode.OnLastWindowClose, Application.Current.DispatcherShutdownMode);
 		}
