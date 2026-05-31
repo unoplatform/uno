@@ -54,6 +54,13 @@ namespace Microsoft.UI.Xaml
 			{
 				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
 			}
+
+			// WinUI sets DispatcherShutdownMode to OnLastWindowClose when Start is called (see
+			// FrameworkApplication::StartDesktop, which sets it *before* invoking the init callback).
+			// We mirror that here, in the base ctor that runs during `new App()`, so the default is
+			// established before the derived App constructor body runs and can override it.
+			// For XAML Islands (no Start call), the field default of OnExplicitShutdown remains.
+			_dispatcherShutdownMode = DispatcherShutdownMode.OnLastWindowClose;
 		}
 
 #if REPORT_FPS
@@ -103,10 +110,6 @@ namespace Microsoft.UI.Xaml
 			SynchronizationContext.SetSynchronizationContext(NativeDispatcher.Main.SynchronizationContext);
 
 			callback(new ApplicationInitializationCallbackParams());
-
-			// WinUI sets DispatcherShutdownMode to OnLastWindowClose when Start is called.
-			// For XAML Islands (no Start call), the default remains OnExplicitShutdown.
-			_current.DispatcherShutdownMode = DispatcherShutdownMode.OnLastWindowClose;
 
 			if (OperatingSystem.IsBrowser())
 			{

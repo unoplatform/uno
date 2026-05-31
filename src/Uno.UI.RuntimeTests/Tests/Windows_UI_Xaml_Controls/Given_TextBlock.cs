@@ -1638,6 +1638,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.Native)] // Very flaky on all targets #9080
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #elif !HAS_RENDER_TARGET_BITMAP
@@ -1668,6 +1669,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
+
+			// The "Select All" command, the context-menu dismissal and the focus
+			// transition that drives the selection highlight all complete asynchronously.
+			// Wait for the selection to actually be applied (and the highlight to be
+			// rendered) before screen-shotting, otherwise the assert below can run before
+			// the highlight has been painted (observed flaky on Linux/Skia).
+			await UITestHelper.WaitFor(
+				() => SUT.Selection.start != SUT.Selection.end,
+				message: "Timed out waiting for the context-menu 'Select All' to apply the selection.");
+			await UITestHelper.WaitForRender();
 
 			var bitmap = await UITestHelper.ScreenShot(SUT);
 

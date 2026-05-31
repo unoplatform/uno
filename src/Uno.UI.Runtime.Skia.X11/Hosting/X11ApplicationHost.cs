@@ -31,6 +31,12 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 {
 	[ThreadStatic] private static bool _isDispatcherThread;
 	private static readonly X11CoreApplicationExtension _coreApplicationExtension = new();
+
+	// Kick off D-Bus IME detection as early as possible (this initializer runs before
+	// the static ctor body) so it can overlap with the rest of startup. InitializeAsync
+	// blocks on the task's result.
+	private static readonly Task<IX11InputMethod?> _imeDetectionTask = X11InputMethodDetector.DetectAsync();
+
 	private readonly EventLoop _eventLoop;
 
 	private readonly Func<Application> _appBuilder;
@@ -243,6 +249,11 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 
 	protected override void Initialize()
 	{
+		// Block until D-Bus IME detection completes, then publish the result. We return
+		// Task.CompletedTask so UnoPlatformHost.Run can finish RunCore synchronously —
+		// RunAsync triggers Win32 OleInitialize / STA breakage so we can't rely on real
+		// awaits here.
+		X11InputMethodDetector.DetectedInputMethod = _imeDetectionTask.Result;
 	}
 
 	public void Dispose()

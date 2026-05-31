@@ -122,7 +122,7 @@ public partial class ContainerVisual : Visual
 		if (isAncestorClip)
 		{
 			Matrix4x4.Invert(TotalMatrix, out var totalMatrixInverted);
-			var childToParentTransform = Parent!.TotalMatrix * totalMatrixInverted;
+			var childToParentTransform = (Parent?.TotalMatrix ?? Matrix4x4.Identity) * totalMatrixInverted;
 			if (!childToParentTransform.IsIdentity)
 			{
 				dst.Transform(childToParentTransform.ToSKMatrix());
@@ -142,7 +142,7 @@ public partial class ContainerVisual : Visual
 		if (isAncestorClip)
 		{
 			Matrix4x4.Invert(TotalMatrix, out var totalMatrixInverted);
-			var childToParentTransform = Parent!.TotalMatrix * totalMatrixInverted;
+			var childToParentTransform = (Parent?.TotalMatrix ?? Matrix4x4.Identity) * totalMatrixInverted;
 			if (!childToParentTransform.IsIdentity)
 			{
 				rect = rect.Transform(childToParentTransform.ToMatrix3x2());

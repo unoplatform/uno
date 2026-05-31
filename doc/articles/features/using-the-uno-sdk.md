@@ -317,6 +317,23 @@ As discussed above setting `EnableDefaultUnoItems` to false will disable these i
 >
 > This approach allows you to selectively remove pages from specific target frameworks while maintaining them in others.
 
+## Platform-Specific Folders
+
+In addition to the per-file suffixes described above, the Uno.Sdk recognizes a set of well-known sub-folders under `Platforms/` that scope their contents to a single target. Files in these folders are automatically included only when the matching TFM is being built and excluded from every other TFM (the SDK removes them from `Compile`, `Page`, `Content`, `EmbeddedResource`, and `Manifest` for inactive platforms).
+
+| Folder | TFM it applies to | Typical contents |
+|---|---|---|
+| `Platforms/Android/` | `*-android` | `Main.Android.cs`, `AndroidManifest.xml`, Android resources |
+| `Platforms/iOS/` | `*-ios` | `Main.iOS.cs`, `Info.plist`, `Entitlements.plist`, `PrivacyInfo.xcprivacy` |
+| `Platforms/tvOS/` | `*-tvos` | tvOS-specific entry point and resources |
+| `Platforms/MacCatalyst/` | `*-maccatalyst` | Mac Catalyst entry point, `Info.plist`, `Entitlements.plist` |
+| `Platforms/MacOS/` | `*-macos` | macOS entry point, `Info.plist`, `Entitlements.plist` |
+| `Platforms/Desktop/` | `*-desktop` | `Program.cs` with the `UnoPlatformHostBuilder` configuration |
+| `Platforms/Wasm/` (or `Platforms/WebAssembly/`) | `*-browserwasm` | `Program.cs`, `wwwroot/`, `manifest.webmanifest` |
+| `Platforms/Windows/` | `*-windows10.*` | `Package.appxmanifest`, `app.manifest`, splash screens, tile/app-icon PNGs referenced by the manifest |
+
+The location of each folder can be overridden via the matching MSBuild property if your project uses a different layout: `PlatformsProjectFolder`, `AndroidProjectFolder`, `iOSProjectFolder`, `tvOSProjectFolder`, `MacCatalystProjectFolder`, `MacOSProjectFolder`, `DesktopProjectFolder`, `WasmProjectFolder`, `WindowsProjectFolder`.
+
 ## Apple Privacy Manifest Support
 
 Starting May 1st, 2024, Apple requires the inclusion of a new file, the [Privacy Manifest file](https://developer.apple.com/documentation/bundleresources/privacy_manifest_files) (named `PrivacyInfo.xcprivacy`), in app bundles. This file is crucial for complying with updated privacy regulations.

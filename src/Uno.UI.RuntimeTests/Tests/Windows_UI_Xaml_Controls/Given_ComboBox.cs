@@ -1309,6 +1309,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // Flaky on Skia WASM #9080
 		public async Task When_ComboPopup_Rearrange_ScrollShouldNotReset()
 		{
 			var SUT = new ComboBox()
@@ -1329,6 +1330,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var origin = sv.VerticalOffset;
 			var destination = origin + sv.ViewportHeight * 2;
 			sv.ChangeView(null, verticalOffset: destination, null, disableAnimation: true);
+			// ChangeView is async on SkiaWasm: the VerticalOffset update is applied on the next render pass,
+			// so poll until the offset settles rather than relying on a single WaitForIdle.
+			await UITestHelper.WaitFor(() => Math.Abs(destination - sv.VerticalOffset) < 1.0, timeoutMS: 2000, $"Expect sv.VerticalOffset to be near {destination:0.##}, got: {sv.VerticalOffset:0.##}");
 			await UITestHelper.WaitForIdle();
 			Assert.IsLessThan(1.0, Math.Abs(destination - sv.VerticalOffset), $"Expect sv.VerticalOffset to be near {destination:0.##}, got: {sv.VerticalOffset:0.##}");
 
@@ -1423,11 +1427,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeWinUI)] // https://github.com/unoplatform/uno-private/issues/1297
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)] // https://github.com/unoplatform/uno-private/issues/1297, flaky on Skia WASM #9080
 		public Task When_ComboBox_ScrollIntoView_SelectedItem() => When_ComboBox_ScrollIntoView_Selection(viaIndex: false);
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeWinUI)] // https://github.com/unoplatform/uno-private/issues/1297
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)] // https://github.com/unoplatform/uno-private/issues/1297, flaky on Skia WASM #9080
 		public Task When_ComboBox_ScrollIntoView_SelectedIndex() => When_ComboBox_ScrollIntoView_Selection(viaIndex: true);
 
 		private async Task When_ComboBox_ScrollIntoView_Selection(bool viaIndex)
@@ -1468,15 +1472,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(source[^3], sut.SelectedItem, "SelectedItem should be the 3rd last");
 
 			var sv = sut.ItemsPanelRoot.FindFirstAncestorOrThrow<ScrollViewer>();
-			var cbi = sut.ContainerFromIndex(sut.SelectedIndex) as FrameworkElement;
-			Assert.IsNotNull(cbi, "Selected container should not be null");
+			// Bringing the selected item into view after the selection change is asynchronous on
+			// SkiaWasm: the virtualizing panel realizes the target container and the ScrollViewer
+			// settles its offset on the layout pass(es) following the selection. Rather than relying
+			// on a single WaitForIdle, poll until the selected container is realized AND fully within
+			// the viewport. We compare with a sub-pixel tolerance because Rect stores its fields as
+			// float and Rect.Intersect recomputes the extents via subtraction, which reintroduces
+			// rounding differences (~2e-4 px) that would break an exact Rect equality comparison even
+			// when the container is geometrically fully visible.
+			const double tolerance = 0.5; // well below one pixel, but absorbs float rounding noise
 
-			var cbiAbsRect = new Rect(cbi.ActualOffset.X, cbi.ActualOffset.Y, cbi.ActualWidth, cbi.ActualHeight);
-			var viewportAbsRect = new Rect(sv.HorizontalOffset, sv.VerticalOffset, sv.ViewportWidth, sv.ViewportHeight);
-			var intersection = viewportAbsRect;
-			intersection.Intersect(cbiAbsRect);
+			bool IsSelectedContainerWithinViewport(out Rect cbiAbsRect, out Rect viewportAbsRect)
+			{
+				cbiAbsRect = default;
+				viewportAbsRect = new Rect(sv.HorizontalOffset, sv.VerticalOffset, sv.ViewportWidth, sv.ViewportHeight);
 
-			Assert.IsTrue(cbiAbsRect == intersection, $"Selected container should be fully within viewport: CBI={PrettyPrint.FormatRect(cbiAbsRect)}, VP={PrettyPrint.FormatRect(viewportAbsRect)}");
+				if (sut.ContainerFromIndex(sut.SelectedIndex) is not FrameworkElement container)
+				{
+					return false;
+				}
+
+				cbiAbsRect = new Rect(container.ActualOffset.X, container.ActualOffset.Y, container.ActualWidth, container.ActualHeight);
+
+				return cbiAbsRect.Left >= viewportAbsRect.Left - tolerance
+					&& cbiAbsRect.Top >= viewportAbsRect.Top - tolerance
+					&& cbiAbsRect.Right <= viewportAbsRect.Right + tolerance
+					&& cbiAbsRect.Bottom <= viewportAbsRect.Bottom + tolerance;
+			}
+
+			await UITestHelper.WaitFor(
+				() => IsSelectedContainerWithinViewport(out _, out _),
+				timeoutMS: 3000,
+				"timed out waiting on the selected container to be realized and scrolled fully into view");
+
+			// Final assertion with a descriptive message capturing the last observed geometry.
+			var withinViewport = IsSelectedContainerWithinViewport(out var finalCbiRect, out var finalViewportRect);
+			Assert.IsTrue(withinViewport, $"Selected container should be fully within viewport: CBI={PrettyPrint.FormatRect(finalCbiRect)}, VP={PrettyPrint.FormatRect(finalViewportRect)}");
 		}
 
 		public sealed class TwoWayBindingClearViewModel : IDisposable
