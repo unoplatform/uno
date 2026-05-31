@@ -8,10 +8,9 @@
 	}
 
 	export class DisplayInformation {
-		private static readonly DpiCheckInterval = 1000;
-
 		private static lastDpi: number;
-		private static dpiWatcher: number;
+		private static dpiMediaQuery: MediaQueryList | null;
+		private static dpiMediaQueryListener: (() => void) | null;
 
 		private static dispatchOrientationChanged: (type: string) => number;
 		private static dispatchDpiChanged: (dpi: number) => number;
@@ -47,19 +46,30 @@
 		}
 
 		public static startDpiChanged() {
-			// DPI can be observed using matchMedia query, but only for certain breakpoints
-			// for accurate observation, we use polling
-
+			// A matchMedia query bound to the current devicePixelRatio fires a
+			// 'change' event whenever the value moves away from it (e.g. moving
+			// the window between displays with different pixel densities). The
+			// query must be re-registered after every change because the new
+			// devicePixelRatio is a different breakpoint.
 			DisplayInformation.lastDpi = window.devicePixelRatio;
-
-			// start polling the devicePixel
-			DisplayInformation.dpiWatcher = window.setInterval(
-				DisplayInformation.updateDpi,
-				DisplayInformation.DpiCheckInterval);
+			DisplayInformation.registerDpiQuery();
 		}
 
 		public static stopDpiChanged() {
-			window.clearInterval(DisplayInformation.dpiWatcher);
+			if (DisplayInformation.dpiMediaQuery && DisplayInformation.dpiMediaQueryListener) {
+				DisplayInformation.dpiMediaQuery.removeEventListener("change", DisplayInformation.dpiMediaQueryListener);
+			}
+			DisplayInformation.dpiMediaQuery = null;
+			DisplayInformation.dpiMediaQueryListener = null;
+		}
+
+		private static registerDpiQuery() {
+			DisplayInformation.dpiMediaQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
+			DisplayInformation.dpiMediaQueryListener = () => {
+				DisplayInformation.updateDpi();
+				DisplayInformation.registerDpiQuery();
+			};
+			DisplayInformation.dpiMediaQuery.addEventListener("change", DisplayInformation.dpiMediaQueryListener, { once: true });
 		}
 
 		public static async setOrientationAsync(uwpOrientations: DisplayOrientations): Promise<void> {
