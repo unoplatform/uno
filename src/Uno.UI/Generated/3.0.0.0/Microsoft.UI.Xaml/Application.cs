@@ -47,8 +47,8 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.Application.ResourceManagerRequested.remove
 		// Skipping already declared method Microsoft.UI.Xaml.Application.OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs)
 		// Forced skipping of method Microsoft.UI.Xaml.Application.DebugSettings.get
-		// Skipping already declared method Microsoft.UI.Xaml.Application.DispatcherShutdownMode.get
-		// Skipping already declared method Microsoft.UI.Xaml.Application.DispatcherShutdownMode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Application.DispatcherShutdownMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Application.DispatcherShutdownMode.set
 		// Forced skipping of method Microsoft.UI.Xaml.Application.FocusVisualKind.get
 		// Forced skipping of method Microsoft.UI.Xaml.Application.FocusVisualKind.set
 		// Forced skipping of method Microsoft.UI.Xaml.Application.HighContrastAdjustment.get
