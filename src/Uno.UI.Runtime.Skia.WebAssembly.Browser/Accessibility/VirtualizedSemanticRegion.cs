@@ -55,9 +55,9 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 	/// </summary>
 	internal void OnItemRealized(IntPtr itemHandle, int index, int totalCount, float x, float y, float width, float height, string role, string label)
 	{
-		if (this.Log().IsEnabled(LogLevel.Debug))
+		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Debug($"ItemRealized container={_containerHandle} item={itemHandle} index={index} total={totalCount} role='{role}' label='{label}' pos=({x},{y}) size={width}x{height}");
+			this.Log().Trace($"ItemRealized container={_containerHandle} item={itemHandle} index={index} total={totalCount} role='{role}' label='{label}' pos=({x},{y}) size={width}x{height}");
 		}
 		_totalItemCount = totalCount;
 		_realizedHandles[index] = itemHandle;
@@ -72,16 +72,16 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 		// Don't remove if focus-pinned
 		if (_isFocusPinned && _pinnedIndex == index)
 		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Debug($"ItemUnrealized skipped (focus-pinned) container={_containerHandle} item={itemHandle} index={index}");
+				this.Log().Trace($"ItemUnrealized skipped (focus-pinned) container={_containerHandle} item={itemHandle} index={index}");
 			}
 			return;
 		}
 
-		if (this.Log().IsEnabled(LogLevel.Debug))
+		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Debug($"ItemUnrealized container={_containerHandle} item={itemHandle} index={index}");
+			this.Log().Trace($"ItemUnrealized container={_containerHandle} item={itemHandle} index={index}");
 		}
 		_realizedHandles.Remove(index);
 		NativeMethods.RemoveVirtualizedItem(itemHandle);

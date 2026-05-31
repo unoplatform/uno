@@ -80,7 +80,7 @@ namespace Uno.UI.Runtime.Skia {
 				parent = document.getElementById(`uno-semantics-${parentHandle}`);
 			}
 			if (!parent) {
-				console.warn(`[A11y] TS appendToParent: parent NOT FOUND handle=${parentHandle} for element=${element.id} — falling back to semanticsRoot`);
+				Accessibility.debugWarn(`[A11y] TS appendToParent: parent NOT FOUND handle=${parentHandle} for element=${element.id} — falling back to semanticsRoot`);
 				parent = SemanticElements.getSemanticsRoot();
 			}
 			if (parent) {
