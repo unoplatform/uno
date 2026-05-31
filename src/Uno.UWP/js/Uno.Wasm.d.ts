@@ -255,9 +255,9 @@ declare namespace Windows.Graphics.Display {
         PortraitFlipped = 8
     }
     export class DisplayInformation {
-        private static readonly DpiCheckInterval;
         private static lastDpi;
-        private static dpiWatcher;
+        private static dpiMediaQuery;
+        private static dpiMediaQueryListener;
         private static dispatchOrientationChanged;
         private static dispatchDpiChanged;
         private static lockingSupported;
@@ -270,6 +270,7 @@ declare namespace Windows.Graphics.Display {
         static stopOrientationChanged(): void;
         static startDpiChanged(): void;
         static stopDpiChanged(): void;
+        private static registerDpiQuery;
         static setOrientationAsync(uwpOrientations: DisplayOrientations): Promise<void>;
         private static parseUwpOrientation;
         private static updateDpi;
