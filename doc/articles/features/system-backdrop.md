@@ -10,6 +10,7 @@ This page explains what is available in Uno, platform differences, usage pattern
 
 > [!TIP]
 > For platform and design guidance, see:
+>
 > - [Windows system backdrops (developer guidance)](https://learn.microsoft.com/en-us/windows/apps/develop/ui/system-backdrops)
 > - [Mica design guidance](https://learn.microsoft.com/en-us/windows/apps/design/style/mica)
 
@@ -23,14 +24,14 @@ These styles correspond to the WinUI types `Microsoft.UI.Xaml.Media.MicaBackdrop
 
 ## Platform support
 
-| Platform | Availability | Notes |
-|----------|--------------|-------|
-| **Windows (Win32)** | ✅ Available (Windows 11, build 22621+) | Mapped to DWM DWMWA_SYSTEMBACKDROP_TYPE via DwmSetWindowAttribute; older builds are ignored and logged. |
-| **macOS (Skia)** | ✅ Available | Maps to `NSVisualEffectView` vibrancy materials via native host integration. |
-| **Linux (Skia)** | ❌ Not available | No runtime implementation in Uno. |
-| **WebAssembly** | ❌ Not available | SystemBackdrop is a desktop visual feature and is not implemented for WASM. |
-| **Android** | ❌ Not available | Not implemented on mobile platforms. |
-| **iOS** | ❌ Not available | Not implemented on mobile platforms. |
+|Platform|Availability|Notes|
+|---|---|---|
+|**Windows (Win32)**|✅ Available (Windows 11, build 22621+)|Mapped to DWM `DWMWA_SYSTEMBACKDROP_TYPE` via `DwmSetWindowAttribute`; older builds are ignored and logged.|
+|**macOS (Skia)**|✅ Available|Maps to `NSVisualEffectView` vibrancy materials via native host integration.|
+|**Linux (Skia)**|❌ Not available|No runtime implementation in Uno.|
+|**WebAssembly**|❌ Not available|SystemBackdrop is a desktop visual feature and is not implemented for WASM.|
+|**Android**|❌ Not available|Not implemented on mobile platforms.|
+|**iOS**|❌ Not available|Not implemented on mobile platforms.|
 
 ## How to enable a system backdrop
 
@@ -54,6 +55,7 @@ App.MainWindow.SystemBackdrop = null;
 ```
 
 Tips:
+
 - Make the page/window background transparent so the backdrop shows through (for example: `Page.Background = new SolidColorBrush(Colors.Transparent)` or via XAML). The SamplesApp test performs a traversal of the visual tree and temporarily replaces opaque backgrounds with transparent brushes so the effect is visible.
 - On Windows, ensure your app is running on a supported Windows 11 build (22621+). Uno logs a warning when an unsupported backdrop is requested on older builds.
 
