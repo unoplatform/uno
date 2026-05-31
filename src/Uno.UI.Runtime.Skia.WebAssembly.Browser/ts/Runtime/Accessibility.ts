@@ -29,8 +29,32 @@ namespace Uno.UI.Runtime.Skia {
 			return element;
 		}
 
+		/**
+		 * Emits a diagnostic message to the console, but only when accessibility
+		 * debug mode is enabled (see AccessibilityDebugger / enableDebugMode).
+		 * Normal runs keep the browser console clean — these traces are only
+		 * useful while developing the a11y layer and would otherwise be emitted
+		 * on every focus change / DOM mutation, even when accessibility is off.
+		 */
+		public static debugLog(message: string) {
+			if (Accessibility.debugModeEnabled) {
+				console.debug(message);
+			}
+		}
+
+		/**
+		 * Same as debugLog, but uses console.warn for fallback/recovery paths
+		 * (e.g. an element not yet flushed to the DOM). Gated behind debug mode
+		 * so it does not spam the console during normal operation.
+		 */
+		public static debugWarn(message: string) {
+			if (Accessibility.debugModeEnabled) {
+				console.warn(message);
+			}
+		}
+
 		public static setup() {
-			console.log('[A11y] Accessibility.setup() — initializing accessibility subsystem');
+			Accessibility.debugLog('[A11y] Accessibility.setup() — initializing accessibility subsystem');
 			const browserExports = WebAssemblyWindowWrapper.getAssemblyExports();
 
 			// Wire up managed callbacks from WebAssemblyAccessibility.cs
@@ -102,7 +126,7 @@ namespace Uno.UI.Runtime.Skia {
 				// Auto-enable accessibility without requiring user interaction.
 				// The C# EnableAccessibility() has retry logic for when
 				// Window/RootElement aren't ready yet.
-				console.log('[A11y] Auto-enabling accessibility (FeatureConfiguration.AutomationPeer.AutoEnableAccessibility = true)');
+				Accessibility.debugLog('[A11y] Auto-enabling accessibility (FeatureConfiguration.AutomationPeer.AutoEnableAccessibility = true)');
 				this.managedEnableAccessibility();
 				LiveRegion.initialize();
 			}
@@ -263,7 +287,7 @@ namespace Uno.UI.Runtime.Skia {
 					if (retryElement) {
 						retryElement.focus();
 					} else {
-						console.warn(`[A11y] TS focusSemanticElement: element NOT FOUND handle=${handle} (after retry)`);
+						Accessibility.debugWarn(`[A11y] TS focusSemanticElement: element NOT FOUND handle=${handle} (after retry)`);
 					}
 				});
 			}
@@ -347,7 +371,7 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		public static addRootElementToSemanticsRoot(rootHandle: number, width: number, height: number, x: number, y: number, isFocusable: boolean): void {
-			console.debug(`[A11y] addRootElementToSemanticsRoot: handle=${rootHandle} size=${width}x${height} pos=(${x},${y}) focusable=${isFocusable}`);
+			Accessibility.debugLog(`[A11y] addRootElementToSemanticsRoot: handle=${rootHandle} size=${width}x${height} pos=(${x},${y}) focusable=${isFocusable}`);
 			let element = Accessibility.createSemanticElement(x, y, width, height, rootHandle, isFocusable);
 			this.semanticsRoot.appendChild(element);
 		}
@@ -381,15 +405,15 @@ namespace Uno.UI.Runtime.Skia {
 				// This matches the behavior of the SemanticElements factory path
 				// and ensures elements still appear in the accessibility tree
 				// even when their semantic parent was pruned.
-				console.warn(`[A11y] addSemanticElement: PARENT NOT FOUND — handle=${handle} parentHandle=${parentHandle} controlType='${temporary}' role='${role}' label='${automationId}'. Falling back to semanticsRoot.`);
+				Accessibility.debugWarn(`[A11y] addSemanticElement: PARENT NOT FOUND — handle=${handle} parentHandle=${parentHandle} controlType='${temporary}' role='${role}' label='${automationId}'. Falling back to semanticsRoot.`);
 				parent = this.semanticsRoot;
 				if (!parent) {
-					console.warn(`[A11y] addSemanticElement: semanticsRoot also null. Element will NOT appear in semantic tree.`);
+					Accessibility.debugWarn(`[A11y] addSemanticElement: semanticsRoot also null. Element will NOT appear in semantic tree.`);
 					return false;
 				}
 			}
 
-			console.debug(`[A11y] addSemanticElement: handle=${handle} parentHandle=${parentHandle} controlType='${temporary}' role='${role}' label='${automationId}' size=${width}x${height} pos=(${x},${y}) focusable=${isFocusable} visible=${isVisible}`);
+			Accessibility.debugLog(`[A11y] addSemanticElement: handle=${handle} parentHandle=${parentHandle} controlType='${temporary}' role='${role}' label='${automationId}' size=${width}x${height} pos=(${x},${y}) focusable=${isFocusable} visible=${isVisible}`);
 
 			let element = Accessibility.createSemanticElement(x, y, width, height, handle, isFocusable);
 			element.setAttribute('ElementType', temporary);
@@ -429,10 +453,10 @@ namespace Uno.UI.Runtime.Skia {
 		public static removeSemanticElement(parentHandle: number, childHandle: number): void {
 			const child = Accessibility.getSemanticElementByHandle(childHandle);
 			if (!child) {
-				console.warn(`[A11y] removeSemanticElement: child handle=${childHandle} not found in DOM (parent=${parentHandle})`);
+				Accessibility.debugWarn(`[A11y] removeSemanticElement: child handle=${childHandle} not found in DOM (parent=${parentHandle})`);
 				return;
 			}
-			console.debug(`[A11y] removeSemanticElement: parent=${parentHandle} child=${childHandle}`);
+			Accessibility.debugLog(`[A11y] removeSemanticElement: parent=${parentHandle} child=${childHandle}`);
 			// Use child.remove() instead of parent.removeChild(child) to handle
 			// cases where the child's actual DOM parent differs from the semantic parent
 			// (e.g., after re-parenting or when duplicate IDs existed previously).
@@ -442,7 +466,7 @@ namespace Uno.UI.Runtime.Skia {
 		public static updateIsFocusable(handle: number, isFocusable: boolean): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				console.debug(`[A11y] TS updateIsFocusable: handle=${handle} focusable=${isFocusable}`);
+				Accessibility.debugLog(`[A11y] TS updateIsFocusable: handle=${handle} focusable=${isFocusable}`);
 				Accessibility.updateElementFocusability(element, isFocusable);
 			}
 			// Silently skip if element doesn't exist in the semantic DOM.
@@ -451,7 +475,7 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		public static updateAriaLabel(handle: number, automationId: string): void {
-			console.debug(`[A11y] TS updateAriaLabel: handle=${handle} label='${automationId}'`);
+			Accessibility.debugLog(`[A11y] TS updateAriaLabel: handle=${handle} label='${automationId}'`);
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
 				element.setAttribute("aria-label", automationId);
@@ -648,7 +672,7 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		public static updateAriaChecked(handle: number, ariaChecked: string): void {
-			console.debug(`[A11y] TS updateAriaChecked: handle=${handle} checked=${ariaChecked}`);
+			Accessibility.debugLog(`[A11y] TS updateAriaChecked: handle=${handle} checked=${ariaChecked}`);
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
 				element.setAttribute("aria-checked", ariaChecked);
@@ -678,7 +702,7 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		public static hideSemanticElement(handle: number) {
-			console.debug(`[A11y] TS hideSemanticElement: handle=${handle}`);
+			Accessibility.debugLog(`[A11y] TS hideSemanticElement: handle=${handle}`);
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
 				element.hidden = true;
