@@ -1,0 +1,38 @@
+<Page x:Class="UITests.Windows_UI_Xaml_Input.FocusTrapRepro.FocusTrapRepro"
+	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	  IsTabStop="False"
+	  mc:Ignorable="d">
+
+	<StackPanel HorizontalAlignment="Center"
+				VerticalAlignment="Center"
+				Spacing="16">
+		<TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+				   Text="Tab / Shift+Tab should cycle through these controls and the browser repeatedly."
+				   TextWrapping="Wrap" />
+
+		<Button x:Name="BeforeTextBoxButton"
+				AutomationProperties.AutomationId="BeforeTextBoxButton"
+				AutomationProperties.Name="Before text box button"
+				Content="Before text box button"
+				IsTabStop="True"
+				TabIndex="0" />
+
+		<TextBox x:Name="FocusTrapTextBox"
+				 AutomationProperties.AutomationId="FocusTrapTextBox"
+				 AutomationProperties.Name="Focus trap text box"
+				 IsTabStop="True"
+				 MinWidth="280"
+				 PlaceholderText="Focus trap text box"
+				 TabIndex="1" />
+
+		<Button x:Name="AfterTextBoxButton"
+				AutomationProperties.AutomationId="AfterTextBoxButton"
+				AutomationProperties.Name="After text box button"
+				Content="After text box button"
+				IsTabStop="True"
+				TabIndex="2" />
+	</StackPanel>
+</Page>
