@@ -641,7 +641,9 @@ public partial class DependencyObjectStore
 				themeChangeAware.OnThemeChanged();
 			}
 
-			_properties.OnThemeChanged();
+			// Note: theme-resolved binding values (TargetNullValue/FallbackValue {ThemeResource}) are
+			// re-resolved and re-applied by UpdateBindingExpressions in the binding-expression phase above;
+			// no separate per-binding RefreshTarget pass is needed here.
 		}
 	}
 
@@ -760,8 +762,10 @@ public partial class DependencyObjectStore
 		// Refresh binding expressions that may reference theme resources (e.g. Binding.TargetNullValue).
 		// Gate on HasThemeResourceBindingExpressions so the (allocating) GetResourceDictionaries().ToArray()
 		// + scope push only runs for elements that actually have a {ThemeResource} TargetNullValue/Fallback,
-		// not for every element that merely has bindings.
-		if ((updateReason & ResourceUpdateReason.ThemeResource) != 0 &&
+		// not for every element that merely has bindings. Covers ThemeResource and HotReload (the same set
+		// the now-removed legacy OnThemeChanged binding refresh handled); UpdateBindingExpressions both
+		// re-resolves the value and re-applies it (only when changed), so no second refresh pass is needed.
+		if ((updateReason & (ResourceUpdateReason.ThemeResource | ResourceUpdateReason.HotReload)) != 0 &&
 			_properties.HasBindings &&
 			_properties.HasThemeResourceBindingExpressions)
 		{
