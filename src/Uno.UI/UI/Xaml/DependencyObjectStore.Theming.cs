@@ -8,6 +8,7 @@
 // This partial contains every theme-related method in one place.
 
 using System;
+using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -378,25 +379,46 @@ public partial class DependencyObjectStore
 
 		// MUX: Theming.cpp:271-276 — snapshot property indices to avoid mutation issues.
 		// "Get the properties that have theme refs" into a separate collection before iterating,
-		// because updating one property could cascade and modify _themeResources.
+		// because updating one property could cascade and modify _themeResources (GetAll returns the live
+		// list). The vast majority of objects carry exactly one theme ref (e.g. a single Foreground), so
+		// take a zero-allocation fast path for that case; otherwise rent a pooled buffer (re-entrancy-safe,
+		// unlike a shared scratch buffer) instead of allocating a fresh array per call — this runs per
+		// themed object on every theme change and every Enter.
 		var entries = _themeResources.GetAll();
 		var snapshotCount = entries.Count;
-		var snapshot = new ThemeResourceMap.Entry[snapshotCount];
-		for (var i = 0; i < snapshotCount; i++)
+
+		if (snapshotCount == 1)
 		{
-			snapshot[i] = entries[i];
+			var entry = entries[0];
+			UpdateThemeReference(entry.Property, entry.Precedence, entry.Reference, owner, cache, ownerThemeOverride);
+			return;
 		}
 
-		// MUX: Theming.cpp:279-282 — update the theme ref on each property.
-		for (var i = 0; i < snapshot.Length; i++)
+		var snapshot = ArrayPool<ThemeResourceMap.Entry>.Shared.Rent(snapshotCount);
+		try
 		{
-			UpdateThemeReference(
-				snapshot[i].Property,
-				snapshot[i].Precedence,
-				snapshot[i].Reference,
-				owner,
-				cache,
-				ownerThemeOverride);
+			for (var i = 0; i < snapshotCount; i++)
+			{
+				snapshot[i] = entries[i];
+			}
+
+			// MUX: Theming.cpp:279-282 — update the theme ref on each property.
+			for (var i = 0; i < snapshotCount; i++)
+			{
+				UpdateThemeReference(
+					snapshot[i].Property,
+					snapshot[i].Precedence,
+					snapshot[i].Reference,
+					owner,
+					cache,
+					ownerThemeOverride);
+			}
+		}
+		finally
+		{
+			// clearArray: true so the pooled buffer does not retain DependencyProperty/ThemeResourceReference
+			// references after return.
+			ArrayPool<ThemeResourceMap.Entry>.Shared.Return(snapshot, clearArray: true);
 		}
 	}
 
