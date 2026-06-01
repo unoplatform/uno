@@ -504,6 +504,16 @@ public partial class DependencyObjectStore
 			}
 		}
 
+		// Push the owner's inherited theme so that `dict.TryGetValue` below selects the
+		// correct Light/Dark sub-dictionary instead of falling back to `Themes.Active`.
+		// Without this, when this Store belongs to a subtree whose root pinned its own
+		// RequestedTheme (or to a non-UIElement DependencyObject like a behaviour whose
+		// associated element is in such a subtree), the dictionary lookup resolves the
+		// resource against the application theme rather than the owner's inherited
+		// ActualTheme — which can write a Dark value onto the DP that overrides the
+		// Light value already written by ThemeResourceReference.RefreshValue.
+		var pushedOwnerTheme = ThemeResourceReference.PushOwnerThemeIfDifferent(ActualInstance);
+
 		try
 		{
 			var wasSet = false;
@@ -540,6 +550,11 @@ public partial class DependencyObjectStore
 		}
 		finally
 		{
+			if (pushedOwnerTheme)
+			{
+				ResourceDictionary.PopRequestedThemeForSubTree();
+			}
+
 			if ((updateReason & ResourceUpdateReason.ResolvedOnLoading) != 0)
 			{
 				foreach (var dict in dictionariesInScope)
