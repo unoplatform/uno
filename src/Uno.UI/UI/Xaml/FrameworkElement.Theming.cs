@@ -293,15 +293,19 @@ public partial class FrameworkElement
 	/// </summary>
 	private void PropagateThemeToChildren(Theme theme, bool forceRefresh)
 	{
-		var childCount = VisualTreeHelper.GetChildrenCount(this);
-		for (var i = 0; i < childCount; i++)
+		// Iterate the children list directly (O(1) Count + indexer) instead of
+		// VisualTreeHelper.GetChild(this, i), whose LINQ ElementAtOrDefault re-enumerates the children on
+		// every index — O(n^2) for a wide panel on each theme switch. Count is re-read each iteration so the
+		// walk stays resilient if a child's NotifyThemeChanged mutates the collection. ElementStub is skipped
+		// to match the previous VisualTreeHelper.GetChild filter (deferred placeholders carry no theme).
+		var children = VisualTreeHelper.GetChildren(this);
+		for (var i = 0; i < children.Count; i++)
 		{
-			var child = VisualTreeHelper.GetChild(this, i);
-			if (child is FrameworkElement fe)
+			// All children participate in the theme walk.
+			// GetRequestedThemeOverride in NotifyThemeChanged will override
+			// the theme for children with explicit RequestedTheme.
+			if (children[i] is FrameworkElement fe && fe is not ElementStub)
 			{
-				// All children participate in the theme walk.
-				// GetRequestedThemeOverride in NotifyThemeChanged will override
-				// the theme for children with explicit RequestedTheme.
 				fe.NotifyThemeChanged(theme, forceRefresh);
 			}
 		}
