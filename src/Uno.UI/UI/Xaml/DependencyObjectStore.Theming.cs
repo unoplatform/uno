@@ -231,6 +231,18 @@ public partial class DependencyObjectStore
 					continue;
 				}
 
+				// Only properties whose declared type can hold a DependencyObject (or a collection of them)
+				// can carry themed logical-tree children. Value-typed (numeric/enum/struct like Width,
+				// Visibility, Thickness) and string properties never can, so skip them before the GetValue
+				// materialization — this avoids reading/coercing the bulk of an object's DPs on every Enter.
+				// WinUI sidesteps this entirely via its curated CEnterDependencyProperty metadata list;
+				// porting that allowlist would narrow the walk further (tracked as follow-up).
+				var propertyType = property.Type;
+				if (propertyType.IsValueType || propertyType == typeof(string))
+				{
+					continue;
+				}
+
 				var propertyValue = GetValue(propertyDetail);
 
 				// Theme the DO value itself before iterating any child collection it carries. Items in
