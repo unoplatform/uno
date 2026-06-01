@@ -964,8 +964,36 @@ namespace Microsoft.UI.Xaml
 		// the resolving owner's theme (ThemeResolution.ResolveOwnerTheme); a standalone resource DO has no
 		// inheritance parent, so without this back-reference it would fall back to the process-global active
 		// theme. Capturing the owner lets materialization and theme-change re-resolution use the element theme.
+		private bool _ownerIsAmbiguous;
+
 		internal void SetResourceOwner(DependencyObject owner)
-			=> _owner = owner is null ? null : WeakReferencePool.RentWeakReference(this, owner);
+		{
+			if (owner is null)
+			{
+				_owner = null;
+				return;
+			}
+
+			// A dictionary instance shared as the Resources of more than one element has no single owning
+			// theme. Rather than attribute one element's theme to the other's resources (last-writer-wins),
+			// mark the owner ambiguous so GetResourceOwner returns null and resolution falls back to the
+			// app/OS theme — the safe, deterministic choice for a shared dictionary. WinUI carries the theme
+			// on each consuming DO instead; for a single literally-shared resource instance (one brush, one
+			// Color) only one theme can win regardless.
+			if (_ownerIsAmbiguous)
+			{
+				return;
+			}
+
+			if (_owner?.Target is { } existing && !ReferenceEquals(existing, owner))
+			{
+				_owner = null;
+				_ownerIsAmbiguous = true;
+				return;
+			}
+
+			_owner = WeakReferencePool.RentWeakReference(this, owner);
+		}
 
 		/// <summary>
 		/// Finds the nearest <see cref="FrameworkElement"/> that owns this dictionary (directly, or via the
