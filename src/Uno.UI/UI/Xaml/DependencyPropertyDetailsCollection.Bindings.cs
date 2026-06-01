@@ -245,6 +245,29 @@ namespace Microsoft.UI.Xaml
 			return false;
 		}
 
+		/// <summary>
+		/// True when at least one binding uses a {ThemeResource} for its TargetNullValue or FallbackValue,
+		/// i.e. needs re-resolution on a theme change. Lets the theme walk skip the (allocating) scope setup
+		/// for the common case of bindings that carry no theme-resolved value.
+		/// </summary>
+		internal bool HasThemeResourceBindingExpressions
+		{
+			get
+			{
+				var bindings = _bindings.Data;
+				for (int i = 0; i < bindings.Length; i++)
+				{
+					var parent = bindings[i].ParentBinding;
+					if (parent.TargetNullValueThemeResource is not null || parent.FallbackValueThemeResource is not null)
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
+		}
+
 		internal void UpdateBindingExpressions(in SpecializedResourceDictionary.ResourceKey themeKey)
 		{
 			foreach (var binding in _bindings)
