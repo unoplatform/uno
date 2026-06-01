@@ -4,6 +4,7 @@ using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using Uno;
 using Uno.Foundation;
+using Uno.UI.Dispatching;
 
 using NativeMethods = __Windows.UI.Core.SystemNavigationManager.NativeMethods;
 
@@ -28,6 +29,17 @@ namespace Windows.UI.Core
 
 		[Preserve]
 		[JSExport]
-		internal static bool DispatchBackRequest() => GetForCurrentView().RequestBack();
+		internal static bool DispatchBackRequest()
+		{
+			// Invoked directly from the JS "popstate" handler, so it does not flow through
+			// NativeDispatcher.RunAction where the UI-thread SynchronizationContext is normally
+			// installed. Apply it here so BackRequested handlers observe a non-null
+			// SynchronizationContext.Current (e.g. for async continuations that post back to the
+			// UI thread). See https://github.com/unoplatform/uno/issues/23227.
+			using (NativeDispatcher.Main.SynchronizationContext.Apply())
+			{
+				return GetForCurrentView().RequestBack();
+			}
+		}
 	}
 }
