@@ -343,7 +343,7 @@ public partial class DependencyObjectStore
 	/// WinUI snapshots property indices into a stack_vector (size 50 to handle ListViewItemPresenter
 	/// with 41+ theme refs), then calls UpdateThemeReference(propertyIndex) for each.
 	/// </remarks>
-	internal void UpdateAllThemeReferences(DependencyObject? owner, ThemeWalkResourceCache? cache = null)
+	internal void UpdateAllThemeReferences(DependencyObject? owner, ThemeWalkResourceCache? cache = null, Theme? ownerThemeOverride = null)
 	{
 		if (_themeResources is not { HasEntries: true })
 		{
@@ -369,7 +369,8 @@ public partial class DependencyObjectStore
 				snapshot[i].Precedence,
 				snapshot[i].Reference,
 				owner,
-				cache);
+				cache,
+				ownerThemeOverride);
 		}
 	}
 
@@ -394,7 +395,8 @@ public partial class DependencyObjectStore
 		DependencyPropertyValuePrecedences precedence,
 		ThemeResourceReference themeRef,
 		DependencyObject? owner,
-		ThemeWalkResourceCache? cache)
+		ThemeWalkResourceCache? cache,
+		Theme? ownerThemeOverride = null)
 	{
 		try
 		{
@@ -419,7 +421,10 @@ public partial class DependencyObjectStore
 			// point, the analog of WinUI's SetThemeResourceBinding pushing this->m_theme before resolving
 			// (Theming.cpp:368-376). Both the ancestor walk and the pinned-dict refresh below resolve
 			// against this theme.
-			var ownerTheme = ThemeResolution.ResolveOwnerTheme(owner);
+			// Prefer the explicit owner theme passed by the caller (the resource-context element's theme for
+			// a standalone resource DO that has no inheritance parent of its own); otherwise resolve from the
+			// owner's own inheritance chain.
+			var ownerTheme = ownerThemeOverride ?? ThemeResolution.ResolveOwnerTheme(owner);
 			var ownerThemeKey = ResourceDictionary.GetThemeKey(ownerTheme);
 
 			// Phase A: Ancestor walk (WinUI: FindNextResolvedValueNoRef → ScopedResources::TraverseVisualTreeResources)
@@ -680,7 +685,13 @@ public partial class DependencyObjectStore
 		// MUX Reference: CDependencyObject::UpdateAllThemeReferences() in Theming.cpp
 		if ((updateReason & ResourceUpdateReason.ThemeResource) != 0)
 		{
-			UpdateAllThemeReferences(ActualInstance, ThemeWalkResourceCache.Instance);
+			// Resolve against the OWNER's effective theme. For a standalone resource DO (e.g. a brush in a
+			// FrameworkElement.Resources dictionary) that has no inheritance parent, the injected resource
+			// context (the dictionary's owning element) supplies the theme, matching WinUI's per-owner
+			// {ThemeResource} resolution. For an element owner this is just its own theme.
+			var themeOwner = ActualInstance as FrameworkElement ?? resourceContextProvider ?? ActualInstance;
+			var ownerThemeOverride = themeOwner is null ? (Theme?)null : ThemeResolution.ResolveOwnerTheme(themeOwner);
+			UpdateAllThemeReferences(ActualInstance, ThemeWalkResourceCache.Instance, ownerThemeOverride);
 		}
 
 		ResourceDictionary[]? dictionariesInScope = null;
@@ -698,7 +709,13 @@ public partial class DependencyObjectStore
 
 			try
 			{
-				_properties.UpdateBindingExpressions();
+				// Resolve {ThemeResource} markup used inside a binding (Binding.TargetNullValue /
+				// FallbackValue) against the OWNER's effective theme — the same owner theme the
+				// UpdateThemeReference / Phase-2 choke points use — rather than the process-global active
+				// theme. For a non-FrameworkElement owner, the injected FE resource context supplies the theme.
+				var bindingThemeOwner = ActualInstance as FrameworkElement ?? resourceContextProvider ?? ActualInstance;
+				var bindingThemeKey = ResourceDictionary.GetThemeKey(ThemeResolution.ResolveOwnerTheme(bindingThemeOwner));
+				_properties.UpdateBindingExpressions(bindingThemeKey);
 			}
 			finally
 			{

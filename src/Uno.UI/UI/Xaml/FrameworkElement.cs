@@ -257,10 +257,23 @@ namespace Microsoft.UI.Xaml
 #endif
 		Microsoft.UI.Xaml.ResourceDictionary Resources
 		{
-			get => _resources ??= new ResourceDictionary();
+			get
+			{
+				if (_resources is null)
+				{
+					_resources = new ResourceDictionary();
+					// Record this element as the dictionary's owner so resources resolve their
+					// {ThemeResource} values against this element's effective theme (see
+					// ResourceDictionary.SetResourceOwner), not the process-global active theme.
+					_resources.SetResourceOwner(this);
+				}
+
+				return _resources;
+			}
 			set
 			{
 				_resources = value;
+				_resources?.SetResourceOwner(this);
 				_resources.InvalidateNotFoundCache(true);
 			}
 		}
