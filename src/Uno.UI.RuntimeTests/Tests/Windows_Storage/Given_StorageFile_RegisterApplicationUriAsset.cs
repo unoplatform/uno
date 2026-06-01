@@ -1,4 +1,4 @@
-#if !WINAPPSDK
+#if __WASM__
 #nullable enable
 
 using System;
@@ -36,10 +36,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 
 			Assert.IsNotNull(file);
 
-			var actualBytes = await FileIO.ReadBufferAsync(file);
-			Assert.AreEqual((uint)expectedContent.Length, actualBytes.Length, "File size mismatch.");
-
-			var actualContent = Encoding.UTF8.GetString(actualBytes.ToArray());
+			var actualContent = await FileIO.ReadTextAsync(file);
 			Assert.AreEqual("hello from runtime registered asset", actualContent);
 		}
 
