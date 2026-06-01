@@ -315,27 +315,5 @@ namespace Microsoft.UI.Xaml
 
 			return changed;
 		}
-
-		internal void OnThemeChanged()
-		{
-			foreach (var binding in _bindings)
-			{
-				RefreshBindingValueIfNecessary(binding);
-			}
-		}
-
-		private void RefreshBindingValueIfNecessary(BindingExpression binding)
-		{
-			if (binding.ParentBinding.TargetNullValueThemeResource is not null ||
-				binding.ParentBinding.FallbackValueThemeResource is not null)
-			{
-				// Note: This may refresh the binding more than really necessary.
-				// For example, if TargetNullValue is set to a theme resource, but the binding is not null
-				// In this case, a change to TargetNullValue should probably not refresh the binding.
-				// Another case is when the ThemeResource evaluates the same between light/dark themes.
-				// For now, it's not necessary.
-				binding.RefreshTarget();
-			}
-		}
 	}
 }
