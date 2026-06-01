@@ -12,15 +12,15 @@
 	Exclude the hotreload sample app for all targets
 	-->
 	<ItemGroup>
-		<Compile Remove="Tests\HotReload\Frame\HRApp\**\*.cs" />
-		<Page Remove="Tests\HotReload\Frame\HRApp\**\*.xaml" />
-		<Compile Remove="Tests\HotReload\Frame\HRApp\*.cs" />
-		<Page Remove="Tests\HotReload\Frame\HRApp\*.xaml" />
-		<Content Remove="Tests\HotReload\Frame\HRApp\**" />
-		<ApplicationDefinition Remove="Tests\HotReload\Frame\HRApp\*.xaml" />
+		<Compile Remove="HotReload\Frame\HRApp\**\*.cs" />
+		<Page Remove="HotReload\Frame\HRApp\**\*.xaml" />
+		<Compile Remove="HotReload\Frame\HRApp\*.cs" />
+		<Page Remove="HotReload\Frame\HRApp\*.xaml" />
+		<Content Remove="HotReload\Frame\HRApp\**" />
+		<ApplicationDefinition Remove="HotReload\Frame\HRApp\*.xaml" />
 
-		<None Include="Tests\HotReload\Frame\HRApp\**\*.cs" Exclude="Tests\HotReload\Frame\HRApp\bin\**;Tests\HotReload\Frame\HRApp\obj\**" />
-		<None Include="Tests\HotReload\Frame\HRApp\**\*.xaml" Exclude="Tests\HotReload\Frame\HRApp\bin\**;Tests\HotReload\Frame\HRApp\obj\**" />
+		<None Include="HotReload\Frame\HRApp\**\*.cs" Exclude="HotReload\Frame\HRApp\bin\**;HotReload\Frame\HRApp\obj\**" />
+		<None Include="HotReload\Frame\HRApp\**\*.xaml" Exclude="HotReload\Frame\HRApp\bin\**;HotReload\Frame\HRApp\obj\**" />
 	</ItemGroup>
 
 	<ItemGroup>
