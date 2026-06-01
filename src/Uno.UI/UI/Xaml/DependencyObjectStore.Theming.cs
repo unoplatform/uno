@@ -488,9 +488,13 @@ public partial class DependencyObjectStore
 			var ownerThemeKey = ResourceDictionary.GetThemeKey(ownerTheme);
 
 			// Phase A: Ancestor walk (WinUI: FindNextResolvedValueNoRef → ScopedResources::TraverseVisualTreeResources)
-			// If element is active, walk ancestor ResourceDictionaries to find
-			// the resource. This handles re-parenting correctly.
-			if (owner is FrameworkElement { IsLoaded: true })
+			// If element is active, walk ancestor ResourceDictionaries to find the resource. This handles
+			// re-parenting correctly. Gate on IsActiveInVisualTree (set at tree Enter) rather than IsLoaded
+			// to match WinUI's IsActive() window — so an element resolves against its current ancestor scope
+			// from Enter onward (incl. after reparenting, before Loaded re-fires), not only once Loaded.
+			// Resources declared locally and unreachable from the live tree (reparented popup content) simply
+			// don't resolve here and fall through to the parse-time pinned dictionary in Phase B.
+			if (owner is UIElement { IsActiveInVisualTree: true })
 			{
 				var dicts = GetResourceDictionaries(includeAppResources: false);
 				foreach (var dict in dicts)
