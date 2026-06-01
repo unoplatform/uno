@@ -66,7 +66,13 @@
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4654" />
 
 		<!-- We remove Unit tests imported from MUX on UAP as they are usualy heavily relying on internal classes.-->
-		<Compile Remove="$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.cs" />
+		<Compile Remove="$(MSBuildThisFileDirectory)MUX\Microsoft\UI\Xaml\Controls\**\*.cs" />
+		<!-- These MUX tests were not authored against MUX internals and were historically compiled on WinAppSDK. -->
+		<Compile Include="$(MSBuildThisFileDirectory)MUX\Microsoft\UI\Xaml\Controls\DropDownButtonTests.cs" />
+		<Compile Include="$(MSBuildThisFileDirectory)MUX\Microsoft\UI\Xaml\Controls\PersonPictureTests.cs" />
+		<Compile Include="$(MSBuildThisFileDirectory)MUX\Microsoft\UI\Xaml\Controls\RelativePanelUnitTests.cs" />
+		<Compile Include="$(MSBuildThisFileDirectory)MUX\Microsoft\UI\Xaml\Controls\SwipeControl\SwipeControl_APITests.cs" />
+		<Compile Include="$(MSBuildThisFileDirectory)MUX\Microsoft\UI\Xaml\Controls\SwipeControl\SwipeControl_InteractionTests.cs" />
 	</ItemGroup>
 	
 	<PropertyGroup>
@@ -74,7 +80,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<PageExclusions>$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.xaml;$(MSBuildThisFileDirectory)Tests\Windows_UI_Xaml\ImplicitXamlNamespaces\**\*.xaml</PageExclusions>
+		<PageExclusions>$(MSBuildThisFileDirectory)MUX\Microsoft\UI\Xaml\Controls\**\*.xaml;$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\ImplicitXamlNamespaces\**\*.xaml</PageExclusions>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -82,11 +88,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="Tests\Windows_UI_Xaml_Controls\HtmlElementAttributeTests\Given_HtmlElementAttribute.Wasm.cs" />
+		<Compile Include="Microsoft\UI\Xaml\Controls\HtmlElementAttributeTests\Given_HtmlElementAttribute.Wasm.cs" />
 	</ItemGroup>
 
 	<!-- Implicit XAML namespace tests are Uno-only (WinAppSDK doesn't support implicit xmlns) -->
 	<ItemGroup>
-		<Compile Remove="Tests\Windows_UI_Xaml\ImplicitXamlNamespaces\**\*.cs" />
+		<Compile Remove="Microsoft\UI\Xaml\ImplicitXamlNamespaces\**\*.cs" />
 	</ItemGroup>
 </Project>
