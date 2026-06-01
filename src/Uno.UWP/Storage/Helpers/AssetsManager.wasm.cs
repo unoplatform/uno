@@ -38,6 +38,48 @@ namespace Windows.Storage.Helpers
 			return new HashSet<string>(SplitMatch().Split(assets), StringComparer.OrdinalIgnoreCase);
 		}
 
+		/// <summary>
+		/// Registers a runtime asset so that subsequent <c>ms-appx:///</c> resolution
+		/// succeeds for paths absent from the compile-time <c>uno-assets.txt</c> manifest.
+		/// </summary>
+		/// <param name="assetPath">
+		/// The asset path as it would appear in a <c>ms-appx:///</c> URI
+		/// (e.g. <c>Fonts/Inter-Regular.ttf</c> or <c>/Fonts/Inter-Regular.ttf</c>).
+		/// A leading <c>/</c> is trimmed automatically.
+		/// </param>
+		/// <param name="content">
+		/// Stream containing the asset bytes. The stream is read from its current position;
+		/// the caller retains ownership and is responsible for disposal.
+		/// </param>
+		/// <param name="ct">Cancellation token.</param>
+		internal static async Task RegisterAssetAsync(string assetPath, Stream content, CancellationToken ct)
+		{
+			var updatedPath = assetPath.TrimStart('/');
+
+			var localPath = Path.Combine(
+				ApplicationData.Current.LocalFolder.Path,
+				".assetsCache",
+				AssetsPathBuilder.UNO_BOOTSTRAP_APP_BASE,
+				updatedPath);
+
+			// Use the same per-path gate as DownloadAsset to serialize concurrent
+			// registrations for the same path and avoid torn writes.
+			using var assetLock = await _assetsGate.LockForAsset(ct, updatedPath);
+
+			if (Path.GetDirectoryName(localPath) is { Length: > 0 } dir)
+			{
+				Directory.CreateDirectory(dir);
+			}
+
+			await using var outStream = File.Create(localPath);
+			await content.CopyToAsync(outStream, ct);
+
+			// Register in the in-memory manifest after the file is fully written so that
+			// a concurrent DownloadAsset call cannot observe the path without its content.
+			var assetSet = await Assets.Value;
+			assetSet.Add(updatedPath);
+		}
+
 		public static async Task<string> DownloadAsset(CancellationToken ct, string assetPath)
 		{
 			var updatedPath = assetPath.TrimStart("/");
