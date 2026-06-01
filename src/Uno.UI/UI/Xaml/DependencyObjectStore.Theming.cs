@@ -217,6 +217,16 @@ public partial class DependencyObjectStore
 					continue;
 				}
 
+				// ItemsSource holds arbitrary user data, not themed DO children, and is NOT a WinUI Enter
+				// property (CEnterDependencyProperty). Enumerating it here is both wrong (WinUI never walks it)
+				// and unsafe: a virtualizing/custom data source may throw on GetEnumerator (e.g. an indexed
+				// ItemsSourceView) or have enumeration side effects. The realized item containers are themed
+				// by the normal visual-tree Enter walk when they materialize, so skipping the raw data is safe.
+				if (property.Name == "ItemsSource")
+				{
+					continue;
+				}
+
 				var propertyValue = GetValue(propertyDetail);
 
 				// Theme the DO value itself before iterating any child collection it carries. Items in
@@ -241,11 +251,24 @@ public partial class DependencyObjectStore
 				// DependencyObjects participate in the walk.
 				if (propertyValue is IEnumerable enumerable && propertyValue is not string)
 				{
-					foreach (var innerValue in enumerable)
+					// Defense-in-depth: a custom IEnumerable DP value could throw from GetEnumerator/MoveNext
+					// (e.g. a virtualizing data source). The theme-Enter walk must never break element Enter,
+					// so guard the enumeration and skip the collection if it can't be safely enumerated.
+					try
 					{
-						if (innerValue is DependencyObject innerDependencyObject)
+						foreach (var innerValue in enumerable)
 						{
-							EstablishThemeAtEnterOnPropertyValue(innerDependencyObject, this);
+							if (innerValue is DependencyObject innerDependencyObject)
+							{
+								EstablishThemeAtEnterOnPropertyValue(innerDependencyObject, this);
+							}
+						}
+					}
+					catch (Exception e)
+					{
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().Debug($"Skipping theme-Enter walk of non-enumerable collection on property '{property.Name}': {e.Message}");
 						}
 					}
 				}
