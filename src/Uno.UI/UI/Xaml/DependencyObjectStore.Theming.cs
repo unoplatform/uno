@@ -134,16 +134,19 @@ public partial class DependencyObjectStore
 			else
 			{
 				// Non-FrameworkElement DO: there is no NotifyThemeChanged walk; adopt the parent theme
-				// and re-resolve this object's own theme references.
+				// and re-resolve this object's own theme references. The owner's theme is now established,
+				// so compute the effective owner theme once and pass it as the override — otherwise
+				// UpdateThemeReference would call ResolveOwnerTheme per theme-ref.
 				SetTheme(parentTheme);
-				UpdateAllThemeReferences(owner, cache: null);
+				UpdateAllThemeReferences(owner, cache: null, ThemeResolution.ResolveOwnerTheme(owner));
 			}
 		}
 		else
 		{
 			// MUX: depends.cpp:1046 — update theme references to account for the new ancestor theme
-			// dictionaries now reachable from this position in the tree.
-			UpdateAllThemeReferences(owner, cache: null);
+			// dictionaries now reachable from this position in the tree. The owner's theme is already
+			// established here, so resolve it once and pass it as the override (avoids a per-theme-ref walk).
+			UpdateAllThemeReferences(owner, cache: null, ThemeResolution.ResolveOwnerTheme(owner));
 		}
 
 		// MUX: depends.cpp:993-1010 — CDependencyObject::EnterImpl walks "Enter properties" (DPs tagged
