@@ -747,17 +747,21 @@ public partial class DependencyObjectStore
 			throw new ArgumentException();
 		}
 
+		// The owner whose effective theme drives every {ThemeResource} resolution below: this element, or —
+		// for a standalone resource DO with no inheritance parent — the injected resource-context element
+		// (the dictionary's owning element), matching WinUI's per-owner {ThemeResource} resolution. Resolve
+		// it lazily and at most once, reused across all three phases, instead of walking the inheritance
+		// chain separately in each. Not computed at all for elements that need none of the phases.
+		Theme? ownerThemeCache = null;
+		Theme GetOwnerTheme()
+			=> ownerThemeCache ??= ThemeResolution.ResolveOwnerTheme(
+				ActualInstance as FrameworkElement ?? resourceContextProvider ?? ActualInstance);
+
 		// Phase 1: Update theme resources via ancestor-walk + pinned-dictionary path
 		// MUX Reference: CDependencyObject::UpdateAllThemeReferences() in Theming.cpp
 		if ((updateReason & ResourceUpdateReason.ThemeResource) != 0)
 		{
-			// Resolve against the OWNER's effective theme. For a standalone resource DO (e.g. a brush in a
-			// FrameworkElement.Resources dictionary) that has no inheritance parent, the injected resource
-			// context (the dictionary's owning element) supplies the theme, matching WinUI's per-owner
-			// {ThemeResource} resolution. For an element owner this is just its own theme.
-			var themeOwner = ActualInstance as FrameworkElement ?? resourceContextProvider ?? ActualInstance;
-			var ownerThemeOverride = themeOwner is null ? (Theme?)null : ThemeResolution.ResolveOwnerTheme(themeOwner);
-			UpdateAllThemeReferences(ActualInstance, ThemeWalkResourceCache.Instance, ownerThemeOverride);
+			UpdateAllThemeReferences(ActualInstance, ThemeWalkResourceCache.Instance, GetOwnerTheme());
 		}
 
 		ResourceDictionary[]? dictionariesInScope = null;
@@ -783,10 +787,8 @@ public partial class DependencyObjectStore
 			{
 				// Resolve {ThemeResource} markup used inside a binding (Binding.TargetNullValue /
 				// FallbackValue) against the OWNER's effective theme — the same owner theme the
-				// UpdateThemeReference / Phase-2 choke points use — rather than the process-global active
-				// theme. For a non-FrameworkElement owner, the injected FE resource context supplies the theme.
-				var bindingThemeOwner = ActualInstance as FrameworkElement ?? resourceContextProvider ?? ActualInstance;
-				var bindingThemeKey = ResourceDictionary.GetThemeKey(ThemeResolution.ResolveOwnerTheme(bindingThemeOwner));
+				// UpdateThemeReference / Phase-2 choke points use — rather than the process-global active theme.
+				var bindingThemeKey = ResourceDictionary.GetThemeKey(GetOwnerTheme());
 				_properties.UpdateBindingExpressions(bindingThemeKey);
 			}
 			finally
@@ -807,8 +809,7 @@ public partial class DependencyObjectStore
 			// against the OWNER's effective theme — the same owner theme the UpdateThemeReference choke point
 			// uses, threaded in as a parameter. For a non-FrameworkElement owner, the injected FE resource
 			// context supplies the theme.
-			var themeOwner = ActualInstance as FrameworkElement ?? resourceContextProvider ?? ActualInstance;
-			var ownerTheme = ThemeResolution.ResolveOwnerTheme(themeOwner);
+			var ownerTheme = GetOwnerTheme();
 
 			var bindings = _resourceBindings.GetAllBindings();
 			foreach (var binding in bindings)
