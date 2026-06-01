@@ -754,6 +754,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void BuildGenericControlInitializerBody(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
 		{
 			TryAnnotateWithGeneratorSource(writer);
+
+			if (FindMember(topLevelControl, "Load") is { } xLoadMember)
+			{
+				AddError("x:Load cannot be used on the root of a Page, User Control or DataTemplate, or direct children of a Resource Dictionary, and can only be used on elements of type UIElement or FlyoutBase", xLoadMember);
+			}
+
 			// OnInitializeCompleted() seems to be used by some older code as a substitute for the constructor for UserControls, which are optimized out of the visual tree.
 			RegisterPartial("void OnInitializeCompleted()");
 
@@ -2385,7 +2391,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 						}
 					}
-					else if (IsPage(topLevelControlSymbol))
+					else if (IsNativePage(topLevelControlSymbol))
 					{
 						if (implicitContentChild.Objects.Count > 0)
 						{
@@ -2611,7 +2617,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				);
 		}
 
-		private bool IsPage(INamedTypeSymbol? symbol) => IsType(symbol, Generation.NativePageSymbol.Value);
+		private bool IsNativePage(INamedTypeSymbol? symbol) => IsType(symbol, Generation.NativePageSymbol.Value);
 
 		private bool IsWindow(INamedTypeSymbol? symbol) => IsType(symbol, Generation.WindowSymbol.Value);
 
@@ -4836,6 +4842,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private (bool isInside, XamlObjectDefinition? xamlObject) IsMemberInsideResourceDictionary(XamlObjectDefinition xamlObject, int? maxDepth = 1)
 			=> IsMemberInside(xamlObject, "ResourceDictionary", maxDepth: maxDepth);
 
+		/// <summary>
+		/// Returns true when <paramref name="definition"/> is a direct child of a ResourceDictionary,
+		/// either an explicit &lt;ResourceDictionary&gt; parent or an implicit one exposed via a typed
+		/// property (e.g. &lt;Page.Resources&gt;).
+		/// </summary>
+		private bool IsDirectChildOfResourceDictionary(XamlObjectDefinition definition)
+		{
+			if (definition.Owner?.Type?.Name is "ResourceDictionary")
+			{
+				return true;
+			}
+
+			// Implicit ResourceDictionary: the definition lives inside a member whose property type
+			// is ResourceDictionary (e.g. FrameworkElement.Resources, Application.Resources).
+			// We check the XAML member type name first; if unresolved in the schema context, fall
+			// back to checking the well-known "Resources" property name which is always ResourceDictionary.
+			return definition.Owner?.Members.Any(m =>
+				m.Objects.Contains(definition) &&
+				(m.Member.Type?.Name is "ResourceDictionary" || m.Member.Name == "Resources")
+			) is true;
+		}
+
 		private static (bool isInside, XamlObjectDefinition? xamlObject) IsMemberInside(XamlObjectDefinition? xamlObject, string typeName, int? maxDepth = null)
 		{
 			if (xamlObject == null)
@@ -6669,6 +6697,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				var nameMember = FindMember(definition, "Name");
 				var nameField = nameMember is { Value: string name } ? SanitizeResourceName(name) : null;
+
+				if (loadMember != null && nameMember == null)
+				{
+					// XamlCompiler error WMC0907: Element must have x:Name attribute specified since it uses x:Load.
+					AddError("Element must have x:Name attribute specified since it uses x:Load.", loadMember);
+					return null;
+				}
+
+
+				if (loadMember != null && (
+					definition.Owner?.Type?.Name is "DataTemplate" ||
+					IsDirectChildOfResourceDictionary(definition)
+				))
+				{
+					// XamlCompiler error WMC0913: x:Load cannot be used on the root of a Page, User Control or DataTemplate, or direct children of a Resource Dictionary,
+					// and can only be used on elements of type UIElement or FlyoutBase
+					AddError("x:Load cannot be used on the root of a Page, User Control or DataTemplate, or direct children of a Resource Dictionary, and can only be used on elements of type UIElement or FlyoutBase", loadMember);
+					return null;
+				}
 
 				var elementStubBaseType = Generation.ElementStubSymbol.Value.BaseType;
 				if (!(targetType?.Is(elementStubBaseType) ?? false))
