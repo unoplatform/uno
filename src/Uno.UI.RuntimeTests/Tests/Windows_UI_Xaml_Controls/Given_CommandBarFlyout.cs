@@ -198,4 +198,117 @@ public class Given_CommandBarFlyout
 #endif
 		}
 	}
+
+	// CommandBarFlyout first-open flash via COMPILED XAML — kahua-private #480.
+	//
+	// The XamlReader.Load test above exercises the EAGER ResourceResolver path
+	// (immediateResolution=false), which the parse-time dictionary pinning fully
+	// covers. Kahua ships COMPILED XAML, whose {ThemeResource} assignments take
+	// the DEFERRED branch (immediateResolution=true): an unpinned
+	// ThemeResourceReference resolved by the load-time _resourceBindings tree
+	// walk. This test loads a compiled page (CommandBarFlyout_FirstOpen_Flash)
+	// to exercise that path.
+	//
+	// It also inspects the element the user actually SEES: the label TextBlock
+	// materialised inside the AppBarButton's template, not just the
+	// AppBarButton.Foreground DP. The label resolves its (template-bound /
+	// inherited) foreground when the template materialises on the first layout
+	// pass — a moment the AppBarButton.Foreground-only assertion never checks.
+	[TestMethod]
+	[RequiresFullWindow]
+	[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/480")]
+	public async Task When_CommandBarFlyout_Compiled_Opens_First_Time_Label_Should_Not_Flash_Wrong_Theme()
+	{
+#if HAS_UNO
+		using var darkApp = ThemeHelper.UseApplicationDarkTheme();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var page = new CommandBarFlyout_FirstOpen_Flash();
+		var owner = (Button)page.FindName("Owner");
+		var flyout = (CommandBarFlyout)owner.Flyout;
+		var command = (AppBarButton)flyout.PrimaryCommands[0];
+
+		var observed = new List<(string Checkpoint, Color? Button, Color? Label)>();
+
+		TextBlock FindLabel()
+			=> EnumerateDescendants(command)
+				.OfType<TextBlock>()
+				.FirstOrDefault(tb => tb.Text == "Item");
+
+		void Snapshot(string checkpoint)
+		{
+			var label = FindLabel();
+			observed.Add((
+				checkpoint,
+				(command.Foreground as SolidColorBrush)?.Color,
+				(label?.Foreground as SolidColorBrush)?.Color));
+		}
+
+		TestServices.WindowHelper.WindowContent = page;
+		await TestServices.WindowHelper.WaitForLoaded(page);
+
+		try
+		{
+			// Mirror the real TextBox selection/context flyout show path
+			// (TextControlFlyoutHelper.ShowAt): positioned + Transient show mode,
+			// which can take a different open/layout path than Standard.
+			flyout.ShowAt(owner, new FlyoutShowOptions
+			{
+				Position = new Windows.Foundation.Point(10, 10),
+				ShowMode = FlyoutShowMode.Transient,
+			});
+			Snapshot("after-show-sync");
+
+			await TestServices.WindowHelper.WaitForIdle();
+			Snapshot("after-first-idle");
+
+			await TestServices.WindowHelper.WaitForLoaded(command);
+			Snapshot("after-command-loaded");
+
+			await TestServices.WindowHelper.WaitForIdle();
+			Snapshot("after-second-idle");
+
+			var label = FindLabel();
+			Assert.IsNotNull(label, "AppBarButton label TextBlock should have materialised. [transient]");
+			Assert.AreEqual(ElementTheme.Light, command.ActualTheme,
+				"AppBarButton should inherit the owner's Light theme.");
+			Assert.AreEqual(Colors.Green, (label.Foreground as SolidColorBrush)?.Color,
+				"Final visible label Foreground must be the Light sentinel (Green).");
+
+			// The label only exists from after-command-loaded onwards. Any Red at a
+			// user-visible checkpoint once it exists is the first-open flash.
+			var visibleRed = observed
+				.Where(o => o.Label == Colors.Red)
+				.ToList();
+			Assert.AreEqual(0, visibleRed.Count,
+				$"Visible label Foreground was the Dark sentinel (Red) at checkpoint(s) " +
+				$"{string.Join(", ", visibleRed.Select(c => c.Checkpoint))}, producing the " +
+				$"first-open flash. All observations (checkpoint → button/label): " +
+				$"[{string.Join(", ", observed.Select(o => $"{o.Checkpoint}=btn:{o.Button}/lbl:{o.Label}"))}]");
+		}
+		finally
+		{
+			flyout.Hide();
+			VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+		}
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+#if HAS_UNO
+	private static IEnumerable<DependencyObject> EnumerateDescendants(DependencyObject root)
+	{
+		var count = VisualTreeHelper.GetChildrenCount(root);
+		for (var i = 0; i < count; i++)
+		{
+			var child = VisualTreeHelper.GetChild(root, i);
+			yield return child;
+			foreach (var descendant in EnumerateDescendants(child))
+			{
+				yield return descendant;
+			}
+		}
+	}
+#endif
 }

@@ -106,22 +106,24 @@ public partial class Popup
 					EnsureVisualTreeOnSubtree(PopupPanel, targetTree);
 				}
 
-				_closePopup.Disposable = currentXamlRoot?.OpenPopup(this);
-
 #if UNO_HAS_ENHANCED_LIFECYCLE
-				// MUX Reference: Popup.cpp CPopupRoot::CompleteAdditionToOpenPopupList (lines 4289-4302)
-				// After the popup is added to PopupRoot, propagate this popup's theme
-				// to its child. The child was just reparented under PopupRoot (which has
-				// Theme.None), so it needs the theme from its logical parent (this Popup).
+				// MUX Reference: CDependencyObject::EnterImpl (depends.cpp:1023-1048) inherits
+				// the theme from the (logical) inheritance parent AT tree-enter, before the
+				// element can measure or render. Uno hosts popup content under a separate
+				// PopupRoot visual tree (Theme.None) that the child enters via OpenPopup below,
+				// so we apply the inherited theme to the child HERE, before that enter, so the
+				// first measure / materialisation resolves its {ThemeResource} brushes against
+				// the correct theme. Applying it after OpenPopup (once the child has already
+				// entered the tree) leaves a one-frame window on hosts whose frame cadence
+				// rasterises a frame between enter and this walk — the mobile-context-menu flash
+				// reported in kahua-private #480: white-on-light text for one frame before the
+				// theme settles.
 				//
-				// If this Popup itself doesn't yet have an inherited theme (it was created
-				// outside the visual tree, e.g. a TextCommandBarFlyout materialised on
-				// first long-press/double-tap and not yet visited by a theme walk), fall
-				// back to the logical anchor's theme — PlacementTarget for ShowAt-style
-				// flyouts, or AssociatedFlyout.Target as a secondary fallback. Without
-				// this, the child measures and renders one frame against Themes.Active
-				// (the application/OS theme), producing the visible mobile-context-menu
-				// flash on first open before the theme walk catches up.
+				// The theme is this Popup's own, set by FlyoutBase.ForwardThemeToPresenter (via
+				// RequestedTheme) just before opening. If the Popup has no inherited theme yet
+				// (created outside the visual tree and not yet visited by a theme walk), fall
+				// back to the logical anchor's theme — PlacementTarget for ShowAt-style flyouts,
+				// or AssociatedFlyout.Target as a secondary fallback.
 				var popupTheme = GetTheme();
 				if (popupTheme == Theme.None)
 				{
@@ -159,6 +161,8 @@ public partial class Popup
 					NotifyLogicalFlyoutItems(AssociatedFlyout, popupTheme);
 				}
 #endif
+
+				_closePopup.Disposable = currentXamlRoot?.OpenPopup(this);
 
 			}
 			else
