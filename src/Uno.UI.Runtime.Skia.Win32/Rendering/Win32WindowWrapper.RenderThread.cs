@@ -95,7 +95,17 @@ internal partial class Win32WindowWrapper
 			}
 		}
 
-		public void Dispose()
+		public void Dispose() => DisposeAndTryJoin();
+
+		/// <summary>
+		/// Stops the render thread and waits for it to exit. Returns <c>true</c> if the
+		/// thread joined within the backstop, <c>false</c> if it had to be abandoned while
+		/// still potentially executing inside a native present (SwapBuffers/BitBlt/DwmFlush).
+		/// When this returns <c>false</c>, the caller MUST NOT dispose any renderer/surface
+		/// resources the abandoned thread might still be touching — doing so would free native
+		/// GPU resources out from under it and risk a use-after-free.
+		/// </summary>
+		internal bool DisposeAndTryJoin()
 		{
 			_disposed = true;
 			_frameSignal.Set(); // Unblock if waiting
@@ -119,12 +129,13 @@ internal partial class Win32WindowWrapper
 					typeof(RenderThread).LogError()?.Error(
 						"Render thread still alive after 2 s; abandoning to keep window close responsive. " +
 						"Leaking _frameSignal, _presentedEvent and renderer until process exit.");
-					return;
+					return false;
 				}
 			}
 
 			_frameSignal.Dispose();
 			_presentedEvent.Dispose();
+			return true;
 		}
 	}
 }
