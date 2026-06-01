@@ -245,25 +245,52 @@ namespace Microsoft.UI.Xaml
 			return false;
 		}
 
-		internal void UpdateBindingExpressions()
+		internal void UpdateBindingExpressions(in SpecializedResourceDictionary.ResourceKey themeKey)
 		{
 			foreach (var binding in _bindings)
 			{
-				UpdateBindingPropertiesFromThemeResources(binding.ParentBinding);
+				if (UpdateBindingPropertiesFromThemeResources(binding.ParentBinding, themeKey))
+				{
+					// The binding's theme-resolved TargetNullValue / FallbackValue changed. Re-apply the
+					// binding so the new value takes effect: a failing/null binding (e.g. null DataContext)
+					// applies its Fallback/TargetNull at activation, which can occur before the theme-resolved
+					// value is available, leaving a stale value on the target. Reapply re-runs the full binding
+					// (including the null-DataContext fallback path that RefreshTarget skips).
+					binding.Reapply();
+				}
 			}
 		}
 
-		private static void UpdateBindingPropertiesFromThemeResources(Binding binding)
+		// Resolve a binding's TargetNullValue / FallbackValue {ThemeResource} against the explicitly passed
+		// owner theme (the binding-target element's effective theme) rather than the process-global active
+		// theme, so the Light/Dark sub-dictionary is selected by the element's own theme — matching WinUI's
+		// per-owner {ThemeResource} resolution. See DependencyObjectStore.UpdateResourceBindings.
+		// Returns true when a resolved value actually changed (so the caller can refresh the target).
+		private static bool UpdateBindingPropertiesFromThemeResources(Binding binding, in SpecializedResourceDictionary.ResourceKey themeKey)
 		{
+			var changed = false;
+
 			if (binding.TargetNullValueThemeResource is { } targetNullValueThemeResourceKey)
 			{
-				binding.TargetNullValue = (object)ResourceResolverSingleton.Instance.ResolveResourceStatic(targetNullValueThemeResourceKey, typeof(object), context: binding.ParseContext);
+				ResourceResolver.ResolveResourceStatic(targetNullValueThemeResourceKey, themeKey, out var value, context: binding.ParseContext);
+				if (!ReferenceEquals(binding.TargetNullValue, value))
+				{
+					binding.TargetNullValue = value;
+					changed = true;
+				}
 			}
 
 			if (binding.FallbackValueThemeResource is { } fallbackValueThemeResourceKey)
 			{
-				binding.FallbackValue = (object)ResourceResolverSingleton.Instance.ResolveResourceStatic(fallbackValueThemeResourceKey, typeof(object), context: binding.ParseContext);
+				ResourceResolver.ResolveResourceStatic(fallbackValueThemeResourceKey, themeKey, out var value, context: binding.ParseContext);
+				if (!ReferenceEquals(binding.FallbackValue, value))
+				{
+					binding.FallbackValue = value;
+					changed = true;
+				}
 			}
+
+			return changed;
 		}
 
 		internal void OnThemeChanged()

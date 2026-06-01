@@ -26,6 +26,7 @@ namespace Microsoft.UI.Xaml
 		private ResourceDictionary _themeDictionaries;
 		private ResourceDictionary _parent;
 		private ManagedWeakReference _sourceDictionary;
+		private ManagedWeakReference _owner;
 		private HashSet<ResourceKey> _keyNotFoundCache;
 
 		/// <summary>
@@ -562,6 +563,21 @@ namespace Microsoft.UI.Xaml
 						ResourceResolver.PopScope();
 					}
 				}
+
+				// A lazily-materialized resource (e.g. a SolidColorBrush whose Color is a {ThemeResource})
+				// resolved its theme references above against the process-global active theme. Re-resolve them
+				// against the owning element's effective theme so the resource matches the theme of the element
+				// hosting this dictionary, matching WinUI's per-owner {ThemeResource} resolution. Only when the
+				// owner already has an established (non-None) theme — otherwise the global fallback stands.
+				if (value is IDependencyObjectStoreProvider materializedProvider
+					&& GetResourceOwner() is { } resourceOwner
+					&& ((IDependencyObjectStoreProvider)resourceOwner).Store.GetTheme() != Theme.None)
+				{
+					materializedProvider.Store.UpdateResourceBindings(
+						ResourceUpdateReason.ThemeResource,
+						resourceContextProvider: resourceOwner,
+						containingDictionary: this);
+				}
 			}
 		}
 
@@ -942,13 +958,44 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Update theme bindings on DependencyObjects in the dictionary.
 		/// </summary>
+		// The FrameworkElement that hosts this dictionary as its Resources, if any. WinUI resolves a
+		// {ThemeResource} declared on a resource (e.g. a SolidColorBrush in FrameworkElement.Resources whose
+		// Color is a {ThemeResource}) against the OWNING element's effective theme. Uno's resolution keys on
+		// the resolving owner's theme (ThemeResolution.ResolveOwnerTheme); a standalone resource DO has no
+		// inheritance parent, so without this back-reference it would fall back to the process-global active
+		// theme. Capturing the owner lets materialization and theme-change re-resolution use the element theme.
+		internal void SetResourceOwner(DependencyObject owner)
+			=> _owner = owner is null ? null : WeakReferencePool.RentWeakReference(this, owner);
+
+		/// <summary>
+		/// Finds the nearest <see cref="FrameworkElement"/> that owns this dictionary (directly, or via the
+		/// merged/theme-dictionary parent chain), used as the resource-context theme provider.
+		/// </summary>
+		private FrameworkElement GetResourceOwner()
+		{
+			for (var current = this; current is not null; current = current._parent)
+			{
+				if (current._owner?.Target is FrameworkElement owner)
+				{
+					return owner;
+				}
+			}
+
+			return null;
+		}
+
 		internal void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{
+			// Resolve resources' {ThemeResource} values against the owning element's effective theme rather
+			// than the process-global active theme (see SetResourceOwner). For app/standalone dictionaries
+			// with no owner this is null and resolution falls back to the app/OS theme, as before.
+			var owner = GetResourceOwner();
+
 			foreach (var item in _values.Values)
 			{
 				if (item is IDependencyObjectStoreProvider provider)
 				{
-					provider.Store.UpdateResourceBindings(updateReason, containingDictionary: this);
+					provider.Store.UpdateResourceBindings(updateReason, resourceContextProvider: owner, containingDictionary: this);
 				}
 			}
 
