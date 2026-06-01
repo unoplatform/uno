@@ -15,5 +15,6 @@ internal class Win32CoreApplicationExtension : ICoreApplicationExtension
 		}
 
 		Win32WindowWrapper.CloseAllWindows();
+		Win32Host.ForceAllWindowsClosed();
 	}
 }

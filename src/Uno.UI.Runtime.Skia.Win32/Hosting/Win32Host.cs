@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -176,7 +176,17 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 	{
 		if (Interlocked.Decrement(ref _openWindows) is 0)
 		{
-			_allWindowsClosed = true;
+			if (Application.Current?.DispatcherShutdownMode != DispatcherShutdownMode.OnExplicitShutdown)
+			{
+				_allWindowsClosed = true;
+			}
 		}
 	}
+
+	/// <summary>
+	/// Forces the run loop to exit regardless of <see cref="DispatcherShutdownMode"/>.
+	/// Called by <see cref="Win32CoreApplicationExtension.Exit"/> when the application
+	/// is being shut down explicitly.
+	/// </summary>
+	internal static void ForceAllWindowsClosed() => _allWindowsClosed = true;
 }

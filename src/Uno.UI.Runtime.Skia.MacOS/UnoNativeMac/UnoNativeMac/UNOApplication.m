@@ -181,6 +181,18 @@ void uno_set_application_can_exit_callback(application_can_exit_fn_ptr p)
     application_can_exit = p;
 }
 
+static application_should_terminate_after_last_window_closed_fn_ptr application_should_terminate_after_last_window_closed;
+
+inline application_should_terminate_after_last_window_closed_fn_ptr uno_get_application_should_terminate_after_last_window_closed_callback(void)
+{
+    return application_should_terminate_after_last_window_closed;
+}
+
+void uno_set_application_should_terminate_after_last_window_closed_callback(application_should_terminate_after_last_window_closed_fn_ptr p)
+{
+    application_should_terminate_after_last_window_closed = p;
+}
+
 static application_start_fn_ptr application_start;
 
 inline application_start_fn_ptr uno_get_application_start_callback(void)
@@ -235,7 +247,8 @@ void uno_application_quit(void)
 #if DEBUG
     NSLog(@"UNOApplicationDelegate.applicationShouldTerminateAfterLastWindowClosed %@", sender);
 #endif
-    return YES;
+    application_should_terminate_after_last_window_closed_fn_ptr cb = uno_get_application_should_terminate_after_last_window_closed_callback();
+    return cb != NULL ? cb() : YES;
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
