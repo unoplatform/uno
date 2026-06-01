@@ -745,9 +745,13 @@ public partial class DependencyObjectStore
 		ResourceDictionary[]? dictionariesInScope = null;
 
 		// MUX Reference: FxCallbacks::DependencyObject_RefreshExpressionsOnThemeChange (Theming.cpp:252)
-		// Refresh binding expressions that may reference theme resources (e.g. Binding.TargetNullValue)
+		// Refresh binding expressions that may reference theme resources (e.g. Binding.TargetNullValue).
+		// Gate on HasThemeResourceBindingExpressions so the (allocating) GetResourceDictionaries().ToArray()
+		// + scope push only runs for elements that actually have a {ThemeResource} TargetNullValue/Fallback,
+		// not for every element that merely has bindings.
 		if ((updateReason & ResourceUpdateReason.ThemeResource) != 0 &&
-			_properties.HasBindings)
+			_properties.HasBindings &&
+			_properties.HasThemeResourceBindingExpressions)
 		{
 			dictionariesInScope = GetResourceDictionaries(includeAppResources: false, resourceContextProvider, containingDictionary).ToArray();
 			for (var i = dictionariesInScope.Length - 1; i >= 0; i--)
