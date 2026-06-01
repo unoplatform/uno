@@ -584,11 +584,27 @@ namespace Microsoft.UI.Xaml
 
 		internal void UpdateResourceBindingsForHotReload() => OnResourcesChanged(ResourceUpdateReason.HotReload | ResourceUpdateReason.ThemeResource);
 
+		// MUX Reference: FrameworkTheming::IsBaseThemeChanging — true while a base (app/system) theme switch
+		// is being applied. CFrameworkElement::NotifyThemeChangedCore uses it so an element that has not yet
+		// been theme-walked (m_theme == None) still raises ActualThemeChanged on the switch (framework.cpp
+		// RaiseActualThemeChangedEventIfChanging). Set only around the base-theme walk below; hot reload goes
+		// through OnResourcesChanged directly and never sets it.
+		internal static bool IsBaseThemeChanging { get; private set; }
+
 		internal void OnRequestedThemeChanged()
 		{
 			RequestedThemeChanged?.Invoke();
 
-			OnResourcesChanged(ResourceUpdateReason.ThemeResource);
+			var wasBaseThemeChanging = IsBaseThemeChanging;
+			IsBaseThemeChanging = true;
+			try
+			{
+				OnResourcesChanged(ResourceUpdateReason.ThemeResource);
+			}
+			finally
+			{
+				IsBaseThemeChanging = wasBaseThemeChanging;
+			}
 		}
 
 		internal event Action RequestedThemeChanged;

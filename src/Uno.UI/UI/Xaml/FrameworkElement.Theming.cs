@@ -229,7 +229,13 @@ public partial class FrameworkElement
 		// spurious ActualThemeChanged events and foreground inheritance on first walk.
 		var appBaseTheme = Theming.FromElementTheme(Application.Current?.ActualElementTheme ?? ElementTheme.Light);
 		var oldBaseForEvent = oldTheme == Theme.None ? appBaseTheme : oldBase;
-		bool effectiveThemeChanged = oldBaseForEvent != newBase || forceRefresh;
+		// MUX: framework.cpp RaiseActualThemeChangedEventIfChanging — for a never-walked element
+		// (oldTheme == None) the app base theme has already been switched, so oldBaseForEvent == newBase and
+		// the first disjunct misses it. Application.IsBaseThemeChanging mirrors WinUI's IsBaseThemeChanging()
+		// so such an element still raises ActualThemeChanged on an app/system theme switch.
+		bool effectiveThemeChanged = oldBaseForEvent != newBase
+			|| (oldTheme == Theme.None && Application.IsBaseThemeChanging)
+			|| forceRefresh;
 
 		// The {ThemeResource} resolution leaf keys on the owner's own theme
 		// (DependencyObjectStore.UpdateThemeReference → ResolveOwnerTheme). SetTheme below makes
