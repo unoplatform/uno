@@ -23,6 +23,7 @@ $external_docs = @{
     "uno.samples"        = @{ ref="1d9ea60a7aec335e1d034446c631b93f605f06b8" }  #latest master commit
     "uno.chefs"          = @{ ref="d54bceea13406bca23e870a89ecee469813c69b3" }  #latest main commit
     "hd-docs"            = @{ ref="ec0553b7a2d000cc0138c020215f313a04ec8807"; dest="studio/Hot Design" } #latest main commit
+    "studio-docs"        = @{ ref="62a7d4c81915243ec6fb3201a42950d220e403c6" }  #latest main commit
 }
 
 $uno_git_url = "https://github.com/unoplatform/"

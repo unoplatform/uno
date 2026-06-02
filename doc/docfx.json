@@ -90,6 +90,9 @@
             },
             "articles/external/uno.extensions/**.md": {
               "branch": "main"
+            },
+            "articles/external/studio-docs/**.md": {
+              "branch": "main"
             }
           }
         },
