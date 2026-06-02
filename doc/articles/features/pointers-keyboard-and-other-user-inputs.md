@@ -188,7 +188,7 @@ The table and sections below describe supported functionality and limitations fo
 | Android               | No                                               | No                                              |
 | iOS                   | No                                               | No                                              |
 | Wasm                  | No                                               | Yes (Text, Link, Image, File, Html, Rtf)        |
-| Skia macOS            | Yes (Text, Link, Bitmap, File, Html, Rtf)        | Yes (Text, Link, File, Html, Rtf)               |
+| Skia macOS            | Yes (Text, Link, Image, File, Html, Rtf)         | Yes (Text, Link, File, Html, Rtf)               |
 | Skia Desktop (Windows) | Yes (Text, Link, Image, File, Html, Rtf)         | Yes (Text, Link, Image, File, Html, Rtf)        |
 | Skia Linux            | No                                               | No                                              |
 
