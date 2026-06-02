@@ -1236,11 +1236,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 		else if (index == _text.Length)
 		{
-			if (right)
-			{
-				return (_text.Length, 0);
-			}
-			else if (_wordBoundaries.Count == 1)
+			if (_wordBoundaries.Count == 1)
 			{
 				return (0, _text.Length);
 			}

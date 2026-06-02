@@ -119,6 +119,8 @@ public partial class TextBox
 		{
 			// we handle touch on the PointerReleased end
 			_lastPointerDown = (currentPoint, 0);
+			// Dismiss the selection flyout on press; the gesture re-shows it (tap) or yields to the context menu (hold).
+			DismissSelectionFlyoutForPointerPress();
 		}
 		else if (!currentPoint.Properties.IsRightButtonPressed) // Mouse (a pen is considered a mouse for now)
 		{
@@ -171,7 +173,14 @@ public partial class TextBox
 	{
 		_mouseMultiTapChunk = null;
 
-		if (!_isPressed || args.Pointer.PointerDeviceType is not PointerDeviceType.Touch)
+		if (!_isPressed)
+		{
+			// Released without a preceeding Pressed: this is a pointer released from the context menu
+			return;
+		}
+		_isPressed = false;
+
+		if (args.Pointer.PointerDeviceType is not PointerDeviceType.Touch)
 		{
 			// Mouse is handled on the PointerPressed side
 			return;
@@ -180,22 +189,18 @@ public partial class TextBox
 		_isPressed = false;
 
 		var touchHoldTime = args.GetCurrentPoint(null).Timestamp - _lastPointerDown.point.Timestamp;
-		var position = args.GetCurrentPoint(this).Position;
 
 		if (touchHoldTime >= GestureRecognizer.HoldMinDelayMicroseconds)
 		{
-			// Touch holding - show ContextFlyout via OnContextRequested
-			// Ported from: WinUI TextBoxBase.cpp OnGripperHeld (line 5219)
-			var contextArgs = new ContextRequestedEventArgs();
-			contextArgs.SetGlobalPoint(args.GetCurrentPoint(null).Position);
-			OnContextRequested(this, contextArgs);
+			// content menu should have already been opened through UIElement-level ContextRequested handling.
+			return;
 		}
 		else if (!Text.IsNullOrEmpty()) // Touch tap
 		{
 			TouchTap(args.GetCurrentPoint(TextBoxView.DisplayBlock).Position, wasFocused);
 			// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (line 2088)
 			// OnPointerReleased - queue SelectionFlyout visibility update after pointer release
-			QueueUpdateSelectionFlyoutVisibility(PointerDeviceType.Touch, position);
+			QueueUpdateSelectionFlyoutVisibility(PointerDeviceType.Touch, args.GetCurrentPoint(this).Position);
 		}
 	}
 
@@ -206,31 +211,19 @@ public partial class TextBox
 		var tappedChunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(index, true);
 
 		var tappedInsideSelection = _selection.start <= index && index < _selection.start + _selection.length;
-		if (tappedInsideSelection && CaretMode != CaretDisplayMode.CaretWithThumbsBothEndsShowing)
+		if (tappedInsideSelection)
 		{
 			CaretMode = CaretDisplayMode.CaretWithThumbsBothEndsShowing;
 		}
-		else if (_selection.length == 0 && TextBoxView.DisplayBlock.ParsedText.GetWordAt(_selection.start, true) is var currentChunk && currentChunk.start <= index && index < currentChunk.start + currentChunk.length)
+		else if (_selection.length == 0)
 		{
 			Select(tappedChunk.start, tappedChunk.length); // touch selection doesn't go backwards (no "negative length")
 			CaretMode = CaretDisplayMode.CaretWithThumbsBothEndsShowing;
 		}
-		else
+		else // outside a selection
 		{
-			var lastNonSpanCharIndex = Text[tappedChunk.start..(tappedChunk.start + tappedChunk.length)].IndexOf(' ');
-			var rightEndIndex = lastNonSpanCharIndex == -1 ? tappedChunk.start + tappedChunk.length - 1 : tappedChunk.start + lastNonSpanCharIndex;
-			var leftEndIndex = tappedChunk.start;
-			var leftEnd = TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(leftEndIndex);
-			var rightEnd = TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(rightEndIndex);
-
-			var closerEnd = Math.Abs(point.X - leftEnd.Left) < Math.Abs(point.X - rightEnd.Right) ? leftEndIndex : rightEndIndex + 1;
-
-			if (wasFocused) // If we were not focused before, caret should be initially thumbless.
-			{
-				CaretMode = CaretDisplayMode.CaretWithThumbsOnlyEndShowing;
-			}
-
-			Select(closerEnd, 0);
+			Select(tappedChunk.start, 0);
+			CaretMode = CaretDisplayMode.CaretWithThumbsOnlyEndShowing;
 		}
 	}
 
@@ -244,113 +237,5 @@ public partial class TextBox
 	{
 		base.OnDoubleTapped(args);
 		args.Handled = true;
-	}
-
-	private void CaretOnPointerPressed(object sender, PointerRoutedEventArgs args)
-	{
-		args.Handled = true;
-
-		var caret = (CaretWithStemAndThumb)sender;
-		if (caret.CapturePointer(args.Pointer))
-		{
-			caret.SetStemVisible(true);
-		}
-
-		caret.LastPointerDown = args.GetCurrentPoint(null);
-	}
-
-	private void CaretOnPointerMoved(object sender, PointerRoutedEventArgs args)
-	{
-		var caret = (CaretWithStemAndThumb)sender;
-		if (!caret.HasPointerCapture)
-		{
-			return;
-		}
-		args.Handled = true;
-
-		var displayBlock = TextBoxView.DisplayBlock;
-		var point = args.GetCurrentPoint(displayBlock).Position - new Point(0, (caret.Height - 16) / 2);
-		var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(point, false, true));
-
-		if (_selection.length == 0)
-		{
-			Debug.Assert(caret == _selectionEndThumbfulCaret);
-			Select(index, 0);
-		}
-		else
-		{
-			Debug.Assert(CaretMode == CaretDisplayMode.CaretWithThumbsBothEndsShowing);
-			var (start, end) = (_selection.start, _selection.start + _selection.length);
-			if (sender == _selectionStartThumbfulCaret)
-			{
-				start = index;
-			}
-			else
-			{
-				end = index;
-			}
-
-			if (start != end) // if start == end, we do nothing like WinUI. This means that the 2 carets won't be on top of one another
-			{
-				SelectInternal(start, end - start);
-
-				if (end < start)
-				{
-					// If we're here this means that the "selection end caret" was dragging "behind" the "selection start caret".
-					// We swap which caret we consider the "selection start caret" now that the "end caret" is actually before the
-					// "start caret".
-					(_selectionStartThumbfulCaret, _selectionEndThumbfulCaret) = (_selectionEndThumbfulCaret, _selectionStartThumbfulCaret);
-				}
-			}
-		}
-
-		UpdateScrolling(caret == _selectionEndThumbfulCaret);
-	}
-
-	private void CaretOnPointerReleased(object sender, PointerRoutedEventArgs e)
-	{
-		ClearCaretPointerState(sender, e);
-
-		var caret = (CaretWithStemAndThumb)sender;
-		var previous = caret.LastPointerDown;
-		var current = e.GetCurrentPoint(null);
-
-		// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (lines 5209-5233)
-		// OnGripperHeld - check if this was a hold gesture on the gripper
-		var holdDuration = current.Timestamp - previous.Timestamp;
-		if (holdDuration >= GestureRecognizer.HoldMinDelayMicroseconds)
-		{
-			// Line 5219: Gripper was held - show ContextFlyout (OnContextRequested)
-			e.Handled = true;
-			var contextArgs = new ContextRequestedEventArgs();
-			contextArgs.SetGlobalPoint(e.GetCurrentPoint(null).Position);
-			OnContextRequested(this, contextArgs);
-		}
-		else if (IsMultiTapGesture((previous.PointerId, previous.Timestamp, previous.Position), current))
-		{
-			e.Handled = true;
-			TouchTap(e.GetCurrentPoint(TextBoxView.DisplayBlock).Position, true);
-			// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (line 653)
-			// Gripper manipulation ended - queue SelectionFlyout visibility update
-			QueueUpdateSelectionFlyoutVisibility(
-				e.Pointer.PointerDeviceType,
-				e.GetCurrentPoint(this).Position);
-		}
-		else
-		{
-			// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (line 653)
-			// Gripper manipulation ended - queue SelectionFlyout visibility update
-			QueueUpdateSelectionFlyoutVisibility(
-				e.Pointer.PointerDeviceType,
-				e.GetCurrentPoint(this).Position);
-		}
-	}
-
-	private void ClearCaretPointerState(object sender, PointerRoutedEventArgs args)
-	{
-		args.Handled = true;
-		var caret = (CaretWithStemAndThumb)sender;
-		caret.SetStemVisible(false);
-		caret.ReleasePointerCaptures();
 	}
 }

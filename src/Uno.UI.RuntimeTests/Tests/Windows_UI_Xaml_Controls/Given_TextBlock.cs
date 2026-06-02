@@ -1251,7 +1251,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif !HAS_RENDER_TARGET_BITMAP
 		[Ignore("Cannot take screenshot on this platform.")]
 #endif
-		public async Task When_IsTextSelectionEnabled_TappedFinger_Then_ClearSelection()
+		public async Task When_IsTextSelectionEnabled_TappedFinger_Then_SelectsWord()
 		{
 			var sut = new TextBlock
 			{
@@ -1264,13 +1264,90 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var finger = injector.GetFinger();
 
-			sut.SelectAll();
-			Assert.AreEqual(sut.Text, sut.SelectedText);
-
-			finger.Press(bounds.GetCenter());
+			// Unlike a mouse click (which clears the selection), a touch tap selects the tapped word
+			// and shows the selection grippers, because a TextBlock has no caret to place.
+			// (GetWordAt includes the trailing whitespace, so the selection is "hello ".)
+			finger.Press(new Point(bounds.X + bounds.Width / 4, bounds.GetCenter().Y));
 			finger.Release();
+			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual("", sut.SelectedText);
+			Assert.AreEqual("hello", sut.SelectedText.TrimEnd());
+#if __SKIA__
+			Assert.IsNotNull(sut.SelectionGrippersForTesting);
+#endif
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_Finger_DragGripper_ExtendsSelection()
+		{
+#if !__SKIA__
+			Assert.Inconclusive("Touch selection grippers are only implemented on Skia.");
+#else
+			var sut = new TextBlock
+			{
+				Text = "hello uno",
+				IsTextSelectionEnabled = true,
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Tap the first word to select it and show the grippers.
+			finger.Press(new Point(bounds.X + bounds.Width / 4, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", sut.SelectedText.TrimEnd());
+			var grippers = sut.SelectionGrippersForTesting;
+			Assert.IsNotNull(grippers);
+
+			// Drag the end gripper far to the right to extend the selection to the end of the text.
+			var endThumb = grippers.Value.end.GetAbsoluteBounds().GetCenter();
+			finger.Press(endThumb);
+			finger.MoveBy(bounds.Width, 0, stepOffsetInMilliseconds: 20);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello uno", sut.SelectedText);
+#endif
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_Disabled_Hides_Grippers()
+		{
+#if !__SKIA__
+			Assert.Inconclusive("Touch selection grippers are only implemented on Skia.");
+#else
+			var sut = new TextBlock
+			{
+				Text = "hello uno",
+				IsTextSelectionEnabled = true,
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(new Point(bounds.X + bounds.Width / 4, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(sut.SelectionGrippersForTesting);
+
+			sut.IsTextSelectionEnabled = false;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNull(sut.SelectionGrippersForTesting);
+#endif
 		}
 
 		[TestMethod]
