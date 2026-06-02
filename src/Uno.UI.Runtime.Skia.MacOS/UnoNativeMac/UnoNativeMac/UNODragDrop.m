@@ -163,10 +163,10 @@ NSDragOperation uno_drag_drop_handle_entered(NSView* view, id<NSDraggingInfo> in
     struct DragDropData data;
     fill_drag_drop_data(&data, view, info);
     uint32 accepted = drag_entered(view.window, &data);
-    free_drag_drop_data(&data);
 #if DEBUG
     NSLog(@"uno_drag_drop_handle_entered at (%g,%g) accepted: 0x%x", data.x, data.y, accepted);
 #endif
+    free_drag_drop_data(&data);
     return ns_operation_from_mask(accepted);
 }
 
