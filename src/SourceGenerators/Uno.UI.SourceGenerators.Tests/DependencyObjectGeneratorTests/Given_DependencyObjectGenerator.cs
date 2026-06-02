@@ -31,6 +31,7 @@ public class Given_DependencyObjectGenerator
 		};
 
 		test.TestState.AdditionalReferences.AddRange(UnoAssemblyHelper.LoadAssemblies());
+		Console.WriteLine($"# jonp: Given_DependencyObjectGenerator.TestAndroid: AdditionalReferences=\n\t{string.Join("\n\t", test.TestState.AdditionalReferences.Select(r => r.Display))}");
 		test.ExpectedDiagnostics.AddRange(expectedDiagnostics);
 		await test.RunAsync();
 	}
