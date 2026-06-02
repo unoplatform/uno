@@ -70,8 +70,8 @@ internal static partial class UnoAssemblyHelper
 	{
 		var tfmSubPaths =
 		(
-			from tfm in tfms
 			from target in targets
+			from tfm in tfms
 			select Path.Combine(target, CurrentConfiguration, tfm)
 		).ToArray();
 
