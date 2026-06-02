@@ -55,7 +55,13 @@ internal partial class MacOSDragDropExtension : IDragDropExtension
 	{
 		_host.Closed -= OnHostClosed;
 		_extensions.TryRemove(_windowHandle, out _);
+
+		var completion = _pendingDragCompletion;
 		_pendingDragCompletion = null;
+		if (completion is not null)
+		{
+			CompleteWith(completion, DataPackageOperation.None);
+		}
 	}
 
 	public static unsafe void Register()
