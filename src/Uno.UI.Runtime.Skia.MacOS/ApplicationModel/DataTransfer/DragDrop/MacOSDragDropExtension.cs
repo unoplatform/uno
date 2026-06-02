@@ -77,25 +77,38 @@ internal partial class MacOSDragDropExtension : IDragDropExtension
 
 	public void StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> onCompleted)
 	{
-		// AppKit's beginDraggingSession must run on the main thread and be called from
-		// a mouse-event context, which is the case when DragOperation hands us control.
-		_ = CoreDispatcher.Main.RunAsync(
-			CoreDispatcherPriority.High,
-			async () =>
+		// AppKit's beginDraggingSession must run on the main thread AND from the originating
+		// mouse-event context ([NSApp currentEvent] must still be that mouse event, which the
+		// native uno_drag_start enforces). DragOperation already hands us control on the main
+		// thread within event processing, so running inline preserves the mouse event.
+		// Deferring through RunAsync would resume on a later run-loop turn where the event is
+		// gone, causing the drag to be rejected — so only marshal when we lack thread access.
+		if (CoreDispatcher.Main.HasThreadAccess)
+		{
+			_ = StartNativeDragSafeAsync(info, onCompleted);
+		}
+		else
+		{
+			_ = CoreDispatcher.Main.RunAsync(
+				CoreDispatcherPriority.High,
+				async () => await StartNativeDragSafeAsync(info, onCompleted));
+		}
+	}
+
+	private async Task StartNativeDragSafeAsync(CoreDragInfo info, Action<DataPackageOperation> onCompleted)
+	{
+		try
+		{
+			await StartNativeDragCoreAsync(info, onCompleted);
+		}
+		catch (Exception e)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
 			{
-				try
-				{
-					await StartNativeDragCoreAsync(info, onCompleted);
-				}
-				catch (Exception e)
-				{
-					if (this.Log().IsEnabled(LogLevel.Error))
-					{
-						this.Log().Error("Failed to start native drag on macOS Skia.", e);
-					}
-					CompleteWith(onCompleted, DataPackageOperation.None);
-				}
-			});
+				this.Log().Error("Failed to start native drag on macOS Skia.", e);
+			}
+			CompleteWith(onCompleted, DataPackageOperation.None);
+		}
 	}
 
 	private async Task StartNativeDragCoreAsync(CoreDragInfo info, Action<DataPackageOperation> onCompleted)
