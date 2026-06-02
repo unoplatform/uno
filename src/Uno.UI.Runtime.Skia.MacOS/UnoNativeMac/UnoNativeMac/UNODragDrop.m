@@ -301,7 +301,14 @@ BOOL uno_drag_start(NSWindow* window, struct DragSourceData* data)
     }
     if (data->bitmapData && data->bitmapSize > 0) {
         NSData* blob = [NSData dataWithBytes:data->bitmapData length:data->bitmapSize];
-        [pbItem setData:blob forType:NSPasteboardTypePNG];
+        // The managed DataPackage may hand us non-PNG bytes (BMP/JPEG/TIFF/etc.), so we
+        // re-encode to PNG to keep the advertised pasteboard type matching the payload,
+        // and only advertise PNG when the conversion succeeds.
+        NSBitmapImageRep* rep = [NSBitmapImageRep imageRepWithData:blob];
+        NSData* png = [rep representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+        if (png) {
+            [pbItem setData:png forType:NSPasteboardTypePNG];
+        }
     }
 
     NSMutableArray<NSDraggingItem*>* dragItems = [NSMutableArray arrayWithCapacity:1 + data->fileCount];
