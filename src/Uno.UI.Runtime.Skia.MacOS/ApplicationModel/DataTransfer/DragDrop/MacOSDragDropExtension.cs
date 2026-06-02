@@ -402,18 +402,21 @@ internal partial class MacOSDragDropExtension : IDragDropExtension
 		}
 
 		var uri = ReadUtf8(data.Uri);
-		if (!string.IsNullOrEmpty(uri))
+		// External drag payloads can carry malformed/partial URL strings; constructing Uri
+		// instances from those would throw and abort the drag. Parse once with Uri.TryCreate
+		// so invalid data is skipped instead of breaking the drag session.
+		if (!string.IsNullOrEmpty(uri) && Uri.TryCreate(uri, UriKind.Absolute, out var parsedUri))
 		{
 			DataPackage.SeparateUri(uri, out var webLink, out var applicationLink);
 			if (webLink is not null)
 			{
-				package.SetWebLink(new Uri(webLink));
+				package.SetWebLink(parsedUri);
 			}
-			if (applicationLink is not null)
+			else if (applicationLink is not null)
 			{
-				package.SetApplicationLink(new Uri(applicationLink));
+				package.SetApplicationLink(parsedUri);
 			}
-			package.SetUri(new Uri(uri));
+			package.SetUri(parsedUri);
 		}
 
 		if (paths.Length > 0)
