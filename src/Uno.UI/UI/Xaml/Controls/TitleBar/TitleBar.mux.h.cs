@@ -1,10 +1,12 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TitleBar.h, commit 5f9e85113
+// MUX Reference TitleBar.h, commit fc2f82117
 
 using System.Collections.Generic;
 using Microsoft.UI.Input;
+using Microsoft.UI.Windowing;
 using Uno.Disposables;
+using Windows.Graphics;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -12,13 +14,18 @@ partial class TitleBar
 {
 	private readonly SerialDisposable m_inputActivationChangedToken = new();
 	private readonly SerialDisposable m_windowRectChangedToken = new();
+	private string m_defaultAppWindowTitle;
 	private readonly SerialDisposable m_backButtonClickRevoker = new();
 	private readonly SerialDisposable m_paneToggleButtonClickRevoker = new();
 	private readonly SerialDisposable m_sizeChangedRevoker = new();
 	private readonly SerialDisposable m_iconLayoutUpdatedRevoker = new();
+	private readonly SerialDisposable m_contentLayoutUpdatedRevoker = new();
+	// Add a cached AppWindow field to avoid repeated GetFromWindowId calls
+	private AppWindow m_appWindow;
 	private readonly SerialDisposable m_flowDirectionChangedRevoker = new();
 
 	private readonly List<FrameworkElement> m_interactableElementsList = new();
+	private readonly List<RectInt32> m_previousPassthroughRects = new();
 	private InputActivationListener m_inputActivationListener;
 	private InputNonClientPointerSource m_inputNonClientPointerSource;
 	private WindowId m_lastAppWindowId;
@@ -35,6 +42,7 @@ partial class TitleBar
 
 	private double m_compactModeThresholdWidth;
 	private bool m_isCompact;
+	private bool m_hasDefaultAppWindowTitle;
 
 	private const string s_leftPaddingColumnName = "LeftPaddingColumn";
 	private const string s_rightPaddingColumnName = "RightPaddingColumn";
