@@ -78,6 +78,8 @@
           href: xref:Uno.UI.CommonIssues.MobileDebugging
         - name: AI Agents
           href: xref:Uno.UI.CommonIssues.AIAgents
+        - name: Enterprise / Corporate Networks
+          href: xref:Uno.Features.DevServer.EnterpriseNetwork
       - name: Platforms
         topicHref: xref:Uno.UI.CommonIssues.Wasm
         items:

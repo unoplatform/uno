@@ -299,9 +299,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 			var isChildSemantic = IsSemanticElement(child);
 
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Debug($"[A11y] OnChildAdded: parent={parent.GetType().Name} handle={parent.Visual.Handle} child={child.GetType().Name} handle={child.Visual.Handle} index={index?.ToString(CultureInfo.InvariantCulture) ?? "append"}");
+				this.Log().Trace($"[A11y] OnChildAdded: parent={parent.GetType().Name} handle={parent.Visual.Handle} child={child.GetType().Name} handle={child.Visual.Handle} index={index?.ToString(CultureInfo.InvariantCulture) ?? "append"}");
 			}
 
 			// Detect virtualized containers for accessibility tracking
@@ -370,9 +370,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		try
 		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Debug($"[A11y] OnChildRemoved: parent={parent.GetType().Name} handle={parent.Visual.Handle} child={child.GetType().Name} handle={child.Visual.Handle}");
+				this.Log().Trace($"[A11y] OnChildRemoved: parent={parent.GetType().Name} handle={parent.Visual.Handle} child={child.GetType().Name} handle={child.Visual.Handle}");
 			}
 
 			TryUnsubscribeScrollSource(child);
@@ -388,9 +388,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			var childHandle = child.Visual.Handle;
 			if (_semanticParentMap.TryGetValue(childHandle, out var semanticParent))
 			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Debug($"[A11y] OnChildRemoved: REMOVING from semantic tree child={child.GetType().Name} handle={childHandle} semanticParent={semanticParent}");
+					this.Log().Trace($"[A11y] OnChildRemoved: REMOVING from semantic tree child={child.GetType().Name} handle={childHandle} semanticParent={semanticParent}");
 				}
 				RemoveSemanticElement(semanticParent, childHandle);
 				_semanticParentMap.Remove(childHandle);
@@ -1386,9 +1386,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 	private void RemoveSemanticElement(IntPtr parentHandle, IntPtr childHandle)
 	{
-		if (this.Log().IsEnabled(LogLevel.Debug))
+		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Debug($"[A11y] RemoveSemanticElement: parent={parentHandle} child={childHandle}");
+			this.Log().Trace($"[A11y] RemoveSemanticElement: parent={parentHandle} child={childHandle}");
 		}
 
 		NativeMethods.RemoveSemanticElement(parentHandle, childHandle);
@@ -1462,9 +1462,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			TryGetPeerOwner(peer, out var element))
 		{
 			var ariaChecked = ConvertToAriaChecked((ToggleState)newValue);
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Debug($"[A11y] PROP CHANGE: ToggleState handle={element.Visual.Handle} element={element.GetType().Name} old={oldValue} new={newValue} ariaChecked={ariaChecked}");
+				this.Log().Trace($"[A11y] PROP CHANGE: ToggleState handle={element.Visual.Handle} element={element.GetType().Name} old={oldValue} new={newValue} ariaChecked={ariaChecked}");
 			}
 
 			// ToggleButton uses aria-pressed, ToggleSwitch uses role="switch" + aria-checked,
@@ -1488,9 +1488,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		else if (automationProperty == AutomationElementIdentifiers.NameProperty &&
 			TryGetPeerOwner(peer, out element))
 		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Debug($"[A11y] PROP CHANGE: Name handle={element.Visual.Handle} element={element.GetType().Name} old='{oldValue}' new='{newValue}'");
+				this.Log().Trace($"[A11y] PROP CHANGE: Name handle={element.Visual.Handle} element={element.GetType().Name} old='{oldValue}' new='{newValue}'");
 			}
 			OnAutomationNameChanged(element, (string)newValue);
 
@@ -1500,9 +1500,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			var liveSetting = peer.GetLiveSetting();
 			if (liveSetting != AutomationLiveSetting.Off)
 			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Debug($"[A11y] PROP CHANGE: Name on LiveRegion — triggering announcement liveSetting={liveSetting} content='{newValue}'");
+					this.Log().Trace($"[A11y] PROP CHANGE: Name on LiveRegion — triggering announcement liveSetting={liveSetting} content='{newValue}'");
 				}
 				_liveRegionManager?.HandleLiveRegionChanged(peer);
 			}
@@ -1510,9 +1510,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		else if (automationProperty == AutomationElementIdentifiers.HelpTextProperty &&
 			TryGetPeerOwner(peer, out element))
 		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Debug($"[A11y] PROP CHANGE: HelpText handle={element.Visual.Handle} element={element.GetType().Name} new='{newValue}'");
+				this.Log().Trace($"[A11y] PROP CHANGE: HelpText handle={element.Visual.Handle} element={element.GetType().Name} new='{newValue}'");
 			}
 			NativeMethods.UpdateAriaDescription(element.Visual.Handle, (string)newValue);
 		}
@@ -1530,9 +1530,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			TryGetPeerOwner(peer, out element))
 		{
 			var isDisabled = !(bool)newValue;
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Debug($"[A11y] PROP CHANGE: IsEnabled handle={element.Visual.Handle} element={element.GetType().Name} disabled={isDisabled}");
+				this.Log().Trace($"[A11y] PROP CHANGE: IsEnabled handle={element.Visual.Handle} element={element.GetType().Name} disabled={isDisabled}");
 			}
 			NativeMethods.UpdateDisabledState(element.Visual.Handle, isDisabled);
 		}
@@ -1541,9 +1541,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			var expanded = (ExpandCollapseState)newValue == ExpandCollapseState.Expanded ||
 							(ExpandCollapseState)newValue == ExpandCollapseState.PartiallyExpanded;
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Debug($"[A11y] PROP CHANGE: ExpandCollapse handle={element.Visual.Handle} element={element.GetType().Name} expanded={expanded}");
+				this.Log().Trace($"[A11y] PROP CHANGE: ExpandCollapse handle={element.Visual.Handle} element={element.GetType().Name} expanded={expanded}");
 			}
 			NativeMethods.UpdateExpandCollapseState(element.Visual.Handle, expanded);
 		}
@@ -1551,9 +1551,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			TryGetPeerOwner(peer, out element))
 		{
 			var selected = (bool)newValue;
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Debug($"[A11y] PROP CHANGE: IsSelected handle={element.Visual.Handle} element={element.GetType().Name} selected={selected}");
+				this.Log().Trace($"[A11y] PROP CHANGE: IsSelected handle={element.Visual.Handle} element={element.GetType().Name} selected={selected}");
 			}
 			NativeMethods.UpdateSelectionState(element.Visual.Handle, selected);
 
@@ -1580,9 +1580,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				// For ComboBox, update aria-label with the selected value so
 				// screen readers announce it when the ComboBox receives focus
 				var selectedValue = newValue as string ?? string.Empty;
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Debug($"[A11y] PROP CHANGE: ComboBox Value handle={element.Visual.Handle} selectedValue='{selectedValue}'");
+					this.Log().Trace($"[A11y] PROP CHANGE: ComboBox Value handle={element.Visual.Handle} selectedValue='{selectedValue}'");
 				}
 				NativeMethods.UpdateAriaLabel(element.Visual.Handle, selectedValue);
 			}
@@ -1590,9 +1590,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				// Sync programmatic text value changes to the semantic DOM element
 				// (e.g., TextBox.Text set from code-behind)
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Debug($"[A11y] PROP CHANGE: Value handle={element.Visual.Handle} element={element.GetType().Name} valueLen={valueProvider.Value?.Length ?? 0}");
+					this.Log().Trace($"[A11y] PROP CHANGE: Value handle={element.Visual.Handle} element={element.GetType().Name} valueLen={valueProvider.Value?.Length ?? 0}");
 				}
 				UpdateTextBoxValueKeepingSelection(element.Visual.Handle, valueProvider.Value, element as TextBox);
 			}
@@ -1601,9 +1601,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			TryGetPeerOwner(peer, out element))
 		{
 			var isReadOnly = (bool)newValue;
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Debug($"[A11y] PROP CHANGE: IsReadOnly handle={element.Visual.Handle} element={element.GetType().Name} readOnly={isReadOnly}");
+				this.Log().Trace($"[A11y] PROP CHANGE: IsReadOnly handle={element.Visual.Handle} element={element.GetType().Name} readOnly={isReadOnly}");
 			}
 			NativeMethods.UpdateTextBoxReadOnly(element.Visual.Handle, isReadOnly);
 		}
@@ -1714,9 +1714,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		switch (eventId)
 		{
 			case AutomationEvents.LiveRegionChanged:
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Debug($"[A11y] AUTOMATION EVENT: LiveRegionChanged peer={peer.GetType().Name}");
+					this.Log().Trace($"[A11y] AUTOMATION EVENT: LiveRegionChanged peer={peer.GetType().Name}");
 				}
 				_liveRegionManager?.HandleLiveRegionChanged(peer);
 				break;
@@ -1727,9 +1727,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				if (TryGetPeerOwner(peer, out var textElement) &&
 					peer.GetPattern(PatternInterface.Value) is IValueProvider textValueProvider)
 				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
+					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
-						this.Log().Debug($"[A11y] AUTOMATION EVENT: {eventId} handle={textElement.Visual.Handle} valueLen={textValueProvider.Value?.Length ?? 0}");
+						this.Log().Trace($"[A11y] AUTOMATION EVENT: {eventId} handle={textElement.Visual.Handle} valueLen={textValueProvider.Value?.Length ?? 0}");
 					}
 					UpdateTextBoxValueKeepingSelection(textElement.Visual.Handle, textValueProvider.Value, textElement as TextBox);
 				}
@@ -1739,9 +1739,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				// Route focus changes to the semantic DOM so the browser focus ring follows
 				if (TryGetPeerOwner(peer, out var focusElement))
 				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
+					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
-						this.Log().Debug($"[A11y] AUTOMATION EVENT: AutomationFocusChanged handle={focusElement.Visual.Handle} element={focusElement.GetType().Name}");
+						this.Log().Trace($"[A11y] AUTOMATION EVENT: AutomationFocusChanged handle={focusElement.Visual.Handle} element={focusElement.GetType().Name}");
 					}
 					NativeMethods.FocusSemanticElement(focusElement.Visual.Handle);
 				}
@@ -1752,9 +1752,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				// re-scan the accessible tree. The browser handles this automatically when
 				// DOM nodes are added/removed, so no explicit notification is needed.
 				// This is here for completeness and logging.
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Debug($"[A11y] AUTOMATION EVENT: StructureChanged peer={peer.GetType().Name}");
+					this.Log().Trace($"[A11y] AUTOMATION EVENT: StructureChanged peer={peer.GetType().Name}");
 				}
 				break;
 
@@ -1762,25 +1762,25 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				// After a button invoke, screen readers may need to update state.
 				// The property change notifications handle the actual state updates;
 				// this event is logged for diagnostics.
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Debug($"[A11y] AUTOMATION EVENT: InvokePatternOnInvoked peer={peer.GetType().Name}");
+					this.Log().Trace($"[A11y] AUTOMATION EVENT: InvokePatternOnInvoked peer={peer.GetType().Name}");
 				}
 				break;
 
 			case AutomationEvents.SelectionItemPatternOnElementSelected:
 				// Selection events trigger property change notifications which handle
 				// the DOM state updates. Log for diagnostics.
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Debug($"[A11y] AUTOMATION EVENT: SelectionItemPatternOnElementSelected peer={peer.GetType().Name}");
+					this.Log().Trace($"[A11y] AUTOMATION EVENT: SelectionItemPatternOnElementSelected peer={peer.GetType().Name}");
 				}
 				break;
 
 			case AutomationEvents.SelectionPatternOnInvalidated:
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Debug($"[A11y] AUTOMATION EVENT: SelectionPatternOnInvalidated peer={peer.GetType().Name}");
+					this.Log().Trace($"[A11y] AUTOMATION EVENT: SelectionPatternOnInvalidated peer={peer.GetType().Name}");
 				}
 				break;
 		}

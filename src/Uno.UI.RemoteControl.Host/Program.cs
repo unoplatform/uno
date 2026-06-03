@@ -42,6 +42,12 @@ namespace Uno.UI.RemoteControl.Host
 
 			try
 			{
+				// Must run before anything else so the Resolving handler and
+				// the eager-loaded shared-framework OOB instances are in place before
+				// ASP.NET Core / Kestrel / add-in load triggers the first
+				// cross-major-version AssemblyRef lookup.
+				HostAssemblyResolution.Install();
+
 				var switchMappings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
 				{
 					["-c"] = "command",

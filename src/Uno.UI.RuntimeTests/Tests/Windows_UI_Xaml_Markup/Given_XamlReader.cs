@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Uno.UI.Extensions;
 using Uno.UI.Helpers;
-using Uno.Xaml;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
@@ -14,7 +13,6 @@ using Microsoft.UI.Xaml.Shapes;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Markup;
-using XamlParseException = Uno.Xaml.XamlParseException;
 using static Private.Infrastructure.TestServices;
 using System.Threading.Tasks;
 using Uno.Disposables;
@@ -650,7 +648,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 					""")
 			);
 
-			Assert.AreEqual(4, ex.LineNumber);
+			StringAssert.Contains(ex.Message, "[Line: 4");
 			Assert.AreEqual("Requested value 'Invalid' was not found.", ex.InnerException.Message);
 		}
 
@@ -684,9 +682,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			);
 
 			var aggregateException = (AggregateException)ex.InnerException;
-			Assert.AreEqual(5, (aggregateException.InnerExceptions[0] as XamlParseException).LineNumber);
 			Assert.AreEqual("Requested value 'Invalid' was not found. [Line: 5 Position: 6]", (aggregateException.InnerExceptions[0] as XamlParseException).Message);
-			Assert.AreEqual(11, (aggregateException.InnerExceptions[1] as XamlParseException).LineNumber);
 			Assert.AreEqual("Requested value 'Invalid2' was not found. [Line: 11 Position: 9]", (aggregateException.InnerExceptions[1] as XamlParseException).Message);
 		}
 
@@ -852,8 +848,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 
 				// The type 'Microsoft.UI.Xaml.Data.Binding' does not contain a property or event named 'Test'. [Line: 7 Position: 6]"
 				Assert.AreEqual("The type 'Microsoft.UI.Xaml.Data.Binding' does not contain a property or event named 'Test'. [Line: 7 Position: 6]", ex.Message);
-				Assert.AreEqual(7, ex.LineNumber);
-				Assert.AreEqual(6, ex.LinePosition);
 			}
 		}
 
@@ -989,10 +983,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 				Assert.HasCount(2, ae.InnerExceptions);
 				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[0]);
 				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[1]);
-				Assert.AreEqual(2, (ae.InnerExceptions[0] as XamlParseException).LineNumber);
-				Assert.AreEqual(3, (ae.InnerExceptions[0] as XamlParseException).LinePosition);
-				Assert.AreEqual(3, (ae.InnerExceptions[1] as XamlParseException).LineNumber);
-				Assert.AreEqual(3, (ae.InnerExceptions[1] as XamlParseException).LinePosition);
+				StringAssert.Contains(ae.InnerExceptions[0].Message, "[Line: 2 Position: 3]");
+				StringAssert.Contains(ae.InnerExceptions[1].Message, "[Line: 3 Position: 3]");
 			}
 		}
 
@@ -1017,10 +1009,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 				Assert.HasCount(2, ae.InnerExceptions);
 				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[0]);
 				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[1]);
-				Assert.AreEqual(2, (ae.InnerExceptions[0] as XamlParseException).LineNumber);
-				Assert.AreEqual(3, (ae.InnerExceptions[0] as XamlParseException).LinePosition);
-				Assert.AreEqual(4, (ae.InnerExceptions[1] as XamlParseException).LineNumber);
-				Assert.AreEqual(4, (ae.InnerExceptions[1] as XamlParseException).LinePosition);
+				StringAssert.Contains(ae.InnerExceptions[0].Message, "[Line: 2 Position: 3]");
+				StringAssert.Contains(ae.InnerExceptions[1].Message, "[Line: 4 Position: 4]");
 			}
 		}
 
@@ -1045,10 +1035,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 				Assert.HasCount(2, ae.InnerExceptions);
 				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[0]);
 				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[1]);
-				Assert.AreEqual(2, (ae.InnerExceptions[0] as XamlParseException).LineNumber);
-				Assert.AreEqual(3, (ae.InnerExceptions[0] as XamlParseException).LinePosition);
-				Assert.AreEqual(4, (ae.InnerExceptions[1] as XamlParseException).LineNumber);
-				Assert.AreEqual(4, (ae.InnerExceptions[1] as XamlParseException).LinePosition);
+				StringAssert.Contains(ae.InnerExceptions[0].Message, "[Line: 2 Position: 3]");
+				StringAssert.Contains(ae.InnerExceptions[1].Message, "[Line: 4 Position: 4]");
 			}
 		}
 

@@ -342,8 +342,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (availableSizeMinor.IsFinite())
 			{
+				// Floor the computed count at 1 to match WinUI: when the available minor size is smaller than a
+				// single item, the (uint) cast would otherwise truncate to 0, leading to a DivideByZeroException
+				// in GetMajorSize / GetLayoutRectForDataIndex. See https://github.com/unoplatform/uno/issues/23366.
 				return Math.Min(
-					(uint)((availableSizeMinor + MinItemSpacing()) / GetMinorItemSizeWithSpacing(context)),
+					Math.Max(1u, (uint)((availableSizeMinor + MinItemSpacing()) / GetMinorItemSizeWithSpacing(context))),
 					maximumRowsOrColumns);
 			}
 

@@ -32,6 +32,13 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 	[ThreadStatic] private static bool _isDispatcherThread;
 	private readonly EventLoop? _eventLoop;
 
+	private static readonly X11CoreApplicationExtension _coreApplicationExtension = new();
+
+	// Kick off D-Bus IME detection as early as possible (this initializer runs before
+	// the static ctor body) so it can overlap with the rest of startup. InitializeAsync
+	// blocks on the task's result.
+	private static readonly Task<IX11InputMethod?> _imeDetectionTask = X11InputMethodDetector.DetectAsync();
+
 	// Must be a static field to prevent GC collection while the native callback is active.
 	private static readonly XErrorHandler s_x11ErrorHandler = OnX11Error;
 
@@ -80,7 +87,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		// remove entries from X11XamlRootHost._windowToHost.
 		Window.AlcWindowCleanupCallback = X11XamlRootHost.RemoveSecondaryAlcWindowEntries;
 
-		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), _ => new X11CoreApplicationExtension());
+		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), _ => _coreApplicationExtension);
 		ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new X11ApplicationViewExtension(o));
 		ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => new X11DisplayInformationExtension(o));
 
@@ -253,7 +260,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 			CoreDispatcher.DispatchOverride(StartApp, Uno.UI.Dispatching.NativeDispatcherPriority.Normal);
 		}
 
-		while (!X11XamlRootHost.AllWindowsDone())
+		while (!ShouldExit())
 		{
 			Thread.Sleep(100);
 		}
@@ -264,6 +271,17 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		}
 
 		return Task.CompletedTask;
+	}
+
+	private bool ShouldExit()
+	{
+		if (_coreApplicationExtension.ExitRequested)
+		{
+			return true;
+		}
+
+		return Application.Current?.DispatcherShutdownMode == DispatcherShutdownMode.OnLastWindowClose
+			&& X11XamlRootHost.AllWindowsDone();
 	}
 
 	private void StartApp()
@@ -281,6 +299,11 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 
 	protected override void Initialize()
 	{
+		// Block until D-Bus IME detection completes, then publish the result. We return
+		// Task.CompletedTask so UnoPlatformHost.Run can finish RunCore synchronously —
+		// RunAsync triggers Win32 OleInitialize / STA breakage so we can't rely on real
+		// awaits here.
+		X11InputMethodDetector.DetectedInputMethod = _imeDetectionTask.Result;
 	}
 
 	public void Dispose()

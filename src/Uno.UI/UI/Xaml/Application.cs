@@ -81,6 +81,7 @@ namespace Microsoft.UI.Xaml
 		private SpecializedResourceDictionary.ResourceKey _requestedThemeForResources;
 		private bool _isInBackground;
 		private ResourceDictionary _resources = new ResourceDictionary();
+		private DispatcherShutdownMode _dispatcherShutdownMode = DispatcherShutdownMode.OnExplicitShutdown;
 
 		static Application()
 		{
@@ -172,6 +173,22 @@ namespace Microsoft.UI.Xaml
 		/// with focus when navigating with a keyboard or gamepad.
 		/// </summary>
 		public FocusVisualKind FocusVisualKind { get; set; } = FocusVisualKind.HighVisibility;
+
+		/// <summary>
+		/// Gets or sets a value that specifies whether the DispatcherQueue event loop exits
+		/// when all XAML windows on a thread are closed.
+		/// </summary>
+		/// <remarks>
+		/// When Application.Start is called, the XAML runtime sets this property to
+		/// <see cref="DispatcherShutdownMode.OnLastWindowClose"/> for the current thread.
+		/// If Application.Start is not called (as is typically the case for XAML Islands),
+		/// this property defaults to <see cref="DispatcherShutdownMode.OnExplicitShutdown"/>.
+		/// </remarks>
+		public DispatcherShutdownMode DispatcherShutdownMode
+		{
+			get => _dispatcherShutdownMode;
+			set => _dispatcherShutdownMode = value;
+		}
 
 		public ApplicationTheme RequestedTheme
 		{

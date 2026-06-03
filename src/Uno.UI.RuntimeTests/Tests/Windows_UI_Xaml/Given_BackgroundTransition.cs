@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -138,9 +139,56 @@ public class Given_BackgroundTransition
 		ImageAssert.HasColorAt(bitmap, new Point(bitmap.Width / 2, bitmap.Height / 2), Microsoft.UI.Colors.Red);
 
 		VisualStateManager.GoToState(SUT, "Normal", true);
-		await Task.Delay(1000);
 
+		// Leaving "PointerOver" reactivates the 2s BrushTransition, which now animates the
+		// background back from Red to Blue. We deliberately avoid asserting an exact
+		// mid-transition color here: the transition progress is driven by the compositor's
+		// wall-clock (Stopwatch-based, see Compositor.TimestampInTicks / ColorBrushTransitionState)
+		// and there is no test seam to deterministically advance it from a runtime test.
+		// Sampling at a fixed Task.Delay therefore lands at an unpredictable point along the
+		// Red->Blue gradient, which is exactly what made this test flaky (e.g. FF2A00D4 instead
+		// of the expected mid purple on slower platforms such as Skia Android).
+		//
+		// Instead we assert the two invariants that the implementation actually guarantees:
+		//   1. The transition animates gradually (it does NOT instantly snap to the target), and
+		//   2. It eventually settles on the target Blue color.
+
+		// (1) Sample as soon as the transition has started. The transition is 2s long, so for
+		// the whole (sub-second) duration of taking a screenshot the color is still in transit
+		// and must NOT have reached the Blue endpoint yet. This is the deterministic counterpart
+		// to the "instantly Red" assertion above: it proves the background animates gradually
+		// instead of snapping straight to the target, on any platform regardless of timing.
+		await UITestHelper.WaitForRender();
 		bitmap = await UITestHelper.ScreenShot(SUT);
-		ImageAssert.HasColorAt(bitmap, new Point(bitmap.Width / 2, bitmap.Height / 2), Color.FromArgb(255, 127, 0, 127), tolerance: 20);
+		var inFlight = bitmap.GetPixel(bitmap.Width / 2, bitmap.Height / 2);
+		Assert.IsFalse(
+			AreClose(inFlight, Microsoft.UI.Colors.Blue, tolerance: 20),
+			$"Expected an in-flight Red->Blue transition color, but the background was already Blue ({inFlight}). " +
+			"It appears to have snapped instead of transitioning gradually.");
+
+		// (2) Poll until the transition completes and assert it has settled on the target Blue.
+		// The wait timeout is generous relative to the 2s duration so it stays robust on slow
+		// platforms without depending on a precise sample time.
+		Color settled = default;
+		var stopwatch = Stopwatch.StartNew();
+		while (stopwatch.ElapsedMilliseconds < 5000)
+		{
+			bitmap = await UITestHelper.ScreenShot(SUT);
+			settled = bitmap.GetPixel(bitmap.Width / 2, bitmap.Height / 2);
+			if (AreClose(settled, Microsoft.UI.Colors.Blue, tolerance: 20))
+			{
+				break;
+			}
+
+			await UITestHelper.WaitForIdle();
+		}
+
+		ImageAssert.HasColorAt(bitmap, new Point(bitmap.Width / 2, bitmap.Height / 2), Microsoft.UI.Colors.Blue, tolerance: 20);
 	}
+
+	private static bool AreClose(Color actual, Color expected, byte tolerance)
+		=> Math.Abs(actual.R - expected.R) <= tolerance
+			&& Math.Abs(actual.G - expected.G) <= tolerance
+			&& Math.Abs(actual.B - expected.B) <= tolerance
+			&& Math.Abs(actual.A - expected.A) <= tolerance;
 }

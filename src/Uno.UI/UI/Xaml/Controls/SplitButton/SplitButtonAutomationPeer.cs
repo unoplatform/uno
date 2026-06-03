@@ -3,6 +3,7 @@
 
 // MUX Reference SplitButtonAutomationPeer.cpp, tag winui3/release/1.8.4
 
+using System.Collections.Generic;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -27,6 +28,33 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 
 			return base.GetPatternCore(patternInterface);
 		}
+
+#if HAS_UNO
+		// Uno-specific: WinUI's DXAML core auto-parents popup content to its anchor in the UIA tree.
+		// Uno only wires the inverse direction (popup content -> anchor via GetPopupAssociatedAutomationPeer),
+		// so flyout children are not discoverable from the SplitButton peer without this override.
+		protected override IList<AutomationPeer> GetChildrenCore()
+		{
+			var baseChildren = base.GetChildrenCore();
+
+			if (GetImpl() is not { IsFlyoutOpen: true } splitButton)
+			{
+				return baseChildren;
+			}
+
+			var presenter = splitButton.Flyout?.GetPresenter();
+			if (presenter?.GetOrCreateAutomationPeer() is not { } flyoutPeer)
+			{
+				return baseChildren;
+			}
+
+			var result = baseChildren is null
+				? new List<AutomationPeer>(1)
+				: new List<AutomationPeer>(baseChildren);
+			result.Add(flyoutPeer);
+			return result;
+		}
+#endif
 
 		protected override string GetClassNameCore()
 		{

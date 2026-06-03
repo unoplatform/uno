@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<!--
+	This project exists ONLY to give Visual Studio Solution Explorer a real
+	project node for the SamplesApp.UnitTests.Shared folder, so that
+	"Add → New Item" creates files directly under this folder. The shared
+	files are actually compiled into each SamplesApp head via the
+	SamplesApp.UnitTests.Shared.props import. This csproj does not build.
+	-->
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<NoBuild>true</NoBuild>
+		<IsPackable>false</IsPackable>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<GenerateDocumentationFile>false</GenerateDocumentationFile>
+		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+		<EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+		<EnableDefaultNoneItems>false</EnableDefaultNoneItems>
+		<EnableDefaultPageItems>false</EnableDefaultPageItems>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="**\*" Exclude="bin\**;obj\**;*.csproj;*.props;*.targets" />
+	</ItemGroup>
+
+	<Target Name="GetTargetPath" />
+	<Target Name="GetCopyToPublishDirectoryItems" />
+</Project>

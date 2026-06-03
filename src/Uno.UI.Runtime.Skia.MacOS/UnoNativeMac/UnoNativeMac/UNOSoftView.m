@@ -21,8 +21,23 @@
         _markedRange = NSMakeRange(NSNotFound, 0);
         _selectedRange = NSMakeRange(0, 0);
         _imeActive = NO;
+        // Layer-backed view: the layer caches the last drawn frame, avoiding the
+        // pre-drawRect background clear that otherwise causes a flash during live resize.
+        self.wantsLayer = YES;
+        // Redraw only when the view is explicitly invalidated (uno_window_invalidate sets
+        // needsDisplay each frame). Between invalidations the existing layer contents stay
+        // visible; UNOWindow's windowWillStartLiveResize pins layerContentsPlacement to
+        // top-left so any brief stretch is anchored correctly.
+        self.layerContentsRedrawPolicy = NSViewLayerContentsRedrawOnSetNeedsDisplay;
     }
     return self;
+}
+
+// Match UNOMetalFlippedView: origin at top-left, so native subview frames placed by
+// managed code (uno_native_arrange) and CAShapeLayer clip masks applied by
+// uno_window_clip_svg use the same top-left coordinate system as the managed side.
+- (BOOL)isFlipped {
+    return YES;
 }
 
 - (BOOL)acceptsFirstResponder {
@@ -31,12 +46,13 @@
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-    double width = dirtyRect.origin.x + dirtyRect.size.width;
-    double height = dirtyRect.origin.y + dirtyRect.size.height;
+    NSSize bounds = self.bounds.size;
+    double width = bounds.width;
+    double height = bounds.height;
 #if DEBUG
     NSLog (@"drawRect: window %p width %f height %f", self.window, width, height);
 #endif
-    CGFloat scale = self.window.backingScaleFactor;
+    CGFloat scale = self.window ? self.window.backingScaleFactor : 1.0;
 
     int size = 0;
     int rowBytes = 0;
@@ -70,10 +86,12 @@
     CFRelease(destination);
 #endif
 
-    CGRect rect = CGRectMake(0, 0, width, height);
-    CGSize content = [self.window contentRectForFrameRect: rect].size;
-    rect = CGRectMake(0, content.height - rect.size.height, rect.size.width, rect.size.height);
-    CGContextDrawImage(NSGraphicsContext.currentContext.CGContext, rect, image);
+    CGContextRef ctx = NSGraphicsContext.currentContext.CGContext;
+    CGContextSaveGState(ctx);
+    CGContextTranslateCTM(ctx, 0, height);
+    CGContextScaleCTM(ctx, 1, -1);
+    CGContextDrawImage(ctx, CGRectMake(0, 0, width, height), image);
+    CGContextRestoreGState(ctx);
 
     CGImageRelease(image);
     CGColorSpaceRelease(colorspace);

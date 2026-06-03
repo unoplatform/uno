@@ -228,9 +228,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 		catch (Exception e)
 		{
-			typeof(Win32WindowWrapper).LogError()?.Error($"Exception in {nameof(WndProc)}", e);
+			typeof(Win32WindowWrapper).LogError()?.Error($"An unhandled exception was thrown while processing win32 message 0x{msg:X4}.", e);
+			return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
 		}
-		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
 	}
 
 	private unsafe LRESULT WndProcInner(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)

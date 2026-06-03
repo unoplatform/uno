@@ -74,6 +74,8 @@ Determine what to run from the user's input:
 
 If the user provides partial names, search `src/Uno.UI.RuntimeTests/Tests/` to resolve fully qualified test names (namespace + class + method).
 
+**Strict mode**: If the user input contains the keyword `strict`, omit the `-p:UnoFastDevBuild=true` flag from the MSBuild command in Phase 2 so the build runs with full CI-equivalent analyzer coverage. Use this only when verifying CI strictness — for normal iteration the fast-dev flag should be left on. (Note: `UnoTargetFrameworkOverride` does not apply here — the WinAppSDK head is already single-TFM `net9.0-windows10.0.19041.0`, configured in Phase 1c.)
+
 ### Phase 1: Prerequisites
 
 Run all prerequisite checks/setup in sequence.
@@ -163,6 +165,8 @@ This is idempotent — safe to run every time. Skip only if you know Graphics3DG
 
 **CRITICAL**: Set bash timeout to **600000** (10 minutes). **NEVER cancel builds.**
 
+The default build below passes `-p:UnoFastDevBuild=true`, which disables analyzers and code-style enforcement for local iteration. Uno.UI compile on Windows has the same analyzer dominance as on Skia (~30s per compile), so this is a meaningful win. The flag is no-op on CI (guarded by `ContinuousIntegrationBuild`). Omit it if the user requested `strict` mode (see Phase 0).
+
 ```bash
 "$MSBUILD" "src/SamplesApp/SamplesApp.Windows/SamplesApp.Windows.csproj" \
     -restore -t:Publish -m -v:m \
@@ -170,6 +174,7 @@ This is idempotent — safe to run every time. Skip only if you know Graphics3DG
     -p:Platform=x64 \
     -p:RuntimeIdentifier=win-x64 \
     -p:GenerateAppxPackageOnBuild=true \
+    -p:UnoFastDevBuild=true \
     -p:PackageCertificateThumbprint=$THUMBPRINT
 ```
 
@@ -177,6 +182,7 @@ This is idempotent — safe to run every time. Skip only if you know Graphics3DG
 - Use **dash syntax** (`-restore`, not `/r`) — forward slashes are eaten by bash
 - Use **`PackageCertificateThumbprint`** — most reliable signing method
 - The cert must be in the user's cert store already (Phase 1d handles this)
+- `-p:UnoFastDevBuild=true` is the local fast-iteration toggle; drop it under `strict` mode
 
 #### Build failure diagnostics
 
@@ -335,10 +341,13 @@ THUMBPRINT=$(cat ~/.uno-dev-cert-thumbprint)
     -p:Platform=x64 -p:Configuration=Release
 
 # --- Phase 2: Build MSIX (timeout: 600000ms) ---
+# Default: pass -p:UnoFastDevBuild=true for fast local iteration.
+# Drop the flag if the user requested `strict` mode.
 "$MSBUILD" "src/SamplesApp/SamplesApp.Windows/SamplesApp.Windows.csproj" \
     -restore -t:Publish -m -v:m \
     -p:Configuration=Release -p:Platform=x64 -p:RuntimeIdentifier=win-x64 \
     -p:GenerateAppxPackageOnBuild=true \
+    -p:UnoFastDevBuild=true \
     -p:PackageCertificateThumbprint=$THUMBPRINT
 
 # --- Phase 3: Install MSIX ---

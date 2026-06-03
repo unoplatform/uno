@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<!--
+		Test fixture for Uno.UI.RemoteControl.DevServer.Tests.
+
+		Deliberately targets a .NET version OLDER than any host TFM this assembly
+		is exercised against, and pins matching-major PackageReferences so its
+		compiled AssemblyRefs (System.Text.Encodings.Web, and
+		Microsoft.Extensions.DependencyInjection.Abstractions used by the
+		registration ctor) embed at that older major version. Those older-major
+		AssemblyRefs are what the host's AddInLoadContext + the
+		AssemblyLoadContext.Default.Resolving handler in
+		Uno.UI.RemoteControl.Host must satisfy from the host's already-loaded
+		newer instance — the regression this fixture protects against
+		(https://github.com/unoplatform/uno/pull/23287).
+
+		EnableDynamicLoading=true follows the Microsoft plugin-tutorial
+		convention: it emits a self-contained .deps.json beside the assembly so
+		AssemblyDependencyResolver inside AddInLoadContext has a real per-add-in
+		dependency graph to consult (exercising step 3 of Load, not just the
+		Default-ALC fall-throughs in steps 1 and 2).
+
+		Maintenance contract: when the host's lowest supported TFM advances past
+		net8.0, bump TargetFramework below to (newest host TFM minus one) and
+		bump the two PackageReferences below to match.
+	-->
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+		<EnableDynamicLoading>true</EnableDynamicLoading>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+	</ItemGroup>
+
+</Project>

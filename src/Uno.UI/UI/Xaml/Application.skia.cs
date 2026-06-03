@@ -1,4 +1,4 @@
-﻿// #define REPORT_FPS
+// #define REPORT_FPS
 
 #nullable enable
 
@@ -52,6 +52,13 @@ namespace Microsoft.UI.Xaml
 			{
 				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
 			}
+
+			// WinUI sets DispatcherShutdownMode to OnLastWindowClose when Start is called (see
+			// FrameworkApplication::StartDesktop, which sets it *before* invoking the init callback).
+			// We mirror that here, in the base ctor that runs during `new App()`, so the default is
+			// established before the derived App constructor body runs and can override it.
+			// For XAML Islands (no Start call), the field default of OnExplicitShutdown remains.
+			_dispatcherShutdownMode = DispatcherShutdownMode.OnLastWindowClose;
 		}
 
 #if REPORT_FPS

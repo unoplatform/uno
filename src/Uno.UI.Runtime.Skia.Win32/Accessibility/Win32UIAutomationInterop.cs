@@ -211,6 +211,22 @@ internal static class Win32UIAutomationInterop
 	internal const int UIA_TogglePatternId = 10015;
 	internal const int UIA_TransformPatternId = 10016;
 	internal const int UIA_ScrollItemPatternId = 10017;
+	internal const int UIA_LegacyIAccessiblePatternId = 10018;
+	internal const int UIA_ItemContainerPatternId = 10019;
+	internal const int UIA_VirtualizedItemPatternId = 10020;
+	internal const int UIA_SynchronizedInputPatternId = 10021;
+	internal const int UIA_ObjectModelPatternId = 10022;
+	internal const int UIA_AnnotationPatternId = 10023;
+	internal const int UIA_TextPattern2Id = 10024;
+	internal const int UIA_StylesPatternId = 10025;
+	internal const int UIA_SpreadsheetPatternId = 10026;
+	internal const int UIA_SpreadsheetItemPatternId = 10027;
+	internal const int UIA_TransformPattern2Id = 10028;
+	internal const int UIA_TextChildPatternId = 10029;
+	internal const int UIA_DragPatternId = 10030;
+	internal const int UIA_DropTargetPatternId = 10031;
+	internal const int UIA_TextEditPatternId = 10032;
+	internal const int UIA_CustomNavigationPatternId = 10033;
 
 	// UIA Event IDs
 	internal const int UIA_ToolTipOpenedEventId = 20000;

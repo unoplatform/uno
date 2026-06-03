@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Windows.Globalization.DateTimeFormatting;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -14,7 +15,8 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarView
 	{
-		internal class CalendarViewAutomationPeer : CalendarViewBaseItem.CalendarViewBaseItemAutomationPeer
+		internal class CalendarViewAutomationPeer : CalendarViewBaseItem.CalendarViewBaseItemAutomationPeer,
+			ITableProvider, IGridProvider, IValueProvider, ISelectionProvider
 		{
 			private const uint BulkChildrenLimit = 20;
 
@@ -110,318 +112,166 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-#if false
-			// Properties.
-			private bool CanSelectMultipleImpl
+			// IValueProvider — exposes the selected date string, or the active view header
+			// (month/year/decade label) when no single date is selected. Read-only because
+			// callers select via SelectedDates, not via this pattern.
+
+			public string Value
 			{
 				get
 				{
-					bool pValue;
-					pValue = false;
-
-					UIElement spOwner;
-					spOwner = Owner;
-
-
-					CalendarViewSelectionMode selectionMode = CalendarViewSelectionMode.None;
-					selectionMode = (spOwner as CalendarView).SelectionMode;
-
-					if (selectionMode == CalendarViewSelectionMode.Multiple)
+					var calendar = (CalendarView)Owner;
+					if (calendar.m_tpSelectedDates is { } selectedDates && selectedDates.Size == 1)
 					{
-						pValue = true;
+						calendar.CreateDateTimeFormatter("day month.full year", out var formatter);
+						return formatter.Format(selectedDates.GetAt(0));
 					}
 
-					return pValue;
+					calendar.GetActiveGeneratorHost(out var host);
+					return host?.GetHeaderTextOfCurrentScope() ?? string.Empty;
 				}
 			}
 
-			private bool IsSelectionRequiredImpl
+			public bool IsReadOnly => true;
+
+			public void SetValue(string value) => throw new InvalidOperationException();
+
+			// ISelectionProvider — multi-select is reported only when CalendarView is in
+			// Multiple mode; the returned providers correspond to realized CalendarViewDayItems.
+
+			public bool CanSelectMultiple
+				=> ((CalendarView)Owner).SelectionMode == CalendarViewSelectionMode.Multiple;
+
+			public bool IsSelectionRequired => false;
+
+			public IRawElementProviderSimple[] GetSelection()
+			{
+				var calendar = (CalendarView)Owner;
+				if (calendar.DisplayMode != CalendarViewDisplayMode.Month)
+				{
+					return Array.Empty<IRawElementProviderSimple>();
+				}
+
+				if (calendar.m_tpSelectedDates is not { } selectedDates || selectedDates.Size == 0)
+				{
+					return Array.Empty<IRawElementProviderSimple>();
+				}
+
+				calendar.GetActiveGeneratorHost(out var host);
+				var panel = host?.Panel;
+				if (panel is null)
+				{
+					return Array.Empty<IRawElementProviderSimple>();
+				}
+
+				var realized = new List<IRawElementProviderSimple>((int)selectedDates.Size);
+				for (uint i = 0; i < selectedDates.Size; i++)
+				{
+					var date = selectedDates.GetAt(i);
+					var itemIndex = host.CalculateOffsetFromMinDate(date);
+					if (panel.ContainerFromIndex(itemIndex) is CalendarViewBaseItem item
+						&& item.GetAutomationPeer() is { } itemPeer
+						&& ProviderFromPeer(itemPeer) is { } provider)
+					{
+						realized.Add(provider);
+					}
+				}
+
+				return realized.ToArray();
+			}
+
+			// ITableProvider — week-day labels at the top serve as column headers; there
+			// are no row headers in the Month view.
+
+			public Microsoft.UI.Xaml.Automation.RowOrColumnMajor RowOrColumnMajor
+				=> Microsoft.UI.Xaml.Automation.RowOrColumnMajor.RowMajor;
+
+			public IRawElementProviderSimple[] GetColumnHeaders()
+			{
+				var calendar = (CalendarView)Owner;
+				if (calendar.DisplayMode != CalendarViewDisplayMode.Month)
+				{
+					return Array.Empty<IRawElementProviderSimple>();
+				}
+
+				if (calendar.GetTemplateChild<Grid>("WeekDayNames") is not { } weekDayNames)
+				{
+					return Array.Empty<IRawElementProviderSimple>();
+				}
+
+				var headers = new List<IRawElementProviderSimple>(weekDayNames.Children.Count);
+				foreach (var child in weekDayNames.Children)
+				{
+					if (child is FrameworkElement fe
+						&& fe.GetAutomationPeer() is { } childPeer
+						&& ProviderFromPeer(childPeer) is { } provider)
+					{
+						headers.Add(provider);
+					}
+				}
+
+				return headers.ToArray();
+			}
+
+			public IRawElementProviderSimple[] GetRowHeaders()
+				=> Array.Empty<IRawElementProviderSimple>();
+
+			// IGridProvider — projects the active view's CalendarPanel as a grid.
+
+			public int ColumnCount
 			{
 				get
 				{
-					bool pValue;
-					pValue = false;
-					return pValue;
+					var calendar = (CalendarView)Owner;
+					calendar.GetActiveGeneratorHost(out var host);
+					return host?.Panel?.Cols ?? 0;
 				}
 			}
 
-			private bool IsReadOnlyImpl
+			public int RowCount
 			{
 				get
 				{
-					bool pValue;
-					pValue = true;
-					return pValue;
+					var calendar = (CalendarView)Owner;
+					calendar.GetActiveGeneratorHost(out var host);
+					return host?.Panel?.Rows ?? 0;
 				}
 			}
 
-			// This will be date string if single date is selected otherwise the name of header of view
-			private string ValueImpl
+			public IRawElementProviderSimple GetItem(int row, int column)
 			{
-				get
+				var calendar = (CalendarView)Owner;
+				calendar.GetActiveGeneratorHost(out var host);
+				var panel = host?.Panel;
+				if (panel is null)
 				{
-					string pValue = default;
-					UIElement spOwner;
-					spOwner = Owner;
-
-					uint count = 0;
-					count = (spOwner as CalendarView).m_tpSelectedDates.Size;
-					if (count == 1)
-					{
-						string @string;
-						DateTimeFormatter spFormatter;
-						(spOwner as CalendarView).CreateDateTimeFormatter("day month.full year", out spFormatter);
-
-						DateTime date;
-						date = (spOwner as CalendarView).m_tpSelectedDates.GetAt(0);
-
-						@string = spFormatter.Format(date);
-						pValue = @string;
-					}
-					else
-					{
-						CalendarViewGeneratorHost spHost;
-						(spOwner as CalendarView).GetActiveGeneratorHost(out spHost);
-						pValue = spHost.GetHeaderTextOfCurrentScope();
-					}
-
-					return pValue;
+					return null;
 				}
-			}
 
-			private RowOrColumnMajor RowOrColumnMajorImpl
-			{
-				get
+				var colCount = panel.Cols;
+				var firstVisibleIndex = panel.FirstVisibleIndex;
+				var itemIndex = firstVisibleIndex + row * colCount + column;
+
+				// firstVisibleIndex sits on the first row; subtract any leading offset so
+				// (row=0, column=0) maps to the first cell as drawn (matches WinUI).
+				if (firstVisibleIndex < colCount)
 				{
-					RowOrColumnMajor pValue;
-					pValue = RowOrColumnMajor.RowMajor;
-					return pValue;
+					itemIndex -= panel.StartIndex;
 				}
-			}
 
-			private int ColumnCountImpl
-			{
-				get
+				if (itemIndex < 0)
 				{
-					int pValue;
-					pValue = 0;
-
-					UIElement spOwner;
-					spOwner = Owner;
-
-					CalendarViewGeneratorHost spHost;
-					(spOwner as CalendarView).GetActiveGeneratorHost(out spHost);
-					CalendarPanel pCalendarPanel = spHost.Panel;
-					if (pCalendarPanel is { })
-					{
-						pValue = pCalendarPanel.Cols;
-					}
-
-					return pValue;
+					return null;
 				}
-			}
 
-			private int RowCountImpl
-			{
-				get
+				if (panel.ContainerFromIndex(itemIndex) is CalendarViewBaseItem item
+					&& item.GetAutomationPeer() is { } itemPeer)
 				{
-					int pValue;
-					pValue = 0;
-
-					UIElement spOwner;
-					spOwner = Owner;
-
-					CalendarViewGeneratorHost spHost;
-					(spOwner as CalendarView).GetActiveGeneratorHost(out spHost);
-					CalendarPanel pCalendarPanel = spHost.Panel;
-					if (pCalendarPanel is { })
-					{
-						pValue = pCalendarPanel.Rows;
-					}
-
-					return pValue;
-				}
-			}
-
-			// This will be visible rows in the view, real number of rows will not provide any value
-			private void GetSelectionImpl(out uint pReturnValueCount, out IRawElementProviderSimple[] ppReturnValue)
-			{
-				UIElement spOwner;
-				spOwner = Owner;
-				pReturnValueCount = 0;
-				ppReturnValue = default;
-
-				CalendarViewDisplayMode mode = CalendarViewDisplayMode.Month;
-				mode = (spOwner as CalendarView).DisplayMode;
-				if (mode == CalendarViewDisplayMode.Month)
-				{
-					uint count = 0;
-					uint realizedCount = 0;
-
-					count = (spOwner as CalendarView).m_tpSelectedDates.Size;
-					if (count > 0)
-					{
-						CalendarViewGeneratorHost spHost;
-						(spOwner as CalendarView).GetActiveGeneratorHost(out spHost);
-
-						IVector<AutomationPeer> spAPChildren;
-						spAPChildren = new TrackerCollection<AutomationPeer>();
-
-						var pPanel = spHost.Panel;
-						if (pPanel is { })
-						{
-							for (uint i = 0; i < count; i++)
-							{
-								DateTime date;
-								int itemIndex = 0;
-								DependencyObject spItemAsI;
-								CalendarViewBaseItem spItem;
-								AutomationPeer spItemPeerAsAP;
-
-								date = (spOwner as CalendarView).m_tpSelectedDates.GetAt(i);
-								itemIndex = spHost.CalculateOffsetFromMinDate(date);
-
-								spItemAsI = pPanel.ContainerFromIndex(itemIndex);
-								if (spItemAsI is { })
-								{
-									spItem = (CalendarViewBaseItem)spItemAsI;
-									spItemPeerAsAP = spItem.GetAutomationPeer();
-									spAPChildren.Add(spItemPeerAsAP);
-								}
-							}
-
-							realizedCount = (uint)spAPChildren.Count;
-							if (realizedCount > 0)
-							{
-								//uint allocSize = sizeof(IIRawElementProviderSimple) * realizedCount;
-								//ppReturnValue = (IIRawElementProviderSimple*)(CoTaskMemAlloc(allocSize));
-								//IFCOOMFAILFAST(ppReturnValue);
-								//ZeroMemory(ppReturnValue, allocSize);
-								ppReturnValue = new IRawElementProviderSimple[realizedCount];
-
-								for (uint index = 0; index < realizedCount; index++)
-								{
-									AutomationPeer spItemPeerAsAP;
-									IRawElementProviderSimple spProvider;
-									spItemPeerAsAP = spAPChildren[(int)index];
-									spProvider = ProviderFromPeer(spItemPeerAsAP);
-									ppReturnValue[index] = spProvider;
-								}
-							}
-
-							pReturnValueCount = realizedCount;
-						}
-					}
-				}
-			}
-
-			private void SetValueImpl(string value)
-			{
-				throw new NotImplementedException();
-			}
-
-			// This will returns the header text labels on the top only in the case of monthView
-			private void GetColumnHeadersImpl(out uint pReturnValueCount, out IRawElementProviderSimple[] ppReturnValue)
-			{
-				pReturnValueCount = 0;
-				ppReturnValue = default;
-				UIElement spOwner;
-				spOwner = Owner;
-
-				CalendarViewDisplayMode mode = CalendarViewDisplayMode.Month;
-				mode = (spOwner as CalendarView).DisplayMode;
-				if (mode == CalendarViewDisplayMode.Month)
-				{
-					uint nCount = 0;
-					Grid spWeekDayNames;
-					spWeekDayNames = (spOwner as CalendarView).GetTemplateChild<Grid>("WeekDayNames");
-					if (spWeekDayNames is { })
-					{
-						IList<UIElement> spChildren;
-						spChildren = (spWeekDayNames as Grid).Children;
-						nCount = (uint)spChildren.Count;
-
-						//uint allocSize = sizeof(IIRawElementProviderSimple) * nCount;
-						//ppReturnValue = (IIRawElementProviderSimple*)(CoTaskMemAlloc(allocSize));
-						//IFCOOMFAILFAST(ppReturnValue);
-						//ZeroMemory(ppReturnValue, allocSize);
-						ppReturnValue = new IRawElementProviderSimple[nCount];
-						for (uint i = 0; i < nCount; i++)
-						{
-							AutomationPeer spItemPeerAsAP;
-							IRawElementProviderSimple spProvider;
-							UIElement spChild;
-							spChild = spChildren[(int)i];
-
-							spItemPeerAsAP = (spChild as FrameworkElement).GetAutomationPeer();
-							spProvider = ProviderFromPeer(spItemPeerAsAP);
-							(ppReturnValue)[i] = spProvider;
-						}
-
-						pReturnValueCount = nCount;
-					}
-				}
-			}
-
-			private void GetRowHeadersImpl(out uint pReturnValueCount, out IRawElementProviderSimple[] ppReturnValue)
-			{
-				pReturnValueCount = 0;
-				ppReturnValue = default;
-				return;
-			}
-
-
-			private void GetItemImpl(int row, int column, out IRawElementProviderSimple ppReturnValue)
-			{
-				ppReturnValue = null;
-
-				UIElement spOwner;
-				spOwner = Owner;
-
-				CalendarViewGeneratorHost spHost;
-				(spOwner as CalendarView).GetActiveGeneratorHost(out spHost);
-
-				DependencyObject spItemAsI;
-				CalendarViewBaseItem spItem;
-				AutomationPeer spItemPeerAsAP;
-				IRawElementProviderSimple spProvider;
-
-				int colCount = 0;
-				colCount = ColumnCountImpl;
-
-				int firstVisibleIndex = 0;
-				CalendarPanel pCalendarPanel = spHost.Panel;
-				if (pCalendarPanel is { })
-				{
-					firstVisibleIndex = pCalendarPanel.FirstVisibleIndex;
-
-					int itemIndex = firstVisibleIndex + row * colCount + column;
-					// firstVisibleIndex is on the first row, we need to count how many space before the firstVisibleIndex.
-					if (firstVisibleIndex < colCount)
-					{
-						int startIndex = 0;
-						startIndex = pCalendarPanel.StartIndex;
-						itemIndex -= startIndex;
-					}
-
-					if (itemIndex >= 0)
-					{
-						spItemAsI = pCalendarPanel.ContainerFromIndex(itemIndex);
-						// This can be a virtualized item or item does not exist, check for null
-						if (spItemAsI is { })
-						{
-							spItem = (CalendarViewBaseItem)spItemAsI;
-
-							spItemPeerAsAP = spItem.GetAutomationPeer();
-							spProvider = ProviderFromPeer(spItemPeerAsAP);
-							ppReturnValue = spProvider;
-						}
-					}
+					return ProviderFromPeer(itemPeer);
 				}
 
-				return;
+				return null;
 			}
-#endif
 
 			internal void RaiseSelectionEvents(CalendarViewSelectedDatesChangedEventArgs pSelectionChangedEventArgs)
 			{
