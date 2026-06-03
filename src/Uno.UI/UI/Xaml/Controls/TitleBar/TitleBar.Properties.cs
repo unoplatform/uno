@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TitleBar.idl, TitleBar.properties.cpp, TitleBar.properties.h, commit 5f9e85113
+// MUX Reference TitleBar.idl, TitleBar.properties.cpp, TitleBar.properties.h, commit fc2f82117
 
 using Windows.Foundation;
 
@@ -97,6 +97,33 @@ public partial class TitleBar
 		get => (TitleBarTemplateSettings)GetValue(TemplateSettingsProperty);
 		private set => SetValue(TemplateSettingsProperty, value);
 	}
+
+	/// <summary>
+	/// Gets or sets a value that indicates whether the drag regions of the title bar are
+	/// automatically refreshed when the content's layout changes.
+	/// </summary>
+	public bool AutoRefreshDragRegions
+	{
+		get => (bool)GetValue(AutoRefreshDragRegionsProperty);
+		set => SetValue(AutoRefreshDragRegionsProperty, value);
+	}
+
+	/// <summary>
+	/// Gets the value of the IsDragRegion attached property for the specified element.
+	/// </summary>
+	/// <param name="element">The element from which to read the property value.</param>
+	/// <returns>The IsDragRegion value of the element. <c>null</c> when unset, <c>false</c> when
+	/// the element is interactable, and <c>true</c> when the element is part of the drag region.</returns>
+	public static bool? GetIsDragRegion(UIElement element) =>
+		(bool?)element.GetValue(IsDragRegionProperty);
+
+	/// <summary>
+	/// Sets the value of the IsDragRegion attached property for the specified element.
+	/// </summary>
+	/// <param name="element">The element on which to set the property value.</param>
+	/// <param name="value">The IsDragRegion value to set.</param>
+	public static void SetIsDragRegion(UIElement element, bool? value) =>
+		element.SetValue(IsDragRegionProperty, value);
 
 	/// <summary>
 	/// Identifies the Title dependency property.
@@ -197,6 +224,26 @@ public partial class TitleBar
 			typeof(TitleBarTemplateSettings),
 			typeof(TitleBar),
 			new FrameworkPropertyMetadata(null));
+
+	/// <summary>
+	/// Identifies the AutoRefreshDragRegions dependency property.
+	/// </summary>
+	public static DependencyProperty AutoRefreshDragRegionsProperty { get; } =
+		DependencyProperty.Register(
+			nameof(AutoRefreshDragRegions),
+			typeof(bool),
+			typeof(TitleBar),
+			new FrameworkPropertyMetadata(false, OnPropertyChanged));
+
+	/// <summary>
+	/// Identifies the IsDragRegion attached dependency property.
+	/// </summary>
+	public static DependencyProperty IsDragRegionProperty { get; } =
+		DependencyProperty.RegisterAttached(
+			"IsDragRegion",
+			typeof(bool?),
+			typeof(TitleBar),
+			new FrameworkPropertyMetadata(null, OnIsDragRegionPropertyChanged));
 
 	/// <summary>
 	/// Occurs when the back navigation button is invoked.
