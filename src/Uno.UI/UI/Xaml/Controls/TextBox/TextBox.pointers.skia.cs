@@ -175,7 +175,7 @@ public partial class TextBox
 
 		if (!_isPressed)
 		{
-			// Released without a preceeding Pressed: this is a pointer released from the context menu
+			// Released without a preceding Pressed: this is a pointer released from the context menu
 			return;
 		}
 		_isPressed = false;
@@ -186,13 +186,11 @@ public partial class TextBox
 			return;
 		}
 
-		_isPressed = false;
-
 		var touchHoldTime = args.GetCurrentPoint(null).Timestamp - _lastPointerDown.point.Timestamp;
 
 		if (touchHoldTime >= GestureRecognizer.HoldMinDelayMicroseconds)
 		{
-			// content menu should have already been opened through UIElement-level ContextRequested handling.
+			// context menu should have already been opened through UIElement-level ContextRequested handling.
 			return;
 		}
 		else if (!Text.IsNullOrEmpty()) // Touch tap

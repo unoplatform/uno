@@ -557,13 +557,16 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
+			var down = _lastPointerDownPoint;
+			_lastPointerDownPoint = null;
+
 			if (FindHyperlinkAt(e) is not null)
 			{
 				// Tapping a hyperlink: navigation is handled elsewhere, don't start a selection.
 				return;
 			}
 
-			if (_lastPointerDownPoint is not { } down)
+			if (down is null)
 			{
 				return;
 			}

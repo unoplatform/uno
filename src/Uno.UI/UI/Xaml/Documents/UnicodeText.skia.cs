@@ -1242,7 +1242,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 			else
 			{
-				return (_wordBoundaries[^2], _text.Length);
+				return (_wordBoundaries[^2], _text.Length - _wordBoundaries[^2]);
 			}
 		}
 		else
@@ -1256,8 +1256,8 @@ internal readonly partial struct UnicodeText : IParsedText
 				}
 				prevBoundary = boundary;
 			}
+			throw new UnreachableException();
 		}
-		throw new UnreachableException();
 	}
 
 	public (int start, int length, bool firstLine, bool lastLine, int lineIndex) GetLineAt(int index)

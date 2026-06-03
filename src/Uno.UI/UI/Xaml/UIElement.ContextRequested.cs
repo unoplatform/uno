@@ -124,7 +124,7 @@ partial class UIElement
 #if __SKIA__
 				if (isTextControl || isTextEditControl)
 				{
-					TextControlFlyoutHelper.ShowAt(flyout, frameworkElement, point, FlyoutShowMode.Transient);
+					TextControlFlyoutHelper.ShowAt(flyout, frameworkElement, point, FlyoutShowMode.Standard);
 				}
 				else
 #endif

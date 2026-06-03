@@ -32,7 +32,7 @@ internal sealed class CaretWithStemAndThumb : Grid
 	/// Invoked once per rendered frame while the gripper is showing, so the owner
 	/// can keep the gripper glued to its anchor character as the text moves.
 	/// </param>
-	public CaretWithStemAndThumb(Action  repositionCallback)
+	public CaretWithStemAndThumb(Action repositionCallback)
 	{
 		_repositionCallback = repositionCallback;
 		// Numbers and colors below are partially measured by hand from WinUI and partially made up to be reasonable.
