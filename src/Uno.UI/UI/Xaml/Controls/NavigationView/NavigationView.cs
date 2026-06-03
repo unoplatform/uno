@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference NavigationView.cpp, commit 65718e2813
+// MUX Reference NavigationView.cpp, commit fc2f82117
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 
@@ -1055,9 +1055,23 @@ public partial class NavigationView : ContentControl
 				var indexPath = GetIndexPathForContainer(nvi);
 				var indexPathFromModel = m_selectionModel.SelectedIndex;
 
-				if (indexPathFromModel != null && indexPath.CompareTo(indexPathFromModel) == 0)
+				if (indexPathFromModel != null)
 				{
-					m_selectionModel.DeselectAt(indexPath);
+					if (indexPath.CompareTo(indexPathFromModel) == 0)
+					{
+						m_selectionModel.DeselectAt(indexPath);
+					}
+					else if (!IsPaneOpen && indexPath.GetSize() == 0)
+					{
+						UpdateIsChildSelected(indexPathFromModel, null); // Update IsChildSelected Property of Parent Chain
+						if (m_prevIndicator == null && m_nextIndicator == null && m_activeIndicator != null)
+						{
+							// Remove selection indication if we are not in the middle of an ongoing animation
+							ResetElementAnimationProperties(m_activeIndicator, 0.0f);
+							m_activeIndicator = null;
+						}
+						m_selectionModel.DeselectAt(indexPathFromModel);
+					}
 				}
 			}
 
@@ -1158,6 +1172,10 @@ public partial class NavigationView : ContentControl
 
 		if (updateSelection)
 		{
+#if IS_UNO
+			// Uno specific: WinUI only calls CloseFlyoutIfRequired(nvi) here. We additionally move the
+			// selection indicator to the topmost collapsed parent so the indicator stays reliable in
+			// minimal display mode and for collapsed multi-level items.
 			var indicatorTarget = nvi;
 
 			// Move indicator to topmost collapsed parent
@@ -1172,6 +1190,7 @@ public partial class NavigationView : ContentControl
 			}
 
 			AnimateSelectionChanged(indicatorTarget);
+#endif
 
 			CloseFlyoutIfRequired(nvi);
 		}
@@ -1778,7 +1797,7 @@ public partial class NavigationView : ContentControl
 								else if (footerGroupDesiredHeight <= totalAvailableHeightHalf)
 								{
 									// Menu items exceed over the half, so let's limit them.
-									footerItemsScrollViewer.MaxHeight = footerGroupDesiredHeight;
+									footerItemsScrollViewer.MaxHeight = footersDesiredHeight;
 									VisualStateManager.GoToState(this, c_separatorVisibleStateName, false);
 									return totalAvailableHeight - footerGroupDesiredHeight;
 								}
@@ -2953,9 +2972,22 @@ public partial class NavigationView : ContentControl
 		switch (key)
 		{
 			case VirtualKey.Enter:
-			case VirtualKey.Space:
 				args.Handled = true;
 				OnNavigationViewItemInvoked(nvi);
+				break;
+			case VirtualKey.Space:
+				{
+					// Check if Alt key is pressed. If Alt+Space is pressed, don't handle it
+					// to allow the system menu to be opened (Alt+Space is a system shortcut).
+					var altState = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Menu);
+					bool isAltPressed = (altState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+
+					if (!isAltPressed)
+					{
+						args.Handled = true;
+						OnNavigationViewItemInvoked(nvi);
+					}
+				}
 				break;
 			case VirtualKey.Home:
 				args.Handled = true;
@@ -3856,13 +3888,18 @@ public partial class NavigationView : ContentControl
 		{
 			// ClearAllNavigationViewItemBaseRevokers is only called in the destructor, where exceptions cannot be thrown.
 			// If the associated NV has not yet been cleaned up, we must detach these revokers or risk a call into freed
-			// memory being made.  However if they have been cleaned up these calls will throw. In this case we can ignore
-			// those exceptions.
+			// memory being made. The try/catch guards against the rare case where the peer has already been disconnected
+			// and accessing it would throw.
 			if (nvib is not null)
 			{
 				try
 				{
-					RevokeNavigationViewItemBaseRevokers(nvib);
+					// inline RevokeNavigationViewItemBaseRevokers and clear the stored reference
+					if (nvib.EventRevokers is { } revokers)
+					{
+						revokers.Dispose();
+						nvib.EventRevokers = null;
+					}
 				}
 				catch
 				{

@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference NavigationViewItemsFactory.cpp, commit 65718e2813
+// MUX Reference NavigationViewItemsFactory.cpp, commit fc2f82117
 
 using System;
 using System.Collections.Generic;
@@ -26,7 +26,7 @@ internal class NavigationViewItemsFactory : ElementFactory
 			m_itemTemplateWrapper = new ItemTemplateWrapper(selector);
 		}
 
-		else if (newValue is IElementFactory customElementFactory)
+		else if (newValue is IElementFactoryShim customElementFactory)
 		{
 			m_itemTemplateWrapper = customElementFactory;
 		}
@@ -151,6 +151,7 @@ internal class NavigationViewItemsFactory : ElementFactory
 			if (childIndex >= 0)
 			{
 				children.RemoveAt(childIndex);
+				args.Parent = null;
 			}
 		}
 	}

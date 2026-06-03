@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TopNavigationViewDataProvider.cpp, commit 65718e2813
+// MUX Reference TopNavigationViewDataProvider.cpp, commit fc2f82117
 
 using System;
 using System.Collections.Generic;
@@ -11,9 +11,12 @@ namespace Microsoft.UI.Xaml.Controls;
 
 internal partial class TopNavigationViewDataProvider : SplitDataSourceBase<object, NavigationViewSplitVectorID, double>
 {
-	internal TopNavigationViewDataProvider(object m_owner) : base(5)
+	internal TopNavigationViewDataProvider(object m_owner) : base((int)NavigationViewSplitVectorID.Size)
 	{
-		m_rawDataSource = m_owner;
+		// C++ initializes m_rawDataSource/m_dataSource as tracker_refs whose tracked value starts null
+		// (m_owner is only the handle manager, which has no Uno equivalent). Start null so the first
+		// SetDataSource(null) is a no-op, matching ShouldChangeDataSource in WinUI.
+		m_rawDataSource = null;
 		m_dataSource = m_owner as ItemsSourceView;
 
 		Func<object, int> lambda = (object value) => IndexOf(value);
@@ -101,7 +104,11 @@ internal partial class TopNavigationViewDataProvider : SplitDataSourceBase<objec
 
 	protected override double DefaultAttachedData()
 	{
-		return double.MinValue;
+		// Matches C++ std::numeric_limits<float>::min(): the smallest positive normalized float, used as a
+		// "not yet measured" width sentinel so IsValidWidth(default) is true (value >= 0). double.MinValue
+		// (the C++ float lowest()) is negative and would wrongly classify the default width as invalid,
+		// flipping the overflow-item measure path in NavigationView.
+		return 1.1754943508222875E-38;
 	}
 
 	internal void MoveAllItemsToPrimaryList()

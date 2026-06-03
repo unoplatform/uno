@@ -1,4 +1,4 @@
-﻿// MUX reference NavigationViewAutomationPeer.cpp, commit 8f1a682
+﻿// MUX reference NavigationViewAutomationPeer.cpp, commit fc2f82117
 
 using System;
 using Microsoft.UI.Xaml.Controls;
@@ -45,7 +45,7 @@ public partial class NavigationViewAutomationPeer : FrameworkElementAutomationPe
 		return Array.Empty<IRawElementProviderSimple>();
 	}
 
-	internal void RaiseSelectionChangedEvent(object oldSelection, object newSelecttion)
+	internal void RaiseSelectionChangedEvent(object oldSelection, object newSelection)
 	{
 		if (AutomationPeer.ListenerExists(AutomationEvents.SelectionPatternOnInvalidated))
 		{
