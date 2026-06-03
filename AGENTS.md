@@ -146,6 +146,12 @@ Single C#/XAML codebase → WinUI 3 API → Platform-specific runtimes (Skia, We
 - **Skia**: Cross-platform (Desktop Win32, macOS, Linux, Skia Android/iOS)
 - **Native**: Platform controls (UIKit, Android Views, DOM elements)
 
+### Development scope: Skia-first (IMPORTANT)
+
+**Unless a task explicitly states otherwise, new features and enhancements target the Skia targets only** (Desktop Win32/macOS/Linux and Skia-on-Android/iOS/WASM). The **native targets** — native Android Views, native iOS/UIKit, WASM DOM — are **maintenance-only**: don't build new features for them, but **don't break them either** (keep them compiling and behaving as-is).
+
+This applies to the **UI rendering layer** (`Uno.UI` native views), *not* to platform APIs. **Platform-specific non-UI WinRT APIs (in `Uno.UWP`/`Uno.Foundation`) are still actively enhanced**, because the Skia targets compile and consume those same per-platform implementations (e.g. Skia-on-Android uses the Android implementation of a file picker, sensor, contacts, etc.).
+
 ### Platform Base Classes
 
 | Platform | Inheritance |
@@ -346,6 +352,13 @@ Guidelines:
 - Keep description under 50 characters
 - Use imperative mood ("Add" not "Added")
 - Reference issues: `fix: Resolve layout issue (fixes #12345)`
+- **Commit cadence**: when the user asks, or when working autonomously on a larger feature, commit in **logical groups** — one focused, Conventional-Commit-formatted commit per coherent chunk that builds clean, rather than one batch at the end. On complex work, these incremental commits also let reviewers follow the progression of the change rather than facing one giant diff. For small one-off edits in an interactive session, leave changes uncommitted unless asked.
+
+### Pull Requests & Issues
+
+When asked to open a PR or file an issue, **base it on the repo's existing templates** (filled out accordingly) — don't free-form:
+- **PRs** → fill out every section of `.github/PULL_REQUEST_TEMPLATE.md` and submit it as the body (e.g. `gh pr create --body-file <filled>.md`).
+- **Issues** → pick the matching GitHub issue **form** under `.github/ISSUE_TEMPLATE/` (`bug-report`, `enhancement`, `documentation-issue`/`-request`, `samples-issue`/`-request`, `feedback`, `support-request`, `success-story`) and fill its required fields (`gh issue create --template <name>.yml`).
 
 ---
 

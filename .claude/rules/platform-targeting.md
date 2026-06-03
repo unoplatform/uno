@@ -10,6 +10,9 @@ Preprocessor symbols and file-suffix exclusion are injected by `src/Uno.CrossTar
 
 Current symbols: `__ANDROID__`, `__APPLE_UIKIT__` (iOS/tvOS/MacCatalyst), `__WASM__`, `__SKIA__`, `__NETSTD_REFERENCE__` / `UNO_REFERENCE_API`, `__CROSSRUNTIME__` (true for Skia, WebAssembly, Reference).
 
+## Scope: Skia-first
+New UI features target **Skia** (incl. Skia-on-Android/iOS/WASM); the **native** UI targets (native Android Views, iOS/UIKit, WASM DOM) are **maintenance-only** — keep them building and behaving, but don't add features there unless the task says so. This is the *UI* layer only: platform-specific **non-UI WinRT APIs** in `Uno.UWP`/`Uno.Foundation` (rule 5 below) are still actively enhanced, since Skia compiles and uses those per-platform implementations. See AGENTS.md → "Development scope".
+
 ## Decision rule — pick the narrowest that fits
 1. **Entire implementation is platform-specific** → separate partial **file suffix**: `.Android.cs`, `.iOS.cs`, `.UIKit.cs` (iOS+tvOS), `.wasm.cs`, `.skia.cs`, `.reference.cs`. One file = exactly one platform/runtime; the suffix is auto-excluded elsewhere.
 2. **Code shared by all cross-runtime targets** (Skia generic + WASM + Reference, but not native Android/iOS) → **`.crossruntime.cs`**. This is *not* "shared by everything" — native platforms have their own `.Android.cs`/`.UIKit.cs`.
