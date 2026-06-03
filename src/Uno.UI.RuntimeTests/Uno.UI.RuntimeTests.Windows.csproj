@@ -65,14 +65,9 @@
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="2.1.3" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4654" />
 
-		<!-- We remove Unit tests imported from MUX on UAP as they are usualy heavily relying on internal classes.-->
-		<Compile Remove="$(MSBuildThisFileDirectory)MUX\Microsoft\UI\Xaml\Controls\**\*.cs" />
-		<!-- These MUX tests were not authored against MUX internals and were historically compiled on WinAppSDK. -->
-		<Compile Include="$(MSBuildThisFileDirectory)MUX\Microsoft\UI\Xaml\Controls\DropDownButtonTests.cs" />
-		<Compile Include="$(MSBuildThisFileDirectory)MUX\Microsoft\UI\Xaml\Controls\PersonPictureTests.cs" />
-		<Compile Include="$(MSBuildThisFileDirectory)MUX\Microsoft\UI\Xaml\Controls\RelativePanelUnitTests.cs" />
-		<Compile Include="$(MSBuildThisFileDirectory)MUX\Microsoft\UI\Xaml\Controls\SwipeControl\SwipeControl_APITests.cs" />
-		<Compile Include="$(MSBuildThisFileDirectory)MUX\Microsoft\UI\Xaml\Controls\SwipeControl\SwipeControl_InteractionTests.cs" />
+		<!-- MUX-imported tests (*.mux.*) rely on MUX/Uno test internals and don't compile against native WinAppSDK. -->
+		<Compile Remove="$(MSBuildThisFileDirectory)**\*.mux.cs" />
+		<Compile Remove="$(MSBuildThisFileDirectory)**\*.mux.xaml.cs" />
 	</ItemGroup>
 	
 	<PropertyGroup>
@@ -80,7 +75,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<PageExclusions>$(MSBuildThisFileDirectory)MUX\Microsoft\UI\Xaml\Controls\**\*.xaml;$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\ImplicitXamlNamespaces\**\*.xaml</PageExclusions>
+		<PageExclusions>$(MSBuildThisFileDirectory)**\*.mux.xaml;$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\ImplicitXamlNamespaces\**\*.xaml</PageExclusions>
 	</PropertyGroup>
 
 	<ItemGroup>
