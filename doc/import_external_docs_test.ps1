@@ -31,6 +31,7 @@ if (-not $NoFetch) {
         "uno.samples"        = "master"
         "uno.chefs"          = "main"
         "hd-docs"            = "main"
+        "studio-docs"        = "main"
     }
 
     Write-Host 'Importing external repositories...' -ForegroundColor Black -BackgroundColor Green
