@@ -14,7 +14,7 @@ jobs:
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
     - name: Assign PR to its author
-      uses: actions/github-script@v6
+      uses: actions/github-script@v9
       with:
         github-token: "${{ secrets.GITHUB_TOKEN }}"
         script: |
