@@ -10,13 +10,21 @@
 	<ThemeResourceV2MergeInput Include="$(MSBuildThisFileFullPath)" />
   </ItemGroup>
 
-  <!-- This task is temporarily placed in debug configuration to avoid parallel build concurrency issues -->
+  <!--
+    Merge the per-control source XAML into the single themeresources_v2.xaml that the XAML source
+    generator consumes as a Page. Run once per project in the outer (cross-targeting) build, before
+    the inner per-TFM builds read it, so there is a single writer per project instead of one writer
+    per TFM. Every variant sets <TargetFrameworks> (plural), so this outer-build hook fires for all
+    of them in every configuration, including local single-TFM override builds. The remaining
+    cross-variant writers to this shared file are made safe by the atomic write in BatchMergeXaml,
+    so the merge no longer needs to be gated to Debug and the file no longer needs to be committed.
+    themeresources_v2.xaml is in Outputs so a missing/deleted file forces regeneration.
+  -->
   <Target Name="GenerateThemeResourceV2File"
-          DependsOnTargets="ResolveProjectReferences"
-          BeforeTargets="BeforeBuild"
+          BeforeTargets="DispatchToInnerBuilds"
           Inputs="@(ThemeResourceV2MergeInput)"
-          Outputs="$(IntermediateOutputPath)\Version2\GenerateThemeResourceFile.write.1u.tlog"
-          Condition="'$(Configuration)'=='Debug'">
+          Outputs="$(MSBuildThisFileDirectory)themeresources_v2.xaml;$(IntermediateOutputPath)\Version2\GenerateThemeResourceFile.write.1u.tlog"
+          Condition="'$(TargetFramework)' == ''">
     <ItemGroup>
       <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />      
       <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\ProgressRing.xaml" />

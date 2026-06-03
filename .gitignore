@@ -268,6 +268,9 @@ doc/articles/external
 
 mergedstyles.xaml
 
+# Generated at build time by GenerateThemeResourceV2File (Uno.UI.FluentTheme.v2/FluentMerge.targets)
+/src/Uno.UI.FluentTheme.v2/themeresources_v2.xaml
+
 !build/ci/publish
 /doc/articles/llms/llms-full.txt
 /src/Uno.UI.DevServer.Cli/Properties/launchSettings.json
