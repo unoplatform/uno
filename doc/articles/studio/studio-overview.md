@@ -40,7 +40,7 @@ AI coding tools can generate code quickly, but for enterprises, generating code 
 - **[Design-to-Code](xref:Uno.Figma.GetStarted)**
   Generate ready-to-use, well-structured XAML or C# Markup directly from your Figma designs with one click, completely eliminating manual design handoff. [Get started](xref:Uno.Figma.GetStarted)
 
-- **[Uno MCP & App MCP](xref:Uno.Features.Uno.MCPs)**
+- **[The Uno Platform MCPs](xref:Uno.Features.Uno.MCPs)**
   The **Uno MCP** provides structured, semantic access to Uno Platform's complete knowledge base—covering documentation, APIs, and best practices—empowering AI agents and developers with the intelligence they need to build better experiences. The **App MCP** brings intelligent automation to life by enabling AI agents to interact directly with live Uno Platform applications, creating a seamless bridge between design, development, and execution.
 
 ## Why Choose Uno Platform Studio?
