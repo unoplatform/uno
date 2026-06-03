@@ -27,6 +27,24 @@ Uno Platform is an open-source .NET UI cross-platform framework for building .NE
 | WinUI Porting | `.github/agents/winui-porting-agent.md` | WinUI porting rules deep reference |
 | DevServer CLI | `.github/agents/devserver-agent.md` | DevServer CLI/Host build, test, MCP proxy |
 
+#### Path-scoped rules (`.claude/rules/`)
+
+These load **automatically** when you touch matching files — you don't invoke them. They hold the non-obvious, subsystem-specific conventions so this always-loaded file stays lean:
+
+| Rule | Applies to | Covers |
+|------|-----------|--------|
+| `code-style.md` | `src/**/*.cs` | nullable, file headers (MUX/MIT), logging, `[Uno.NotImplemented]` |
+| `platform-targeting.md` | `src/**/*.cs` | file-suffix vs `#if` vs `OperatingSystem.IsX()` vs `ApiExtensibility` |
+| `debugging-discipline.md` | `src/**/*.cs` | full root-cause/validation/diagnosis-bias protocols |
+| `dependency-properties.md` | `src/Uno.UI/**` | `[GeneratedDependencyProperty]`, metadata, callbacks |
+| `runtime-tests.md` | `src/Uno.UI.RuntimeTests/**` | `[RunsOnUIThread]`, `[PlatformCondition]`, `UITestHelper` |
+| `unit-tests.md` | `src/Uno.UI.Tests/**` | MSTest, no-visual-tree logic tests |
+| `source-generators.md` | `src/SourceGenerators/**` | incremental gens, LOH/perf, cancellation |
+| `samples.md` | `src/SamplesApp/**` | `[Sample]`, theming, XamlStyler |
+| `build-system.md` | `src/**/*.{csproj,props,targets}` | TFMs, output paths, package versions |
+
+**Which to reach for:** the relevant `.claude/rules/*.md` is already in context (path-scoped) — use it as the checklist. Open a `.github/agents/*.md` only when you need the deep reference (full templates, edge cases). Use a `/skill` for the actual build/run/scaffold workflow.
+
 ---
 
 ## Quick Reference
@@ -52,12 +70,13 @@ Uno Platform is an open-source .NET UI cross-platform framework for building .NE
 | `.wasm.cs` | WebAssembly |
 | `.skia.cs` | Skia |
 | `.reference.cs` | Reference implementation |
+| `.crossruntime.cs` | Skia + WebAssembly + Reference (shared) |
 
 ### Key Source Directories
 
-- `src/Uno.UI/` - Core UI framework (141+ WinUI controls)
-- `src/Uno.UWP/` - Non-UI APIs
-- `src/Uno.Foundation/` - Foundation APIs
+- `src/Uno.UI/` - Core UI framework (WinUI controls, layout, XAML runtime)
+- `src/Uno.UWP/` - Non-UI WinRT APIs (platform-specific assemblies)
+- `src/Uno.Foundation/` - Foundation APIs (platform-specific assemblies)
 - `src/Uno.UI.Runtime.Skia.*/` - Skia platform runtimes
 - `src/SourceGenerators/` - XAML parser, DependencyProperty generator
 - `src/SamplesApp/` - Sample app for validation and tests
@@ -187,84 +206,11 @@ When editing specifications, documentation, or other repo-tracked design artifac
 
 4. **If implementation follow-up exists in private repos**, describe it as alignment or downstream tracking work without identifiers or URLs.
 
-### Root-Cause First Debugging Protocol (MANDATORY)
+### Debugging & Validation (MANDATORY — summary)
 
-When fixing crashes, rendering issues, or selection/indexing bugs,
-agents must follow this order:
+When fixing crashes, rendering, or selection/indexing bugs: **reproduce first → name the broken invariant → fix the root cause (and the mutation point) before adding guards → prove it with a test that fails-before/passes-after → validate at runtime, not compile-only.** Label every proposed change `root-cause fix` or `defensive hardening`; a guard-only change is never a complete resolution. Report validation evidence with explicit labels — **Code review** (by inspection) vs **Compile** (which project built) vs **Runtime** (which test/app ran) — and never present compile-only as runtime validation.
 
-1. **Reproduce first**
-   - Capture exact repro steps and expected vs actual behavior.
-   - Keep one known-good repro path and rerun it after each meaningful change.
-
-2. **Identify the broken invariant**
-   - Prefer state/lifecycle invariants over symptom-level checks.
-   - For pipelines that derive secondary state, verify those derived
-      structures (for example: maps, indices, caches, or metadata)
-      are rebuilt from final post-mutation state.
-
-3. **Fix root cause before adding guards**
-    - Do not lead with null/index guards as the primary fix if
-       ownership/lifecycle is incorrect.
-    - Defensive guards are allowed only after root-cause correction,
-       and only as secondary hardening.
-
-4. **Prove correctness with targeted tests**
-   - Add/extend tests that fail before and pass after the root fix.
-   - Cover both the triggering scenario and one adjacent regression scenario.
-
-5. **Validate with runtime behavior, not compile only**
-   - Run the closest runtime or integration path available for the changed area.
-   - If full runtime execution is not possible in the environment,
-       state that explicitly and provide the exact command(s) for
-       maintainers to run.
-
-6. **Communicate confidence accurately**
-   - Separate: (a) code review assessment,
-       (b) compile validation, (c) runtime validation.
-   - Never present guard-only mitigation as a complete root-cause fix.
-
-**Anti-pattern to avoid:**
-
-- Symptom-driven patching that accumulates bounds checks while
-   stale or invalid intermediate state remains possible.
-
-### Validation Evidence Protocol (MANDATORY)
-
-For bug fixes and PR reviews, agents must report validation evidence
-with explicit labels:
-
-- **Code review assessment**: What logic appears correct by inspection.
-- **Compile validation**: Which project/solution was built, and result.
-- **Runtime validation**: Which app/test path was executed, and result.
-
-Rules:
-
-1. Do not present compile-only checks as runtime validation.
-2. If runtime execution is skipped or blocked, state that explicitly
-   and provide exact commands to run.
-3. When reviewing another PR, distinguish between confidence from
-   diff inspection vs. confidence from local execution.
-
-### Diagnosis Bias Checks (MANDATORY)
-
-Before proposing a crash fix, agents must run these checks to avoid
-choosing symptom-level guards over the real fix:
-
-1. **Invariant checkpoint before patching**
-    - Name the invariant likely broken (ownership, lifecycle,
-       index/map coherence, post-mutation consistency).
-   - If no invariant is identified, do not claim a root-cause fix.
-
-2. **Mutation-point review**
-    - Inspect where state is created/trimmed/reordered and verify all
-       dependent structures are refreshed there.
-    - Prefer correcting the mutation point over adding protections in
-       downstream consumers.
-
-3. **Guard classification**
-    - Explicitly label each proposed change as either
-       `root-cause fix` or `defensive hardening`.
-   - Guard-only changes must not be presented as complete resolution.
+The full protocol (root-cause steps, diagnosis-bias checks, evidence rules) auto-loads from `.claude/rules/debugging-discipline.md` when editing `src/**/*.cs`.
 
 ### Validation Checklist
 
@@ -332,25 +278,11 @@ Extensive use for:
 
 ### DependencyProperty Pattern
 
-See `.github/agents/dependency-property-agent.md` for full patterns. Quick template:
-
-```csharp
-public static DependencyProperty MyPropertyProperty { get; } =
-    DependencyProperty.Register(nameof(MyProperty), typeof(MyType), typeof(MyControl),
-        new FrameworkPropertyMetadata(default(MyType), OnMyPropertyChanged));
-
-public MyType MyProperty
-{
-    get => (MyType)GetValue(MyPropertyProperty);
-    set => SetValue(MyPropertyProperty, value);
-}
-```
+Prefer `[GeneratedDependencyProperty]` for new properties. Conventions auto-load from `.claude/rules/dependency-properties.md`; full templates in `.github/agents/dependency-property-agent.md`.
 
 ### Code Style
 
-- **Braces**: Always use, even for single-line conditionals
-- **Indentation**: Tabs (configured in .editorconfig)
-- **Extension methods**: In `[TypeName]Extensions.cs`, mark `internal`
+Tabs, Allman braces (always), `internal` extension methods in `[Type]Extensions.cs`, `#nullable enable` per-file, MUX/MIT headers on ported code. Details auto-load from `.claude/rules/code-style.md`. Style is analyzer-enforced on CI even when `UnoFastDevBuild=true` skips it locally.
 
 ### XAML Formatting (SamplesApp)
 
