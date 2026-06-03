@@ -1,12 +1,17 @@
 ---
-description: Roslyn source-generator conventions and performance constraints for Uno.UI.SourceGenerators. Auto-loaded when editing generators. Full reference in .github/agents/source-generators-agent.md.
+description: Roslyn source-generator architecture, conventions, and performance constraints for Uno.UI.SourceGenerators. Auto-loaded when editing generators.
 paths:
   - "src/SourceGenerators/**/*.cs"
 ---
 
 # Source generators (Uno.UI.SourceGenerators)
 
-Deep reference: `.github/agents/source-generators-agent.md`. Generators run inside the compiler — performance and cancellation discipline are load-bearing.
+Generators run inside the compiler — performance and cancellation discipline are load-bearing.
+
+## Architecture map
+- **Projects**: `Uno.UI.SourceGenerators` (main XAML + DependencyObject generators), `Uno.UI.SourceGenerators.Internal` (utilities), `Uno.UI.Tasks` (MSBuild tasks incl. `RuntimeAssetsSelectorTask`).
+- **XAML pipeline** (`XamlGenerator/`): XAML files → parse (parallel, cached) → build name/maps → generate C# (parallel). Key classes: `XamlCodeGenerator` (entry `ISourceGenerator`), `XamlFileGenerator` (per-file codegen), `XamlFileParser` (parse + checksum cache), `XamlObjectDefinition`/`XamlMemberDefinition` (parsed tree), `NameScope` (named elements, backing fields, components). Emits `InitializeComponent()`, named-element fields, resource-dictionary singletons, `x:Bind` expression methods (`Utils/XBindExpressionParser.cs`), and lazy stubs for `x:Load`.
+- **DependencyObject generation** (`DependencyObject/`): emits the `IDependencyObject`/`IDependencyObjectStoreProvider` mixin (`__Store`, `GetValue`/`SetValue`/`ClearValue`) plus platform lifecycle partials — this is why `DependencyObject` can be an *interface* on mobile.
 
 - **New generators are `IIncrementalGenerator`** (fine-grained caching). The large legacy XAML generator is still `ISourceGenerator` (`XamlCodeGenerator`) — match the surrounding file's model when editing it; don't half-convert.
 - **Emit via `IndentedStringBuilder`** (from `Uno.Roslyn`), and wrap large output in **`StringBuilderBasedSourceText`** instead of `builder.ToString()` — the latter allocates to the Large Object Heap. Don't mutate the builder after wrapping it.

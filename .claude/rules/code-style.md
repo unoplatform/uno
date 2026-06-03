@@ -17,7 +17,7 @@ Indentation is **tabs** (see `.editorconfig`), braces always, `new_line_before_o
   // MUX Reference AnimatedIcon.properties.cpp, tag winui3/release/1.7.1, commit f4d781d
   ```
   Keep the `// MUX Reference <file>, tag <tag>, commit <hash>` line accurate — it pins the upstream source. **Uno-native** code omits both the MS copyright and the MUX line.
-- Don't add a `_Mux` suffix to ported members — use the natural WinUI name. (See `.github/agents/winui-porting-agent.md`.)
+- Don't add a `_Mux` suffix to ported members — use the natural WinUI name. (See the `/winui-port` skill for the full porting rules.)
 
 ## Idioms
 - **`#nullable enable`** is per-file (top of file), not global. New/refactored files should enable it; large legacy files (e.g. `FrameworkElement.cs`) often don't — don't bulk-flip them.

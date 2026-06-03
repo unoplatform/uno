@@ -6,7 +6,7 @@ paths:
 
 # Runtime tests (Uno.UI.RuntimeTests)
 
-Build & run with the **`/runtime-tests`** skill. Patterns reference: `.github/agents/runtime-tests-agent.md`. WinUI parity: `/winui-runtime-tests`.
+Build & run with the **`/runtime-tests`** skill. WinUI parity: `/winui-runtime-tests`.
 
 - Test class needs **both** `[TestClass]` and `[RunsOnUIThread]`. Test methods are **`async Task`** (never `void`/sync) — `WaitForLoaded`/`WaitForIdle`/`ScreenShot` return `Task` and must be awaited, or the test races to a false pass.
 - **Folder mirrors the namespace with underscores**: a `Button` test goes in `Tests/Windows_UI_Xaml_Controls/Given_Button.cs`, namespace `Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls`. Class `Given_<Control>`, method `When_<Scenario>`.

@@ -1,12 +1,12 @@
 ---
-description: DependencyProperty registration conventions for Uno.UI controls. Auto-loaded when editing Uno.UI source. Full reference in .github/agents/dependency-property-agent.md.
+description: DependencyProperty registration conventions for Uno.UI controls. Auto-loaded when editing Uno.UI source.
 paths:
   - "src/Uno.UI/**/*.cs"
 ---
 
 # DependencyProperty (Uno.UI)
 
-Deep reference + templates: `.github/agents/dependency-property-agent.md`. The non-obvious must-knows:
+For full templates, copy from existing controls — `Canvas` (attached + `[GeneratedDependencyProperty]`), `RangeBase` (changed + coerce), `Button` (manual `Register`). The non-obvious must-knows:
 
 - **Prefer `[GeneratedDependencyProperty]`** for new properties — it's the modern source-generated pattern. The field is assigned from the generated `Create…` method:
   ```csharp

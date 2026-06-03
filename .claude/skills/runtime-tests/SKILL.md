@@ -250,7 +250,7 @@ kill $HTTP_PID $COMPANION_PID 2>/dev/null || true
 - Test location: `src/Uno.UI.RuntimeTests/Tests/`
 - WASM CI script: `build/test-scripts/wasm-run-skia-runtime-tests.sh`
 - WASM companion server: `build/test-scripts/skia-browserwasm-file-creation-server.py`
-- Agent guide: `.github/agents/runtime-tests-agent.md`
+- Test-authoring conventions: `.claude/rules/runtime-tests.md`
 
 ### CI-Only Options
 - `--runtime-tests-group` / `--runtime-tests-group-count`: For CI test sharding

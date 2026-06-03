@@ -6,7 +6,7 @@ This file provides guidance to AI Agents when working with code in this reposito
 
 Uno Platform is an open-source .NET UI cross-platform framework for building .NET applications from a single codebase using the WinUI 3 API. It targets Web (WebAssembly), Desktop (Windows, macOS, Linux via Skia), and Mobile (iOS, tvOS, Android).
 
-**Reference these instructions first**. Use Claude Code skills (preferred) or specialized agents for deep dives:
+**Reference these instructions first**, then lean on skills (workflows) and the path-scoped rules below.
 
 #### Claude Code Skills (invoke via `/skill-name`)
 
@@ -14,18 +14,9 @@ Uno Platform is an open-source .NET UI cross-platform framework for building .NE
 |-------|---------|---------|
 | Add Sample | `/add-sample` | Creating SamplesApp sample pages with correct registration |
 | Runtime Tests | `/runtime-tests` | Building and running Uno runtime tests (Skia Desktop/WASM) |
-| WinUI Porting | `/winui-port` | Porting WinUI C++ code to Uno Platform C# |
 | WinUI Runtime Tests | `/winui-runtime-tests` | Running runtime tests against native WinUI on Windows |
-
-#### Specialized Agent Files (for deep reference)
-
-| Agent | File | Use For |
-|-------|------|---------|
-| DependencyProperty | `.github/agents/dependency-property-agent.md` | Adding/modifying DependencyProperties |
-| Source Generators | `.github/agents/source-generators-agent.md` | XAML/DependencyObject generator work |
-| Runtime Tests | `.github/agents/runtime-tests-agent.md` | Runtime test patterns and helpers reference |
-| WinUI Porting | `.github/agents/winui-porting-agent.md` | WinUI porting rules deep reference |
-| DevServer CLI | `.github/agents/devserver-agent.md` | DevServer CLI/Host build, test, MCP proxy |
+| WinUI Porting | `/winui-port` | Porting WinUI C++ code to Uno Platform C# (full deep reference) |
+| DevServer | `/devserver` | DevServer CLI/Host build, test, MCP proxy, add-in discovery |
 
 #### Path-scoped rules (`.claude/rules/`)
 
@@ -43,7 +34,7 @@ These load **automatically** when you touch matching files — you don't invoke 
 | `samples.md` | `src/SamplesApp/**` | `[Sample]`, theming, XamlStyler |
 | `build-system.md` | `src/**/*.{csproj,props,targets}` | TFMs, output paths, package versions |
 
-**Which to reach for:** the relevant `.claude/rules/*.md` is already in context (path-scoped) — use it as the checklist. Open a `.github/agents/*.md` only when you need the deep reference (full templates, edge cases). Use a `/skill` for the actual build/run/scaffold workflow.
+**Which to reach for:** the relevant `.claude/rules/*.md` is already in context (path-scoped) — use it as the checklist. Use a `/skill` for the actual build/run/scaffold/port workflow (and its deep reference).
 
 ---
 
@@ -242,9 +233,7 @@ Add tests to `Uno.UI.RuntimeTests`. Key helpers:
 - `await WindowHelper.WaitForLoaded(element)` - Wait for load
 - `await WindowHelper.WaitForIdle()` - Wait for UI to settle
 
-**To build and run tests, use the `/runtime-tests` skill.** It handles build, filter encoding, execution, and result parsing for both Skia Desktop and WASM.
-
-See `.github/agents/runtime-tests-agent.md` for detailed patterns.
+**To build and run tests, use the `/runtime-tests` skill.** It handles build, filter encoding, execution, and result parsing for both Skia Desktop and WASM. Test-authoring conventions auto-load from `.claude/rules/runtime-tests.md`.
 
 ### Common Build Issues
 
@@ -278,7 +267,7 @@ Extensive use for:
 
 ### DependencyProperty Pattern
 
-Prefer `[GeneratedDependencyProperty]` for new properties. Conventions auto-load from `.claude/rules/dependency-properties.md`; full templates in `.github/agents/dependency-property-agent.md`.
+Prefer `[GeneratedDependencyProperty]` for new properties. Conventions auto-load from `.claude/rules/dependency-properties.md`; for full templates copy from existing controls (`Canvas`, `RangeBase`, `Button`).
 
 ### Code Style
 
@@ -371,12 +360,12 @@ Guidelines:
 - Build guide: `doc/articles/uno-development/building-uno-ui.md`
 - Samples guide: `doc/articles/uno-development/working-with-the-samples-apps.md`
 
-### Specialized Agents
-- `.github/agents/dependency-property-agent.md` - DependencyProperty patterns
-- `.github/agents/source-generators-agent.md` - XAML/DependencyObject generators
-- `.github/agents/runtime-tests-agent.md` - Runtime test execution
-- `.github/agents/winui-porting-agent.md` - WinUI C++ to C# porting
-- `.github/agents/devserver-agent.md` - DevServer CLI/Host maintenance
+### Subsystem deep dives
+- `/winui-port` skill - WinUI C++ → C# porting
+- `/devserver` skill - DevServer CLI/Host maintenance
+- `/runtime-tests` skill + `.claude/rules/runtime-tests.md` - runtime test execution & authoring
+- `.claude/rules/dependency-properties.md` - DependencyProperty patterns
+- `.claude/rules/source-generators.md` - XAML/DependencyObject generators
 
 ### Community
 - [Discord](https://platform.uno/discord)
