@@ -13,6 +13,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [RunsOnUIThread]
 public class Given_CheckBox
 {
+#if HAS_UNO // Builds the item template in code via the Uno-specific DataTemplate(Func<>) ctor, which isn't available on native WinUI.
 	[TestMethod]
 	public async Task When_IsChecked_Set_Via_Binding_In_ItemsRepeater()
 	{
@@ -78,6 +79,7 @@ public class Given_CheckBox
 			states2.Any(s => s.Contains("Checked") && !s.Contains("Unchecked")),
 			$"Item3 (IsChecked=true) should be in a Checked visual state, but states are: [{string.Join(", ", states2)}]");
 	}
+#endif
 
 	[TestMethod]
 	public async Task When_IsChecked_Set_Before_Template_Applied()
@@ -97,6 +99,7 @@ public class Given_CheckBox
 			$"CheckBox with IsChecked=true should be in a Checked visual state, but states are: [{string.Join(", ", states)}]");
 	}
 
+#if HAS_UNO
 	private static List<CheckBox> GetCheckBoxes(DependencyObject parent)
 	{
 		var result = new List<CheckBox>();
@@ -118,4 +121,5 @@ public class Given_CheckBox
 	}
 
 	private sealed record TestItem(string Name, bool IsEnabled);
+#endif
 }
