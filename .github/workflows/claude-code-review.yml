@@ -1,0 +1,93 @@
+# This workflow runs an AI agent over pull requests. PR titles, descriptions,
+# and diffs are ATTACKER-CONTROLLED and can carry prompt injection. Two
+# disclosures inform this file:
+#   - "Comment and Control": a crafted comment hijacks the agent into dumping
+#     CI secrets via recon (`/proc`, env) + an outbound channel.
+#   - RyotaK / GMO Flatt Security (CVSS 7.8, fixed in claude-code-action
+#     v1.0.94): a `*[bot]` actor could bypass the action's write-permission
+#     check, then prompt-injection read `/proc/self/environ` to steal the
+#     OIDC request token (ACTIONS_ID_TOKEN_REQUEST_TOKEN) and exchange it for
+#     a privileged GitHub App token — a supply-chain compromise.
+# The defenses here, in order of importance:
+#   1. Trigger gate (`if:` below) — runs only for repo members, never forks
+#      or outside contributors. This is enforced by US, not by the action's
+#      internal (historically bypassable) actor check, so the "any [bot] can
+#      open a PR" delivery vector is closed regardless of the action version.
+#   2. Tool allowlist (`--allowedTools`) — a hijacked agent has NO tool that
+#      can read env/files/`/proc` or reach the network. It can only post PR
+#      comments. Allowlisting beats blocklisting: there is no `cat`/`head`/
+#      `env`/`cat /proc/*/environ`/`curl`/`git push` to abuse. Do not widen.
+#   3. Least privilege — NO `id-token: write`: without it the OIDC request
+#      token does not exist in this job, so the RyotaK escalation has nothing
+#      to steal. Minimal scopes, credentials not persisted, only the Anthropic
+#      key + GITHUB_TOKEN are exposed.
+#   4. Pinned, patched action — must be >= v1.0.94 (see the `uses:` note).
+#   5. Trusted prompt — REVIEW.md is loaded from the BASE branch, never the
+#      PR head, and PR title/body are NEVER interpolated into the prompt.
+# If you change any of these, you are changing the security posture.
+
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+
+# Least privilege: the agent can comment on the PR and read the repo, nothing
+# more. No `id-token: write` (we authenticate with an API key, not OIDC) and
+# no `contents: write`.
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    # Only run for repo users (owners/members/collaborators), never for
+    # forks or outside/first-time contributors — keeps the review key off
+    # untrusted code and stops the "anyone who can open a PR" delivery vector.
+    if: >
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          # Don't leave the GITHUB_TOKEN in .git/config where a hijacked
+          # agent could reuse it for git operations.
+          persist-credentials: false
+
+      - name: Load review prompt
+        id: review_prompt
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo 'prompt<<PROMPT_EOF_8a3f'
+            echo "REPO: ${{ github.repository }}"
+            echo "PR NUMBER: ${{ github.event.pull_request.number }}"
+            echo ""
+            gh api "repos/${{ github.repository }}/contents/REVIEW.md?ref=${{ github.base_ref }}" \
+              --jq '.content' | base64 -d
+            echo 'PROMPT_EOF_8a3f'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Claude Code Review
+        # SECURITY: pinned to a full commit SHA (not the mutable `@v1` tag) so a
+        # repointed/compromised tag can't pull unexpected action code — the
+        # supply-chain risk the RyotaK disclosure centers on. Dependabot
+        # (github-actions ecosystem in .github/dependabot.yml) bumps this.
+        # Must stay >= v1.0.94, which fixes that disclosure: checkHumanActor in
+        # agent mode, env scrubbing for child processes, a `gh` wrapper that
+        # blocks exfil URL patterns (`gh ... view https://attacker/<secret>`),
+        # run-summary disabled by default, and ignoring issues/comments edited
+        # after trigger.
+        uses: anthropics/claude-code-action@36a69b6a90b850823f86de06fdfd56264772ad98 # v1.0.134
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_CODEREVIEW_KEY }}
+          track_progress: true
+          prompt: ${{ steps.review_prompt.outputs.prompt }}
+          claude_args: |
+            --model claude-sonnet-4-6
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,mcp__github_comment__update_claude_comment,Bash(gh pr diff:*),Bash(gh pr view:*)"
