@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference NavigationViewItemSeparator.cpp, commit 65718e2813
+// MUX Reference NavigationViewItemSeparator.cpp, commit fc2f82117
 
 using Uno.UI.Helpers.WinUI;
 using Microsoft.UI.Xaml;

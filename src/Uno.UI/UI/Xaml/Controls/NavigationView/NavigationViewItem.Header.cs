@@ -1,4 +1,4 @@
-﻿// MUX reference NavigationViewItem.h, commit 65718e2813
+﻿// MUX reference NavigationViewItem.h, commit fc2f82117
 
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
