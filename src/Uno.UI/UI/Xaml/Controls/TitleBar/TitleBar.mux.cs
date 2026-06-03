@@ -1,12 +1,13 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TitleBar.cpp, commit 5f9e85113
+// MUX Reference TitleBar.cpp, commit fc2f82117
 
 using System.Collections.Generic;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
@@ -29,9 +30,11 @@ partial class TitleBar
 		SizeChanged += OnSizeChanged;
 		m_sizeChangedRevoker.Disposable = Disposable.Create(() => SizeChanged -= OnSizeChanged);
 
-		m_flowDirectionChangedRevoker.Disposable = this.RegisterDisposablePropertyChangedCallback(
+		var flowDirectionChangedToken = RegisterPropertyChangedCallback(
 			FrameworkElement.FlowDirectionProperty,
 			OnFlowDirectionChanged);
+		m_flowDirectionChangedRevoker.Disposable = Disposable.Create(() =>
+			UnregisterPropertyChangedCallback(FrameworkElement.FlowDirectionProperty, flowDirectionChangedToken));
 	}
 
 	// TODO Uno: Original C++ destructor cleanup. Uno does not support cleanup via finalizers.
@@ -48,6 +51,13 @@ partial class TitleBar
 	//     {
 	//         m_inputActivationListener.InputActivationChanged(m_inputActivationChangedToken);
 	//         m_inputActivationChangedToken.value = 0;
+	//     }
+	//
+	//     const auto appWindow = TryGetAppWindow();
+	//     if (appWindow)
+	//     {
+	//         // Safely restore default if the window title still matches what we last applied
+	//         ResetTitle(Title());
 	//     }
 	// }
 
@@ -87,11 +97,29 @@ partial class TitleBar
 		UpdateIconRegion();
 	}
 
+	private void HandleTitleChange(string oldTitle, string newTitle)
+	{
+		// If transitioning from non-empty to empty, prefer ResetTitle to avoid overwriting external titles.
+		if (!string.IsNullOrEmpty(oldTitle) && string.IsNullOrEmpty(newTitle))
+		{
+			ResetTitle(oldTitle);
+			GoToState(s_titleTextCollapsedVisualStateName, false);
+		}
+		else
+		{
+			UpdateTitle();
+		}
+	}
+
 	private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
 	{
 		DependencyProperty property = args.Property;
 
-		if (property == IsBackButtonVisibleProperty)
+		if (property == AutoRefreshDragRegionsProperty)
+		{
+			UpdateAutoRefreshDragRegions();
+		}
+		else if (property == IsBackButtonVisibleProperty)
 		{
 			UpdateBackButton();
 		}
@@ -103,19 +131,22 @@ partial class TitleBar
 		{
 			UpdatePaneToggleButton();
 		}
-		if (property == IconSourceProperty)
+		else if (property == IconSourceProperty)
 		{
 			UpdateIcon();
 		}
 		else if (property == TitleProperty)
 		{
-			UpdateTitle();
+			var oldTitle = args.OldValue as string ?? "";
+			var newTitle = Title;
+
+			HandleTitleChange(oldTitle, newTitle);
 		}
 		else if (property == SubtitleProperty)
 		{
 			UpdateSubtitle();
 		}
-		if (property == LeftHeaderProperty)
+		else if (property == LeftHeaderProperty)
 		{
 			UpdateLeftHeader();
 		}
@@ -316,6 +347,52 @@ partial class TitleBar
 		UpdateIconRegion();
 	}
 
+	private void OnContentLayoutUpdated(object sender, object args)
+	{
+		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
+		// Content layout has changed (children added/removed/resized at runtime).
+		// Refresh the interactable elements list and drag region.
+		UpdateInteractableElementsList();
+		UpdateDragRegion();
+
+		// If auto-refresh is disabled, unsubscribe after the first update.
+		// This gives us one-shot behavior: the initial layout pass updates
+		// drag regions, then we stop listening to avoid repeated tree walks.
+		if (!AutoRefreshDragRegions)
+		{
+			m_contentLayoutUpdatedRevoker.Disposable = null;
+		}
+	}
+
+	// Static callback for IsDragRegion attached property changes.
+	// Walks up the visual tree to find the parent TitleBar and triggers an update of its drag regions.
+	// This handles dynamic changes to IsDragRegion at runtime (including hot reload scenarios).
+	//
+	// Note: If element is not yet in the visual tree (e.g., during initial XAML parsing),
+	// GetParent returns null and we exit immediately. The TitleBar will discover the
+	// IsDragRegion value later via FindInteractableElements() during layout updates.
+	private static void OnIsDragRegionPropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		// Walk up from sender to find the owning TitleBar and refresh its drag regions.
+		// Note: If multiple elements have their IsDragRegion changed at the same time,
+		// this will result in duplicate work. A future optimization could defer the update
+		// using CompositionTarget.Rendered to coalesce multiple changes into a single pass.
+		var current = sender;
+		while (current != null)
+		{
+			if (current is TitleBar titleBar)
+			{
+				titleBar.UpdateInteractableElementsList();
+				titleBar.UpdateDragRegion();
+				return;
+			}
+			current = VisualTreeHelper.GetParent(current);
+		}
+	}
+
 	private void UpdateBackButton()
 	{
 		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
@@ -373,12 +450,9 @@ partial class TitleBar
 	{
 		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
 
-		var appWindowId = GetAppWindowId();
-
-		if (appWindowId.Value != 0)
+		var appWindow = TryGetAppWindow();
+		if (appWindow is not null)
 		{
-			AppWindow appWindow = AppWindow.GetFromWindowId(appWindowId);
-
 			// TODO 50724421: Bind to appTitleBar Left and Right inset changed event.
 			if (appWindow.TitleBar is { } appTitleBar)
 			{
@@ -419,13 +493,56 @@ partial class TitleBar
 
 		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH_STR, METH_NAME, this, titleText.c_str());
 
+		var appWindow = TryGetAppWindow();
+
+		// Capture default title once.
+		if (appWindow is not null && !m_hasDefaultAppWindowTitle)
+		{
+			m_defaultAppWindowTitle = appWindow.Title;
+			m_hasDefaultAppWindowTitle = true;
+		}
+
 		if (string.IsNullOrEmpty(titleText))
 		{
+			// Do not set appWindow.Title here. Reset is handled by ResetTitle via OnPropertyChanged.
 			GoToState(s_titleTextCollapsedVisualStateName, false);
+			return;
 		}
-		else
+
+		// Only set the window title if it actually needs to change.
+		if (appWindow is not null)
 		{
-			GoToState(s_titleTextVisibleVisualStateName, false);
+			var currentTitle = appWindow.Title;
+			if (currentTitle != titleText)
+			{
+				appWindow.Title = titleText;
+			}
+		}
+
+		GoToState(s_titleTextVisibleVisualStateName, false);
+	}
+
+	private void ResetTitle(string lastAppliedTitle)
+	{
+		//TITLEBAR_TRACE_INFO(nullptr, TRACE_MSG_METH, METH_NAME, nullptr);
+
+		if (!m_hasDefaultAppWindowTitle)
+		{
+			return;
+		}
+
+		var appWindow = TryGetAppWindow();
+		if (appWindow is null)
+		{
+			return;
+		}
+
+		// Restore only if the current title matches what we previously applied
+		var currentTitle = appWindow.Title;
+		if (lastAppliedTitle == currentTitle && currentTitle != m_defaultAppWindowTitle)
+		{
+			appWindow.Title = m_defaultAppWindowTitle;
+			m_hasDefaultAppWindowTitle = false;
 		}
 	}
 
@@ -470,6 +587,9 @@ partial class TitleBar
 	{
 		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
 
+		// Revoke previous handler
+		m_contentLayoutUpdatedRevoker.Disposable = null;
+
 		if (Content == null)
 		{
 			GoToState(s_contentCollapsedVisualStateName, false);
@@ -480,6 +600,15 @@ partial class TitleBar
 			{
 				m_contentAreaGrid = GetTemplateChild<Grid>(s_contentPresenterGridPartName);
 				m_contentArea = GetTemplateChild<FrameworkElement>(s_contentPresenterPartName);
+			}
+
+			// Always subscribe to LayoutUpdated which fires after Loaded + Measure + Arrange,
+			// ensuring elements have valid bounds. If AutoRefreshDragRegions is false, the
+			// handler will self-unregister after the first update (one-shot behavior).
+			if (Content is FrameworkElement content)
+			{
+				content.LayoutUpdated += OnContentLayoutUpdated;
+				m_contentLayoutUpdatedRevoker.Disposable = Disposable.Create(() => content.LayoutUpdated -= OnContentLayoutUpdated);
 			}
 
 			GoToState(s_contentVisibleVisualStateName, false);
@@ -557,14 +686,40 @@ partial class TitleBar
 					}
 				}
 
+				// Skip the SetRegionRects call if the rects haven't changed since last update.
+				bool rectsUnchanged = passthroughRects.Count == m_previousPassthroughRects.Count;
+				for (int i = 0; rectsUnchanged && i < passthroughRects.Count; i++)
+				{
+					var a = passthroughRects[i];
+					var b = m_previousPassthroughRects[i];
+					rectsUnchanged = a.X == b.X && a.Y == b.Y && a.Width == b.Width && a.Height == b.Height;
+				}
+
+				if (rectsUnchanged)
+				{
+					//TITLEBAR_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR, METH_NAME, this, L"Passthrough rects unchanged, skipping SetRegionRects");
+					return;
+				}
+
 				//TITLEBAR_TRACE_VERBOSE_DBG(*this, L"%s[0x%p](SetRegionRects - Size: %d)\n", METH_NAME, this, passthroughRects.size());
+
+				m_previousPassthroughRects.Clear();
+				m_previousPassthroughRects.AddRange(passthroughRects);
 
 				// Set list of rects as passthrough regions for the non-client area.
 				nonClientPointerSource.SetRegionRects(NonClientRegionKind.Passthrough, passthroughRects.ToArray());
 			}
 			else
 			{
+				// Skip if we already had no rects previously.
+				if (m_previousPassthroughRects.Count == 0)
+				{
+					return;
+				}
+
 				//TITLEBAR_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR, METH_NAME, this, L"Clear Passthrough RegionRects");
+
+				m_previousPassthroughRects.Clear();
 
 				// There is no interactable areas. Clear previous passthrough rects.
 				nonClientPointerSource.ClearRegionRects(NonClientRegionKind.Passthrough);
@@ -641,9 +796,10 @@ partial class TitleBar
 		{
 			if (m_contentArea is { } contentArea)
 			{
-				//TITLEBAR_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR, METH_NAME, this, L"Append contentArea to m_interactableElementsList");
+				//TITLEBAR_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR, METH_NAME, this, L"Find controls in contentArea");
 
-				m_interactableElementsList.Add(contentArea);
+				// Recursively find interactive controls, respecting IsDragRegion
+				FindInteractableElements(contentArea, false);
 			}
 		}
 
@@ -670,6 +826,47 @@ partial class TitleBar
 			IsBackButtonVisible == IsPaneToggleButtonVisible ?
 			s_defaultSpacingVisualStateName : s_negativeInsetVisualStateName,
 			false);
+	}
+
+	public void RecomputeDragRegions()
+	{
+		//TITLEBAR_TRACE_INFO(*this, TRACE_MSG_METH, METH_NAME, this);
+
+		// Force a synchronous layout pass so the visual tree reflects any
+		// recently added/removed children and elements have valid bounds.
+		UpdateLayout();
+
+		UpdateInteractableElementsList();
+		UpdateDragRegion();
+	}
+
+	private void UpdateAutoRefreshDragRegions()
+	{
+		//TITLEBAR_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
+		if (AutoRefreshDragRegions)
+		{
+			// Re-subscribe to LayoutUpdated if not already subscribed
+			// (it may have been revoked by the one-shot unregister in OnContentLayoutUpdated).
+			if (Content != null)
+			{
+				if (Content is FrameworkElement content)
+				{
+					content.LayoutUpdated += OnContentLayoutUpdated;
+					m_contentLayoutUpdatedRevoker.Disposable = Disposable.Create(() => content.LayoutUpdated -= OnContentLayoutUpdated);
+				}
+			}
+
+			// Recompute interactable elements now so drag regions are current immediately.
+			// Note: UpdateDragRegion() is not called here because OnPropertyChanged already
+			// calls it unconditionally after this method returns.
+			UpdateInteractableElementsList();
+		}
+		else
+		{
+			// App opted out of automatic refresh — stop listening.
+			m_contentLayoutUpdatedRevoker.Disposable = null;
+		}
 	}
 
 	private void LoadBackButton()
@@ -740,6 +937,8 @@ partial class TitleBar
 			m_lastAppWindowId = appWindowId;
 
 			m_inputNonClientPointerSource = null;
+
+			m_appWindow = null;
 		}
 
 		return appWindowId;
@@ -755,5 +954,109 @@ partial class TitleBar
 		}
 
 		return m_inputNonClientPointerSource;
+	}
+
+	// Helper to retrieve and cache AppWindow for current WindowId
+	private AppWindow TryGetAppWindow()
+	{
+		var appWindowId = GetAppWindowId();
+		if (appWindowId.Value == 0)
+		{
+			m_appWindow = null;
+			return null;
+		}
+
+		// Refresh cache if WindowId changed or cache is empty
+		if (m_appWindow is null)
+		{
+			m_appWindow = AppWindow.GetFromWindowId(appWindowId);
+		}
+
+		return m_appWindow;
+	}
+
+	private void FindInteractableElements(DependencyObject element, bool parentIsDragRegion)
+	{
+		if (element is null)
+		{
+			return;
+		}
+
+		var uiElement = element as UIElement;
+
+		// All children from VisualTreeHelper should be UIElements; bail out if not.
+		if (uiElement is null)
+		{
+			return;
+		}
+
+		// Skip elements that are not visible or not hit-testable.
+		// Note: UIElement.IsHitTestVisible() is a separate property and does NOT reflect Visibility.
+		// We must check Visibility explicitly to skip Collapsed elements.
+		if (uiElement.Visibility != Visibility.Visible || !uiElement.IsHitTestVisible)
+		{
+			return;
+		}
+
+		bool currentIsDragRegion = parentIsDragRegion;
+
+		// Check if IsDragRegion is explicitly set (non-null) on this element.
+		// IReference<bool>: null = unset, false = clickable, true = draggable.
+		var isDragRegion = GetIsDragRegion(uiElement);
+		if (isDragRegion != null)
+		{
+			if (!isDragRegion.Value)
+			{
+				// IsDragRegion=false: Add this entire element as interactable and stop recursing
+				// into its children (the element's bounds cover all its internal elements).
+				if (uiElement is FrameworkElement fe)
+				{
+					//TITLEBAR_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR, METH_NAME, this,
+					//    fe.Name().empty() ? L"(element with IsDragRegion=false)" : fe.Name().c_str());
+					m_interactableElementsList.Add(fe);
+				}
+				return;
+			}
+
+			// IsDragRegion=true: This element is explicitly marked as a drag region.
+			// If it's a Control, treat the entire control as draggable — don't recurse
+			// into its template children. Only recurse for non-Control containers (e.g. Panel)
+			// where children may override with IsDragRegion=false.
+			if (uiElement is Control)
+			{
+				//TITLEBAR_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR, METH_NAME, this, L"Control with IsDragRegion=true, skipping subtree");
+				return;
+			}
+
+			//TITLEBAR_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR, METH_NAME, this, L"Element with IsDragRegion=true, recursing children");
+			currentIsDragRegion = true;
+		}
+
+		// Check if this element is an interactive control (Button, TextBox, ComboBox, etc.)
+		// Only apply auto-detection when not inside a parent with IsDragRegion=true.
+		if (!currentIsDragRegion)
+		{
+			if (uiElement is Control control)
+			{
+				if (control.IsEnabled)
+				{
+					// Add enabled control as interactable. Don't recurse into children —
+					// the control's bounds already cover all its internal elements.
+					//TITLEBAR_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR, METH_NAME, this,
+					//    control.Name().empty() ? L"(unnamed control)" : control.Name().c_str());
+					m_interactableElementsList.Add(control);
+					return;
+				}
+				// Disabled controls: fall through to recurse into children,
+				// propagating currentIsDragRegion to preserve ancestor intent.
+			}
+		}
+
+		// Recursively process all children in the visual tree (for Panels, disabled controls, etc.)
+		var childCount = VisualTreeHelper.GetChildrenCount(element);
+		for (int i = 0; i < childCount; i++)
+		{
+			FindInteractableElements(VisualTreeHelper.GetChild(element, i), currentIsDragRegion);
+		}
 	}
 }
