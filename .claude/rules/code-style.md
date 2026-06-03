@@ -27,5 +27,11 @@ Indentation is **tabs** (see `.editorconfig`), braces always, `new_line_before_o
 - **Unimplemented members** are marked `[Uno.NotImplemented]` — never `throw new NotImplementedException()`. Generated stubs in `Generated/` folders already use the attribute; never edit those files.
 - Suppress analyzer warnings narrowly with `#pragma warning disable <CODE>` / `restore <CODE>` (e.g. `CS0618` obsolete, `CA1422` platform-compat), not project-wide.
 
+## Comments
+- Add a comment only when it earns its place — explain the non-obvious **why**, not the **what** the code already states plainly. Let clear names and small methods carry the *what*.
+- Keep them **succinct and meaningful**: a line or two. No walls of text.
+- **Don't narrate code removal or change history** — no "removed X", "used to do Y", "no longer needed". A comment states the present reason a line exists; git carries the history. (Rare exception: a genuinely useful note about why something is intentionally *absent*.)
+- A `// MUX Reference …` attribution line (above) is not a history comment — keep it.
+
 ## Conditional symbols
 `#if IS_UNIT_TESTS` and `#if !UNO_REFERENCE_API` gate code per build flavor; platform symbols are covered in `platform-targeting.md`. Global usings (`GlobalUsings.cs`) only define **Android** aliases (e.g. `AView`) and only under `__ANDROID__` — don't assume other platforms have global aliases.
