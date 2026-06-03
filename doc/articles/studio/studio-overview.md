@@ -4,7 +4,7 @@ uid: Uno.Platform.Studio.Overview
 
 # Uno Platform Studio Overview
 
-**Uno Platform Studio** is an AI-native productivity platform for building enterprise-grade, cross-platform .NET applications. It brings together purpose-built tools—from prompt-to-app generation and an AI development agent, to design handoff and the industry-first, cross-platform runtime visual designer for .NET, Hot Design<sup>®</sup>—so developers can design, build, and iterate on apps for every platform .NET runs on, all while staying in their flow.
+**Uno Platform Studio** is an AI-native productivity platform for building enterprise-grade, cross-platform .NET applications. It brings together purpose-built tools, from prompt-to-app generation and an AI development agent, to design handoff and the industry-first, cross-platform runtime visual designer for .NET, Hot Design<sup>®</sup>, so developers can design, build, and iterate on apps for every platform .NET runs on, all while staying in their flow.
 
 ![Introducing Uno Platform Studio](Assets/Introducing-Uno-Platform-Studio.png)
 
@@ -20,9 +20,9 @@ AI coding tools can generate code quickly, but for enterprises, generating code 
 
 **Uno Platform Studio 3.0** closes that gap by giving AI agents the context and validation loops they need to build real apps, through two new components that work alongside Hot Design<sup>®</sup>, Hot Reload, Design-to-Code, the Uno MCP, and the App MCP:
 
-- **Uno Platform Studio App** — a browser-based way to go from a prompt to a working Uno Platform app in minutes, with no installs required. Start from a description—or one of the curated samples in the Gallery—watch the app build live thanks to Hot Reload, refine it through the conversation panel, then export to your preferred IDE or CLI to keep building. [Get started](xref:Uno.PlatformStudio.GetStarted)
+- **Uno Platform Studio App:** a browser-based way to go from a prompt to a working Uno Platform app in minutes, with no installs required. Start from a description (or one of the curated samples in the Gallery), watch the app build live thanks to Hot Reload, refine it through the conversation panel, then export to your preferred IDE or CLI to keep building. [Get started](xref:Uno.PlatformStudio.GetStarted)
 
-- **Uno Platform Studio Agent** — the orchestration layer that connects AI models to the Uno Platform development workflow. It contributes deep, cross-platform .NET domain knowledge, manages context, scaffolds apps from best practices, grounds responses in the latest Uno Platform documentation, and invokes MCP tools to verify its own work. It ships with 70+ Uno Platform–specific skills—spanning themes, Material Design, MVUX state management, navigation, toolkit controls, and UI test automation—delivered through the single `uno-platform-studio` plugin for Claude Code, GitHub Copilot, and OpenAI Codex, all inside a human-in-the-loop workflow. [Learn more](xref:Uno.PlatformStudio.Skills)
+- **Uno Platform Studio Agent:** the orchestration layer that connects AI models to the Uno Platform development workflow. It contributes deep, cross-platform .NET domain knowledge, manages context, scaffolds apps from best practices, grounds responses in the latest Uno Platform documentation, and invokes MCP tools to verify its own work. It ships with 70+ Uno Platform-specific skills (spanning themes, Material Design, MVUX state management, navigation, toolkit controls, and UI test automation), delivered through the single `uno-platform-studio` plugin for Claude Code, GitHub Copilot, and OpenAI Codex, all inside a human-in-the-loop workflow. [Learn more](xref:Uno.PlatformStudio.Skills)
 
 ## Productivity tools
 
@@ -41,7 +41,7 @@ AI coding tools can generate code quickly, but for enterprises, generating code 
   Generate ready-to-use, well-structured XAML or C# Markup directly from your Figma designs with one click, completely eliminating manual design handoff. [Get started](xref:Uno.Figma.GetStarted)
 
 - **[The Uno Platform MCPs](xref:Uno.Features.Uno.MCPs)**
-  The **Uno MCP** provides structured, semantic access to Uno Platform's complete knowledge base—covering documentation, APIs, and best practices—empowering AI agents and developers with the intelligence they need to build better experiences. The **App MCP** brings intelligent automation to life by enabling AI agents to interact directly with live Uno Platform applications, creating a seamless bridge between design, development, and execution.
+  The **Uno MCP** provides structured, semantic access to Uno Platform's complete knowledge base (covering documentation, APIs, and best practices), empowering AI agents and developers with the intelligence they need to build better experiences. The **App MCP** brings intelligent automation to life by enabling AI agents to interact directly with live Uno Platform applications, creating a seamless bridge between design, development, and execution.
 
 ## Why Choose Uno Platform Studio?
 
@@ -49,7 +49,7 @@ AI coding tools can generate code quickly, but for enterprises, generating code 
 
 - Go from prompt to working app in minutes, then keep building in your preferred IDE.
 - Stay in your flow by working directly in your preferred IDE and Figma design tool on any OS.
-- Build apps for every platform .NET runs on—web, desktop, mobile, and embedded.
+- Build apps for every platform .NET runs on: web, desktop, mobile, and embedded.
 - Keep AI grounded in your design system, your live app, and official docs, with a human in control.
 - Streamline workflows with tools that integrate design, development, and iteration.
 
