@@ -8,5 +8,4 @@
 # AI agent configuration — explicit ownership for change visibility
 /CLAUDE.md                                 @unoplatform/maintainers
 /AGENTS.md                                 @unoplatform/maintainers
-/.github/agents/                           @unoplatform/maintainers
 /.claude/                                  @unoplatform/maintainers
