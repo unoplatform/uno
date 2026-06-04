@@ -106,14 +106,11 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 			? NativeUno.uno_capture_video()
 			: NativeUno.uno_capture_photo(_photoFormat == CameraCaptureUIPhotoFormat.Jpeg);
 
-		if (NativeDispatcher.Main.HasThreadAccess)
-		{
-			using (token.Register(() => NativeUno.uno_capture_cancel()))
-			{
-				return Capture();
-			}
-		}
-
+		// Always post onto the dispatcher — even when already on the main thread — so the
+		// native modal event loop opens after the current event (e.g. a Button pointer-released
+		// dispatch) has finished unwinding. Running the modal synchronously on top of an active
+		// pointer dispatch re-enters PointerManager and trips its "pointer already being processed"
+		// assertion when AppKit delivers mouse events into the modal.
 		var tcs = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
 		using var cancelRegistration = token.CanBeCanceled
 			? token.Register(() =>
