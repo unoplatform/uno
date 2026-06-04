@@ -4,6 +4,29 @@
 		<IsUnoHead Condition="'$(OutputType)'=='Exe' OR '$(OutputType)'=='WinExe'">true</IsUnoHead>
 	</PropertyGroup>
 
+	<!--
+		GLCanvasElement native shim support. These items MUST be static (evaluation-time), not
+		inside a target: Uno.Wasm.Bootstrap translates WasmShellNativeCompile to NativeFileReference
+		in _UnoAdjustCompatibility (BeforeTargets="ResolveStaticWebAssetsConfiguration"), whose
+		execution order relative to our targets is not guaranteed - on clean builds it can run
+		first and see an empty item list, silently dropping the shim from the native link.
+	-->
+	<ItemGroup Condition=" '$(IsUnoHead)' == 'true' AND '$(UnoDisableAdjustSkiaSharpDependency)' != 'true' ">
+		<!--
+			Native shim that wraps gl functions with more than 8 arguments (glTexImage2D & co).
+			The mono-wasm interpreter only supports up to 8 args for [UnmanagedCallersOnly]
+			trampolines (dotnet/runtime#109338), so the framework can't dispatch those signatures
+			directly from managed code. The shim packs args into a struct and calls a 1-arg
+			managed dispatcher. The managed side reaches the shims via [DllImport("uno_gl_shim")]
+			(see WasmGLFunctions.LargeArityShims.cs), which also primes the float-bearing
+			interp->native trampoline cookies that Silk.NET's calli dispatch needs.
+
+			WasmShellNativeCompile (not WasmShellNativeFileReference) is the item that runs emcc
+			on raw .c sources; NativeFileReference filters to .o/.a only.
+		-->
+		<WasmShellNativeCompile Include="$(MSBuildThisFileDirectory)native\uno_gl_shim.c" Visible="false" />
+	</ItemGroup>
+
 	<Target Name="_UnoSkiaWebAssemblyFeatureDefines" AfterTargets="PrepareForBuild">
 
 		<PropertyGroup>
@@ -52,30 +75,6 @@
 		<ItemGroup>
 			<WasmShellNativeFileReference Include="@(SkiaSharpStaticLibrary)" Visible="false" />
 			<WasmShellNativeFileReference Include="@(HarfBuzzSharpStaticLibrary)" Visible="false" />
-
-			<!--
-				Native shim that wraps glTexImage2D (9 args). The mono-wasm interpreter only
-				supports up to 8 args for [UnmanagedCallersOnly] trampolines (dotnet/runtime#109338),
-				so the framework can't dispatch the 9-arg signature directly from managed code.
-				The shim packs args into a struct and calls a 1-arg managed dispatcher.
-
-				WasmShellNativeCompile (not NativeFileReference) is the item that runs emcc on
-				raw .c sources; NativeFileReference filters to .o/.a only.
-			-->
-			<WasmShellNativeCompile Include="$(MSBuildThisFileDirectory)native\uno_gl_shim.c" Visible="false" />
-
-			<!--
-				Inject signature-primer DllImport declarations into the consuming app's MAIN
-				assembly. Silk.NET's float-bearing gl wrapper methods (gl.ClearColor / gl.Uniform1f
-				/ gl.Uniform4f) trigger calli with cookies VFFFF / VIF / VIFFFF; the wasm
-				interp->native trampoline pack only includes cookies that the build-time
-				PInvokeTableGenerator + InterpToNativeGenerator discover. They scan [DllImport]
-				declarations, and apparently only in the head assembly - declaring the dummies
-				in the framework library wasn't picked up. The primer has a [ModuleInitializer]
-				so no user code needs to reference it; the volatile-guarded body keeps the
-				declarations from being trimmed.
-			-->
-			<Compile Include="$(MSBuildThisFileDirectory)native\UnoGLCanvasElementWasmSignaturePrimer.cs" Visible="false" />
 
 			<!-- Include the GL symbol when running under net7 (https://github.com/dotnet/runtime/issues/76077) -->
 			<EmccExportedRuntimeMethod Include="GL" KeepDuplicates="false" />
