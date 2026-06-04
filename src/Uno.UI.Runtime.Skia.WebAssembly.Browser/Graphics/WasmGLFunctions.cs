@@ -18,11 +18,10 @@ namespace Uno.UI.Runtime.Skia.WebAssembly.Browser.Graphics;
 // everything as int; uint args from the [UnmanagedCallersOnly] signature are bit-cast at the
 // call boundary (no behavior change since wasm32 transfers them as i32 anyway).
 //
-// Entries with 9 or more arguments (glTexImage2D in v1) can't be dispatched directly from managed
-// code: the mono-wasm interpreter caps native-to-interp trampolines at 8 args (dotnet/runtime#109338).
-// These route through a native C shim (build/native/uno_gl_shim.c) that packs args into a struct
-// and calls a 1-arg managed dispatcher. The shim pointers are obtained via
-// [DllImport("uno_gl_shim")] getters (see NativeShimGetters in WasmGLFunctions.LargeArityShims.cs).
+// Entries with 9 or more arguments can't be dispatched directly from managed code: the mono-wasm
+// interpreter caps native-to-interp trampolines at 8 args (dotnet/runtime#109338). These route
+// through native C shims (build/native/uno_gl_shim.c) that pack args into a struct and call a
+// 1-arg managed dispatcher; see WasmGLFunctions.LargeArityShims.cs.
 //
 // Float-bearing calli signatures (VFFFF for gl.ClearColor, VIF for gl.Uniform1f, VIFFFF for
 // gl.Uniform4f) need to be discovered by the build-time ManagedToNativeGenerator via [DllImport]
@@ -104,7 +103,7 @@ internal static unsafe partial class WasmGLFunctions
 			["glDeleteTextures"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, IntPtr, void>)&glDeleteTextures,
 			["glBindTexture"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, uint, void>)&glBindTexture,
 			["glActiveTexture"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, void>)&glActiveTexture,
-			["glTexImage2D"] = (IntPtr)NativeShimGetters.uno_get_gltexImage2D_ptr(),
+			// glTexImage2D has 9 args -> registered in RegisterLargeArityShimEntries.
 			["glTexParameteri"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, int, int, void>)&glTexParameteri,
 			["glTexParameterIuiv"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, int, IntPtr, void>)&glTexParameterIuiv,
 			["glReadBuffer"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, void>)&glReadBuffer,
@@ -235,29 +234,6 @@ internal static unsafe partial class WasmGLFunctions
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void glActiveTexture(int texture) => NativeMethods.ActiveTexture(texture);
-
-	// glTexImage2D has 9 args -> dispatched through the native C shim (uno_gl_shim.c) which packs
-	// the call into a struct and calls glTexImage2DPacked below as a 1-arg [UnmanagedCallersOnly].
-	[StructLayout(LayoutKind.Sequential)]
-	private struct GLTexImage2DArgs
-	{
-		public int Target;
-		public int Level;
-		public int InternalFormat;
-		public int Width;
-		public int Height;
-		public int Border;
-		public int Format;
-		public int Type;
-		public int Pixels;
-	}
-
-	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) }, EntryPoint = "uno_glTexImage2D_managed")]
-	private static void glTexImage2DPacked(GLTexImage2DArgs* args)
-		=> NativeMethods.TexImage2D(
-			args->Target, args->Level, args->InternalFormat,
-			args->Width, args->Height, args->Border,
-			args->Format, args->Type, args->Pixels);
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void glTexParameteri(int target, int pname, int param) => NativeMethods.TexParameteri(target, pname, param);
@@ -453,9 +429,6 @@ internal static unsafe partial class WasmGLFunctions
 
 		[JSImport(Prefix + "glActiveTexture")]
 		internal static partial void ActiveTexture(int texture);
-
-		[JSImport(Prefix + "glTexImage2D")]
-		internal static partial void TexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, int pixelsPtr);
 
 		[JSImport(Prefix + "glTexParameteri")]
 		internal static partial void TexParameteri(int target, int pname, int param);

@@ -20,6 +20,7 @@ internal static unsafe partial class WasmGLFunctions
 	{
 		KeepSignaturePrimer();
 
+		_addresses["glTexImage2D"] = (IntPtr)NativeShimGetters.uno_get_glTexImage2D_ptr();
 		_addresses["glTexSubImage2D"] = (IntPtr)NativeShimGetters.uno_get_glTexSubImage2D_ptr();
 		_addresses["glTexImage3D"] = (IntPtr)NativeShimGetters.uno_get_glTexImage3D_ptr();
 		_addresses["glTexSubImage3D"] = (IntPtr)NativeShimGetters.uno_get_glTexSubImage3D_ptr();
@@ -111,7 +112,7 @@ internal static unsafe partial class WasmGLFunctions
 	{
 		private const string ShimLibrary = "uno_gl_shim";
 
-		[DllImport(ShimLibrary, CallingConvention = CallingConvention.Cdecl)] internal static extern int uno_get_gltexImage2D_ptr();
+		[DllImport(ShimLibrary, CallingConvention = CallingConvention.Cdecl)] internal static extern int uno_get_glTexImage2D_ptr();
 		[DllImport(ShimLibrary, CallingConvention = CallingConvention.Cdecl)] internal static extern int uno_get_glTexSubImage2D_ptr();
 		[DllImport(ShimLibrary, CallingConvention = CallingConvention.Cdecl)] internal static extern int uno_get_glTexImage3D_ptr();
 		[DllImport(ShimLibrary, CallingConvention = CallingConvention.Cdecl)] internal static extern int uno_get_glTexSubImage3D_ptr();
@@ -121,6 +122,14 @@ internal static unsafe partial class WasmGLFunctions
 		[DllImport(ShimLibrary, CallingConvention = CallingConvention.Cdecl)] internal static extern int uno_get_glCompressedTexSubImage3D_ptr();
 		[DllImport(ShimLibrary, CallingConvention = CallingConvention.Cdecl)] internal static extern int uno_get_glBlitFramebuffer_ptr();
 	}
+
+	// glTexImage2D (9 args)
+	[StructLayout(LayoutKind.Sequential)]
+	private struct GLTexImage2DArgs { public int Target, Level, InternalFormat, Width, Height, Border, Format, Type, Pixels; }
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) }, EntryPoint = "uno_glTexImage2D_managed")]
+	private static void glTexImage2DPacked(GLTexImage2DArgs* args)
+		=> NativeMethods.TexImage2D(args->Target, args->Level, args->InternalFormat, args->Width, args->Height, args->Border, args->Format, args->Type, args->Pixels);
 
 	// glTexSubImage2D (9 args)
 	[StructLayout(LayoutKind.Sequential)]
@@ -188,6 +197,7 @@ internal static unsafe partial class WasmGLFunctions
 
 	private static partial class NativeMethods
 	{
+		[JSImport(Prefix + "glTexImage2D")] internal static partial void TexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, int pixelsPtr);
 		[JSImport(Prefix + "glTexSubImage2D")] internal static partial void TexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, int pixelsPtr);
 		[JSImport(Prefix + "glTexImage3D")] internal static partial void TexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, int pixelsPtr);
 		[JSImport(Prefix + "glTexSubImage3D")] internal static partial void TexSubImage3D(int target, int level, int xoffset, int yoffset, int zoffset, int width, int height, int depth, int format, int type, int pixelsPtr);
