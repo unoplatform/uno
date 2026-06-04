@@ -18,6 +18,9 @@ internal partial class TopViewLayer : UIView
 #if __IOS__
 		MultipleTouchEnabled = true;
 		SetupScrollGestureRecognizer();
+		SetupHoverGesture();
+		SetupPointerInteraction();
+		AppleUIKitCorePointerInputSource.Instance.RegisterCursorInvalidator(() => _pointerInteraction?.Invalidate());
 #endif
 	}
 
@@ -87,6 +90,35 @@ internal partial class TopViewLayer : UIView
 		{
 			NSNotificationCenter.DefaultCenter.RemoveObserver(_userDefaultsObserver);
 			_userDefaultsObserver = null;
+		}
+	}
+
+	private UIPointerInteraction? _pointerInteraction;
+
+	private void SetupHoverGesture()
+	{
+		// UIHoverGestureRecognizer reports mouse/trackpad hover (pointer movement with no button) on
+		// iPadOS 13.4+, feeding PointerEntered/Moved/Exited into the managed input pipeline.
+		if (UIDevice.CurrentDevice.CheckSystemVersion(13, 4))
+		{
+			AddGestureRecognizer(new UIHoverGestureRecognizer(OnHover)
+			{
+				ShouldRecognizeSimultaneously = (_, _) => true
+			});
+		}
+	}
+
+	private void OnHover(UIHoverGestureRecognizer recognizer)
+		=> AppleUIKitCorePointerInputSource.Instance.HoverGesture(this, recognizer);
+
+	private void SetupPointerInteraction()
+	{
+		// UIPointerInteraction lets us drive the iPadOS pointer shape from the managed cursor
+		// (UIElement.ProtectedCursor -> CoreWindow.PointerCursor). Available on iPadOS 13.4+.
+		if (UIDevice.CurrentDevice.CheckSystemVersion(13, 4))
+		{
+			_pointerInteraction = new UIPointerInteraction(new UnoPointerInteractionDelegate());
+			AddInteraction(_pointerInteraction);
 		}
 	}
 #endif

@@ -86,14 +86,31 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 	public event TypedEventHandler<object, PointerEventArgs>? PointerCancelled; // Uno Only
 #pragma warning restore CS0067
 
+	private PointerPointProperties? _previousProperties;
+	private Point _pointerPosition;
+	private CoreCursor? _pointerCursor = new(CoreCursorType.Arrow, 0);
+	private Action? _invalidateCursor;
+
 	public bool HasCapture => false;
 
-	public Point PointerPosition => default;
+	public Point PointerPosition => _pointerPosition;
 
 	public CoreCursor PointerCursor
 	{
-		get => new(CoreCursorType.Arrow, 0);
-		set { }
+		get => _pointerCursor!;
+		set
+		{
+			// A null cursor hides the pointer. Only the cursor shape (Type) is observable, so skip
+			// redundant assignments that would otherwise re-query the native pointer interaction.
+			if (_pointerCursor?.Type == value?.Type)
+			{
+				_pointerCursor = value;
+				return;
+			}
+
+			_pointerCursor = value;
+			_invalidateCursor?.Invoke();
+		}
 	}
 
 	public void SetPointerCapture()
@@ -121,7 +138,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 			foreach (UITouch touch in touches)
 			{
-				var args = CreatePointerEventArgs(source, touch);
+				var args = CreatePointerEventArgs(source, touch, evt);
 
 				TraceSingle(args);
 
@@ -145,7 +162,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 			foreach (UITouch touch in touches)
 			{
-				var args = CreatePointerEventArgs(source, touch);
+				var args = CreatePointerEventArgs(source, touch, evt);
 
 				TraceSingle(args);
 
@@ -169,7 +186,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 			foreach (UITouch touch in touches)
 			{
-				var args = CreatePointerEventArgs(source, touch);
+				var args = CreatePointerEventArgs(source, touch, evt);
 
 				TraceSingle(args);
 
@@ -193,7 +210,7 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 
 			foreach (UITouch touch in touches)
 			{
-				var args = CreatePointerEventArgs(source, touch);
+				var args = CreatePointerEventArgs(source, touch, evt);
 
 				TraceSingle(args);
 
@@ -528,7 +545,120 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 	}
 #endif
 
-	private PointerEventArgs CreatePointerEventArgs(UIView source, UITouch touch)
+#if __IOS__
+	private const uint MousePointerId = 1u;
+	// Logical-point length of the I-beam / axis-resize pointer shapes.
+	private const float CursorBeamLength = 20f;
+
+	// Builds the pointer args for a mouse/trackpad ("indirect pointer") event. Shared by the touch
+	// pipeline (clicks/drags, with the pressed buttons carried on the UIEvent) and by the hover
+	// gesture recognizer (movement with no button pressed).
+	private PointerEventArgs CreateMousePointerEventArgs(double nativeTimestamp, Point position, UIEventButtonMask buttonMask, VirtualKeyModifiers modifiers)
+	{
+		var isLeftPressed = (buttonMask & UIEventButtonMask.Primary) != 0;
+		var isRightPressed = (buttonMask & UIEventButtonMask.Secondary) != 0;
+		// iPadOS only names the primary/secondary buttons; the middle button is button index 2.
+		var isMiddlePressed = ((long)buttonMask & (1L << 2)) != 0;
+
+		var properties = new PointerPointProperties
+		{
+			IsLeftButtonPressed = isLeftPressed,
+			IsRightButtonPressed = isRightPressed,
+			IsMiddleButtonPressed = isMiddlePressed,
+			IsXButton1Pressed = false,
+			IsXButton2Pressed = false,
+			IsBarrelButtonPressed = false,
+			IsEraser = false,
+			IsHorizontalMouseWheel = false,
+			IsPrimary = true,
+			IsInRange = true,
+			Orientation = 0,
+			Pressure = 0,
+			TouchConfidence = false,
+		}.SetUpdateKindFromPrevious(_previousProperties);
+
+		_previousProperties = properties;
+		_pointerPosition = position;
+
+		var pointerPoint = new PointerPoint(
+			PointerHelpers.ToFrameId(nativeTimestamp),
+			PointerHelpers.ToTimestamp(nativeTimestamp),
+			PointerDevice.For(Windows.Devices.Input.PointerDeviceType.Mouse),
+			MousePointerId,
+			position,
+			position,
+			properties.HasPressedButton, // isInContact == any mouse button pressed
+			properties);
+
+		return new PointerEventArgs(pointerPoint, modifiers);
+	}
+
+	// Forwards mouse/trackpad hover (movement with no button pressed) from the
+	// UIHoverGestureRecognizer on the TopViewLayer. Began => entered, Changed => moved, Ended => exited.
+	internal void HoverGesture(UIView source, UIHoverGestureRecognizer recognizer)
+	{
+		try
+		{
+			// While a button is held the touch pipeline owns the interaction (drag); ignore hover so
+			// it cannot clobber the active contact state.
+			if (_previousProperties?.HasPressedButton == true)
+			{
+				return;
+			}
+
+			var location = recognizer.LocationInView(source);
+			var position = new Point(location.X, location.Y);
+			var modifiers = VirtualKeyHelper.FromModifierFlags(recognizer.ModifierFlags);
+
+			switch (recognizer.State)
+			{
+				case UIGestureRecognizerState.Began:
+					PointerEntered?.Invoke(this, CreateMousePointerEventArgs(CAAnimation.CurrentMediaTime(), position, 0, modifiers));
+					PointerMoved?.Invoke(this, CreateMousePointerEventArgs(CAAnimation.CurrentMediaTime(), position, 0, modifiers));
+					break;
+				case UIGestureRecognizerState.Changed:
+					PointerMoved?.Invoke(this, CreateMousePointerEventArgs(CAAnimation.CurrentMediaTime(), position, 0, modifiers));
+					break;
+				case UIGestureRecognizerState.Ended:
+				case UIGestureRecognizerState.Cancelled:
+				case UIGestureRecognizerState.Failed:
+					PointerExited?.Invoke(this, CreateMousePointerEventArgs(CAAnimation.CurrentMediaTime(), position, 0, modifiers));
+					break;
+			}
+		}
+		catch (Exception e)
+		{
+			TraceError(e);
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	// Registers a callback the TopViewLayer uses to refresh its UIPointerInteraction whenever the
+	// active cursor changes (the managed InputManager assigns PointerCursor as the pointer moves).
+	internal void RegisterCursorInvalidator(Action invalidate) => _invalidateCursor = invalidate;
+
+	// Maps the WinUI cursor to an iPadOS pointer style. iPadOS exposes an adaptive pointer rather than
+	// a fixed cursor catalog, so only the text beam and axis beams have direct equivalents; a null
+	// cursor hides the pointer and everything else falls back to the system pointer.
+	internal UIPointerStyle GetPointerStyle()
+	{
+		var cursor = _pointerCursor;
+		if (cursor is null)
+		{
+			return UIPointerStyle.CreateHiddenPointerStyle();
+		}
+
+		return cursor.Type switch
+		{
+			CoreCursorType.IBeam => UIPointerStyle.Create(UIPointerShape.CreateBeam((nfloat)CursorBeamLength, UIAxis.Vertical), UIAxis.Neither),
+			CoreCursorType.SizeWestEast => UIPointerStyle.Create(UIPointerShape.CreateBeam((nfloat)CursorBeamLength, UIAxis.Horizontal), UIAxis.Neither),
+			CoreCursorType.SizeNorthSouth => UIPointerStyle.Create(UIPointerShape.CreateBeam((nfloat)CursorBeamLength, UIAxis.Vertical), UIAxis.Neither),
+			_ => UIPointerStyle.CreateSystemPointerStyle(),
+		};
+	}
+#endif
+
+	private PointerEventArgs CreatePointerEventArgs(UIView source, UITouch touch, UIEvent? evt)
 	{
 #if __TVOS__
 		var position = touch.LocationInView(source);
@@ -536,6 +666,17 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 		var position = touch.GetPreciseLocation(source);
 #endif
 		var pointerDeviceType = touch.Type.ToPointerDeviceType();
+
+#if __IOS__
+		if (pointerDeviceType == Windows.Devices.Input.PointerDeviceType.Mouse)
+		{
+			// Mouse/trackpad ("indirect pointer") clicks arrive through the touch pipeline on
+			// iPadOS 13.4+, with the pressed buttons reported on the UIEvent (not the UITouch).
+			var buttonMask = evt?.ButtonMask ?? (UIEventButtonMask)0;
+			var mouseModifiers = VirtualKeyHelper.FromModifierFlags(evt?.ModifierFlags ?? default);
+			return CreateMousePointerEventArgs(touch.Timestamp, new Point(position.X, position.Y), buttonMask, mouseModifiers);
+		}
+#endif
 		var isInContact = touch.Phase == UITouchPhase.Began
 			|| touch.Phase == UITouchPhase.Moved
 			|| touch.Phase == UITouchPhase.Stationary;
