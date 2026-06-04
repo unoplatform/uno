@@ -1,4 +1,4 @@
-﻿name: Check Links
+name: Check Links
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ jobs:
     name: Check Docs links
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: recursive
