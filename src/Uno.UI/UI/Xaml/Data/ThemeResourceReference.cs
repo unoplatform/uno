@@ -342,9 +342,18 @@ internal sealed class ThemeResourceReference
 				}
 			}
 
-			// 3. Try top-level resources as last resort
-			if (Uno.UI.ResourceResolver.TryTopLevelRetrieval(ResourceKey, ParseContext, out var topLevelValue))
+			// 3. Try top-level resources as last resort, pinning the providing dictionary so the
+			//    pinned-dictionary-only RefreshValue path re-resolves the (app-level) override directly
+			//    afterwards instead of reverting to a stale parse-time pin (a {ThemeResource} on a
+			//    storyboard key-frame whose template lives in a framework/control dictionary, while the
+			//    key is overridden at application level).
+			if (Uno.UI.ResourceResolver.TryTopLevelRetrieval(ResourceKey, ParseContext, out var topLevelValue, out var topLevelDict))
 			{
+				if (topLevelDict is not null)
+				{
+					_targetDictionary = new WeakReference<ResourceDictionary>(topLevelDict);
+				}
+
 				SetResolvedValue(topLevelValue);
 				return topLevelValue;
 			}
