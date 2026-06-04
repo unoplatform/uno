@@ -696,4 +696,7 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_capture_cancel();
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_perform_on_main_runloop(nint context, delegate* unmanaged<nint, void> callback);
 }

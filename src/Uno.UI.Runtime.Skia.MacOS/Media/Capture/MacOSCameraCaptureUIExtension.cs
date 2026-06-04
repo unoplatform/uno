@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
@@ -106,11 +107,14 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 			? NativeUno.uno_capture_video()
 			: NativeUno.uno_capture_photo(_photoFormat == CameraCaptureUIPhotoFormat.Jpeg);
 
-		// Always post onto the dispatcher — even when already on the main thread — so the
-		// native modal event loop opens after the current event (e.g. a Button pointer-released
-		// dispatch) has finished unwinding. Running the modal synchronously on top of an active
-		// pointer dispatch re-enters PointerManager and trips its "pointer already being processed"
-		// assertion when AppKit delivers mouse events into the modal.
+		// Run the blocking native modal from the main *run loop*, not the GCD main queue (which is
+		// what NativeDispatcher.Main.Enqueue uses). [NSApp runModalForWindow:] blocks the thread it
+		// runs on; if that thread is executing a serial GCD main-queue work item, the queue cannot
+		// drain for the modal's lifetime, and AVFoundation delivers its capture/recording completion
+		// through the main queue — so the capture never finishes and the Capture/Record buttons
+		// freeze. A CFRunLoop-scheduled block leaves the serial main queue free while the modal pumps.
+		// It also runs after the current event (the pointer dispatch that started the capture) has
+		// unwound, so the modal does not re-enter the pointer pipeline.
 		var tcs = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
 		using var cancelRegistration = token.CanBeCanceled
 			? token.Register(() =>
@@ -120,7 +124,7 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 			})
 			: default;
 
-		NativeDispatcher.Main.Enqueue(() =>
+		Action work = () =>
 		{
 			if (token.IsCancellationRequested)
 			{
@@ -135,8 +139,15 @@ internal class MacOSCameraCaptureUIExtension : ICameraCaptureUIExtension
 			{
 				tcs.TrySetException(ex);
 			}
-		});
+		};
+
+		ScheduleOnMainRunLoop(work);
 
 		return await tcs.Task;
 	}
+
+	// Schedules the work item on the main run loop via the native helper. The GCHandle is freed by
+	// MacOSDispatcher.NativeToManaged after the work runs (same trampoline used by the GCD dispatcher).
+	private static unsafe void ScheduleOnMainRunLoop(Action work) =>
+		NativeUno.uno_perform_on_main_runloop((nint)GCHandle.Alloc(work), &MacOSDispatcher.NativeToManaged);
 }

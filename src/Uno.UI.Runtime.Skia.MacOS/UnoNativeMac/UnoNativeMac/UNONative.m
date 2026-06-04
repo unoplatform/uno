@@ -235,6 +235,53 @@ void uno_native_dispose(NSView<UNONativeElement>* element)
 // Both photo and video present a modal window with a live camera preview.
 // These functions must be called from the main thread (same pattern as file pickers).
 
+// Schedules a modal-teardown block ([NSApp stopModal] / abortModal) on the main thread
+// using CFRunLoop instead of the GCD main queue.
+//
+// The capture modal is launched through the managed NativeDispatcher, which posts work
+// onto the GCD main queue (dispatch_async on _dispatch_main_q). The blocking
+// [NSApp runModalForWindow:] therefore runs *inside* a GCD main-queue block. Because the
+// main queue is serial, it cannot drain any further main-queue block until that outer
+// block returns — but the outer block does not return until the modal ends. A teardown
+// call posted with dispatch_async(dispatch_get_main_queue(), ...) would deadlock: it can
+// never run, so the modal never ends and the Capture/Record buttons appear stuck.
+//
+// CFRunLoopPerformBlock enqueues directly onto the run loop and is serviced by the nested
+// modal run loop (NSModalPanelRunLoopMode is a common mode), so teardown works whether the
+// modal was entered from AppKit's event loop or from a GCD main-queue block. It is safe to
+// call from any thread.
+static void uno_dispatch_capture_modal_teardown(dispatch_block_t block)
+{
+    CFRunLoopRef mainLoop = CFRunLoopGetMain();
+    // [NSApp runModalForWindow:] pumps the run loop in NSModalPanelRunLoopMode, which is
+    // NOT a member of the common-modes set — so a block scheduled for kCFRunLoopCommonModes
+    // (or posted via the GCD main queue) is never serviced while the modal is up and the
+    // modal can never be torn down. Schedule explicitly for every mode the modal/button
+    // tracking loops can be running in so [NSApp stopModal]/abortModal always lands.
+    NSArray *modes = @[ (__bridge id)kCFRunLoopDefaultMode, NSModalPanelRunLoopMode, NSEventTrackingRunLoopMode ];
+    CFRunLoopPerformBlock(mainLoop, (__bridge CFArrayRef)modes, block);
+    CFRunLoopWakeUp(mainLoop);
+}
+
+// Schedules a managed callback on the main run loop (NOT the GCD main queue) and wakes it.
+//
+// The capture modal ([NSApp runModalForWindow:]) is blocking. The managed NativeDispatcher
+// posts work onto the serial GCD main queue (dispatch_async on _dispatch_main_q); running the
+// modal from there blocks that queue for the modal's entire lifetime. AVFoundation delivers its
+// photo/movie capture-completion through the main queue, so it can never drain and the
+// Capture/Record buttons freeze. Running the modal from a CFRunLoop block instead leaves the
+// serial main queue free while the modal pumps, so completions are delivered. The block also
+// runs on the next main run loop pass — after the current event (the pointer dispatch that
+// started the capture) has unwound — which avoids re-entering the pointer pipeline.
+void uno_perform_on_main_runloop(void* context, void (*callback)(void* context))
+{
+    CFRunLoopRef mainLoop = CFRunLoopGetMain();
+    CFRunLoopPerformBlock(mainLoop, kCFRunLoopCommonModes, ^{
+        callback(context);
+    });
+    CFRunLoopWakeUp(mainLoop);
+}
+
 // --- Photo capture delegate ---
 
 @interface UNOCameraCaptureDelegate : NSObject <AVCapturePhotoCaptureDelegate>
@@ -250,7 +297,7 @@ void uno_native_dispose(NSView<UNONativeElement>* element)
     if (!error) {
         self.capturedImageData = [photo fileDataRepresentation];
     }
-    dispatch_async(dispatch_get_main_queue(), ^{
+    uno_dispatch_capture_modal_teardown(^{
         [NSApp stopModal];
     });
 }
@@ -310,7 +357,7 @@ void uno_native_dispose(NSView<UNONativeElement>* element)
                                   error:(NSError *)error
 {
     self.succeeded = (error == nil);
-    dispatch_async(dispatch_get_main_queue(), ^{
+    uno_dispatch_capture_modal_teardown(^{
         [NSApp stopModal];
     });
 }
@@ -360,7 +407,7 @@ static NSWindow * _Nullable s_activeCaptureWindow = nil;
 
 void uno_capture_cancel(void)
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    uno_dispatch_capture_modal_teardown(^{
         if (s_activeCaptureWindow != nil) {
             [NSApp abortModal];
         }
