@@ -1,0 +1,17 @@
+﻿<ResourceDictionary x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.ThemeNavReproOverrides"
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<!--
+		App-level override of the stock Button PointerOver background, mirroring Kahua's FluentOverrides.xaml.
+		Light => Blue, Default(Dark) => Red, so a test can observe which theme dictionary the PointerOver
+		key-frame resolved against after navigation.
+	-->
+	<ResourceDictionary.ThemeDictionaries>
+		<ResourceDictionary x:Key="Light">
+			<SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="Blue" />
+		</ResourceDictionary>
+		<ResourceDictionary x:Key="Default">
+			<SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="Red" />
+		</ResourceDictionary>
+	</ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>
