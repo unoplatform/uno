@@ -1279,10 +1279,6 @@ namespace Uno.UI.Runtime.Skia {
 			writeCString(namePtr, bufSize, info.name, lengthPtr);
 		}
 
-		// Bootstrap bridge for the glTexImage2D 9-arg shim. The C function is exported by
-		// uno_gl_shim.c with EMSCRIPTEN_KEEPALIVE so it lives on Module as _uno_get_gltexImage2D_ptr.
-		// Returns the wasm function-table index of uno_glTexImage2D, which managed code then
-		// publishes in its Silk.NET dispatch table for "glTexImage2D".
 		// ------------------------------------------------------------------------------------
 		// Misc: glGetAttachedShaders, glGetShaderPrecisionFormat, indexed queries, glGetStringi
 		// ------------------------------------------------------------------------------------
