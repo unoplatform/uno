@@ -2,15 +2,16 @@
 // caps at 8 arguments. glTexImage2D has 9, so we wrap it in a native shim that packs the
 // arguments into a struct and forwards to a single-argument managed dispatcher.
 //
-// The framework exposes uno_get_gltexImage2D_ptr() to JS via EMSCRIPTEN_KEEPALIVE so the
-// function-pointer table in WasmGLFunctions can route Silk.NET's "glTexImage2D" lookup at
-// this native function (which has a stable 9 i32 -> void wasm signature) rather than at a
-// 9-arg [UnmanagedCallersOnly] method that the interpreter cannot build a trampoline for.
+// The framework calls uno_get_gltexImage2D_ptr() (and the other uno_get_*_ptr getters) via
+// [DllImport("uno_gl_shim")] so the function-pointer table in WasmGLFunctions can route
+// Silk.NET's "glTexImage2D" lookup at this native function (which has a stable 9 i32 -> void
+// wasm signature) rather than at a 9-arg [UnmanagedCallersOnly] method that the interpreter
+// cannot build a trampoline for.
 //
-// We can't reach the symbol via [DllImport] (no library-name registration for ad-hoc .c
-// files in Uno.Wasm.Bootstrap) or via NativeLibrary.GetMainProgramHandle() (not supported
-// on browser-wasm). The supported path is JS -> Module._uno_get_gltexImage2D_ptr() and
-// then [JSImport] back into managed code with the resulting int as the table index.
+// The DllImport module name resolves because this file is linked via WasmShellNativeCompile
+// -> NativeFileReference, and the wasm SDK registers every NativeFileReference's base name
+// as a static PInvoke module (_WasmPInvokeModules in WasmApp.Common.targets) - the same
+// mechanism that makes DllImport("unoicu") work against unoicu.a.
 
 #include <emscripten.h>
 #include <stdint.h>
@@ -143,11 +144,11 @@ void uno_glBlitFramebuffer(int srcX0, int srcY0, int srcX1, int srcY1, int dstX0
 EMSCRIPTEN_KEEPALIVE
 int uno_get_glBlitFramebuffer_ptr(void) { return (int)(intptr_t)&uno_glBlitFramebuffer; }
 
-// Dummy bodies for the signature primer in UnoGLCanvasElementWasmSignaturePrimer.cs.
-// The [DllImport] declarations there are what the build-time PInvokeTableGenerator scans
-// to register the matching trampoline cookies; these C bodies exist solely so wasm-ld
-// can resolve the symbols at link time. They're never called at runtime - the managed
-// callers sit behind a volatile-false guard.
+// Dummy bodies for the SignaturePrimer [DllImport] declarations in
+// WasmGLFunctions.LargeArityShims.cs. Those declarations are what the build-time
+// ManagedToNativeGenerator scans to register the matching trampoline cookies; these C
+// bodies exist solely so wasm-ld can resolve the symbols at link time. They're never
+// called at runtime - the managed callers sit behind a volatile-false guard.
 void uno_dummy_VFFFF(float a, float b, float c, float d) { (void)a; (void)b; (void)c; (void)d; }
 void uno_dummy_VIF(int a, float b) { (void)a; (void)b; }
 void uno_dummy_VIFFFF(int a, float b, float c, float d, float e) { (void)a; (void)b; (void)c; (void)d; (void)e; }
