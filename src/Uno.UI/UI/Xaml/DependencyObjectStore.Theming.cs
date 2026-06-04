@@ -533,6 +533,7 @@ public partial class DependencyObjectStore
 						if (themeRef is not null)
 						{
 							themeRef.LastResolvedValue = value;
+							themeRef.IsResolved = true;
 						}
 					}
 
@@ -562,6 +563,9 @@ public partial class DependencyObjectStore
 						{
 							themeRef.SetTargetDictionary(topLevelDict);
 							themeRef.LastResolvedValue = topLevelValue;
+							// Mark resolved: IsResolved distinguishes "resolved to null" from "not yet
+							// resolved" (UpdateThemeReference skips deferred refs whose value is null).
+							themeRef.IsResolved = true;
 						}
 					}
 				}
