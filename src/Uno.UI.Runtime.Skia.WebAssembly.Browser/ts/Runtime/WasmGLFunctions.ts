@@ -16,9 +16,9 @@ namespace Uno.UI.Runtime.Skia {
 
 	function tables(): GlAny {
 		const G = (<GlAny>window).GL;
-		// Lazily ensure each handle table exists. window.GL provided by emscripten
-		// usually has them, but on platforms where we initialize WebGL outside
-		// emscripten this guard avoids "cannot read property X of undefined".
+		// Lazily ensure each handle table exists. Emscripten's library_webgl.js creates the
+		// common tables (buffers, programs, ...) at startup, but the WebGL2-era ones (syncs,
+		// transformFeedbacks, ...) vary by emscripten version and link configuration.
 		G.buffers ||= [null];
 		G.programs ||= [null];
 		G.shaders ||= [null];
