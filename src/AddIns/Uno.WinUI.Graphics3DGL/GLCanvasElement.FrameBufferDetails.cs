@@ -18,7 +18,7 @@ public abstract partial class GLCanvasElement
 		{
 			_gl = gl;
 
-			Framebuffer = gl.GenBuffer();
+			Framebuffer = gl.GenFramebuffer();
 			gl.BindFramebuffer(GLEnum.Framebuffer, Framebuffer);
 			{
 				_textureColorBuffer = gl.GenTexture();
