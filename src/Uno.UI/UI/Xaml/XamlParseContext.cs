@@ -23,16 +23,51 @@ namespace Uno.UI.Xaml
 
 		public string AssemblyName { get; set; }
 
-		private System.Runtime.Loader.AssemblyLoadContext _assemblyLoadContext;
+		// The non-default ALC is held WEAKLY so that long-lived XamlParseContext instances
+		// (e.g. captured by ResourceBinding/ThemeResourceReference on elements reachable from
+		// non-collectible statics such as generated GlobalStaticResources singletons) never
+		// pin a collectible AssemblyLoadContext. While the secondary app is active its ALC is
+		// strongly rooted by the hosting side (live windows, visual tree, executing threads);
+		// once the host releases it and Unload() completes, this weak reference dies and the
+		// previous app's whole object graph becomes collectible.
+		private System.WeakReference<System.Runtime.Loader.AssemblyLoadContext> _assemblyLoadContext;
+
+		// The default ALC is process-immortal: hold it directly to avoid a pointless
+		// WeakReference allocation (and TryGetTarget would always succeed anyway).
+		private System.Runtime.Loader.AssemblyLoadContext _defaultAssemblyLoadContext;
+
+		// Latches the lazy by-AssemblyName resolution when no matching assembly is loaded,
+		// so repeated misses don't re-scan AppDomain on every access.
 		private bool _assemblyLoadContextResolved;
 
 		public System.Runtime.Loader.AssemblyLoadContext AssemblyLoadContext
 		{
 			get
 			{
-				if (_assemblyLoadContext is not null || _assemblyLoadContextResolved)
+				if (_defaultAssemblyLoadContext is not null)
 				{
-					return _assemblyLoadContext;
+					return _defaultAssemblyLoadContext;
+				}
+
+				if (_assemblyLoadContext is not null)
+				{
+					if (_assemblyLoadContext.TryGetTarget(out var alc))
+					{
+						return alc;
+					}
+
+					// The previously resolved ALC was unloaded and collected. Drop the dead
+					// reference and re-run the lazy resolution below: when the same logical
+					// app has been re-loaded (hot reload), a same-name assembly now lives in
+					// a NEW ALC and must be picked up — mirroring the "bump to the live
+					// registration" behavior in ResourceResolver.
+					_assemblyLoadContext = null;
+					_assemblyLoadContextResolved = false;
+				}
+
+				if (_assemblyLoadContextResolved)
+				{
+					return null;
 				}
 
 				// Lazily resolve from AssemblyName so secondary-ALC consumers are reachable
@@ -48,18 +83,37 @@ namespace Uno.UI.Xaml
 					{
 						if (string.Equals(assembly.GetName().Name, AssemblyName, System.StringComparison.Ordinal))
 						{
-							_assemblyLoadContext = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(assembly);
-							break;
+							var resolved = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(assembly);
+							SetAssemblyLoadContext(resolved);
+							return resolved;
 						}
 					}
 				}
 
-				return _assemblyLoadContext;
+				return null;
 			}
-			set
+			set => SetAssemblyLoadContext(value);
+		}
+
+		private void SetAssemblyLoadContext(System.Runtime.Loader.AssemblyLoadContext value)
+		{
+			if (value is null)
 			{
-				_assemblyLoadContext = value;
-				_assemblyLoadContextResolved = value is not null;
+				_defaultAssemblyLoadContext = null;
+				_assemblyLoadContext = null;
+				_assemblyLoadContextResolved = false;
+			}
+			else if (ReferenceEquals(value, System.Runtime.Loader.AssemblyLoadContext.Default))
+			{
+				_defaultAssemblyLoadContext = value;
+				_assemblyLoadContext = null;
+				_assemblyLoadContextResolved = true;
+			}
+			else
+			{
+				_defaultAssemblyLoadContext = null;
+				_assemblyLoadContext = new System.WeakReference<System.Runtime.Loader.AssemblyLoadContext>(value);
+				_assemblyLoadContextResolved = true;
 			}
 		}
 	}
