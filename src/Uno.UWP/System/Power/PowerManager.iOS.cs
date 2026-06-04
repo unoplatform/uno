@@ -20,6 +20,12 @@ public partial class PowerManager
 	private const string MaxCapacityKey = "Max Capacity";
 	private const string PowerSourceStateKey = "Power Source State";
 	private const string AcPowerValue = "AC Power";
+	private static readonly NSString IsPresentNSString = new(IsPresentKey);
+	private static readonly NSString IsChargingNSString = new(IsChargingKey);
+	private static readonly NSString IsChargedNSString = new(IsChargedKey);
+	private static readonly NSString CurrentCapacityNSString = new(CurrentCapacityKey);
+	private static readonly NSString MaxCapacityNSString = new(MaxCapacityKey);
+	private static readonly NSString PowerSourceStateNSString = new(PowerSourceStateKey);
 #endif
 
 
@@ -223,7 +229,7 @@ public partial class PowerManager
 						continue;
 					}
 
-					if (description[new NSString(IsPresentKey)] is NSNumber isPresentNumber
+					if (description[IsPresentNSString] is NSNumber isPresentNumber
 						&& !isPresentNumber.BoolValue)
 					{
 						continue;
@@ -232,11 +238,11 @@ public partial class PowerManager
 					return new MacCatalystPowerSourceState
 					{
 						IsPresent = true,
-						IsCharging = (description[new NSString(IsChargingKey)] as NSNumber)?.BoolValue == true,
-						IsCharged = (description[new NSString(IsChargedKey)] as NSNumber)?.BoolValue == true,
-						CurrentCapacity = (description[new NSString(CurrentCapacityKey)] as NSNumber)?.Int32Value ?? 0,
-						MaxCapacity = (description[new NSString(MaxCapacityKey)] as NSNumber)?.Int32Value ?? 0,
-						PowerSourceState = (description[new NSString(PowerSourceStateKey)] as NSString)?.ToString()
+						IsCharging = (description[IsChargingNSString] as NSNumber)?.BoolValue == true,
+						IsCharged = (description[IsChargedNSString] as NSNumber)?.BoolValue == true,
+						CurrentCapacity = (description[CurrentCapacityNSString] as NSNumber)?.Int32Value ?? 0,
+						MaxCapacity = (description[MaxCapacityNSString] as NSNumber)?.Int32Value ?? 0,
+						PowerSourceState = (description[PowerSourceStateNSString] as NSString)?.ToString()
 					};
 				}
 			}
@@ -260,7 +266,7 @@ public partial class PowerManager
 		public bool IsCharged { get; set; }
 		public int CurrentCapacity { get; set; }
 		public int MaxCapacity { get; set; }
-		public string PowerSourceState { get; set; }
+		public string? PowerSourceState { get; set; }
 	}
 
 	[DllImport("/System/Library/Frameworks/IOKit.framework/IOKit")]
