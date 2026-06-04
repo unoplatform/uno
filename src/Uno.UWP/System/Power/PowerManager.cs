@@ -1,4 +1,4 @@
-#if __ANDROID__ || __IOS__ || __WASM__
+#if __ANDROID__ || __IOS__ || __WASM__ || __SKIA__
 using System;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;

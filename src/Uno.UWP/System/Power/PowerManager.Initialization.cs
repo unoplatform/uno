@@ -15,6 +15,18 @@ partial class PowerManager
 		return InitializePlatformAsync();
 #elif __ANDROID__ || __IOS__
 		return Task.FromResult(true);
+#elif __SKIA__
+		if (IsPlatformSupported())
+		{
+			return Task.FromResult(true);
+		}
+
+		if (typeof(PowerManager).Log().IsEnabled(LogLevel.Error))
+		{
+			typeof(PowerManager).Log().LogError("PowerManager is not implemented on this platform");
+		}
+
+		return Task.FromResult(false);
 #else
 		if (typeof(PowerManager).Log().IsEnabled(LogLevel.Error))
 		{
