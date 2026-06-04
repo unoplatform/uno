@@ -17,6 +17,14 @@ public sealed partial class AlcContentHost : ContentControl
 	private Application? _sourceApplicationOverride;
 	private Application? _contentApplication;
 
+	// Keys this control copied into its own Resources / ThemeDictionaries from the source
+	// application. Tracked so the next UpdateMergedResources removes exactly those entries:
+	// when the secondary app's content is cleared (app unloading), the host must not keep
+	// referencing the previous app's resource objects — they may be typed in the secondary
+	// (collectible) AssemblyLoadContext and would otherwise pin it after unload.
+	private readonly List<object> _copiedDirectResourceKeys = new();
+	private readonly List<object> _copiedThemeDictionaryKeys = new();
+
 	public AlcContentHost()
 	{
 		HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -64,6 +72,27 @@ public sealed partial class AlcContentHost : ContentControl
 
 	private void UpdateMergedResources()
 	{
+		// Remove everything previously projected from the (old) source application before
+		// recomputing the source. When the content is cleared on app unload the source falls
+		// back to the host application, and the previous app's resource objects must not be
+		// retained by this control (see the tracking fields for the rationale).
+		foreach (var key in _copiedDirectResourceKeys)
+		{
+			Resources.Remove(key);
+		}
+
+		_copiedDirectResourceKeys.Clear();
+
+		foreach (var key in _copiedThemeDictionaryKeys)
+		{
+			Resources.ThemeDictionaries.Remove(key);
+		}
+
+		_copiedThemeDictionaryKeys.Clear();
+
+		// Clear existing merged dictionaries to avoid duplicates
+		Resources.MergedDictionaries.Clear();
+
 		var sourceApp = _sourceApplicationOverride
 			?? _contentApplication
 			?? Application.GetForInstance(Content)
@@ -73,9 +102,6 @@ public sealed partial class AlcContentHost : ContentControl
 		{
 			return;
 		}
-
-		// Clear existing merged dictionaries to avoid duplicates
-		Resources.MergedDictionaries.Clear();
 
 		// Merge all resource dictionaries from the source application
 		foreach (var resourceDictionary in sourceApp.Resources.MergedDictionaries)
@@ -89,6 +115,7 @@ public sealed partial class AlcContentHost : ContentControl
 			foreach (var themeDictionary in sourceApp.Resources.ThemeDictionaries)
 			{
 				Resources.ThemeDictionaries[themeDictionary.Key] = themeDictionary.Value;
+				_copiedThemeDictionaryKeys.Add(themeDictionary.Key);
 			}
 		}
 
@@ -98,6 +125,7 @@ public sealed partial class AlcContentHost : ContentControl
 		foreach (var key in sourceApp.Resources.Keys.Except(Resources.Keys).ToList())
 		{
 			Resources[key] = sourceApp.Resources[key];
+			_copiedDirectResourceKeys.Add(key);
 		}
 	}
 }

@@ -131,6 +131,46 @@ public class Given_AlcContentHost
 	}
 
 	/// <summary>
+	/// Teardown hygiene: the direct resources and theme dictionaries that AlcContentHost
+	/// copies from the secondary app onto the host control must be removed when the
+	/// secondary app content is cleared. Otherwise the host retains the previous app's
+	/// resource objects (potentially typed in the collectible ALC) after unload, keeping
+	/// them — and through them the ALC — alive across preview reloads.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_SecondaryAppContentCleared_Then_ProjectedResourcesRemovedFromHost()
+	{
+		var contentHost = await StartSecondaryAlcAppAsync();
+
+		// Pre-conditions: the secondary app's DIRECT resource and theme dictionaries
+		// were projected onto the host control (merged dictionaries are covered by
+		// the existing inheritance tests).
+		Assert.IsTrue(contentHost.Resources.ContainsKey("AlcAppDirectBrush", shouldCheckSystem: false),
+			"Pre-condition: AlcAppDirectBrush (direct Application.Resources entry) should be projected while the secondary app is hosted");
+		Assert.IsTrue(
+			contentHost.Resources.ThemeDictionaries.TryGetValue("Light", out var lightDictionary)
+				&& lightDictionary is ResourceDictionary lightResources
+				&& lightResources.ContainsKey("AlcAppThemeColor", shouldCheckSystem: false),
+			"Pre-condition: the secondary app's Light theme dictionary should be projected while the secondary app is hosted");
+
+		// Teardown trigger: clear the hosted content. UpdateMergedResources re-runs with
+		// the host application as the source and must drop everything previously copied
+		// from the secondary app.
+		contentHost.Content = null;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsFalse(contentHost.Resources.ContainsKey("AlcAppDirectBrush", shouldCheckSystem: false),
+			"After content is cleared, the secondary app's direct resources must be removed from the host control's Resources");
+
+		var staleThemeEntry = contentHost.Resources.ThemeDictionaries.TryGetValue("Light", out var themeValue)
+			&& themeValue is ResourceDictionary themeResources
+			&& themeResources.ContainsKey("AlcAppThemeColor", shouldCheckSystem: false);
+		Assert.IsFalse(staleThemeEntry,
+			"After content is cleared, the secondary app's theme dictionaries must be removed from the host control's Resources");
+	}
+
+	/// <summary>
 	/// Validates that ResourceDictionary.Source in App.xaml correctly resolves to the ALC-specific
 	/// dictionary when loaded from a secondary AssemblyLoadContext. This tests the fix for the issue
 	/// where both primary and secondary ALCs with the same resource URI pattern (e.g.,
