@@ -137,7 +137,15 @@ but Uno does not rely on native `[got|lost]pointercapture` events.
 
 ### iPadOS mouse support
 
-To differentiate between mouse and touch device type for pointer events, include the following in your app's `Info.plist`:
+On the Skia iOS target, a mouse or trackpad connected to an iPad (iPadOS 13.4 or later) is supported on par with the desktop targets:
+
+- Pointer events report `PointerDeviceType.Mouse`.
+- Hover is reported via `PointerEntered`, `PointerMoved` (with `IsInContact == false`) and `PointerExited`, so pointer-over visual states work.
+- `CoreWindow.PointerPosition` tracks the current pointer location.
+- Button state (`IsLeftButtonPressed`, `IsRightButtonPressed`, `IsMiddleButtonPressed`) and `PointerUpdateKind` are populated, and a secondary (right) click — including a two-finger trackpad click — raises `RightTapped`.
+- The pointer shape follows the hovered element's cursor (see [Using pointer cursors](xref:Uno.Features.Cursors)).
+
+This requires the following key in your app's `Info.plist` (already included in the Uno Platform app templates):
 
 ```xml
   <key>UIApplicationSupportsIndirectInputEvents</key>
