@@ -6,7 +6,7 @@ This file provides guidance to AI Agents when working with code in this reposito
 
 Uno Platform is an open-source .NET UI cross-platform framework for building .NET applications from a single codebase using the WinUI 3 API. It targets Web (WebAssembly), Desktop (Windows, macOS, Linux via Skia), and Mobile (iOS, tvOS, Android).
 
-**Reference these instructions first**. Use Claude Code skills (preferred) or specialized agents for deep dives:
+**Reference these instructions first**, then lean on skills (workflows) and the path-scoped rules below.
 
 #### Claude Code Skills (invoke via `/skill-name`)
 
@@ -14,18 +14,27 @@ Uno Platform is an open-source .NET UI cross-platform framework for building .NE
 |-------|---------|---------|
 | Add Sample | `/add-sample` | Creating SamplesApp sample pages with correct registration |
 | Runtime Tests | `/runtime-tests` | Building and running Uno runtime tests (Skia Desktop/WASM) |
-| WinUI Porting | `/winui-port` | Porting WinUI C++ code to Uno Platform C# |
 | WinUI Runtime Tests | `/winui-runtime-tests` | Running runtime tests against native WinUI on Windows |
+| WinUI Porting | `/winui-port` | Porting WinUI C++ code to Uno Platform C# (full deep reference) |
+| DevServer | `/devserver` | DevServer CLI/Host build, test, MCP proxy, add-in discovery |
 
-#### Specialized Agent Files (for deep reference)
+#### Path-scoped rules (`.claude/rules/`)
 
-| Agent | File | Use For |
-|-------|------|---------|
-| DependencyProperty | `.github/agents/dependency-property-agent.md` | Adding/modifying DependencyProperties |
-| Source Generators | `.github/agents/source-generators-agent.md` | XAML/DependencyObject generator work |
-| Runtime Tests | `.github/agents/runtime-tests-agent.md` | Runtime test patterns and helpers reference |
-| WinUI Porting | `.github/agents/winui-porting-agent.md` | WinUI porting rules deep reference |
-| DevServer CLI | `.github/agents/devserver-agent.md` | DevServer CLI/Host build, test, MCP proxy |
+These load **automatically** when you touch matching files — you don't invoke them. They hold the non-obvious, subsystem-specific conventions so this always-loaded file stays lean:
+
+| Rule | Applies to | Covers |
+|------|-----------|--------|
+| `code-style.md` | `src/**/*.cs` | nullable, file headers (MUX/MIT), logging, `[Uno.NotImplemented]` |
+| `platform-targeting.md` | `src/**/*.cs` | file-suffix vs `#if` vs `OperatingSystem.IsX()` vs `ApiExtensibility` |
+| `debugging-discipline.md` | `src/**/*.cs` | full root-cause/validation/diagnosis-bias protocols |
+| `dependency-properties.md` | `src/Uno.UI/**` | `[GeneratedDependencyProperty]`, metadata, callbacks |
+| `runtime-tests.md` | `src/Uno.UI.RuntimeTests/**` | `[RunsOnUIThread]`, `[PlatformCondition]`, `UITestHelper` |
+| `unit-tests.md` | `src/Uno.UI.Tests/**` | MSTest, no-visual-tree logic tests |
+| `source-generators.md` | `src/SourceGenerators/**` | incremental gens, LOH/perf, cancellation |
+| `samples.md` | `src/SamplesApp/**` | `[Sample]`, theming, XamlStyler |
+| `build-system.md` | `src/**/*.{csproj,props,targets}` | TFMs, output paths, package versions |
+
+**Which to reach for:** the relevant `.claude/rules/*.md` is already in context (path-scoped) — use it as the checklist. Use a `/skill` for the actual build/run/scaffold/port workflow (and its deep reference).
 
 ---
 
@@ -52,12 +61,13 @@ Uno Platform is an open-source .NET UI cross-platform framework for building .NE
 | `.wasm.cs` | WebAssembly |
 | `.skia.cs` | Skia |
 | `.reference.cs` | Reference implementation |
+| `.crossruntime.cs` | Skia + WebAssembly + Reference (shared) |
 
 ### Key Source Directories
 
-- `src/Uno.UI/` - Core UI framework (141+ WinUI controls)
-- `src/Uno.UWP/` - Non-UI APIs
-- `src/Uno.Foundation/` - Foundation APIs
+- `src/Uno.UI/` - Core UI framework (WinUI controls, layout, XAML runtime)
+- `src/Uno.UWP/` - Non-UI WinRT APIs (platform-specific assemblies)
+- `src/Uno.Foundation/` - Foundation APIs (platform-specific assemblies)
 - `src/Uno.UI.Runtime.Skia.*/` - Skia platform runtimes
 - `src/SourceGenerators/` - XAML parser, DependencyProperty generator
 - `src/SamplesApp/` - Sample app for validation and tests
@@ -136,6 +146,12 @@ Single C#/XAML codebase → WinUI 3 API → Platform-specific runtimes (Skia, We
 - **Skia**: Cross-platform (Desktop Win32, macOS, Linux, Skia Android/iOS)
 - **Native**: Platform controls (UIKit, Android Views, DOM elements)
 
+### Development scope: Skia-first (IMPORTANT)
+
+**Unless a task explicitly states otherwise, new features and enhancements target the Skia targets only** (Desktop Win32/macOS/Linux and Skia-on-Android/iOS/WASM). The **native targets** — native Android Views, native iOS/UIKit, WASM DOM — are **maintenance-only**: don't build new features for them, but **don't break them either** (keep them compiling and behaving as-is).
+
+This applies to the **UI rendering layer** (`Uno.UI` native views), *not* to platform APIs. **Platform-specific non-UI WinRT APIs (in `Uno.UWP`/`Uno.Foundation`) are still actively enhanced**, because the Skia targets compile and consume those same per-platform implementations (e.g. Skia-on-Android uses the Android implementation of a file picker, sensor, contacts, etc.).
+
 ### Platform Base Classes
 
 | Platform | Inheritance |
@@ -187,84 +203,11 @@ When editing specifications, documentation, or other repo-tracked design artifac
 
 4. **If implementation follow-up exists in private repos**, describe it as alignment or downstream tracking work without identifiers or URLs.
 
-### Root-Cause First Debugging Protocol (MANDATORY)
+### Debugging & Validation (MANDATORY — summary)
 
-When fixing crashes, rendering issues, or selection/indexing bugs,
-agents must follow this order:
+When fixing crashes, rendering, or selection/indexing bugs: **reproduce first → name the broken invariant → fix the root cause (and the mutation point) before adding guards → prove it with a test that fails-before/passes-after → validate at runtime, not compile-only.** Label every proposed change `root-cause fix` or `defensive hardening`; a guard-only change is never a complete resolution. Report validation evidence with explicit labels — **Code review** (by inspection) vs **Compile** (which project built) vs **Runtime** (which test/app ran) — and never present compile-only as runtime validation.
 
-1. **Reproduce first**
-   - Capture exact repro steps and expected vs actual behavior.
-   - Keep one known-good repro path and rerun it after each meaningful change.
-
-2. **Identify the broken invariant**
-   - Prefer state/lifecycle invariants over symptom-level checks.
-   - For pipelines that derive secondary state, verify those derived
-      structures (for example: maps, indices, caches, or metadata)
-      are rebuilt from final post-mutation state.
-
-3. **Fix root cause before adding guards**
-    - Do not lead with null/index guards as the primary fix if
-       ownership/lifecycle is incorrect.
-    - Defensive guards are allowed only after root-cause correction,
-       and only as secondary hardening.
-
-4. **Prove correctness with targeted tests**
-   - Add/extend tests that fail before and pass after the root fix.
-   - Cover both the triggering scenario and one adjacent regression scenario.
-
-5. **Validate with runtime behavior, not compile only**
-   - Run the closest runtime or integration path available for the changed area.
-   - If full runtime execution is not possible in the environment,
-       state that explicitly and provide the exact command(s) for
-       maintainers to run.
-
-6. **Communicate confidence accurately**
-   - Separate: (a) code review assessment,
-       (b) compile validation, (c) runtime validation.
-   - Never present guard-only mitigation as a complete root-cause fix.
-
-**Anti-pattern to avoid:**
-
-- Symptom-driven patching that accumulates bounds checks while
-   stale or invalid intermediate state remains possible.
-
-### Validation Evidence Protocol (MANDATORY)
-
-For bug fixes and PR reviews, agents must report validation evidence
-with explicit labels:
-
-- **Code review assessment**: What logic appears correct by inspection.
-- **Compile validation**: Which project/solution was built, and result.
-- **Runtime validation**: Which app/test path was executed, and result.
-
-Rules:
-
-1. Do not present compile-only checks as runtime validation.
-2. If runtime execution is skipped or blocked, state that explicitly
-   and provide exact commands to run.
-3. When reviewing another PR, distinguish between confidence from
-   diff inspection vs. confidence from local execution.
-
-### Diagnosis Bias Checks (MANDATORY)
-
-Before proposing a crash fix, agents must run these checks to avoid
-choosing symptom-level guards over the real fix:
-
-1. **Invariant checkpoint before patching**
-    - Name the invariant likely broken (ownership, lifecycle,
-       index/map coherence, post-mutation consistency).
-   - If no invariant is identified, do not claim a root-cause fix.
-
-2. **Mutation-point review**
-    - Inspect where state is created/trimmed/reordered and verify all
-       dependent structures are refreshed there.
-    - Prefer correcting the mutation point over adding protections in
-       downstream consumers.
-
-3. **Guard classification**
-    - Explicitly label each proposed change as either
-       `root-cause fix` or `defensive hardening`.
-   - Guard-only changes must not be presented as complete resolution.
+The full protocol (root-cause steps, diagnosis-bias checks, evidence rules) auto-loads from `.claude/rules/debugging-discipline.md` when editing `src/**/*.cs`.
 
 ### Validation Checklist
 
@@ -296,9 +239,7 @@ Add tests to `Uno.UI.RuntimeTests`. Key helpers:
 - `await WindowHelper.WaitForLoaded(element)` - Wait for load
 - `await WindowHelper.WaitForIdle()` - Wait for UI to settle
 
-**To build and run tests, use the `/runtime-tests` skill.** It handles build, filter encoding, execution, and result parsing for both Skia Desktop and WASM.
-
-See `.github/agents/runtime-tests-agent.md` for detailed patterns.
+**To build and run tests, use the `/runtime-tests` skill.** It handles build, filter encoding, execution, and result parsing for both Skia Desktop and WASM. Test-authoring conventions auto-load from `.claude/rules/runtime-tests.md`.
 
 ### Common Build Issues
 
@@ -332,25 +273,11 @@ Extensive use for:
 
 ### DependencyProperty Pattern
 
-See `.github/agents/dependency-property-agent.md` for full patterns. Quick template:
-
-```csharp
-public static DependencyProperty MyPropertyProperty { get; } =
-    DependencyProperty.Register(nameof(MyProperty), typeof(MyType), typeof(MyControl),
-        new FrameworkPropertyMetadata(default(MyType), OnMyPropertyChanged));
-
-public MyType MyProperty
-{
-    get => (MyType)GetValue(MyPropertyProperty);
-    set => SetValue(MyPropertyProperty, value);
-}
-```
+Prefer `[GeneratedDependencyProperty]` for new properties. Conventions auto-load from `.claude/rules/dependency-properties.md`; for full templates copy from existing controls (`Canvas`, `RangeBase`, `Button`).
 
 ### Code Style
 
-- **Braces**: Always use, even for single-line conditionals
-- **Indentation**: Tabs (configured in .editorconfig)
-- **Extension methods**: In `[TypeName]Extensions.cs`, mark `internal`
+Tabs, Allman braces (always), `internal` extension methods in `[Type]Extensions.cs`, `#nullable enable` per-file, MUX/MIT headers on ported code. Comments only when they add value — succinct, explaining the non-obvious *why*, never narrating code removal/history. Details auto-load from `.claude/rules/code-style.md`. Style is analyzer-enforced on CI even when `UnoFastDevBuild=true` skips it locally.
 
 ### Events
 
@@ -442,6 +369,14 @@ Guidelines:
 - Keep description under 50 characters
 - Use imperative mood ("Add" not "Added")
 - Reference issues: `fix: Resolve layout issue (fixes #12345)`
+- **Commit cadence**: when the user asks, or when working autonomously on a larger feature, commit in **logical groups** — one focused, Conventional-Commit-formatted commit per coherent chunk that builds clean, rather than one batch at the end. On complex work, these incremental commits also let reviewers follow the progression of the change rather than facing one giant diff. For small one-off edits in an interactive session, leave changes uncommitted unless asked.
+
+### Pull Requests & Issues
+
+When asked to open a PR or file an issue, **base it on the repo's existing templates** (filled out accordingly) — don't free-form:
+- **PRs** → fill out every section of `.github/PULL_REQUEST_TEMPLATE.md` and submit it as the body (e.g. `gh pr create --body-file <filled>.md`).
+- **Issues** → pick the matching GitHub issue **form** under `.github/ISSUE_TEMPLATE/` (`bug-report`, `enhancement`, `documentation-issue`/`-request`, `samples-issue`/`-request`, `feedback`, `support-request`, `success-story`) and fill its required fields (`gh issue create --template <name>.yml`).
+- **Every PR must reference an associated issue** (unless it's a pure-documentation change). Before opening the PR, settle the issue: use the one identified in the conversation; else search for an existing match (`gh issue list --search "<keywords>"`); else create one from the forms above. Put its number on the template's first line — `**GitHub Issue:** closes #XYZ` — so merging the PR auto-closes the issue.
 
 ---
 
@@ -456,12 +391,12 @@ Guidelines:
 - Build guide: `doc/articles/uno-development/building-uno-ui.md`
 - Samples guide: `doc/articles/uno-development/working-with-the-samples-apps.md`
 
-### Specialized Agents
-- `.github/agents/dependency-property-agent.md` - DependencyProperty patterns
-- `.github/agents/source-generators-agent.md` - XAML/DependencyObject generators
-- `.github/agents/runtime-tests-agent.md` - Runtime test execution
-- `.github/agents/winui-porting-agent.md` - WinUI C++ to C# porting
-- `.github/agents/devserver-agent.md` - DevServer CLI/Host maintenance
+### Subsystem deep dives
+- `/winui-port` skill - WinUI C++ → C# porting
+- `/devserver` skill - DevServer CLI/Host maintenance
+- `/runtime-tests` skill + `.claude/rules/runtime-tests.md` - runtime test execution & authoring
+- `.claude/rules/dependency-properties.md` - DependencyProperty patterns
+- `.claude/rules/source-generators.md` - XAML/DependencyObject generators
 
 ### Community
 - [Discord](https://platform.uno/discord)
