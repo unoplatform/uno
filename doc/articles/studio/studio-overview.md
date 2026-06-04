@@ -18,9 +18,9 @@ AI coding tools can generate code quickly, but for enterprises, generating code 
 - Pull context from official, version-correct Uno Platform documentation.
 - Stay inside an approval workflow that a human controls.
 
-**Uno Platform Studio 3.0** closes that gap by giving AI agents the context and validation loops they need to build real apps, through two new components that work alongside Hot Design<sup>®</sup>, Hot Reload, Design-to-Code, the Uno MCP, and the App MCP:
+**Uno Platform Studio** closes that gap by giving AI agents the context and validation loops they need to build real apps, through two new components that work alongside Hot Design<sup>®</sup>, Hot Reload, Design-to-Code, the Uno MCP, and the App MCP:
 
-- **Uno Platform Studio App:** a browser-based way to go from a prompt to a working Uno Platform app in minutes, with no installs required. Start from a description (or one of the curated samples in the Gallery), watch the app build live thanks to Hot Reload, refine it through the conversation panel, then export to your preferred IDE or CLI to keep building. [Get started](xref:Uno.PlatformStudio.GetStarted)
+- **Uno Platform Studio App:** allows you to go from a prompt to a working Uno Platform app in minutes. Start from a description (or one of the curated samples in the Gallery), watch the app build live thanks to Hot Reload, refine it through the conversation panel, then export to your preferred IDE or CLI to keep building. [Get started](xref:Uno.PlatformStudio.GetStarted)
 
 - **Uno Platform Studio Agent:** the orchestration layer that connects AI models to the Uno Platform development workflow. It contributes deep, cross-platform .NET domain knowledge, manages context, scaffolds apps from best practices, grounds responses in the latest Uno Platform documentation, and invokes MCP tools to verify its own work. It ships with 70+ Uno Platform-specific skills (spanning themes, Material Design, MVUX state management, navigation, toolkit controls, and UI test automation), delivered through the single `uno-platform-studio` plugin for Claude Code, GitHub Copilot, and OpenAI Codex, all inside a human-in-the-loop workflow. [Learn more](xref:Uno.PlatformStudio.Skills)
 
@@ -32,7 +32,7 @@ AI coding tools can generate code quickly, but for enterprises, generating code 
   Describe what you want and generate a working, well-structured Uno Platform app in the browser, then continue building in your IDE.
 
 - **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)**
-  The industry-first, runtime visual designer, for cross-platform .NET applications. Hot Design<sup>®</sup> transforms your running app into a Designer, from any IDE, on any OS, to create polished interfaces with ease. Pair it with the **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)** for AI-powered UX/UI creation that leverages your data contexts and live previews. [Get started](xref:Uno.HotDesign.GetStarted.Guide)
+  The industry-first, patented, runtime visual designer, for cross-platform .NET applications. Hot Design<sup>®</sup> transforms your running app into a Designer, from any IDE, on any OS, to create polished interfaces with ease. Pair it with the **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)** for AI-powered UX/UI creation that leverages your data contexts and live previews. [Get started](xref:Uno.HotDesign.GetStarted.Guide)
 
 - **[Hot Reload](xref:Uno.Features.HotReload)**
   Reliably update any code in your app and get instant confirmation your changes were applied, with a Hot Reload Indicator to monitor changes while you develop.
