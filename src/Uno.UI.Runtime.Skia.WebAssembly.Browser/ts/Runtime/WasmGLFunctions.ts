@@ -1429,26 +1429,5 @@ namespace Uno.UI.Runtime.Skia {
 		public static glBlitFramebuffer(srcX0: number, srcY0: number, srcX1: number, srcY1: number, dstX0: number, dstY0: number, dstX1: number, dstY1: number, mask: number, filter: number): void {
 			gl().blitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
 		}
-
-		public static getExportedShimPtr(getterName: string): number {
-			const M = (<any>window).Module;
-			if (!M) {
-				console.error(`getExportedShimPtr('${getterName}'): window.Module is unavailable.`);
-				return 0;
-			}
-			const direct = M["_" + getterName];
-			if (typeof direct === "function") {
-				return direct() | 0;
-			}
-			if (typeof M.cwrap === "function") {
-				try {
-					return M.cwrap(getterName, "number", [])() | 0;
-				} catch (e) {
-					console.error(`getExportedShimPtr('${getterName}'): cwrap fallback failed.`, e);
-				}
-			}
-			console.error(`getExportedShimPtr: '${getterName}' is not reachable on Module. The shim function may not be EMSCRIPTEN_KEEPALIVE-annotated.`);
-			return 0;
-		}
 	}
 }

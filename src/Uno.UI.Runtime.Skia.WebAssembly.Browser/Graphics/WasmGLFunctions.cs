@@ -21,16 +21,17 @@ namespace Uno.UI.Runtime.Skia.WebAssembly.Browser.Graphics;
 // Entries with 9 or more arguments (glTexImage2D in v1) can't be dispatched directly from managed
 // code: the mono-wasm interpreter caps native-to-interp trampolines at 8 args (dotnet/runtime#109338).
 // These route through a native C shim (build/native/uno_gl_shim.c) that packs args into a struct
-// and calls a 1-arg managed dispatcher.
+// and calls a 1-arg managed dispatcher. The shim pointers are obtained via
+// [DllImport("uno_gl_shim")] getters (see NativeShimGetters in WasmGLFunctions.LargeArityShims.cs).
 //
 // Float-bearing calli signatures (VFFFF for gl.ClearColor, VIF for gl.Uniform1f, VIFFFF for
-// gl.Uniform4f) need to be discovered by the build-time PInvokeTableGenerator via [DllImport]
-// declarations in the head assembly; see UnoGLCanvasElementWasmSignaturePrimer.cs which is
-// Compile-included into the consuming app by this framework's .targets file.
+// gl.Uniform4f) need to be discovered by the build-time ManagedToNativeGenerator via [DllImport]
+// declarations; see SignaturePrimer in WasmGLFunctions.LargeArityShims.cs.
 //
 // Adding a new entry: add an [UnmanagedCallersOnly] method below, register it in the static ctor
 // dictionary, and add the matching JSImport + TS implementation. If the new signature has any
-// float/double parameters, add a matching [DllImport] dummy to the primer too.
+// float/double parameters, add a matching [DllImport] dummy to SignaturePrimer (plus a C body
+// in uno_gl_shim.c) too.
 internal static unsafe partial class WasmGLFunctions
 {
 	private static Dictionary<string, IntPtr> _addresses = null!;
@@ -103,7 +104,7 @@ internal static unsafe partial class WasmGLFunctions
 			["glDeleteTextures"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, IntPtr, void>)&glDeleteTextures,
 			["glBindTexture"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, uint, void>)&glBindTexture,
 			["glActiveTexture"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, void>)&glActiveTexture,
-			["glTexImage2D"] = GetShimPtr("uno_get_gltexImage2D_ptr"),
+			["glTexImage2D"] = (IntPtr)NativeShimGetters.uno_get_gltexImage2D_ptr(),
 			["glTexParameteri"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, int, int, void>)&glTexParameteri,
 			["glTexParameterIuiv"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, int, IntPtr, void>)&glTexParameterIuiv,
 			["glReadBuffer"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, void>)&glReadBuffer,
@@ -257,26 +258,6 @@ internal static unsafe partial class WasmGLFunctions
 			args->Target, args->Level, args->InternalFormat,
 			args->Width, args->Height, args->Border,
 			args->Format, args->Type, args->Pixels);
-
-	// Resolve a C-shim function pointer by calling its EMSCRIPTEN_KEEPALIVE-exported getter
-	// (uno_get_<name>_ptr) through JS. Used for every gl function whose argument count exceeds
-	// the [UnmanagedCallersOnly] cap (dotnet/runtime#109338) and therefore has to be reached
-	// via a native wrapper in uno_gl_shim.c.
-	//
-	// We can't use [DllImport("uno_gl_shim")] directly: the wasm runtime's pinvoke resolver
-	// rejects the library name for ad-hoc statically-linked .c files. NativeLibrary.GetMainProgramHandle
-	// isn't implemented on browser-wasm either. The JS path is the only thing that works.
-	private static IntPtr GetShimPtr(string getterName)
-	{
-		var ptr = NativeMethods.GetExportedShimPtr(getterName);
-		if (ptr == 0)
-		{
-			throw new InvalidOperationException(
-				$"Native shim getter '{getterName}' is not reachable from the wasm module. " +
-				"Verify that uno_gl_shim.c is being linked via WasmShellNativeCompile and that the C function is EMSCRIPTEN_KEEPALIVE-annotated.");
-		}
-		return (IntPtr)ptr;
-	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void glTexParameteri(int target, int pname, int param) => NativeMethods.TexParameteri(target, pname, param);
@@ -571,11 +552,5 @@ internal static unsafe partial class WasmGLFunctions
 
 		[JSImport(Prefix + "glUniform4f")]
 		internal static partial void Uniform4f(int location, float v0, float v1, float v2, float v3);
-
-		// Generic bootstrap helper: given a getter symbol name (uno_get_<name>_ptr), returns
-		// the wasm function-table index of the wrapped C function. JS calls Module.<name> or
-		// Module.cwrap(name, ...). Used for every C-shim that wraps a >8-arg gl function.
-		[JSImport(Prefix + "getExportedShimPtr")]
-		internal static partial int GetExportedShimPtr(string getterName);
 	}
 }
