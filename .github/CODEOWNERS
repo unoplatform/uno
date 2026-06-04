@@ -3,9 +3,9 @@
 # standard @username or @org/team-name format. You can also refer to a user by an
 # email address that has been added to their GitHub account, for example user@example.com
 
-*                                          @unoplatform/maintainers
+*                                          @unoplatform/uno-core-team
 
 # AI agent configuration — explicit ownership for change visibility
-/CLAUDE.md                                 @unoplatform/maintainers
-/AGENTS.md                                 @unoplatform/maintainers
-/.claude/                                  @unoplatform/maintainers
+/CLAUDE.md                                 @unoplatform/uno-core-team
+/AGENTS.md                                 @unoplatform/uno-core-team
+/.claude/                                  @unoplatform/uno-core-team
