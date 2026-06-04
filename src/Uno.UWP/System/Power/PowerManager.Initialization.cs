@@ -23,7 +23,7 @@ partial class PowerManager
 
 		if (typeof(PowerManager).Log().IsEnabled(LogLevel.Error))
 		{
-			typeof(PowerManager).Log().LogError("PowerManager is not implemented on this platform");
+			typeof(PowerManager).Log().LogError("PowerManager is only implemented on macOS for the Skia runtime");
 		}
 
 		return Task.FromResult(false);

@@ -10,6 +10,7 @@ namespace Windows.System.Power;
 
 public static partial class PowerManager
 {
+	private const string AcPowerSourceState = "AC Power";
 	private const string CoreFoundationFramework = "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation";
 	private const string IOKitFramework = "/System/Library/Frameworks/IOKit.framework/IOKit";
 	private const string ObjectiveCFramework = "/usr/lib/libobjc.A.dylib";
@@ -17,6 +18,7 @@ public static partial class PowerManager
 	private const int CfNumberIntType = 9;
 
 	private static readonly TimeSpan _pollingInterval = TimeSpan.FromSeconds(5);
+	private static readonly TimerCallback _pollStatusesCallback = static _ => PollStatuses();
 
 	private static Timer? _statusPollingTimer;
 	private static bool _isMacOS;
@@ -98,7 +100,7 @@ public static partial class PowerManager
 			}
 
 			SeedLastKnownValues();
-			_statusPollingTimer = new Timer(static _ => PollStatuses(), null, _pollingInterval, _pollingInterval);
+			_statusPollingTimer = new Timer(_pollStatusesCallback, null, _pollingInterval, _pollingInterval);
 		}
 	}
 
@@ -200,9 +202,9 @@ public static partial class PowerManager
 			var isExternalPower = false;
 
 			var count = CFArrayGetCount(powerSourcesList);
-			for (nint index = 0; index < count; index++)
+			for (nint powerSourceIndex = 0; powerSourceIndex < count; powerSourceIndex++)
 			{
-				var powerSource = CFArrayGetValueAtIndex(powerSourcesList, index);
+				var powerSource = CFArrayGetValueAtIndex(powerSourcesList, powerSourceIndex);
 				if (powerSource == IntPtr.Zero)
 				{
 					continue;
@@ -218,7 +220,7 @@ public static partial class PowerManager
 				totalCurrentCapacity += GetInt32Value(description, "Current Capacity");
 				totalMaxCapacity += GetInt32Value(description, "Max Capacity");
 				isCharging |= GetBooleanValue(description, "Is Charging");
-				isExternalPower |= string.Equals(GetStringValue(description, "Power Source State"), "AC Power", StringComparison.Ordinal);
+				isExternalPower |= string.Equals(GetStringValue(description, "Power Source State"), AcPowerSourceState, StringComparison.Ordinal);
 			}
 
 			return new(isPresent, isExternalPower, isCharging, totalCurrentCapacity, totalMaxCapacity);
