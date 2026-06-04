@@ -1,0 +1,108 @@
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Input.PointersTests.MousePointer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Shared.Windows_UI_Input.PointersTests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Padding="16" Spacing="12">
+
+            <TextBlock FontWeight="Bold" Text="iPadOS mouse / trackpad" />
+            <TextBlock
+                Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                Text="Connect a mouse or trackpad to an iPad (or run on Mac). Move, click, right-click and hover over the areas below."
+                TextWrapping="Wrap" />
+
+            <!--  Hover + move + buttons surface  -->
+            <Border
+                x:Name="Surface"
+                Height="160"
+                Background="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+                BorderBrush="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                BorderThickness="1">
+                <TextBlock
+                    x:Name="SurfaceState"
+                    Margin="8"
+                    VerticalAlignment="Top"
+                    Text="Move the pointer here…"
+                    TextWrapping="Wrap" />
+            </Border>
+
+            <TextBlock
+                x:Name="EventLog"
+                FontFamily="Consolas"
+                FontSize="12"
+                Text=""
+                TextWrapping="Wrap" />
+
+            <TextBlock
+                Margin="0,8,0,0"
+                FontWeight="Bold"
+                Text="Cursors (hover each tile)" />
+
+            <!--  Per-element cursors via ProtectedCursor  -->
+            <ItemsControl>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" Spacing="8" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <local:CursorControl
+                    Width="96"
+                    Height="64"
+                    Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                    CursorShape="Arrow">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="Arrow" />
+                </local:CursorControl>
+                <local:CursorControl
+                    Width="96"
+                    Height="64"
+                    Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                    CursorShape="Hand">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="Hand" />
+                </local:CursorControl>
+                <local:CursorControl
+                    Width="96"
+                    Height="64"
+                    Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                    CursorShape="IBeam">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="IBeam" />
+                </local:CursorControl>
+                <local:CursorControl
+                    Width="96"
+                    Height="64"
+                    Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                    CursorShape="SizeWestEast">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="Size W-E" />
+                </local:CursorControl>
+                <local:CursorControl
+                    Width="96"
+                    Height="64"
+                    Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                    CursorShape="SizeNorthSouth">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="Size N-S" />
+                </local:CursorControl>
+            </ItemsControl>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>
