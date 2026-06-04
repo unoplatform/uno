@@ -8,7 +8,7 @@ uid: Uno.Platform.Studio.Overview
 
 ![Introducing Uno Platform Studio](Assets/Introducing-Uno-Platform-Studio.png)
 
-## New in Uno Platform Studio 3.0: AI-native development for enterprise .NET
+## New in Uno Platform Studio: AI-native development for enterprise .NET
 
 AI coding tools can generate code quickly, but for enterprises, generating code is not the same as building a real application. Production apps need design system awareness, live runtime context, cross-platform consistency, UI validation, and a human reviewer in the loop. Generic AI agents struggle to:
 
