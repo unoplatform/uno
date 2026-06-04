@@ -161,6 +161,16 @@ namespace Microsoft.UI.Xaml
 		private HashSet<ResourceKey> KeyNotFoundCache
 			=> _keyNotFoundCache ??= new(SpecializedResourceDictionary.ResourceKeyComparer.Default);
 
+		/// <summary>
+		/// A typed key whose <see cref="Type"/> comes from a collectible AssemblyLoadContext must
+		/// never enter the key-not-found cache: dictionaries live as long as their owning element
+		/// (often the host application's lifetime) and a cached RuntimeType pins its
+		/// LoaderAllocator — and through it the whole collectible ALC — long after unload.
+		/// Re-probing such keys is cheap compared to leaking the entire secondary app.
+		/// </summary>
+		private static bool CanCacheKeyNotFound(in ResourceKey resourceKey)
+			=> resourceKey.TypeKey is not { IsCollectible: true };
+
 		internal object Lookup(object key)
 		{
 			if (!TryGetValue(key, out var value))
@@ -322,7 +332,7 @@ namespace Microsoft.UI.Xaml
 				return ResourceResolver.TrySystemResourceRetrieval(modifiedKey, out value);
 			}
 
-			if (useKeysNotFoundCache && !shouldCheckSystem)
+			if (useKeysNotFoundCache && !shouldCheckSystem && CanCacheKeyNotFound(resourceKey))
 			{
 				KeyNotFoundCache.Add(resourceKey);
 			}
@@ -400,7 +410,7 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			if (useKeysNotFoundCache && !shouldCheckSystem)
+			if (useKeysNotFoundCache && !shouldCheckSystem && CanCacheKeyNotFound(resourceKey))
 			{
 				KeyNotFoundCache.Add(resourceKey);
 			}
