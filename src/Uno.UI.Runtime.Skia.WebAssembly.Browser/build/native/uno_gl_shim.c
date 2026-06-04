@@ -1,12 +1,19 @@
 // Workaround for dotnet/runtime#109338: [UnmanagedCallersOnly] on browser-wasm interpreter
-// caps at 8 arguments. glTexImage2D has 9, so we wrap it in a native shim that packs the
-// arguments into a struct and forwards to a single-argument managed dispatcher.
+// caps at 8 arguments. gl functions with more arguments (glTexImage2D, glBlitFramebuffer, etc.)
+// are wrapped in native shims that pack the arguments into a struct and forward to a
+// single-argument managed dispatcher.
 //
-// The framework calls uno_get_gltexImage2D_ptr() (and the other uno_get_*_ptr getters) via
-// [DllImport("uno_gl_shim")] so the function-pointer table in WasmGLFunctions can route
-// Silk.NET's "glTexImage2D" lookup at this native function (which has a stable 9 i32 -> void
-// wasm signature) rather than at a 9-arg [UnmanagedCallersOnly] method that the interpreter
-// cannot build a trampoline for.
+// The framework calls the uno_get_*_ptr getters via [DllImport("uno_gl_shim")] so the
+// function-pointer table in WasmGLFunctions can route Silk.NET's lookups at these native
+// functions (which have stable all-i32 wasm signatures) rather than at >8-arg
+// [UnmanagedCallersOnly] methods that the interpreter cannot build trampolines for.
+//
+// Each shim follows the same pattern:
+//   1. struct of all args
+//   2. EMSCRIPTEN_KEEPALIVE C wrapper with the full arg list
+//   3. extern managed dispatcher with [UnmanagedCallersOnly(EntryPoint=...)] in C#
+//      (see WasmGLFunctions.LargeArityShims.cs)
+//   4. EMSCRIPTEN_KEEPALIVE getter exposing the function pointer
 //
 // The DllImport module name resolves because this file is linked via WasmShellNativeCompile
 // -> NativeFileReference, and the wasm SDK registers every NativeFileReference's base name
@@ -16,45 +23,16 @@
 #include <emscripten.h>
 #include <stdint.h>
 
-typedef struct {
-	int target;
-	int level;
-	int internalformat;
-	int width;
-	int height;
-	int border;
-	int format;
-	int type;
-	int pixels;
-} uno_gl_tex_image_2d_args;
-
-extern void uno_glTexImage2D_managed(uno_gl_tex_image_2d_args* args);
-
+// glTexImage2D: 9 args
+typedef struct { int target, level, internalformat, width, height, border, format, type, pixels; } uno_gl_texImage2D_args;
+extern void uno_glTexImage2D_managed(uno_gl_texImage2D_args* args);
 EMSCRIPTEN_KEEPALIVE
-void uno_glTexImage2D(int target, int level, int internalformat,
-                      int width, int height, int border,
-                      int format, int type, int pixels) {
-	uno_gl_tex_image_2d_args args = {
-		target, level, internalformat,
-		width, height, border,
-		format, type, pixels
-	};
+void uno_glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, int pixels) {
+	uno_gl_texImage2D_args args = { target, level, internalformat, width, height, border, format, type, pixels };
 	uno_glTexImage2D_managed(&args);
 }
-
 EMSCRIPTEN_KEEPALIVE
-int uno_get_gltexImage2D_ptr(void) {
-	return (int)(intptr_t)&uno_glTexImage2D;
-}
-
-// ----------------------------------------------------------------------------
-// Additional shims for other gl functions that exceed the 8-arg UCO cap.
-// Each follows the same pattern as glTexImage2D above:
-//   1. struct of all args
-//   2. EMSCRIPTEN_KEEPALIVE C wrapper with the full arg list
-//   3. extern managed dispatcher with [UnmanagedCallersOnly(EntryPoint=...)] in C#
-//   4. EMSCRIPTEN_KEEPALIVE getter exposing the function pointer to JS
-// ----------------------------------------------------------------------------
+int uno_get_glTexImage2D_ptr(void) { return (int)(intptr_t)&uno_glTexImage2D; }
 
 // glTexSubImage2D: 9 args
 typedef struct { int target, level, xoffset, yoffset, width, height, format, type, pixels; } uno_gl_texSubImage2D_args;
