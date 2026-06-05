@@ -1,7 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project>
   <PropertyGroup>
-	<PageExclusions>$(MSBuildThisFileDirectory)Resources\**\*.xaml</PageExclusions>
+	<!--
+	  Exclude the source per-control XAML (merged into themeresources_v2.xaml below) and the merged
+	  file itself from the automatic Page glob. The merged file is added to @(Page) explicitly by
+	  _IncludeThemeResourceV2Page so it doesn't depend on existing on disk at evaluation time.
+	-->
+	<PageExclusions>$(MSBuildThisFileDirectory)Resources\**\*.xaml;$(MSBuildThisFileDirectory)themeresources_v2.xaml</PageExclusions>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,19 +17,19 @@
 
   <!--
     Merge the per-control source XAML into the single themeresources_v2.xaml that the XAML source
-    generator consumes as a Page. Run once per project in the outer (cross-targeting) build, before
-    the inner per-TFM builds read it, so there is a single writer per project instead of one writer
-    per TFM. Every variant sets <TargetFrameworks> (plural), so this outer-build hook fires for all
-    of them in every configuration, including local single-TFM override builds. The remaining
-    cross-variant writers to this shared file are made safe by the atomic write in BatchMergeXaml,
-    so the merge no longer needs to be gated to Debug and the file no longer needs to be committed.
-    themeresources_v2.xaml is in Outputs so a missing/deleted file forces regeneration.
+    generator consumes as a Page. This runs in the inner (per-TFM) build before the source generator
+    reads its inputs (_InjectAdditionalFiles), not in the outer cross-targeting build: the file is a
+    build artifact (no longer committed), and v2 is consumed by app heads purely through a
+    ProjectReference, which builds the inner build directly and never runs DispatchToInnerBuilds. An
+    outer-only hook would therefore never fire for those consumers, leaving the file ungenerated and
+    the resource unregistered at runtime. Concurrent writers (multiple TFMs/variants sharing this one
+    file) are made safe by the atomic write in BatchMergeXaml. themeresources_v2.xaml is in Outputs so
+    a missing/deleted file forces regeneration.
   -->
   <Target Name="GenerateThemeResourceV2File"
-          BeforeTargets="DispatchToInnerBuilds"
+          BeforeTargets="BeforeBuild;GenerateMSBuildEditorConfigFileCore;_InjectAdditionalFiles"
           Inputs="@(ThemeResourceV2MergeInput)"
-          Outputs="$(MSBuildThisFileDirectory)themeresources_v2.xaml;$(IntermediateOutputPath)\Version2\GenerateThemeResourceFile.write.1u.tlog"
-          Condition="'$(TargetFramework)' == ''">
+          Outputs="$(MSBuildThisFileDirectory)themeresources_v2.xaml;$(IntermediateOutputPath)\Version2\GenerateThemeResourceFile.write.1u.tlog">
     <ItemGroup>
       <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />      
       <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\ProgressRing.xaml" />
@@ -46,6 +51,21 @@
 	  TlogReadFilesOutputPath="$(IntermediateOutputPath)\Version2\GenerateThemeResourceFile.read.1u.tlog"
 	  TlogWriteFilesOutputPath="$(IntermediateOutputPath)\Version2\GenerateThemeResourceFile.write.1u.tlog" />
     <Message Text="Theme resources XAML file was generated" />
+  </Target>
+
+  <!--
+    Add the generated themeresources_v2.xaml to @(Page) at build time (the automatic glob excludes it
+    via PageExclusions because it may not exist at evaluation on a clean build). Must run before the
+    source generator collects its inputs in _InjectAdditionalFiles. Gated on the same flag as the
+    automatic Page glob so the Reference stub assembly keeps excluding it.
+  -->
+  <Target Name="_IncludeThemeResourceV2Page"
+          DependsOnTargets="GenerateThemeResourceV2File"
+          BeforeTargets="BeforeBuild;GenerateMSBuildEditorConfigFileCore;_InjectAdditionalFiles"
+          Condition="'$(EnableAutomaticXamlPageInclusion)' != 'false'">
+    <ItemGroup>
+      <Page Include="$(MSBuildThisFileDirectory)themeresources_v2.xaml" />
+    </ItemGroup>
   </Target>
 
   <PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Reference'">
