@@ -47,11 +47,6 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private bool _changingGlInitialized;
 
-	// Set when a user callback (Init, RenderOverride, OnDestroy) or the framebuffer setup throws.
-	// Once set, Invalidate() and Render() become no-ops until the element is reloaded, so a single
-	// faulty element logs one error instead of throwing into the dispatcher every frame.
-	private bool _renderingStopped;
-
 	// valid if and only if GLCanvasElement was loaded at least once and OpenGL is available on the running platform
 	private INativeOpenGLWrapper? _nativeOpenGlWrapper;
 	// These are valid if and only if IsLoaded and _nativeOpenGlWrapper is not null
@@ -223,7 +218,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 #if WINAPPSDK
 	public void Invalidate()
 	{
-		if (_renderingStopped)
+		if (IsGLInitialized == false)
 		{
 			return;
 		}
@@ -240,7 +235,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	// Invalidate() inside RenderOverride(), we will enter an infinite loop that completely hangs the app.
 	public void Invalidate()
 	{
-		if (_renderingStopped)
+		if (IsGLInitialized == false)
 		{
 			return;
 		}
@@ -284,6 +279,8 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	/// <summary>
 	/// Indicates whether this element was loaded successfully or not, including the OpenGL context creation and setup.
 	/// This property is only valid when the element is loaded. When the element is not loaded in the visual tree, the value will be null.
+	/// The value also becomes false if an exception escapes <see cref="Init"/>, <see cref="RenderOverride"/> or the
+	/// framebuffer setup, in which case the element stops rendering until it is reloaded.
 	/// </summary>
 	public bool? IsGLInitialized
 	{
@@ -297,7 +294,6 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
 	{
-		_renderingStopped = false;
 		_nativeOpenGlWrapper = GetOrCreateNativeOpenGlWrapper(XamlRoot!, _getWindowFunc);
 
 		if (_nativeOpenGlWrapper is null)
@@ -311,9 +307,9 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 		using (_nativeOpenGlWrapper.MakeCurrent())
 		{
 			UpdateFramebuffer();
-			if (_renderingStopped)
+			if (IsGLInitialized == false)
 			{
-				IsGLInitialized = false;
+				// The framebuffer creation failed and already recorded the failure.
 				return;
 			}
 
@@ -328,7 +324,6 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 					this.Log().Error($"{nameof(GLCanvasElement)} initialization failed. The element will not render.", e);
 				}
 
-				_renderingStopped = true;
 				IsGLInitialized = false;
 				return;
 			}
@@ -417,7 +412,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private void UpdateFramebuffer()
 	{
-		if (_renderingStopped || !IsLoaded || _nativeOpenGlWrapper is null)
+		if (IsGLInitialized == false || !IsLoaded || _nativeOpenGlWrapper is null)
 		{
 			return;
 		}
@@ -443,7 +438,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 					this.Log().Error($"{nameof(GLCanvasElement)} framebuffer update failed. The element will no longer render.", e);
 				}
 
-				_renderingStopped = true;
+				IsGLInitialized = false;
 				_details = null;
 				return;
 			}
@@ -465,7 +460,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private unsafe void Render()
 	{
-		if (_renderingStopped || !IsLoaded || _nativeOpenGlWrapper is null)
+		if (IsGLInitialized == false || !IsLoaded || _nativeOpenGlWrapper is null)
 		{
 			return;
 		}
@@ -505,7 +500,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 				this.Log().Error($"{nameof(GLCanvasElement)} rendering failed. The element will no longer render.", e);
 			}
 
-			_renderingStopped = true;
+			IsGLInitialized = false;
 		}
 	}
 
