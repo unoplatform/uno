@@ -88,21 +88,10 @@ public class Given_CommandBarFlyout
 	}
 #endif
 
-	// ------------------------------------------------------------------
-	// CommandBarFlyout first-open flash — kahua-private #480.
-	//
-	// Mirrors Given_MenuFlyout's Scenario C for CommandBarFlyout / TextCommandBarFlyout
-	// (used by the TextBox edit context menu — Cut / Copy / Paste — where the user
-	// originally reported the visible flash). The flyout's PrimaryCommands /
-	// SecondaryCommands are logical-only at popup-open time — they have not yet been
-	// reparented under the presenter's visual tree, which doesn't happen until the
-	// upcoming layout pass templates the CommandBarFlyoutCommandBar. Any
-	// {ThemeResource} brush resolved against the application's global active theme
-	// at XAML parse time would otherwise render one frame with the wrong-theme
-	// brush before the corrective theme walk converges. This test verifies the
-	// command's Foreground is already correct at the synchronous return point of
-	// ShowAt (the last instruction before the first measure / render).
-	// ------------------------------------------------------------------
+	// CommandBarFlyout first-open flash — kahua-private #480. Commands are logical-only at open time
+	// (reparented under the presenter only on the next layout pass), so a {ThemeResource} brush must
+	// already be correct at ShowAt's synchronous return — before the first measure/render — rather than
+	// resolving against the app's global active theme and flashing the wrong brush for one frame.
 	[TestMethod]
 	[RequiresFullWindow]
 	[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/480")]

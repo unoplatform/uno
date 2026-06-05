@@ -17,39 +17,14 @@ using static Private.Infrastructure.TestServices;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
 /// <summary>
-/// Regression repros for the WinUI theming-alignment refactor (scenarios S1–S5 and the
-/// public app-dark-switch regression). Each test encodes <b>correct WinUI behavior</b>:
-/// a value resolved through <c>{ThemeResource}</c> is a pure function of (key, the resolving
-/// owner's effective theme), where the owner's theme is established at tree-<c>Enter</c> from
-/// its (logical) inheritance parent — never from a process-global ambient.
-///
-/// <para><b>Polarity (important).</b> The reported defects all share one shape: the ambient
-/// OS theme is <b>Dark</b> while the relevant subtree is themed <b>Light</b> at the
-/// <i>element</i> level (the real app sets <c>root.RequestedTheme = Light</c>, not
-/// <c>Application.RequestedTheme</c>, so the app follows the OS). A materialized / recycled /
-/// scrolled-in / first-opened element with no governing theme walk then resolves the global
-/// ambient (Dark) instead of its own Light theme. These repros reproduce exactly that:
-/// a <b>Light element-level island under a (simulated) Dark ambient</b>, asserting the
-/// materialized child resolves <b>Light</b>.</para>
-///
-/// <para><b>Determinism.</b> The ambient OS theme is pinned via
-/// <see cref="ThemeHelper.UseSystemThemeOverride"/> so the repros are RED on current master on
-/// <i>any</i> machine OS theme — not only when the developer's OS happens to be Dark (which is
-/// why the existing theming suite "passes" on a Light OS and fails on a Dark OS today).</para>
-///
-/// Authoring notes:
-/// - Deterministic sentinel brushes via local <c>ThemeDictionaries["Light"]/["Dark"]/["Default"]</c>
-///   (Light = #FF111111, Dark = #FFEEEEEE), asserting exact <see cref="Color"/> values.
-/// - The outer region is themed <c>RequestedTheme="Dark"</c> so the test also exercises a real
-///   "Light island inside a Dark region" boundary on native WinUI (where the Uno-only ambient
-///   override compiles out and the app is Light by default) — keeping the test a valid oracle.
-/// - This class intentionally does NOT inherit <see cref="Given_ElementTheme"/>'s class-level
-///   native exclusion; instead every element-level theme test is excluded on native per-method
-///   (<c>[PlatformCondition(Exclude, NativeAndroid | NativeIOS)]</c>). Element-level theming
-///   (incl. the popup/flyout first-open tests T4/T5) is a Skia/WASM feature — native targets
-///   support OS + application theme only (plan.md Phase 7) — so these repros do not apply to
-///   iOS/Android. The per-method form (vs a blanket class exclusion) keeps each test's native
-///   scope explicit at the test site.
+/// Regression repros for the WinUI theming-alignment refactor. Each test asserts that a value
+/// resolved through <c>{ThemeResource}</c> is a pure function of (key, the resolving owner's
+/// effective theme), established at tree-<c>Enter</c> from the owner's inheritance parent — never
+/// from a process-global ambient. Each repro is a Light element-level island under a Dark ambient,
+/// asserting the materialized child resolves Light. The ambient OS theme is pinned via
+/// <see cref="ThemeHelper.UseSystemThemeOverride"/> so they fail on master regardless of the
+/// machine OS theme. Native targets support OS + application theme only, so element-level tests are
+/// excluded per-method (<c>[PlatformCondition(Exclude, NativeAndroid | NativeIOS)]</c>).
 /// </summary>
 [TestClass]
 [RunsOnUIThread]

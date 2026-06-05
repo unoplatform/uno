@@ -5114,50 +5114,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
-		// ---------------------------------------------------------------------------
 		// {ThemeResource} inheritance for grid/list row content presented after tab reload — kahua #482.
-		//
-		// Verifies that a {ThemeResource} used inside list/grid row content resolves against the
-		// content's own inherited ActualTheme — not the ambient/application theme — when that content is
-		// presented AFTER tab-style navigation has unloaded and reloaded the tab subtree.
-		//
-		// This models the issue scenario: a view hosts an items grid inside one tab. The user navigates to
-		// a different tab (the grid tab subtree is unloaded), then navigates back (the grid tab subtree
-		// re-enters the tree). When grid row content is subsequently presented through a surface that is
-		// reparented out of the owner's visual scope (a Flyout's PopupRoot — the same mechanism a grid uses
-		// for a row's pop-up detail), its {ThemeResource} can resolve against the global/application active
-		// theme instead of the row's own inherited ActualTheme — so the row text renders with the wrong
-		// theme's color even though the row's ActualTheme is correct.
-		//
-		// The OS-vs-app mismatch is reproduced on Uno by pinning the application theme to Dark
-		// (ThemeHelper.UseApplicationDarkTheme, #if HAS_UNO — it relies on the Uno-internal
-		// SetExplicitRequestedTheme) and placing a host that pins RequestedTheme=Light. On native WinUI the
-		// app-theme pin is unavailable, so the test runs as a Light-host baseline confirming the
-		// WinUI-correct value (Green); WinUI never exhibits the regression, so it still validates the
-		// behavior the Uno fix must match. The host's Resources declare a theme-keyed sentinel
-		// brush (Light=Green, Dark=Red, Default=Red). A grid row's Foreground references that brush via
-		// {ThemeResource}, declared inline in the SAME XAML so it parses inside the host's resource scope (a
-		// standalone XamlReader.Load of a {ThemeResource} fragment throws on WinUI). A TabView provides the
-		// navigation trigger: tab 1 hosts the items grid and an owner button whose Flyout presents the row
-		// content; tab 2 is unrelated. The test switches to tab 2 (grid tab subtree unloads), switches back
-		// (grid tab subtree re-enters), then opens the flyout whose content is hosted in the PopupRoot,
-		// reparented out of the owner's visual scope.
-		//
-		// WinUI-correct behavior: the row content's {ThemeResource} resolves against the owner's inherited
-		// Light theme, so the brush evaluates to the Light sentinel (Green) — even though the application
-		// theme is Dark and the content was reached after tab navigation. Uno regression: the
-		// popup-presented row content resolves the {ThemeResource} against the global/application active
-		// theme (Dark), evaluating to the Dark sentinel (Red), despite the row's ActualTheme correctly being
-		// Light. The expected value (Green) is identical on Skia Desktop and native WinUI; only the
-		// app-level mismatch differs (forced Dark on Uno, default on WinUI, as noted above). The assertions
-		// encode the WinUI-correct behavior.
-		// ---------------------------------------------------------------------------
-
-		// One XAML document: a RequestedTheme=Light host (the themed dictionary owner) declares the
-		// theme-keyed sentinel brush. A TabView gives the navigation trigger; tab 1 hosts an items grid
-		// (ListView) plus an owner Button whose Flyout presents the grid row content (a TextBlock) using
-		// the brush via {ThemeResource}, parsed inside the host's resource scope. Mirrors a view declaring
-		// its own row text brushes in a themed ResourceDictionary and showing a row's detail in a popup.
+		// A RequestedTheme=Light host declares a theme-keyed sentinel brush (Light=Green, Dark=Red); a row's
+		// Foreground uses it via {ThemeResource} parsed in the host's scope. After tab navigation unloads and
+		// re-enters the grid subtree, opening a Flyout reparents the row content into the PopupRoot. Its
+		// {ThemeResource} must still resolve the row's inherited Light (Green); Uno regressed to the app Dark
+		// (Red). On Uno the app theme is pinned Dark (UseApplicationDarkTheme, #if HAS_UNO) to force the
+		// mismatch; native WinUI runs the Light-host baseline (also Green), so both validate the same value.
 		private static Border CreateThemeResourceLightHost()
 			=> (Border)XamlReader.Load(
 				"""
