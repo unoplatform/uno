@@ -35,9 +35,8 @@ namespace UITests.Shared.Windows_UI_Composition
 			_startTime = DateTime.UtcNow;
 
 			var slVersion = gl.GetStringS(StringName.ShadingLanguageVersion);
-			var versionDef = slVersion.Contains("OpenGL ES", StringComparison.InvariantCultureIgnoreCase)
-				? "#version 300 es"
-				: "#version 330";
+			var isEs = slVersion.Contains("OpenGL ES", StringComparison.InvariantCultureIgnoreCase);
+			var versionDef = isEs ? "#version 300 es" : "#version 330";
 
 			var vsSource = versionDef + """
 
@@ -229,6 +228,10 @@ namespace UITests.Shared.Windows_UI_Composition
 			Check(Math.Abs(samplerMaxLod - 3f) < 0.001f, $"GetSamplerParameterfv returned {samplerMaxLod}");
 			gl.GetSamplerParameter(sampler, SamplerParameterI.WrapT, out int samplerWrapT);
 			Check(samplerWrapT == (int)GLEnum.Repeat, $"GetSamplerParameteriv returned 0x{samplerWrapT:x}");
+			gl.BindSampler(0, sampler);
+			gl.GetInteger(GLEnum.SamplerBinding, out int samplerBinding);
+			Check(samplerBinding == (int)sampler, $"GetIntegerv(SAMPLER_BINDING) returned {samplerBinding}, expected {sampler}");
+			gl.BindSampler(0, 0);
 			gl.DeleteSampler(sampler);
 
 			var rbo = gl.GenRenderbuffer();
@@ -246,6 +249,11 @@ namespace UITests.Shared.Windows_UI_Composition
 			Check(gl.IsFramebuffer(fbo), "IsFramebuffer was false");
 			gl.GetFramebufferAttachmentParameter(GLEnum.Framebuffer, GLEnum.ColorAttachment0, GLEnum.FramebufferAttachmentObjectType, out int attachmentType);
 			Check(attachmentType == (int)GLEnum.Renderbuffer, $"GetFramebufferAttachmentParameteriv returned 0x{attachmentType:x}");
+			// Object-binding queries must reverse-map to integer ids (incl. the READ target).
+			gl.BindFramebuffer(GLEnum.ReadFramebuffer, fbo);
+			gl.GetInteger(GLEnum.ReadFramebufferBinding, out int readFboBinding);
+			Check(readFboBinding == (int)fbo, $"GetIntegerv(READ_FRAMEBUFFER_BINDING) returned {readFboBinding}, expected {fbo}");
+			gl.BindFramebuffer(GLEnum.ReadFramebuffer, 0);
 			gl.BindFramebuffer(GLEnum.Framebuffer, 0);
 			gl.DeleteFramebuffer(fbo);
 			gl.DeleteRenderbuffer(rbo);
@@ -281,6 +289,39 @@ namespace UITests.Shared.Windows_UI_Composition
 			for (uint i = 0; i < extensionCount; i++)
 			{
 				Check(!string.IsNullOrEmpty(gl.GetStringS(StringName.Extensions, i)), $"GetStringi(EXTENSIONS, {i}) returned an empty string");
+			}
+
+			// COPY_READ_BUFFER binding query (an object-returning pname).
+			gl.BindBuffer(BufferTargetARB.CopyReadBuffer, _vbo);
+			gl.GetInteger(GLEnum.CopyReadBufferBinding, out int copyReadBinding);
+			Check(copyReadBinding == (int)_vbo, $"GetIntegerv(COPY_READ_BUFFER_BINDING) returned {copyReadBinding}, expected {_vbo}");
+			gl.BindBuffer(BufferTargetARB.CopyReadBuffer, 0);
+
+			// Array-valued state query: VIEWPORT writes 4 ints.
+			Span<int> savedViewport = stackalloc int[4];
+			gl.GetInteger(GLEnum.Viewport, savedViewport);
+			gl.Viewport(1, 2, 3, 4);
+			Span<int> viewport = stackalloc int[4];
+			gl.GetInteger(GLEnum.Viewport, viewport);
+			Check(viewport[0] == 1 && viewport[1] == 2 && viewport[2] == 3 && viewport[3] == 4,
+				$"GetIntegerv(VIEWPORT) returned ({viewport[0]},{viewport[1]},{viewport[2]},{viewport[3]})");
+			gl.Viewport(savedViewport[0], savedViewport[1], (uint)savedViewport[2], (uint)savedViewport[3]);
+
+			// Compressed-format enumeration (NUM_ pname is emulated on WebGL2).
+			gl.GetInteger(GLEnum.NumCompressedTextureFormats, out int compressedCount);
+			Check(compressedCount >= 0, $"GetIntegerv(NUM_COMPRESSED_TEXTURE_FORMATS) returned {compressedCount}");
+
+			// Capabilities WebGL2 has no toggle for must still report truthfully.
+			gl.Enable(EnableCap.Multisample);
+			Check(gl.IsEnabled(EnableCap.Multisample), "IsEnabled(MULTISAMPLE) returned false");
+
+			if (isEs)
+			{
+				// ES3 keeps the legacy combined extension string (desktop core profiles reject it).
+				Check(!string.IsNullOrEmpty(gl.GetStringS(StringName.Extensions)), "GetString(EXTENSIONS) returned an empty string");
+				// SHADER_COMPILER is an ES3 pname (desktop only from GL 4.1).
+				gl.GetInteger(GLEnum.ShaderCompiler, out int shaderCompiler);
+				Check(shaderCompiler == 1, $"GetIntegerv(SHADER_COMPILER) returned {shaderCompiler}");
 			}
 
 			gl.Hint(HintTarget.FragmentShaderDerivativeHint, HintMode.Nicest);
