@@ -139,6 +139,8 @@ void uno_dummy_VIIF(int a, int b, float c) { (void)a; (void)b; (void)c; }
 void uno_dummy_VIIL(int a, int b, long long c) { (void)a; (void)b; (void)c; }
 int uno_dummy_IIIL(int a, int b, long long c) { (void)a; (void)b; (void)c; return 0; }
 void uno_dummy_VIIFI(int a, int b, float c, int d) { (void)a; (void)b; (void)c; (void)d; }
+void uno_dummy_VD(double a) { (void)a; }
+void uno_dummy_VDD(double a, double b) { (void)a; (void)b; }
 // All-int large-arity cookies for the >8-arg shim wrappers above: Silk.NET reaches them via
 // calli with 9 (glTexImage2D & co), 10 (glTexImage3D, glBlitFramebuffer), and 11
 // (glTexSubImage3D, glCompressedTexSubImage3D) i32 arguments.
