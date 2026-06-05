@@ -12,7 +12,7 @@ From hereon, an understanding of the contract and consumer-visible behavior of [
 
 Uno's theming is aligned 1:1 with WinUI around a single invariant:
 
-> The value of any `{ThemeResource}` is a pure function of **(resource key, the resolving owner's effective theme)**. The owner's effective theme is established the moment the owner enters the live tree — inherited from its **(logical) inheritance parent** — and is *never* derived from a process-global "current theme" that a caller has to remember to set.
+> The value of any `{ThemeResource}` is a pure function of **(resource key, the resolving owner's effective theme, and the providing resource scope)**. The owner's effective theme is established the moment the owner enters the live tree — inherited from its **(logical) inheritance parent** — and is *never* derived from a process-global "current theme" that a caller has to remember to set. The providing dictionary is pinned at resolution so reparented popup/flyout content keeps resolving the key from the opener's scope rather than the `PopupRoot` it is visually moved under (see [Resource resolution](#resource-resolution)).
 
 Four mechanisms implement this; control authors should understand them so they don't reintroduce the historical band-aids (see the note below):
 
