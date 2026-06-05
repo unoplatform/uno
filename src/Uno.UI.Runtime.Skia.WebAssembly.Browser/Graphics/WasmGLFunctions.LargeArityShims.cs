@@ -91,6 +91,12 @@ internal static unsafe partial class WasmGLFunctions
 		[DllImport(ShimLibrary, EntryPoint = "uno_dummy_VIIFI", CallingConvention = CallingConvention.Cdecl)]
 		internal static extern void DummyVIIFI(int a, int b, float c, int d);
 
+		[DllImport(ShimLibrary, EntryPoint = "uno_dummy_VD", CallingConvention = CallingConvention.Cdecl)]
+		internal static extern void DummyVD(double a);
+
+		[DllImport(ShimLibrary, EntryPoint = "uno_dummy_VDD", CallingConvention = CallingConvention.Cdecl)]
+		internal static extern void DummyVDD(double a, double b);
+
 		[DllImport(ShimLibrary, EntryPoint = "uno_dummy_V9I", CallingConvention = CallingConvention.Cdecl)]
 		internal static extern void DummyV9I(int a, int b, int c, int d, int e, int f, int g, int h, int i);
 
@@ -122,6 +128,8 @@ internal static unsafe partial class WasmGLFunctions
 			_ = SignaturePrimer.DummyIIIL(0, 0, 0);
 			SignaturePrimer.DummyV8I(0, 0, 0, 0, 0, 0, 0, 0);
 			SignaturePrimer.DummyVIIFI(0, 0, 0, 0);
+			SignaturePrimer.DummyVD(0);
+			SignaturePrimer.DummyVDD(0, 0);
 			SignaturePrimer.DummyV9I(0, 0, 0, 0, 0, 0, 0, 0, 0);
 			SignaturePrimer.DummyV10I(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 			SignaturePrimer.DummyV11I(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);

@@ -26,6 +26,9 @@ internal static unsafe partial class WasmGLFunctions
 		_addresses["glGetFramebufferAttachmentParameteriv"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, int, int, IntPtr, void>)&glGetFramebufferAttachmentParameteriv;
 		_addresses["glGetRenderbufferParameteriv"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, int, IntPtr, void>)&glGetRenderbufferParameteriv;
 		_addresses["glClearDepthf"] = (IntPtr)(delegate* unmanaged[Cdecl]<float, void>)&glClearDepthf;
+		// Alias for the desktop-GL double-precision name, which is what Silk.NET's
+		// gl.ClearDepth(double) resolves. The narrowing matches the ES semantics.
+		_addresses["glClearDepth"] = (IntPtr)(delegate* unmanaged[Cdecl]<double, void>)&glClearDepth;
 		_addresses["glClearStencil"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, void>)&glClearStencil;
 	}
 
@@ -70,6 +73,9 @@ internal static unsafe partial class WasmGLFunctions
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void glClearDepthf(float d) => NativeMethods.ClearDepthf(d);
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void glClearDepth(double d) => NativeMethods.ClearDepthf((float)d);
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void glClearStencil(int s) => NativeMethods.ClearStencil(s);

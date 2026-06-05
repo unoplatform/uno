@@ -148,6 +148,9 @@ namespace UITests.Shared.Windows_UI_Composition
 			gl.Enable(EnableCap.DepthTest);
 			gl.DepthFunc(DepthFunction.Lequal);
 			gl.DepthMask(true);
+			// Silk.NET's double-precision desktop names; aliased to the f-variants on WebGL2.
+			gl.ClearDepth(1.0);
+			gl.DepthRange(0.0, 1.0);
 			gl.Enable(EnableCap.CullFace);
 			gl.CullFace(CullFaceMode.Back);
 			gl.FrontFace(FrontFaceDirection.Ccw);
