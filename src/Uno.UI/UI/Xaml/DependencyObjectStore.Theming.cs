@@ -533,7 +533,6 @@ public partial class DependencyObjectStore
 						if (themeRef is not null)
 						{
 							themeRef.LastResolvedValue = value;
-							themeRef.IsResolved = true;
 						}
 					}
 
@@ -543,31 +542,9 @@ public partial class DependencyObjectStore
 
 			if (!wasSet)
 			{
-				// The resource wasn't found in the in-scope (non-app) dictionaries, but may be provided by
-				// an application-level dictionary — e.g. an app-merged ThemeDictionaries override of a Fluent
-				// control resource (CheckBoxCheckBackgroundFillChecked, ...). Resolve it AND pin the providing
-				// dictionary onto the _themeResources entry. Without this re-pin a ThemeResource bound on a
-				// non-FrameworkElement owner (a storyboard key-frame, a VisualState Setter) keeps its parse-time
-				// pin — the STOCK control dictionary that declared the template, which also defines the key — so
-				// the pinned-dictionary-only ThemeResourceReference.RefreshValue path (invoked by
-				// ObjectAnimationUsingKeyFrames.EnsureKeyFrameThemeResources on every storyboard begin) keeps
-				// re-resolving the stock value and shadows the app-level override.
-				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var topLevelValue, out var topLevelDict))
+				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value))
 				{
-					SetResourceBindingValue(property, binding, topLevelValue);
-
-					if (topLevelDict is not null && _themeResources is not null)
-					{
-						var themeRef = _themeResources.Get(property, binding.Precedence);
-						if (themeRef is not null)
-						{
-							themeRef.SetTargetDictionary(topLevelDict);
-							themeRef.LastResolvedValue = topLevelValue;
-							// Mark resolved: IsResolved distinguishes "resolved to null" from "not yet
-							// resolved" (UpdateThemeReference skips deferred refs whose value is null).
-							themeRef.IsResolved = true;
-						}
-					}
+					SetResourceBindingValue(property, binding, value);
 				}
 			}
 		}
