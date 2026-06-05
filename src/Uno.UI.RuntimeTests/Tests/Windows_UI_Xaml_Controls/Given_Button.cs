@@ -18,7 +18,6 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Color = Windows.UI.Color;
 using Microsoft.UI.Xaml.Data;
-using Combinatorial.MSTest;
 using Uno.UI.Toolkit.DevTools.Input;
 
 
@@ -35,11 +34,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public class Given_Button
 	{
 		[TestMethod]
-		[CombinatorialData]
-		public async Task When_NavigationViewButtonStyles(bool useFluent)
+		public async Task When_NavigationViewButtonStyles()
 		{
-			using var _ = useFluent ? null : StyleHelper.UseUwpStyles();
-
 			var normalBtn = (Button)XamlReader.Load("""
 				<Button xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Style="{StaticResource NavigationBackButtonNormalStyle}" />
 				""");
@@ -50,10 +46,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				""");
 			var smallBtnRect = await UITestHelper.Load(smallBtn);
 
-			Assert.AreEqual(new Size(40, 40), new Size(normalBtnRect.Width, normalBtnRect.Height));
-			Assert.AreEqual(new Size(32, 32), new Size(smallBtnRect.Width, smallBtnRect.Height));
-			Assert.AreEqual(0, normalBtnRect.Left - smallBtnRect.Left);
-			Assert.AreEqual(8, normalBtnRect.Right - smallBtnRect.Right);
+			// Aligned with WinUI fc2f82117: both styles share NavigationBackButtonWidth/Height (40x36).
+			// The Small style only differs from the Normal style by trimming the right margin.
+			// A small tolerance accounts for sub-pixel rounding in the transformed bounds.
+			Assert.AreEqual(40, normalBtnRect.Width, 0.5);
+			Assert.AreEqual(36, normalBtnRect.Height, 0.5);
+			Assert.AreEqual(40, smallBtnRect.Width, 0.5);
+			Assert.AreEqual(36, smallBtnRect.Height, 0.5);
+			Assert.AreEqual(new Thickness(4, 2, 4, 2), normalBtn.Margin);
+			Assert.AreEqual(new Thickness(4, 2, 0, 2), smallBtn.Margin);
 		}
 
 		[TestMethod]

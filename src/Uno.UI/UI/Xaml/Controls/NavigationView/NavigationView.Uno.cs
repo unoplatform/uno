@@ -5,10 +5,12 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class NavigationView
 {
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 	//TODO: Uno specific - remove when #4689 is fixed
 
 	private void OnRepeaterUnoBeforeElementPrepared(ItemsRepeater itemsRepeater, ItemsRepeaterElementPreparedEventArgs args) =>
 		OnRepeaterElementPrepared(itemsRepeater, args);
+#endif
 
 	//TODO: Uno specific - remove when #4727 is fixed
 
