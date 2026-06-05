@@ -18,6 +18,9 @@ internal static unsafe partial class WasmGLFunctions
 		_addresses["glBindBufferBase"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, uint, uint, void>)&glBindBufferBase;
 		_addresses["glBindBufferRange"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, uint, uint, int, int, void>)&glBindBufferRange;
 		_addresses["glGetBufferParameteriv"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, int, IntPtr, void>)&glGetBufferParameteriv;
+		// Desktop GL reads buffers back via glGetBufferSubData (or mapping, which doesn't exist
+		// on WebGL2); WebGL2's getBufferSubData maps to it directly.
+		_addresses["glGetBufferSubData"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, IntPtr, IntPtr, IntPtr, void>)&glGetBufferSubData;
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
@@ -37,6 +40,10 @@ internal static unsafe partial class WasmGLFunctions
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void glGetBufferParameteriv(int target, int pname, IntPtr @params) => NativeMethods.GetBufferParameteriv(target, pname, (int)@params);
 
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void glGetBufferSubData(int target, IntPtr offset, IntPtr size, IntPtr data)
+		=> NativeMethods.GetBufferSubData(target, (int)offset, (int)size, (int)data);
+
 	private static partial class NativeMethods
 	{
 		[JSImport(Prefix + "glBufferSubData")] internal static partial void BufferSubData(int target, int offset, int size, int dataPtr);
@@ -44,5 +51,6 @@ internal static unsafe partial class WasmGLFunctions
 		[JSImport(Prefix + "glBindBufferBase")] internal static partial void BindBufferBase(int target, int index, int buffer);
 		[JSImport(Prefix + "glBindBufferRange")] internal static partial void BindBufferRange(int target, int index, int buffer, int offset, int size);
 		[JSImport(Prefix + "glGetBufferParameteriv")] internal static partial void GetBufferParameteriv(int target, int pname, int paramsPtr);
+		[JSImport(Prefix + "glGetBufferSubData")] internal static partial void GetBufferSubData(int target, int offset, int size, int dataPtr);
 	}
 }
