@@ -33,7 +33,6 @@ using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.UI.HiDpi;
 using Windows.Win32.UI.WindowsAndMessaging;
 using Uno.UI.Dispatching;
-using MARGINS = Windows.Win32.UI.Controls.MARGINS;
 using Point = System.Drawing.Point;
 
 namespace Uno.UI.Runtime.Skia.Win32;
@@ -885,7 +884,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		if (backdrop is not null and not (Microsoft.UI.Xaml.Media.MicaBackdrop or Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop))
 		{
+			// Leave any currently applied backdrop untouched rather than clearing it with DWMSBT_NONE.
 			this.LogWarn()?.Warn($"Only {nameof(Microsoft.UI.Xaml.Media.MicaBackdrop)} and {nameof(Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop)} are currently supported on Win32. '{backdrop.GetType().Name}' was ignored.");
+			return;
 		}
 
 		DWM_SYSTEMBACKDROP_TYPE backdropType = backdrop switch
@@ -912,19 +913,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			this.LogError()?.Error($"Failed to set system backdrop: {Win32Helper.GetErrorMessage(hResult)}");
 		}
 
-		// DWMWA_SYSTEMBACKDROP_TYPE only makes Mica/Acrylic appear under the non-client area unless
-		// the DWM frame is also extended into the client area. Using MARGINS {-1,-1,-1,-1} ("sheet of
-		// glass") tells DWM to paint the backdrop behind the entire window, so the transparent client
-		// pixels reveal the material instead of black.
-		if (backdropType is not DWM_SYSTEMBACKDROP_TYPE.DWMSBT_NONE)
-		{
-			var sheetOfGlass = new MARGINS { cxLeftWidth = -1, cxRightWidth = -1, cyTopHeight = -1, cyBottomHeight = -1 };
-			PInvoke.DwmExtendFrameIntoClientArea(_hwnd, in sheetOfGlass);
-		}
-		else
-		{
-			// Restore whatever frame extension the current presenter/title-bar configuration expects.
-			UpdateClientAreaExtension();
-		}
+		// DWMWA_SYSTEMBACKDROP_TYPE only makes Mica/Acrylic appear under the non-client area unless the
+		// DWM frame is also extended into the client area. Let the presenter recompute the extension:
+		// when a backdrop is active its ApplyFrameExtension extends the frame across the whole client
+		// area ("sheet of glass" MARGINS {-1,-1,-1,-1}) so the transparent client pixels reveal the
+		// material instead of black; otherwise it restores the title-bar/border configuration. Keeping
+		// this in the presenter avoids fighting it over the frame margins and corner preference.
+		UpdateClientAreaExtension();
 	}
 }

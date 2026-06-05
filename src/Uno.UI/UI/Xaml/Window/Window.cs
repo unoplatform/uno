@@ -308,7 +308,7 @@ public partial class Window
 
 #if __SKIA__
 	private Microsoft.UI.Xaml.Media.SystemBackdrop? _systemBackdrop;
-	private readonly List<(DependencyObject element, Brush? original)> _savedBackdropBackgrounds = new();
+	private readonly Dictionary<DependencyObject, Brush?> _savedBackdropBackgrounds = new();
 	private readonly HashSet<FrameworkElement> _backdropLoadedSubscriptions = new();
 	private bool _backdropBackgroundsApplied;
 
@@ -333,15 +333,17 @@ public partial class Window
 
 	private void UpdateRootVisualBackgroundForBackdrop(Media.SystemBackdrop? backdrop)
 	{
-		if (RootElement is null)
-		{
-			return;
-		}
-
+		// Always tear down first so subscriptions and saved backgrounds are released even when the
+		// root has already been torn down (RootElement is null), avoiding stale strong references.
 		if (backdrop is null || !IsBackdropSupported(backdrop))
 		{
 			ClearBackdropLoadedSubscriptions();
 			RestoreSavedBackdropBackgrounds();
+			return;
+		}
+
+		if (RootElement is null)
+		{
 			return;
 		}
 
@@ -372,15 +374,17 @@ public partial class Window
 
 			if (TryGetOpaqueBackground(current, out var originalBrush))
 			{
-				_savedBackdropBackgrounds.Add((current, originalBrush));
+				_savedBackdropBackgrounds[current] = originalBrush;
 				SetElementBackground(current, transparent);
 			}
 
-			// Listen for new descendants being loaded (for example after Frame.Navigate)
-			// so we can re-walk and transparentize their backgrounds as well.
+			// Listen for new descendants being loaded (for example after Frame.Navigate) so we can
+			// re-walk and transparentize their backgrounds as well, and for them being unloaded so we
+			// can drop the subscription and release the element instead of retaining it indefinitely.
 			if (current is FrameworkElement fe && _backdropLoadedSubscriptions.Add(fe))
 			{
 				fe.Loaded += OnBackdropElementLoaded;
+				fe.Unloaded += OnBackdropElementUnloaded;
 			}
 
 			for (var i = Media.VisualTreeHelper.GetChildrenCount(current) - 1; i >= 0; i--)
@@ -413,6 +417,7 @@ public partial class Window
 		foreach (var element in _backdropLoadedSubscriptions)
 		{
 			element.Loaded -= OnBackdropElementLoaded;
+			element.Unloaded -= OnBackdropElementUnloaded;
 		}
 
 		_backdropLoadedSubscriptions.Clear();
@@ -430,8 +435,27 @@ public partial class Window
 		ApplyTransparentBackgroundsForBackdrop();
 	}
 
+	private void OnBackdropElementUnloaded(object sender, RoutedEventArgs e)
+	{
+		// Drop the subscription when an element leaves the tree so it can be collected and we stop
+		// re-walking from stale elements. Restore its original background first so that, if it is
+		// re-inserted later, the re-walk captures the real value instead of our transparent override.
+		if (sender is FrameworkElement fe && _backdropLoadedSubscriptions.Remove(fe))
+		{
+			fe.Loaded -= OnBackdropElementLoaded;
+			fe.Unloaded -= OnBackdropElementUnloaded;
+
+			if (_savedBackdropBackgrounds.Remove(fe, out var original))
+			{
+				SetElementBackground(fe, original);
+			}
+		}
+	}
+
 	private static bool TryGetOpaqueBackground(DependencyObject element, out Brush? originalBrush)
 	{
+		// Panel/Border/ContentPresenter derive from FrameworkElement while Control (Page, UserControl,
+		// ContentControl, NavigationView, ...) is a separate branch, so these cases never overlap.
 		switch (element)
 		{
 			case Controls.Panel panel when panel.Background is Media.SolidColorBrush panelBrush && panelBrush.Color.A > 0:
@@ -442,6 +466,9 @@ public partial class Window
 				return true;
 			case Controls.ContentPresenter presenter when presenter.Background is Media.SolidColorBrush presenterBrush && presenterBrush.Color.A > 0:
 				originalBrush = presenter.Background;
+				return true;
+			case Controls.Control control when control.Background is Media.SolidColorBrush controlBrush && controlBrush.Color.A > 0:
+				originalBrush = control.Background;
 				return true;
 			default:
 				originalBrush = null;
@@ -461,6 +488,9 @@ public partial class Window
 				break;
 			case Controls.ContentPresenter presenter:
 				presenter.Background = brush;
+				break;
+			case Controls.Control control:
+				control.Background = brush;
 				break;
 		}
 	}

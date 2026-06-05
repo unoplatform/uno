@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -16,7 +15,8 @@ namespace UITests.Microsoft_UI_Windowing;
 		"Demonstrates Window.SystemBackdrop support for Mica and Desktop Acrylic materials. " +
 		"On macOS, uses NSVisualEffectView with the matching vibrancy material. " +
 		"On Windows 11 (22621+), uses DwmSetWindowAttribute with DWMWA_SYSTEMBACKDROP_TYPE. " +
-		"The page Background should be Transparent to let the backdrop show through.")]
+		"The framework makes the visual tree transparent so the backdrop shows through. " +
+		"Use the 'Extend content into title bar' toggle to verify the material also fills the title bar.")]
 public sealed partial class MicaBackdropTests : Page
 {
 	public MicaBackdropTests()
@@ -35,14 +35,12 @@ public sealed partial class MicaBackdropTests : Page
 
 	private void OnUnloaded(object sender, RoutedEventArgs e)
 	{
-		ViewModel?.ClearBackdrop();
+		ViewModel?.Reset();
 	}
 }
 
 internal class MicaBackdropTestsViewModel : ViewModelBase
 {
-	private readonly List<(DependencyObject element, Brush original)> _savedBackgrounds = new();
-
 	public MicaBackdropTestsViewModel()
 	{
 	}
@@ -59,6 +57,20 @@ internal class MicaBackdropTestsViewModel : ViewModelBase
 				return $"Mica ({mica.Kind})";
 			}
 			return backdrop?.GetType().Name ?? "None";
+		}
+	}
+
+	/// <summary>
+	/// Mirrors <see cref="Window.ExtendsContentIntoTitleBar"/> so the sample can verify the backdrop
+	/// material also fills the title bar region when the content is extended into it.
+	/// </summary>
+	public bool ExtendsContentIntoTitleBar
+	{
+		get => App.MainWindow.ExtendsContentIntoTitleBar;
+		set
+		{
+			App.MainWindow.ExtendsContentIntoTitleBar = value;
+			RaisePropertyChanged();
 		}
 	}
 
@@ -80,92 +92,24 @@ internal class MicaBackdropTestsViewModel : ViewModelBase
 	public void ClearBackdrop()
 	{
 		App.MainWindow.SystemBackdrop = null;
-		RestoreSavedBackgrounds();
+		RaisePropertyChanged(nameof(CurrentBackdrop));
+	}
+
+	/// <summary>
+	/// Restores the window to its default state when leaving the sample.
+	/// </summary>
+	public void Reset()
+	{
+		App.MainWindow.SystemBackdrop = null;
+		ExtendsContentIntoTitleBar = false;
 		RaisePropertyChanged(nameof(CurrentBackdrop));
 	}
 
 	private void SetBackdrop(SystemBackdrop backdrop)
 	{
+		// Setting Window.SystemBackdrop is enough: the framework transparentizes the visual tree so
+		// the material shows through. No manual background walking is required here anymore.
 		App.MainWindow.SystemBackdrop = backdrop;
-		MakeVisualTreeBackgroundsTransparent();
 		RaisePropertyChanged(nameof(CurrentBackdrop));
-	}
-
-	/// <summary>
-	/// Walks the visible visual tree hosted by SamplesApp and makes opaque container
-	/// backgrounds transparent so the system backdrop material can show through.
-	/// </summary>
-	private void MakeVisualTreeBackgroundsTransparent()
-	{
-		RestoreSavedBackgrounds();
-
-		var transparentBrush = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
-		if (App.MainWindow.Content is not DependencyObject root)
-		{
-			return;
-		}
-
-		var pending = new Stack<DependencyObject>();
-		var visited = new HashSet<DependencyObject>();
-		pending.Push(root);
-
-		while (pending.Count > 0)
-		{
-			var current = pending.Pop();
-			if (!visited.Add(current))
-			{
-				continue;
-			}
-
-			if (TryGetOpaqueBackground(current, out var originalBrush))
-			{
-				_savedBackgrounds.Add((current, originalBrush));
-				SetBackground(current, transparentBrush);
-			}
-
-			for (var i = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChildrenCount(current) - 1; i >= 0; i--)
-			{
-				pending.Push(Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChild(current, i));
-			}
-		}
-	}
-
-	private static bool TryGetOpaqueBackground(DependencyObject element, out Brush originalBrush)
-	{
-		switch (element)
-		{
-			case Panel panel when panel.Background is SolidColorBrush panelBrush && panelBrush.Color.A > 0:
-				originalBrush = panel.Background;
-				return true;
-			case Border border when border.Background is SolidColorBrush borderBrush && borderBrush.Color.A > 0:
-				originalBrush = border.Background;
-				return true;
-			default:
-				originalBrush = null;
-				return false;
-		}
-	}
-
-	private static void SetBackground(DependencyObject element, Brush background)
-	{
-		switch (element)
-		{
-			case Panel panel:
-				panel.Background = background;
-				break;
-			case Border border:
-				border.Background = background;
-				break;
-		}
-	}
-
-	private void RestoreSavedBackgrounds()
-	{
-		foreach (var (element, original) in _savedBackgrounds)
-		{
-			SetBackground(element, original);
-		}
-
-		_savedBackgrounds.Clear();
 	}
 }
