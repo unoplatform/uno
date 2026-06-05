@@ -140,11 +140,16 @@ namespace Uno.UI.Runtime.Skia {
 			if (cached) return cached;
 			const ctx = gl();
 			let value: string;
-			try {
-				value = ctx.getParameter(name) as string;
-				if (value == null) value = "";
-			} catch {
-				value = "";
+			if (name === 0x1F03 /* GL_EXTENSIONS */) {
+				// ES3 keeps the legacy combined extension string; WebGL2's getParameter does not.
+				value = (ctx.getSupportedExtensions() ?? []).join(" ");
+			} else {
+				try {
+					value = ctx.getParameter(name) as string;
+					if (value == null) value = "";
+				} catch {
+					value = "";
+				}
 			}
 			const ptr = allocCString(value);
 			stringCache[name] = ptr;
@@ -185,16 +190,41 @@ namespace Uno.UI.Runtime.Skia {
 				return;
 			}
 
+			// More ES3-core scalar pnames WebGL2's getParameter rejects.
+			if (pname === 0x86A2 /* NUM_COMPRESSED_TEXTURE_FORMATS */) {
+				const ctx = gl();
+				const formats = ctx.getParameter(ctx.COMPRESSED_TEXTURE_FORMATS);
+				writeInt32(dataPtr, formats ? (formats as any).length : 0);
+				return;
+			}
+			if (pname === 0x8DFA /* SHADER_COMPILER */) {
+				writeInt32(dataPtr, 1); // WebGL2 always compiles from source
+				return;
+			}
+			if (pname === 0x8DF9 /* NUM_SHADER_BINARY_FORMATS */ || pname === 0x87FE /* NUM_PROGRAM_BINARY_FORMATS */
+				|| pname === 0x821E /* CONTEXT_FLAGS */) {
+				writeInt32(dataPtr, 0); // no binary shader/program formats, no context flags
+				return;
+			}
+			if (pname === 0x8DF8 /* SHADER_BINARY_FORMATS */ || pname === 0x87FF /* PROGRAM_BINARY_FORMATS */) {
+				return; // their counts are 0, so there is nothing to write
+			}
+
 			// Object-binding queries (FRAMEBUFFER_BINDING, RENDERBUFFER_BINDING, BUFFER_*_BINDING,
 			// TEXTURE_BINDING_*, VERTEX_ARRAY_BINDING, CURRENT_PROGRAM) return the bound WebGL*
 			// object - or null when nothing's bound. Reverse-map to the integer id we stamped onto
 			// them in glGen*. Look the object up in the table as a fallback in case .name wasn't
 			// set (e.g. objects auto-created on first bind by external code).
-			if (pname === 0x8CA6 /* FRAMEBUFFER_BINDING */ || pname === 0x8CA7 /* RENDERBUFFER_BINDING */ ||
+			if (pname === 0x8CA6 /* FRAMEBUFFER_BINDING (== DRAW_) */ || pname === 0x8CAA /* READ_FRAMEBUFFER_BINDING */ ||
+				pname === 0x8CA7 /* RENDERBUFFER_BINDING */ ||
 				pname === 0x8894 /* ARRAY_BUFFER_BINDING */ || pname === 0x8895 /* ELEMENT_ARRAY_BUFFER_BINDING */ ||
 				pname === 0x8C8F /* TRANSFORM_FEEDBACK_BUFFER_BINDING */ || pname === 0x8A28 /* UNIFORM_BUFFER_BINDING */ ||
+				pname === 0x88ED /* PIXEL_PACK_BUFFER_BINDING */ || pname === 0x88EF /* PIXEL_UNPACK_BUFFER_BINDING */ ||
+				pname === 0x8F36 /* COPY_READ_BUFFER_BINDING */ || pname === 0x8F37 /* COPY_WRITE_BUFFER_BINDING */ ||
 				pname === 0x85B5 /* VERTEX_ARRAY_BINDING */ || pname === 0x8069 /* TEXTURE_BINDING_2D */ ||
-				pname === 0x8514 /* TEXTURE_BINDING_CUBE_MAP */ || pname === 0x8B8D /* CURRENT_PROGRAM */) {
+				pname === 0x806A /* TEXTURE_BINDING_3D */ || pname === 0x8C1D /* TEXTURE_BINDING_2D_ARRAY */ ||
+				pname === 0x8514 /* TEXTURE_BINDING_CUBE_MAP */ || pname === 0x8919 /* SAMPLER_BINDING */ ||
+				pname === 0x8E25 /* TRANSFORM_FEEDBACK_BINDING */ || pname === 0x8B8D /* CURRENT_PROGRAM */) {
 				const obj = gl().getParameter(pname);
 				if (!obj) { writeInt32(dataPtr, 0); return; }
 				let id = ((obj as any).name | 0);
@@ -202,6 +232,7 @@ namespace Uno.UI.Runtime.Skia {
 					const candidates: any[][] = [
 						tables().framebuffers, tables().renderbuffers, tables().buffers,
 						tables().textures, tables().vaos, tables().programs,
+						tables().samplers, tables().transformFeedbacks,
 					];
 					for (const table of candidates) {
 						for (let i = 1; i < table.length; i++) {
@@ -236,8 +267,42 @@ namespace Uno.UI.Runtime.Skia {
 			gl().viewport(x, y, width, height);
 		}
 
-		public static glEnable(cap: number): void { gl().enable(cap); }
-		public static glDisable(cap: number): void { gl().disable(cap); }
+		// Desktop/ES capabilities WebGL2 has no toggle for. alwaysOn: the behavior is
+		// unconditionally active in WebGL2 (enabling is a no-op, disabling is impossible);
+		// otherwise the feature does not exist (enabling is impossible, disabling is a no-op).
+		// Passing these to WebGL2's enable/disable would raise INVALID_ENUM on every call.
+		private static readonly fixedCaps: { [cap: number]: { name: string, alwaysOn: boolean } } = {
+			0x809D: { name: "GL_MULTISAMPLE", alwaysOn: true },
+			0x884F: { name: "GL_TEXTURE_CUBE_MAP_SEAMLESS", alwaysOn: true },
+			0x8642: { name: "GL_PROGRAM_POINT_SIZE", alwaysOn: true },
+			0x8D69: { name: "GL_PRIMITIVE_RESTART_FIXED_INDEX", alwaysOn: true },
+			0x8F9D: { name: "GL_PRIMITIVE_RESTART", alwaysOn: true },
+			0x8DB9: { name: "GL_FRAMEBUFFER_SRGB", alwaysOn: false },
+			0x0B20: { name: "GL_LINE_SMOOTH", alwaysOn: false },
+			0x0B41: { name: "GL_POLYGON_SMOOTH", alwaysOn: false },
+			0x864F: { name: "GL_DEPTH_CLAMP", alwaysOn: false },
+		};
+
+		public static glEnable(cap: number): void {
+			const fixed = WasmGLFunctions.fixedCaps[cap];
+			if (fixed) {
+				if (!fixed.alwaysOn) {
+					warnOnce("enable" + cap, `glEnable(${fixed.name}): not available on WebGL2; the call is ignored.`);
+				}
+				return;
+			}
+			gl().enable(cap);
+		}
+		public static glDisable(cap: number): void {
+			const fixed = WasmGLFunctions.fixedCaps[cap];
+			if (fixed) {
+				if (fixed.alwaysOn) {
+					warnOnce("disable" + cap, `glDisable(${fixed.name}): always enabled on WebGL2 and cannot be disabled; the call is ignored.`);
+				}
+				return;
+			}
+			gl().disable(cap);
+		}
 		public static glClear(mask: number): void { gl().clear(mask); }
 		public static glClearColor(r: number, g: number, b: number, a: number): void { gl().clearColor(r, g, b, a); }
 
@@ -778,7 +843,11 @@ namespace Uno.UI.Runtime.Skia {
 		public static glFlush(): void { gl().flush(); }
 		public static glSampleCoverage(value: number, invert: number): void { gl().sampleCoverage(value, invert !== 0); }
 
-		public static glIsEnabled(cap: number): number { return gl().isEnabled(cap) ? 1 : 0; }
+		public static glIsEnabled(cap: number): number {
+			const fixed = WasmGLFunctions.fixedCaps[cap];
+			if (fixed) return fixed.alwaysOn ? 1 : 0;
+			return gl().isEnabled(cap) ? 1 : 0;
+		}
 		public static glIsBuffer(buffer: number): number {
 			const obj = buffer === 0 ? null : tables().buffers[buffer];
 			return obj && gl().isBuffer(obj) ? 1 : 0;
