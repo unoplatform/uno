@@ -1609,7 +1609,6 @@ public class Given_ElementTheme
 	/// even when a sibling element has a different RequestedTheme.
 	/// </summary>
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	[RequiresFullWindow]
 	public async Task When_Sibling_Has_Different_Theme_TextBlock_Foreground_Matches_App_Theme()
 	{
@@ -2517,7 +2516,6 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	[RequiresFullWindow]
 	public async Task When_Theme_Changes_Button_Normal_Foreground_Updates()
 	{
@@ -2548,7 +2546,6 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	[RequiresFullWindow]
 	public async Task When_Grandparent_RequestedTheme_Changes_Button_Foreground_Updates()
 	{
@@ -2593,7 +2590,6 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	[RequiresFullWindow]
 	public async Task When_XamlParsed_Buttons_Theme_Change_Foreground_Updates()
 	{
@@ -2643,7 +2639,6 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	[RequiresFullWindow]
 	public async Task When_Theme_Changes_TextBlock_Foreground_Updates()
 	{
@@ -2671,7 +2666,6 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	[RequiresFullWindow]
 	public async Task When_Theme_Default_To_Dark_Button_PointerOver_Updates()
 	{
@@ -3652,7 +3646,6 @@ public class Given_ElementTheme
 	///   After Local Default:  col0=black,      col1=white,      col2=black  (col1 keeps Dark)
 	/// </summary>
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	[RequiresFullWindow]
 	public async Task When_ParentThemeChanges_BasicThemeResources_FullRepro()
 	{

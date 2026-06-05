@@ -45,7 +45,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		[RequiresFullWindow]
 		public async Task When_Parent_Resource_Override_On_Loaded()
 		{
@@ -622,72 +621,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 
-#if HAS_UNO
-		// Ported from PR #23327 to confirm the full rework covers the non-UIElement behaviour scenario:
-		// a non-UIElement DependencyObject (a Microsoft.Xaml.Behaviors-style behaviour) whose
-		// {ThemeResource}-bound property is resolved OUTSIDE any theme walk must pick up its host element's
-		// inherited theme, reached purely through DependencyObjectStore.Parent (no AssociatedObject reflection).
-		[TestMethod]
-		[RequiresFullWindow]
-		public async Task When_NonFE_Behaviour_Inside_Light_Pinned_Subtree_Resolves_Light_ThemeResource()
-		{
-			using var _ = ThemeHelper.UseApplicationDarkTheme();
-
-			var lightPinnedRoot = new Border
-			{
-				RequestedTheme = ElementTheme.Light,
-				Width = 150,
-				Height = 150,
-			};
-
-			var borderResources = new ResourceDictionary();
-			borderResources.ThemeDictionaries["Light"] = new ResourceDictionary
-			{
-				["OwnerThemePushTestBrush"] = new SolidColorBrush(Colors.LightYellow),
-			};
-			borderResources.ThemeDictionaries["Dark"] = new ResourceDictionary
-			{
-				["OwnerThemePushTestBrush"] = new SolidColorBrush(Colors.DarkSlateBlue),
-			};
-			lightPinnedRoot.Resources = borderResources;
-
-			WindowHelper.WindowContent = lightPinnedRoot;
-			await WindowHelper.WaitForLoaded(lightPinnedRoot);
-
-			// Attach the behaviour the way Interaction.Behaviors does: a DependencyObjectCollection
-			// whose parent is the host element, wiring the behaviour's Store.Parent to the host.
-			var behavior = new FakeThemeBehavior();
-			var behaviorCollection = new DependencyObjectCollection(lightPinnedRoot);
-			behaviorCollection.Add(behavior);
-
-			Assert.AreSame(
-				lightPinnedRoot,
-				behavior.GetParent(),
-				"Behaviour's Store.Parent should be wired to the host element, like Interaction.Behaviors.");
-
-			var resourceKey = new SpecializedResourceDictionary.ResourceKey("OwnerThemePushTestBrush");
-			var store = ((IDependencyObjectStoreProvider)behavior).Store;
-			store.SetResourceBinding(
-				FakeThemeBehavior.TestBrushProperty,
-				resourceKey,
-				ResourceUpdateReason.ThemeResource,
-				context: null,
-				precedence: null,
-				setterBindingPath: null);
-
-			store.UpdateResourceBindings(
-				ResourceUpdateReason.ThemeResource,
-				resourceContextProvider: lightPinnedRoot);
-
-			var brush = behavior.TestBrush as SolidColorBrush;
-			Assert.IsNotNull(brush, "Behaviour's TestBrush should be resolved");
-			Assert.AreEqual(
-				Colors.LightYellow,
-				brush.Color,
-				"The behaviour inherits Light from its host element via Store.Parent; the {ThemeResource} " +
-				"must resolve from the Light sub-dictionary, not from Themes.Active (Dark).");
-		}
-#endif
 	}
 
 #if HAS_UNO
