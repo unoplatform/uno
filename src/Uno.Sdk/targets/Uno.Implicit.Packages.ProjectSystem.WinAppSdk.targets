@@ -16,6 +16,7 @@
 		-->
 		<_UnoProjectSystemPackageReference Include="Microsoft.Windows.SDK.BuildTools.WinApp"
 		                                   ProjectSystem="true"
+		                                   PrivateAssets="all"
 		                                   Condition="$(_IsExecutable) == 'true' AND '$(UnoDisableWinAppRunSupport)' != 'true'" />
 	</ItemGroup>
 
