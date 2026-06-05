@@ -548,6 +548,16 @@ namespace Uno.UI.Runtime.Skia {
 		public static glGetShaderiv(shader: number, pname: number, paramsPtr: number): void {
 			const sh = tables().shaders[shader];
 			if (!sh) { writeInt32(paramsPtr, 0); return; }
+			// WebGL2 dropped the *_LENGTH pnames (strings are returned directly); compute them.
+			// Silk.NET's string-returning helpers (GetShaderInfoLog etc.) query these to size buffers.
+			if (pname === 0x8B84 /* INFO_LOG_LENGTH */) {
+				writeInt32(paramsPtr, (gl().getShaderInfoLog(sh)?.length ?? 0) + 1);
+				return;
+			}
+			if (pname === 0x8B88 /* SHADER_SOURCE_LENGTH */) {
+				writeInt32(paramsPtr, (gl().getShaderSource(sh)?.length ?? 0) + 1);
+				return;
+			}
 			const v = gl().getShaderParameter(sh, pname);
 			writeInt32(paramsPtr, typeof v === "boolean" ? (v ? 1 : 0) : (v | 0));
 		}
@@ -600,6 +610,35 @@ namespace Uno.UI.Runtime.Skia {
 		public static glGetProgramiv(program: number, pname: number, paramsPtr: number): void {
 			const p = tables().programs[program];
 			if (!p) { writeInt32(paramsPtr, 0); return; }
+			// WebGL2 dropped the *_LENGTH pnames (strings are returned directly); compute them.
+			// Silk.NET's string-returning helpers (GetActiveUniform etc.) query these to size buffers.
+			if (pname === 0x8B84 /* INFO_LOG_LENGTH */) {
+				writeInt32(paramsPtr, (gl().getProgramInfoLog(p)?.length ?? 0) + 1);
+				return;
+			}
+			if (pname === 0x8B87 /* ACTIVE_UNIFORM_MAX_LENGTH */ || pname === 0x8B8A /* ACTIVE_ATTRIBUTE_MAX_LENGTH */) {
+				const ctx = gl();
+				const isUniform = pname === 0x8B87;
+				const count = ctx.getProgramParameter(p, isUniform ? ctx.ACTIVE_UNIFORMS : ctx.ACTIVE_ATTRIBUTES) as number;
+				let max = 0;
+				for (let i = 0; i < count; i++) {
+					const info = isUniform ? ctx.getActiveUniform(p, i) : ctx.getActiveAttrib(p, i);
+					if (info) max = Math.max(max, info.name.length);
+				}
+				writeInt32(paramsPtr, max === 0 ? 0 : max + 1);
+				return;
+			}
+			if (pname === 0x8C76 /* TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH */) {
+				const ctx = gl();
+				const count = ctx.getProgramParameter(p, ctx.TRANSFORM_FEEDBACK_VARYINGS) as number;
+				let max = 0;
+				for (let i = 0; i < count; i++) {
+					const info = ctx.getTransformFeedbackVarying(p, i);
+					if (info) max = Math.max(max, info.name.length);
+				}
+				writeInt32(paramsPtr, max === 0 ? 0 : max + 1);
+				return;
+			}
 			const v = gl().getProgramParameter(p, pname);
 			writeInt32(paramsPtr, typeof v === "boolean" ? (v ? 1 : 0) : (v | 0));
 		}

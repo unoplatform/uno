@@ -79,6 +79,20 @@ internal static unsafe partial class WasmGLFunctions
 
 		[DllImport(ShimLibrary, EntryPoint = "uno_dummy_IIIL", CallingConvention = CallingConvention.Cdecl)]
 		internal static extern int DummyIIIL(int a, int b, long c);
+
+		// All-int large-arity cookies for the C-shim wrappers themselves: Silk.NET invokes
+		// uno_glTexImage2D & co via calli with 9/10/11 i32 args, and those interp->native
+		// trampolines also only exist if a matching [DllImport] is discovered at build time.
+		// (9 ints happened to be primed by other libraries' pinvokes; 10 and 11 were not,
+		// aborting the runtime on the first glTexImage3D/glTexSubImage3D call.)
+		[DllImport(ShimLibrary, EntryPoint = "uno_dummy_V9I", CallingConvention = CallingConvention.Cdecl)]
+		internal static extern void DummyV9I(int a, int b, int c, int d, int e, int f, int g, int h, int i);
+
+		[DllImport(ShimLibrary, EntryPoint = "uno_dummy_V10I", CallingConvention = CallingConvention.Cdecl)]
+		internal static extern void DummyV10I(int a, int b, int c, int d, int e, int f, int g, int h, int i, int j);
+
+		[DllImport(ShimLibrary, EntryPoint = "uno_dummy_V11I", CallingConvention = CallingConvention.Cdecl)]
+		internal static extern void DummyV11I(int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k);
 	}
 
 	// Referenced from RegisterLargeArityShimEntries behind an always-false volatile guard so the
@@ -100,6 +114,9 @@ internal static unsafe partial class WasmGLFunctions
 			SignaturePrimer.DummyVIIF(0, 0, 0);
 			SignaturePrimer.DummyVIIL(0, 0, 0);
 			_ = SignaturePrimer.DummyIIIL(0, 0, 0);
+			SignaturePrimer.DummyV9I(0, 0, 0, 0, 0, 0, 0, 0, 0);
+			SignaturePrimer.DummyV10I(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+			SignaturePrimer.DummyV11I(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 		}
 	}
 
