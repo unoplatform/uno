@@ -27,6 +27,9 @@ internal static unsafe partial class WasmGLFunctions
 		_addresses["glDepthFunc"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, void>)&glDepthFunc;
 		_addresses["glDepthMask"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, void>)&glDepthMask;
 		_addresses["glDepthRangef"] = (IntPtr)(delegate* unmanaged[Cdecl]<float, float, void>)&glDepthRangef;
+		// Alias for the desktop-GL double-precision name, which is what Silk.NET's
+		// gl.DepthRange(double, double) resolves. The narrowing matches the ES semantics.
+		_addresses["glDepthRange"] = (IntPtr)(delegate* unmanaged[Cdecl]<double, double, void>)&glDepthRange;
 
 		_addresses["glStencilFunc"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, int, uint, void>)&glStencilFunc;
 		_addresses["glStencilFuncSeparate"] = (IntPtr)(delegate* unmanaged[Cdecl]<int, int, int, uint, void>)&glStencilFuncSeparate;
@@ -87,6 +90,9 @@ internal static unsafe partial class WasmGLFunctions
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void glDepthRangef(float n, float f) => NativeMethods.DepthRangef(n, f);
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void glDepthRange(double n, double f) => NativeMethods.DepthRangef((float)n, (float)f);
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void glStencilFunc(int func, int @ref, uint mask) => NativeMethods.StencilFunc(func, @ref, (int)mask);
