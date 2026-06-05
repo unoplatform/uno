@@ -71,6 +71,17 @@ namespace Uno.UI.Helpers.WinUI
 			return desiredWidth;
 		}
 
+		public static double MeasureAndGetDesiredHeightFor(UIElement element, Size availableSize)
+		{
+			double desiredHeight = 0;
+			if (element != null)
+			{
+				element.Measure(availableSize);
+				desiredHeight = element.DesiredSize.Height;
+			}
+			return desiredHeight;
+		}
+
 		public static double GetActualWidthFor(UIElement element)
 		{
 			return (element != null ? (element as FrameworkElement).ActualWidth : 0);

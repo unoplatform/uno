@@ -30,6 +30,10 @@ using Windows.System.Profile;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using static Microsoft.UI.Xaml.Controls._Tracing;
+#if __ANDROID__
+using System.Linq;
+using Uno.UI.Extensions;
+#endif
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -55,7 +59,9 @@ public partial class NavigationView : ContentControl
 	private const string c_navViewBackButtonToolTip = "NavigationViewBackButtonToolTip";
 	private const string c_navViewCloseButton = "NavigationViewCloseButton";
 	private const string c_navViewCloseButtonToolTip = "NavigationViewCloseButtonToolTip";
+#pragma warning disable IDE0051 // Defined in the WinUI source but not used.
 	private const string c_paneShadowReceiverCanvas = "PaneShadowReceiver";
+#pragma warning restore IDE0051
 	private const string c_flyoutRootGrid = "FlyoutRootGrid";
 	private const string c_settingsItemTag = "Settings";
 
@@ -97,7 +103,9 @@ public partial class NavigationView : ContentControl
 	private const int c_paneToggleButtonWidth = 40;
 	private const int c_toggleButtonHeightWithNoBackButton = 56;
 	private const int c_backButtonRowDefinition = 1;
+#pragma warning disable IDE0051 // Defined in the WinUI source but not used.
 	private const float c_paneElevationTranslationZ = 32;
+#pragma warning restore IDE0051
 	private const double c_paneOverlayShadowDepth = 16.0;
 
 	private const int c_mainMenuBlockIndex = 0;
@@ -1718,7 +1726,7 @@ public partial class NavigationView : ContentControl
 #if __APPLE_UIKIT__ // Uno workaround: The arrange is async on iOS, ActualHeight is not set yet. This would constraints the footer to MaxHeight 0.
 									return footerItemsRepeater.DesiredSize.Height + footerItemsRepeaterTopBottomMargin;
 #else
-									var footerItemsDesiredHeight = LayoutUtils.MeasureAndGetDesiredWidthFor(footerItemsRepeater, c_infSize);
+									var footerItemsDesiredHeight = LayoutUtils.MeasureAndGetDesiredHeightFor(footerItemsRepeater, c_infSize);
 									return footerItemsDesiredHeight + footerItemsRepeaterTopBottomMargin;
 #endif
 								}
@@ -4456,7 +4464,7 @@ public partial class NavigationView : ContentControl
 
 #if __ANDROID__
 			// workaround for unoplatform/uno#19516 where toggling IsBackButtonVisible would stop NVIs from updating their layout/size when expanded/collapsed.
-			if (FeatureConfiguration.NavigationView.EnableUno19516Workaround &&
+			if (global::Uno.UI.FeatureConfiguration.NavigationView.EnableUno19516Workaround &&
 				m_appliedTemplate && IsLoaded)
 			{
 				foreach (var ir in this.EnumerateDescendants().OfType<ItemsRepeater>())

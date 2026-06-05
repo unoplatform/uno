@@ -31,7 +31,7 @@ public partial class NavigationViewItemPresenter : ContentControl
 		this.SetDefaultStyleKey();
 	}
 
-#if HAS_UNO // In WinUI this is directly in UnhookEventsAndClearFields, but we need to call this part separately.
+	// In WinUI this is directly in UnhookEventsAndClearFields, but we need to call this part separately.
 	private void UnhookEvents()
 	{
 		m_expandCollapseChevronPointerPressedRevoker.Disposable = null;
@@ -40,7 +40,6 @@ public partial class NavigationViewItemPresenter : ContentControl
 		m_expandCollapseChevronPointerCanceledRevoker.Disposable = null;
 		m_expandCollapseChevronPointerCaptureLostRevoker.Disposable = null;
 	}
-#endif
 
 	private void UnhookEventsAndClearFields()
 	{
