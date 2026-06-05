@@ -407,18 +407,46 @@ partial class ClientHotReloadProcessor
 				}
 			}
 
+<<<<<<< HEAD
 			// Traverse the current app's tree to replace dictionaries matching the source property
 			// with the updated ones.
 			UpdateResourceDictionaries(updatedDictionaries, Application.Current.Resources);
 
 			// Force the app reevaluate global resources changes
 			Application.Current.UpdateResourceBindingsForHotReload();
+=======
+			if (updatedSources.Count > 0)
+			{
+				// Recursively refresh every source-backed dictionary in the merged-dictionary graph whose
+				// source was rebuilt by this update — wherever it sits, including dictionaries nested inside
+				// typed ResourceDictionary subclasses (e.g. a SimpleTheme/BaseTheme theme referencing an
+				// override file via ColorOverrideSource).
+				//
+				// CRITICAL: the rebuilt dictionaries do NOT necessarily live in Application.Current. When the
+				// app is hosted inside a secondary AssemblyLoadContext (e.g. a host rendering a consumer app in
+				// a per-app ALC), Application.Current is the *host* application — the consumer app is a
+				// secondary-ALC Application registered in Application's ALC registry, never Current. The edited
+				// source-backed dictionaries are merged into the *inner* app's Application.Resources, so a
+				// host-only walk never reaches them. We therefore refresh the host AND every secondary
+				// application's resource tree.
+				RefreshResourcesForApp(Application.Current, updatedSources);
+
+				if (Application.HasSecondaryApps)
+				{
+					foreach (var secondary in Application.EnumerateSecondaryApplications())
+					{
+						RefreshResourcesForApp(secondary, updatedSources);
+					}
+				}
+			}
+>>>>>>> 8b5cd9fb1c (fix: Enhance secondary ALC resource refresh logic)
 #endif
 		}
 	}
 
 #if !(WINUI || WINAPPSDK || WINDOWS_UWP)
 	/// <summary>
+<<<<<<< HEAD
 	/// Refreshes ResourceDictionary instances that have been detected as updated
 	/// </summary>
 	/// <param name="updatedDictionaries"></param>
@@ -434,6 +462,94 @@ partial class ClientHotReloadProcessor
 		{
 			root.RefreshMergedDictionary(merged);
 		}
+=======
+	/// Refreshes the source-backed dictionaries of a single application's resource tree and, when at least
+	/// one was refreshed, re-evaluates its resource bindings. The resolution context is pinned to the
+	/// application's own <see cref="AssemblyLoadContext"/> so that <c>RefreshMergedDictionary</c> resolves
+	/// each source against the correct (ALC-scoped) registry — essential when the app is hosted in a
+	/// secondary ALC, where the rebuilt dictionaries were registered into that ALC's scoped registry rather
+	/// than the global one.
+	/// </summary>
+	private static void RefreshResourcesForApp(Application? app, HashSet<string> updatedSources)
+	{
+		if (app?.Resources is not { } resources)
+		{
+			return;
+		}
+
+		var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(app.GetType().Assembly)
+			?? System.Runtime.Loader.AssemblyLoadContext.Default;
+
+		int refreshed;
+		using (Uno.UI.ResourceResolver.SetResolutionContext(alc))
+		{
+			refreshed = UpdateResourceDictionaries(updatedSources, resources);
+		}
+
+		if (refreshed > 0)
+		{
+			// Force the app to reevaluate global resource changes.
+			app.UpdateResourceBindingsForHotReload();
+		}
+	}
+
+	/// <summary>
+	/// Recursively refreshes every source-backed <see cref="ResourceDictionary"/> reachable through
+	/// <see cref="ResourceDictionary.MergedDictionaries"/> whose source was rebuilt by the current
+	/// metadata update, returning the number of dictionaries that were refreshed.
+	/// </summary>
+	/// <remarks>
+	/// Matching is done on a normalized source key (see <see cref="NormalizeResourceDictionarySource"/>):
+	/// a rebuilt dictionary advertises its source in "local resource" form (<c>ms-resource:///Files/Foo.xaml</c>)
+	/// while the live merged entry usually references the same file as <c>ms-appx:///Foo.xaml</c>. The walk
+	/// recurses into every entry — including typed subclasses such as theme dictionaries — so nested
+	/// overrides are reached, but only the matched entry is reloaded via <c>RefreshMergedDictionary</c>.
+	/// A typed subclass is therefore never replaced unless its own source file was the one edited.
+	/// </remarks>
+	private static int UpdateResourceDictionaries(HashSet<string> updatedSources, ResourceDictionary root)
+	{
+		var refreshed = 0;
+
+		// Snapshot first: RefreshMergedDictionary mutates MergedDictionaries (it replaces the entry at its index).
+		foreach (var merged in root.MergedDictionaries.ToArray())
+		{
+			if (merged.Source is { } source
+				&& updatedSources.Contains(NormalizeResourceDictionarySource(source)))
+			{
+				root.RefreshMergedDictionary(merged);
+				refreshed++;
+			}
+		}
+
+		foreach (var merged in root.MergedDictionaries)
+		{
+			refreshed += UpdateResourceDictionaries(updatedSources, merged);
+		}
+
+		return refreshed;
+	}
+
+	/// <summary>
+	/// Normalizes a resource dictionary source URI to a scheme-independent key so that the
+	/// <c>ms-resource:///Files/</c> form advertised by a rebuilt dictionary and the <c>ms-appx:///</c>
+	/// form held by a live merged entry compare equal when they point at the same file.
+	/// </summary>
+	private static string NormalizeResourceDictionarySource(Uri source)
+	{
+		var value = source.OriginalString;
+
+		if (value.StartsWith(Uno.UI.Xaml.XamlFilePathHelper.LocalResourcePrefix, StringComparison.OrdinalIgnoreCase))
+		{
+			return value.Substring(Uno.UI.Xaml.XamlFilePathHelper.LocalResourcePrefix.Length);
+		}
+
+		if (value.StartsWith(Uno.UI.Xaml.XamlFilePathHelper.AppXIdentifier, StringComparison.OrdinalIgnoreCase))
+		{
+			return value.Substring(Uno.UI.Xaml.XamlFilePathHelper.AppXIdentifier.Length);
+		}
+
+		return value;
+>>>>>>> 8b5cd9fb1c (fix: Enhance secondary ALC resource refresh logic)
 	}
 #endif
 
