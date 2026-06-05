@@ -95,6 +95,16 @@ namespace Uno.UI.Runtime.Skia {
 		}
 	}
 
+	// With a pixel buffer object bound, the pixels/data argument of the TexImage*/TexSubImage*/
+	// ReadPixels family is a byte offset into the bound buffer rather than a client-memory
+	// pointer, and WebGL2 has dedicated GLintptr overloads for that case.
+	function unpackPboBound(ctx: WebGL2RenderingContext): boolean {
+		return !!ctx.getParameter(ctx.PIXEL_UNPACK_BUFFER_BINDING);
+	}
+	function packPboBound(ctx: WebGL2RenderingContext): boolean {
+		return !!ctx.getParameter(ctx.PIXEL_PACK_BUFFER_BINDING);
+	}
+
 	// WebGL2 (unlike desktop GL) fails every draw with INVALID_OPERATION while the front and
 	// back stencil reference/value-mask/write-mask differ; only the funcs/ops may vary per face.
 	// The mismatch is recorded when stencil state is set (transient divergence between two
@@ -455,7 +465,9 @@ namespace Uno.UI.Runtime.Skia {
 			if (width === 0 || height === 0) {
 				console.warn(`WasmGLFunctions.glTexImage2D: zero-sized texture (${width}x${height}) - will likely cause FRAMEBUFFER_INCOMPLETE_ATTACHMENT.`);
 			}
-			if (pixelsPtr === 0) {
+			if (unpackPboBound(ctx)) {
+				ctx.texImage2D(target, level, internalformat, width, height, border, format, type, pixelsPtr);
+			} else if (pixelsPtr === 0) {
 				ctx.texImage2D(target, level, internalformat, width, height, border, format, type, null);
 			} else {
 				const HEAPU8 = (<GlAny>window).Module.HEAPU8 as Uint8Array;
@@ -481,6 +493,13 @@ namespace Uno.UI.Runtime.Skia {
 		public static glReadBuffer(mode: number): void { gl().readBuffer(mode); }
 
 		public static glReadPixels(x: number, y: number, width: number, height: number, format: number, type: number, pixelsPtr: number): void {
+			const packCtx = gl();
+			if (packPboBound(packCtx)) {
+				// pixelsPtr is a byte offset into the bound PIXEL_PACK_BUFFER. No BGRA
+				// translation is possible on this path (the data never passes through here).
+				packCtx.readPixels(x, y, width, height, format, type, pixelsPtr);
+				return;
+			}
 			const HEAPU8 = (<GlAny>window).Module.HEAPU8 as Uint8Array;
 			// WebGL2 doesn't accept BGRA in readPixels. GLCanvasElement.Render() asks for
 			// BGRA/UNSIGNED_BYTE so the bytes drop straight into the WriteableBitmap's BGRA
@@ -1095,6 +1114,11 @@ namespace Uno.UI.Runtime.Skia {
 		public static glBindBufferRange(target: number, index: number, buffer: number, offset: number, size: number): void {
 			gl().bindBufferRange(target, index, buffer === 0 ? null : tables().buffers[buffer], offset, size);
 		}
+		public static glGetBufferSubData(target: number, offset: number, size: number, dataPtr: number): void {
+			const HEAPU8 = (<GlAny>window).Module.HEAPU8 as Uint8Array;
+			gl().getBufferSubData(target, offset, HEAPU8.subarray(dataPtr, dataPtr + size));
+		}
+
 		public static glGetBufferParameteriv(target: number, pname: number, paramsPtr: number): void {
 			const v = gl().getBufferParameter(target, pname);
 			writeInt32(paramsPtr, typeof v === "number" ? (v | 0) : 0);
@@ -1172,8 +1196,13 @@ namespace Uno.UI.Runtime.Skia {
 			gl().texStorage3D(target, levels, internalformat, width, height, depth);
 		}
 		public static glCompressedTexImage2D(target: number, level: number, internalformat: number, width: number, height: number, border: number, imageSize: number, dataPtr: number): void {
+			const ctx = gl();
+			if (unpackPboBound(ctx)) {
+				ctx.compressedTexImage2D(target, level, internalformat, width, height, border, imageSize, dataPtr);
+				return;
+			}
 			const HEAPU8 = (<GlAny>window).Module.HEAPU8 as Uint8Array;
-			gl().compressedTexImage2D(target, level, internalformat, width, height, border, HEAPU8.subarray(dataPtr, dataPtr + imageSize));
+			ctx.compressedTexImage2D(target, level, internalformat, width, height, border, HEAPU8.subarray(dataPtr, dataPtr + imageSize));
 		}
 		public static glGetTexParameterfv(target: number, pname: number, paramsPtr: number): void {
 			const v = gl().getTexParameter(target, pname);
@@ -1544,8 +1573,11 @@ namespace Uno.UI.Runtime.Skia {
 
 		public static glTexSubImage2D(target: number, level: number, xoffset: number, yoffset: number, width: number, height: number, format: number, type: number, pixelsPtr: number): void {
 			const ctx = gl();
+			if (unpackPboBound(ctx)) {
+				ctx.texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixelsPtr);
+				return;
+			}
 			if (pixelsPtr === 0) {
-				// WebGL2 still allows null for some cases (PBO path); pass undefined to match.
 				(ctx as any).texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, null);
 				return;
 			}
@@ -1560,7 +1592,9 @@ namespace Uno.UI.Runtime.Skia {
 				if (internalformat === 0x1907 /* GL_RGB */) internalformat = 0x8051 /* GL_RGB8 */;
 				else if (internalformat === 0x1908 /* GL_RGBA */) internalformat = 0x8058 /* GL_RGBA8 */;
 			}
-			if (pixelsPtr === 0) {
+			if (unpackPboBound(ctx)) {
+				ctx.texImage3D(target, level, internalformat, width, height, depth, border, format, type, pixelsPtr);
+			} else if (pixelsPtr === 0) {
 				ctx.texImage3D(target, level, internalformat, width, height, depth, border, format, type, null);
 			} else {
 				const HEAPU8 = (<GlAny>window).Module.HEAPU8 as Uint8Array;
@@ -1571,6 +1605,10 @@ namespace Uno.UI.Runtime.Skia {
 
 		public static glTexSubImage3D(target: number, level: number, xoffset: number, yoffset: number, zoffset: number, width: number, height: number, depth: number, format: number, type: number, pixelsPtr: number): void {
 			const ctx = gl();
+			if (unpackPboBound(ctx)) {
+				ctx.texSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixelsPtr);
+				return;
+			}
 			if (pixelsPtr === 0) {
 				(ctx as any).texSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, null);
 				return;
@@ -1585,18 +1623,33 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		public static glCompressedTexImage3D(target: number, level: number, internalformat: number, width: number, height: number, depth: number, border: number, imageSize: number, dataPtr: number): void {
+			const ctx = gl();
+			if (unpackPboBound(ctx)) {
+				ctx.compressedTexImage3D(target, level, internalformat, width, height, depth, border, imageSize, dataPtr);
+				return;
+			}
 			const HEAPU8 = (<GlAny>window).Module.HEAPU8 as Uint8Array;
-			gl().compressedTexImage3D(target, level, internalformat, width, height, depth, border, HEAPU8.subarray(dataPtr, dataPtr + imageSize));
+			ctx.compressedTexImage3D(target, level, internalformat, width, height, depth, border, HEAPU8.subarray(dataPtr, dataPtr + imageSize));
 		}
 
 		public static glCompressedTexSubImage2D(target: number, level: number, xoffset: number, yoffset: number, width: number, height: number, format: number, imageSize: number, dataPtr: number): void {
+			const ctx = gl();
+			if (unpackPboBound(ctx)) {
+				ctx.compressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, imageSize, dataPtr);
+				return;
+			}
 			const HEAPU8 = (<GlAny>window).Module.HEAPU8 as Uint8Array;
-			gl().compressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, HEAPU8.subarray(dataPtr, dataPtr + imageSize));
+			ctx.compressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, HEAPU8.subarray(dataPtr, dataPtr + imageSize));
 		}
 
 		public static glCompressedTexSubImage3D(target: number, level: number, xoffset: number, yoffset: number, zoffset: number, width: number, height: number, depth: number, format: number, imageSize: number, dataPtr: number): void {
+			const ctx = gl();
+			if (unpackPboBound(ctx)) {
+				ctx.compressedTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, dataPtr);
+				return;
+			}
 			const HEAPU8 = (<GlAny>window).Module.HEAPU8 as Uint8Array;
-			gl().compressedTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, HEAPU8.subarray(dataPtr, dataPtr + imageSize));
+			ctx.compressedTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, HEAPU8.subarray(dataPtr, dataPtr + imageSize));
 		}
 
 		public static glBlitFramebuffer(srcX0: number, srcY0: number, srcX1: number, srcY1: number, dstX0: number, dstY0: number, dstX1: number, dstY1: number, mask: number, filter: number): void {
