@@ -47,6 +47,11 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private bool _changingGlInitialized;
 
+	// Set when a user callback (Init, RenderOverride, OnDestroy) or the framebuffer setup throws.
+	// Once set, Invalidate() and Render() become no-ops until the element is reloaded, so a single
+	// faulty element logs one error instead of throwing into the dispatcher every frame.
+	private bool _renderingStopped;
+
 	// valid if and only if GLCanvasElement was loaded at least once and OpenGL is available on the running platform
 	private INativeOpenGLWrapper? _nativeOpenGlWrapper;
 	// These are valid if and only if IsLoaded and _nativeOpenGlWrapper is not null
@@ -216,7 +221,15 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	/// animation, call <see cref="Invalidate"/> inside <see cref="RenderOverride"/> to continuously invalidate and update.
 	/// </summary>
 #if WINAPPSDK
-	public void Invalidate() => DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, Render);
+	public void Invalidate()
+	{
+		if (_renderingStopped)
+		{
+			return;
+		}
+
+		DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, Render);
+	}
 #else
 	// We used to Invalidate like this
 	// public void Invalidate() => NativeDispatcher.Main.Enqueue(Render, NativeDispatcherPriority.Idle);
@@ -227,6 +240,11 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	// Invalidate() inside RenderOverride(), we will enter an infinite loop that completely hangs the app.
 	public void Invalidate()
 	{
+		if (_renderingStopped)
+		{
+			return;
+		}
+
 		Compositor.GetSharedCompositor().InvalidateRender(Visual);
 	}
 
@@ -279,6 +297,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
 	{
+		_renderingStopped = false;
 		_nativeOpenGlWrapper = GetOrCreateNativeOpenGlWrapper(XamlRoot!, _getWindowFunc);
 
 		if (_nativeOpenGlWrapper is null)
@@ -292,7 +311,27 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 		using (_nativeOpenGlWrapper.MakeCurrent())
 		{
 			UpdateFramebuffer();
-			Init(_gl);
+			if (_renderingStopped)
+			{
+				IsGLInitialized = false;
+				return;
+			}
+
+			try
+			{
+				Init(_gl);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"{nameof(GLCanvasElement)} initialization failed. The element will not render.", e);
+				}
+
+				_renderingStopped = true;
+				IsGLInitialized = false;
+				return;
+			}
 		}
 
 		var window =
@@ -339,7 +378,17 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 				return;
 			}
 #endif
-			OnDestroy(_gl);
+			try
+			{
+				OnDestroy(_gl);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"{nameof(GLCanvasElement)}.{nameof(OnDestroy)} failed.", e);
+				}
+			}
 			_details?.Dispose();
 			_gl.Dispose();
 		}
@@ -368,7 +417,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private void UpdateFramebuffer()
 	{
-		if (!IsLoaded || _nativeOpenGlWrapper is null)
+		if (_renderingStopped || !IsLoaded || _nativeOpenGlWrapper is null)
 		{
 			return;
 		}
@@ -382,8 +431,22 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 		using (_nativeOpenGlWrapper!.MakeCurrent())
 		{
-			_details?.Dispose();
-			_details = new FrameBufferDetails(_gl, RenderSize);
+			try
+			{
+				_details?.Dispose();
+				_details = new FrameBufferDetails(_gl, RenderSize);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"{nameof(GLCanvasElement)} framebuffer update failed. The element will no longer render.", e);
+				}
+
+				_renderingStopped = true;
+				_details = null;
+				return;
+			}
 		}
 
 #if WINAPPSDK
@@ -402,7 +465,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private unsafe void Render()
 	{
-		if (!IsLoaded || _nativeOpenGlWrapper is null)
+		if (_renderingStopped || !IsLoaded || _nativeOpenGlWrapper is null)
 		{
 			return;
 		}
@@ -412,6 +475,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 		using var _ = _nativeOpenGlWrapper!.MakeCurrent();
 
 		_gl!.BindFramebuffer(GLEnum.Framebuffer, _details.Framebuffer);
+		try
 		{
 			_gl.Viewport(new System.Drawing.Size((int)RenderSize.Width, (int)RenderSize.Height));
 
@@ -433,6 +497,15 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 			_backBuffer.PixelBuffer.Length = (uint)RenderSize.Width * (uint)RenderSize.Height * BytesPerPixel;
 #endif
 			_backBuffer.Invalidate();
+		}
+		catch (Exception e)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"{nameof(GLCanvasElement)} rendering failed. The element will no longer render.", e);
+			}
+
+			_renderingStopped = true;
 		}
 	}
 
