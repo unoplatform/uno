@@ -12,22 +12,28 @@ namespace UITests.Shared.Windows_UI_Composition
 	//   - gl.TexSubImage3D per-layer upload (routed through the >8-arg C shim on wasm)
 	//   - gl.GenerateMipmap on the array texture
 	//   - gl.TexStorage2D + per-frame gl.TexSubImage2D (also a C shim) on a dynamic texture
+	//   - gl.TexImage3D on TEXTURE_3D (a 10-arg C shim), in both pointer modes: a null
+	//     allocation, a re-specification with data, and a TexSubImage3D sub-box overwrite
+	//   - sampler3D with trilinear filtering between depth slices (animated w sweep)
 	//   - gl.PixelStorei (UNPACK_ALIGNMENT for tightly-packed uploads)
 	//   - sampler objects: gl.GenSamplers / gl.SamplerParameter / gl.BindSampler / gl.DeleteSampler
 	//
 	// Left half: a 4-layer checkerboard array texture cycling through layers, minified (UV x8)
 	// so the sampler object's mip mode is visible - it alternates between NEAREST and trilinear
-	// every few seconds. Right half: a 2D texture with a color band scrolled one row per frame
-	// via TexSubImage2D.
+	// every few seconds. Top right: a 2D texture with a color band scrolled one row per frame
+	// via TexSubImage2D. Bottom right: a TEXTURE_3D hue volume sampled with an animated depth
+	// coordinate, morphing smoothly through the slices.
 	public class GLCanvasElement_TextureArrayElement() : GLCanvasElement(() => App.MainWindow)
 	{
 		private const int TexSize = 64;
 		private const int LayerCount = 4;
 
+		private const int VolumeSize = 16;
+
 		private uint _vao, _vbo, _program;
-		private uint _arrayTexture, _dynamicTexture;
+		private uint _arrayTexture, _dynamicTexture, _volumeTexture;
 		private uint _samplerNearest, _samplerTrilinear;
-		private int _uArrayTexLoc, _uDynamicTexLoc, _uLayerLoc;
+		private int _uArrayTexLoc, _uDynamicTexLoc, _uVolumeTexLoc, _uLayerLoc, _uWLoc;
 		private int _scrollRow;
 		private DateTime _startTime;
 
@@ -107,6 +113,47 @@ namespace UITests.Shared.Windows_UI_Composition
 			gl.TexParameterI(TextureTarget.Texture2D, GLEnum.TextureWrapS, (uint)GLEnum.ClampToEdge);
 			gl.TexParameterI(TextureTarget.Texture2D, GLEnum.TextureWrapT, (uint)GLEnum.ClampToEdge);
 
+			// --- TEXTURE_3D volume via the mutable-storage path (glTexImage3D C shim) ---
+			_volumeTexture = gl.GenTexture();
+			gl.BindTexture(TextureTarget.Texture3D, _volumeTexture);
+			gl.GetInteger(GLEnum.TextureBinding3D, out int volumeBinding);
+			if (volumeBinding != (int)_volumeTexture)
+			{
+				throw new Exception($"GetIntegerv(TEXTURE_BINDING_3D) returned {volumeBinding}, expected {_volumeTexture}");
+			}
+			// 1) Allocation without data (the classic desktop alloc-then-fill idiom).
+			gl.TexImage3D(TextureTarget.Texture3D, 0, InternalFormat.Rgba8, VolumeSize, VolumeSize, VolumeSize, 0, GLEnum.Rgba, GLEnum.UnsignedByte, (void*)0);
+			// 2) Legal re-specification of the same level, now with data: hue varies with depth.
+			var volume = new byte[VolumeSize * VolumeSize * VolumeSize * 4];
+			for (int z = 0; z < VolumeSize; z++)
+			{
+				var (r, g, b) = HueToRgb(z / (float)VolumeSize);
+				for (int xy = 0; xy < VolumeSize * VolumeSize; xy++)
+				{
+					var i = (z * VolumeSize * VolumeSize + xy) * 4;
+					volume[i + 0] = r; volume[i + 1] = g; volume[i + 2] = b; volume[i + 3] = 255;
+				}
+			}
+			fixed (byte* p = volume)
+			{
+				gl.TexImage3D(TextureTarget.Texture3D, 0, InternalFormat.Rgba8, VolumeSize, VolumeSize, VolumeSize, 0, GLEnum.Rgba, GLEnum.UnsignedByte, p);
+			}
+			// 3) Overwrite the center sub-box with white via TexSubImage3D (mutable storage).
+			var box = new byte[(VolumeSize / 2) * (VolumeSize / 2) * (VolumeSize / 2) * 4];
+			for (int i = 0; i < box.Length; i++)
+			{
+				box[i] = 255;
+			}
+			fixed (byte* p = box)
+			{
+				gl.TexSubImage3D(TextureTarget.Texture3D, 0, VolumeSize / 4, VolumeSize / 4, VolumeSize / 4, VolumeSize / 2, VolumeSize / 2, VolumeSize / 2, GLEnum.Rgba, GLEnum.UnsignedByte, p);
+			}
+			gl.TexParameterI(TextureTarget.Texture3D, GLEnum.TextureMinFilter, (uint)GLEnum.Linear);
+			gl.TexParameterI(TextureTarget.Texture3D, GLEnum.TextureMagFilter, (uint)GLEnum.Linear);
+			gl.TexParameterI(TextureTarget.Texture3D, GLEnum.TextureWrapS, (uint)GLEnum.ClampToEdge);
+			gl.TexParameterI(TextureTarget.Texture3D, GLEnum.TextureWrapT, (uint)GLEnum.ClampToEdge);
+			gl.TexParameterI(TextureTarget.Texture3D, GLEnum.TextureWrapR, (uint)GLEnum.ClampToEdge);
+
 			// --- Geometry + shaders ---
 			_vao = gl.GenVertexArray();
 			gl.BindVertexArray(_vao);
@@ -123,7 +170,7 @@ namespace UITests.Shared.Windows_UI_Composition
 			var versionDef = isEs ? "#version 300 es" : "#version 330";
 			// Sampler precision statements are an ES-only construct; strict desktop drivers
 			// reject them in #version 330.
-			var samplerPrecision = isEs ? "precision highp sampler2DArray;" : "";
+			var samplerPrecision = isEs ? "precision highp sampler2DArray;\nprecision highp sampler3D;" : "";
 
 			_program = CreateProgram(gl,
 				versionDef + """
@@ -144,19 +191,26 @@ namespace UITests.Shared.Windows_UI_Composition
 				out vec4 fragColor;
 				uniform sampler2DArray uArrayTex;
 				uniform sampler2D uDynamicTex;
+				uniform sampler3D uVolumeTex;
 				uniform float uLayer;
+				uniform float uW;
 				void main() {
 				    if (vUV.x < 0.5) {
 				        // Minified (x8) so the sampler's mip filtering is visible.
 				        fragColor = texture(uArrayTex, vec3(vUV * 8.0, uLayer));
+				    } else if (vUV.y >= 0.5) {
+				        fragColor = texture(uDynamicTex, vec2((vUV.x - 0.5) * 2.0, (vUV.y - 0.5) * 2.0));
 				    } else {
-				        fragColor = texture(uDynamicTex, vec2((vUV.x - 0.5) * 2.0, vUV.y));
+				        // Trilinear sweep through the volume's depth slices.
+				        fragColor = texture(uVolumeTex, vec3((vUV.x - 0.5) * 2.0, vUV.y * 2.0, uW));
 				    }
 				}
 				""");
 			_uArrayTexLoc = gl.GetUniformLocation(_program, "uArrayTex");
 			_uDynamicTexLoc = gl.GetUniformLocation(_program, "uDynamicTex");
+			_uVolumeTexLoc = gl.GetUniformLocation(_program, "uVolumeTex");
 			_uLayerLoc = gl.GetUniformLocation(_program, "uLayer");
+			_uWLoc = gl.GetUniformLocation(_program, "uW");
 		}
 
 		protected override void OnDestroy(GL gl)
@@ -165,6 +219,7 @@ namespace UITests.Shared.Windows_UI_Composition
 			gl.DeleteBuffer(_vbo);
 			gl.DeleteTexture(_arrayTexture);
 			gl.DeleteTexture(_dynamicTexture);
+			gl.DeleteTexture(_volumeTexture);
 			gl.DeleteSampler(_samplerNearest);
 			gl.DeleteSampler(_samplerTrilinear);
 			gl.DeleteProgram(_program);
@@ -205,9 +260,13 @@ namespace UITests.Shared.Windows_UI_Composition
 			gl.BindSampler(0, trilinear ? _samplerTrilinear : _samplerNearest);
 			gl.ActiveTexture(TextureUnit.Texture1);
 			gl.BindTexture(TextureTarget.Texture2D, _dynamicTexture);
+			gl.ActiveTexture(TextureUnit.Texture2);
+			gl.BindTexture(TextureTarget.Texture3D, _volumeTexture);
 			gl.Uniform1(_uArrayTexLoc, 0);
 			gl.Uniform1(_uDynamicTexLoc, 1);
+			gl.Uniform1(_uVolumeTexLoc, 2);
 			gl.Uniform1(_uLayerLoc, (float)layer);
+			gl.Uniform1(_uWLoc, 0.5f + 0.5f * MathF.Sin(t * 0.7f));
 
 			gl.BindVertexArray(_vao);
 			gl.DrawArrays(PrimitiveType.Triangles, 0, 6);
