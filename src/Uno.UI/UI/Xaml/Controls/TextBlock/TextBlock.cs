@@ -47,7 +47,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if !__WASM__
 		// Used for text selection which is handled natively
 		private bool _isPressed;
-		private Range _selectionOnPointerPressed;
+		private Range _selectionOnPointerPressed; // stores the selection before a mouse press so that it's restored on pointer cancellation
 #endif
 
 		private Hyperlink _hyperlinkOver;
@@ -955,17 +955,6 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void ClearTextPartial();
 
 		#region pointer events
-#if !__WASM__
-		// https://github.com/unoplatform/uno-private/issues/1238
-		// For pen and touch selection, we need to:
-		// * Start selection using a long-press and/or double-tap (platform specific)
-		// * Add visual anchor (platform specific) to edit selection (pointer pressed out of those anchors only scroll, tap would unselect)
-		// * Prevent scrolling to kick-in when editing selection (i.e. disable the DirectManipulation)
-		// * Automatic scroll (platform specific) when pointer is close to the edge of the parent ScrollViewer
-		// * Show a magnifier when finger can hide the text being (un)selected (platform specific)
-		private static bool SupportsSelection(PointerRoutedEventArgs args)
-			=> args.Pointer.PointerDeviceType is PointerDeviceType.Mouse;
-#endif
 
 		// Ported from: TextSelectionManager.cpp OnRightTapped (lines 895-938)
 		// WinUI focuses the TextBlock on right-tap so that when the context flyout
@@ -1019,7 +1008,7 @@ namespace Microsoft.UI.Xaml.Controls
 				that.CompleteGesture(); // Make sure to mute Tapped
 			}
 #if !__WASM__
-			else if (that.IsTextSelectionEnabled && SupportsSelection(e))
+			else if (that.IsTextSelectionEnabled && e.Pointer.PointerDeviceType is PointerDeviceType.Mouse)
 			{
 				var point = e.GetCurrentPoint(that);
 
@@ -1038,6 +1027,8 @@ namespace Microsoft.UI.Xaml.Controls
 				// Ported from: TextSelectionManager.cpp OnHolding/OnRightTapped
 				// Don't take focus if the context flyout is open.
 #if __SKIA__
+				// A mouse interaction drops any touch grippers that were showing.
+				that.HideGrippers();
 				if (!Internal.TextControlFlyoutHelper.IsOpen(that.ContextFlyout))
 #endif
 				{
@@ -1045,6 +1036,21 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				that.CapturePointer(e.Pointer);
+			}
+#endif
+#if __SKIA__
+			else if (that.IsTextSelectionEnabled && e.Pointer.PointerDeviceType is PointerDeviceType.Touch or PointerDeviceType.Pen)
+			{
+				// Touch/pen: remember the press for hold/tap detection on release. We don't select or
+				// capture here, and we don't set Handled, so the Holding (long-press -> context menu)
+				// and Tapped/Released gestures still fire. Selection happens in OnPointerReleasedForSelectionFlyout.
+				that._lastPointerDownPoint = e.GetCurrentPoint(null);
+				// Dismiss the selection flyout on press; the gesture re-shows it (tap) or yields to the context menu (hold).
+				that.DismissSelectionFlyoutForPointerPress();
+				if (!Internal.TextControlFlyoutHelper.IsOpen(that.ContextFlyout))
+				{
+					that.Focus(FocusState.Pointer);
+				}
 			}
 #endif
 		};
@@ -1090,7 +1096,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			// Modeled after WinUI TextSelectionManager.cpp UpdateSelectionFlyoutVisibility:
-			// After pointer release, queue a SelectionFlyout visibility update for touch/pen input.
+			// After pointer release, handle touch/pen selection and queue a SelectionFlyout visibility update.
 			that.OnPointerReleasedForSelectionFlyout(e);
 #if !__WASM__
 			e.Handled |= that.IsTextSelectionEnabled;
@@ -1103,7 +1109,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 #if !__WASM__
 				that._isPressed = false;
-				if (SupportsSelection(e))
+				if (e.Pointer.PointerDeviceType is PointerDeviceType.Mouse)
 				{
 					that.Selection = that._selectionOnPointerPressed;
 				}
@@ -1129,7 +1135,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 #if !__WASM__
-			if (that._isPressed && that.IsTextSelectionEnabled && SupportsSelection(e))
+			if (that._isPressed && that.IsTextSelectionEnabled && e.Pointer.PointerDeviceType is PointerDeviceType.Mouse)
 			{
 				var point = e.GetCurrentPoint(that);
 #if __SKIA__ // GetCharacterIndexAtPoint returns -1 if point isn't on any char. For pointers, we still want to get the closest char

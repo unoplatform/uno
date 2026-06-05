@@ -1236,17 +1236,13 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 		else if (index == _text.Length)
 		{
-			if (right)
-			{
-				return (_text.Length, 0);
-			}
-			else if (_wordBoundaries.Count == 1)
+			if (_wordBoundaries.Count == 1)
 			{
 				return (0, _text.Length);
 			}
 			else
 			{
-				return (_wordBoundaries[^2], _text.Length);
+				return (_wordBoundaries[^2], _text.Length - _wordBoundaries[^2]);
 			}
 		}
 		else
@@ -1260,8 +1256,8 @@ internal readonly partial struct UnicodeText : IParsedText
 				}
 				prevBoundary = boundary;
 			}
+			throw new UnreachableException();
 		}
-		throw new UnreachableException();
 	}
 
 	public (int start, int length, bool firstLine, bool lastLine, int lineIndex) GetLineAt(int index)

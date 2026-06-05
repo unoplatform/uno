@@ -37,12 +37,11 @@ namespace Microsoft.UI.Xaml.Controls;
 
 using SelectionDetails = (int start, int length, bool selectionEndsAtTheStart);
 
-public partial class TextBox
+public partial class TextBox : ITextSelectionGripperHost
 {
 	private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 
-	private CaretWithStemAndThumb _selectionStartThumbfulCaret;
-	private CaretWithStemAndThumb _selectionEndThumbfulCaret;
+	private TextSelectionGripperPresenter _gripperPresenter;
 	private TextBoxView _textBoxView;
 	private static ITextBoxNotificationsProviderSingleton _textBoxNotificationsSingleton;
 	private SerialDisposable _clipboardChangeSubscription = new SerialDisposable();
@@ -333,8 +332,7 @@ public partial class TextBox
 	{
 		_forceFocusedVisualState = false;
 		_timer.Stop();
-		_selectionStartThumbfulCaret?.Hide();
-		_selectionEndThumbfulCaret?.Hide();
+		_gripperPresenter?.Hide();
 		CaretMode = CaretDisplayMode.ThumblessCaretHidden;
 		_clipboardChangeSubscription.Disposable = null;
 	}
@@ -408,71 +406,14 @@ public partial class TextBox
 
 				if (_isSkiaTextBox)
 				{
-					_selectionStartThumbfulCaret = new();
-					_selectionEndThumbfulCaret = new();
-
-					foreach (var caret in (ReadOnlySpan<CaretWithStemAndThumb>)[_selectionStartThumbfulCaret, _selectionEndThumbfulCaret])
-					{
-						caret.PointerPressed += CaretOnPointerPressed;
-						caret.PointerReleased += CaretOnPointerReleased;
-						caret.PointerMoved += CaretOnPointerMoved;
-						caret.PointerCanceled += ClearCaretPointerState;
-						caret.PointerCaptureLost += ClearCaretPointerState;
-					}
-
-					displayBlock.DrawingFinished += () =>
-					{
-						// Only invalidate the carets after drawing is complete
-						// to avoid modifying the children visuals while they are being enumerated.
-						NativeDispatcher.Main.Enqueue(() =>
-						{
-							UpdateFlyoutPosition();
-						}, NativeDispatcherPriority.Normal);
-					};
+					// The presenter owns the touch-selection gripper visuals and their drag/positioning
+					// logic (shared with selectable TextBlock). It subscribes to DisplayBlock.DrawingFinished
+					// to keep the grippers glued to the selection ends as the text is (re)drawn.
+					_gripperPresenter ??= new TextSelectionGripperPresenter(this);
 				}
 			}
 
 			TextBoxView.SetTextNative(Text);
-		}
-	}
-
-	private void UpdateFlyoutPosition()
-	{
-		if (CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing or CaretDisplayMode.CaretWithThumbsBothEndsShowing)
-		{
-			var (selectionStart, selectionEnd) = IsBackwardSelection ? (SelectionStart + SelectionLength, SelectionLength) : (SelectionStart, SelectionStart + SelectionLength);
-			foreach (var (index, caret) in (ReadOnlySpan<(int, CaretWithStemAndThumb)>)[(selectionStart, _selectionStartThumbfulCaret), (selectionEnd, _selectionEndThumbfulCaret)])
-			{
-				var rect = _textBoxView.DisplayBlock.ParsedText.GetRectForIndex(index);
-				rect.Width = TextBlock.CaretThickness;
-				caret.Height = rect.Height + 16;
-				var transform = TextBoxView.DisplayBlock.TransformToVisual(null);
-				if (transform.TransformBounds(rect).IntersectWith(this.GetAbsoluteBoundsRect()) is not null)
-				{
-					var matrixTransform = (MatrixTransform)transform;
-
-					var textBoxMatrix = matrixTransform.Matrix.ToMatrix3x2();
-
-					// Calculate the center point of the caret in local coordinates
-					var localCenterX = rect.GetMidX() - caret.Width / 2;
-					var localPoint = new Point(localCenterX, rect.Top);
-
-					// Create translation matrix based on the target point
-					var translationMatrix = Matrix3x2.CreateTranslation((float)localPoint.X, (float)localPoint.Y);
-					var totalMatrix = Matrix3x2.Multiply(translationMatrix, textBoxMatrix);
-					caret.ShowAt(XamlRoot, totalMatrix);
-				}
-			}
-			if (CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing)
-			{
-				_selectionStartThumbfulCaret.Hide();
-				_selectionEndThumbfulCaret.SetStemVisible(SelectionLength == 0);
-			}
-		}
-		else
-		{
-			_selectionStartThumbfulCaret?.Hide();
-			_selectionEndThumbfulCaret?.Hide();
 		}
 	}
 
@@ -1899,114 +1840,52 @@ public partial class TextBox
 #pragma warning restore 67 // An event was declared but never used in the class in which it was declared.
 	}
 
-	private class CaretWithStemAndThumb : Grid
+	#region ITextSelectionGripperHost
+	// The touch-selection grippers are driven by the shared TextSelectionGripperPresenter. The presenter
+	// owns the visuals/drag mechanics; these members expose just enough of TextBox's selection model and
+	// text surface for it to do its job.
+
+	TextBlock ITextSelectionGripperHost.GripperTextSurface => TextBoxView.DisplayBlock;
+
+	Rect ITextSelectionGripperHost.GripperClipBounds => this.GetAbsoluteBoundsRect();
+
+	GripperMode ITextSelectionGripperHost.GripperMode => _caretMode switch
 	{
-		// This is equal to the default system accent color on Windows.
-		// This is, however, a constant color that doesn't depend on the
-		// current system accent color. Changing the accent color does NOT
-		// change the thumb color on WinUI, only the selection color.
-		private static readonly Color ThumbFillColor = Colors.FromARGB("FF0078D7");
+		CaretDisplayMode.CaretWithThumbsOnlyEndShowing => GripperMode.EndOnly,
+		CaretDisplayMode.CaretWithThumbsBothEndsShowing => GripperMode.Both,
+		_ => GripperMode.Hidden,
+	};
 
-		private readonly Ellipse _thumb;
-		private readonly Ellipse _thumbRing;
-		private readonly Rectangle _stem;
-		private Popup _popup;
+	int ITextSelectionGripperHost.SelectionLowerIndex => SelectionStart;
 
-		public PointerPoint LastPointerDown { get; set; }
+	int ITextSelectionGripperHost.SelectionUpperIndex => SelectionStart + SelectionLength;
 
-		public CaretWithStemAndThumb()
-		{
-			// Numbers and colors below are partially measured by hand from WinUI and partially made up to be reasonable.
+	void ITextSelectionGripperHost.SetGripperSelection(int start, int end) => SelectInternal(start, end - start);
 
-			Background = new SolidColorBrush(Colors.Transparent); // to hit-test positively everywhere in the grid
+	void ITextSelectionGripperHost.MoveGripperCaret(int index) => Select(index, 0);
 
-			Width = 16;
+	void ITextSelectionGripperHost.ScrollForGripper(bool isEndGripper) => UpdateScrolling(isEndGripper);
 
-			RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-			RowDefinitions.Add(new RowDefinition { Height = new GridLength(16, GridUnitType.Pixel) });
+	void ITextSelectionGripperHost.OnGripperPressed() => DismissSelectionFlyoutForPointerPress();
 
-			_thumb = new Ellipse
-			{
-				Fill = new SolidColorBrush(Colors.White),
-				Width = 16,
-				Height = 16
-			};
+	// Dismiss the selection flyout (the floating copy/paste bar) when a touch interaction begins, so it
+	// doesn't linger next to a context menu opened on the same gesture.
+	internal void DismissSelectionFlyoutForPointerPress() => TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);
 
-			_thumbRing = new Ellipse
-			{
-				Stroke = new SolidColorBrush(ThumbFillColor),
-				StrokeThickness = 2,
-				Width = 14,
-				Height = 14,
-				Margin = new Thickness(1)
-			};
-
-			_stem = new Rectangle
-			{
-				Visibility = Visibility.Collapsed,
-				IsHitTestVisible = false,
-				HorizontalAlignment = HorizontalAlignment.Center,
-				Stroke = new SolidColorBrush(ThumbFillColor),
-				Width = 2
-			};
-
-			Grid.SetRow(_stem, 0);
-			Grid.SetRow(_thumb, 1);
-			Grid.SetRow(_thumbRing, 1);
-
-			Children.Add(_stem);
-			Children.Add(_thumb);
-			Children.Add(_thumbRing);
-		}
-
-		public void SetStemVisible(bool visible) => _stem.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
-
-		public void ShowAt(XamlRoot xamlRoot, Matrix3x2 transform)
-		{
-			_popup ??= new Popup
-			{
-				Child = this,
-				IsLightDismissEnabled = false,
-				XamlRoot = xamlRoot
-			};
-			_popup.PopupPanel.Visual.ZIndex = VisualTree.TextBoxTouchKnobPopupZIndex;
-
-			if (this.RenderTransform is not MatrixTransform matrixTransform)
-			{
-				matrixTransform = new MatrixTransform();
-				this.RenderTransform = matrixTransform;
-			}
-			matrixTransform.Matrix = new Matrix(transform);
-			if (!_popup.IsOpen)
-			{
-				_popup.IsOpen = true;
-				((CompositionTarget)Visual.CompositionTarget)!.FrameRendered += OnFrameRendered;
-			}
-		}
-
-		private void OnFrameRendered()
-		{
-			NativeDispatcher.Main.Enqueue(() =>
-			{
-				if (FocusManager.GetFocusedElement(XamlRoot!) is TextBox textBox)
-				{
-					textBox.UpdateFlyoutPosition();
-				}
-			}, NativeDispatcherPriority.Idle);
-		}
-
-		public void Hide()
-		{
-			if (Visual.CompositionTarget is CompositionTarget target)
-			{
-				target.FrameRendered -= OnFrameRendered;
-			}
-			if (_popup is not null)
-			{
-				_popup.IsOpen = false;
-			}
-		}
+	void ITextSelectionGripperHost.RequestGripperContextMenu(PointerRoutedEventArgs args)
+	{
+		// Ported from TextBoxBase.cpp OnGripperHeld: a held gripper opens the context flyout.
+		var contextArgs = new ContextRequestedEventArgs();
+		contextArgs.SetGlobalPoint(args.GetCurrentPoint(null).Position);
+		OnContextRequested(this, contextArgs);
 	}
+
+	void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args)
+		=> QueueUpdateSelectionFlyoutVisibility(args.Pointer.PointerDeviceType, args.GetCurrentPoint(this).Position);
+
+	void ITextSelectionGripperHost.OnGripperTapped(PointerRoutedEventArgs args)
+		=> TouchTap(args.GetCurrentPoint(TextBoxView.DisplayBlock).Position, true);
+	#endregion
 
 	/// <summary>
 	/// Fires the ContextMenuOpening event synchronously and returns whether it was handled.
