@@ -332,89 +332,59 @@ namespace Uno.UI
 
 			var effectivePrecedence = precedence ?? DependencyPropertyValuePrecedences.Local;
 
-			// Push the owner's inherited theme onto the global subtree theme stack BEFORE
-			// running TryStaticRetrieval. Without this, the initial value is captured against
-			// `Themes.Active`, which represents the application/OS theme rather than the
-			// owner's inherited element-level theme. The mismatch hits any owner whose theme
-			// boundary differs from the application theme (e.g. a RequestedTheme=Light subtree
-			// inside an application that follows an OS=Dark setting), and is especially
-			// noticeable for non-UIElement owners (Microsoft.Xaml.Behaviors-style behaviours
-			// with ThemeResource-bound properties) which never participate in a later theme
-			// walk that would have a chance to refresh the value.
-			var pushedOwnerTheme = isThemeResource && Microsoft.UI.Xaml.Data.ThemeResourceReference.PushOwnerThemeIfDifferent(owner);
-			try
+			// Set the initial value from statically-available top-level resources.
+			// This uses the 3-parameter TryStaticRetrieval overload, which does not capture
+			// the providing ResourceDictionary. For theme resources, dictionary pinning is
+			// deferred until the load-time re-resolution path.
+			if (!immediateResolution && TryStaticRetrieval(specializedKey, context, out var value))
 			{
-				// Set the initial value from statically-available top-level resources.
-				// For theme resources we use the overload that also returns the providing
-				// ResourceDictionary, so it can be pinned on the ThemeResourceReference (see below).
-				if (!immediateResolution && TryStaticRetrieval(specializedKey, context, out var value, out var providingDictionary))
+				owner.SetValue(property, BindingPropertyHelper.Convert(property.Type, value), precedence);
+
+				// If it's {StaticResource Foo} and we managed to resolve it at parse-time, then we don't want to update it again (per UWP).
+				updateReason &= ~ResourceUpdateReason.StaticResourceLoading;
+
+				if (isThemeResource)
 				{
-					owner.SetValue(property, BindingPropertyHelper.Convert(property.Type, value), precedence);
+					// Create ThemeResourceReference without pinned dictionary for now.
+					// The providing dictionary will be captured during the first
+					// _resourceBindings resolution at load time (via the re-pin logic
+					// in InnerUpdateResourceBindingsUnsafe).
+					var themeRef = new ThemeResourceReference(
+						specializedKey, null, value, isResolved: true, context,
+						updateReason, effectivePrecedence);
+					(owner as IDependencyObjectStoreProvider)?.Store.SetThemeResourceBinding(property, themeRef);
 
-					// If it's {StaticResource Foo} and we managed to resolve it at parse-time, then we don't want to update it again (per UWP).
-					updateReason &= ~ResourceUpdateReason.StaticResourceLoading;
-
-					if (isThemeResource)
-					{
-						// Pin the providing dictionary on the theme reference immediately.
-						//
-						// MUX Reference: CThemeResource always retains its source dictionary
-						// (ThemeResource.h m_pThemeResourceDictionary), set when the value is first
-						// resolved, so RefreshValue() can re-select the correct theme sub-dictionary
-						// on every theme change.
-						//
-						// Capturing the dictionary here (rather than deferring to the load-time
-						// _resourceBindings walk) is required for content that is reparented out of
-						// its declaring resource scope before/while loading — popup/flyout/tooltip/
-						// menu content lives in a separate PopupRoot branch, so the load-time ancestor
-						// walk can't reach the dictionary that declared the resource. Without the pin,
-						// RefreshValue() falls back to the stale parse-time value resolved against the
-						// ambient theme instead of the element's own inherited ActualTheme.
-						var themeRef = new ThemeResourceReference(
-							specializedKey, providingDictionary, value, isResolved: true, context,
-							updateReason, effectivePrecedence);
-						(owner as IDependencyObjectStoreProvider)?.Store.SetThemeResourceBinding(property, themeRef);
-
-						// Also register a ResourceBinding for the initial tree-walk resolution
-						// at load time, which will also re-pin the providing dictionary if a closer
-						// ancestor scope shadows the resource.
-						(owner as IDependencyObjectStoreProvider)?.Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
-						return;
-					}
-
-					if (updateReason == ResourceUpdateReason.None)
-					{
-						// If there's no other reason, don't create a resource binding.
-						return;
-					}
-
-					// Non-theme persistent binding (HotReload) -- use old path
+					// Also register a ResourceBinding for the initial tree-walk resolution
+					// at load time, which will also pin the providing dictionary.
 					(owner as IDependencyObjectStoreProvider)?.Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
 					return;
 				}
 
-				if (isThemeResource)
+				if (updateReason == ResourceUpdateReason.None)
 				{
-					// Couldn't resolve yet (deferred until loading). Create a ThemeResourceReference
-					// without a pinned dictionary -- it will be resolved via tree-walk at load time.
-					var themeRef = new ThemeResourceReference(
-						specializedKey, null, null, isResolved: false, context,
-						updateReason, effectivePrecedence);
-					(owner as IDependencyObjectStoreProvider)?.Store.SetThemeResourceBinding(property, themeRef);
+					// If there's no other reason, don't create a resource binding.
+					return;
 				}
 
-				// Also register in the old ResourceBinding path to ensure deferred resolution
-				// on loading still works. The _resourceBindings path handles the initial tree-walk
-				// resolution, and the _themeResources path handles efficient theme-change re-resolution.
+				// Non-theme persistent binding (HotReload) -- use old path
 				(owner as IDependencyObjectStoreProvider)?.Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
+				return;
 			}
-			finally
+
+			if (isThemeResource)
 			{
-				if (pushedOwnerTheme)
-				{
-					ResourceDictionary.PopRequestedThemeForSubTree();
-				}
+				// Couldn't resolve yet (deferred until loading). Create a ThemeResourceReference
+				// without a pinned dictionary -- it will be resolved via tree-walk at load time.
+				var themeRef = new ThemeResourceReference(
+					specializedKey, null, null, isResolved: false, context,
+					updateReason, effectivePrecedence);
+				(owner as IDependencyObjectStoreProvider)?.Store.SetThemeResourceBinding(property, themeRef);
 			}
+
+			// Also register in the old ResourceBinding path to ensure deferred resolution
+			// on loading still works. The _resourceBindings path handles the initial tree-walk
+			// resolution, and the _themeResources path handles efficient theme-change re-resolution.
+			(owner as IDependencyObjectStoreProvider)?.Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
 		}
 
 		/// <summary>
