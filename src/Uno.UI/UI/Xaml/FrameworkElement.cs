@@ -434,11 +434,6 @@ namespace Microsoft.UI.Xaml
 			this.StoreTryEnableHardReferences();
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
-			// Theme establishment/inheritance happens earlier, at tree Enter, for every DO
-			// (DependencyObjectStore.EstablishThemeAtEnter, ported from CDependencyObject::EnterImpl
-			// depends.cpp:1023-1048). The Enter walk runs synchronously on attach — before this Loading
-			// pass — so GetTheme() is already established here, and {ThemeResource} resolution keys on the
-			// owner's own theme (UpdateThemeReference → ResolveOwnerTheme).
 			var effectiveTheme = GetTheme();
 
 			// Apply active style and default style when we enter the visual tree.
@@ -692,11 +687,6 @@ namespace Microsoft.UI.Xaml
 
 		private void ApplyStyleWithThemeContext(Style oldStyle, Style newStyle, DependencyPropertyValuePrecedences precedence)
 		{
-			// MUX Reference: CFrameworkElement::OnStyleChanged -> InvalidateProperty chain.
-			// ThemeResource setters in the style resolve against the element's own theme, threaded through
-			// the resolution chain (ApplyResource → UpdateThemeReference, and Setter ThemeResources via
-			// ResourceResolver.ApplyThemeResource → ResolveOwnerTheme) — at initial load and on a
-			// code-behind style change alike.
 			ApplyStyleCore(oldStyle, newStyle, precedence);
 		}
 

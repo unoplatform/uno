@@ -274,6 +274,3 @@ mergedstyles.xaml
 !build/ci/publish
 /doc/articles/llms/llms-full.txt
 /src/Uno.UI.DevServer.Cli/Properties/launchSettings.json
-
-# Phase 0 theming baseline (local, NDA-safe; not committed)
-/specs/theming-winui-alignment/baseline-results.md

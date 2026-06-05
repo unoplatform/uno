@@ -523,9 +523,6 @@ public partial class FrameworkElement
 		{
 			_themeForeground = null;
 		}
-
-		// _theme is intentionally NOT cleared here (see remarks): clearing it on unload made a recycled
-		// element resolve the global ambient on reload instead of its island theme.
 	}
 #endif
 

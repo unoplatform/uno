@@ -93,9 +93,6 @@ namespace UnitTestsApp
 				Uno.UI.Xaml.Controls.NativeWindowWrapperBase.InitialWidth,
 				Uno.UI.Xaml.Controls.NativeWindowWrapperBase.InitialHeight));
 
-			// Note: the app-level custom-theme axis (ApplicationHelper.RequestedCustomTheme) was removed in
-			// the WinUI theming alignment (Phase 6, D7); there is no longer a custom theme to reset here.
-
 			return app;
 		}
 

@@ -105,11 +105,6 @@ public partial class Popup
 				}
 
 				_closePopup.Disposable = currentXamlRoot?.OpenPopup(this);
-
-				// The reparented Child adopts the opener's theme via the tree-Enter walk
-				// (DependencyObjectStore.EstablishThemeAtEnter), which inherits from the Child's logical
-				// parent — this Popup (Popup.Base.cs sets LogicalParentOverride). Mirrors WinUI's EnterImpl
-				// theme block (depends.cpp:1026-1041); runs on Skia/WASM only, as element-level theming does.
 			}
 			else
 			{
