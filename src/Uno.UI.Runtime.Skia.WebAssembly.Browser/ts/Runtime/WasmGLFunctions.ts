@@ -177,6 +177,14 @@ namespace Uno.UI.Runtime.Skia {
 				return;
 			}
 
+			// GL_NUM_EXTENSIONS is likewise desktop/ES-core only; WebGL2's getParameter rejects it.
+			// Report the count behind getSupportedExtensions so the standard desktop enumeration
+			// idiom (GetIntegerv(NUM_EXTENSIONS) + GetStringi(EXTENSIONS, i)) works.
+			if (pname === 0x821D /* NUM_EXTENSIONS */) {
+				writeInt32(dataPtr, (gl().getSupportedExtensions() ?? []).length);
+				return;
+			}
+
 			// Object-binding queries (FRAMEBUFFER_BINDING, RENDERBUFFER_BINDING, BUFFER_*_BINDING,
 			// TEXTURE_BINDING_*, VERTEX_ARRAY_BINDING, CURRENT_PROGRAM) return the bound WebGL*
 			// object - or null when nothing's bound. Reverse-map to the integer id we stamped onto

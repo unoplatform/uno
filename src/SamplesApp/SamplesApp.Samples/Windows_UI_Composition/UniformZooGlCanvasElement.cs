@@ -274,6 +274,15 @@ namespace UITests.Shared.Windows_UI_Composition
 			gl.GetBufferParameter(BufferTargetARB.ArrayBuffer, GLEnum.BufferSize, out long bufferSize64);
 			Check(bufferSize64 == quad.Length * sizeof(float), $"GetBufferParameteri64v(Size) returned {bufferSize64}");
 
+			// Extension enumeration via the desktop idiom: NUM_EXTENSIONS + GetStringi. On wasm
+			// both are emulated over getSupportedExtensions; any real GL exposes at least one.
+			gl.GetInteger(GLEnum.NumExtensions, out int extensionCount);
+			Check(extensionCount > 0, $"GetIntegerv(NUM_EXTENSIONS) returned {extensionCount}");
+			for (uint i = 0; i < extensionCount; i++)
+			{
+				Check(!string.IsNullOrEmpty(gl.GetStringS(StringName.Extensions, i)), $"GetStringi(EXTENSIONS, {i}) returned an empty string");
+			}
+
 			gl.Hint(HintTarget.FragmentShaderDerivativeHint, HintMode.Nicest);
 			gl.Finish();
 
