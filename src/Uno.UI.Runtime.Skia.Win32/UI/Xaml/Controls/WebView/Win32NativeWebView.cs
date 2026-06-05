@@ -26,12 +26,10 @@ internal class Win32NativeWebViewProvider(CoreWebView2 owner) : INativeWebViewPr
 {
 	public INativeWebView CreateNativeWebView(ContentPresenter contentPresenter)
 	{
-		const string assemblyName =
 #if NET10_0_OR_GREATER
-			"WebView2";
+		return new Win32NativeAotWebView(owner, contentPresenter);
 #else
-			"Microsoft.Web.WebView2.Core";
-#endif
+		const string assemblyName = "Microsoft.Web.WebView2.Core";
 
 		try
 		{
@@ -43,9 +41,6 @@ internal class Win32NativeWebViewProvider(CoreWebView2 owner) : INativeWebViewPr
 			typeof(Win32Host).LogError()?.Error($"Failed to load {assemblyName} needed for WebView support. Make sure that WebView is included in the project's UnoFeatures. For more details, see https://aka.platform.uno/webview2 and https://aka.platform.uno/using-uno-sdk.");
 			return null!;
 		}
-#if NET10_0_OR_GREATER
-		return new Win32NativeAotWebView(owner, contentPresenter);
-#else
 		return new Win32NativeWebView(owner, contentPresenter);
 #endif
 	}
