@@ -85,6 +85,12 @@ internal static unsafe partial class WasmGLFunctions
 		// trampolines also only exist if a matching [DllImport] is discovered at build time.
 		// (9 ints happened to be primed by other libraries' pinvokes; 10 and 11 were not,
 		// aborting the runtime on the first glTexImage3D/glTexSubImage3D call.)
+		[DllImport(ShimLibrary, EntryPoint = "uno_dummy_V8I", CallingConvention = CallingConvention.Cdecl)]
+		internal static extern void DummyV8I(int a, int b, int c, int d, int e, int f, int g, int h);
+
+		[DllImport(ShimLibrary, EntryPoint = "uno_dummy_VIIFI", CallingConvention = CallingConvention.Cdecl)]
+		internal static extern void DummyVIIFI(int a, int b, float c, int d);
+
 		[DllImport(ShimLibrary, EntryPoint = "uno_dummy_V9I", CallingConvention = CallingConvention.Cdecl)]
 		internal static extern void DummyV9I(int a, int b, int c, int d, int e, int f, int g, int h, int i);
 
@@ -114,6 +120,8 @@ internal static unsafe partial class WasmGLFunctions
 			SignaturePrimer.DummyVIIF(0, 0, 0);
 			SignaturePrimer.DummyVIIL(0, 0, 0);
 			_ = SignaturePrimer.DummyIIIL(0, 0, 0);
+			SignaturePrimer.DummyV8I(0, 0, 0, 0, 0, 0, 0, 0);
+			SignaturePrimer.DummyVIIFI(0, 0, 0, 0);
 			SignaturePrimer.DummyV9I(0, 0, 0, 0, 0, 0, 0, 0, 0);
 			SignaturePrimer.DummyV10I(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 			SignaturePrimer.DummyV11I(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);

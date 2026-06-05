@@ -138,9 +138,11 @@ void uno_dummy_VIFFF(int a, float b, float c, float d) { (void)a; (void)b; (void
 void uno_dummy_VIIF(int a, int b, float c) { (void)a; (void)b; (void)c; }
 void uno_dummy_VIIL(int a, int b, long long c) { (void)a; (void)b; (void)c; }
 int uno_dummy_IIIL(int a, int b, long long c) { (void)a; (void)b; (void)c; return 0; }
+void uno_dummy_VIIFI(int a, int b, float c, int d) { (void)a; (void)b; (void)c; (void)d; }
 // All-int large-arity cookies for the >8-arg shim wrappers above: Silk.NET reaches them via
 // calli with 9 (glTexImage2D & co), 10 (glTexImage3D, glBlitFramebuffer), and 11
 // (glTexSubImage3D, glCompressedTexSubImage3D) i32 arguments.
+void uno_dummy_V8I(int a, int b, int c, int d, int e, int f, int g, int h) { (void)a; (void)b; (void)c; (void)d; (void)e; (void)f; (void)g; (void)h; }
 void uno_dummy_V9I(int a, int b, int c, int d, int e, int f, int g, int h, int i) { (void)a; (void)b; (void)c; (void)d; (void)e; (void)f; (void)g; (void)h; (void)i; }
 void uno_dummy_V10I(int a, int b, int c, int d, int e, int f, int g, int h, int i, int j) { (void)a; (void)b; (void)c; (void)d; (void)e; (void)f; (void)g; (void)h; (void)i; (void)j; }
 void uno_dummy_V11I(int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k) { (void)a; (void)b; (void)c; (void)d; (void)e; (void)f; (void)g; (void)h; (void)i; (void)j; (void)k; }
