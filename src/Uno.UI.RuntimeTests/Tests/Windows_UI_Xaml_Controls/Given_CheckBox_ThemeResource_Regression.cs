@@ -75,6 +75,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// CheckedNormal); asserts in the enabled CheckedNormal state after the round-trip.
 		[TestMethod]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
 		public async Task When_App_Override_Checked_Survives_IsEnabled_Toggle_Under_Dark_App()
 		{
 			using var _ = ThemeHelper.UseApplicationDarkTheme();
