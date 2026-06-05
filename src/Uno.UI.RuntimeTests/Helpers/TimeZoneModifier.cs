@@ -47,6 +47,7 @@ public class TimeZoneModifier : IDisposable
 			}
 			else
 			{
+				// https://github.com/dotnet/runtime/blob/91ee24a97d907e213e181a855b8469524cd376b5/src/libraries/System.Private.CoreLib/src/System/TimeZoneInfo.cs#L101
 				return typeof(TimeZoneInfo).GetProperty("Local");
 			}
 		}
