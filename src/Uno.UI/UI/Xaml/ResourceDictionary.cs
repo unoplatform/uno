@@ -970,29 +970,47 @@ namespace Microsoft.UI.Xaml
 		{
 			if (owner is null)
 			{
-				_owner = null;
+				ReturnOwnerWeakReference();
 				return;
 			}
 
-			// A dictionary instance shared as the Resources of more than one element has no single owning
-			// theme. Rather than attribute one element's theme to the other's resources (last-writer-wins),
-			// mark the owner ambiguous so GetResourceOwner returns null and resolution falls back to the
-			// app/OS theme — the safe, deterministic choice for a shared dictionary. WinUI carries the theme
-			// on each consuming DO instead; for a single literally-shared resource instance (one brush, one
-			// Color) only one theme can win regardless.
 			if (_ownerIsAmbiguous)
 			{
 				return;
 			}
 
-			if (_owner?.Target is { } existing && !ReferenceEquals(existing, owner))
+			if (_owner?.Target is { } existing)
 			{
-				_owner = null;
+				if (ReferenceEquals(existing, owner))
+				{
+					// Same owner — keep the rented reference rather than renting another. FrameworkElement.Resources
+					// sets the owner on both getter initialization and setter, so this is hit repeatedly.
+					return;
+				}
+
+				// A dictionary instance shared as the Resources of more than one element has no single owning
+				// theme. Rather than attribute one element's theme to the other's resources (last-writer-wins),
+				// mark the owner ambiguous so GetResourceOwner returns null and resolution falls back to the
+				// app/OS theme — the safe, deterministic choice for a shared dictionary. WinUI carries the theme
+				// on each consuming DO instead; for a single literally-shared resource instance (one brush, one
+				// Color) only one theme can win regardless.
+				ReturnOwnerWeakReference();
 				_ownerIsAmbiguous = true;
 				return;
 			}
 
+			// A prior owner may have been collected, leaving a stale reference — return it before renting a new one.
+			ReturnOwnerWeakReference();
 			_owner = WeakReferencePool.RentWeakReference(this, owner);
+		}
+
+		private void ReturnOwnerWeakReference()
+		{
+			if (_owner is not null)
+			{
+				WeakReferencePool.ReturnWeakReference(this, _owner);
+				_owner = null;
+			}
 		}
 
 		/// <summary>
