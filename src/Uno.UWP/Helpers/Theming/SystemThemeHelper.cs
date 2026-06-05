@@ -123,8 +123,10 @@ internal static partial class SystemThemeHelper
 
 		_changesObserved = true;
 
-		// Cache the initial theme for future comparisons
-		_lastSystemTheme = GetSystemTheme();
+		// Cache the effective theme (the override when one is set, else the real OS theme) so a
+		// SystemThemeOverride applied before the first subscription stays authoritative — seeding from
+		// GetSystemTheme() here would overwrite it with the real OS theme and make SystemTheme report stale.
+		_lastSystemTheme = EffectiveSystemTheme;
 
 		ObserveThemeChangesPlatform();
 
