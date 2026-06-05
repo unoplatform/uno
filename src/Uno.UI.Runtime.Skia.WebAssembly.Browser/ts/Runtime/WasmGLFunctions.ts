@@ -551,11 +551,13 @@ namespace Uno.UI.Runtime.Skia {
 			// WebGL2 dropped the *_LENGTH pnames (strings are returned directly); compute them.
 			// Silk.NET's string-returning helpers (GetShaderInfoLog etc.) query these to size buffers.
 			if (pname === 0x8B84 /* INFO_LOG_LENGTH */) {
-				writeInt32(paramsPtr, (gl().getShaderInfoLog(sh)?.length ?? 0) + 1);
+				const len = gl().getShaderInfoLog(sh)?.length ?? 0;
+				writeInt32(paramsPtr, len === 0 ? 0 : len + 1);
 				return;
 			}
 			if (pname === 0x8B88 /* SHADER_SOURCE_LENGTH */) {
-				writeInt32(paramsPtr, (gl().getShaderSource(sh)?.length ?? 0) + 1);
+				const len = gl().getShaderSource(sh)?.length ?? 0;
+				writeInt32(paramsPtr, len === 0 ? 0 : len + 1);
 				return;
 			}
 			const v = gl().getShaderParameter(sh, pname);
@@ -613,7 +615,8 @@ namespace Uno.UI.Runtime.Skia {
 			// WebGL2 dropped the *_LENGTH pnames (strings are returned directly); compute them.
 			// Silk.NET's string-returning helpers (GetActiveUniform etc.) query these to size buffers.
 			if (pname === 0x8B84 /* INFO_LOG_LENGTH */) {
-				writeInt32(paramsPtr, (gl().getProgramInfoLog(p)?.length ?? 0) + 1);
+				const len = gl().getProgramInfoLog(p)?.length ?? 0;
+				writeInt32(paramsPtr, len === 0 ? 0 : len + 1);
 				return;
 			}
 			if (pname === 0x8B87 /* ACTIVE_UNIFORM_MAX_LENGTH */ || pname === 0x8B8A /* ACTIVE_ATTRIBUTE_MAX_LENGTH */) {
