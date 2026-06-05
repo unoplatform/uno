@@ -84,6 +84,38 @@ namespace Uno.UI.Runtime.Skia {
 		if (lengthOutPtr !== 0) writeInt32(lengthOutPtr, writable);
 	}
 
+	// One-shot portability warnings: emitted the first time a WebGL2-incompatible state
+	// combination is detected, so users get an explanation instead of only the per-draw
+	// INVALID_OPERATION spam the browser produces.
+	const warnedOnce = new Set<string>();
+	function warnOnce(key: string, message: string): void {
+		if (!warnedOnce.has(key)) {
+			warnedOnce.add(key);
+			console.warn(message);
+		}
+	}
+
+	// WebGL2 (unlike desktop GL) fails every draw with INVALID_OPERATION while the front and
+	// back stencil reference/value-mask/write-mask differ; only the funcs/ops may vary per face.
+	// The mismatch is recorded when stencil state is set (transient divergence between two
+	// consecutive Separate calls is legitimate) and only reported at draw time while the
+	// stencil test is enabled.
+	function recordStencilMismatch(ctx: WebGL2RenderingContext): void {
+		(<GlAny>ctx).__unoStencilMismatch =
+			ctx.getParameter(ctx.STENCIL_REF) !== ctx.getParameter(ctx.STENCIL_BACK_REF)
+			|| ctx.getParameter(ctx.STENCIL_VALUE_MASK) !== ctx.getParameter(ctx.STENCIL_BACK_VALUE_MASK)
+			|| ctx.getParameter(ctx.STENCIL_WRITEMASK) !== ctx.getParameter(ctx.STENCIL_BACK_WRITEMASK);
+	}
+
+	function warnIfStencilMismatch(ctx: WebGL2RenderingContext): void {
+		if ((<GlAny>ctx).__unoStencilMismatch && ctx.isEnabled(ctx.STENCIL_TEST)) {
+			warnOnce("stencilMismatch",
+				"Draw call with diverging front/back stencil reference, value mask, or write mask. " +
+				"WebGL2 requires them to be identical (only the stencil funcs/ops may differ per face); " +
+				"draws fail with INVALID_OPERATION until they match again.");
+		}
+	}
+
 	// Static C-string cache for glGetString. Each unique pname value gets a single allocation
 	// in wasm memory that we never free, matching glGetString's "pointer remains valid" contract.
 	const stringCache: { [pname: number]: number } = {};
@@ -202,11 +234,15 @@ namespace Uno.UI.Runtime.Skia {
 		public static glClearColor(r: number, g: number, b: number, a: number): void { gl().clearColor(r, g, b, a); }
 
 		public static glDrawArrays(mode: number, first: number, count: number): void {
-			gl().drawArrays(mode, first, count);
+			const ctx = gl();
+			warnIfStencilMismatch(ctx);
+			ctx.drawArrays(mode, first, count);
 		}
 
 		public static glDrawElements(mode: number, count: number, type: number, indicesPtr: number): void {
-			gl().drawElements(mode, count, type, indicesPtr);
+			const ctx = gl();
+			warnIfStencilMismatch(ctx);
+			ctx.drawElements(mode, count, type, indicesPtr);
 		}
 
 		public static glPixelStorei(pname: number, param: number): void { gl().pixelStorei(pname, param); }
@@ -700,10 +736,26 @@ namespace Uno.UI.Runtime.Skia {
 		public static glDepthMask(flag: number): void { gl().depthMask(flag !== 0); }
 		public static glDepthRangef(n: number, f: number): void { gl().depthRange(n, f); }
 
-		public static glStencilFunc(func: number, ref: number, mask: number): void { gl().stencilFunc(func, ref, mask); }
-		public static glStencilFuncSeparate(face: number, func: number, ref: number, mask: number): void { gl().stencilFuncSeparate(face, func, ref, mask); }
-		public static glStencilMask(mask: number): void { gl().stencilMask(mask); }
-		public static glStencilMaskSeparate(face: number, mask: number): void { gl().stencilMaskSeparate(face, mask); }
+		public static glStencilFunc(func: number, ref: number, mask: number): void {
+			const ctx = gl();
+			ctx.stencilFunc(func, ref, mask);
+			recordStencilMismatch(ctx);
+		}
+		public static glStencilFuncSeparate(face: number, func: number, ref: number, mask: number): void {
+			const ctx = gl();
+			ctx.stencilFuncSeparate(face, func, ref, mask);
+			recordStencilMismatch(ctx);
+		}
+		public static glStencilMask(mask: number): void {
+			const ctx = gl();
+			ctx.stencilMask(mask);
+			recordStencilMismatch(ctx);
+		}
+		public static glStencilMaskSeparate(face: number, mask: number): void {
+			const ctx = gl();
+			ctx.stencilMaskSeparate(face, mask);
+			recordStencilMismatch(ctx);
+		}
 		public static glStencilOp(fail: number, zfail: number, zpass: number): void { gl().stencilOp(fail, zfail, zpass); }
 		public static glStencilOpSeparate(face: number, sfail: number, dpfail: number, dppass: number): void { gl().stencilOpSeparate(face, sfail, dpfail, dppass); }
 
@@ -1119,13 +1171,19 @@ namespace Uno.UI.Runtime.Skia {
 		// ------------------------------------------------------------------------------------
 
 		public static glDrawArraysInstanced(mode: number, first: number, count: number, instanceCount: number): void {
-			gl().drawArraysInstanced(mode, first, count, instanceCount);
+			const ctx = gl();
+			warnIfStencilMismatch(ctx);
+			ctx.drawArraysInstanced(mode, first, count, instanceCount);
 		}
 		public static glDrawElementsInstanced(mode: number, count: number, type: number, indicesPtr: number, instanceCount: number): void {
-			gl().drawElementsInstanced(mode, count, type, indicesPtr, instanceCount);
+			const ctx = gl();
+			warnIfStencilMismatch(ctx);
+			ctx.drawElementsInstanced(mode, count, type, indicesPtr, instanceCount);
 		}
 		public static glDrawRangeElements(mode: number, start: number, end: number, count: number, type: number, indicesPtr: number): void {
-			gl().drawRangeElements(mode, start, end, count, type, indicesPtr);
+			const ctx = gl();
+			warnIfStencilMismatch(ctx);
+			ctx.drawRangeElements(mode, start, end, count, type, indicesPtr);
 		}
 
 		// ------------------------------------------------------------------------------------
