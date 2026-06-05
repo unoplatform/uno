@@ -8,7 +8,9 @@ using Uno.WinUI.Graphics3DGL;
 namespace UITests.Shared.Windows_UI_Composition
 {
 	// Stress tests compressed-texture uploads and framebuffer-to-texture copies:
-	//   - gl.CompressedTexImage2D + gl.CompressedTexSubImage2D (ETC2, mandatory in WebGL2/ES3)
+	//   - gl.CompressedTexImage2D + gl.CompressedTexSubImage2D (ETC2; mandatory in real ES3,
+	//     but on WebGL2 only available via WEBGL_compressed_texture_etc - absent on most
+	//     desktop browsers, so the uncompressed fallback path is the common one there)
 	//   - gl.CompressedTexImage3D + gl.CompressedTexSubImage3D on a TEXTURE_2D_ARRAY
 	//   - gl.CopyTexImage2D / gl.CopyTexSubImage2D / gl.CopyTexSubImage3D from an offscreen FBO
 	//   - gl.FramebufferTextureLayer (rendering into one layer of an array texture)
@@ -16,9 +18,10 @@ namespace UITests.Shared.Windows_UI_Composition
 	//   - gl.GetStringi (extension enumeration for the ETC2 feature check on desktop GL)
 	//
 	// 2x2 grid: [ETC2 2D texture | ETC2 array layer (cycling)] over [CopyTexImage2D snapshot |
-	// array layer combining CopyTexSubImage3D and a FramebufferTextureLayer render]. On desktop
-	// GL older than 4.3 without ARB_ES3_compatibility the compressed quadrants fall back to
-	// uncompressed uploads (logged).
+	// array layer combining CopyTexSubImage3D and a FramebufferTextureLayer render]. Where ETC2
+	// isn't available (desktop GL < 4.3 without ARB_ES3_compatibility, or WebGL2 without
+	// WEBGL_compressed_texture_etc) the compressed quadrants fall back to uncompressed
+	// uploads (logged).
 	public class GLCanvasElement_CompressedCopyElement() : GLCanvasElement(() => App.MainWindow)
 	{
 		private const int TexSize = 32; // multiple of the 4x4 ETC2 block size
@@ -219,30 +222,46 @@ namespace UITests.Shared.Windows_UI_Composition
 		private unsafe bool DetectEtc2Support(GL gl)
 		{
 			var version = gl.GetStringS(StringName.Version);
-			if (version.Contains("OpenGL ES", StringComparison.InvariantCultureIgnoreCase) ||
-				version.Contains("WebGL", StringComparison.InvariantCultureIgnoreCase))
-			{
-				return true; // ETC2 is mandatory in ES 3.0 / WebGL2
-			}
 
-			// Desktop GL: core since 4.3, otherwise advertised via ARB_ES3_compatibility.
-			gl.GetInteger(GLEnum.MajorVersion, out int major);
-			gl.GetInteger(GLEnum.MinorVersion, out int minor);
-			if (major > 4 || (major == 4 && minor >= 3))
+			if (version.Contains("WebGL", StringComparison.InvariantCultureIgnoreCase))
 			{
-				return true;
+				// Unlike real ES 3.0, WebGL 2.0 does NOT guarantee ETC2/EAC: desktop GPUs can't
+				// decode it, so browsers only expose it via WEBGL_compressed_texture_etc
+				// (typically present on mobile, absent on desktop).
+				if (HasExtension(gl, "WEBGL_compressed_texture_etc"))
+				{
+					return true;
+				}
 			}
-
-			gl.GetInteger(GLEnum.NumExtensions, out int extensionCount);
-			for (uint i = 0; i < extensionCount; i++)
+			else if (version.Contains("OpenGL ES", StringComparison.InvariantCultureIgnoreCase))
 			{
-				if (gl.GetStringS(StringName.Extensions, i) == "GL_ARB_ES3_compatibility")
+				return true; // ETC2 is mandatory in (real) ES 3.0
+			}
+			else
+			{
+				// Desktop GL: core since 4.3, otherwise advertised via ARB_ES3_compatibility.
+				gl.GetInteger(GLEnum.MajorVersion, out int major);
+				gl.GetInteger(GLEnum.MinorVersion, out int minor);
+				if (major > 4 || (major == 4 && minor >= 3) || HasExtension(gl, "GL_ARB_ES3_compatibility"))
 				{
 					return true;
 				}
 			}
 
 			Console.WriteLine("ETC2 compressed textures are not supported on this GL; using uncompressed fallbacks.");
+			return false;
+		}
+
+		private static bool HasExtension(GL gl, string name)
+		{
+			gl.GetInteger(GLEnum.NumExtensions, out int extensionCount);
+			for (uint i = 0; i < extensionCount; i++)
+			{
+				if (gl.GetStringS(StringName.Extensions, i) == name)
+				{
+					return true;
+				}
+			}
 			return false;
 		}
 
