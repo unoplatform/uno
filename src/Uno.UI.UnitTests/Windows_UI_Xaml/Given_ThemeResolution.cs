@@ -100,4 +100,26 @@ public class Given_ThemeResolution
 	[TestMethod]
 	public void When_Owner_Null_Returns_App_Fallback()
 		=> Assert.AreEqual(AppFallback(), ThemeResolution.ResolveOwnerTheme(null));
+
+	// The owner-less fallback must track the active base theme (Themes.Active / GetActiveTheme), which is the
+	// SAME base the lazy-materialization resolution leaf keys on — so the two owner-less {ThemeResource}
+	// resolution paths never disagree. Regression guard for Given_ResourceDictionary.When_LinkedResDict_ThemeUpdated,
+	// which was OS-theme-dependent while the fallback re-derived from ActualElementTheme instead of Themes.Active.
+	[TestMethod]
+	public void When_Owner_Null_Follows_Active_Theme()
+	{
+		var original = ResourceDictionary.GetActiveTheme();
+		try
+		{
+			ResourceDictionary.SetActiveTheme("Dark");
+			Assert.AreEqual(Theme.Dark, Theming.GetBaseValue(ThemeResolution.ResolveOwnerTheme(null)));
+
+			ResourceDictionary.SetActiveTheme("Light");
+			Assert.AreEqual(Theme.Light, Theming.GetBaseValue(ThemeResolution.ResolveOwnerTheme(null)));
+		}
+		finally
+		{
+			ResourceDictionary.SetActiveTheme(original);
+		}
+	}
 }
