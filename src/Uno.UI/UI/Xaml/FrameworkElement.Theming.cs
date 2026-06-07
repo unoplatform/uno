@@ -299,6 +299,7 @@ public partial class FrameworkElement
 	/// </summary>
 	private void PropagateThemeToChildren(Theme theme, bool forceRefresh)
 	{
+#if __CROSSRUNTIME__
 		// Iterate the children list directly (O(1) Count + indexer) instead of
 		// VisualTreeHelper.GetChild(this, i), whose LINQ ElementAtOrDefault re-enumerates the children on
 		// every index — O(n^2) for a wide panel on each theme switch. Count is re-read each iteration so the
@@ -315,6 +316,19 @@ public partial class FrameworkElement
 				fe.NotifyThemeChanged(theme, forceRefresh);
 			}
 		}
+#else
+		// Non-crossruntime flavors (unit tests, native Android/iOS) lack the UIElement-typed GetChildren
+		// fast overload (it returns the crossruntime-only MaterializableList<UIElement>). They also never
+		// reach this method — NotifyThemeChanged early-returns without UNO_HAS_ENHANCED_LIFECYCLE — so this
+		// branch is compile-only; enumerate the IEnumerable<DependencyObject> overload.
+		foreach (var child in VisualTreeHelper.GetChildren(this))
+		{
+			if (child is FrameworkElement fe && fe is not ElementStub)
+			{
+				fe.NotifyThemeChanged(theme, forceRefresh);
+			}
+		}
+#endif
 	}
 
 	// MUX Reference framework.cpp, lines 3346-3386
