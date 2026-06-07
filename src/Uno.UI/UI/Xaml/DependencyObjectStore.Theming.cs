@@ -382,7 +382,7 @@ public partial class DependencyObjectStore
 	/// WinUI snapshots property indices into a stack_vector (size 50 to handle ListViewItemPresenter
 	/// with 41+ theme refs), then calls UpdateThemeReference(propertyIndex) for each.
 	/// </remarks>
-	internal void UpdateAllThemeReferences(DependencyObject? owner, ThemeWalkResourceCache? cache = null, Theme? ownerThemeOverride = null)
+	internal void UpdateAllThemeReferences(DependencyObject? owner, ThemeWalkResourceCache? cache = null, Theme? ownerThemeOverride = null, bool preferAppResourceOverride = false)
 	{
 		if (_themeResources is not { HasEntries: true })
 		{
@@ -402,7 +402,7 @@ public partial class DependencyObjectStore
 		if (snapshotCount == 1)
 		{
 			var entry = entries[0];
-			UpdateThemeReference(entry.Property, entry.Precedence, entry.Reference, owner, cache, ownerThemeOverride);
+			UpdateThemeReference(entry.Property, entry.Precedence, entry.Reference, owner, cache, ownerThemeOverride, preferAppResourceOverride);
 			return;
 		}
 
@@ -423,7 +423,8 @@ public partial class DependencyObjectStore
 					snapshot[i].Reference,
 					owner,
 					cache,
-					ownerThemeOverride);
+					ownerThemeOverride,
+					preferAppResourceOverride);
 			}
 		}
 		finally
@@ -456,7 +457,8 @@ public partial class DependencyObjectStore
 		ThemeResourceReference themeRef,
 		DependencyObject? owner,
 		ThemeWalkResourceCache? cache,
-		Theme? ownerThemeOverride = null)
+		Theme? ownerThemeOverride = null,
+		bool preferAppResourceOverride = false)
 	{
 		try
 		{
@@ -516,7 +518,7 @@ public partial class DependencyObjectStore
 			// already by the tree lookup above."
 			if (!resolved)
 			{
-				newValue = themeRef.RefreshValue(ownerTheme, cache);
+				newValue = themeRef.RefreshValue(ownerTheme, cache, preferAppResourceOverride);
 			}
 
 			// MUX: Theming.cpp:385-393 — SetValue with resolved value

@@ -327,20 +327,25 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return;
 			}
 
-			var effectiveTheme = targetElement.GetTheme();
-			if (effectiveTheme == Theme.None)
-			{
-				return;
-			}
-
-			// A HighContrast-only theme (no Light/Dark base) has no owner theme, so resolve against the
-			// app theme (owner == null).
-			DependencyObject owner = Theming.GetBaseValue(effectiveTheme) == Theme.None ? null : targetElement;
+			// Re-resolve each keyframe's {ThemeResource} against the TARGET element's EFFECTIVE theme. We pass the
+			// target element so UpdateThemeReference -> ResolveOwnerTheme walks the inheritance chain rather than
+			// reading the target's own per-object theme: a control-template child (e.g. a CheckBox's
+			// NormalRectangle) typically has _theme == None even though it lives in a themed (e.g. Light-pinned)
+			// subtree. Gating on its own None theme bailed here and left the keyframe at its stale, stock value on
+			// a visual-state re-entry. ResolveOwnerTheme resolves the inherited theme (never None), so the keyframe
+			// re-resolves against the owner's effective theme.
+			//
+			// preferAppResourceOverride: a keyframe's {ThemeResource} is authored in the generic/Fluent control
+			// template, so it pins to the framework (global) theme dictionary. Per WinUI
+			// (GetKeyOverrideFromApplicationResourcesNoRef, Resources.cpp:668-682) an app-level override of that
+			// key must still win over the framework default — so a Light-pinned checked CheckBox keeps its
+			// app-level CheckBoxCheckBackgroundFillChecked override across a visual-state re-entry instead of
+			// reverting to the stock accent.
 			foreach (var keyFrame in KeyFrames)
 			{
 				if (keyFrame is IDependencyObjectStoreProvider provider)
 				{
-					provider.Store.UpdateAllThemeReferences(owner);
+					provider.Store.UpdateAllThemeReferences(targetElement, preferAppResourceOverride: true);
 				}
 			}
 		}

@@ -838,6 +838,26 @@ namespace Uno.UI
 			return false;
 		}
 
+		// MUX: CResourceDictionary::GetKeyFromThemeDictionariesNoRef / GetKeyOverrideFromApplicationResourcesNoRef
+		// (Resources.cpp:668-682, 907-938) — "Always allow Application.Resources to override values found in the
+		// global ThemeDictionaries." When a {ThemeResource} resolves from (is pinned to) the system/Fluent
+		// dictionary, an app-level override of the same key must still win. Returns the overriding value only
+		// when Application.Resources provides the key from a NON-system dictionary (a genuine app-level override),
+		// selecting the Light/Dark sub-dictionary by the resolving owner's effective theme.
+		internal static bool TryApplicationResourceOverride(in SpecializedResourceDictionary.ResourceKey resourceKey, in SpecializedResourceDictionary.ResourceKey themeKey, out object value)
+		{
+			value = null;
+			if (Application.Current?.Resources is { } appResources
+				&& appResources.TryGetValue(resourceKey, themeKey, out var appValue, out var providingDictionary, shouldCheckSystem: false)
+				&& providingDictionary is { IsSystemDictionary: false })
+			{
+				value = appValue;
+				return true;
+			}
+
+			return false;
+		}
+
 		/// <summary>
 		/// Tries to retrieve a resource from the same assembly as the retrieving context. Used when parsing third-party libraries
 		/// (ie not application XAML, and not Uno.UI XAML)
