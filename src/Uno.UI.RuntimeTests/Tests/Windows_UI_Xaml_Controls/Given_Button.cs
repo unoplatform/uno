@@ -34,10 +34,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public class Given_Button
 	{
 		[TestMethod]
-		// Excluded on native WinUI because the runtime tests target WindowsAppSDK 1.6
-		// (Uno.UI.RuntimeTests.Windows.csproj), which predates the WinUI fc2f82117 back button
-		// change. WinAppSDK 1.6 ships Normal 40x40 / Small 32x32; Uno mirrors fc2f82117 where both
-		// styles are 40x36 and the Small style only trims the right margin.
+		// Excluded on native WinUI: Uno mirrors the MUX controls/dev resources (fc2f82117),
+		// which size the back button 40x36 with a margin-only Small style. Shipped WinUI overrides
+		// those in dxaml generic.xaml with Normal 40x40 / Small 32x32, and that is what native WinUI
+		// renders in every release (verified identical at 1.6.9, 1.7.3 and 1.8.2), so no WindowsAppSDK
+		// bump makes this pass at 40x36. Re-enable if WinUI promotes the controls/dev sizes to generic.xaml.
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_NavigationViewButtonStyles()
 		{
