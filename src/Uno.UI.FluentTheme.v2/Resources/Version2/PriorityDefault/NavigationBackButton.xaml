@@ -69,5 +69,8 @@
   </Style>
   <Style x:Key="NavigationBackButtonSmallStyle" TargetType="Button" BasedOn="{StaticResource NavigationBackButtonNormalStyle}">
     <Setter Property="Margin" Value="4,2,0,2" />
+    <!-- Shipped WinUI (dxaml generic.xaml) sizes the small back button to 32x32; the MUX fc2f82117 margin-only style is not yet shipped. -->
+    <Setter Property="Width" Value="32" />
+    <Setter Property="Height" Value="32" />
   </Style>
 </ResourceDictionary>

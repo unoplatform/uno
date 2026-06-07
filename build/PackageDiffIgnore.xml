@@ -2505,6 +2505,9 @@
 		  <!-- ItemsRepeater.Animator property: paired with removed ElementAnimator type (see <Types> above). -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ItemsRepeater::AnimatorProperty()" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimator Microsoft.UI.Xaml.Controls.ItemsRepeater::Animator()" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
+
+		  <!-- StackLayout.DisableVirtualization is a plain CLR property in WinUI (backed by internal IsVirtualizationEnabledProperty); the DisableVirtualizationProperty DP is not part of the WinUI surface. -->
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout::DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />
 	  </Properties>
 
 	  <Methods>
@@ -2567,6 +2570,8 @@
 		  <Member fullName="Microsoft.UI.Xaml.Documents.Block Microsoft.UI.Xaml.Documents.BlockCollection.get_Item(System.Int32 index)" reason="WinUI sync: indexer provided by base class" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Documents.BlockCollection.set_Item(System.Int32 index, Microsoft.UI.Xaml.Documents.Block value)" reason="WinUI sync: indexer provided by base class" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.OnCleanUpVirtualizedItem(Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs e)" reason="WinUI sync: not in WinAppSDK 1.8" />
+		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout.get_DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />
 		  <!-- END WinUI sync: other removed methods -->
 
 		  <!-- ====================================================================== -->
@@ -2902,6 +2907,17 @@
 
 		  <!-- END WinUI sync (Category B): shadow event removals -->
 	  </Events>
+	</IgnoreSet>
+
+	<IgnoreSet baseVersion="6.6">
+	  <Properties>
+		  <!-- StackLayout.DisableVirtualization is a plain CLR property in WinUI (backed by internal IsVirtualizationEnabledProperty); the DisableVirtualizationProperty DP is not part of the WinUI surface. -->
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout::DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />
+	  </Properties>
+	  <Methods>
+		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout.get_DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />
+	  </Methods>
 	</IgnoreSet>
 	<![CDATA[
 		The 'baseVersion' should be the current latest stable version published on nuget, 

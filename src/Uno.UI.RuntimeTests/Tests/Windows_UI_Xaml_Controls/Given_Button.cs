@@ -46,15 +46,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				""");
 			var smallBtnRect = await UITestHelper.Load(smallBtn);
 
-			// Aligned with WinUI fc2f82117: both styles share NavigationBackButtonWidth/Height (40x36).
-			// The Small style only differs from the Normal style by trimming the right margin.
-			// A small tolerance accounts for sub-pixel rounding in the transformed bounds.
+			// Aligned with shipped WinUI (dxaml generic.xaml): the Normal back button is 40x40
+			// and the Small back button is 32x32. A small tolerance accounts for sub-pixel
+			// rounding in the transformed bounds.
 			Assert.AreEqual(40, normalBtnRect.Width, 0.5);
-			Assert.AreEqual(36, normalBtnRect.Height, 0.5);
-			Assert.AreEqual(40, smallBtnRect.Width, 0.5);
-			Assert.AreEqual(36, smallBtnRect.Height, 0.5);
-			Assert.AreEqual(new Thickness(4, 2, 4, 2), normalBtn.Margin);
-			Assert.AreEqual(new Thickness(4, 2, 0, 2), smallBtn.Margin);
+			Assert.AreEqual(40, normalBtnRect.Height, 0.5);
+			Assert.AreEqual(32, smallBtnRect.Width, 0.5);
+			Assert.AreEqual(32, smallBtnRect.Height, 0.5);
 		}
 
 		[TestMethod]
