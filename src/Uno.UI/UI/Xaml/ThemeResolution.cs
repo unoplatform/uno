@@ -28,6 +28,7 @@ namespace Microsoft.UI.Xaml;
 /// </remarks>
 internal static class ThemeResolution
 {
+
 	/// <summary>
 	/// Returns the effective <see cref="Theme"/> for the given <paramref name="owner"/>: the nearest
 	/// established per-object theme found by walking up the inheritance-parent chain (starting at the
@@ -53,8 +54,13 @@ internal static class ThemeResolution
 		}
 
 		// MUX: framework.cpp:3953-3978 — ActualTheme falls back to the app/OS base theme
-		// (FrameworkTheming::GetBaseTheme) when no per-object theme is set.
-		return Theming.FromElementTheme(Application.Current?.ActualElementTheme ?? ElementTheme.Light) | highContrast;
+		// (FrameworkTheming::GetBaseTheme) when no per-object theme is set. Use Themes.Active
+		// (ResourceDictionary.GetActiveBaseTheme), which is the SAME base theme the lazy-materialization
+		// resolution leaf keys on (GetActiveTheme), so the two owner-less resolution paths never disagree.
+		// In production Themes.Active and ActualElementTheme are both derived from Application.RequestedTheme
+		// (Application.cs:229-252) and are therefore equal; they diverge only when the active theme is set
+		// directly via ResourceDictionary.SetActiveTheme without round-tripping Application.RequestedTheme.
+		return ResourceDictionary.GetActiveBaseTheme() | highContrast;
 	}
 
 	/// <summary>

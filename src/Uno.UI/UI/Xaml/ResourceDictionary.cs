@@ -1106,6 +1106,27 @@ namespace Microsoft.UI.Xaml
 		internal static ResourceKey GetThemeKey(Theme theme)
 			=> Theming.GetBaseValue(theme) == Theme.Light ? Themes.Light : Themes.Dark;
 
+		// The application/OS base theme (Themes.Active) expressed as a base Theme. This is the single
+		// owner-less fallback for {ThemeResource} resolution: it is what the lazy-materialization leaf keys on
+		// (GetActiveTheme), and the analog of WinUI's FrameworkTheming::GetBaseTheme used by
+		// EnsureActiveThemeDictionary when no subtree theme is requested (Resources.cpp:765). Kept coherent with
+		// Application.RequestedTheme (Application.cs:229-244). "Default" (pre-app-theme-init) resolves to the
+		// app's ActualElementTheme so the result is always a concrete Light/Dark.
+		internal static Theme GetActiveBaseTheme()
+		{
+			var active = Themes.Active;
+			if (active.Equals(Themes.Light))
+			{
+				return Theme.Light;
+			}
+			if (active.Equals(Themes.Dark))
+			{
+				return Theme.Dark;
+			}
+
+			return Theming.FromElementTheme(Application.Current?.ActualElementTheme ?? ElementTheme.Light);
+		}
+
 		internal static void SetActiveTheme(SpecializedResourceDictionary.ResourceKey key)
 			=> Themes.Active = key;
 
