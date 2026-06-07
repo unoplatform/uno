@@ -18006,13 +18006,9 @@
   </Style>
   <Style x:Key="NavigationBackButtonSmallStyle" TargetType="Button" BasedOn="{StaticResource NavigationBackButtonNormalStyle}">
     <Setter Property="Margin" Value="4,2,0,2" />
-    <!-- Shipped WinUI (dxaml generic.xaml) sizes the small back button to 32x32; the MUX fc2f82117 margin-only style is not yet shipped. -->
-    <Setter Property="Width" Value="32" />
-    <Setter Property="Height" Value="32" />
   </Style>
   <x:Double x:Key="NavigationBackButtonWidth">40</x:Double>
-  <!-- Shipped WinUI (dxaml generic.xaml) uses 40; the MUX fc2f82117 value of 36 is not yet shipped, so we keep parity with native WinUI. -->
-  <x:Double x:Key="NavigationBackButtonHeight">40</x:Double>
+  <x:Double x:Key="NavigationBackButtonHeight">36</x:Double>
   <Style TargetType="controls:NavigationView">
     <Setter Property="PaneToggleButtonStyle" Value="{StaticResource PaneToggleButtonStyle}" />
     <Setter Property="IsTabStop" Value="False" />
