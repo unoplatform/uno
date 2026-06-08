@@ -1,3 +1,4 @@
+#if HAS_UNO
 using System;
 using System.Numerics;
 using Microsoft.UI.Composition;
@@ -77,3 +78,4 @@ public class Given_CubicBezierEasingFunction
 	private static float InvokeEase(CubicBezierEasingFunction easing, float t)
 		=> easing.Ease(t);
 }
+#endif
