@@ -43,11 +43,11 @@ explicitly linked. Over-keeping is the safe error direction.
 | WS | Title | Status |
 |----|-------|--------|
 | W7 | Composition native backing | ✅ done (12 native files deleted; `CompositionConfiguration.UseCompositorThread` removed; Skia+Ref+Tests green) |
-| W9 | Media native backends | 🟡 partial: Uno.UI presenter `.Android/.Apple.cs` removable now; **Uno.UWP `MediaPlayer.Android/.Apple.cs` engine is consumed by Skia-on-mobile** (no MediaPlayerExtension in Android/AppleUIKit hosts, unlike macOS/Browser) → migrate engine to hosts first (device-validated). DEFER engine. |
+| W3 | Native Apple (UIKit) rendering | ✅ done (210 Uno.UI `.UIKit/.iOS/.Apple.cs` deleted; 14 host-linked kept; AppleUIKit host + Skia + Ref + Tests compile clean) |
+| W9 | Media native backends | 🟡 partial: Uno.UI presenter `.Apple.cs` already removed via W3; `.Android.cs` to remove in W2; **Uno.UWP `MediaPlayer.Android/.Apple.cs` engine consumed by Skia-on-mobile** (no MediaPlayerExtension in Android/AppleUIKit hosts, unlike macOS/Browser) → migrate engine to hosts first (device-validated). DEFER engine. |
 | W6 | Mixin generators (3 of 4; defer `DependencyPropertyMixinGenerator`) | ⬜ |
-| W2 | Native Android rendering | ⬜ |
-| W3 | Native Apple (UIKit) rendering | ⬜ |
-| W4 | Native WASM DOM rendering | ⬜ |
+| W2 | Native Android rendering | 🟡 next (206 `.Android.cs` to remove, 21 host-linked kept; +17 `.java` via BindingHelper project in W1) |
+| W4 | Native WASM DOM rendering | ⬜ (114 `.wasm.cs` to remove, 4 kept; `.ts` DOM-vs-bootstrap split TBD) |
 | W5 | Core shared abstractions (`#if` cleanup) | ⬜ |
 | W8 | Controls with native impls | ⬜ |
 | W10 | Window/safe-area/insets/keyboard | ⬜ (highest risk; service-before-deletion) |
