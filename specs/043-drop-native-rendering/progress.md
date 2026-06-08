@@ -47,13 +47,31 @@ explicitly linked. Over-keeping is the safe error direction.
 | W9 | Media native backends | 🟡 partial: Uno.UI presenter `.Apple.cs` already removed via W3; `.Android.cs` to remove in W2; **Uno.UWP `MediaPlayer.Android/.Apple.cs` engine consumed by Skia-on-mobile** (no MediaPlayerExtension in Android/AppleUIKit hosts, unlike macOS/Browser) → migrate engine to hosts first (device-validated). DEFER engine. |
 | W6 | Mixin generators | ✅ done (deleted FrameworkElementAndroid/UIKitMixinGenerator + BaseActivityCallbacksGenerator + their tests; Internal+Tests+Skia clean). KEPT `DependencyPropertyMixinGenerator` + `MixinGeneration.targets`/`UNO_MIXIN_GENERATION` (still emit cross-platform DPs for Skia). |
 | W2 | Native Android rendering | ✅ done (204 `.Android.cs` deleted; 21 host-linked + ViewHelper/InsetsExtensions over-keep; Android host + Skia + Ref + Tests clean. Resolved W7 `ApplicationActivity.Android.cs` dangling ref). `.java` (17) + BindingHelper project → W1. |
-| W4 | Native WASM DOM rendering | 🟡 next: `.wasm.cs` (110 to remove, 4 host-linked kept) validatable (WebAssembly.Browser host lib is net9.0). `.ts` DOM-vs-bootstrap split + `Uno.UI.Runtime.WebAssembly` project → W4-proper/W1. |
-| W5 | Core shared abstractions (`#if` cleanup) | ⬜ |
-| W8 | Controls with native impls | ⬜ |
-| W10 | Window/safe-area/insets/keyboard | ⬜ (highest risk; service-before-deletion) |
-| W1 | Build/TFMs/packaging/deps | ⬜ (structural anchor; affects Skia build). **Entanglement found — spec's removable list is imprecise:** `Uno.UI.Dispatching.netcoremobile` is consumed by Skia.Android host (dispatcher is platform-layered like Uno.UWP) → KEEP, not remove. `MediaPlayer.WebAssembly`, `SamplesApp.Skia.WebAssembly.Browser`, `Uno.UI.Wasm.Tests` reference Wasm UI variant(s) → untangle per-project before deleting. Needs careful per-project dep analysis + rewiring, not blind deletion. |
-| W11 | Tests/samples/templates/CI | ⬜ |
-| W12 | Documentation | ⬜ |
+| W4 | Native WASM DOM rendering | 🟡 partial: 114 `.wasm.cs` deleted + validated (WebAssembly.Browser host lib net9.0 clean). REMAINING: `.ts` DOM removal (`WindowManager.ts` etc., keep bootstrap/interop `Runtime/Xaml/input/focus` + `WebView.ts` + `ts/types/**`); delete `Uno.UI.Runtime.WebAssembly` project. Needs WASM (browserwasm / `wasm-tools-net9`) build validation — not available in this env. |
+| W5 | Core shared abstractions (`#if` cleanup) | ⬜ 245 shared Uno.UI `.cs` files carry now-dead native `#if` blocks. Skia-neutral (branches already compile-excluded) → cosmetic/contributor-readability value (#12). Validatable on Skia desktop but large + per-file `#if`/`#elif`/`#else` collapse risk. Also: remove native-only types (`IShadowChildrenProvider`, `NativeRenderTransformAdapter`), `NativeOwner` in Reference/unittests (rework `ElementCompositionPreview` `#else`). |
+| W8 | Controls with native impls + FeatureConfiguration native flags | ⬜ FeatureConfiguration native flags are all `#if __ANDROID__/__APPLE_UIKIT__/__WASM__`-guarded → **already excluded from Skia**, so removing them is Skia-neutral (pure public-API/dead-code cleanup, value realized only once netcoremobile/Wasm projects go in W1). Some are `__ANDROID__ \|\| UNO_REFERENCE_API` (exposed to Reference) — careful. Do with/after W1. |
+| W10 | Window/safe-area/insets/keyboard | ⬜ highest risk; service-before-deletion. The kept host-linked `NativeWindowWrapper.Android/.UIKit.cs` need the W10 EDITs (drop GetVisualBounds insets etc.); `LayoutProvider.Android.cs`/`InputPane.Android/.Apple.cs` removal needs the Skia-host equivalents confirmed on-device. Device-validated. |
+| W1 | Build/TFMs/packaging/deps | ⬜ structural anchor; affects Skia build. **Entanglement found — spec's removable list is imprecise:** `Uno.UI.Dispatching.netcoremobile/.Wasm` consumed by Skia hosts (dispatcher is platform-layered like Uno.UWP) → KEEP. `MediaPlayer.WebAssembly` → `Uno.UI.Wasm.csproj`, `SamplesApp.Skia.WebAssembly.Browser`, `Uno.UI.Wasm.Tests` reference Wasm UI variant(s) → rewire (likely to `Uno.UI.Skia`) before deleting. Validatable: Skia-only.slnf restore+build + host LIBS (net9.0/-android/-ios). NOT validatable here: browserwasm app heads (`wasm-tools-net9` missing) + WASM/device runtime. Touches `.sln`/`.slnx`/`*.slnf`/`Directory.Build.props _AdjustedOutputProjects`/`Directory.Build.targets` AndroidX pins/`Uno.Implicit.Packages...Android.targets`/nuspec — do incrementally, validate each. |
+| W11 | Tests/samples/templates/CI | ⬜ remove native test/sample/template heads + 3 native CI stages (`wasm_tests`/`android_tests`/`ios_tests`) + `determine-test-scope.ps1`. Couple CI edits with W1 project removal. |
+| W12 | Documentation | 🟡 partial: 7.0 migration guide + native-doc stubs (uids preserved) + toc done. REMAINING (deferred until W1/W5 land — they describe the contributor-facing tree which is mid-migration): AGENTS.md native-targeting + `.claude/rules/platform-targeting.md`/`code-style.md`, deep arch docs (`how-uno-works.md`, `Uno-UI-Performance.md`, `intro.md`, xf-migration). |
+
+## Remaining work & handoff (for CI/device-equipped continuation)
+**Done + validated here (8 commits):** native rendering C# fully removed across all four
+backends (Composition W7, Apple W3, Android W2, WASM `.wasm.cs` W4) + native mixin
+generators (W6); ~533 files. Each commit compile-validated on **Skia desktop + Reference +
+Tests + Skia.Android/AppleUIKit/WebAssembly.Browser host libs** (`Uno.UI-Skia-only.slnf`,
+0 new errors; the lone pre-existing `wasm-tools-net9` error on the WASM *app* head is
+environmental). Plus 7.0 migration guide (W12).
+
+**Methodology to reuse:** native file is KEEP iff a kept project `<Compile Include>`-links
+it; REMOVE otherwise; validate by building the relevant Skia host. On-device
+runtime/behavioral parity is NOT covered here — every removal still needs the spec's
+device CI gates (notch/safe-area, IME, fling/snap, media) before release.
+
+**What this environment CANNOT validate (hard gates for the rest):** browserwasm app-head
+builds (`wasm-tools-net9` not installed) and any on-device/Skia-on-mobile *runtime*
+behavior. W1 (WASM rewiring), W4-ts, W9 (media engine), W10 (safe-area/keyboard) therefore
+need a CI/device environment.
 
 ## Deferred / notes
 - `ApplicationActivity.Android.cs` references the now-deleted `CompositorThread`/
