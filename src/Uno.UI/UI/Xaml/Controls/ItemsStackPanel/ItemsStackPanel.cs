@@ -27,11 +27,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal override Orientation? PhysicalOrientation => Orientation;
 
-#if __ANDROID__
-		public int FirstCacheIndex => _layout.XamlParent.NativePanel.ViewCache.FirstCacheIndex;
-		public int LastCacheIndex => _layout.XamlParent.NativePanel.ViewCache.LastCacheIndex;
-#endif
-
 		public ItemsStackPanel()
 		{
 			if (FeatureConfiguration.ListViewBase.DefaultCacheLength.HasValue)
@@ -60,9 +55,7 @@ namespace Microsoft.UI.Xaml.Controls
 				_layout.BindToEquivalentProperty(this, nameof(AreStickyGroupHeadersEnabled));
 				_layout.BindToEquivalentProperty(this, nameof(GroupHeaderPlacement));
 				_layout.BindToEquivalentProperty(this, nameof(GroupPadding));
-#if !__APPLE_UIKIT__
 				_layout.BindToEquivalentProperty(this, nameof(CacheLength));
-#endif
 			}
 		}
 

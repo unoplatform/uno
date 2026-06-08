@@ -13,10 +13,6 @@ using Windows.UI.Core;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Image : FrameworkElement
@@ -450,45 +446,6 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 			}
-
-#if __APPLE_UIKIT__ || __ANDROID__
-			if (Source is SvgImageSource svgImageSource && _svgCanvas is not null)
-			{
-#if __ANDROID__
-				ClipBounds = null;
-#endif
-				// Calculate the resulting space required on screen for the image;
-				var containerSize = this.MeasureSource(finalSize, svgImageSource.SourceSize);
-
-				// Calculate the position of the image to follow stretch and alignment requirements
-				var finalPosition = LayoutRound(this.ArrangeSource(finalSize, containerSize));
-				var roundedSize = LayoutRound(new Vector2((float)containerSize.Width, (float)containerSize.Height));
-
-				_svgCanvas.Arrange(new Rect(finalPosition.X, finalPosition.Y, roundedSize.X, roundedSize.Y));
-				_svgCanvas.Clip = new RectangleGeometry() { Rect = new Rect(0, 0, finalSize.Width, finalSize.Height) };
-				return finalSize;
-			}
-#endif
-
-#if __ANDROID__
-			// Images on UWP are always clipped to the control's boundaries.
-			var physicalSize = finalSize.LogicalToPhysicalPixels();
-			ClipBounds = new ARect(0, 0, (int)physicalSize.Width, (int)physicalSize.Height);
-
-			_lastLayoutSize = finalSize;
-
-			// Try opening the image in the case where UseTargetSize has been set, as now
-			// we have both _targetWidth and _targetWidth that have been set.
-			try
-			{
-				_isInLayout = true;
-				TryOpenImage();
-			}
-			finally
-			{
-				_isInLayout = false;
-			}
-#endif
 
 			return ArrangeFirstChild(finalSize);
 		}

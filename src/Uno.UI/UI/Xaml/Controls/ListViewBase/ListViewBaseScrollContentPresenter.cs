@@ -5,15 +5,6 @@ using System.Text;
 using Uno.Extensions;
 
 using Uno.Foundation.Logging;
-#if __ANDROID__
-using View = Android.Views.View;
-using Font = Android.Graphics.Typeface;
-#elif __APPLE_UIKIT__
-using UIKit;
-using View = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {

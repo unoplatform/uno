@@ -16,7 +16,6 @@ namespace Microsoft.UI.Xaml.Controls
 	[Microsoft.UI.Xaml.Data.Bindable]
 	abstract partial class VirtualizingPanelLayout : IScrollSnapPointsInfo
 	{
-#if !__ANDROID__ && !__APPLE_UIKIT__
 		/// <summary>
 		/// Determines if the owner Panel is inside a popup. Used to determine
 		/// if the computation of the breadth should be using the parent's stretch
@@ -24,7 +23,6 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Related: https://github.com/unoplatform/uno/issues/135
 		/// </summary>
 		private bool IsInsidePopup { get; set; }
-#endif
 
 		protected enum RelativeHeaderPlacement { Inline, Adjacent }
 
@@ -139,9 +137,7 @@ namespace Microsoft.UI.Xaml.Controls
 			get
 			{
 				var stretchOwner =
-#if !__APPLE_UIKIT__ && !__ANDROID__
 					IsInsidePopup ? (FrameworkElement)OwnerPanel :
-#endif
 					XamlParent;
 				if (stretchOwner == null)
 				{
@@ -289,13 +285,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				throw new NotSupportedException($"{nameof(VirtualizingPanelLayouter)} is only used for measuring and arranging child views.");
 			}
-
-#if __ANDROID__
-			protected override void MeasureChild(AView view, int widthSpec, int heightSpec)
-			{
-				view.Measure(widthSpec, heightSpec);
-			}
-#endif
 
 			protected override Size MeasureOverride(Size availableSize)
 			{

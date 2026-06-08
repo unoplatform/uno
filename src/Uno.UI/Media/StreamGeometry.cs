@@ -6,15 +6,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Extensions;
 
-#if __APPLE_UIKIT__
-using Foundation;
-using UIKit;
-using CoreGraphics;
-using Path = UIKit.UIBezierPath;
-using ObjCRuntime;
-#elif __ANDROID__
-using Android.Graphics;
-#elif __SKIA__
+#if __SKIA__
 using Microsoft.UI.Composition;
 using Path = SkiaSharp.SKPath;
 using SkiaSharp;

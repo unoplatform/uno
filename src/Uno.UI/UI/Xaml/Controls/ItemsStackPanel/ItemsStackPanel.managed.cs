@@ -5,15 +5,9 @@ using System.Text;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
 
-#if __APPLE_UIKIT__ || __ANDROID__
-namespace Uno.UI.Controls
-{
-	public partial class ManagedItemsStackPanel
-#else
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ItemsStackPanel
-#endif
 	{
 		protected override Size MeasureOverride(Size availableSize) => _layout.MeasureOverride(availableSize);
 

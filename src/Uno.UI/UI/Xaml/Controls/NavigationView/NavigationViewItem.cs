@@ -2,13 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference NavigationViewItem.cpp, commit 9f7c129
 
-#if __ANDROID__
-// For performance considerations, we prefer to delay pressed and over state in order to avoid
-// visual state updates when starting scroll start or while scrolling, especially with touch.
-// This has a great impact on Android where ScrollViewer does not capture pointer while scrolling.
-#define UNO_USE_DEFERRED_VISUAL_STATES
-#endif
-
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using Microsoft.UI.Xaml.Controls.Primitives;

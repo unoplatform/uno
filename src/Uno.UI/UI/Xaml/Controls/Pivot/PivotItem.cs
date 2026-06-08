@@ -52,18 +52,5 @@ namespace Microsoft.UI.Xaml.Controls
 				item.PivotHeaderItem.Content = args.NewValue;
 			}
 		}
-
-#if __ANDROID__
-		// This allows the PivotItem to fill the whole available space.
-		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
-		{
-			if (ChildCount != 0)
-			{
-				MeasureChild(GetChildAt(0), widthMeasureSpec, heightMeasureSpec);
-			}
-
-			SetMeasuredDimension(ViewHelper.MeasureSpecGetSize(widthMeasureSpec), ViewHelper.MeasureSpecGetSize(heightMeasureSpec));
-		}
-#endif
 	}
 }
