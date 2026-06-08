@@ -38,20 +38,24 @@ public class TimeZoneModifier : IDisposable
 
 		return (TimeZoneInfo)localProperty.GetValue(cachedData);
 
-		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "`t.GetProperty()` path should be impossible, and trimmer behavior ensures `typeof(TimeZoneInfo).GetProperty(string constant)` works.")]
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "`t.GetProperty()` path should be impossible, and trimmer behavior ensures `GetType(TimeZoneInfo_CachedData_TypeName).GetProperty(string constant)` works.")]
 		static PropertyInfo GetLocalProperty(object data)
 		{
-			if (data.GetType() is var t && t != typeof(TimeZoneInfo))
+			if (data.GetType() is var t && t != TimeZoneInfoCachedDataType)
 			{
 				return t.GetProperty("Local");
 			}
 			else
 			{
 				// https://github.com/dotnet/runtime/blob/91ee24a97d907e213e181a855b8469524cd376b5/src/libraries/System.Private.CoreLib/src/System/TimeZoneInfo.cs#L101
-				return typeof(TimeZoneInfo).GetProperty("Local");
+				return Type.GetType(TimeZoneInfo_CachedData_TypeName, throwOnError: true).GetProperty("Local");
 			}
 		}
 	}
+
+	private const string TimeZoneInfo_CachedData_TypeName = "System.TimeZoneInfo+CachedData, System.Runtime";
+
+	private static Type TimeZoneInfoCachedDataType = Type.GetType(TimeZoneInfo_CachedData_TypeName, throwOnError: false);
 
 	private static void SetLocalTimeZone(TimeZoneInfo timeZoneInfo)
 	{
@@ -60,7 +64,6 @@ public class TimeZoneModifier : IDisposable
 		if (localTimeZoneField is null)
 		{
 			// At the time of writing, the field is found here:
-			// https://github.com/dotnet/runtime/blob/91ee24a97d907e213e181a855b8469524cd376b5/src/libraries/System.Private.CoreLib/src/System/TimeZoneInfo.cs#L71
 			throw new Exception("_localTimeZone field wasn't found");
 		}
 
@@ -69,13 +72,14 @@ public class TimeZoneModifier : IDisposable
 		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "`t.GetField()` path should be impossible, and trimmer behavior ensures `typeof(TimeZoneInfo).GetField(string constant)` works.")]
 		static FieldInfo GetLocalField(object data)
 		{
-			if (data.GetType() is var t && t != typeof(TimeZoneInfo))
+			if (data.GetType() is var t && t != TimeZoneInfoCachedDataType)
 			{
 				return t.GetField("_localTimeZone", BindingFlags.Instance | BindingFlags.NonPublic);
 			}
 			else
 			{
-				return typeof(TimeZoneInfo).GetField("_localTimeZone", BindingFlags.Instance | BindingFlags.NonPublic);
+				// https://github.com/dotnet/runtime/blob/91ee24a97d907e213e181a855b8469524cd376b5/src/libraries/System.Private.CoreLib/src/System/TimeZoneInfo.cs#L71
+				return Type.GetType(TimeZoneInfo_CachedData_TypeName, throwOnError: true).GetField("_localTimeZone", BindingFlags.Instance | BindingFlags.NonPublic);
 			}
 		}
 	}
