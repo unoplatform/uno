@@ -16,10 +16,6 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class AutoSuggestBox : ItemsControl
@@ -64,17 +60,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_popup.IsLightDismissEnabled = false;
 			}
-
-#if __ANDROID__
-			_popup.DisableFocus();
-#endif
-
-#if __APPLE_UIKIT__
-			if (_textBox is { } textbox)
-			{
-				textbox.IsKeepingFocusOnEndEditing = true;
-			}
-#endif
 
 			UpdateTextBox();
 			UpdateDescriptionVisibility(true);

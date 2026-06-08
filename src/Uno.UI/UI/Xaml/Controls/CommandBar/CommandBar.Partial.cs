@@ -2,10 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 #nullable enable
 
-#if __APPLE_UIKIT__ || __ANDROID__
-#define HAS_NATIVE_COMMANDBAR
-#endif
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -33,10 +29,6 @@ using Uno.UI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Controls;
 using Uno.UI.Dispatching;
-
-#if __ANDROID__
-using Android.Views;
-#endif
 
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
@@ -118,10 +110,6 @@ namespace Microsoft.UI.Xaml.Controls
 			get => null;
 			set => throw new NotImplementedException();
 		}
-
-#if __APPLE_UIKIT__ || __ANDROID__
-		internal NativeCommandBarPresenter? Presenter { get; set; }
-#endif
 
 		public CommandBar()
 		{
@@ -258,12 +246,6 @@ namespace Microsoft.UI.Xaml.Controls
 			GetTemplatePart("PrimaryItemsControl", out m_tpPrimaryItemsControlPart);
 			GetTemplatePart("SecondaryItemsControl", out m_tpSecondaryItemsControlPart);
 
-#if __ANDROID__
-			Presenter = (this as ViewGroup).FindFirstChild<NativeCommandBarPresenter>();
-#elif __APPLE_UIKIT__
-			Presenter = this.FindFirstChild<NativeCommandBarPresenter?>();
-#endif
-
 			if (m_tpSecondaryItemsControlPart is { })
 			{
 				m_tpSecondaryItemsControlPart.Loaded += OnSecondaryItemsControlLoaded;
@@ -359,25 +341,6 @@ namespace Microsoft.UI.Xaml.Controls
 			NativeDispatcher.Main.Enqueue(() => IsOpen = false, NativeDispatcherPriority.Idle);
 		}
 
-#if __APPLE_UIKIT__ || __ANDROID__
-		private static DependencyProperty NavigationCommandProperty = Uno.UI.ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions, Uno.UI.Toolkit", "NavigationCommand");
-
-		internal override void UpdateThemeBindings(ResourceUpdateReason updateReason)
-		{
-			base.UpdateThemeBindings(updateReason);
-
-			// these commands are not part of visual tree, so we need to propagate it manually
-			var commands = new[] { PrimaryCommands, SecondaryCommands }
-				.Where(x => x != null)
-				.SelectMany(x => x)
-				.OfType<AppBarButton>()
-				.Prepend(this.GetValue(NavigationCommandProperty) as AppBarButton);
-			foreach (var command in commands)
-			{
-				command?.UpdateThemeBindings(updateReason);
-			}
-		}
-#endif
 		#endregion
 
 		protected override Size MeasureOverride(Size availableSize)

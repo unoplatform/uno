@@ -554,11 +554,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			ForceConfigViewport(viewport.Size);
 
 			_layoutStrategy.BeginMeasure();
-#if __ANDROID__
-			using var a = PreventRequestLayout();
-#else
 			ShouldInterceptInvalidate = true;
-#endif
 			int index = -1, startIndex = 0, firstVisibleIndex = -1, lastVisibleIndex = -1;
 			var bottom = 0.0;
 			try
@@ -683,9 +679,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				// We force the parent ScrollViewer to use the same viewport as us, no matter its own stretching.
 				ViewportHeight = viewport.Height;
 
-#if !__ANDROID__
 				ShouldInterceptInvalidate = false;
-#endif
 				_layoutStrategy.EndMeasure();
 			}
 

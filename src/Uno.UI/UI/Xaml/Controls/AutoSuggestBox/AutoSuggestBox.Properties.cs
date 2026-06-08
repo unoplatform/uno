@@ -66,11 +66,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => this.SetValue(QueryIconProperty, value);
 		}
 
-		public
-#if __APPLE_UIKIT__
-		new
-#endif
-		object Description
+		public object Description
 		{
 			get => this.GetValue(DescriptionProperty);
 			set => this.SetValue(DescriptionProperty, value);

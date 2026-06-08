@@ -2,10 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 #nullable enable
 
-#if __APPLE_UIKIT__ || __ANDROID__
-#define HAS_NATIVE_COMMANDBAR
-#endif
-
 using System;
 using DirectUI;
 using Uno.Disposables;

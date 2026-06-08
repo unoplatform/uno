@@ -7,14 +7,7 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Microsoft.UI.Xaml.Media.Animation;
 
-#if __ANDROID__
-using Android.Views;
-using NativeView = Android.Views.View;
-#elif __APPLE_UIKIT__
-using NativeView = UIKit.UIView;
-#else
 using NativeView = System.Object;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -31,13 +24,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				parent.InvalidateArrange();
 			}
-
-#if __WASM__
-			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties && dependencyObject is UIElement element)
-			{
-				element.UpdateDOMXamlProperty("Canvas.Left", args.NewValue);
-			}
-#endif
 		}
 
 		#endregion
@@ -53,13 +39,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				parent.InvalidateArrange();
 			}
-
-#if __WASM__
-			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties && dependencyObject is UIElement element)
-			{
-				element.UpdateDOMXamlProperty("Canvas.Top", args.NewValue);
-			}
-#endif
 		}
 
 		#endregion
@@ -71,9 +50,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static void OnZIndexChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-#if !__WASM__
 			(dependencyObject as IFrameworkElement)?.InvalidateArrange();
-#endif
 			if (dependencyObject is UIElement element)
 			{
 				var zindex = args.NewValue is int d ? (int?)d : null;

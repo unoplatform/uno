@@ -14,12 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <inheritdoc />
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
-#if __WASM__
-			// We prevent propagation to the parent, so we can set the right background based on the IsToday, IsSelected, etc.
-			// base.OnBackgroundChanged(e);
-#else
 			base.OnBackgroundChanged(e);
-#endif
 		}
 #endif
 	}

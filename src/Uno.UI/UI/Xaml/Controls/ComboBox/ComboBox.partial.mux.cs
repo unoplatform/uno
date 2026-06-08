@@ -23,10 +23,6 @@ using Windows.Foundation;
 using Windows.System;
 using static DirectUI.ElevationHelper;
 
-#if __ANDROID__
-using Uno.UI;
-#endif
-
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -942,11 +938,6 @@ partial class ComboBox
 		{
 #if HAS_UNO // Force load children
 			// This method will load the itempresenter children
-#if __ANDROID__
-			SetItemsPresenter((m_tpPopupPart.Child as AViewGroup).FindFirstChild<ItemsPresenter>()!);
-#elif __APPLE_UIKIT__
-			SetItemsPresenter(m_tpPopupPart.Child.FindFirstChild<ItemsPresenter>()!);
-#endif
 #endif
 
 			m_tpPopupPart.IsOpen = true;
@@ -1167,15 +1158,6 @@ partial class ComboBox
 		// to do consult the FocusManager (see HasFocus()).
 		UpdateSelectionBoxHighlighted();
 		IsSelectionActive = hasFocus;
-
-#if __IOS__
-		if (_popup is Popup popup && popup.Child.FindFirstChild<Picker>() is not null)
-		{
-			// If the ComboBox is in a Picker, we don't want to close the ComboBox when it loses focus.
-			// The Picker will handle the closing of the ComboBox.
-			hasFocus = true;
-		}
-#endif
 
 		if (!hasFocus && !IsFullMode)
 		{

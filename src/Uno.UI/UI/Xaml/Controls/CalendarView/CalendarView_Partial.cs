@@ -219,10 +219,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			PrepareState();
 			DefaultStyleKey = typeof(CalendarView);
-
-#if __WASM__
-			IsMeasureDirtyPathDisabled = true;
-#endif
 		}
 
 		~CalendarView()
@@ -1858,12 +1854,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (isScopeChanged)
 				{
-#if __ANDROID__
-					// .InvalidateMeasure() bug https://github.com/unoplatform/uno/issues/6236
-					DispatcherQueue.TryEnqueue(() => UpdateHeaderText(false /*withAnimation*/));
-#else
 					UpdateHeaderText(false /*withAnimation*/);
-#endif
 				}
 
 				// everytime visible indices changed, we need to update

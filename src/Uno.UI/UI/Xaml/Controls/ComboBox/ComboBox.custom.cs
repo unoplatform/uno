@@ -16,15 +16,7 @@ using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.System;
 
-#if __ANDROID__
-using Android.Views;
-using _View = Android.Views.View;
-#elif __APPLE_UIKIT__
-using UIKit;
-using _View = UIKit.UIView;
-#else
 using _View = Microsoft.UI.Xaml.FrameworkElement;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -306,11 +298,7 @@ public partial class ComboBox : Selector
 
 			if (itemView != null)
 			{
-#if __ANDROID__
-				var comboBoxItem = itemView.FindFirstParentOfView<ComboBoxItem>();
-#else
 				var comboBoxItem = itemView.FindFirstParent<ComboBoxItem>();
-#endif
 				if (comboBoxItem != null)
 				{
 					// Keep track of the former parent, so we can put the item back when the dropdown is shown
@@ -375,11 +363,7 @@ public partial class ComboBox : Selector
 	private void RestoreSelectedItem(_View selectionView)
 	{
 		var dropdownParent = _selectionParentInDropdown?.Target as FrameworkElement;
-#if __ANDROID__
-		var comboBoxItem = dropdownParent?.FindFirstParentOfView<ComboBoxItem>();
-#else
 		var comboBoxItem = dropdownParent?.FindFirstParent<ComboBoxItem>();
-#endif
 
 		// Sanity check, ensure parent is still valid (ComboBoxItem may have been recycled)
 		if (dropdownParent != null
@@ -510,11 +494,7 @@ public partial class ComboBox : Selector
 #if !IS_UNIT_TESTS
 		else if (VirtualizingPanel?.GetLayouter() is { } layouter)
 		{
-#if __APPLE_UIKIT__ || __ANDROID__
-			// TODO
-#else
 			layouter.ScrollIntoView(item, alignment);
-#endif
 		}
 #endif
 	}
@@ -791,20 +771,6 @@ public partial class ComboBox : Selector
 			{
 				this.Log().Debug($"Layout the combo's dropdown at {frame} (desired: {desiredSize} / available: {finalSize} / visible: {visibleBounds} / selected: {selectedIndex} of {itemsCount})");
 			}
-
-#if __ANDROID__
-			// Check whether the status bar is translucent
-			// If so, we may need to compensate for the origin location
-			// TODO: Adjust for multiwindow #13827
-			var isTranslucent = Window.CurrentSafe!.IsStatusBarTranslucent();
-			var allowUnderStatusBar = FeatureConfiguration.ComboBox.AllowPopupUnderTranslucentStatusBar;
-			if (isTranslucent && allowUnderStatusBar)
-			{
-				var offset = visibleBounds.Location;
-				frame.X -= offset.X;
-				frame.Y -= offset.Y;
-			}
-#endif
 
 			child.Arrange(frame);
 
