@@ -29,9 +29,6 @@ namespace Microsoft.UI.Xaml.Shapes
 		#endregion
 
 		public Polygon()
-#if __WASM__
-			: base("polygon")
-#endif
 		{
 			Points = new PointCollection();
 		}

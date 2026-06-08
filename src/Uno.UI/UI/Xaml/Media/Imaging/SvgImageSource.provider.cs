@@ -1,4 +1,4 @@
-﻿#if __APPLE_UIKIT__ || __SKIA__ || __ANDROID__
+﻿#if __SKIA__
 #nullable enable
 
 using System;

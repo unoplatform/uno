@@ -7,14 +7,6 @@ using Windows.Foundation;
 
 using Rect = Windows.Foundation.Rect;
 
-#if __APPLE_UIKIT__
-using Foundation;
-using UIKit;
-using CoreGraphics;
-#elif __ANDROID__
-using Android.Graphics;
-#endif
-
 namespace Microsoft.UI.Xaml.Media
 {
 	[TypeConverter(typeof(GeometryConverter))]
@@ -32,11 +24,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		public static implicit operator Geometry(string data)
 		{
-#if __WASM__
-			return new GeometryData(data);
-#else
 			return Parsers.ParseGeometry(data);
-#endif
 		}
 
 		public Rect Bounds => ComputeBounds();
@@ -86,26 +74,6 @@ namespace Microsoft.UI.Xaml.Media
 
 		#endregion
 
-#if __APPLE_UIKIT__
-		public static implicit operator UIImage(Geometry g)
-		{
-			return g.ToNativeImage();
-		}
-
-		public static implicit operator CGPath(Geometry g)
-		{
-			return g.ToCGPath();
-		}
-
-		public virtual UIImage ToNativeImage() { throw new InvalidOperationException(); }
-
-		public virtual UIImage ToNativeImage(CGSize targetSize, UIColor color = default(UIColor), Thickness margin = default(Thickness)) { throw new InvalidOperationException(); }
-
-		public virtual CGPath ToCGPath() { throw new InvalidOperationException(); }
-
-#elif __ANDROID__
-		public virtual Path ToPath() { throw new InvalidOperationException(); }
-#endif
 		public virtual void Dispose() { throw new InvalidOperationException(); }
 	}
 }

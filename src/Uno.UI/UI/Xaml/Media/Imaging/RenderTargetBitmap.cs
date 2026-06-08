@@ -84,11 +84,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		}
 		#endregion
 
-#if __ANDROID__
-		private byte[]? _buffer;
-#else
 		private UnmanagedArrayOfBytes? _buffer;
-#endif
 		private int _bufferSize;
 
 #if __SKIA__
@@ -162,7 +158,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 					}
 
 					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(element!, ref _buffer, new Size(scaledWidth, scaledHeight));
-#if __WASM__ || __SKIA__
+#if __SKIA__
 					InvalidateSource();
 #endif
 				}
@@ -190,7 +186,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 					}
 
 					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(element!, ref _buffer);
-#if __WASM__ || __SKIA__
+#if __SKIA__
 					InvalidateSource();
 #endif
 				}
@@ -213,28 +209,15 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 					return Task.FromResult<IBuffer>(new Buffer([]));
 				}
 
-#if __ANDROID__
-				return Task.FromResult<IBuffer>(new Buffer(_buffer.AsMemory().Slice(0, _bufferSize)));
-#else
 				unsafe
 				{
 					var mem = new UnmanagedMemoryManager<byte>((byte*)_buffer.Pointer.ToPointer(), _bufferSize);
 					return Task.FromResult<IBuffer>(new Buffer(mem.Memory.Slice(0, _bufferSize)));
 				}
-#endif
 			});
 
 		#region Misc static helpers
 #if HAS_RENDER_TARGET_BITMAP
-#if __ANDROID__
-		private static void EnsureBuffer(ref byte[]? buffer, int length)
-		{
-			if (buffer is null || buffer.Length < length)
-			{
-				buffer = new byte[length];
-			}
-		}
-#else
 		private static void EnsureBuffer(ref UnmanagedArrayOfBytes? buffer, int length)
 		{
 			if (buffer is null || buffer.Length < length)
@@ -242,7 +225,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				buffer = new UnmanagedArrayOfBytes(length);
 			}
 		}
-#endif
 #endif
 		#endregion
 	}

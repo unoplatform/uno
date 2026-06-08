@@ -13,10 +13,6 @@ using System.Buffers;
 using Uno.UI.DataBinding;
 using static Microsoft.UI.Xaml.Media.Animation.Timeline.TimelineState;
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-
 namespace Microsoft.UI.Xaml
 {
 	[ContentProperty(Name = "States")]

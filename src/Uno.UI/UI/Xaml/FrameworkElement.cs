@@ -29,15 +29,8 @@ using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
 
-#if __ANDROID__
-using View = Android.Views.View;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-using UIKit;
-#else
 using Color = System.Drawing.Color;
 using View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml
 {
@@ -114,9 +107,6 @@ namespace Microsoft.UI.Xaml
 
 		#region Tag Dependency Property
 
-#if __APPLE_UIKIT__ || __ANDROID__
-#pragma warning disable 114 // Error CS0114: 'FrameworkElement.Tag' hides inherited member 'UIView.Tag'
-#endif
 		public object Tag
 		{
 			get => GetTagValue();
@@ -252,9 +242,6 @@ namespace Microsoft.UI.Xaml
 		}
 
 		public
-#if __ANDROID__
-		new
-#endif
 		Microsoft.UI.Xaml.ResourceDictionary Resources
 		{
 			get => _resources ??= new ResourceDictionary();
@@ -276,9 +263,6 @@ namespace Microsoft.UI.Xaml
 		/// Gets the parent of this FrameworkElement in the object tree.
 		/// </summary>
 		public
-#if __ANDROID__
-		new
-#endif
 		DependencyObject Parent =>
 			LogicalParentOverride ??
 			((IDependencyObjectStoreProvider)this).Store.Parent as DependencyObject;
@@ -343,14 +327,7 @@ namespace Microsoft.UI.Xaml
 		/// <returns>The size that this object determines it needs during layout, based on its calculations of the allocated sizes for child objects or based on other considerations such as a fixed container size.</returns>
 		protected virtual Size MeasureOverride(Size availableSize)
 		{
-#if __ANDROID__ || __APPLE_UIKIT__
-			var child = this.FindFirstChild();
-			return child is not null && child is not UIElement
-				? MeasureElement(child, availableSize)
-				: new Size(0, 0);
-#else
 			return default;
-#endif
 		}
 
 		/// <summary>
@@ -360,13 +337,6 @@ namespace Microsoft.UI.Xaml
 		/// <returns>The actual size that is used after the element is arranged in layout.</returns>
 		protected virtual Size ArrangeOverride(Size finalSize)
 		{
-#if __ANDROID__ || __APPLE_UIKIT__
-			var child = this.FindFirstChild();
-			if (child is not null && child is not UIElement)
-			{
-				ArrangeElement(child, new Rect(0, 0, finalSize.Width, finalSize.Height));
-			}
-#endif
 			return finalSize;
 		}
 
@@ -690,9 +660,6 @@ namespace Microsoft.UI.Xaml
 		public static DependencyProperty AllowFocusOnInteractionProperty { get; } = CreateAllowFocusOnInteractionProperty();
 
 		internal virtual
-#if __ANDROID__
-			new
-#endif
 			bool HasFocus()
 		{
 			var focusManager = VisualTree.GetFocusManagerForElement(this);
@@ -916,100 +883,7 @@ namespace Microsoft.UI.Xaml
 			return finalSize;
 		}
 
-#if XAMARIN
-		private static FrameworkElement FindPhaseEnabledRoot(ContentControl content)
-		{
-			if (content.TemplatedRoot is FrameworkElement root)
-			{
-				var presenter = root.FindFirstChild<ContentPresenter>();
-
-				if (presenter?.ContentTemplateRoot is FrameworkElement presenterRoot
-					&& presenterRoot.DataTemplateRenderPhases != null)
-				{
-					return presenterRoot;
-				}
-			}
-
-			return null;
-		}
-
-		/// <summary>
-		/// Initializes the provided control for phased binding, if supported.
-		/// </summary>
-		/// <param name="content"></param>
-		internal static void InitializePhaseBinding(ContentControl content)
-		{
-			var presenterRoot = FindPhaseEnabledRoot(content);
-
-			if (presenterRoot != null)
-			{
-				// Phase zero is always visible
-				presenterRoot.ApplyBindingPhase(0);
-			}
-		}
-
-		/// <summary>
-		/// Registers the provided item template instance for phase binding
-		/// </summary>
-		/// <param name="content">The content control the phase-render</param>
-		/// <param name="registerForRecycled">An action that will be executed when the provided view will be recycled.</param>
-		internal static void RegisterPhaseBinding(ContentControl content, Action<Action> registerForRecycled)
-		{
-			var presenterRoot = FindPhaseEnabledRoot(content);
-
-			if (presenterRoot != null)
-			{
-				// Phase zero is always visible
-				presenterRoot.ApplyBindingPhase(0);
-
-				var startPhaseIndex = presenterRoot.DataTemplateRenderPhases[0] == 0 ? 1 : 0;
-
-				// Schedule all the phases at once
-				for (int i = startPhaseIndex; i < presenterRoot.DataTemplateRenderPhases.Length; i++)
-				{
-					Uno.UI.Dispatching.UIAsyncOperation action = null;
-					var phaseCapture = i;
-
-					async void ApplyPhase()
-					{
-						// Yield immediately so we requeue on the normal dispatcher.
-						await Task.Yield();
-
-						if (!action.IsCancelled)
-						{
-							presenterRoot.ApplyBindingPhase(presenterRoot.DataTemplateRenderPhases[phaseCapture]);
-
-							// Reset the action so we can avoid canceling it.
-							action = null;
-						}
-					}
-
-#if __ANDROID__
-					// Schedule on the animation dispatcher so the callback appears faster.
-					action = (Uno.UI.Dispatching.UIAsyncOperation)presenterRoot.Dispatcher.RunAnimation(ApplyPhase);
-#elif __APPLE_UIKIT__
-					action = (Uno.UI.Dispatching.UIAsyncOperation)presenterRoot.Dispatcher.RunAsync(CoreDispatcherPriority.High, ApplyPhase);
-#endif
-
-					registerForRecycled(
-						() =>
-						{
-							// If the view is recycled, don't process the other phases.
-							action?.Cancel();
-
-							// Reset to the original so the next datacontext assignment only
-							// impacts the least of the tree.
-							presenterRoot.ApplyBindingPhase(0);
-						}
-					);
-				}
-			}
-		}
-#endif
-
-
 		#region AutomationPeer
-#if !__APPLE_UIKIT__ && !__ANDROID__ // This code is generated in FrameworkElementMixins
 
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
@@ -1042,7 +916,6 @@ namespace Microsoft.UI.Xaml
 
 		// Delegates to UIElement.GetOrCreateAutomationPeer() which caches in _uiElementAutomationPeer.
 		public AutomationPeer GetAutomationPeer() => GetOrCreateAutomationPeer();
-#endif
 
 		#endregion
 
@@ -1068,10 +941,6 @@ namespace Microsoft.UI.Xaml
 			protected override string Name => Panel.Name;
 
 			protected override Size ArrangeOverride(Size finalSize) => _arrangeOverrideHandler(finalSize);
-
-#if __ANDROID__
-			protected override void MeasureChild(View view, int widthSpec, int heightSpec) => view.Measure(widthSpec, heightSpec);
-#endif
 
 			protected override Size MeasureOverride(Size availableSize) => _measureOverrideHandler(availableSize);
 		}

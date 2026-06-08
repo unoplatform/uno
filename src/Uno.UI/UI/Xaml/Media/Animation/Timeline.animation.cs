@@ -240,13 +240,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				}
 				else
 				{
-#if __ANDROID__
-					if (ABuild.VERSION.SdkInt >= ABuildVersionCodes.Kitkat)
-					{
-						_animator.AnimationPause += OnAnimatorAnimationPause;
-					}
-#endif
-
 					_animator.AnimationEnd += OnAnimatorAnimationEndFrame;
 				}
 
@@ -296,16 +289,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 				_animator.Start();
 				State = TimelineState.Active;
-
-#if __APPLE_UIKIT__
-				// On iOS, animations started while the app is in the background will lead to properties in an incoherent state (native static
-				// values out of syc with native presented values and Xaml values). As a workaround we fast-forward the animation to its final
-				// state. (The ideal would probably be to restart the animation when the app resumes.)
-				if (Application.Current?.IsSuspended ?? false)
-				{
-					SkipToFill();
-				}
-#endif
 			}
 
 			/// <summary>
@@ -348,17 +331,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				// There are two types of fill behaviors:
 				if (FillBehavior == FillBehavior.HoldEnd) // HoldEnd: Keep displaying the last frame
 				{
-#if __APPLE_UIKIT__
-					// iOS && macOS: Here we make sure that the final frame is applied properly (it may have been skipped by animator)
-					// Note: The value is applied using the "Animations" precedence, which means that the user won't be able to alter
-					//		 it from application code. Instead we should set the value using a lower precedence
-					//		 (possibly "Local" with PropertyInfo.SetLocalValue(ComputeToValue())) but we must keep the
-					//		 original "Local" value, so will be able to rollback the animation when
-					//		 going to another VisualState (if the storyboard ran in that context).
-					//		 In that case we should also do "ClearValue();" to remove the "Animations" value, even if using "HoldEnd"
-					//		 cf. https://github.com/unoplatform/uno/issues/631
-					PropertyInfo.Value = ComputeToValue();
-#endif
 					State = TimelineState.Filling;
 				}
 				else // Stop: Put back the initial state
@@ -401,13 +373,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				// we should consider the animation to be stopped, we shouldn't clear any animated
 				// value in order to support deactivation scenarios.
 				State = TimelineState.Stopped;
-
-#if __APPLE_UIKIT__
-				_startingValue = null;
-
-				// On Android, AnimationEnd is always called after AnimationCancel. We don't unset _startingValue yet to be able to calculate
-				// the final value correctly.
-#endif
 			}
 
 			/// <summary>
@@ -451,21 +416,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			private object GetValueCore()
 			{
-#if !__ANDROID__
 				return GetValue();
-#else
-				// On android, animation may target a native property implementing the behavior instead of the specified dependency property.
-				// When starting a new animation midst another, in order to continue from the current animated value,
-				// we need to retrieve the value of that native property, as reading the dp value will just give the final value.
-				if (AnimatorFactory.TryGetNativeAnimatedValue(_owner, out var value))
-				{
-					return value;
-				}
-				else
-				{
-					return GetValue();
-				}
-#endif
 			}
 
 			/// <summary>

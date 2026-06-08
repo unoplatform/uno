@@ -131,11 +131,7 @@ namespace Microsoft.UI.Xaml
 #if TARGET_64BIT
 		private ulong _fastModMultiplier;
 		private static bool Is64Bits = IntPtr.Size >= 8
-#if __WASM__
-			|| WebAssemblyRuntime.IsWebAssembly;
-#else
 			;
-#endif
 #endif
 		private int _count;
 		private int _freeList;

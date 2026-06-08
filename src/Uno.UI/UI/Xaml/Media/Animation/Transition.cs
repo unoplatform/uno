@@ -3,11 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
 using Uno.Disposables;
-#if __ANDROID__
-using View = Android.Views.View;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-#endif
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {

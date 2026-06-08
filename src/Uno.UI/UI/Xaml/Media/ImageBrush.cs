@@ -28,9 +28,6 @@ namespace Microsoft.UI.Xaml.Media
 		public static DependencyProperty AlignmentXProperty { get; } =
 			DependencyProperty.Register("AlignmentX", typeof(AlignmentX), typeof(ImageBrush), new FrameworkPropertyMetadata(AlignmentX.Center));
 
-#if __WASM__
-		[NotImplemented]
-#endif
 		public AlignmentX AlignmentX
 		{
 			get => (AlignmentX)GetValue(AlignmentXProperty);
@@ -42,9 +39,6 @@ namespace Microsoft.UI.Xaml.Media
 		public static DependencyProperty AlignmentYProperty { get; } =
 			DependencyProperty.Register("AlignmentY", typeof(AlignmentY), typeof(ImageBrush), new FrameworkPropertyMetadata(AlignmentY.Center));
 
-#if __WASM__
-		[NotImplemented]
-#endif
 		public AlignmentY AlignmentY
 		{
 			get => (AlignmentY)GetValue(AlignmentYProperty);
@@ -56,9 +50,6 @@ namespace Microsoft.UI.Xaml.Media
 		public static DependencyProperty StretchProperty { get; } =
 		  DependencyProperty.Register("Stretch", typeof(Stretch), typeof(ImageBrush), new FrameworkPropertyMetadata(defaultValue: Stretch.Fill, propertyChangedCallback: null));
 
-#if __WASM__
-		[NotImplemented]
-#endif
 		public Stretch Stretch
 		{
 			get => (Stretch)this.GetValue(StretchProperty);
@@ -198,7 +189,7 @@ namespace Microsoft.UI.Xaml.Media
 			return location;
 		}
 
-#if __ANDROID__ || __APPLE_UIKIT__ || __CROSSRUNTIME__
+#if __CROSSRUNTIME__
 		private void OnImageOpened()
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))

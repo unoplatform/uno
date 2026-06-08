@@ -32,7 +32,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 		public void Invalidate()
 		{
-#if __WASM__ || __SKIA__
+#if __SKIA__
 			InvalidateSource();
 #endif
 			InvalidateImageSource();
@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		{
 			UpdateBuffer();
 
-#if __ANDROID__ || __SKIA__ // TODO: Other platforms.
+#if __SKIA__ // TODO: Other platforms.
 			DecodeStreamIntoBuffer();
 #endif
 		}
