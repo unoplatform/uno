@@ -270,6 +270,8 @@
         href: migrating-from-previous-releases.md
       - name: Upgrading to Single Project
         href: xref:Uno.Development.MigratingToSingleProject
+      - name: Upgrading to Uno 7.0 (Skia-only rendering)
+        href: xref:Uno.Development.MigratingToUno7
       - name: Upgrading to Uno 6.0
         href: xref:Uno.Development.MigratingToUno6
       - name: Upgrading to Uno 5.0
