@@ -1208,6 +1208,74 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Hyperlink_Hovered_Then_HandCursor_Wins_Over_Selection()
+		{
+			// The TextBlock's ProtectedCursor resolves to Hand while hovering a hyperlink,
+			// I-beam while selection is enabled but not hovering a hyperlink, mirroring WinUI's
+			// innermost-element-wins cursor resolution.
+			var hyperlink = new Hyperlink();
+			hyperlink.Inlines.Add(new Run { Text = "click me" });
+			var SUT = new TextBlock { IsTextSelectionEnabled = true };
+			SUT.Inlines.Add(hyperlink);
+
+			await UITestHelper.Load(SUT);
+
+			// Selection enabled, pointer not over the TextBlock yet.
+			Assert.AreEqual(Microsoft.UI.Input.InputSystemCursorShape.IBeam, SUT.CalculatedFinalCursor);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			// Over the hyperlink: Hand takes precedence over the selection I-beam.
+			Assert.AreEqual(Microsoft.UI.Input.InputSystemCursorShape.Hand, SUT.CalculatedFinalCursor);
+
+			// Move off the TextBlock: no longer hovering a hyperlink, but still selectable.
+			mouse.MoveTo(new Point(bounds.Right + 50, bounds.Bottom + 50));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(Microsoft.UI.Input.InputSystemCursorShape.IBeam, SUT.CalculatedFinalCursor);
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Hyperlink_Hovered_Without_Selection_Then_Hand_Else_Null()
+		{
+			var hyperlink = new Hyperlink();
+			hyperlink.Inlines.Add(new Run { Text = "click me" });
+			var SUT = new TextBlock();
+			SUT.Inlines.Add(hyperlink);
+
+			await UITestHelper.Load(SUT);
+
+			// Not selectable and not hovering a hyperlink: no cursor override.
+			// ProtectedCursor is null, which resolves to the inherited/default Arrow.
+			Assert.AreEqual(Microsoft.UI.Input.InputSystemCursorShape.Arrow, SUT.CalculatedFinalCursor);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(Microsoft.UI.Input.InputSystemCursorShape.Hand, SUT.CalculatedFinalCursor);
+
+			mouse.MoveTo(new Point(bounds.Right + 50, bounds.Bottom + 50));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(Microsoft.UI.Input.InputSystemCursorShape.Arrow, SUT.CalculatedFinalCursor);
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
 #elif !HAS_RENDER_TARGET_BITMAP
 		[Ignore("Cannot take screenshot on this platform.")]
 #endif
