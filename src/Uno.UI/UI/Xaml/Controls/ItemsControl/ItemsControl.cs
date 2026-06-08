@@ -16,17 +16,8 @@ using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using System.Diagnostics.CodeAnalysis;
 
-#if __ANDROID__
-using _View = Android.Views.View;
-using _ViewGroup = Android.Views.ViewGroup;
-#elif __APPLE_UIKIT__
-using UIKit;
-using _View = UIKit.UIView;
-using _ViewGroup = UIKit.UIView;
-#else
 using _View = Microsoft.UI.Xaml.UIElement;
 using _ViewGroup = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -1029,11 +1020,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (ItemsPanelRoot == null
 				|| !ShouldItemsControlManageChildren
-#if __ANDROID__
-				// workaround for INCC callback on disposed object
-				// see: Given_xBind.When_XBind_TargetDisposed_Test()
-				|| (Handle == nint.Zero || ItemsPanelRoot.Handle == nint.Zero)
-#endif
 				)
 			{
 				return;

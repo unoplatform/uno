@@ -1712,11 +1712,7 @@ public partial class NavigationView : ContentControl
 										var footerItemsRepeaterMargin = footerItemsRepeater.Margin;
 										footerItemsRepeaterTopBottomMargin = footerItemsRepeaterMargin.Top + footerItemsRepeaterMargin.Bottom;
 									}
-#if __APPLE_UIKIT__ // Uno workaround: The arrange is async on iOS, ActualHeight is not set yet. This would constraints the footer to MaxHeight 0.
-									return footerItemsRepeater.DesiredSize.Height + footerItemsRepeaterTopBottomMargin;
-#else
 									return footerItemsRepeater.ActualHeight + footerItemsRepeaterTopBottomMargin;
-#endif
 								}
 								var footersActualHeight = GetFootersActualHeight(footerItemsRepeater);
 
@@ -1730,11 +1726,7 @@ public partial class NavigationView : ContentControl
 											var paneFooterMargin = paneFooter.Margin;
 											paneFooterTopBottomMargin = paneFooterMargin.Top + paneFooterMargin.Bottom;
 										}
-#if __APPLE_UIKIT__ // Uno workaround: The arrange is async on iOS, ActualHeight is not set yet. This would constraints the footer to MaxHeight 0.
-										return paneFooter.DesiredSize.Height + paneFooterTopBottomMargin;
-#else
 										return paneFooter.ActualHeight + paneFooterTopBottomMargin;
-#endif
 									}
 									return 0.0;
 								}
