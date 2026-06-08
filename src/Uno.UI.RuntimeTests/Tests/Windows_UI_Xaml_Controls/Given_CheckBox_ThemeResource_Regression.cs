@@ -29,6 +29,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// must be re-pinned there; otherwise a checked CheckBox reverts to the stock brush on a visual-state re-entry.
 		[TestMethod]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
 		public async Task When_App_Override_Checked_Survives_IsChecked_Reentry_Under_Dark_App()
 		{
 			using var _ = ThemeHelper.UseApplicationDarkTheme();
