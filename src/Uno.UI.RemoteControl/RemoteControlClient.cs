@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net.WebSockets;
+using System.Runtime.Loader;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
@@ -124,6 +125,49 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 					break;
 				}
 			}
+		}
+	}
+
+	/// <summary>
+	/// Removes queued <see cref="OnRemoteControlClientAvailable"/> callbacks whose target lives in a collectible
+	/// (non-default) <see cref="AssemblyLoadContext"/>. Such callbacks are registered by code in a previewed app's
+	/// ALC waiting for the default <see cref="Instance"/>; when that app only ever creates additional clients
+	/// (<see cref="CreateAdditional"/>, with SetAsDefaultInstance=false) the waiting list never drains, so the
+	/// captured per-ALC closures pin the collectible ALC after unload. Called on ALC teardown.
+	/// </summary>
+	public static void RemoveCollectibleAlcWaitingCallbacks()
+	{
+		while (true)
+		{
+			var current = _waitingList;
+			if (current is null || current.Count == 0)
+			{
+				return;
+			}
+
+			var kept = current.Where(static a => !IsCollectibleTarget(a)).ToArray();
+			if (kept.Length == current.Count)
+			{
+				return; // nothing collectible to remove
+			}
+
+			IReadOnlyCollection<Action<RemoteControlClient>>? next = kept.Length == 0 ? null : kept;
+			if (ReferenceEquals(Interlocked.CompareExchange(ref _waitingList, next, current), current))
+			{
+				return;
+			}
+		}
+
+		static bool IsCollectibleTarget(Action<RemoteControlClient> action)
+		{
+			var declaringType = action.Target?.GetType() ?? action.Method.DeclaringType;
+			if (declaringType is null)
+			{
+				return false;
+			}
+
+			var alc = AssemblyLoadContext.GetLoadContext(declaringType.Assembly);
+			return alc is not null && alc != AssemblyLoadContext.Default && alc.IsCollectible;
 		}
 	}
 
@@ -307,8 +351,22 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		{
 			if (Interlocked.CompareExchange(ref _state, States.Active, States.Ready) is States.Ready)
 			{
+				// Scope the diagnostics sink to ProcessMessages' execution flow and restore the
+				// caller's ambient value afterwards. EnsureActive runs on the caller (e.g. UI)
+				// thread; assigning DevServerDiagnostics.Current unscoped would persist the sink
+				// in that thread's ambient ExecutionContext and flow it into every context
+				// captured thereafter (timers, continuations, dispatcher enqueues), pinning the
+				// StatusSink → owner graph and any collectible AssemblyLoadContext it reaches.
+				var previousSink = DevServerDiagnostics.Current;
 				DevServerDiagnostics.Current = Owner._status;
-				_ = Owner.ProcessMessages(Transport!, _ct.Token);
+				try
+				{
+					_ = Owner.ProcessMessages(Transport!, _ct.Token);
+				}
+				finally
+				{
+					DevServerDiagnostics.Current = previousSink;
+				}
 			}
 		}
 
@@ -959,31 +1017,40 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		}
 
 		Timer? timer = default;
-		timer = new Timer(async _ =>
+
+		// Suppress ExecutionContext flow while creating the long-lived keep-alive timer. The
+		// timer is held by the process-global TimerQueue for the connection's lifetime; if it
+		// captured the current ambient context it would also capture (and pin) whatever is
+		// ambient on this thread — including the DevServerDiagnostics sink — keeping the
+		// StatusSink → owner graph and any collectible AssemblyLoadContext alive indefinitely.
+		using (System.Threading.ExecutionContext.SuppressFlow())
 		{
-			try
+			timer = new Timer(async _ =>
 			{
-				if (this.Log().IsEnabled(LogLevel.Trace))
+				try
 				{
-					this.Log().Trace($"Sending Keepalive frame from client");
-				}
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"Sending Keepalive frame from client");
+					}
 
-				_ping = _ping.Next();
-				_status.ReportPing(_ping);
-				await SendMessage(_ping);
-			}
-			catch (Exception error)
-			{
-				if (this.Log().IsEnabled(LogLevel.Trace))
+					_ping = _ping.Next();
+					_status.ReportPing(_ping);
+					await SendMessage(_ping);
+				}
+				catch (Exception error)
 				{
-					this.Log().Trace("Keepalive failed");
-				}
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace("Keepalive failed");
+					}
 
-				_status.ReportKeepAliveAborted(error);
-				Interlocked.CompareExchange(ref _keepAliveTimer, null, timer);
-				timer?.Dispose();
-			}
-		});
+					_status.ReportKeepAliveAborted(error);
+					Interlocked.CompareExchange(ref _keepAliveTimer, null, timer);
+					timer?.Dispose();
+				}
+			});
+		}
 
 		if (Interlocked.CompareExchange(ref _keepAliveTimer, timer, null) is null)
 		{
@@ -1118,6 +1185,11 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		{
 			Instance = null;
 		}
+
+		// Drop the shared RemoteControlJsonOptions' source-generated context. CreateClient registers this
+		// client's per-ALC RemoteControlJsonContext.Default on the shared (default-ALC) RemoteControlJsonOptions;
+		// leaving it set pins the secondary app's collectible ALC after unload. Recreated lazily on next use.
+		Messaging.RemoteControlJsonOptions.Reset();
 	}
 
 	// The three helpers below are internal (rather than private) to allow unit testing via InternalsVisibleTo.
