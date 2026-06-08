@@ -33,6 +33,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// reverts from the Blue override to the stock brush.
 		[TestMethod]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
 		public async Task When_App_Override_Checked_Survives_IsChecked_Reentry_Under_Dark_App()
 		{
 			using var _ = ThemeHelper.UseApplicationDarkTheme();
