@@ -48,7 +48,7 @@ explicitly linked. Over-keeping is the safe error direction.
 | W6 | Mixin generators | ✅ done (deleted FrameworkElementAndroid/UIKitMixinGenerator + BaseActivityCallbacksGenerator + their tests; Internal+Tests+Skia clean). KEPT `DependencyPropertyMixinGenerator` + `MixinGeneration.targets`/`UNO_MIXIN_GENERATION` (still emit cross-platform DPs for Skia). |
 | W2 | Native Android rendering | ✅ done (204 `.Android.cs` deleted; 21 host-linked + ViewHelper/InsetsExtensions over-keep; Android host + Skia + Ref + Tests clean. Resolved W7 `ApplicationActivity.Android.cs` dangling ref). `.java` (17) + BindingHelper project → W1. |
 | W4 | Native WASM DOM rendering | 🟡 partial: 114 `.wasm.cs` deleted + validated (WebAssembly.Browser host lib net9.0 clean). REMAINING: `.ts` DOM removal (`WindowManager.ts` etc., keep bootstrap/interop `Runtime/Xaml/input/focus` + `WebView.ts` + `ts/types/**`); delete `Uno.UI.Runtime.WebAssembly` project. Needs WASM (browserwasm / `wasm-tools-net9`) build validation — not available in this env. |
-| W5 | Core shared abstractions (`#if` cleanup) | ⬜ 245 shared Uno.UI `.cs` files carry now-dead native `#if` blocks. Skia-neutral (branches already compile-excluded) → cosmetic/contributor-readability value (#12). Validatable on Skia desktop but large + per-file `#if`/`#elif`/`#else` collapse risk. Also: remove native-only types (`IShadowChildrenProvider`, `NativeRenderTransformAdapter`), `NativeOwner` in Reference/unittests (rework `ElementCompositionPreview` `#else`). |
+| W5 | Core shared abstractions (`#if` cleanup) | 🟡 started: removed `IShadowChildrenProvider` + 6 orphaned fully-native control files (pull-to-refresh native, NativeFramePresenter gesture delegate, FlipView/ItemsPresenter native partials), validated. REMAINING: ~225 shared `.cs` files carry now-dead native `#if` blocks. Skia-neutral (branches already compile-excluded) → cosmetic/contributor-readability (#12). **Not safely bulk-automatable** (shared files mix live + dead branches; `!__SKIA__`/`#else` branches are used by Reference — must preserve; per-file `#if`/`#elif`/`#else` collapse risk). Best done as a reviewed pass with Skia+Reference+Tests validation. Also: remove `NativeOwner` from Reference/unittests (rework `ElementCompositionPreview` `#else`). |
 | W8 | Controls with native impls + FeatureConfiguration native flags | ⬜ FeatureConfiguration native flags are all `#if __ANDROID__/__APPLE_UIKIT__/__WASM__`-guarded → **already excluded from Skia**, so removing them is Skia-neutral (pure public-API/dead-code cleanup, value realized only once netcoremobile/Wasm projects go in W1). Some are `__ANDROID__ \|\| UNO_REFERENCE_API` (exposed to Reference) — careful. Do with/after W1. |
 | W10 | Window/safe-area/insets/keyboard | ⬜ highest risk; service-before-deletion. The kept host-linked `NativeWindowWrapper.Android/.UIKit.cs` need the W10 EDITs (drop GetVisualBounds insets etc.); `LayoutProvider.Android.cs`/`InputPane.Android/.Apple.cs` removal needs the Skia-host equivalents confirmed on-device. Device-validated. |
 | W1 | Build/TFMs/packaging/deps | ⬜ structural anchor; affects Skia build. **Entanglement found — spec's removable list is imprecise:** `Uno.UI.Dispatching.netcoremobile/.Wasm` consumed by Skia hosts (dispatcher is platform-layered like Uno.UWP) → KEEP. `MediaPlayer.WebAssembly` → `Uno.UI.Wasm.csproj`, `SamplesApp.Skia.WebAssembly.Browser`, `Uno.UI.Wasm.Tests` reference Wasm UI variant(s) → rewire (likely to `Uno.UI.Skia`) before deleting. Validatable: Skia-only.slnf restore+build + host LIBS (net9.0/-android/-ios). NOT validatable here: browserwasm app heads (`wasm-tools-net9` missing) + WASM/device runtime. Touches `.sln`/`.slnx`/`*.slnf`/`Directory.Build.props _AdjustedOutputProjects`/`Directory.Build.targets` AndroidX pins/`Uno.Implicit.Packages...Android.targets`/nuspec — do incrementally, validate each. |
@@ -56,12 +56,22 @@ explicitly linked. Over-keeping is the safe error direction.
 | W12 | Documentation | 🟡 partial: 7.0 migration guide + native-doc stubs (uids preserved) + toc done. REMAINING (deferred until W1/W5 land — they describe the contributor-facing tree which is mid-migration): AGENTS.md native-targeting + `.claude/rules/platform-targeting.md`/`code-style.md`, deep arch docs (`how-uno-works.md`, `Uno-UI-Performance.md`, `intro.md`, xf-migration). |
 
 ## Remaining work & handoff (for CI/device-equipped continuation)
-**Done + validated here (8 commits):** native rendering C# fully removed across all four
+**Done + validated here (11 commits):** native rendering C# fully removed across all four
 backends (Composition W7, Apple W3, Android W2, WASM `.wasm.cs` W4) + native mixin
-generators (W6); ~533 files. Each commit compile-validated on **Skia desktop + Reference +
+generators (W6) + W5 starts (IShadowChildrenProvider + 6 orphaned fully-native files);
+~540 files / ~74k lines. Each commit compile-validated on **Skia desktop + Reference +
 Tests + Skia.Android/AppleUIKit/WebAssembly.Browser host libs** (`Uno.UI-Skia-only.slnf`,
 0 new errors; the lone pre-existing `wasm-tools-net9` error on the WASM *app* head is
 environmental). Plus 7.0 migration guide (W12).
+
+**Why active work stopped here:** the clean, self-contained, fully-validatable-in-this-env
+removals are complete. Everything remaining is either (a) blocked on a CI/device
+environment (W1 browserwasm rewiring, W4-ts, W9 media engine, W10 safe-area — need
+`wasm-tools-net9` and/or on-device runtime), or (b) intricate per-item refactoring with
+poor autonomous ROI and rising risk best done under human review (W5 #if-forest across
+~225 files with Skia-vs-Reference branch subtlety; W8 mixed #if-guarded vs unconditional
+flags needing call-site work). Pushing further would mean either unvalidatable changes on
+the branch or large cosmetic churn — neither is appropriate to do blind.
 
 **Methodology to reuse:** native file is KEEP iff a kept project `<Compile Include>`-links
 it; REMOVE otherwise; validate by building the relevant Skia host. On-device
