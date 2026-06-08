@@ -50,7 +50,20 @@ namespace Microsoft.UI.Xaml.Controls
 		private Range _selectionOnPointerPressed; // stores the selection before a mouse press so that it's restored on pointer cancellation
 #endif
 
-		private Hyperlink _hyperlinkOver;
+		private Hyperlink _hyperlinkOver; // do not use: use HyperlinkOver instead
+		private Hyperlink HyperlinkOver
+		{
+			get => _hyperlinkOver;
+			set
+			{
+				if (_hyperlinkOver != value)
+				{
+					_hyperlinkOver = value;
+					UpdateProtectedCursor();
+				}
+			}
+		}
+
 		private bool _subscribeToPointerEvents;
 
 		private Action _foregroundChanged;
@@ -590,9 +603,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnIsTextSelectionEnabledChanged()
 		{
-			ProtectedCursor = IsTextSelectionEnabled ? InputSystemCursor.Create(InputSystemCursorShape.IBeam) : null;
+			UpdateProtectedCursor();
 			OnIsTextSelectionEnabledChangedPartial();
 		}
+
+		// The cursor while hovering a hyperlink takes precedence over the text-selection I-beam,
+		// matching WinUI where the innermost element wins the cursor resolution.
+		private void UpdateProtectedCursor() =>
+			ProtectedCursor = HyperlinkOver is not null
+				? InputSystemCursor.Create(InputSystemCursorShape.Hand)
+				: IsTextSelectionEnabled
+					? InputSystemCursor.Create(InputSystemCursorShape.IBeam)
+					: null;
 
 		partial void OnIsTextSelectionEnabledChangedPartial();
 
@@ -1127,10 +1149,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			var hyperlink = that.FindHyperlinkAt(e);
-			if (that._hyperlinkOver != hyperlink)
+			if (that.HyperlinkOver != hyperlink)
 			{
-				that._hyperlinkOver?.ReleasePointerOver(e.Pointer);
-				that._hyperlinkOver = hyperlink;
+				that.HyperlinkOver?.ReleasePointerOver(e.Pointer);
+				that.HyperlinkOver = hyperlink;
 				hyperlink?.SetPointerOver(e.Pointer);
 			}
 
@@ -1160,11 +1182,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// This assertion fails because we don't release pointer captures on PointerExited in InputManager
 			// TODO: make it such that this assertion doesn't fail
-			// global::System.Diagnostics.Debug.Assert(that._hyperlinkOver == null);
+			// global::System.Diagnostics.Debug.Assert(that.HyperlinkOver == null);
 
 			var hyperlink = that.FindHyperlinkAt(e);
 
-			that._hyperlinkOver = hyperlink;
+			that.HyperlinkOver = hyperlink;
 			hyperlink?.SetPointerOver(e.Pointer);
 		};
 
@@ -1175,8 +1197,8 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			that._hyperlinkOver?.ReleasePointerOver(e.Pointer);
-			that._hyperlinkOver = null;
+			that.HyperlinkOver?.ReleasePointerOver(e.Pointer);
+			that.HyperlinkOver = null;
 		};
 
 		private bool AbortHyperlinkCaptures(Pointer pointer)
@@ -1188,8 +1210,8 @@ namespace Microsoft.UI.Xaml.Controls
 				aborted |= hyperlink.ReleasePointerOver(pointer);
 			}
 
-			aborted |= _hyperlinkOver?.ReleasePointerOver(pointer) ?? false;
-			_hyperlinkOver = null;
+			aborted |= HyperlinkOver?.ReleasePointerOver(pointer) ?? false;
+			HyperlinkOver = null;
 
 			return aborted;
 		}
@@ -1209,7 +1231,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateHyperlinks()
 		{
-			global::System.Diagnostics.Debug.Assert(_hyperlinkOver is null || _hyperlinks.Count(h => h == _hyperlinkOver) == 1);
+			global::System.Diagnostics.Debug.Assert(HyperlinkOver is null || _hyperlinks.Count(h => h == HyperlinkOver) == 1);
 
 			if (UseInlinesFastPath) // i.e. no Inlines
 			{
@@ -1221,14 +1243,14 @@ namespace Microsoft.UI.Xaml.Controls
 						hyperlink.AbortAllPointerState();
 					}
 
-					_hyperlinkOver = null;
+					HyperlinkOver = null;
 					_hyperlinks.Clear();
 				}
 
 				return;
 			}
 
-			_hyperlinkOver = null;
+			HyperlinkOver = null;
 			var previousHyperLinks = _hyperlinks.ToHashSet();
 			_hyperlinks.Clear();
 			foreach (var hyperlink in Inlines.TraversedTree.preorderTree.OfType<Hyperlink>())
@@ -1250,7 +1272,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var hasHyperlink = _hyperlinks.Count > 0;
 
-				global::System.Diagnostics.Debug.Assert(!(!hasHyperlink && _hyperlinkOver is { }));
+				global::System.Diagnostics.Debug.Assert(!(!hasHyperlink && HyperlinkOver is not null));
 
 				return hasHyperlink;
 			}
