@@ -425,9 +425,6 @@ namespace Microsoft.UI.Xaml.Media
 		{
 #if __ANDROID__
 			view.RemoveAllViews();
-#elif __APPLE_UIKIT__
-			var children = view.ChildrenShadow;
-			children.ForEach(v => v.RemoveFromSuperview());
 #elif __CROSSRUNTIME__
 			view.ClearChildren();
 #else

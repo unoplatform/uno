@@ -1097,11 +1097,6 @@ namespace Microsoft.UI.Xaml
 			{
 				return children[0] as UIElement;
 			}
-#elif XAMARIN
-			if (this is IShadowChildrenProvider { ChildrenShadow: { Count: > 0 } childrenShadow })
-			{
-				return childrenShadow[0] as UIElement;
-			}
 #endif
 
 			if (VisualTreeHelper.GetChildrenCount(this) > 0)
