@@ -15,61 +15,61 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object Tag
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object RadialControllerMenuItem.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20RadialControllerMenuItem.Tag");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerMenuItem", "object RadialControllerMenuItem.Tag");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string DisplayText
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RadialControllerMenuItem.DisplayText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RadialControllerMenuItem.DisplayText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerMenuItem", "DisplayText");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenuItem.DisplayText.get
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenuItem.Tag.get
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenuItem.Tag.set
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenuItem.Invoked.add
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenuItem.Invoked.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Input.RadialControllerMenuItem CreateFromFontGlyph(string displayText, string glyph, string fontFamily)
+		public object Tag
 		{
-			throw new global::System.NotImplementedException("The member RadialControllerMenuItem RadialControllerMenuItem.CreateFromFontGlyph(string displayText, string glyph, string fontFamily) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RadialControllerMenuItem%20RadialControllerMenuItem.CreateFromFontGlyph%28string%20displayText%2C%20string%20glyph%2C%20string%20fontFamily%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Input.RadialControllerMenuItem CreateFromFontGlyph(string displayText, string glyph, string fontFamily, global::System.Uri fontUri)
-		{
-			throw new global::System.NotImplementedException("The member RadialControllerMenuItem RadialControllerMenuItem.CreateFromFontGlyph(string displayText, string glyph, string fontFamily, Uri fontUri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RadialControllerMenuItem%20RadialControllerMenuItem.CreateFromFontGlyph%28string%20displayText%2C%20string%20glyph%2C%20string%20fontFamily%2C%20Uri%20fontUri%29");
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerMenuItem", "Tag");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerMenuItem", "Tag");
+			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.RadialControllerMenuItem CreateFromIcon(string displayText, global::Windows.Storage.Streams.RandomAccessStreamReference icon)
 		{
-			throw new global::System.NotImplementedException("The member RadialControllerMenuItem RadialControllerMenuItem.CreateFromIcon(string displayText, RandomAccessStreamReference icon) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RadialControllerMenuItem%20RadialControllerMenuItem.CreateFromIcon%28string%20displayText%2C%20RandomAccessStreamReference%20icon%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerMenuItem", "CreateFromIcon(string displayText, RandomAccessStreamReference icon)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.RadialControllerMenuItem CreateFromKnownIcon(string displayText, global::Windows.UI.Input.RadialControllerMenuKnownIcon value)
 		{
-			throw new global::System.NotImplementedException("The member RadialControllerMenuItem RadialControllerMenuItem.CreateFromKnownIcon(string displayText, RadialControllerMenuKnownIcon value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RadialControllerMenuItem%20RadialControllerMenuItem.CreateFromKnownIcon%28string%20displayText%2C%20RadialControllerMenuKnownIcon%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerMenuItem", "CreateFromKnownIcon(string displayText, RadialControllerMenuKnownIcon value)");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.UI.Input.RadialControllerMenuItem CreateFromFontGlyph(string displayText, string glyph, string fontFamily)
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerMenuItem", "CreateFromFontGlyph(string displayText, string glyph, string fontFamily)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.UI.Input.RadialControllerMenuItem CreateFromFontGlyph(string displayText, string glyph, string fontFamily, global::System.Uri fontUri)
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerMenuItem", "CreateFromFontGlyph(string displayText, string glyph, string fontFamily, Uri fontUri)");
+		}
+#endif
+		// Forced skipping of method Windows.UI.Input.RadialControllerMenuItem.Invoked.add
+		// Forced skipping of method Windows.UI.Input.RadialControllerMenuItem.Invoked.remove
+		// Forced skipping of method Windows.UI.Input.RadialControllerMenuItem.DisplayText.get
+		// Forced skipping of method Windows.UI.Input.RadialControllerMenuItem.Tag.get
+		// Forced skipping of method Windows.UI.Input.RadialControllerMenuItem.Tag.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.RadialControllerMenuItem, object> Invoked
@@ -77,12 +77,12 @@ namespace Windows.UI.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerMenuItem", "event TypedEventHandler<RadialControllerMenuItem, object> RadialControllerMenuItem.Invoked");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerMenuItem", "event Invoked");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerMenuItem", "event TypedEventHandler<RadialControllerMenuItem, object> RadialControllerMenuItem.Invoked");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerMenuItem", "event Invoked");
 			}
 		}
 #endif

@@ -15,29 +15,29 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Handled
+		public bool Cancel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2ScreenCaptureStartingEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2ScreenCaptureStartingEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs", "Cancel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs", "bool CoreWebView2ScreenCaptureStartingEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs", "Cancel");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Cancel
+		public bool Handled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2ScreenCaptureStartingEventArgs.Cancel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2ScreenCaptureStartingEventArgs.Cancel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs", "bool CoreWebView2ScreenCaptureStartingEventArgs.Cancel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs", "Handled");
 			}
 		}
 #endif
@@ -47,8 +47,15 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2FrameInfo CoreWebView2ScreenCaptureStartingEventArgs.OriginalSourceFrameInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2FrameInfo%20CoreWebView2ScreenCaptureStartingEventArgs.OriginalSourceFrameInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs", "OriginalSourceFrameInfo");
 			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.Deferral GetDeferral()
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.Cancel.get
@@ -56,12 +63,5 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.Handled.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.Handled.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs.OriginalSourceFrameInfo.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Deferral GetDeferral()
-		{
-			throw new global::System.NotImplementedException("The member Deferral CoreWebView2ScreenCaptureStartingEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreWebView2ScreenCaptureStartingEventArgs.GetDeferral%28%29");
-		}
-#endif
 	}
 }

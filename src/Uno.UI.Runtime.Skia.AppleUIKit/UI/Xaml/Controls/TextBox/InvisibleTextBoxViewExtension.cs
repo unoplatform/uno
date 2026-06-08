@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using UIKit;
+using Uno.UI;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.AppleUIKit;
 using Uno.UI.Runtime.Skia.AppleUIKit.Hosting;
@@ -78,20 +79,9 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	public void InvalidateLayout()
 	{
-		if (_textBoxView is not null)
+		if (_textBoxView is UIView nativeView)
 		{
-			//var width = _view.DisplayBlock.ActualWidth;
-			//var height = _view.DisplayBlock.ActualHeight;
-
-			//var position = _view.DisplayBlock.TransformToVisual(null).TransformPoint(default);
-			//var rect = new Rect(position.X, position.Y, width, height);
-			//var physical = rect.LogicalToPhysicalPixels();
-			//_nativeInput.Layout(
-			//	(int)physical.Left,
-			//	(int)physical.Top,
-			//	(int)physical.Right,
-			//	(int)physical.Bottom
-			//);
+			UpdateNativeViewFrame(nativeView);
 		}
 	}
 
@@ -157,6 +147,14 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		_textBoxView.AutocapitalizationType = InputScopeHelper.ConvertInputScopeToCapitalization(textBox.InputScope);
 		_textBoxView.KeyboardType = InputScopeHelper.ConvertInputScopeToKeyboardType(textBox.InputScope);
 
+		// Apply the iOS 26 number-pad-popover opt-out after KeyboardType is set so the iPad +
+		// numeric-keyboard gate is evaluated against the final value. Single-line only; the
+		// popover is a UITextField behavior and does not apply to UITextView (multiline).
+		if (_textBoxView is SinglelineInvisibleTextBoxView singleline)
+		{
+			singleline.TryDisableNumberPadPopover();
+		}
+
 		_textBoxView.SpellCheckingType = textBox.IsSpellCheckEnabled ? UITextSpellCheckingType.Yes : UITextSpellCheckingType.No;
 		_textBoxView.AutocorrectionType = textBox.IsSpellCheckEnabled ? UITextAutocorrectionType.Yes : UITextAutocorrectionType.No;
 
@@ -170,6 +168,13 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 		_textBoxView.SecureTextEntry = textBox is PasswordBox;
 		SetSoftKeyboardTheme();
+
+		// KeyboardType may have changed — re-evaluate the native view
+		// position (anchored vs. off-screen).
+		if (_textBoxView is UIView nativeView)
+		{
+			UpdateNativeViewFrame(nativeView);
+		}
 	}
 
 	private void SetSoftKeyboardTheme()
@@ -212,8 +217,26 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		}
 	}
 
+	internal void SyncSelectionToTextBox()
+	{
+		if (_owner?.TextBox is { } textBox)
+		{
+			var start = GetSelectionStart();
+			var length = GetSelectionLength();
+			textBox.SelectInternal(start, length);
+		}
+	}
+
 	internal void ProcessNativeTextInput(string? text)
 	{
+		// During IME composition, text updates are managed by the shared
+		// TextBox.skia.cs composition handlers via IImeTextBoxExtension events.
+		// Suppress the normal text processing path to prevent double processing.
+		if (_textBoxView?.IsComposing == true)
+		{
+			return;
+		}
+
 		if (_owner?.TextBox is { } textBox)
 		{
 			var selectionStart = textBox.SelectionStart;
@@ -250,9 +273,8 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			{
 				_latestNativeView = view;
 				layer.AddSubview(nativeView);
-				// Push the overlay native view out of the visible view - this way
-				// the blue typing suggestion overlay will not be shown to the user.
-				nativeView.Frame = new CoreGraphics.CGRect(-1000, -1000, 10, 10);
+
+				UpdateNativeViewFrame(nativeView);
 			}
 		}
 	}
@@ -294,6 +316,71 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			nativeView.RemoveFromSuperview();
 			_latestNativeView = null;
 		}
+	}
+
+	private void UpdateNativeViewFrame(UIView nativeView)
+	{
+		var textBox = _textBoxView?.Owner?.TextBox;
+		var rect = textBox?.GetAbsoluteBoundsRect();
+		// GetAbsoluteBoundsRect returns WinUI DIPs which map 1:1 to iOS
+		// points.  Do NOT convert to physical pixels — UIView.Frame is in
+		// points, not physical pixels.
+		var x = rect?.X ?? 0;
+		var y = rect?.Y ?? 0;
+		var width = rect?.Width ?? 10;
+		var height = rect?.Height ?? 10;
+
+		// Only iPad shows a floating numeric keypad that needs an anchor
+		// view. For all other cases we push the native view off-screen so
+		// that the iOS autocorrect/suggestion bubble does not leak over
+		// the Skia-rendered text.
+		if (ShouldAnchorToTextBox())
+		{
+			nativeView.Frame = new CoreGraphics.CGRect(x, y, width, height);
+		}
+		else
+		{
+			nativeView.Frame = new CoreGraphics.CGRect(-1000 - width, -1000 - height, width, height);
+		}
+	}
+
+	private bool ShouldAnchorToTextBox()
+		=> _textBoxView is { } view && IsFloatingNumericKeypad(view.KeyboardType);
+
+	// Returns true when the textfield is on iPad with a numeric keyboard type —
+	// the configuration where iOS displays (or would display) the floating
+	// number-pad popover. Used by TryDisableNumberPadPopover to decide whether
+	// the setAllowsNumberPadPopover: opt-out is relevant for this field.
+	internal static bool IsIPadNumericKeyboard(UIKeyboardType keyboardType)
+	{
+		if (UIDevice.CurrentDevice.UserInterfaceIdiom != UIUserInterfaceIdiom.Pad)
+		{
+			return false;
+		}
+
+		return keyboardType is
+			UIKeyboardType.NumberPad or
+			UIKeyboardType.DecimalPad or
+			UIKeyboardType.NumbersAndPunctuation or
+			UIKeyboardType.PhonePad;
+	}
+
+	// Single source of truth for "should we anchor/expand the caret rect so
+	// iPad's floating numeric keypad positions adjacent to the full control?"
+	// Also consumed by SinglelineInvisibleTextBoxView.GetFirstRectForRange /
+	// GetCaretRectForPosition. Keep the two call sites in sync by routing
+	// through this helper.
+	// When FeatureConfiguration.TextBox.DisableNumberPadPopover is true the
+	// popover is opted out via setAllowsNumberPadPopover:, so no anchoring or
+	// frame adjustments are needed and we return false.
+	internal static bool IsFloatingNumericKeypad(UIKeyboardType keyboardType)
+	{
+		if (global::Uno.UI.FeatureConfiguration.TextBox.DisableNumberPadPopover)
+		{
+			return false;
+		}
+
+		return IsIPadNumericKeyboard(keyboardType);
 	}
 
 	private static bool CouldBecomeFirstResponder(FrameworkElement? element)

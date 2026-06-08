@@ -8,32 +8,32 @@ namespace Microsoft.UI.Xaml.Input
 #endif
 	public partial class ManipulationStartingRoutedEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
+		// Skipping already declared property Container
+		// Skipping already declared property Handled
+		// Skipping already declared property Mode
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Input.ManipulationPivot Pivot
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ManipulationPivot ManipulationStartingRoutedEventArgs.Pivot is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ManipulationPivot%20ManipulationStartingRoutedEventArgs.Pivot");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs", "Pivot");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs", "ManipulationPivot ManipulationStartingRoutedEventArgs.Pivot");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs", "Pivot");
 			}
 		}
 #endif
-		// Skipping already declared property Mode
-		// Skipping already declared property Handled
-		// Skipping already declared property Container
 		// Skipping already declared method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.ManipulationStartingRoutedEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.ManipulationStartingRoutedEventArgs()
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Mode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Mode.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Container.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Container.set
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Pivot.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Pivot.set
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Mode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Mode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Pivot.get
+		// Forced skipping of method Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.Pivot.set
 	}
 }

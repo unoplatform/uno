@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference HyperlinkButtonAutomationPeer_Partial.cpp, tag winui3/release/1.4.2
+// MUX Reference HyperlinkButtonAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
 
 using Microsoft.UI.Composition.Interactions;
 using Microsoft.UI.Xaml.Controls;
@@ -20,6 +20,16 @@ public partial class HyperlinkButtonAutomationPeer : ButtonBaseAutomationPeer, P
 
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.Hyperlink;
+
+	protected override object GetPatternCore(PatternInterface patternInterface)
+	{
+		if (patternInterface == PatternInterface.Invoke)
+		{
+			return this;
+		}
+
+		return base.GetPatternCore(patternInterface);
+	}
 
 	public void Invoke()
 	{

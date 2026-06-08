@@ -28,8 +28,8 @@ namespace Windows.Media.MediaProperties
 		}
 #endif
 		// Forced skipping of method Windows.Media.MediaProperties.IMediaEncodingProperties.Properties.get
-		// Forced skipping of method Windows.Media.MediaProperties.IMediaEncodingProperties.Type.get
-		// Forced skipping of method Windows.Media.MediaProperties.IMediaEncodingProperties.Subtype.set
 		// Forced skipping of method Windows.Media.MediaProperties.IMediaEncodingProperties.Subtype.get
+		// Forced skipping of method Windows.Media.MediaProperties.IMediaEncodingProperties.Subtype.set
+		// Forced skipping of method Windows.Media.MediaProperties.IMediaEncodingProperties.Type.get
 	}
 }

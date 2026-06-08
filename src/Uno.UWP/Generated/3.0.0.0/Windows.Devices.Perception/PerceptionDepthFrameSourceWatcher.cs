@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -20,33 +19,33 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceWatcherStatus PerceptionDepthFrameSourceWatcher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceWatcherStatus%20PerceptionDepthFrameSourceWatcher.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher", "Status");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher.SourceAdded.add
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher.SourceAdded.remove
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher.SourceRemoved.add
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher.SourceRemoved.remove
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher.Stopped.add
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher.Stopped.remove
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher.EnumerationCompleted.add
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher.EnumerationCompleted.remove
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher.Status.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher", "void PerceptionDepthFrameSourceWatcher.Start()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher", "Start()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Stop()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher", "void PerceptionDepthFrameSourceWatcher.Stop()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher", "Stop()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher.EnumerationCompleted.add
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher.EnumerationCompleted.remove
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher.SourceAdded.add
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher.SourceAdded.remove
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher.SourceRemoved.add
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher.SourceRemoved.remove
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher.Stopped.add
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher.Stopped.remove
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher.Status.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher, object> EnumerationCompleted
@@ -54,12 +53,12 @@ namespace Windows.Devices.Perception
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher", "event TypedEventHandler<PerceptionDepthFrameSourceWatcher, object> PerceptionDepthFrameSourceWatcher.EnumerationCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher", "event EnumerationCompleted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher", "event TypedEventHandler<PerceptionDepthFrameSourceWatcher, object> PerceptionDepthFrameSourceWatcher.EnumerationCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher", "event EnumerationCompleted");
 			}
 		}
 #endif
@@ -70,12 +69,12 @@ namespace Windows.Devices.Perception
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher", "event TypedEventHandler<PerceptionDepthFrameSourceWatcher, PerceptionDepthFrameSourceAddedEventArgs> PerceptionDepthFrameSourceWatcher.SourceAdded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher", "event SourceAdded");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher", "event TypedEventHandler<PerceptionDepthFrameSourceWatcher, PerceptionDepthFrameSourceAddedEventArgs> PerceptionDepthFrameSourceWatcher.SourceAdded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher", "event SourceAdded");
 			}
 		}
 #endif
@@ -86,12 +85,12 @@ namespace Windows.Devices.Perception
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher", "event TypedEventHandler<PerceptionDepthFrameSourceWatcher, PerceptionDepthFrameSourceRemovedEventArgs> PerceptionDepthFrameSourceWatcher.SourceRemoved");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher", "event SourceRemoved");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher", "event TypedEventHandler<PerceptionDepthFrameSourceWatcher, PerceptionDepthFrameSourceRemovedEventArgs> PerceptionDepthFrameSourceWatcher.SourceRemoved");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher", "event SourceRemoved");
 			}
 		}
 #endif
@@ -102,12 +101,12 @@ namespace Windows.Devices.Perception
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher", "event TypedEventHandler<PerceptionDepthFrameSourceWatcher, object> PerceptionDepthFrameSourceWatcher.Stopped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher", "event Stopped");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher", "event TypedEventHandler<PerceptionDepthFrameSourceWatcher, object> PerceptionDepthFrameSourceWatcher.Stopped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameSourceWatcher", "event Stopped");
 			}
 		}
 #endif

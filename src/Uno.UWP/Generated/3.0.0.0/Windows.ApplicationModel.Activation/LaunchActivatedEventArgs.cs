@@ -8,53 +8,53 @@ namespace Windows.ApplicationModel.Activation
 #endif
 	public partial class LaunchActivatedEventArgs : global::Windows.ApplicationModel.Activation.ILaunchActivatedEventArgs, global::Windows.ApplicationModel.Activation.IActivatedEventArgs, global::Windows.ApplicationModel.Activation.IApplicationViewActivatedEventArgs, global::Windows.ApplicationModel.Activation.IPrelaunchActivatedEventArgs, global::Windows.ApplicationModel.Activation.IViewSwitcherProvider, global::Windows.ApplicationModel.Activation.ILaunchActivatedEventArgs2, global::Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser
 	{
+		// Skipping already declared property Arguments
+		// Skipping already declared property CurrentlyShownApplicationViewId
 		// Skipping already declared property Kind
+		// Skipping already declared property PrelaunchActivated
 		// Skipping already declared property PreviousExecutionState
 		// Skipping already declared property SplashScreen
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.System.User User
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member User LaunchActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20LaunchActivatedEventArgs.User");
-			}
-		}
-#endif
-		// Skipping already declared property CurrentlyShownApplicationViewId
-		// Skipping already declared property Arguments
-		// Skipping already declared property TileId
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Activation.TileActivatedInfo TileActivatedInfo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TileActivatedInfo LaunchActivatedEventArgs.TileActivatedInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TileActivatedInfo%20LaunchActivatedEventArgs.TileActivatedInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.LaunchActivatedEventArgs", "TileActivatedInfo");
 			}
 		}
 #endif
-		// Skipping already declared property PrelaunchActivated
+		// Skipping already declared property TileId
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.System.User User
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.LaunchActivatedEventArgs", "User");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.ViewManagement.ActivationViewSwitcher ViewSwitcher
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationViewSwitcher LaunchActivatedEventArgs.ViewSwitcher is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivationViewSwitcher%20LaunchActivatedEventArgs.ViewSwitcher");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.LaunchActivatedEventArgs", "ViewSwitcher");
 			}
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Activation.LaunchActivatedEventArgs.Arguments.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.LaunchActivatedEventArgs.TileId.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.LaunchActivatedEventArgs.CurrentlyShownApplicationViewId.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.LaunchActivatedEventArgs.Kind.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.LaunchActivatedEventArgs.PrelaunchActivated.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.LaunchActivatedEventArgs.PreviousExecutionState.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.LaunchActivatedEventArgs.SplashScreen.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.LaunchActivatedEventArgs.CurrentlyShownApplicationViewId.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.LaunchActivatedEventArgs.PrelaunchActivated.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.LaunchActivatedEventArgs.ViewSwitcher.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.LaunchActivatedEventArgs.TileActivatedInfo.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.LaunchActivatedEventArgs.TileId.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.LaunchActivatedEventArgs.User.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.LaunchActivatedEventArgs.ViewSwitcher.get
 		// Processing: Windows.ApplicationModel.Activation.ILaunchActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IActivatedEventArgs
 		// Processing: Windows.ApplicationModel.Activation.IApplicationViewActivatedEventArgs

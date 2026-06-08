@@ -14,11 +14,11 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChatQueryOptions.SearchString is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatQueryOptions.SearchString");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatQueryOptions", "SearchString");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatQueryOptions", "string ChatQueryOptions.SearchString");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatQueryOptions", "SearchString");
 			}
 		}
 #endif
@@ -26,7 +26,7 @@ namespace Windows.ApplicationModel.Chat
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ChatQueryOptions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatQueryOptions", "ChatQueryOptions.ChatQueryOptions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatQueryOptions", "ChatQueryOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatQueryOptions.ChatQueryOptions()

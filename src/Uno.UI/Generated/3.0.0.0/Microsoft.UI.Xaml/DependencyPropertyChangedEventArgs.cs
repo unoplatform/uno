@@ -11,8 +11,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property NewValue
 		// Skipping already declared property OldValue
 		// Skipping already declared property Property
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs.Property.get
-		// Forced skipping of method Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs.OldValue.get
 		// Forced skipping of method Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs.NewValue.get
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs.OldValue.get
+		// Forced skipping of method Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs.Property.get
 	}
 }

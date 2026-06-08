@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactChangeType ContactChange.ChangeType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactChangeType%20ContactChange.ChangeType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactChange", "ChangeType");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Contact ContactChange.Contact is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Contact%20ContactChange.Contact");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactChange", "Contact");
 			}
 		}
 #endif

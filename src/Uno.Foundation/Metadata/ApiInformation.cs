@@ -44,8 +44,8 @@ public partial class ApiInformation
 	private static bool IsImplementedByUno(MemberInfo? member) => (member?.GetCustomAttributes(typeof(Uno.NotImplementedAttribute), false)?.Length ?? -1) == 0;
 
 	public static bool IsTypePresent(
-			[DynamicallyAccessedMembers(PublicMembers)]
-			string typeName)
+		[DynamicallyAccessedMembers(PublicMembers)]
+		string typeName)
 	{
 		lock (_gate)
 		{
@@ -165,8 +165,8 @@ public partial class ApiInformation
 	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Types may be removed or not present as part of the normal operations of that method")]
 	[return: DynamicallyAccessedMembers(PublicMembers)]
 	private static Type? GetValidType(
-			[DynamicallyAccessedMembers(PublicMembers)]
-			string typeName)
+		[DynamicallyAccessedMembers(PublicMembers)]
+		string typeName)
 	{
 		lock (_assemblies)
 		{
@@ -246,9 +246,15 @@ public partial class ApiInformation
 		}
 	}
 
+	private static string BuildNotImplementedMessage(string type, string memberName)
+		=> $"The member {memberName} is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m={Uri.EscapeDataString(type + "." + memberName)}";
+
+	internal static NotImplementedException CreateNotImplementedException(string type, string memberName)
+		=> new NotImplementedException(BuildNotImplementedMessage(type, memberName));
+
 	internal static void TryRaiseNotImplemented(string type, string memberName, LogLevel errorLogLevelOverride = LogLevel.Error)
 	{
-		var message = $"The member {memberName} is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m={Uri.EscapeDataString(type + "." + memberName)}";
+		var message = BuildNotImplementedMessage(type, memberName);
 
 		if (IsFailWhenNotImplemented)
 		{
@@ -258,9 +264,12 @@ public partial class ApiInformation
 		{
 			lock (_notImplementedOnce)
 			{
-				if (!_notImplementedOnce.Contains(memberName) || AlwaysLogNotImplementedMessages)
+				// Keyed by type + member since generated stubs pass member names without a containing-type prefix,
+				// which would otherwise collapse same-named members of different types into a single log entry.
+				var key = type + "." + memberName;
+				if (!_notImplementedOnce.Contains(key) || AlwaysLogNotImplementedMessages)
 				{
-					_notImplementedOnce.Add(memberName);
+					_notImplementedOnce.Add(key);
 
 					var logLevel = NotImplementedLogLevel == LogLevel.Error ? errorLogLevelOverride : NotImplementedLogLevel;
 

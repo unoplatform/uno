@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,6 +29,7 @@ using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Extensions.System;
 using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls.Extensions;
 using Microsoft.UI.Xaml.Media;
 using Uno.Graphics;
 using Uno.UI.UI.Input.Internal;
@@ -61,6 +62,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 
 		ApiExtensibility.Register<ApplicationView>(typeof(IApplicationViewExtension), o => new Win32ApplicationViewExtension(o));
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), _ => Win32SystemThemeHelperExtension.Instance);
+		ApiExtensibility.Register(typeof(ITextScaleFactorExtension), _ => Win32TextScaleFactorExtension.Instance);
 
 		ApiExtensibility.Register<DisplayInformation>(typeof(IDisplayInformationExtension), displayInformation =>
 		{
@@ -96,7 +98,11 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		{
 			ApiExtensibility.Register<MediaPlayer>(typeof(IMediaPlayerExtension), player => Activator.CreateInstance(mediaExtensionType, player)!);
 		}
+		ApiExtensibility.Register(typeof(ITextBoxNotificationsProviderSingleton), _ => Win32TextBoxNotificationsProviderSingleton.Instance);
+		ApiExtensibility.Register(typeof(IImeTextBoxExtension), _ => Win32ImeTextBoxExtension.Instance);
 		ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new Win32NativeOpenGLWrapper(xamlRoot));
+
+		AccessibilityRouter.EnsureInitialized();
 	}
 
 	public Win32Host(Func<Application> appBuilder) : this(appBuilder, false)
@@ -170,7 +176,17 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 	{
 		if (Interlocked.Decrement(ref _openWindows) is 0)
 		{
-			_allWindowsClosed = true;
+			if (Application.Current?.DispatcherShutdownMode != DispatcherShutdownMode.OnExplicitShutdown)
+			{
+				_allWindowsClosed = true;
+			}
 		}
 	}
+
+	/// <summary>
+	/// Forces the run loop to exit regardless of <see cref="DispatcherShutdownMode"/>.
+	/// Called by <see cref="Win32CoreApplicationExtension.Exit"/> when the application
+	/// is being shut down explicitly.
+	/// </summary>
+	internal static void ForceAllWindowsClosed() => _allWindowsClosed = true;
 }

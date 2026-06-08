@@ -11,8 +11,8 @@ namespace Windows.Devices.Geolocation
 		// Skipping already declared property CivicAddress
 		// Skipping already declared property Coordinate
 		// Skipping already declared property VenueData
-		// Forced skipping of method Windows.Devices.Geolocation.Geoposition.Coordinate.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geoposition.CivicAddress.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geoposition.Coordinate.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geoposition.VenueData.get
 	}
 }

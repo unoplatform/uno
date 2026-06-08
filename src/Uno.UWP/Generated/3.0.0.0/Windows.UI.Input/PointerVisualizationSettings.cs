@@ -15,42 +15,42 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsContactFeedbackEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool PointerVisualizationSettings.IsContactFeedbackEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PointerVisualizationSettings.IsContactFeedbackEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.PointerVisualizationSettings", "bool PointerVisualizationSettings.IsContactFeedbackEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsBarrelButtonFeedbackEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PointerVisualizationSettings.IsBarrelButtonFeedbackEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PointerVisualizationSettings.IsBarrelButtonFeedbackEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerVisualizationSettings", "IsBarrelButtonFeedbackEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.PointerVisualizationSettings", "bool PointerVisualizationSettings.IsBarrelButtonFeedbackEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.PointerVisualizationSettings", "IsBarrelButtonFeedbackEnabled");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.IsContactFeedbackEnabled.set
-		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.IsContactFeedbackEnabled.get
-		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.IsBarrelButtonFeedbackEnabled.set
-		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.IsBarrelButtonFeedbackEnabled.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsContactFeedbackEnabled
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerVisualizationSettings", "IsContactFeedbackEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.PointerVisualizationSettings", "IsContactFeedbackEnabled");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Input.PointerVisualizationSettings GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member PointerVisualizationSettings PointerVisualizationSettings.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointerVisualizationSettings%20PointerVisualizationSettings.GetForCurrentView%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerVisualizationSettings", "GetForCurrentView()");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.IsBarrelButtonFeedbackEnabled.get
+		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.IsBarrelButtonFeedbackEnabled.set
+		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.IsContactFeedbackEnabled.get
+		// Forced skipping of method Windows.UI.Input.PointerVisualizationSettings.IsContactFeedbackEnabled.set
 	}
 }

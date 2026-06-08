@@ -19,7 +19,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<WiFiAvailableNetwork> WiFiNetworkReport.AvailableNetworks is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CWiFiAvailableNetwork%3E%20WiFiNetworkReport.AvailableNetworks");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiNetworkReport", "AvailableNetworks");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset WiFiNetworkReport.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20WiFiNetworkReport.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFi.WiFiNetworkReport", "Timestamp");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFi.WiFiNetworkReport.Timestamp.get
 		// Forced skipping of method Windows.Devices.WiFi.WiFiNetworkReport.AvailableNetworks.get
+		// Forced skipping of method Windows.Devices.WiFi.WiFiNetworkReport.Timestamp.get
 	}
 }

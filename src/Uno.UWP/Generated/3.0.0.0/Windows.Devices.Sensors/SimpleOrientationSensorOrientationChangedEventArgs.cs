@@ -10,7 +10,7 @@ namespace Windows.Devices.Sensors
 	{
 		// Skipping already declared property Orientation
 		// Skipping already declared property Timestamp
-		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensorOrientationChangedEventArgs.Timestamp.get
 		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensorOrientationChangedEventArgs.Orientation.get
+		// Forced skipping of method Windows.Devices.Sensors.SimpleOrientationSensorOrientationChangedEventArgs.Timestamp.get
 	}
 }

@@ -19,7 +19,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Headset.CaptureDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Headset.CaptureDeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Headset", "CaptureDeviceId");
 			}
 		}
 #endif
@@ -29,19 +29,19 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Headset.RenderDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Headset.RenderDeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Headset", "RenderDeviceId");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.Headset.CaptureDeviceId.get
-		// Forced skipping of method Windows.Gaming.Input.Headset.RenderDeviceId.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Power.BatteryReport TryGetBatteryReport()
 		{
-			throw new global::System.NotImplementedException("The member BatteryReport Headset.TryGetBatteryReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BatteryReport%20Headset.TryGetBatteryReport%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.Headset", "TryGetBatteryReport()");
 		}
 #endif
+		// Forced skipping of method Windows.Gaming.Input.Headset.CaptureDeviceId.get
+		// Forced skipping of method Windows.Gaming.Input.Headset.RenderDeviceId.get
 		// Processing: Windows.Gaming.Input.IGameControllerBatteryInfo
 	}
 }

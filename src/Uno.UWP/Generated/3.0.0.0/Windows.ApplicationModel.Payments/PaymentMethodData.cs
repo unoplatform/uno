@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentMethodData.JsonData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PaymentMethodData.JsonData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentMethodData", "JsonData");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> PaymentMethodData.SupportedMethodIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20PaymentMethodData.SupportedMethodIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentMethodData", "SupportedMethodIds");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.ApplicationModel.Payments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaymentMethodData(global::System.Collections.Generic.IEnumerable<string> supportedMethodIds)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentMethodData", "PaymentMethodData.PaymentMethodData(IEnumerable<string> supportedMethodIds)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentMethodData", "PaymentMethodData(IEnumerable<string> supportedMethodIds)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.PaymentMethodData(System.Collections.Generic.IEnumerable<string>)
@@ -40,11 +40,11 @@ namespace Windows.ApplicationModel.Payments
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaymentMethodData(global::System.Collections.Generic.IEnumerable<string> supportedMethodIds, string jsonData)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentMethodData", "PaymentMethodData.PaymentMethodData(IEnumerable<string> supportedMethodIds, string jsonData)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentMethodData", "PaymentMethodData(IEnumerable<string> supportedMethodIds, string jsonData)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.PaymentMethodData(System.Collections.Generic.IEnumerable<string>, string)
-		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.SupportedMethodIds.get
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.JsonData.get
+		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.SupportedMethodIds.get
 	}
 }

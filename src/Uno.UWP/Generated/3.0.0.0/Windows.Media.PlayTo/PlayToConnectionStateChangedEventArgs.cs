@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.PlayTo
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -20,7 +19,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlayToConnectionState PlayToConnectionStateChangedEventArgs.CurrentState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlayToConnectionState%20PlayToConnectionStateChangedEventArgs.CurrentState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToConnectionStateChangedEventArgs", "CurrentState");
 			}
 		}
 #endif
@@ -30,11 +29,11 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlayToConnectionState PlayToConnectionStateChangedEventArgs.PreviousState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlayToConnectionState%20PlayToConnectionStateChangedEventArgs.PreviousState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToConnectionStateChangedEventArgs", "PreviousState");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionStateChangedEventArgs.PreviousState.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionStateChangedEventArgs.CurrentState.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionStateChangedEventArgs.PreviousState.get
 	}
 }

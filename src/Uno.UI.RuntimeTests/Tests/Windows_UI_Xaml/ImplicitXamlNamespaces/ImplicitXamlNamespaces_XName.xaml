@@ -1,0 +1,12 @@
+<UserControl
+	x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ImplicitXamlNamespaces_XName">
+
+	<Grid>
+		<Button x:Name="NamedButton"
+				x:FieldModifier="public"
+				Content="Named" />
+		<TextBlock x:Name="NamedTextBlock"
+				   x:FieldModifier="public"
+				   Text="Named Text" />
+	</Grid>
+</UserControl>

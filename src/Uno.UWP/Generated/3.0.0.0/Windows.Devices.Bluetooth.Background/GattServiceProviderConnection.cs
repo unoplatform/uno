@@ -15,11 +15,21 @@ namespace Windows.Devices.Bluetooth.Background
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.Devices.Bluetooth.Background.GattServiceProviderConnection> AllServices
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.GattServiceProviderConnection", "AllServices");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalService Service
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattLocalService GattServiceProviderConnection.Service is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattLocalService%20GattServiceProviderConnection.Service");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.GattServiceProviderConnection", "Service");
 			}
 		}
 #endif
@@ -29,29 +39,19 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GattServiceProviderConnection.TriggerId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GattServiceProviderConnection.TriggerId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.GattServiceProviderConnection", "TriggerId");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.Devices.Bluetooth.Background.GattServiceProviderConnection> AllServices
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, GattServiceProviderConnection> GattServiceProviderConnection.AllServices is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20GattServiceProviderConnection%3E%20GattServiceProviderConnection.AllServices");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.TriggerId.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.Service.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.AllServices.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Background.GattServiceProviderConnection", "void GattServiceProviderConnection.Start()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Background.GattServiceProviderConnection", "Start()");
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.AllServices.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.Service.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.TriggerId.get
 	}
 }

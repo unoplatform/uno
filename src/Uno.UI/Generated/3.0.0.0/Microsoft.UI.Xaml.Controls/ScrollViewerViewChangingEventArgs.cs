@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ScrollViewerView ScrollViewerViewChangingEventArgs.FinalView is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ScrollViewerView%20ScrollViewerViewChangingEventArgs.FinalView");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs", "FinalView");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ScrollViewerViewChangingEventArgs.IsInertial is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ScrollViewerViewChangingEventArgs.IsInertial");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs", "IsInertial");
 			}
 		}
 #endif
@@ -39,12 +39,12 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ScrollViewerView ScrollViewerViewChangingEventArgs.NextView is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ScrollViewerView%20ScrollViewerViewChangingEventArgs.NextView");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs", "NextView");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.NextView.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.FinalView.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.IsInertial.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs.NextView.get
 	}
 }

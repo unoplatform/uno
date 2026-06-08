@@ -15,11 +15,21 @@ namespace Windows.Media.Capture.Frames
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Capture.Frames.AudioMediaFrame AudioMediaFrame
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "AudioMediaFrame");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Capture.Frames.BufferMediaFrame BufferMediaFrame
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BufferMediaFrame MediaFrameReference.BufferMediaFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BufferMediaFrame%20MediaFrameReference.BufferMediaFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "BufferMediaFrame");
 			}
 		}
 #endif
@@ -29,7 +39,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialCoordinateSystem MediaFrameReference.CoordinateSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialCoordinateSystem%20MediaFrameReference.CoordinateSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "CoordinateSystem");
 			}
 		}
 #endif
@@ -39,7 +49,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaFrameReference.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaFrameReference.Duration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "Duration");
 			}
 		}
 #endif
@@ -49,7 +59,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaFrameFormat MediaFrameReference.Format is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaFrameFormat%20MediaFrameReference.Format");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "Format");
 			}
 		}
 #endif
@@ -59,7 +69,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<Guid, object> MediaFrameReference.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3CGuid%2C%20object%3E%20MediaFrameReference.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "Properties");
 			}
 		}
 #endif
@@ -69,7 +79,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaFrameSourceKind MediaFrameReference.SourceKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaFrameSourceKind%20MediaFrameReference.SourceKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "SourceKind");
 			}
 		}
 #endif
@@ -79,7 +89,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? MediaFrameReference.SystemRelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20MediaFrameReference.SystemRelativeTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "SystemRelativeTime");
 			}
 		}
 #endif
@@ -89,36 +99,26 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoMediaFrame MediaFrameReference.VideoMediaFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoMediaFrame%20MediaFrameReference.VideoMediaFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameReference", "VideoMediaFrame");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Capture.Frames.AudioMediaFrame AudioMediaFrame
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AudioMediaFrame MediaFrameReference.AudioMediaFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioMediaFrame%20MediaFrameReference.AudioMediaFrame");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.SourceKind.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.Format.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.SystemRelativeTime.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.Duration.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.Properties.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.BufferMediaFrame.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.VideoMediaFrame.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.CoordinateSystem.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Frames.MediaFrameReference", "void MediaFrameReference.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Frames.MediaFrameReference", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.AudioMediaFrame.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.BufferMediaFrame.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.CoordinateSystem.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.Duration.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.Format.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.Properties.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.SourceKind.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.SystemRelativeTime.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.VideoMediaFrame.get
 		// Processing: System.IDisposable
 	}
 }

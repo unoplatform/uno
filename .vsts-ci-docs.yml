@@ -6,6 +6,10 @@ trigger:
       - release/stable/*
       - feature/*
       - legacy/*
+  paths:
+    include:
+      - doc/**
+      - '**/*.md'
 
 pr: 
   branches:
@@ -15,14 +19,19 @@ pr:
       - release/stable/*
       - feature/*
       - legacy/*
+  paths:
+    include:
+      - doc/**
+      - '**/*.md'
 
 variables:
-  windowsScaledPool: 'Windows2022-20250720-1'
+  windowsScaledPool: 'Windows2025-20260406-1'
   linuxVMImage: 'ubuntu-22.04'
 
   enable_dotnet_cache: true
   enable_emsdk_cache: true
   GlobalUnoCheckVersion: '1.33.0-dev.26'
+  DotNetSdkVersion: '10.0.105'
 
 stages:
 - template: build/ci/.azure-devops-stages-docs.yml

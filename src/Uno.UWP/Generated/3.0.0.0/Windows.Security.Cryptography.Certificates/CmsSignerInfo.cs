@@ -10,29 +10,29 @@ namespace Windows.Security.Cryptography.Certificates
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string HashAlgorithmName
+		public global::Windows.Security.Cryptography.Certificates.Certificate Certificate
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CmsSignerInfo.HashAlgorithmName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CmsSignerInfo.HashAlgorithmName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "Certificate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "string CmsSignerInfo.HashAlgorithmName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "Certificate");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Security.Cryptography.Certificates.Certificate Certificate
+		public string HashAlgorithmName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate CmsSignerInfo.Certificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Certificate%20CmsSignerInfo.Certificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "HashAlgorithmName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "Certificate CmsSignerInfo.Certificate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "HashAlgorithmName");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CmsTimestampInfo CmsSignerInfo.TimestampInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CmsTimestampInfo%20CmsSignerInfo.TimestampInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "TimestampInfo");
 			}
 		}
 #endif
@@ -50,7 +50,7 @@ namespace Windows.Security.Cryptography.Certificates
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CmsSignerInfo()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "CmsSignerInfo.CmsSignerInfo()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CmsSignerInfo", "CmsSignerInfo()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsSignerInfo.CmsSignerInfo()

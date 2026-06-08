@@ -65,6 +65,8 @@ internal partial class X11XamlRootHost
 		_keyboardSource = keyboardSource;
 	}
 
+	internal X11KeyboardInputSource? GetKeyboardSource() => _keyboardSource;
+
 	public void SetDragDropExtension(X11DragDropExtension dragDrop)
 	{
 		if (_dragDrop is not null)
@@ -146,8 +148,6 @@ internal partial class X11XamlRootHost
 
 			foreach (var @event in GetEvents(x11Window.Display))
 			{
-				this.LogTrace()?.Trace($"XLIB EVENT: {@event.type}");
-
 				_ = XLib.XQueryTree(x11Window.Display, x11Window.Window, out IntPtr root, out _, out var children, out _);
 				_ = XLib.XFree(children);
 				if (@event.AnyEvent.window == root)

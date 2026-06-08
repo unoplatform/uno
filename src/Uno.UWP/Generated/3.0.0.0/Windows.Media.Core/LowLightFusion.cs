@@ -14,7 +14,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LowLightFusion.MaxSupportedFrameCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LowLightFusion.MaxSupportedFrameCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.LowLightFusion", "MaxSupportedFrameCount");
 			}
 		}
 #endif
@@ -24,18 +24,18 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<BitmapPixelFormat> LowLightFusion.SupportedBitmapPixelFormats is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CBitmapPixelFormat%3E%20LowLightFusion.SupportedBitmapPixelFormats");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.LowLightFusion", "SupportedBitmapPixelFormats");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.LowLightFusion.SupportedBitmapPixelFormats.get
-		// Forced skipping of method Windows.Media.Core.LowLightFusion.MaxSupportedFrameCount.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Media.Core.LowLightFusionResult, double> FuseAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Graphics.Imaging.SoftwareBitmap> frameSet)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<LowLightFusionResult, double> LowLightFusion.FuseAsync(IEnumerable<SoftwareBitmap> frameSet) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CLowLightFusionResult%2C%20double%3E%20LowLightFusion.FuseAsync%28IEnumerable%3CSoftwareBitmap%3E%20frameSet%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.LowLightFusion", "FuseAsync(IEnumerable<SoftwareBitmap> frameSet)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.LowLightFusion.MaxSupportedFrameCount.get
+		// Forced skipping of method Windows.Media.Core.LowLightFusion.SupportedBitmapPixelFormats.get
 	}
 }

@@ -15,15 +15,11 @@ namespace Windows.UI.Notifications
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Template
+		public global::System.Collections.Generic.IDictionary<string, string> Hints
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NotificationBinding.Template is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NotificationBinding.Template");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.NotificationBinding", "string NotificationBinding.Template");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.NotificationBinding", "Hints");
 			}
 		}
 #endif
@@ -33,35 +29,39 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NotificationBinding.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NotificationBinding.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.NotificationBinding", "Language");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.NotificationBinding", "string NotificationBinding.Language");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.NotificationBinding", "Language");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IDictionary<string, string> Hints
+		public string Template
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, string> NotificationBinding.Hints is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20string%3E%20NotificationBinding.Hints");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.NotificationBinding", "Template");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.NotificationBinding", "Template");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.Template.get
-		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.Template.set
-		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.Language.get
-		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.Language.set
-		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.Hints.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Notifications.AdaptiveNotificationText> GetTextElements()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<AdaptiveNotificationText> NotificationBinding.GetTextElements() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CAdaptiveNotificationText%3E%20NotificationBinding.GetTextElements%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.NotificationBinding", "GetTextElements()");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.Hints.get
+		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.Language.get
+		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.Language.set
+		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.Template.get
+		// Forced skipping of method Windows.UI.Notifications.NotificationBinding.Template.set
 	}
 }

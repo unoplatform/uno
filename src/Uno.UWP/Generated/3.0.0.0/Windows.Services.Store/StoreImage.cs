@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreImage.Caption is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreImage.Caption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreImage", "Caption");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint StoreImage.Height is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20StoreImage.Height");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreImage", "Height");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreImage.ImagePurposeTag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreImage.ImagePurposeTag");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreImage", "ImagePurposeTag");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri StoreImage.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20StoreImage.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreImage", "Uri");
 			}
 		}
 #endif
@@ -59,14 +59,14 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint StoreImage.Width is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20StoreImage.Width");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreImage", "Width");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreImage.Uri.get
-		// Forced skipping of method Windows.Services.Store.StoreImage.ImagePurposeTag.get
-		// Forced skipping of method Windows.Services.Store.StoreImage.Width.get
-		// Forced skipping of method Windows.Services.Store.StoreImage.Height.get
 		// Forced skipping of method Windows.Services.Store.StoreImage.Caption.get
+		// Forced skipping of method Windows.Services.Store.StoreImage.Height.get
+		// Forced skipping of method Windows.Services.Store.StoreImage.ImagePurposeTag.get
+		// Forced skipping of method Windows.Services.Store.StoreImage.Uri.get
+		// Forced skipping of method Windows.Services.Store.StoreImage.Width.get
 	}
 }

@@ -19,7 +19,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DepthMediaFrameFormat VideoMediaFrameFormat.DepthFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DepthMediaFrameFormat%20VideoMediaFrameFormat.DepthFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrameFormat", "DepthFormat");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint VideoMediaFrameFormat.Height is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20VideoMediaFrameFormat.Height");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrameFormat", "Height");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaFrameFormat VideoMediaFrameFormat.MediaFrameFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaFrameFormat%20VideoMediaFrameFormat.MediaFrameFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrameFormat", "MediaFrameFormat");
 			}
 		}
 #endif
@@ -49,13 +49,13 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint VideoMediaFrameFormat.Width is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20VideoMediaFrameFormat.Width");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.VideoMediaFrameFormat", "Width");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.MediaFrameFormat.get
 		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.DepthFormat.get
-		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.Width.get
 		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.Height.get
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.MediaFrameFormat.get
+		// Forced skipping of method Windows.Media.Capture.Frames.VideoMediaFrameFormat.Width.get
 	}
 }

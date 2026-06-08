@@ -19,7 +19,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhotoImportItem PhotoImportItemImportedEventArgs.ImportedItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhotoImportItem%20PhotoImportItemImportedEventArgs.ImportedItem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportItemImportedEventArgs", "ImportedItem");
 			}
 		}
 #endif

@@ -14,12 +14,12 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet LaunchUriResult.Result is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20LaunchUriResult.Result");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.LaunchUriResult", "Result");
 			}
 		}
 #endif
 		// Skipping already declared property Status
-		// Forced skipping of method Windows.System.LaunchUriResult.Status.get
 		// Forced skipping of method Windows.System.LaunchUriResult.Result.get
+		// Forced skipping of method Windows.System.LaunchUriResult.Status.get
 	}
 }

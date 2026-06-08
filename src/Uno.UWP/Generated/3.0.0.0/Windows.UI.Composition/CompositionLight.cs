@@ -9,27 +9,12 @@ namespace Windows.UI.Composition
 	public partial class CompositionLight : global::Windows.UI.Composition.CompositionObject
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal CompositionLight()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.VisualUnorderedCollection Targets
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member VisualUnorderedCollection CompositionLight.Targets is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VisualUnorderedCollection%20CompositionLight.Targets");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.VisualUnorderedCollection ExclusionsFromTargets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VisualUnorderedCollection CompositionLight.ExclusionsFromTargets is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VisualUnorderedCollection%20CompositionLight.ExclusionsFromTargets");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionLight", "ExclusionsFromTargets");
 			}
 		}
 #endif
@@ -39,17 +24,27 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CompositionLight.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionLight.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionLight", "IsEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionLight", "bool CompositionLight.IsEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionLight", "IsEnabled");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionLight.Targets.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Composition.VisualUnorderedCollection Targets
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionLight", "Targets");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.UI.Composition.CompositionLight.ExclusionsFromTargets.get
 		// Forced skipping of method Windows.UI.Composition.CompositionLight.IsEnabled.get
 		// Forced skipping of method Windows.UI.Composition.CompositionLight.IsEnabled.set
+		// Forced skipping of method Windows.UI.Composition.CompositionLight.Targets.get
 	}
 }

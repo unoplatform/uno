@@ -19,39 +19,39 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserWatcherStatus UserWatcher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserWatcherStatus%20UserWatcher.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserWatcher", "Status");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.UserWatcher.Status.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "void UserWatcher.Start()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "Start()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Stop()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "void UserWatcher.Stop()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "Stop()");
 		}
 #endif
 		// Forced skipping of method Windows.System.UserWatcher.Added.add
 		// Forced skipping of method Windows.System.UserWatcher.Added.remove
-		// Forced skipping of method Windows.System.UserWatcher.Removed.add
-		// Forced skipping of method Windows.System.UserWatcher.Removed.remove
-		// Forced skipping of method Windows.System.UserWatcher.Updated.add
-		// Forced skipping of method Windows.System.UserWatcher.Updated.remove
 		// Forced skipping of method Windows.System.UserWatcher.AuthenticationStatusChanged.add
 		// Forced skipping of method Windows.System.UserWatcher.AuthenticationStatusChanged.remove
 		// Forced skipping of method Windows.System.UserWatcher.AuthenticationStatusChanging.add
 		// Forced skipping of method Windows.System.UserWatcher.AuthenticationStatusChanging.remove
 		// Forced skipping of method Windows.System.UserWatcher.EnumerationCompleted.add
 		// Forced skipping of method Windows.System.UserWatcher.EnumerationCompleted.remove
+		// Forced skipping of method Windows.System.UserWatcher.Removed.add
+		// Forced skipping of method Windows.System.UserWatcher.Removed.remove
 		// Forced skipping of method Windows.System.UserWatcher.Stopped.add
 		// Forced skipping of method Windows.System.UserWatcher.Stopped.remove
+		// Forced skipping of method Windows.System.UserWatcher.Updated.add
+		// Forced skipping of method Windows.System.UserWatcher.Updated.remove
+		// Forced skipping of method Windows.System.UserWatcher.Status.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.System.UserWatcher, global::Windows.System.UserChangedEventArgs> Added
@@ -59,12 +59,12 @@ namespace Windows.System
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event TypedEventHandler<UserWatcher, UserChangedEventArgs> UserWatcher.Added");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event Added");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event TypedEventHandler<UserWatcher, UserChangedEventArgs> UserWatcher.Added");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event Added");
 			}
 		}
 #endif
@@ -75,12 +75,12 @@ namespace Windows.System
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event TypedEventHandler<UserWatcher, UserChangedEventArgs> UserWatcher.AuthenticationStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event AuthenticationStatusChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event TypedEventHandler<UserWatcher, UserChangedEventArgs> UserWatcher.AuthenticationStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event AuthenticationStatusChanged");
 			}
 		}
 #endif
@@ -91,12 +91,12 @@ namespace Windows.System
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event TypedEventHandler<UserWatcher, UserAuthenticationStatusChangingEventArgs> UserWatcher.AuthenticationStatusChanging");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event AuthenticationStatusChanging");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event TypedEventHandler<UserWatcher, UserAuthenticationStatusChangingEventArgs> UserWatcher.AuthenticationStatusChanging");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event AuthenticationStatusChanging");
 			}
 		}
 #endif
@@ -107,12 +107,12 @@ namespace Windows.System
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event TypedEventHandler<UserWatcher, object> UserWatcher.EnumerationCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event EnumerationCompleted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event TypedEventHandler<UserWatcher, object> UserWatcher.EnumerationCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event EnumerationCompleted");
 			}
 		}
 #endif
@@ -123,12 +123,12 @@ namespace Windows.System
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event TypedEventHandler<UserWatcher, UserChangedEventArgs> UserWatcher.Removed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event Removed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event TypedEventHandler<UserWatcher, UserChangedEventArgs> UserWatcher.Removed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event Removed");
 			}
 		}
 #endif
@@ -139,12 +139,12 @@ namespace Windows.System
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event TypedEventHandler<UserWatcher, object> UserWatcher.Stopped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event Stopped");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event TypedEventHandler<UserWatcher, object> UserWatcher.Stopped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event Stopped");
 			}
 		}
 #endif
@@ -155,12 +155,12 @@ namespace Windows.System
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event TypedEventHandler<UserWatcher, UserChangedEventArgs> UserWatcher.Updated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event Updated");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event TypedEventHandler<UserWatcher, UserChangedEventArgs> UserWatcher.Updated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.UserWatcher", "event Updated");
 			}
 		}
 #endif

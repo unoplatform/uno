@@ -19,7 +19,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PhotoImportItem> PhotoImportFindItemsResult.FoundItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPhotoImportItem%3E%20PhotoImportFindItemsResult.FoundItems");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "FoundItems");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhotoImportFindItemsResult.HasSucceeded is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PhotoImportFindItemsResult.HasSucceeded");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "HasSucceeded");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhotoImportImportMode PhotoImportFindItemsResult.ImportMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhotoImportImportMode%20PhotoImportFindItemsResult.ImportMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "ImportMode");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PhotoImportFindItemsResult.PhotosCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PhotoImportFindItemsResult.PhotosCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "PhotosCount");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong PhotoImportFindItemsResult.PhotosSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20PhotoImportFindItemsResult.PhotosSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "PhotosSizeInBytes");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PhotoImportFindItemsResult.SelectedPhotosCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PhotoImportFindItemsResult.SelectedPhotosCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "SelectedPhotosCount");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong PhotoImportFindItemsResult.SelectedPhotosSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20PhotoImportFindItemsResult.SelectedPhotosSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "SelectedPhotosSizeInBytes");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PhotoImportFindItemsResult.SelectedSiblingsCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PhotoImportFindItemsResult.SelectedSiblingsCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "SelectedSiblingsCount");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong PhotoImportFindItemsResult.SelectedSiblingsSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20PhotoImportFindItemsResult.SelectedSiblingsSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "SelectedSiblingsSizeInBytes");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PhotoImportFindItemsResult.SelectedSidecarsCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PhotoImportFindItemsResult.SelectedSidecarsCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "SelectedSidecarsCount");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong PhotoImportFindItemsResult.SelectedSidecarsSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20PhotoImportFindItemsResult.SelectedSidecarsSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "SelectedSidecarsSizeInBytes");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PhotoImportFindItemsResult.SelectedTotalCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PhotoImportFindItemsResult.SelectedTotalCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "SelectedTotalCount");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong PhotoImportFindItemsResult.SelectedTotalSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20PhotoImportFindItemsResult.SelectedTotalSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "SelectedTotalSizeInBytes");
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PhotoImportFindItemsResult.SelectedVideosCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PhotoImportFindItemsResult.SelectedVideosCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "SelectedVideosCount");
 			}
 		}
 #endif
@@ -159,7 +159,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong PhotoImportFindItemsResult.SelectedVideosSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20PhotoImportFindItemsResult.SelectedVideosSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "SelectedVideosSizeInBytes");
 			}
 		}
 #endif
@@ -169,7 +169,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhotoImportSession PhotoImportFindItemsResult.Session is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhotoImportSession%20PhotoImportFindItemsResult.Session");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "Session");
 			}
 		}
 #endif
@@ -179,7 +179,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PhotoImportFindItemsResult.SiblingsCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PhotoImportFindItemsResult.SiblingsCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "SiblingsCount");
 			}
 		}
 #endif
@@ -189,7 +189,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong PhotoImportFindItemsResult.SiblingsSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20PhotoImportFindItemsResult.SiblingsSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "SiblingsSizeInBytes");
 			}
 		}
 #endif
@@ -199,7 +199,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PhotoImportFindItemsResult.SidecarsCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PhotoImportFindItemsResult.SidecarsCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "SidecarsCount");
 			}
 		}
 #endif
@@ -209,7 +209,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong PhotoImportFindItemsResult.SidecarsSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20PhotoImportFindItemsResult.SidecarsSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "SidecarsSizeInBytes");
 			}
 		}
 #endif
@@ -219,7 +219,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PhotoImportFindItemsResult.TotalCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PhotoImportFindItemsResult.TotalCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "TotalCount");
 			}
 		}
 #endif
@@ -229,7 +229,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong PhotoImportFindItemsResult.TotalSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20PhotoImportFindItemsResult.TotalSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "TotalSizeInBytes");
 			}
 		}
 #endif
@@ -239,7 +239,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PhotoImportFindItemsResult.VideosCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PhotoImportFindItemsResult.VideosCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "VideosCount");
 			}
 		}
 #endif
@@ -249,80 +249,80 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong PhotoImportFindItemsResult.VideosSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20PhotoImportFindItemsResult.VideosSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "VideosSizeInBytes");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.Session.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.HasSucceeded.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.FoundItems.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.PhotosCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.PhotosSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.VideosCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.VideosSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SidecarsCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SidecarsSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SiblingsCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SiblingsSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.TotalCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.TotalSizeInBytes.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SelectAll()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportFindItemsResult", "void PhotoImportFindItemsResult.SelectAll()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportFindItemsResult", "SelectAll()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SelectNone()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportFindItemsResult", "void PhotoImportFindItemsResult.SelectNone()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportFindItemsResult", "SelectNone()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SelectNewAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction PhotoImportFindItemsResult.SelectNewAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20PhotoImportFindItemsResult.SelectNewAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "SelectNewAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetImportMode(global::Windows.Media.Import.PhotoImportImportMode value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportFindItemsResult", "void PhotoImportFindItemsResult.SetImportMode(PhotoImportImportMode value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportFindItemsResult", "SetImportMode(PhotoImportImportMode value)");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.ImportMode.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedPhotosCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedPhotosSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedVideosCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedVideosSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedSidecarsCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedSidecarsSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedSiblingsCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedSiblingsSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedTotalCount.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedTotalSizeInBytes.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectionChanged.add
-		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectionChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Media.Import.PhotoImportImportItemsResult, global::Windows.Media.Import.PhotoImportProgress> ImportItemsAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<PhotoImportImportItemsResult, PhotoImportProgress> PhotoImportFindItemsResult.ImportItemsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CPhotoImportImportItemsResult%2C%20PhotoImportProgress%3E%20PhotoImportFindItemsResult.ImportItemsAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportFindItemsResult", "ImportItemsAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.ItemImported.add
 		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.ItemImported.remove
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectionChanged.add
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectionChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddItemsInDateRangeToSelection(global::System.DateTimeOffset rangeStart, global::System.TimeSpan rangeLength)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportFindItemsResult", "void PhotoImportFindItemsResult.AddItemsInDateRangeToSelection(DateTimeOffset rangeStart, TimeSpan rangeLength)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportFindItemsResult", "AddItemsInDateRangeToSelection(DateTimeOffset rangeStart, TimeSpan rangeLength)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.FoundItems.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.HasSucceeded.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.ImportMode.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.PhotosCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.PhotosSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedPhotosCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedPhotosSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedSiblingsCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedSiblingsSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedSidecarsCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedSidecarsSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedTotalCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedTotalSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedVideosCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SelectedVideosSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.Session.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SiblingsCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SiblingsSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SidecarsCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.SidecarsSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.TotalCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.TotalSizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.VideosCount.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.VideosSizeInBytes.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Import.PhotoImportFindItemsResult, global::Windows.Media.Import.PhotoImportItemImportedEventArgs> ItemImported
@@ -330,12 +330,12 @@ namespace Windows.Media.Import
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportFindItemsResult", "event TypedEventHandler<PhotoImportFindItemsResult, PhotoImportItemImportedEventArgs> PhotoImportFindItemsResult.ItemImported");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportFindItemsResult", "event ItemImported");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportFindItemsResult", "event TypedEventHandler<PhotoImportFindItemsResult, PhotoImportItemImportedEventArgs> PhotoImportFindItemsResult.ItemImported");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportFindItemsResult", "event ItemImported");
 			}
 		}
 #endif
@@ -346,12 +346,12 @@ namespace Windows.Media.Import
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportFindItemsResult", "event TypedEventHandler<PhotoImportFindItemsResult, PhotoImportSelectionChangedEventArgs> PhotoImportFindItemsResult.SelectionChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportFindItemsResult", "event SelectionChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportFindItemsResult", "event TypedEventHandler<PhotoImportFindItemsResult, PhotoImportSelectionChangedEventArgs> PhotoImportFindItemsResult.SelectionChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportFindItemsResult", "event SelectionChanged");
 			}
 		}
 #endif

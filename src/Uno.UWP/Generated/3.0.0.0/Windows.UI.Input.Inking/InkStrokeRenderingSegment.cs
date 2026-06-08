@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point InkStrokeRenderingSegment.BezierControlPoint1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20InkStrokeRenderingSegment.BezierControlPoint1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStrokeRenderingSegment", "BezierControlPoint1");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point InkStrokeRenderingSegment.BezierControlPoint2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20InkStrokeRenderingSegment.BezierControlPoint2");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStrokeRenderingSegment", "BezierControlPoint2");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point InkStrokeRenderingSegment.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20InkStrokeRenderingSegment.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStrokeRenderingSegment", "Position");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InkStrokeRenderingSegment.Pressure is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InkStrokeRenderingSegment.Pressure");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStrokeRenderingSegment", "Pressure");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InkStrokeRenderingSegment.TiltX is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InkStrokeRenderingSegment.TiltX");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStrokeRenderingSegment", "TiltX");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InkStrokeRenderingSegment.TiltY is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InkStrokeRenderingSegment.TiltY");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStrokeRenderingSegment", "TiltY");
 			}
 		}
 #endif
@@ -79,13 +79,13 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InkStrokeRenderingSegment.Twist is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InkStrokeRenderingSegment.Twist");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStrokeRenderingSegment", "Twist");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeRenderingSegment.Position.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeRenderingSegment.BezierControlPoint1.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeRenderingSegment.BezierControlPoint2.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeRenderingSegment.Position.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeRenderingSegment.Pressure.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeRenderingSegment.TiltX.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeRenderingSegment.TiltY.get

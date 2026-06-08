@@ -10,15 +10,15 @@ namespace Windows.Security.Cryptography.Certificates
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public byte[] Value
+		public bool IsCritical
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte[] CertificateExtension.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%5B%5D%20CertificateExtension.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateExtension", "IsCritical");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateExtension", "byte[] CertificateExtension.Value");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateExtension", "IsCritical");
 			}
 		}
 #endif
@@ -28,25 +28,25 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CertificateExtension.ObjectId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CertificateExtension.ObjectId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateExtension", "ObjectId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateExtension", "string CertificateExtension.ObjectId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateExtension", "ObjectId");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsCritical
+		public byte[] Value
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateExtension.IsCritical is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CertificateExtension.IsCritical");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CertificateExtension", "Value");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateExtension", "bool CertificateExtension.IsCritical");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateExtension", "Value");
 			}
 		}
 #endif
@@ -54,21 +54,21 @@ namespace Windows.Security.Cryptography.Certificates
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CertificateExtension()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateExtension", "CertificateExtension.CertificateExtension()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateExtension", "CertificateExtension()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateExtension.CertificateExtension()
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateExtension.ObjectId.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateExtension.ObjectId.set
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateExtension.IsCritical.get
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateExtension.IsCritical.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void EncodeValue(string value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateExtension", "void CertificateExtension.EncodeValue(string value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CertificateExtension", "EncodeValue(string value)");
 		}
 #endif
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateExtension.IsCritical.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateExtension.IsCritical.set
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateExtension.ObjectId.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateExtension.ObjectId.set
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateExtension.Value.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CertificateExtension.Value.set
 	}

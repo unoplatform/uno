@@ -1,0 +1,8 @@
+<Project>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\Uno.Foundation\_Compat\*.cs" Link="_Compat\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\*.cs" />
+  </ItemGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)..\..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.props" />
+</Project>

@@ -9,6 +9,8 @@ namespace Windows.ApplicationModel
 	public partial struct PackageVersion
 	{
 		// Forced skipping of method Windows.ApplicationModel.PackageVersion.PackageVersion()
+		// Skipping already declared method Windows.ApplicationModel.PackageVersion.PackageVersion(ushort, ushort, ushort, ushort)
+		// Forced skipping of method Windows.ApplicationModel.PackageVersion.PackageVersion(ushort, ushort, ushort, ushort)
 		// Skipping already declared field Windows.ApplicationModel.PackageVersion.Major
 		// Skipping already declared field Windows.ApplicationModel.PackageVersion.Minor
 		// Skipping already declared field Windows.ApplicationModel.PackageVersion.Build

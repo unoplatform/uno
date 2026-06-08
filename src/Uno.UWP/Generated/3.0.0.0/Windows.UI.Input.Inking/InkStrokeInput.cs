@@ -19,18 +19,18 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkPresenter InkStrokeInput.InkPresenter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkPresenter%20InkStrokeInput.InkPresenter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStrokeInput", "InkPresenter");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeStarted.add
-		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeStarted.remove
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeCanceled.add
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeCanceled.remove
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeContinued.add
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeContinued.remove
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeEnded.add
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeEnded.remove
-		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeCanceled.add
-		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeCanceled.remove
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeStarted.add
+		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.StrokeStarted.remove
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeInput.InkPresenter.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -39,12 +39,12 @@ namespace Windows.UI.Input.Inking
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStrokeInput", "event TypedEventHandler<InkStrokeInput, PointerEventArgs> InkStrokeInput.StrokeCanceled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStrokeInput", "event StrokeCanceled");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStrokeInput", "event TypedEventHandler<InkStrokeInput, PointerEventArgs> InkStrokeInput.StrokeCanceled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStrokeInput", "event StrokeCanceled");
 			}
 		}
 #endif
@@ -55,12 +55,12 @@ namespace Windows.UI.Input.Inking
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStrokeInput", "event TypedEventHandler<InkStrokeInput, PointerEventArgs> InkStrokeInput.StrokeContinued");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStrokeInput", "event StrokeContinued");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStrokeInput", "event TypedEventHandler<InkStrokeInput, PointerEventArgs> InkStrokeInput.StrokeContinued");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStrokeInput", "event StrokeContinued");
 			}
 		}
 #endif
@@ -71,12 +71,12 @@ namespace Windows.UI.Input.Inking
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStrokeInput", "event TypedEventHandler<InkStrokeInput, PointerEventArgs> InkStrokeInput.StrokeEnded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStrokeInput", "event StrokeEnded");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStrokeInput", "event TypedEventHandler<InkStrokeInput, PointerEventArgs> InkStrokeInput.StrokeEnded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStrokeInput", "event StrokeEnded");
 			}
 		}
 #endif
@@ -87,12 +87,12 @@ namespace Windows.UI.Input.Inking
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStrokeInput", "event TypedEventHandler<InkStrokeInput, PointerEventArgs> InkStrokeInput.StrokeStarted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStrokeInput", "event StrokeStarted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStrokeInput", "event TypedEventHandler<InkStrokeInput, PointerEventArgs> InkStrokeInput.StrokeStarted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkStrokeInput", "event StrokeStarted");
 			}
 		}
 #endif

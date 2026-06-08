@@ -15,15 +15,15 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float YawInDegrees
+		public float PitchInDegrees
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InclinometerDataThreshold.YawInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InclinometerDataThreshold.YawInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.InclinometerDataThreshold", "PitchInDegrees");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.InclinometerDataThreshold", "float InclinometerDataThreshold.YawInDegrees");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.InclinometerDataThreshold", "PitchInDegrees");
 			}
 		}
 #endif
@@ -33,25 +33,25 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InclinometerDataThreshold.RollInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InclinometerDataThreshold.RollInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.InclinometerDataThreshold", "RollInDegrees");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.InclinometerDataThreshold", "float InclinometerDataThreshold.RollInDegrees");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.InclinometerDataThreshold", "RollInDegrees");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float PitchInDegrees
+		public float YawInDegrees
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InclinometerDataThreshold.PitchInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InclinometerDataThreshold.PitchInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.InclinometerDataThreshold", "YawInDegrees");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.InclinometerDataThreshold", "float InclinometerDataThreshold.PitchInDegrees");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.InclinometerDataThreshold", "YawInDegrees");
 			}
 		}
 #endif

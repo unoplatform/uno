@@ -10,29 +10,29 @@ namespace Windows.ApplicationModel.UserDataTasks
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.UserDataTasks.UserDataTaskQuerySortProperty SortProperty
+		public global::Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryKind Kind
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskQuerySortProperty UserDataTaskQueryOptions.SortProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskQuerySortProperty%20UserDataTaskQueryOptions.SortProperty");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions", "Kind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions", "UserDataTaskQuerySortProperty UserDataTaskQueryOptions.SortProperty");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions", "Kind");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryKind Kind
+		public global::Windows.ApplicationModel.UserDataTasks.UserDataTaskQuerySortProperty SortProperty
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataTaskQueryKind UserDataTaskQueryOptions.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskQueryKind%20UserDataTaskQueryOptions.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions", "SortProperty");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions", "UserDataTaskQueryKind UserDataTaskQueryOptions.Kind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions", "SortProperty");
 			}
 		}
 #endif
@@ -40,13 +40,13 @@ namespace Windows.ApplicationModel.UserDataTasks
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public UserDataTaskQueryOptions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions", "UserDataTaskQueryOptions.UserDataTaskQueryOptions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions", "UserDataTaskQueryOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.UserDataTaskQueryOptions()
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.SortProperty.get
-		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.SortProperty.set
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.Kind.set
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.SortProperty.get
+		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskQueryOptions.SortProperty.set
 	}
 }

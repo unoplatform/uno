@@ -84,12 +84,33 @@
     <Project Path="AddIns/Uno.WinUI.Graphics3DGL/Uno.WinUI.Graphics3DGL.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
+    <Project Path="AddIns/Uno.WinUI.SpellChecking/Uno.WinUI.SpellChecking.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
   </Folder>
   <Folder Name="/DevServer/">
     <Project Path="Uno.UI.DevServer.Cli/Uno.UI.DevServer.Cli.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
+    <Project Path="Uno.UI.DevServer.Cli.Tests/Uno.UI.DevServer.Cli.Tests.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
     <Project Path="Uno.UI.RemoteControl.DevServer.Tests/Uno.UI.RemoteControl.DevServer.Tests.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
+    <Project Path="Uno.UI.RemoteControl.DevServer.Tests/Fixtures/AddInWithCrossMajorVersionRefs/AddInWithCrossMajorVersionRefs.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
+    <Project Path="Uno.UI.RemoteControl.DevServer.Tests/Fixtures/AddInWithDiServiceRegistration/AddInWithDiServiceRegistration.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
+    <Project Path="Uno.UI.RemoteControl.DevServer.Tests/Fixtures/Uno.Licensing.TestContracts/Uno.Licensing.TestContracts.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
+    <Project Path="Uno.UI.RemoteControl.DevServer.Tests/Fixtures/AddInWithSharedContractProvider/AddInWithSharedContractProvider.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
+    <Project Path="Uno.UI.RemoteControl.DevServer.Tests/Fixtures/AddInWithSharedContractConsumer/AddInWithSharedContractConsumer.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
     <Project Path="Uno.UI.RemoteControl.Host/Uno.UI.RemoteControl.Host.csproj">
@@ -122,7 +143,6 @@
       <Deploy Solution="Debug|iPhone" />
       <Deploy Solution="Debug|iPhoneSimulator" />
     </Project>
-    <Project Path="SamplesApp/SamplesApp.Shared/SamplesApp.Shared.shproj" />
     <Project Path="SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
@@ -149,7 +169,6 @@
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Build Solution="Release_NoSamples|Any CPU" Project="false" />
     </Project>
-    <Project Path="SamplesApp/SamplesApp.UnitTests.Shared/SamplesApp.UnitTests.Shared.shproj" />
     <Project Path="SamplesApp/SamplesApp.Wasm.UITests/SamplesApp.Wasm.UITests.njsproj" Id="b4c15c47-85e2-444e-b9f3-d970e35601a9">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Platform Project="AnyCPU" />
@@ -176,7 +195,15 @@
       <Platform Solution="*|x86" Project="x86" />
       <Deploy />
     </Project>
-    <Project Path="SamplesApp/UITests.Shared/UITests.Shared.shproj" />
+    <Project Path="SamplesApp/SamplesApp.Samples/SamplesApp.Samples.csproj">
+      <Build Project="false" />
+    </Project>
+    <Project Path="SamplesApp/SamplesApp.Shared/SamplesApp.Shared.csproj">
+      <Build Project="false" />
+    </Project>
+    <Project Path="SamplesApp/SamplesApp.UnitTests.Shared/SamplesApp.UnitTests.Shared.csproj">
+      <Build Project="false" />
+    </Project>
   </Folder>
   <Folder Name="/SamplesApp/UnoIslands/">
     <Project Path="SamplesApp/UnoIslands.Shared/UnoIslands.Shared.shproj" />
@@ -203,6 +230,9 @@
     <File Path="Directory.Build.targets" />
   </Folder>
   <Folder Name="/Tools/">
+    <Project Path="FontFallbackPreprocessor/FontFallbackPreprocessor.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
     <Project Path="Uno.NUnitTransformTool/Uno.NUnitTransformTool.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
@@ -213,7 +243,7 @@
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Build Solution="*|ARM64" Project="false" />
     </Project>
-    <Project Path="Uno.UWPSyncGenerator.Reference/Uno.UWPSyncGenerator.Reference.csproj" Id="44b48aa5-e344-43a7-9919-d12cc2bdc686">
+    <Project Path="Uno.WinAppSDKSyncGenerator.References/Uno.WinAppSDKSyncGenerator.References.csproj" Id="44b48aa5-e344-43a7-9919-d12cc2bdc686">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Platform Solution="*|Any CPU" Project="x86" />
       <Platform Solution="*|ARM" Project="ARM" />
@@ -224,7 +254,7 @@
       <Platform Solution="*|x86" Project="x86" />
       <Build Solution="*|ARM64" Project="false" />
     </Project>
-    <Project Path="Uno.UWPSyncGenerator/Uno.UWPSyncGenerator.csproj">
+    <Project Path="Uno.WinAppSDKSyncGenerator/Uno.WinAppSDKSyncGenerator.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Build Solution="*|ARM64" Project="false" />
     </Project>
@@ -366,7 +396,6 @@
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/Generators/">
-    <Project Path="SourceGenerators/SourceGeneratorHelpers/SourceGeneratorHelpers.shproj" />
     <Project Path="SourceGenerators/Uno.UI.SourceGenerators.Internal/Uno.UI.SourceGenerators.Internal.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
@@ -374,6 +403,9 @@
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="SourceGenerators/Uno.UI.SourceGenerators/Uno.UI.SourceGenerators.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Release" />
+    </Project>
+    <Project Path="SourceGenerators/Uno.UI.SourceGenerators.WinAppSDK/Uno.UI.SourceGenerators.WinAppSDK.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="SourceGenerators/Uno.UI.Tasks/Uno.UI.Tasks.csproj">
@@ -554,6 +586,9 @@
     </Project>
   </Folder>
   <Project Path="Uno.Sdk/Uno.Sdk.csproj">
+    <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+  </Project>
+  <Project Path="Uno.Sdk.AddInVersionValidation.Tests/Uno.Sdk.AddInVersionValidation.Tests.csproj">
     <BuildType Solution="Release_NoSamples|*" Project="Debug" />
   </Project>
   <Properties Name="TestCaseManagementSettings" Scope="PostLoad">

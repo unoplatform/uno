@@ -13,27 +13,27 @@ namespace Microsoft.UI.Xaml.Hosting
 		{
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.WindowsXamlManager.XamlShutdownCompletedOnThread.add
-		// Forced skipping of method Microsoft.UI.Xaml.Hosting.WindowsXamlManager.XamlShutdownCompletedOnThread.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
+		public static global::Microsoft.UI.Xaml.Hosting.WindowsXamlManager InitializeForCurrentThread()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Hosting.WindowsXamlManager", "void WindowsXamlManager.Dispose()");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Hosting.WindowsXamlManager", "InitializeForCurrentThread()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.Hosting.WindowsXamlManager GetForCurrentThread()
 		{
-			throw new global::System.NotImplementedException("The member WindowsXamlManager WindowsXamlManager.GetForCurrentThread() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WindowsXamlManager%20WindowsXamlManager.GetForCurrentThread%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Hosting.WindowsXamlManager", "GetForCurrentThread()");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.WindowsXamlManager.XamlShutdownCompletedOnThread.add
+		// Forced skipping of method Microsoft.UI.Xaml.Hosting.WindowsXamlManager.XamlShutdownCompletedOnThread.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.Hosting.WindowsXamlManager InitializeForCurrentThread()
+		public void Dispose()
 		{
-			throw new global::System.NotImplementedException("The member WindowsXamlManager WindowsXamlManager.InitializeForCurrentThread() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WindowsXamlManager%20WindowsXamlManager.InitializeForCurrentThread%28%29");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Hosting.WindowsXamlManager", "Dispose()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -43,12 +43,12 @@ namespace Microsoft.UI.Xaml.Hosting
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Hosting.WindowsXamlManager", "event TypedEventHandler<WindowsXamlManager, XamlShutdownCompletedOnThreadEventArgs> WindowsXamlManager.XamlShutdownCompletedOnThread");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Hosting.WindowsXamlManager", "event XamlShutdownCompletedOnThread");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Hosting.WindowsXamlManager", "event TypedEventHandler<WindowsXamlManager, XamlShutdownCompletedOnThreadEventArgs> WindowsXamlManager.XamlShutdownCompletedOnThread");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Hosting.WindowsXamlManager", "event XamlShutdownCompletedOnThread");
 			}
 		}
 #endif

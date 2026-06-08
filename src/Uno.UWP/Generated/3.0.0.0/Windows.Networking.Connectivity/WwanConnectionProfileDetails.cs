@@ -19,7 +19,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WwanConnectionProfileDetails.AccessPointName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WwanConnectionProfileDetails.AccessPointName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.WwanConnectionProfileDetails", "AccessPointName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WwanConnectionProfileDetails.HomeProviderId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WwanConnectionProfileDetails.HomeProviderId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.WwanConnectionProfileDetails", "HomeProviderId");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WwanNetworkIPKind WwanConnectionProfileDetails.IPKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WwanNetworkIPKind%20WwanConnectionProfileDetails.IPKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.WwanConnectionProfileDetails", "IPKind");
 			}
 		}
 #endif
@@ -49,26 +49,26 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Guid> WwanConnectionProfileDetails.PurposeGuids is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CGuid%3E%20WwanConnectionProfileDetails.PurposeGuids");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.WwanConnectionProfileDetails", "PurposeGuids");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.WwanConnectionProfileDetails.HomeProviderId.get
-		// Forced skipping of method Windows.Networking.Connectivity.WwanConnectionProfileDetails.AccessPointName.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Connectivity.WwanNetworkRegistrationState GetNetworkRegistrationState()
 		{
-			throw new global::System.NotImplementedException("The member WwanNetworkRegistrationState WwanConnectionProfileDetails.GetNetworkRegistrationState() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WwanNetworkRegistrationState%20WwanConnectionProfileDetails.GetNetworkRegistrationState%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.WwanConnectionProfileDetails", "GetNetworkRegistrationState()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Connectivity.WwanDataClass GetCurrentDataClass()
 		{
-			throw new global::System.NotImplementedException("The member WwanDataClass WwanConnectionProfileDetails.GetCurrentDataClass() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WwanDataClass%20WwanConnectionProfileDetails.GetCurrentDataClass%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.WwanConnectionProfileDetails", "GetCurrentDataClass()");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Connectivity.WwanConnectionProfileDetails.AccessPointName.get
+		// Forced skipping of method Windows.Networking.Connectivity.WwanConnectionProfileDetails.HomeProviderId.get
 		// Forced skipping of method Windows.Networking.Connectivity.WwanConnectionProfileDetails.IPKind.get
 		// Forced skipping of method Windows.Networking.Connectivity.WwanConnectionProfileDetails.PurposeGuids.get
 	}

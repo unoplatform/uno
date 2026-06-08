@@ -18,22 +18,6 @@ namespace Microsoft.UI.Xaml
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.DataTemplate.DataTemplate()
 		// Forced skipping of method Microsoft.UI.Xaml.DataTemplate.DataTemplate()
-		// Skipping already declared method Microsoft.UI.Xaml.DataTemplate.LoadContent()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.UIElement GetElement(global::Microsoft.UI.Xaml.ElementFactoryGetArgs args)
-		{
-			throw new global::System.NotImplementedException("The member UIElement DataTemplate.GetElement(ElementFactoryGetArgs args) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UIElement%20DataTemplate.GetElement%28ElementFactoryGetArgs%20args%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void RecycleElement(global::Microsoft.UI.Xaml.ElementFactoryRecycleArgs args)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DataTemplate", "void DataTemplate.RecycleElement(ElementFactoryRecycleArgs args)");
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Xaml.DataTemplate.ExtensionInstanceProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.IDataTemplateExtension GetExtensionInstance(global::Microsoft.UI.Xaml.FrameworkElement element)
@@ -46,6 +30,22 @@ namespace Microsoft.UI.Xaml
 		public static void SetExtensionInstance(global::Microsoft.UI.Xaml.FrameworkElement element, global::Microsoft.UI.Xaml.IDataTemplateExtension value)
 		{
 			element.SetValue(ExtensionInstanceProperty, value);
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Xaml.DataTemplate.ExtensionInstanceProperty.get
+		// Skipping already declared method Microsoft.UI.Xaml.DataTemplate.LoadContent()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Xaml.UIElement GetElement(global::Microsoft.UI.Xaml.ElementFactoryGetArgs args)
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.DataTemplate", "GetElement(ElementFactoryGetArgs args)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void RecycleElement(global::Microsoft.UI.Xaml.ElementFactoryRecycleArgs args)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DataTemplate", "RecycleElement(ElementFactoryRecycleArgs args)");
 		}
 #endif
 		// Processing: Microsoft.UI.Xaml.IElementFactory

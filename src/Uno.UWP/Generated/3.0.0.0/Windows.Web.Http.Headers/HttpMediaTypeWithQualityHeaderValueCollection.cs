@@ -6,7 +6,7 @@ namespace Windows.Web.Http.Headers
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class HttpMediaTypeWithQualityHeaderValueCollection : global::System.Collections.Generic.IList<global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue>, global::System.Collections.Generic.IEnumerable<global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue>, global::Windows.Foundation.IStringable
+	public partial class HttpMediaTypeWithQualityHeaderValueCollection : global::System.Collections.Generic.IList<global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue>, global::System.Collections.Generic.ICollection<global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue>, global::System.Collections.Generic.IEnumerable<global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue>, global::System.Collections.IEnumerable, global::Windows.Foundation.IStringable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal HttpMediaTypeWithQualityHeaderValueCollection()
@@ -15,135 +15,11 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint HttpMediaTypeWithQualityHeaderValueCollection.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20HttpMediaTypeWithQualityHeaderValueCollection.Size");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void ParseAdd(string input)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection", "void HttpMediaTypeWithQualityHeaderValueCollection.ParseAdd(string input)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool TryParseAdd(string input)
-		{
-			throw new global::System.NotImplementedException("The member bool HttpMediaTypeWithQualityHeaderValueCollection.TryParseAdd(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpMediaTypeWithQualityHeaderValueCollection.TryParseAdd%28string%20input%29");
-		}
-#endif
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection.GetAt(uint)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection.Size.get
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection.GetView()
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection.IndexOf(Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue, out uint)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection.SetAt(uint, Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection.InsertAt(uint, Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection.RemoveAt(uint)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection.Append(Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue)
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection.RemoveAtEnd()
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection.Clear()
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection.GetMany(uint, Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue[])
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection.ReplaceAll(Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue[])
-		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection.First()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public override string ToString()
-		{
-			throw new global::System.NotImplementedException("The member string HttpMediaTypeWithQualityHeaderValueCollection.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpMediaTypeWithQualityHeaderValueCollection.ToString%28%29");
-		}
-#endif
-		// Processing: System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int IndexOf(global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Insert(int index, global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void RemoveAt(int index)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue this[int index]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
-		// Processing: System.Collections.Generic.ICollection<Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Add(global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Clear()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Contains(global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void CopyTo(global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue[] array, int arrayIndex)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Remove(global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int Count
 		{
 			get
 			{
-				throw new global::System.NotSupportedException();
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection", "Count");
 			}
 		}
 #endif
@@ -153,19 +29,118 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotSupportedException();
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection", "IsReadOnly");
 			}
 		}
 #endif
-		// Processing: System.Collections.Generic.IEnumerable<Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue>
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue this[int index]
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection", "this[int index]");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection", "this[int index]");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void ParseAdd(string input)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection", "ParseAdd(string input)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool TryParseAdd(string input)
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection", "TryParseAdd(string input)");
+		}
+#endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection.Count.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection.IsReadOnly.get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection.this[int].get
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection.this[int].set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int IndexOf(global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue item)
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection", "IndexOf(HttpMediaTypeWithQualityHeaderValue item)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Insert(int index, global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection", "Insert(int index, HttpMediaTypeWithQualityHeaderValue item)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void RemoveAt(int index)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection", "RemoveAt(int index)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Add(global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue item)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection", "Add(HttpMediaTypeWithQualityHeaderValue item)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Clear()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection", "Clear()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Contains(global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue item)
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection", "Contains(HttpMediaTypeWithQualityHeaderValue item)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void CopyTo(global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue[] array, int arrayIndex)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection", "CopyTo(HttpMediaTypeWithQualityHeaderValue[] array, int arrayIndex)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool Remove(global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue item)
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection", "Remove(HttpMediaTypeWithQualityHeaderValue item)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection", "GetEnumerator()");
 		}
 #endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection.System.Collections.IEnumerable.GetEnumerator()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public override string ToString()
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection", "ToString()");
+		}
+#endif
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection.System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue>.get_Item(int)
+		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection.System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue>.set_Item(int, Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue)
+		// Processing: System.Collections.Generic.IList<Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue>
+		// Processing: System.Collections.Generic.ICollection<Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue>
+		// Processing: System.Collections.Generic.IEnumerable<Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable

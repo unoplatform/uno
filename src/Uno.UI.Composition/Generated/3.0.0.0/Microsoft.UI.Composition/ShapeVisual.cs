@@ -8,10 +8,10 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class ShapeVisual : global::Microsoft.UI.Composition.ContainerVisual
 	{
-		// Skipping already declared property ViewBox
 		// Skipping already declared property Shapes
-		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.ViewBox.set
-		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.ViewBox.get
+		// Skipping already declared property ViewBox
 		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.Shapes.get
+		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.ViewBox.get
+		// Forced skipping of method Microsoft.UI.Composition.ShapeVisual.ViewBox.set
 	}
 }

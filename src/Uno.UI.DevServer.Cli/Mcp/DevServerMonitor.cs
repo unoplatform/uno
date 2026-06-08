@@ -1,12 +1,18 @@
-﻿using System.Net;
+using System.Diagnostics;
+using System.Net;
 using System.Net.Sockets;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Uno.UI.DevServer.Cli.Helpers;
+using Uno.UI.RemoteControl.Host;
+using Uno.UI.RemoteControl.Host.Helpers;
 
 namespace Uno.UI.DevServer.Cli.Mcp;
 
-public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonitor> logger)
+/// <seealso cref="MonitorDecisions"/>
+/// <seealso href="../health-diagnostics.md"/>
+/// <seealso href="../../Uno.UI.RemoteControl.Host/ambient-registry.md"/>
+internal class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonitor> logger)
 {
 	private readonly IServiceProvider _services = services;
 	private readonly ILogger<DevServerMonitor> _logger = logger;
@@ -15,11 +21,70 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 	private string _currentDirectory = "";
 	private CancellationTokenSource? _cts;
 	private Task? _monitor;
+	private string? _unoSdkVersion;
+	private long _discoveryDurationMs;
+	private DiscoveryInfo? _lastDiscoveryInfo;
+	private Process? _serverProcess;
+	/// <summary>
+	/// PID of a server adopted from the AmbientRegistry (not spawned by this monitor).
+	/// Tracked so we can terminate it in <see cref="StopMonitoringAsync"/> — unlike
+	/// <see cref="_serverProcess"/>, we don't hold a <see cref="Process"/> handle
+	/// because we didn't spawn the process.
+	/// </summary>
+	private int? _adoptedServerPid;
+	private WorkspaceResolution? _workspaceResolution;
 
 	public event Action<string>? ServerStarted;
 	public event Action? ServerFailed;
+	public event Action? ServerCrashed;
+	public event Action? ServerLaunching;
 
-	internal void StartMonitoring(string currentDirectory, int port, List<string> forwardedArgs)
+	public string? UnoSdkVersion => _unoSdkVersion;
+	public long DiscoveryDurationMs => _discoveryDurationMs;
+	public DiscoveryInfo? LastDiscoveryInfo => _lastDiscoveryInfo;
+
+	private void LogTimeline(string stage, long elapsedMilliseconds, string details)
+	{
+		_logger.LogDebug("TIMELINE|devserver-monitor|{Stage}|{ElapsedMs}|{Details}", stage, elapsedMilliseconds,
+			details);
+	}
+
+	/// <summary>
+	/// Set to true when the monitor has scanned for solutions and found none.
+	/// Reset to false when a solution is found. Used by HealthService to report
+	/// a clear message to the agent.
+	/// </summary>
+	public bool SolutionNotFound { get; private set; }
+
+	/// <summary>
+	/// The list of solution files discovered during the last scan, stored as
+	/// paths relative to <see cref="_currentDirectory"/>. Exposed via
+	/// <see cref="HealthService"/> so the MCP agent can see which solutions
+	/// were found.
+	/// </summary>
+	public IReadOnlyList<string> DiscoveredSolutions { get; private set; } = [];
+
+	/// <summary>
+	/// Set to true when the monitor has determined that this workspace is not
+	/// an Uno Platform project (no host found after <see cref="MaxNoHostRetries"/>
+	/// discovery attempts). The monitor stops scanning to avoid wasting resources.
+	/// </summary>
+	public bool NotAnUnoWorkspace { get; private set; }
+
+	private int _noHostDiscoveryCount;
+	private const int MaxNoHostRetries = 3;
+
+	/// <summary>
+	/// Set to <c>true</c> when the host responds to HTTP on the expected port but the
+	/// <c>/mcp</c> endpoint is not available (404/400 on every probe attempt). This
+	/// indicates a pre-MCP host version or a host where MCP transport failed to register.
+	/// Used by <see cref="HealthService"/> to surface an actionable diagnostic.
+	/// Reset on stop and at the beginning of each readiness cycle to avoid stale diagnostics.
+	/// </summary>
+	public bool HostRespondedNoMcp { get; private set; }
+
+	internal void StartMonitoring(string currentDirectory, int port, List<string> forwardedArgs,
+		WorkspaceResolution? workspaceResolution = null)
 	{
 		if (_monitor is not null)
 		{
@@ -29,6 +94,9 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 		_originalPort = port;
 		_forwardedArgs = forwardedArgs;
 		_currentDirectory = currentDirectory;
+		_workspaceResolution = workspaceResolution;
+		_noHostDiscoveryCount = 0;
+		NotAnUnoWorkspace = false;
 
 		var forwardedArgsDisplay = string.Join(" ", _forwardedArgs);
 		_logger.LogTrace(
@@ -37,8 +105,42 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 			_originalPort,
 			forwardedArgsDisplay);
 
-		_cts = new CancellationTokenSource();
-		_monitor = Task.Run(() => RunMonitor(_cts.Token), _cts.Token);
+		var cts = new CancellationTokenSource();
+		_cts = cts;
+		_monitor = Task.Run(() => RunMonitor(cts.Token), cts.Token);
+	}
+
+	internal async Task StopMonitoringAsync()
+	{
+		var cts = _cts;
+		_cts = null;
+		cts?.Cancel();
+		TerminateServerProcess();
+
+		if (_monitor is not null)
+		{
+			try
+			{
+				await _monitor;
+			}
+			catch (OperationCanceledException)
+			{
+				// Expected when canceling
+			}
+		}
+
+		// Kill any process that was spawned by the monitor task during the
+		// race window between Cancel() and the task actually observing the
+		// cancellation token. Without this second call, a crash-recovery
+		// retry that spawns a new process just before the token is checked
+		// leaves a zombie host process running.
+		TerminateServerProcess();
+
+		_monitor = null;
+		cts?.Dispose();
+		_serverProcess = null;
+		_adoptedServerPid = null;
+		HostRespondedNoMcp = false;
 	}
 
 	private async Task RunMonitor(CancellationToken ct)
@@ -50,29 +152,58 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 		{
 			try
 			{
+				var monitorCycleStopwatch = Stopwatch.StartNew();
 				// If we don't have a solution, we can't start a DevServer yet.
-				var solutionFiles = Directory
-					.EnumerateFiles(_currentDirectory, "*.sln")
-					.Concat(Directory.EnumerateFiles(_currentDirectory, "*.slnx")).ToArray();
+				// Search recursively (up to 3 levels deep) so solutions in
+				// subdirectories like src/MyProject.slnx are found.
+				var solutionFiles = SolutionFileFinder.FindSolutionFiles(_currentDirectory);
+				LogTimeline("scan-solutions.complete", monitorCycleStopwatch.ElapsedMilliseconds,
+					$"directory={_currentDirectory};count={solutionFiles.Length}");
 
 				_logger.LogTrace(
 					"DevServerMonitor scan found {Count} solution files in {Directory}",
 					solutionFiles.Length,
 					_currentDirectory);
 
+				SolutionNotFound = solutionFiles.Length == 0;
+				DiscoveredSolutions = solutionFiles
+					.Select(f => Path.GetRelativePath(_currentDirectory, f))
+					.ToArray();
+
 				if (solutionFiles.Length != 0)
 				{
-					// If we don't have a dev server host, we can't start a DevServer yet.
-					var hostPath = await _services
-						.GetRequiredService<UnoToolsLocator>()
-						.ResolveHostExecutableAsync(_currentDirectory);
+					// Run full discovery to get DiscoveryInfo (used by health reports)
+					var discoveryStopwatch = System.Diagnostics.Stopwatch.StartNew();
+					var locator = _services.GetRequiredService<UnoToolsLocator>();
+					var discovery = await locator.DiscoverAsync(_currentDirectory, _workspaceResolution);
+					discoveryStopwatch.Stop();
+					LogTimeline("discover-tools.complete", monitorCycleStopwatch.ElapsedMilliseconds,
+						$"duration={discoveryStopwatch.ElapsedMilliseconds}ms;host={discovery.HostPath}");
+					_lastDiscoveryInfo = discovery;
+					_unoSdkVersion = discovery.UnoSdkVersion;
+					_discoveryDurationMs = discoveryStopwatch.ElapsedMilliseconds;
+					var hostPath = discovery.HostPath;
 
 					if (hostPath is null)
 					{
-						_logger.LogTrace("DevServerMonitor could not resolve a host executable in {Directory}", _currentDirectory);
+						_noHostDiscoveryCount++;
+						_logger.LogTrace(
+							"DevServerMonitor could not resolve a host executable in {Directory} (attempt {Count})",
+							_currentDirectory, _noHostDiscoveryCount);
+
+						if (_noHostDiscoveryCount >= MaxNoHostRetries)
+						{
+							_logger.LogInformation(
+								"No Uno SDK host found after {Count} attempts in {Directory} — stopping monitor. "
+								+ "This workspace does not appear to be an Uno Platform project.",
+								_noHostDiscoveryCount, _currentDirectory);
+							NotAnUnoWorkspace = true;
+							break;
+						}
 					}
 					else
 					{
+						_noHostDiscoveryCount = 0; // Reset on success
 						_logger.LogTrace("DevServerMonitor resolved host executable {HostPath}", hostPath);
 					}
 
@@ -89,12 +220,21 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 						{
 							_logger.LogDebug($"Using user-specified port {port}");
 						}
+
+						var solution =
+							DetermineSolutionToLaunch(solutionFiles, _workspaceResolution);
+						LogTimeline("determine-solution.complete", monitorCycleStopwatch.ElapsedMilliseconds,
+							solution ?? "<none>");
+
 						_logger.LogTrace(
-							"DevServerMonitor launching controller from {HostPath} in {WorkingDirectory} on port {Port}",
+							"DevServerMonitor launching server from {HostPath} in {WorkingDirectory} on port {Port}",
 							hostPath,
 							_currentDirectory,
 							port);
-						var (success, exitCode) = await StartProcess(hostPath, port, _currentDirectory, ct);
+						var (success, effectivePort) =
+							await StartProcess(hostPath, port, _currentDirectory, solution, ct, enableMajorRollForward: discovery.HostRequiresMajorRollForward);
+						LogTimeline("start-process.complete", monitorCycleStopwatch.ElapsedMilliseconds,
+							$"success={success};port={effectivePort}");
 						if (!success)
 						{
 							retryCount++;
@@ -118,21 +258,158 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 						// Success - reset retry count
 						retryCount = 0;
 
-						_logger.LogInformation("DevServer started on port {Port}", port);
+						_logger.LogInformation("DevServer started on port {Port}", effectivePort);
+						ServerLaunching?.Invoke();
 
-						var remoteEndpoint = $"http://localhost:{port}/mcp";
+						var remoteEndpoint = $"http://localhost:{effectivePort}/mcp";
 						_logger.LogInformation("Starting MCP stdio proxy to {Endpoint}", remoteEndpoint);
 
-						if (!await WaitForServerReadyAsync(port, ct))
+						var readinessStopwatch = Stopwatch.StartNew();
+						HostRespondedNoMcp = false;
+						var readinessResult = await WaitForServerReadyAsync(effectivePort, ct);
+
+						// ── AmbientRegistry fallback ──────────────────────────
+						// When the spawned process exits during the readiness
+						// probe (e.g. the controller detected an existing server
+						// started by another IDE and exited with code 0), re-check
+						// the AmbientRegistry for an active server on a different
+						// port and adopt it.
+						if (readinessResult == MonitorDecisions.ReadinessProbeResult.ProcessExited
+							&& !string.IsNullOrWhiteSpace(solution))
 						{
+							var fallbackAmbient = new AmbientRegistry(_logger);
+							var existing = fallbackAmbient.GetActiveDevServerForPath(solution);
+							if (MonitorDecisions.ShouldAttemptAmbientFallback(
+								readinessResult, solution, existing?.Port, effectivePort))
+							{
+								_logger.LogInformation(
+									"Spawned process exited; adopting existing DevServer (PID {Pid}) on port {Port} via AmbientRegistry",
+									existing!.ProcessId, existing.Port);
+								LogTimeline("wait-ready.ambient-fallback", monitorCycleStopwatch.ElapsedMilliseconds,
+									$"oldPort={effectivePort};newPort={existing.Port};pid={existing.ProcessId}");
+								effectivePort = existing.Port;
+								_serverProcess = MonitorDecisions.DisposeAndClearProcess(_serverProcess);
+								_adoptedServerPid = existing.ProcessId;
+
+								readinessResult = await WaitForServerReadyAsync(effectivePort, ct);
+							}
+						}
+
+						// Handle ServerRespondedNoMcp before the generic readiness check,
+						// because IsReadinessAcceptable rejects it (only Ready is acceptable).
+						if (readinessResult == MonitorDecisions.ReadinessProbeResult.ServerRespondedNoMcp)
+						{
+							HostRespondedNoMcp = true;
+							_logger.LogWarning(
+								"Host responds to HTTP on port {Port} but the /mcp endpoint is not available. " +
+								"The host version may predate MCP support or the MCP transport failed to register.",
+								effectivePort);
+
+							LogTimeline("wait-ready.no-mcp", monitorCycleStopwatch.ElapsedMilliseconds,
+								$"port={effectivePort};duration={readinessStopwatch.ElapsedMilliseconds}ms");
+
+							if (_serverProcess is null)
+							{
+								// We adopted this server from the AmbientRegistry — it doesn't
+								// support MCP so there's no point keeping it. Kill it and retry
+								// so the next cycle spawns a fresh host from the resolved package.
+								_logger.LogWarning(
+									"Adopted server on port {Port} does not support /mcp; terminating to start fresh",
+									effectivePort);
+								TerminateAdoptedServer();
+								_adoptedServerPid = null;
+								retryCount++;
+								if (retryCount >= maxRetries)
+								{
+									_logger.LogError(
+										"DevServer failed to start with MCP support after {MaxRetries} attempts. " +
+										"The installed Uno.WinUI.DevServer package may need to be upgraded.",
+										maxRetries);
+									ServerFailed?.Invoke();
+									break;
+								}
+								await Task.Delay(TimeSpan.FromSeconds(2), ct);
+								continue;
+							}
+							else
+							{
+								// We spawned this host ourselves — the resolved package
+								// doesn't support MCP. Fail with a clear message rather
+								// than retrying endlessly.
+								_logger.LogError(
+									"Self-spawned DevServer does not support /mcp. " +
+									"Upgrade the Uno.WinUI.DevServer package to a version with MCP support.");
+								ServerFailed?.Invoke();
+								break;
+							}
+						}
+
+						if (!MonitorDecisions.IsReadinessAcceptable(readinessResult))
+						{
+							LogTimeline("wait-ready.failed", monitorCycleStopwatch.ElapsedMilliseconds,
+								$"port={effectivePort};duration={readinessStopwatch.ElapsedMilliseconds}ms;result={readinessResult}");
+							var failAction = MonitorDecisions.DetermineReadinessFailureAction(_serverProcess);
+							if (failAction == MonitorDecisions.ReadinessFailureAction.RetryStart)
+							{
+								_logger.LogWarning("Server process exited during startup, will retry");
+								_serverProcess = MonitorDecisions.DisposeAndClearProcess(_serverProcess);
+								retryCount++;
+
+								if (retryCount >= maxRetries)
+								{
+									_logger.LogError("DevServer failed to start after {MaxRetries} attempts",
+										maxRetries);
+									ServerFailed?.Invoke();
+									break;
+								}
+
+								await Task.Delay(TimeSpan.FromSeconds(5), ct);
+								continue;
+							}
+
 							ServerFailed?.Invoke();
 							return;
 						}
 
-						_logger.LogTrace("DevServerMonitor detected ready server at {Endpoint}; raising ServerStarted", remoteEndpoint);
-						ServerStarted?.Invoke(remoteEndpoint);
+						LogTimeline("wait-ready.complete", monitorCycleStopwatch.ElapsedMilliseconds,
+							$"port={effectivePort};duration={readinessStopwatch.ElapsedMilliseconds}ms;result={readinessResult}");
 
-						break;
+						HostRespondedNoMcp = false;
+
+						// Update remoteEndpoint in case effectivePort changed via AmbientRegistry fallback
+						remoteEndpoint = $"http://localhost:{effectivePort}/mcp";
+
+						_logger.LogTrace("DevServerMonitor detected ready server at {Endpoint}; raising ServerStarted",
+							remoteEndpoint);
+						ServerStarted?.Invoke(remoteEndpoint);
+						LogTimeline("server-started.event-raised", monitorCycleStopwatch.ElapsedMilliseconds,
+							remoteEndpoint);
+
+						var postAction = MonitorDecisions.DeterminePostStartupAction(_serverProcess);
+						if (postAction == MonitorDecisions.PostStartupAction.MonitorOwnProcess)
+						{
+							await WaitForProcessExitAsync(ct);
+
+							_logger.LogWarning("Server process exited, initiating recovery");
+							_serverProcess = MonitorDecisions.DisposeAndClearProcess(_serverProcess);
+							ServerCrashed?.Invoke();
+
+							retryCount = 0;
+							continue;
+						}
+						else // PostStartupAction.PollHealth
+						{
+							_logger.LogInformation(
+								"Attached to existing DevServer, monitoring via HTTP health polling");
+							if (!await PollHealthUntilFailureAsync(effectivePort, ct))
+							{
+								_logger.LogWarning("Attached DevServer stopped responding, initiating recovery");
+								_serverProcess = MonitorDecisions.DisposeAndClearProcess(_serverProcess);
+								ServerCrashed?.Invoke();
+								retryCount = 0;
+								continue;
+							}
+						}
 					}
 				}
 
@@ -146,39 +423,73 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 		}
 	}
 
-	private async Task<bool> WaitForServerReadyAsync(int port, CancellationToken ct)
+	internal static string? DetermineSolutionToLaunch(IReadOnlyList<string> solutionFiles,
+		WorkspaceResolution? workspaceResolution)
 	{
+		if (!string.IsNullOrWhiteSpace(workspaceResolution?.SelectedSolutionPath))
+		{
+			var selectedSolutionPath = Path.GetFullPath(workspaceResolution.SelectedSolutionPath);
+			var matchingSolution = solutionFiles.FirstOrDefault(solution =>
+				PathComparison.PathsEqual(solution, selectedSolutionPath));
+
+			if (matchingSolution is not null)
+			{
+				return matchingSolution;
+			}
+		}
+
+		return solutionFiles
+			.OrderBy(PathComparison.Normalize, StringComparer.Ordinal)
+			.FirstOrDefault();
+	}
+
+	private async Task<MonitorDecisions.ReadinessProbeResult> WaitForServerReadyAsync(int port, CancellationToken ct)
+	{
+		var readinessStopwatch = Stopwatch.StartNew();
 		var endpoints = new[]
 		{
-			$"http://localhost:{port}/mcp",
-			$"http://127.0.0.1:{port}/mcp",
-			$"http://[::1]:{port}/mcp"
+			$"http://localhost:{port}/mcp", $"http://127.0.0.1:{port}/mcp", $"http://[::1]:{port}/mcp"
 		};
 
-		var maxAttempts = 30; // 30 seconds
+		var maxAttempts = 40; // ~32s delay budget: 10×200ms + 30×1000ms (plus HTTP request time)
 
 		using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(1) };
 
+		var anyHttpResponse = false;
+
 		for (int i = 0; i < maxAttempts; i++)
 		{
+			// Short-circuit: if the process already died, no point polling further
+			if (MonitorDecisions.ShouldShortCircuitReadiness(_serverProcess))
+			{
+				_logger.LogDebug(
+					"Server process has exited during readiness probe (attempt {Attempt}/{Max}); short-circuiting",
+					i + 1, maxAttempts);
+				return MonitorDecisions.ReadinessProbeResult.ProcessExited;
+			}
+
 			// Test all endpoints simultaneously
 			var tasks = endpoints.Select(async endpoint =>
 			{
 				try
 				{
-					var response = await httpClient.GetAsync(endpoint, ct);
+					using var response = await httpClient.GetAsync(endpoint, ct);
 					if (response.StatusCode != HttpStatusCode.NotFound
 						&& response.StatusCode != HttpStatusCode.BadRequest)
 					{
-						return (success: true, endpoint);
+						return (success: true, httpResponse: true, endpoint);
 					}
+
+					// Got an HTTP response but it was 404/400 — server is alive,
+					// but /mcp is not registered (older host or MCP init failure).
+					return (success: false, httpResponse: true, endpoint);
 				}
 				catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
 				{
 					// Server not ready yet on this endpoint
 				}
 
-				return (success: false, endpoint: endpoint);
+				return (success: false, httpResponse: false, endpoint: endpoint);
 			}).ToArray();
 
 			var results = await Task.WhenAll(tasks);
@@ -188,76 +499,319 @@ public class DevServerMonitor(IServiceProvider services, ILogger<DevServerMonito
 			if (successfulEndpoint.success)
 			{
 				_logger.LogDebug("DevServer is ready at {Endpoint}", successfulEndpoint.endpoint);
-				return true;
+				LogTimeline("ready-probe.success", readinessStopwatch.ElapsedMilliseconds, successfulEndpoint.endpoint);
+				return MonitorDecisions.ReadinessProbeResult.Ready;
 			}
 
-			await Task.Delay(1000, ct);
+			// Track whether we ever got an HTTP response (even 404/400)
+			if (results.Any(r => r.httpResponse))
+			{
+				anyHttpResponse = true;
+			}
+
+			// Probe aggressively for the first ~2 seconds (10×200ms), then slow to 1s (~30s total budget)
+			var delay = i < 10 ? 200 : 1000;
+			await Task.Delay(delay, ct);
 		}
 
-		_logger.LogError("DevServer did not become ready within timeout period on any of: {Endpoints}", string.Join(", ", endpoints));
-		return false;
+		// Distinguish between "server alive but /mcp unavailable" and "nothing listening"
+		if (anyHttpResponse)
+		{
+			_logger.LogWarning(
+				"DevServer responded to HTTP but /mcp was not available within timeout on: {Endpoints}",
+				string.Join(", ", endpoints));
+			LogTimeline("ready-probe.server-responded-no-mcp", readinessStopwatch.ElapsedMilliseconds,
+				string.Join(", ", endpoints));
+			return MonitorDecisions.ReadinessProbeResult.ServerRespondedNoMcp;
+		}
+
+		_logger.LogError("DevServer did not become ready within timeout period on any of: {Endpoints}",
+			string.Join(", ", endpoints));
+		LogTimeline("ready-probe.timeout", readinessStopwatch.ElapsedMilliseconds, string.Join(", ", endpoints));
+		return MonitorDecisions.ReadinessProbeResult.TimedOut;
 	}
 
-	private async Task<(bool success, int? exitCode)> StartProcess(string hostPath, int port, string workingDirectory, CancellationToken ct)
+	/// <summary>
+	/// Periodically polls the DevServer health endpoint. Returns <c>false</c> when
+	/// the server stops responding (consecutive failures exceed threshold), indicating
+	/// the attached DevServer has died and recovery should begin.
+	/// Returns <c>true</c> only on cancellation (clean shutdown).
+	/// </summary>
+	private async Task<bool> PollHealthUntilFailureAsync(int port, CancellationToken ct)
 	{
+		const int maxConsecutiveFailures = 3;
+		var consecutiveFailures = 0;
+
+		var endpoints = new[]
+		{
+			$"http://localhost:{port}/mcp", $"http://127.0.0.1:{port}/mcp", $"http://[::1]:{port}/mcp"
+		};
+
+		using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
+
+		while (!ct.IsCancellationRequested)
+		{
+			try
+			{
+				await Task.Delay(MonitorDecisions.HealthPollIntervalMs, ct);
+			}
+			catch (OperationCanceledException)
+			{
+				return true; // clean shutdown
+			}
+
+			var anySuccess = false;
+			foreach (var endpoint in endpoints)
+			{
+				try
+				{
+					using var response = await httpClient.GetAsync(endpoint, ct);
+					anySuccess = true;
+					break;
+				}
+				catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+				{
+					// This endpoint failed, try next
+				}
+			}
+
+			if (anySuccess)
+			{
+				consecutiveFailures = 0;
+			}
+			else
+			{
+				consecutiveFailures++;
+				_logger.LogDebug("Health poll failed ({Failures}/{Max})", consecutiveFailures, maxConsecutiveFailures);
+
+				if (consecutiveFailures >= maxConsecutiveFailures)
+				{
+					return false; // server is dead
+				}
+			}
+		}
+
+		return true; // canceled — clean shutdown
+	}
+
+	internal async Task<(bool success, int effectivePort)> StartProcess(string hostPath, int port,
+		string workingDirectory, string? solution, CancellationToken ct, bool enableMajorRollForward = false)
+	{
+		var processStartStopwatch = Stopwatch.StartNew();
+		// Check for existing DevServer instance via AmbientRegistry.
+		// This is safe for the MCP stdio bridge because it connects via HTTP (/mcp endpoint),
+		// not via the IDEChannel named pipe. The Host's IDEChannel only supports a
+		// single IDE connection (maxNumberOfServerInstances: 1), so reuse is limited
+		// to MCP-alongside-IDE scenarios. Two full IDEs sharing the same Host would
+		// conflict on the IDEChannel, Hot Reload notifications, and launch tracking.
+		var ambient = new AmbientRegistry(_logger);
+
+		if (!string.IsNullOrWhiteSpace(solution))
+		{
+			var existing = ambient.GetActiveDevServerForPath(solution);
+			if (existing is not null)
+			{
+				_logger.LogInformation(
+					"Reusing existing DevServer (PID {Pid}, port {Port}) for {Solution}",
+					existing.ProcessId, existing.Port, solution);
+				LogTimeline("start-process.reused-existing", processStartStopwatch.ElapsedMilliseconds,
+					$"pid={existing.ProcessId};port={existing.Port}");
+				_adoptedServerPid = existing.ProcessId;
+				return (true, existing.Port);
+			}
+		}
+
+		// Write .csproj.user files for Hot Reload port sync
+		if (!string.IsNullOrWhiteSpace(solution))
+		{
+			try
+			{
+				await CsprojUserGenerator.SetCsprojUserPort(solution, port);
+				_logger.LogDebug("Updated .csproj.user files for solution {Solution} with port {Port}", solution, port);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogWarning(ex, "Failed to update .csproj.user files");
+				// Non-fatal: continue with launch
+			}
+		}
+
+		// Build args for direct server launch (no controller)
 		var args = new List<string>
 		{
-			"--command", "start",
-			"--httpPort", port.ToString(System.Globalization.CultureInfo.InvariantCulture),
-			"--ppid", Environment.ProcessId.ToString(System.Globalization.CultureInfo.InvariantCulture)
+			"--httpPort",
+			port.ToString(System.Globalization.CultureInfo.InvariantCulture),
+			"--ppid",
+			Environment.ProcessId.ToString(System.Globalization.CultureInfo.InvariantCulture)
 		};
+
+		if (!string.IsNullOrWhiteSpace(solution))
+		{
+			args.Add("--solution");
+			args.Add(solution);
+		}
+
+		// Use add-ins from the discovery info (already resolved in RunMonitor)
+		try
+		{
+			if (_lastDiscoveryInfo?.AddIns is { Count: > 0 } addIns)
+			{
+				var addInsValue = string.Join(";",
+					addIns.Select(a => a.EntryPointDll).Distinct(StringComparer.OrdinalIgnoreCase));
+				args.Add("--addins");
+				args.Add(addInsValue);
+				_logger.LogDebug("Resolved {Count} add-in(s) for server process", addIns.Count);
+			}
+		}
+		catch (Exception ex)
+		{
+			_logger.LogWarning(ex, "Add-in resolution failed, server will use MSBuild fallback");
+		}
 
 		args.AddRange(_forwardedArgs);
 
-		var startInfo = DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, workingDirectory, redirectOutput: true, redirectInput: true);
+		// CRITICAL: redirectInput MUST be true when the CLI runs as an MCP stdio bridge.
+		// Without it, the child process inherits our stdin — the MCP message pipe from
+		// the AI agent — and steals incoming JSON-RPC messages, causing random hangs.
+		var startInfo =
+			DevServerProcessHelper.CreateDotnetProcessStartInfo(hostPath, args, workingDirectory, redirectOutput: true, redirectInput: true, enableMajorRollForward: enableMajorRollForward);
 
-		var (exitCode, stdout, stderr) = await DevServerProcessHelper.RunConsoleProcessAsync(startInfo, _logger);
+		_logger.LogDebug("Starting server process: {File} {Args}", startInfo.FileName,
+			startInfo.Arguments);
 
-		if (_logger.IsEnabled(LogLevel.Debug) || exitCode != 0)
+		var process = new Process { StartInfo = startInfo, EnableRaisingEvents = true };
+
+		process.OutputDataReceived += (_, e) =>
 		{
-			// Already logged by helper
-			if (!string.IsNullOrWhiteSpace(stdout))
+			if (e.Data is not null && _logger.IsEnabled(LogLevel.Debug))
 			{
-				_logger.LogDebug("Controller stdout:\n{Stdout}", stdout);
+				_logger.LogDebug("[server:stdout] {Data}", e.Data);
 			}
-			if (!string.IsNullOrWhiteSpace(stderr))
+		};
+
+		process.ErrorDataReceived += (_, e) =>
+		{
+			if (e.Data is not null && _logger.IsEnabled(LogLevel.Debug))
 			{
-				_logger.LogError("Controller stderr:\n{Stderr}", stderr);
+				_logger.LogDebug("[server:stderr] {Data}", e.Data);
 			}
+		};
+
+		if (!process.Start())
+		{
+			_logger.LogError("Failed to start server process");
+			LogTimeline("start-process.failed-to-spawn", processStartStopwatch.ElapsedMilliseconds, hostPath);
+			return (false, port);
 		}
 
-		if (exitCode != 0)
+		_serverProcess = process;
+		_logger.LogDebug("Started server process (PID {Pid})", process.Id);
+		LogTimeline("start-process.spawned", processStartStopwatch.ElapsedMilliseconds,
+			$"pid={process.Id};port={port}");
+
+		try
 		{
-			await StopLingeringDevServerAsync(hostPath, workingDirectory, ct);
-			return (false, exitCode);
+			// Close the redirected stdin immediately — the host doesn't read from it,
+			// and leaving it open can prevent the process from exiting cleanly.
+			if (startInfo.RedirectStandardInput)
+			{
+				process.StandardInput.Close();
+			}
+
+			if (startInfo.RedirectStandardOutput)
+			{
+				process.BeginOutputReadLine();
+			}
+
+			if (startInfo.RedirectStandardError)
+			{
+				process.BeginErrorReadLine();
+			}
+		}
+		catch (InvalidOperationException)
+		{
+			// Streams may not be available
 		}
 
-		return (true, null);
+		// Don't wait for exit — the server is long-running
+		return (true, port);
 	}
 
-	private async Task StopLingeringDevServerAsync(string hostPath, string workingDirectory, CancellationToken ct)
+	private async Task WaitForProcessExitAsync(CancellationToken ct)
+	{
+		if (_serverProcess is not { HasExited: false } proc)
+		{
+			return;
+		}
+
+		var exitTcs = new TaskCompletionSource();
+		proc.Exited += (_, _) => exitTcs.TrySetResult();
+
+		// Process may have exited between check and event registration
+		if (proc.HasExited)
+		{
+			return;
+		}
+
+		await exitTcs.Task.WaitAsync(ct);
+	}
+
+	private void TerminateServerProcess()
 	{
 		try
 		{
-			var stopArgs = new List<string>
+			if (_serverProcess is { HasExited: false } proc)
 			{
-				"--command", "stop"
-			};
-
-			stopArgs.AddRange(_forwardedArgs);
-
-			var stopInfo = DevServerProcessHelper.CreateDotnetProcessStartInfo(
-				hostPath,
-				stopArgs,
-				workingDirectory,
-				redirectOutput: true);
-
-			_logger.LogWarning("Attempting to stop lingering DevServer instance after failed start.");
-			await DevServerProcessHelper.RunConsoleProcessAsync(stopInfo, _logger);
+				proc.Kill(entireProcessTree: true);
+				_logger.LogDebug("Terminated server process (PID {Pid})", proc.Id);
+			}
 		}
-		catch (Exception ex) when (!ct.IsCancellationRequested)
+		catch (Exception ex)
 		{
-			_logger.LogError(ex, "Failed to stop lingering DevServer instance");
+			_logger.LogWarning(ex, "Failed to terminate server process");
+		}
+
+		// Do not terminate adopted servers here. An adopted server may have been
+		// started by another process (for example, an IDE) and we cannot prove
+		// ownership from this generic stop path. Adopted servers are only killed
+		// in targeted scenarios (e.g., the NoMcp kill-and-retry path) where we
+		// explicitly know the server is unusable for our purposes.
+		if (_adoptedServerPid is { } adoptedPid)
+		{
+			_logger.LogDebug(
+				"Skipping termination of adopted server process (PID {Pid}) — ownership not proven",
+				adoptedPid);
+		}
+	}
+
+	/// <summary>
+	/// Terminates an adopted server that has been explicitly determined to be
+	/// unusable (e.g., it does not support MCP). Unlike <see cref="TerminateServerProcess"/>,
+	/// this is called only in targeted scenarios where the kill is justified.
+	/// </summary>
+	private void TerminateAdoptedServer()
+	{
+		if (_adoptedServerPid is not { } adoptedPid)
+		{
+			return;
+		}
+
+		try
+		{
+			var adopted = Process.GetProcessById(adoptedPid);
+			if (!adopted.HasExited)
+			{
+				adopted.Kill(entireProcessTree: true);
+				_logger.LogDebug("Terminated adopted server process (PID {Pid})", adoptedPid);
+			}
+		}
+		catch (ArgumentException)
+		{
+			// Process already exited — expected
+		}
+		catch (Exception ex)
+		{
+			_logger.LogWarning(ex, "Failed to terminate adopted server process (PID {Pid})", adoptedPid);
 		}
 	}
 

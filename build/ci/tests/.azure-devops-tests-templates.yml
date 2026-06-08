@@ -31,7 +31,7 @@ jobs:
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-      artifactName: 'Nuget_Packages'
+      artifactName: 'nuget-packages'
 
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-mobile-install-windows.yml
@@ -42,7 +42,7 @@ jobs:
   - task: CopyFiles@2
     displayName: Copy Artifacts to PackageCache
     inputs:
-      SourceFolder: '$(System.ArtifactsDirectory)/Nuget_Packages/vslatest'
+      SourceFolder: '$(System.ArtifactsDirectory)/nuget-packages/vslatest'
       Contents: '*.nupkg'
       TargetFolder: '$(Build.SourcesDirectory)/src/PackageCache'
       OverWrite: true
@@ -63,7 +63,7 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/src/SolutionTemplate/binlogs
-      ArtifactName: template-tests-binlogs-windows
+      ArtifactName: template-tests-windows-logs
       ArtifactType: Container
 
 - job: Dotnet_Template_Tests_NetCoreMobile_macos
@@ -92,7 +92,7 @@ jobs:
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-      artifactName: 'Nuget_Packages'
+      artifactName: 'nuget-packages'
 
   # Install android 35 as we're running on macos-15
   - bash: |
@@ -104,16 +104,6 @@ jobs:
   - template: ../templates/ios-build-select-version.yml
     parameters:
       xCodeRoot: ${{ parameters.xCodeRoot }}
-
-  - bash: |
-      set -euo pipefail
-      if xcrun simctl list runtimes | grep -q "iOS 26.2"; then
-        echo "iOS 26.2 runtime already installed"
-        exit 0
-      fi
-      echo "Downloading iOS 26.2 simulator runtime"
-      sudo xcodebuild -downloadPlatform iOS -buildVersion 26.2
-    displayName: Ensure iOS 26.2 simulator runtime
 
   - template: ../templates/dotnet-mobile-install-mac.yml
   - template: ../templates/dotnet-install-previous-wasmtools.yml
@@ -130,7 +120,7 @@ jobs:
   - task: CopyFiles@2
     displayName: Copy Artifacts to PackageCache
     inputs:
-      SourceFolder: '$(System.ArtifactsDirectory)/Nuget_Packages/vslatest'
+      SourceFolder: '$(System.ArtifactsDirectory)/nuget-packages/vslatest'
       Contents: '*.nupkg'
       TargetFolder: '$(Build.SourcesDirectory)/src/PackageCache'
       OverWrite: true
@@ -150,7 +140,7 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/src/SolutionTemplate/binlogs
-      ArtifactName: template-tests-binlogs-macos
+      ArtifactName: template-tests-macos-logs
       ArtifactType: Container
 
 - job: Dotnet_Template_Tests_net7_Linux
@@ -176,7 +166,7 @@ jobs:
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-      artifactName: 'Nuget_Packages'
+      artifactName: 'nuget-packages'
 
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-mobile-install-linux.yml
@@ -196,7 +186,7 @@ jobs:
   - task: CopyFiles@2
     displayName: Copy Artifacts to PackageCache
     inputs:
-      SourceFolder: '$(System.ArtifactsDirectory)/Nuget_Packages/vslatest'
+      SourceFolder: '$(System.ArtifactsDirectory)/nuget-packages/vslatest'
       Contents: '*.nupkg'
       TargetFolder: '$(Build.SourcesDirectory)/src/PackageCache'
       OverWrite: true
@@ -247,7 +237,7 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/src/SolutionTemplate/binlogs
-      ArtifactName: template-tests-binlogs-net7-linux
+      ArtifactName: template-tests-linux-logs
       ArtifactType: Container
 
 
@@ -279,7 +269,7 @@ jobs:
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-      artifactName: 'Nuget_Packages'
+      artifactName: 'nuget-packages'
 
   # Install the .NET 10 SDK in the default system location so 
   # the devserver tests can find them.
@@ -287,7 +277,7 @@ jobs:
     displayName: Install .NET 10 SDK
     inputs:
       packageType: 'sdk'
-      version: '10.0.101'
+      version: '$(DotNetSdkVersion)'
 
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-install.yml
@@ -296,7 +286,7 @@ jobs:
   - task: CopyFiles@2
     displayName: Copy Artifacts to PackageCache
     inputs:
-      SourceFolder: '$(System.ArtifactsDirectory)/Nuget_Packages/vslatest'
+      SourceFolder: '$(System.ArtifactsDirectory)/nuget-packages/vslatest'
       Contents: '*.nupkg'
       TargetFolder: '$(Build.SourcesDirectory)/src/PackageCache'
       OverWrite: true
@@ -317,12 +307,81 @@ jobs:
       targetType: 'inline'
       script: |
         dotnet nuget add source https://pkgs.dev.azure.com/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/_packaging/unoplatformdev/nuget/v3/index.json -n "uno-dev"
+        dotnet test --project src/Uno.UI.DevServer.Cli.E2E.Tests/Uno.UI.DevServer.Cli.E2E.Tests.csproj --filter TestCategory=DevServerSourceE2E --no-restore -v minimal
         build/test-scripts/run-devserver-cli-tests.ps1
       pwsh: true # Use PowerShell core (required for IsWindows to run)
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       NBGV_SemVer2: $(NBGV_SemVer2)
+      PACKAGES_DIR: $(Build.SourcesDirectory)/src/PackageCache
       WasmCachePath: $(WasmCachePath)
       CODEX_API_KEY: $(OPENAI_TOKEN)
       UNO_STUDIO_LICENSES_BIN: $(UNO_STUDIO_LICENSES_BIN)
       UNO_STUDIO_USER_JSON: $(UNO_STUDIO_USER_JSON)
+
+- job: Dotnet_Tests_Validate_DevServerCli_Compat
+  displayName: 'DevServer CLI Compat Tests'
+  timeoutInMinutes: 15
+  cancelTimeoutInMinutes: 0
+  dependsOn: Dotnet_Tests_Validate_DevServerCli
+
+  pool:
+    name: $(poolName)
+    vmImage: $(vmImage)
+
+  strategy:
+    matrix:
+      hosted_ubuntu:
+        poolName: '${{ parameters.vmPoolLinux }}'
+        vmImage:
+      hosted_windows:
+        poolName: '${{ parameters.poolName }}'
+        vmImage:
+      macos:
+        vmImage: 'macOS-15'
+        poolName:
+
+  variables:
+    NuGetAuditMode: direct
+
+  steps:
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      artifactName: 'nuget-packages'
+
+  - task: UseDotNet@2
+    displayName: Install .NET 10 SDK
+    inputs:
+      packageType: 'sdk'
+      version: '$(DotNetSdkVersion)'
+
+  - template: ../templates/gitversion.yml
+  - template: ../templates/dotnet-install.yml
+  - template: ../templates/uno-dev-feed.yml
+
+  - task: CopyFiles@2
+    displayName: Copy Artifacts to PackageCache
+    inputs:
+      SourceFolder: '$(System.ArtifactsDirectory)/nuget-packages/vslatest'
+      Contents: '*.nupkg'
+      TargetFolder: '$(Build.SourcesDirectory)/src/PackageCache'
+      OverWrite: true
+
+  - task: PowerShell@2
+    displayName: Setup local package feed
+    inputs:
+      targetType: 'inline'
+      script: |
+        cd $(Agent.WorkFolder)
+        dotnet nuget add source $(Build.SourcesDirectory)/src/PackageCache -n "local-source-compat"
+
+  - task: PowerShell@2
+    displayName: Run DevServer Compat Tests
+    inputs:
+      targetType: 'inline'
+      script: |
+        build/test-scripts/run-devserver-compat-tests.ps1
+      pwsh: true
+    env:
+      BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
+      NBGV_SemVer2: $(NBGV_SemVer2)

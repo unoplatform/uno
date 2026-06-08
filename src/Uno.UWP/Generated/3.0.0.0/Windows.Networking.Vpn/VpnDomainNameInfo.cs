@@ -10,15 +10,11 @@ namespace Windows.Networking.Vpn
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.Vpn.VpnDomainNameType DomainNameType
+		public global::System.Collections.Generic.IList<global::Windows.Networking.HostName> DnsServers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnDomainNameType VpnDomainNameInfo.DomainNameType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnDomainNameType%20VpnDomainNameInfo.DomainNameType");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnDomainNameInfo", "VpnDomainNameType VpnDomainNameInfo.DomainNameType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameInfo", "DnsServers");
 			}
 		}
 #endif
@@ -28,21 +24,25 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName VpnDomainNameInfo.DomainName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20VpnDomainNameInfo.DomainName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameInfo", "DomainName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnDomainNameInfo", "HostName VpnDomainNameInfo.DomainName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnDomainNameInfo", "DomainName");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Networking.HostName> DnsServers
+		public global::Windows.Networking.Vpn.VpnDomainNameType DomainNameType
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<HostName> VpnDomainNameInfo.DnsServers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CHostName%3E%20VpnDomainNameInfo.DnsServers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameInfo", "DomainNameType");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnDomainNameInfo", "DomainNameType");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<HostName> VpnDomainNameInfo.WebProxyServers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CHostName%3E%20VpnDomainNameInfo.WebProxyServers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameInfo", "WebProxyServers");
 			}
 		}
 #endif
@@ -62,7 +62,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> VpnDomainNameInfo.WebProxyUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CUri%3E%20VpnDomainNameInfo.WebProxyUris");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnDomainNameInfo", "WebProxyUris");
 			}
 		}
 #endif
@@ -70,15 +70,15 @@ namespace Windows.Networking.Vpn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VpnDomainNameInfo(string name, global::Windows.Networking.Vpn.VpnDomainNameType nameType, global::System.Collections.Generic.IEnumerable<global::Windows.Networking.HostName> dnsServerList, global::System.Collections.Generic.IEnumerable<global::Windows.Networking.HostName> proxyServerList)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnDomainNameInfo", "VpnDomainNameInfo.VpnDomainNameInfo(string name, VpnDomainNameType nameType, IEnumerable<HostName> dnsServerList, IEnumerable<HostName> proxyServerList)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnDomainNameInfo", "VpnDomainNameInfo(string name, VpnDomainNameType nameType, IEnumerable<HostName> dnsServerList, IEnumerable<HostName> proxyServerList)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.VpnDomainNameInfo(string, Windows.Networking.Vpn.VpnDomainNameType, System.Collections.Generic.IEnumerable<Windows.Networking.HostName>, System.Collections.Generic.IEnumerable<Windows.Networking.HostName>)
-		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.DomainName.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.DomainName.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.DomainNameType.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.DomainNameType.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.DnsServers.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.DomainName.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.DomainName.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.DomainNameType.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.DomainNameType.set
 		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.WebProxyServers.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnDomainNameInfo.WebProxyUris.get
 	}

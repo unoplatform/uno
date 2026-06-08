@@ -10,15 +10,11 @@ namespace Microsoft.Web.WebView2.Core
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int TreatAsSecure
+		public global::System.Collections.Generic.IList<string> AllowedOrigins
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CoreWebView2CustomSchemeRegistration.TreatAsSecure is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2CustomSchemeRegistration.TreatAsSecure");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration", "int CoreWebView2CustomSchemeRegistration.TreatAsSecure");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration", "AllowedOrigins");
 			}
 		}
 #endif
@@ -28,21 +24,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2CustomSchemeRegistration.HasAuthorityComponent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2CustomSchemeRegistration.HasAuthorityComponent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration", "HasAuthorityComponent");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration", "bool CoreWebView2CustomSchemeRegistration.HasAuthorityComponent");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<string> AllowedOrigins
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<string> CoreWebView2CustomSchemeRegistration.AllowedOrigins is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20CoreWebView2CustomSchemeRegistration.AllowedOrigins");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration", "HasAuthorityComponent");
 			}
 		}
 #endif
@@ -52,7 +38,21 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2CustomSchemeRegistration.SchemeName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2CustomSchemeRegistration.SchemeName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration", "SchemeName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int TreatAsSecure
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration", "TreatAsSecure");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration", "TreatAsSecure");
 			}
 		}
 #endif
@@ -60,15 +60,15 @@ namespace Microsoft.Web.WebView2.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CoreWebView2CustomSchemeRegistration(string schemeName)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration", "CoreWebView2CustomSchemeRegistration.CoreWebView2CustomSchemeRegistration(string schemeName)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration", "CoreWebView2CustomSchemeRegistration(string schemeName)");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.CoreWebView2CustomSchemeRegistration(string)
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.SchemeName.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.AllowedOrigins.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.TreatAsSecure.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.TreatAsSecure.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.HasAuthorityComponent.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.HasAuthorityComponent.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.SchemeName.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.TreatAsSecure.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration.TreatAsSecure.set
 	}
 }

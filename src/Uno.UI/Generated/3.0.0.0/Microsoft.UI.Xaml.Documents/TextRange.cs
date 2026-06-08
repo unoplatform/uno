@@ -3,17 +3,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Documents
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial struct TextRange
 	{
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextRange.TextRange()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public int StartIndex;
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public TextRange(int _StartIndex, int _Length)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.TextRange", "TextRange(int _StartIndex, int _Length)");
+		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		public int Length;
-#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextRange.TextRange(int, int)
+		// Skipping already declared field Microsoft.UI.Xaml.Documents.TextRange.StartIndex
+		// Skipping already declared field Microsoft.UI.Xaml.Documents.TextRange.Length
 	}
 }

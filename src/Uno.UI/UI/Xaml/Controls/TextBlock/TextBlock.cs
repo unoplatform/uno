@@ -21,6 +21,7 @@ using Windows.Foundation;
 using Windows.UI.Input;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Uno;
 using Uno.Foundation.Logging;
@@ -46,7 +47,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if !__WASM__
 		// Used for text selection which is handled natively
 		private bool _isPressed;
-		private Range _selectionOnPointerPressed;
+		private Range _selectionOnPointerPressed; // stores the selection before a mouse press so that it's restored on pointer cancellation
 #endif
 
 		private Hyperlink _hyperlinkOver;
@@ -65,13 +66,21 @@ namespace Microsoft.UI.Xaml.Controls
 			get => _selection;
 			set
 			{
-				_selection = value;
-
-				OnSelectionChanged();
+				if (_selection != value)
+				{
+					_selection = value;
+					OnSelectionChanged();
+				}
 			}
 		}
 
 		partial void OnSelectionChanged();
+
+		/// <summary>
+		/// Called from OnPointerReleased to handle SelectionFlyout visibility updates.
+		/// Implemented in TextBlock.skia.cs.
+		/// </summary>
+		partial void OnPointerReleasedForSelectionFlyout(PointerRoutedEventArgs e);
 
 #if !UNO_REFERENCE_API
 		public TextBlock()
@@ -320,6 +329,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 			OnTextChangedPartial();
 			InvalidateTextBlock();
+
+			// When a TextBlock with LiveSetting (Polite/Assertive) has its text changed,
+			// raise LiveRegionChanged so screen readers announce the new content.
+			// In WinUI3, the OS UIA framework monitors content changes on live region
+			// elements automatically. We replicate that behavior here.
+			if (AutomationProperties.GetLiveSetting(this) != AutomationLiveSetting.Off)
+			{
+				AutomationHelper.RaiseEventIfListener(this, AutomationEvents.LiveRegionChanged);
+			}
 		}
 
 		partial void OnTextChangedPartial();
@@ -388,6 +406,27 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		partial void OnFontSizeChangedPartial();
+
+		#endregion
+
+		#region IsTextScaleFactorEnabled Dependency Property
+
+		public bool IsTextScaleFactorEnabled
+		{
+			get => (bool)GetValue(IsTextScaleFactorEnabledProperty);
+			set => SetValue(IsTextScaleFactorEnabledProperty, value);
+		}
+
+		public static DependencyProperty IsTextScaleFactorEnabledProperty { get; } =
+			DependencyProperty.Register(
+				nameof(IsTextScaleFactorEnabled),
+				typeof(bool),
+				typeof(TextBlock),
+				new FrameworkPropertyMetadata(
+					defaultValue: true,
+					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure
+				)
+			);
 
 		#endregion
 
@@ -752,8 +791,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
+		#region TextHighlighters
+
+		public IList<TextHighlighter> TextHighlighters { get; } = new ObservableCollection<TextHighlighter>();
+
+		#endregion
+
 		#region DependencyProperty: IsTextTrimmed
 		private TypedEventHandler<TextBlock, IsTextTrimmedChangedEventArgs> _isTextTrimmedChanged;
+
+#if __SKIA__
+		public event ContextMenuOpeningEventHandler ContextMenuOpening;
+#endif
 
 #if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
 		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
@@ -906,17 +955,30 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void ClearTextPartial();
 
 		#region pointer events
-#if !__WASM__
-		// https://github.com/unoplatform/uno-private/issues/1238
-		// For pen and touch selection, we need to:
-		// * Start selection using a long-press and/or double-tap (platform specific)
-		// * Add visual anchor (platform specific) to edit selection (pointer pressed out of those anchors only scroll, tap would unselect)
-		// * Prevent scrolling to kick-in when editing selection (i.e. disable the DirectManipulation)
-		// * Automatic scroll (platform specific) when pointer is close to the edge of the parent ScrollViewer
-		// * Show a magnifier when finger can hide the text being (un)selected (platform specific)
-		private static bool SupportsSelection(PointerRoutedEventArgs args)
-			=> args.Pointer.PointerDeviceType is PointerDeviceType.Mouse;
+
+		// Ported from: TextSelectionManager.cpp OnRightTapped (lines 895-938)
+		// WinUI focuses the TextBlock on right-tap so that when the context flyout
+		// opens and steals focus, the LostFocus handler can set
+		// _forceFocusedForContextFlyout, keeping the selection highlight visible.
+		private static readonly RightTappedEventHandler OnRightTapped = (object sender, RightTappedRoutedEventArgs e) =>
+		{
+			if (sender is not TextBlock that || !that.IsTextSelectionEnabled)
+			{
+				return;
+			}
+
+			if (e.Handled)
+			{
+				return;
+			}
+
+#if __SKIA__
+			if (!that.IsFocused && !Internal.TextControlFlyoutHelper.IsOpen(that.ContextFlyout))
+			{
+				that.Focus(FocusState.Pointer);
+			}
 #endif
+		};
 
 		private static readonly PointerEventHandler OnPointerPressed = (object sender, PointerRoutedEventArgs e) =>
 		{
@@ -946,7 +1008,7 @@ namespace Microsoft.UI.Xaml.Controls
 				that.CompleteGesture(); // Make sure to mute Tapped
 			}
 #if !__WASM__
-			else if (that.IsTextSelectionEnabled && SupportsSelection(e))
+			else if (that.IsTextSelectionEnabled && e.Pointer.PointerDeviceType is PointerDeviceType.Mouse)
 			{
 				var point = e.GetCurrentPoint(that);
 
@@ -962,9 +1024,33 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				e.Handled = true;
-				that.Focus(FocusState.Pointer);
+				// Ported from: TextSelectionManager.cpp OnHolding/OnRightTapped
+				// Don't take focus if the context flyout is open.
+#if __SKIA__
+				// A mouse interaction drops any touch grippers that were showing.
+				that.HideGrippers();
+				if (!Internal.TextControlFlyoutHelper.IsOpen(that.ContextFlyout))
+#endif
+				{
+					that.Focus(FocusState.Pointer);
+				}
 
 				that.CapturePointer(e.Pointer);
+			}
+#endif
+#if __SKIA__
+			else if (that.IsTextSelectionEnabled && e.Pointer.PointerDeviceType is PointerDeviceType.Touch or PointerDeviceType.Pen)
+			{
+				// Touch/pen: remember the press for hold/tap detection on release. We don't select or
+				// capture here, and we don't set Handled, so the Holding (long-press -> context menu)
+				// and Tapped/Released gestures still fire. Selection happens in OnPointerReleasedForSelectionFlyout.
+				that._lastPointerDownPoint = e.GetCurrentPoint(null);
+				// Dismiss the selection flyout on press; the gesture re-shows it (tap) or yields to the context menu (hold).
+				that.DismissSelectionFlyoutForPointerPress();
+				if (!Internal.TextControlFlyoutHelper.IsOpen(that.ContextFlyout))
+				{
+					that.Focus(FocusState.Pointer);
+				}
 			}
 #endif
 		};
@@ -1009,6 +1095,9 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
+			// Modeled after WinUI TextSelectionManager.cpp UpdateSelectionFlyoutVisibility:
+			// After pointer release, handle touch/pen selection and queue a SelectionFlyout visibility update.
+			that.OnPointerReleasedForSelectionFlyout(e);
 #if !__WASM__
 			e.Handled |= that.IsTextSelectionEnabled;
 #endif
@@ -1020,7 +1109,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 #if !__WASM__
 				that._isPressed = false;
-				if (SupportsSelection(e))
+				if (e.Pointer.PointerDeviceType is PointerDeviceType.Mouse)
 				{
 					that.Selection = that._selectionOnPointerPressed;
 				}
@@ -1046,7 +1135,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 #if !__WASM__
-			if (that._isPressed && that.IsTextSelectionEnabled && SupportsSelection(e))
+			if (that._isPressed && that.IsTextSelectionEnabled && e.Pointer.PointerDeviceType is PointerDeviceType.Mouse)
 			{
 				var point = e.GetCurrentPoint(that);
 #if __SKIA__ // GetCharacterIndexAtPoint returns -1 if point isn't on any char. For pointers, we still want to get the closest char
@@ -1189,6 +1278,7 @@ namespace Microsoft.UI.Xaml.Controls
 					InsertHandler(PointerEnteredEvent, OnPointerEntered);
 					InsertHandler(PointerExitedEvent, OnPointerExit);
 					InsertHandler(PointerCaptureLostEvent, OnPointerCaptureLost);
+					InsertHandler(RightTappedEvent, OnRightTapped);
 				}
 				else
 				{
@@ -1198,6 +1288,7 @@ namespace Microsoft.UI.Xaml.Controls
 					RemoveHandler(PointerEnteredEvent, OnPointerEntered);
 					RemoveHandler(PointerExitedEvent, OnPointerExit);
 					RemoveHandler(PointerCaptureLostEvent, OnPointerCaptureLost);
+					RemoveHandler(RightTappedEvent, OnRightTapped);
 				}
 			}
 		}

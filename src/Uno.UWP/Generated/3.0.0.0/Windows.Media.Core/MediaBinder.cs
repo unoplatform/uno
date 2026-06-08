@@ -10,25 +10,25 @@ namespace Windows.Media.Core
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Token
+		public global::Windows.Media.Core.MediaSource Source
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaBinder.Token is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaBinder.Token");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaBinder", "string MediaBinder.Token");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaBinder", "Source");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Core.MediaSource Source
+		public string Token
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaSource MediaBinder.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaBinder.Source");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaBinder", "Token");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaBinder", "Token");
 			}
 		}
 #endif
@@ -36,15 +36,15 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaBinder()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaBinder", "MediaBinder.MediaBinder()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaBinder", "MediaBinder()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.MediaBinder.MediaBinder()
 		// Forced skipping of method Windows.Media.Core.MediaBinder.Binding.add
 		// Forced skipping of method Windows.Media.Core.MediaBinder.Binding.remove
+		// Forced skipping of method Windows.Media.Core.MediaBinder.Source.get
 		// Forced skipping of method Windows.Media.Core.MediaBinder.Token.get
 		// Forced skipping of method Windows.Media.Core.MediaBinder.Token.set
-		// Forced skipping of method Windows.Media.Core.MediaBinder.Source.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MediaBinder, global::Windows.Media.Core.MediaBindingEventArgs> Binding
@@ -52,12 +52,12 @@ namespace Windows.Media.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaBinder", "event TypedEventHandler<MediaBinder, MediaBindingEventArgs> MediaBinder.Binding");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaBinder", "event Binding");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaBinder", "event TypedEventHandler<MediaBinder, MediaBindingEventArgs> MediaBinder.Binding");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaBinder", "event Binding");
 			}
 		}
 #endif

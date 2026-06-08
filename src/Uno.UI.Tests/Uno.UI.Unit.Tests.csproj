@@ -32,11 +32,6 @@
 		<PackageReference Include="AwesomeAssertions" />
 		<PackageReference Include="Moq" Version="4.17.2" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" PrivateAssets="all" />
-
-		<!-- https://github.com/NuGet/Home/issues/7344 -->
-		<PackageReference Include="System.Net.Http" Version="4.3.4" />
-		<!-- https://github.com/NuGet/Home/issues/7344 -->
-		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -71,7 +66,7 @@
 		<PRIResource Include="**\*.resw" />
 	</ItemGroup>
 	<ItemGroup>
-		<Page Include="..\SamplesApp\UITests.Shared\Windows_UI_Xaml\Resources\Test_Dictionary_Linked.xaml" Link="App/Linked/Test_Dictionary_Linked.xaml" />
+		<Page Include="..\SamplesApp\SamplesApp.Samples\Windows_UI_Xaml\Resources\Test_Dictionary_Linked.xaml" Link="App/Linked/Test_Dictionary_Linked.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="..\Uno.UI.RemoteControl.VS\AbsolutePathComparer.cs">

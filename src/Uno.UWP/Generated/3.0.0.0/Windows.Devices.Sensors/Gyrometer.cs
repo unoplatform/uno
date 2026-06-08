@@ -8,55 +8,13 @@ namespace Windows.Devices.Sensors
 #endif
 	public partial class Gyrometer
 	{
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint ReportInterval
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint Gyrometer.ReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Gyrometer.ReportInterval");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Gyrometer", "uint Gyrometer.ReportInterval");
-			}
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint MinimumReportInterval
+		public string DeviceId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Gyrometer.MinimumReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Gyrometer.MinimumReportInterval");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Display.DisplayOrientations ReadingTransform
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DisplayOrientations Gyrometer.ReadingTransform is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayOrientations%20Gyrometer.ReadingTransform");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Gyrometer", "DisplayOrientations Gyrometer.ReadingTransform");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint ReportLatency
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint Gyrometer.ReportLatency is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Gyrometer.ReportLatency");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Gyrometer", "uint Gyrometer.ReportLatency");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Gyrometer", "DeviceId");
 			}
 		}
 #endif
@@ -66,7 +24,59 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Gyrometer.MaxBatchSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Gyrometer.MaxBatchSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Gyrometer", "MaxBatchSize");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint MinimumReportInterval
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Gyrometer", "MinimumReportInterval");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.Display.DisplayOrientations ReadingTransform
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Gyrometer", "ReadingTransform");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Gyrometer", "ReadingTransform");
+			}
+		}
+#endif
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint ReportInterval
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Gyrometer", "ReportInterval");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Gyrometer", "ReportInterval");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint ReportLatency
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Gyrometer", "ReportLatency");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Gyrometer", "ReportLatency");
 			}
 		}
 #endif
@@ -76,54 +86,44 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GyrometerDataThreshold Gyrometer.ReportThreshold is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GyrometerDataThreshold%20Gyrometer.ReportThreshold");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Gyrometer", "ReportThreshold");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DeviceId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Gyrometer.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Gyrometer.DeviceId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Sensors.GyrometerReading GetCurrentReading()
-		{
-			throw new global::System.NotImplementedException("The member GyrometerReading Gyrometer.GetCurrentReading() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GyrometerReading%20Gyrometer.GetCurrentReading%28%29");
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.MinimumReportInterval.get
-		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.ReportInterval.set
-		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.ReportInterval.get
-		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.ReadingChanged.add
-		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.ReadingChanged.remove
-		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.DeviceId.get
-		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.ReadingTransform.set
-		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.ReadingTransform.get
-		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.ReportLatency.set
-		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.ReportLatency.get
-		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.MaxBatchSize.get
-		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.ReportThreshold.get
+		// Skipping already declared method Windows.Devices.Sensors.Gyrometer.GetDefault()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string Gyrometer.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Gyrometer.GetDeviceSelector%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Gyrometer", "GetDeviceSelector()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.Gyrometer> FromIdAsync(string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Gyrometer> Gyrometer.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGyrometer%3E%20Gyrometer.FromIdAsync%28string%20deviceId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Gyrometer", "FromIdAsync(string deviceId)");
 		}
 #endif
-		// Skipping already declared method Windows.Devices.Sensors.Gyrometer.GetDefault()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Sensors.GyrometerReading GetCurrentReading()
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Gyrometer", "GetCurrentReading()");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.ReadingChanged.add
+		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.ReadingChanged.remove
+		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.DeviceId.get
+		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.MaxBatchSize.get
+		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.MinimumReportInterval.get
+		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.ReadingTransform.get
+		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.ReadingTransform.set
+		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.ReportInterval.get
+		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.ReportInterval.set
+		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.ReportLatency.get
+		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.ReportLatency.set
+		// Forced skipping of method Windows.Devices.Sensors.Gyrometer.ReportThreshold.get
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sensors.Gyrometer, global::Windows.Devices.Sensors.GyrometerReadingChangedEventArgs> ReadingChanged
@@ -131,12 +131,12 @@ namespace Windows.Devices.Sensors
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Gyrometer", "event TypedEventHandler<Gyrometer, GyrometerReadingChangedEventArgs> Gyrometer.ReadingChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Gyrometer", "event ReadingChanged");
 			}
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Gyrometer", "event TypedEventHandler<Gyrometer, GyrometerReadingChangedEventArgs> Gyrometer.ReadingChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Gyrometer", "event ReadingChanged");
 			}
 		}
 #endif

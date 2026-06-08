@@ -12,19 +12,19 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaSourceAppServiceConnection(global::Windows.ApplicationModel.AppService.AppServiceConnection appServiceConnection)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaSourceAppServiceConnection", "MediaSourceAppServiceConnection.MediaSourceAppServiceConnection(AppServiceConnection appServiceConnection)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaSourceAppServiceConnection", "MediaSourceAppServiceConnection(AppServiceConnection appServiceConnection)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Core.MediaSourceAppServiceConnection.MediaSourceAppServiceConnection(Windows.ApplicationModel.AppService.AppServiceConnection)
-		// Forced skipping of method Windows.Media.Core.MediaSourceAppServiceConnection.InitializeMediaStreamSourceRequested.add
-		// Forced skipping of method Windows.Media.Core.MediaSourceAppServiceConnection.InitializeMediaStreamSourceRequested.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaSourceAppServiceConnection", "void MediaSourceAppServiceConnection.Start()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaSourceAppServiceConnection", "Start()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.MediaSourceAppServiceConnection.InitializeMediaStreamSourceRequested.add
+		// Forced skipping of method Windows.Media.Core.MediaSourceAppServiceConnection.InitializeMediaStreamSourceRequested.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MediaSourceAppServiceConnection, global::Windows.Media.Core.InitializeMediaStreamSourceRequestedEventArgs> InitializeMediaStreamSourceRequested
@@ -32,12 +32,12 @@ namespace Windows.Media.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaSourceAppServiceConnection", "event TypedEventHandler<MediaSourceAppServiceConnection, InitializeMediaStreamSourceRequestedEventArgs> MediaSourceAppServiceConnection.InitializeMediaStreamSourceRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaSourceAppServiceConnection", "event InitializeMediaStreamSourceRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaSourceAppServiceConnection", "event TypedEventHandler<MediaSourceAppServiceConnection, InitializeMediaStreamSourceRequestedEventArgs> MediaSourceAppServiceConnection.InitializeMediaStreamSourceRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaSourceAppServiceConnection", "event InitializeMediaStreamSourceRequested");
 			}
 		}
 #endif

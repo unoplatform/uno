@@ -8,16 +8,6 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 	public static partial class AppointmentProperties
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string HasInvitees
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.HasInvitees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentProperties.HasInvitees");
-			}
-		}
-#endif
 		// Skipping already declared property AllDay
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -25,7 +15,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.AllowNewTimeProposal is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentProperties.AllowNewTimeProposal");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentProperties", "AllowNewTimeProposal");
 			}
 		}
 #endif
@@ -35,20 +25,40 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.BusyStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentProperties.BusyStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentProperties", "BusyStatus");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string ChangeNumber
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentProperties", "ChangeNumber");
 			}
 		}
 #endif
 		// Skipping already declared property DefaultProperties
 		// Skipping already declared property Details
-		// Skipping already declared property Duration
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string Recurrence
+		public static string DetailsKind
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.Recurrence is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentProperties.Recurrence");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentProperties", "DetailsKind");
+			}
+		}
+#endif
+		// Skipping already declared property Duration
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string HasInvitees
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentProperties", "HasInvitees");
 			}
 		}
 #endif
@@ -58,7 +68,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.Invitees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentProperties.Invitees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentProperties", "Invitees");
 			}
 		}
 #endif
@@ -68,7 +78,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.IsCanceledMeeting is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentProperties.IsCanceledMeeting");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentProperties", "IsCanceledMeeting");
 			}
 		}
 #endif
@@ -78,7 +88,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.IsOrganizedByUser is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentProperties.IsOrganizedByUser");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentProperties", "IsOrganizedByUser");
 			}
 		}
 #endif
@@ -88,7 +98,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.IsResponseRequested is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentProperties.IsResponseRequested");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentProperties", "IsResponseRequested");
 			}
 		}
 #endif
@@ -99,7 +109,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.OnlineMeetingLink is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentProperties.OnlineMeetingLink");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentProperties", "OnlineMeetingLink");
 			}
 		}
 #endif
@@ -110,18 +120,38 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.OriginalStartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentProperties.OriginalStartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentProperties", "OriginalStartTime");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string Recurrence
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentProperties", "Recurrence");
 			}
 		}
 #endif
 		// Skipping already declared property Reminder
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string RemoteChangeNumber
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentProperties", "RemoteChangeNumber");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string ReplyTime
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.ReplyTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentProperties.ReplyTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentProperties", "ReplyTime");
 			}
 		}
 #endif
@@ -131,7 +161,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.Sensitivity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentProperties.Sensitivity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentProperties", "Sensitivity");
 			}
 		}
 #endif
@@ -143,7 +173,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentProperties.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentProperties", "Uri");
 			}
 		}
 #endif
@@ -153,65 +183,35 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.UserResponse is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentProperties.UserResponse");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentProperties", "UserResponse");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string DetailsKind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.DetailsKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentProperties.DetailsKind");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string RemoteChangeNumber
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.RemoteChangeNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentProperties.RemoteChangeNumber");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string ChangeNumber
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.ChangeNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentProperties.ChangeNumber");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.ChangeNumber.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.RemoteChangeNumber.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.DetailsKind.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.Subject.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.Location.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.StartTime.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.Duration.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.Reminder.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.BusyStatus.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.Sensitivity.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.OriginalStartTime.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.IsResponseRequested.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.AllowNewTimeProposal.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.AllDay.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.AllowNewTimeProposal.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.BusyStatus.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.ChangeNumber.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.DefaultProperties.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.Details.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.OnlineMeetingLink.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.ReplyTime.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.Organizer.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.UserResponse.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.DetailsKind.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.Duration.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.HasInvitees.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.Invitees.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.IsCanceledMeeting.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.IsOrganizedByUser.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.IsResponseRequested.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.Location.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.OnlineMeetingLink.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.Organizer.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.OriginalStartTime.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.Recurrence.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.Reminder.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.RemoteChangeNumber.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.ReplyTime.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.Sensitivity.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.StartTime.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.Subject.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.Uri.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.Invitees.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.DefaultProperties.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentProperties.UserResponse.get
 	}
 }

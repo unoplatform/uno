@@ -19,7 +19,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan CurrentTimeChangeRequestedEventArgs.Time is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20CurrentTimeChangeRequestedEventArgs.Time");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.CurrentTimeChangeRequestedEventArgs", "Time");
 			}
 		}
 #endif

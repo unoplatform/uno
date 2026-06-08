@@ -15,25 +15,11 @@ namespace Windows.Devices.HumanInterfaceDevice
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsActive
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool HidBooleanControl.IsActive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HidBooleanControl.IsActive");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "bool HidBooleanControl.IsActive");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription ControlDescription
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HidBooleanControlDescription HidBooleanControl.ControlDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HidBooleanControlDescription%20HidBooleanControl.ControlDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "ControlDescription");
 			}
 		}
 #endif
@@ -43,7 +29,21 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HidBooleanControl.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20HidBooleanControl.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "Id");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsActive
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "IsActive");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "IsActive");
 			}
 		}
 #endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort HidBooleanControl.UsageId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20HidBooleanControl.UsageId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "UsageId");
 			}
 		}
 #endif
@@ -63,15 +63,15 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort HidBooleanControl.UsagePage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20HidBooleanControl.UsagePage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidBooleanControl", "UsagePage");
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControl.ControlDescription.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControl.Id.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControl.UsagePage.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControl.UsageId.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControl.IsActive.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControl.IsActive.set
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControl.ControlDescription.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControl.UsageId.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidBooleanControl.UsagePage.get
 	}
 }

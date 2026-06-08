@@ -17,27 +17,27 @@ namespace Windows.Media.Capture
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Capture.AdvancedCapturedPhoto> CaptureAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AdvancedCapturedPhoto> AdvancedPhotoCapture.CaptureAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAdvancedCapturedPhoto%3E%20AdvancedPhotoCapture.CaptureAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AdvancedPhotoCapture", "CaptureAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Capture.AdvancedCapturedPhoto> CaptureAsync(object context)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AdvancedCapturedPhoto> AdvancedPhotoCapture.CaptureAsync(object context) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAdvancedCapturedPhoto%3E%20AdvancedPhotoCapture.CaptureAsync%28object%20context%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AdvancedPhotoCapture", "CaptureAsync(object context)");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.AdvancedPhotoCapture.OptionalReferencePhotoCaptured.add
-		// Forced skipping of method Windows.Media.Capture.AdvancedPhotoCapture.OptionalReferencePhotoCaptured.remove
-		// Forced skipping of method Windows.Media.Capture.AdvancedPhotoCapture.AllPhotosCaptured.add
-		// Forced skipping of method Windows.Media.Capture.AdvancedPhotoCapture.AllPhotosCaptured.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction FinishAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction AdvancedPhotoCapture.FinishAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AdvancedPhotoCapture.FinishAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AdvancedPhotoCapture", "FinishAsync()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.AdvancedPhotoCapture.AllPhotosCaptured.add
+		// Forced skipping of method Windows.Media.Capture.AdvancedPhotoCapture.AllPhotosCaptured.remove
+		// Forced skipping of method Windows.Media.Capture.AdvancedPhotoCapture.OptionalReferencePhotoCaptured.add
+		// Forced skipping of method Windows.Media.Capture.AdvancedPhotoCapture.OptionalReferencePhotoCaptured.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Capture.AdvancedPhotoCapture, object> AllPhotosCaptured
@@ -45,12 +45,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AdvancedPhotoCapture", "event TypedEventHandler<AdvancedPhotoCapture, object> AdvancedPhotoCapture.AllPhotosCaptured");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AdvancedPhotoCapture", "event AllPhotosCaptured");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AdvancedPhotoCapture", "event TypedEventHandler<AdvancedPhotoCapture, object> AdvancedPhotoCapture.AllPhotosCaptured");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AdvancedPhotoCapture", "event AllPhotosCaptured");
 			}
 		}
 #endif
@@ -61,12 +61,12 @@ namespace Windows.Media.Capture
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AdvancedPhotoCapture", "event TypedEventHandler<AdvancedPhotoCapture, OptionalReferencePhotoCapturedEventArgs> AdvancedPhotoCapture.OptionalReferencePhotoCaptured");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AdvancedPhotoCapture", "event OptionalReferencePhotoCaptured");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AdvancedPhotoCapture", "event TypedEventHandler<AdvancedPhotoCapture, OptionalReferencePhotoCapturedEventArgs> AdvancedPhotoCapture.OptionalReferencePhotoCaptured");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AdvancedPhotoCapture", "event OptionalReferencePhotoCaptured");
 			}
 		}
 #endif

@@ -18,9 +18,11 @@ stages:
         README.md
         README/**
         build/**
+        src/Uno.Sdk/packages.json
 
     - template: templates/gitversion-run.yml
     - template: setup/.azure-devops-setup-commitsar.yml
+    - template: setup/.azure-devops-setup-validate-packages.yml
     - template: setup/.azure-devops-setup-doc-validations.yml
 
   - job: DetermineScope
@@ -46,6 +48,10 @@ stages:
   parameters:
     vmImage: '$(linuxVMImage)'
 
+- template: setup/.azure-devops-setup-font-fallback.yml
+  parameters:
+    vmImage: '$(linuxVMImage)'
+
 - stage: binaries_build_native_macos
   displayName: Build - Native Binaries
   dependsOn:
@@ -54,7 +60,6 @@ stages:
   jobs:
   - template: build/.azure-devops-build-native.yml
     parameters:
-      UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
       macOSImageName: '$(macOSVMImage)'
  
@@ -68,7 +73,6 @@ stages:
   - template: build/.azure-devops-build-managed.yml
     parameters:
       poolName: '$(windowsScaledPool)'
-      UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
 
 - stage: packages_tests
@@ -98,6 +102,16 @@ stages:
     parameters:
       poolName: '$(windowsScaledPool)'
 
+- stage: addin_version_alignment
+  displayName: Tests - Add-in Version Alignment
+  dependsOn: []
+
+  jobs:
+
+  - template: tests/.azure-devops-tests-devserver-linux.yml
+    parameters:
+      poolName: '$(linuxScaledPool)'
+
 - stage: wasm_tests
   displayName: Tests - WebAssembly Native
   condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeWasm'], 'true')))
@@ -120,7 +134,6 @@ stages:
     poolName: '$(windowsScaledPool)'
     xCodeRootBuild: '$(xCodeRoot)'
     xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
-    UNO_UWP_BUILD: false
     XAML_FLAVOR_BUILD: WinUI
 
 - stage: android_tests

@@ -10,41 +10,21 @@ namespace Windows.Security.Credentials
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DisplayName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string WebAccountProvider.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebAccountProvider.DisplayName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri IconUri
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Uri WebAccountProvider.IconUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20WebAccountProvider.IconUri");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Id
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string WebAccountProvider.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebAccountProvider.Id");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Authority
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebAccountProvider.Authority is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebAccountProvider.Authority");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccountProvider", "Authority");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string DisplayName
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccountProvider", "DisplayName");
 			}
 		}
 #endif
@@ -54,17 +34,27 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebAccountProvider.DisplayPurpose is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebAccountProvider.DisplayPurpose");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccountProvider", "DisplayPurpose");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.System.User User
+		public global::System.Uri IconUri
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User WebAccountProvider.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20WebAccountProvider.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccountProvider", "IconUri");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Id
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccountProvider", "Id");
 			}
 		}
 #endif
@@ -74,7 +64,17 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebAccountProvider.IsSystemProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WebAccountProvider.IsSystemProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccountProvider", "IsSystemProvider");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.System.User User
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.WebAccountProvider", "User");
 			}
 		}
 #endif
@@ -82,16 +82,16 @@ namespace Windows.Security.Credentials
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WebAccountProvider(string id, string displayName, global::System.Uri iconUri)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.WebAccountProvider", "WebAccountProvider.WebAccountProvider(string id, string displayName, Uri iconUri)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.WebAccountProvider", "WebAccountProvider(string id, string displayName, Uri iconUri)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.WebAccountProvider(string, string, System.Uri)
-		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.Id.get
-		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.DisplayName.get
-		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.IconUri.get
-		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.DisplayPurpose.get
 		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.Authority.get
-		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.User.get
+		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.DisplayName.get
+		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.DisplayPurpose.get
+		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.IconUri.get
+		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.Id.get
 		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.IsSystemProvider.get
+		// Forced skipping of method Windows.Security.Credentials.WebAccountProvider.User.get
 	}
 }

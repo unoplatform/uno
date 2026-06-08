@@ -8,41 +8,13 @@ namespace Windows.Devices.Sensors
 #endif
 	public partial class LightSensor
 	{
-#if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint ReportInterval
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint LightSensor.ReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20LightSensor.ReportInterval");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.LightSensor", "uint LightSensor.ReportInterval");
-			}
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint MinimumReportInterval
+		public string DeviceId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint LightSensor.MinimumReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20LightSensor.MinimumReportInterval");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint ReportLatency
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint LightSensor.ReportLatency is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20LightSensor.ReportLatency");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.LightSensor", "uint LightSensor.ReportLatency");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.LightSensor", "DeviceId");
 			}
 		}
 #endif
@@ -52,7 +24,45 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint LightSensor.MaxBatchSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20LightSensor.MaxBatchSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.LightSensor", "MaxBatchSize");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint MinimumReportInterval
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.LightSensor", "MinimumReportInterval");
+			}
+		}
+#endif
+#if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint ReportInterval
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.LightSensor", "ReportInterval");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.LightSensor", "ReportInterval");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint ReportLatency
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.LightSensor", "ReportLatency");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.LightSensor", "ReportLatency");
 			}
 		}
 #endif
@@ -62,52 +72,42 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LightSensorDataThreshold LightSensor.ReportThreshold is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LightSensorDataThreshold%20LightSensor.ReportThreshold");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.LightSensor", "ReportThreshold");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DeviceId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string LightSensor.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20LightSensor.DeviceId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Sensors.LightSensorReading GetCurrentReading()
-		{
-			throw new global::System.NotImplementedException("The member LightSensorReading LightSensor.GetCurrentReading() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LightSensorReading%20LightSensor.GetCurrentReading%28%29");
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Sensors.LightSensor.MinimumReportInterval.get
-		// Forced skipping of method Windows.Devices.Sensors.LightSensor.ReportInterval.set
-		// Forced skipping of method Windows.Devices.Sensors.LightSensor.ReportInterval.get
-		// Forced skipping of method Windows.Devices.Sensors.LightSensor.ReadingChanged.add
-		// Forced skipping of method Windows.Devices.Sensors.LightSensor.ReadingChanged.remove
-		// Forced skipping of method Windows.Devices.Sensors.LightSensor.DeviceId.get
-		// Forced skipping of method Windows.Devices.Sensors.LightSensor.ReportLatency.set
-		// Forced skipping of method Windows.Devices.Sensors.LightSensor.ReportLatency.get
-		// Forced skipping of method Windows.Devices.Sensors.LightSensor.MaxBatchSize.get
-		// Forced skipping of method Windows.Devices.Sensors.LightSensor.ReportThreshold.get
+		// Skipping already declared method Windows.Devices.Sensors.LightSensor.GetDefault()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string LightSensor.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20LightSensor.GetDeviceSelector%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.LightSensor", "GetDeviceSelector()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.LightSensor> FromIdAsync(string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<LightSensor> LightSensor.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CLightSensor%3E%20LightSensor.FromIdAsync%28string%20deviceId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.LightSensor", "FromIdAsync(string deviceId)");
 		}
 #endif
-		// Skipping already declared method Windows.Devices.Sensors.LightSensor.GetDefault()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Sensors.LightSensorReading GetCurrentReading()
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.LightSensor", "GetCurrentReading()");
+		}
+#endif
+		// Forced skipping of method Windows.Devices.Sensors.LightSensor.ReadingChanged.add
+		// Forced skipping of method Windows.Devices.Sensors.LightSensor.ReadingChanged.remove
+		// Forced skipping of method Windows.Devices.Sensors.LightSensor.DeviceId.get
+		// Forced skipping of method Windows.Devices.Sensors.LightSensor.MaxBatchSize.get
+		// Forced skipping of method Windows.Devices.Sensors.LightSensor.MinimumReportInterval.get
+		// Forced skipping of method Windows.Devices.Sensors.LightSensor.ReportInterval.get
+		// Forced skipping of method Windows.Devices.Sensors.LightSensor.ReportInterval.set
+		// Forced skipping of method Windows.Devices.Sensors.LightSensor.ReportLatency.get
+		// Forced skipping of method Windows.Devices.Sensors.LightSensor.ReportLatency.set
+		// Forced skipping of method Windows.Devices.Sensors.LightSensor.ReportThreshold.get
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sensors.LightSensor, global::Windows.Devices.Sensors.LightSensorReadingChangedEventArgs> ReadingChanged
@@ -115,12 +115,12 @@ namespace Windows.Devices.Sensors
 			[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.LightSensor", "event TypedEventHandler<LightSensor, LightSensorReadingChangedEventArgs> LightSensor.ReadingChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.LightSensor", "event ReadingChanged");
 			}
 			[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.LightSensor", "event TypedEventHandler<LightSensor, LightSensorReadingChangedEventArgs> LightSensor.ReadingChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.LightSensor", "event ReadingChanged");
 			}
 		}
 #endif

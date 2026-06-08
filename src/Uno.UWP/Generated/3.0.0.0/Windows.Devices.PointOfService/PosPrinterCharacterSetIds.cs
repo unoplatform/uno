@@ -14,7 +14,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PosPrinterCharacterSetIds.Ansi is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PosPrinterCharacterSetIds.Ansi");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCharacterSetIds", "Ansi");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PosPrinterCharacterSetIds.Ascii is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PosPrinterCharacterSetIds.Ascii");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCharacterSetIds", "Ascii");
 			}
 		}
 #endif
@@ -34,12 +34,12 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PosPrinterCharacterSetIds.Utf16LE is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PosPrinterCharacterSetIds.Utf16LE");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.PosPrinterCharacterSetIds", "Utf16LE");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCharacterSetIds.Utf16LE.get
-		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCharacterSetIds.Ascii.get
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCharacterSetIds.Ansi.get
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCharacterSetIds.Ascii.get
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinterCharacterSetIds.Utf16LE.get
 	}
 }

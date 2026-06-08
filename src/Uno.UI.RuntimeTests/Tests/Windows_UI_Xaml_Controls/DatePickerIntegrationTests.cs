@@ -74,6 +74,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 		// Test Cases
 		//
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task VerifyDefaultProperties()
 		{
 			DatePicker datePicker = null;
@@ -122,6 +123,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task CanFireDateChangedEvent()
 		{
 			var datePickerValueChangedEvent = new TaskCompletionSource<object>();
@@ -549,6 +551,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task ValidateDayMonthYearFormatProperties()
 		{
 			string dayFormat = "{day.integer(2)}";
@@ -688,6 +691,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task ValidateMinYearAndMaxYearProperties()
 		{
 			var datePicker = await SetupDatePickerTest();
@@ -765,7 +769,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 #else
 				var flyoutPopup = VisualTreeHelper.GetOpenPopupsForXamlRoot(datePicker.XamlRoot)[0];
 #endif
-				var datepickerFlyoutPresenter = GetDatePickerFlyoutPresenter(datePicker.XamlRoot);
+				var datepickerFlyoutPresenter = GetDatePickerFlyoutPresenter();
 
 				// The flyout popup, the flyout presenter and the button should have an RTL flow direction.
 				// The DatePicker itself should remain in LTR flow direction.
@@ -953,6 +957,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task HasPlaceholderTextByDefault()
 		{
 			var datePicker = await SetupDatePickerTest();
@@ -996,6 +1001,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 #endif
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task ValidateSelectedDatePropagatesToDate()
 		{
 			var datePicker = await SetupDatePickerTest();
@@ -1033,6 +1039,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task CanProgrammaticallyClearSelectedDate()
 		{
 			var datePicker = await SetupDatePickerTest();
@@ -1090,6 +1097,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task CanSelectDateInJapaneseCalendar()
 		{
 			var datePicker = await SetupDatePickerTest();
@@ -1114,9 +1122,9 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			});
 		}
 
-		private DatePickerFlyoutPresenter GetDatePickerFlyoutPresenter(XamlRoot xamlRoot)
+		private DatePickerFlyoutPresenter GetDatePickerFlyoutPresenter()
 		{
-			return FlyoutHelper.GetOpenFlyoutPresenter(xamlRoot) as DatePickerFlyoutPresenter;
+			return FlyoutHelper.GetOpenFlyoutPresenter() as DatePickerFlyoutPresenter;
 		}
 
 		private void VerifyDatesAreEqual(Calendar expected, DateTimeOffset actual)

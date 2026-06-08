@@ -14,16 +14,16 @@ namespace Microsoft.UI.Windowing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompactOverlaySize CompactOverlayPresenter.InitialSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompactOverlaySize%20CompactOverlayPresenter.InitialSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Windowing.CompactOverlayPresenter", "InitialSize");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.CompactOverlayPresenter", "CompactOverlaySize CompactOverlayPresenter.InitialSize");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.CompactOverlayPresenter", "InitialSize");
 			}
 		}
 #endif
+		// Skipping already declared method Microsoft.UI.Windowing.CompactOverlayPresenter.Create()
 		// Forced skipping of method Microsoft.UI.Windowing.CompactOverlayPresenter.InitialSize.get
 		// Forced skipping of method Microsoft.UI.Windowing.CompactOverlayPresenter.InitialSize.set
-		// Skipping already declared method Microsoft.UI.Windowing.CompactOverlayPresenter.Create()
 	}
 }

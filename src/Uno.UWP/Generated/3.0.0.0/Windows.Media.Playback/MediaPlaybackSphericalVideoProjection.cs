@@ -15,43 +15,15 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Quaternion ViewOrientation
+		public global::Windows.Media.MediaProperties.SphericalVideoFrameFormat FrameFormat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Quaternion MediaPlaybackSphericalVideoProjection.ViewOrientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Quaternion%20MediaPlaybackSphericalVideoProjection.ViewOrientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSphericalVideoProjection", "FrameFormat");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSphericalVideoProjection", "Quaternion MediaPlaybackSphericalVideoProjection.ViewOrientation");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Playback.SphericalVideoProjectionMode ProjectionMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SphericalVideoProjectionMode MediaPlaybackSphericalVideoProjection.ProjectionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SphericalVideoProjectionMode%20MediaPlaybackSphericalVideoProjection.ProjectionMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSphericalVideoProjection", "SphericalVideoProjectionMode MediaPlaybackSphericalVideoProjection.ProjectionMode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool MediaPlaybackSphericalVideoProjection.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlaybackSphericalVideoProjection.IsEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSphericalVideoProjection", "bool MediaPlaybackSphericalVideoProjection.IsEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSphericalVideoProjection", "FrameFormat");
 			}
 		}
 #endif
@@ -61,37 +33,65 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MediaPlaybackSphericalVideoProjection.HorizontalFieldOfViewInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20MediaPlaybackSphericalVideoProjection.HorizontalFieldOfViewInDegrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSphericalVideoProjection", "HorizontalFieldOfViewInDegrees");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSphericalVideoProjection", "double MediaPlaybackSphericalVideoProjection.HorizontalFieldOfViewInDegrees");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSphericalVideoProjection", "HorizontalFieldOfViewInDegrees");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.MediaProperties.SphericalVideoFrameFormat FrameFormat
+		public bool IsEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SphericalVideoFrameFormat MediaPlaybackSphericalVideoProjection.FrameFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SphericalVideoFrameFormat%20MediaPlaybackSphericalVideoProjection.FrameFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSphericalVideoProjection", "IsEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSphericalVideoProjection", "SphericalVideoFrameFormat MediaPlaybackSphericalVideoProjection.FrameFormat");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSphericalVideoProjection", "IsEnabled");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.IsEnabled.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.IsEnabled.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Playback.SphericalVideoProjectionMode ProjectionMode
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSphericalVideoProjection", "ProjectionMode");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSphericalVideoProjection", "ProjectionMode");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Quaternion ViewOrientation
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSphericalVideoProjection", "ViewOrientation");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSphericalVideoProjection", "ViewOrientation");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.FrameFormat.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.FrameFormat.set
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.HorizontalFieldOfViewInDegrees.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.HorizontalFieldOfViewInDegrees.set
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.ViewOrientation.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.ViewOrientation.set
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.IsEnabled.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.IsEnabled.set
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.ProjectionMode.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.ProjectionMode.set
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.ViewOrientation.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSphericalVideoProjection.ViewOrientation.set
 	}
 }

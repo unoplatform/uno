@@ -1,4 +1,4 @@
-﻿#if __SKIA__
+#if __SKIA__
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -39,19 +39,19 @@ public class Given_ContainerVisual
 		Assert.IsTrue(containerVisual.IsChildrenRenderOrderDirty);
 		var children = containerVisual.GetChildrenInRenderOrderTestingOnly();
 		Assert.IsFalse(containerVisual.IsChildrenRenderOrderDirty);
-		Assert.AreEqual(1, children.Count());
+		Assert.HasCount(1, children);
 
 		containerVisual.Children.InsertAtTop(compositor.CreateShapeVisual());
 		Assert.IsTrue(containerVisual.IsChildrenRenderOrderDirty);
 		children = containerVisual.GetChildrenInRenderOrderTestingOnly();
 		Assert.IsFalse(containerVisual.IsChildrenRenderOrderDirty);
-		Assert.AreEqual(2, children.Count());
+		Assert.HasCount(2, children);
 
 		containerVisual.Children.Remove(shape);
 		Assert.IsTrue(containerVisual.IsChildrenRenderOrderDirty);
 		children = containerVisual.GetChildrenInRenderOrderTestingOnly();
 		Assert.IsFalse(containerVisual.IsChildrenRenderOrderDirty);
-		Assert.AreEqual(1, children.Count());
+		Assert.HasCount(1, children);
 	}
 
 	[TestMethod]
@@ -124,6 +124,60 @@ public class Given_ContainerVisual
 
 		var screenShot2 = await UITestHelper.ScreenShot(((FrameworkElement)TestServices.WindowHelper.XamlRoot.VisualTree.RootElement)!);
 		ImageAssert.DoesNotHaveColorAt(screenShot2, p, Colors.Red);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22416")]
+	public void GetArrangeClipPathInElementCoordinateSpace_NullParentAncestorClip_MapsToElementLocalSpace()
+	{
+		var compositor = TestServices.WindowHelper.XamlRoot.Compositor;
+		var visual = compositor.CreateContainerVisual();
+		visual.Offset = new Vector3(30, 20, 0);
+
+		// An ancestor (Panel) layout clip is stored in the parent's coordinate space.
+		// For an element at offset (30, 20), a local clip of (0, 0, 50, 40) is stored as (30, 20, 50, 40).
+		visual.LayoutClip = (new Rect(30, 20, 50, 40), true);
+
+		// No parent: mimics the composition root (RootVisual is a Panel) or a visual rendered standalone
+		// via RenderRootVisual. This used to throw a NullReferenceException (issue #22416).
+		Assert.IsNull(visual.Parent);
+
+		// SKPath overload (the one used by GetPrePaintingClipping during rendering).
+		using var path = new SKPath();
+		Assert.IsTrue(visual.GetArrangeClipPathInElementCoordinateSpace(path));
+		Assert.AreEqual(0f, path.Bounds.Left, 0.01f);
+		Assert.AreEqual(0f, path.Bounds.Top, 0.01f);
+		Assert.AreEqual(50f, path.Bounds.Right, 0.01f);
+		Assert.AreEqual(40f, path.Bounds.Bottom, 0.01f);
+
+		// Rect? overload.
+		var rect = visual.GetArrangeClipPathInElementCoordinateSpace();
+		Assert.IsNotNull(rect);
+		Assert.AreEqual(0, rect.Value.X, 0.01);
+		Assert.AreEqual(0, rect.Value.Y, 0.01);
+		Assert.AreEqual(50, rect.Value.Width, 0.01);
+		Assert.AreEqual(40, rect.Value.Height, 0.01);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22416")]
+	public void RenderRootVisual_NullParentAncestorClip_DoesNotThrow()
+	{
+		var compositor = TestServices.WindowHelper.XamlRoot.Compositor;
+		var visual = compositor.CreateContainerVisual();
+		visual.Size = new Vector2(100, 100);
+		visual.Offset = new Vector3(30, 20, 0);
+		visual.LayoutClip = (new Rect(30, 20, 50, 40), true);
+
+		Assert.IsNull(visual.Parent);
+
+		using var surface = SKSurface.Create(new SKImageInfo(100, 100, SKColorType.Bgra8888, SKAlphaType.Premul));
+
+		// Rendering a parent-less Panel-like visual carrying an ancestor layout clip used to throw a
+		// NullReferenceException inside GetArrangeClipPathInElementCoordinateSpace (issue #22416).
+		visual.RenderRootVisual(surface.Canvas, Vector2.Zero);
 	}
 
 	private class FrameCounterSKCanvasElement : SKCanvasElement

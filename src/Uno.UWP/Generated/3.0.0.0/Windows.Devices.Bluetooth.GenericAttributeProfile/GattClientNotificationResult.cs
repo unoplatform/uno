@@ -15,11 +15,21 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ushort BytesSent
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult", "BytesSent");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public byte? ProtocolError
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte? GattClientNotificationResult.ProtocolError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%3F%20GattClientNotificationResult.ProtocolError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult", "ProtocolError");
 			}
 		}
 #endif
@@ -29,7 +39,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattCommunicationStatus GattClientNotificationResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattCommunicationStatus%20GattClientNotificationResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult", "Status");
 			}
 		}
 #endif
@@ -39,23 +49,13 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattSubscribedClient GattClientNotificationResult.SubscribedClient is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattSubscribedClient%20GattClientNotificationResult.SubscribedClient");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult", "SubscribedClient");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ushort BytesSent
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort GattClientNotificationResult.BytesSent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20GattClientNotificationResult.BytesSent");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.SubscribedClient.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.Status.get
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.ProtocolError.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.BytesSent.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.ProtocolError.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.Status.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattClientNotificationResult.SubscribedClient.get
 	}
 }

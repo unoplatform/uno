@@ -19,11 +19,11 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RadialControllerMenu.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RadialControllerMenu.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerMenu", "IsEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerMenu", "bool RadialControllerMenu.IsEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerMenu", "IsEnabled");
 			}
 		}
 #endif
@@ -33,33 +33,33 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<RadialControllerMenuItem> RadialControllerMenu.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CRadialControllerMenuItem%3E%20RadialControllerMenu.Items");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerMenu", "Items");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.Items.get
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.IsEnabled.get
-		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.IsEnabled.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.RadialControllerMenuItem GetSelectedMenuItem()
 		{
-			throw new global::System.NotImplementedException("The member RadialControllerMenuItem RadialControllerMenu.GetSelectedMenuItem() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RadialControllerMenuItem%20RadialControllerMenu.GetSelectedMenuItem%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerMenu", "GetSelectedMenuItem()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SelectMenuItem(global::Windows.UI.Input.RadialControllerMenuItem menuItem)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerMenu", "void RadialControllerMenu.SelectMenuItem(RadialControllerMenuItem menuItem)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerMenu", "SelectMenuItem(RadialControllerMenuItem menuItem)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySelectPreviouslySelectedMenuItem()
 		{
-			throw new global::System.NotImplementedException("The member bool RadialControllerMenu.TrySelectPreviouslySelectedMenuItem() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RadialControllerMenu.TrySelectPreviouslySelectedMenuItem%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.RadialControllerMenu", "TrySelectPreviouslySelectedMenuItem()");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.IsEnabled.get
+		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.IsEnabled.set
+		// Forced skipping of method Windows.UI.Input.RadialControllerMenu.Items.get
 	}
 }

@@ -14,7 +14,7 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HostName.CanonicalName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HostName.CanonicalName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "CanonicalName");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HostName.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HostName.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "DisplayName");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPInformation HostName.IPInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPInformation%20HostName.IPInformation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "IPInformation");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HostName.RawName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HostName.RawName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "RawName");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Networking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostNameType HostName.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostNameType%20HostName.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "Type");
 			}
 		}
 #endif
@@ -62,35 +62,35 @@ namespace Windows.Networking
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HostName(string hostName)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.HostName", "HostName.HostName(string hostName)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.HostName", "HostName(string hostName)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.HostName.HostName(string)
-		// Forced skipping of method Windows.Networking.HostName.IPInformation.get
-		// Forced skipping of method Windows.Networking.HostName.RawName.get
-		// Forced skipping of method Windows.Networking.HostName.DisplayName.get
-		// Forced skipping of method Windows.Networking.HostName.CanonicalName.get
-		// Forced skipping of method Windows.Networking.HostName.Type.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static int Compare(string value1, string value2)
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "Compare(string value1, string value2)");
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsEqual(global::Windows.Networking.HostName hostName)
 		{
-			throw new global::System.NotImplementedException("The member bool HostName.IsEqual(HostName hostName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HostName.IsEqual%28HostName%20hostName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "IsEqual(HostName hostName)");
 		}
 #endif
 #if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HostName.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HostName.ToString%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.HostName", "ToString()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static int Compare(string value1, string value2)
-		{
-			throw new global::System.NotImplementedException("The member int HostName.Compare(string value1, string value2) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20HostName.Compare%28string%20value1%2C%20string%20value2%29");
-		}
-#endif
+		// Forced skipping of method Windows.Networking.HostName.CanonicalName.get
+		// Forced skipping of method Windows.Networking.HostName.DisplayName.get
+		// Forced skipping of method Windows.Networking.HostName.IPInformation.get
+		// Forced skipping of method Windows.Networking.HostName.RawName.get
+		// Forced skipping of method Windows.Networking.HostName.Type.get
 	}
 }

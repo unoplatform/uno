@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ClipboardHistoryItem> ClipboardHistoryItemsResult.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CClipboardHistoryItem%3E%20ClipboardHistoryItemsResult.Items");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult", "Items");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ClipboardHistoryItemsResultStatus ClipboardHistoryItemsResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ClipboardHistoryItemsResultStatus%20ClipboardHistoryItemsResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult", "Status");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult.Status.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult.Items.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult.Status.get
 	}
 }

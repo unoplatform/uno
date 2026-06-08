@@ -17,14 +17,14 @@ namespace Windows.Graphics.Holographic
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.Graphics.Holographic.HolographicFrameScanoutReport> ReadReports()
 		{
-			throw new global::System.NotImplementedException("The member IList<HolographicFrameScanoutReport> HolographicFrameScanoutMonitor.ReadReports() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CHolographicFrameScanoutReport%3E%20HolographicFrameScanoutMonitor.ReadReports%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFrameScanoutMonitor", "ReadReports()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicFrameScanoutMonitor", "void HolographicFrameScanoutMonitor.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicFrameScanoutMonitor", "Dispose()");
 		}
 #endif
 		// Processing: System.IDisposable

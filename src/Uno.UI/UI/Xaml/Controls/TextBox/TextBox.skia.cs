@@ -9,6 +9,7 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Internal;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
@@ -17,6 +18,7 @@ using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.UI;
 using Uno.UI.Dispatching;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Media;
@@ -25,22 +27,24 @@ using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.Foundation;
+using Windows.ApplicationModel.DataTransfer;
 using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
 using Microsoft.UI.Xaml.Media.Media3D;
 using System.Numerics;
+using Uno.Disposables;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 using SelectionDetails = (int start, int length, bool selectionEndsAtTheStart);
 
-public partial class TextBox
+public partial class TextBox : ITextSelectionGripperHost
 {
 	private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 
-	private CaretWithStemAndThumb _selectionStartThumbfulCaret;
-	private CaretWithStemAndThumb _selectionEndThumbfulCaret;
+	private TextSelectionGripperPresenter _gripperPresenter;
 	private TextBoxView _textBoxView;
 	private static ITextBoxNotificationsProviderSingleton _textBoxNotificationsSingleton;
+	private SerialDisposable _clipboardChangeSubscription = new SerialDisposable();
 
 	private SelectionDetails _selection;
 	private float _caretXOffset; // this is not necessarily the visual offset of the caret, but where the caret is logically supposed to be when moving up and down with the keyboard, even if the caret is temporarily elsewhere
@@ -51,6 +55,8 @@ public partial class TextBox
 	private (int start, int length)? _pendingSelection;
 
 	private bool _clearHistoryOnTextChanged = true;
+	private CompositionBrush _cachedCaretBrush;
+	private Color _cachedCaretColor;
 
 	private static readonly VirtualKeyModifiers _platformCtrlKey;
 
@@ -63,12 +69,12 @@ public partial class TextBox
 	private string _textWhenTypingStarted;
 
 	private int _historyIndex;
+	private (int start, int length, bool isBackward) _lastNotifiedSelection = (-1, -1, false);
 	private readonly List<HistoryRecord> _history = new(); // the selection of an action is what was selected right before it happened. Might turn out to be unnecessary.
 
 	private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(0.5) };
 
-	private MenuFlyout _contextMenu;
-	private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
+	private MenuFlyout _proofingMenu;
 
 	internal bool IsBackwardSelection => _selection.selectionEndsAtTheStart;
 
@@ -78,10 +84,9 @@ public partial class TextBox
 
 	static TextBox()
 	{
-		_platformCtrlKey =
-			OperatingSystem.IsMacOS() || (OperatingSystem.IsBrowser() && WebAssemblyImports.EvalBool("navigator?.platform.toUpperCase().includes('MAC') ?? false"))
-			? VirtualKeyModifiers.Windows
-			: VirtualKeyModifiers.Control;
+		_platformCtrlKey = Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
+		_ = ApiExtensibility.CreateInstance(null, out _textBoxNotificationsSingleton);
+		InitializeIme();
 	}
 
 	internal CaretDisplayMode CaretMode
@@ -93,7 +98,10 @@ public partial class TextBox
 			{
 				_caretMode = value;
 				UpdateDisplaySelection();
-				TextBoxView?.DisplayBlock.InvalidateInlines(false);
+				if (TextBoxView?.DisplayBlock.Visual is { } visual)
+				{
+					Visual.Compositor.InvalidateRender(visual);
+				}
 				if (value is CaretDisplayMode.ThumblessCaretShowing)
 				{
 					_timer.Start(); // restart
@@ -107,28 +115,188 @@ public partial class TextBox
 		}
 	}
 
-	[GeneratedDependencyProperty(DefaultValue = false)]
-	public static DependencyProperty CanUndoProperty { get; } = CreateCanUndoProperty();
+	public static DependencyProperty CanUndoProperty { get; } = DependencyProperty.Register(
+		nameof(CanUndo),
+		typeof(bool),
+		typeof(TextBox),
+		new FrameworkPropertyMetadata(defaultValue: false)
+		{
+			PropMethodCall = GetCanUndo,
+		});
 
-	public bool CanUndo
+	public bool CanUndo => (bool)GetValue(CanUndoProperty);
+
+#nullable enable
+	private static object? GetCanUndo(DependencyObject instance, bool isGet, object? valueToSet)
 	{
-		get => GetCanUndoValue();
-		private set => SetCanUndoValue(value);
+		if (!isGet)
+		{
+			throw new InvalidOperationException($"{nameof(CanUndoProperty)} is read-only.");
+		}
+
+		return Uno.UI.Helpers.Boxes.Box(((TextBox)instance)._historyIndex > 0);
+	}
+#nullable restore
+
+	public static DependencyProperty CanRedoProperty { get; } = DependencyProperty.Register(
+		nameof(CanRedo),
+		typeof(bool),
+		typeof(TextBox),
+		new FrameworkPropertyMetadata(defaultValue: false)
+		{
+			PropMethodCall = GetCanRedo,
+		});
+
+	public bool CanRedo => (bool)GetValue(CanRedoProperty);
+
+#nullable enable
+	private static object? GetCanRedo(DependencyObject instance, bool isGet, object? valueToSet)
+	{
+		if (!isGet)
+		{
+			throw new InvalidOperationException($"{nameof(CanRedoProperty)} is read-only.");
+		}
+
+		var textBox = (TextBox)instance;
+		return Uno.UI.Helpers.Boxes.Box(textBox._historyIndex < textBox._history.Count - 1);
+	}
+#nullable restore
+
+	[GeneratedDependencyProperty(DefaultValue = false)]
+	public static DependencyProperty CanPasteClipboardContentProperty { get; } = CreateCanPasteClipboardContentProperty();
+
+	public bool CanPasteClipboardContent
+	{
+		get => GetCanPasteClipboardContentValue();
+		private set => SetCanPasteClipboardContentValue(value);
 	}
 
-	[GeneratedDependencyProperty(DefaultValue = false)]
-	public static DependencyProperty CanRedoProperty { get; } = CreateCanRedoProperty();
+	public static DependencyProperty SelectionFlyoutProperty { get; } =
+		DependencyProperty.Register(
+			nameof(SelectionFlyout), typeof(FlyoutBase), typeof(TextBox),
+			new FrameworkPropertyMetadata(default(FlyoutBase), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
-	public bool CanRedo
+	public FlyoutBase SelectionFlyout
 	{
-		get => GetCanRedoValue();
-		private set => SetCanRedoValue(value);
+		get => (FlyoutBase)GetValue(SelectionFlyoutProperty);
+		set => SetValue(SelectionFlyoutProperty, value);
 	}
 
-	private void UpdateCanUndoRedo()
+	public static DependencyProperty ProofingMenuFlyoutProperty { get; } =
+		DependencyProperty.Register(
+			nameof(ProofingMenuFlyout), typeof(FlyoutBase), typeof(TextBox),
+			new FrameworkPropertyMetadata(default(FlyoutBase), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+
+	// Ported from: TextBoxBase.cpp GetProofingMenuFlyoutNoRef (lines 5507-5520)
+	public FlyoutBase ProofingMenuFlyout
 	{
-		CanUndo = _historyIndex > 0;
-		CanRedo = _historyIndex < _history.Count - 1;
+		get
+		{
+			EnsureProofingMenu();
+			TextControlFlyoutHelper.AddProofingFlyout(_proofingMenu, this);
+			if (IsSpellCheckEnabled && (FocusState != FocusState.Unfocused || _forceFocusedVisualState))
+			{
+				UpdateProofingMenu();
+			}
+			SetValue(ProofingMenuFlyoutProperty, _proofingMenu);
+			return _proofingMenu;
+		}
+	}
+
+	private void UpdateCanPasteClipboardContent()
+	{
+		if (IsReadOnly)
+		{
+			CanPasteClipboardContent = false;
+			return;
+		}
+
+		try
+		{
+			var content = Clipboard.GetContent();
+			CanPasteClipboardContent = content?.Contains(StandardDataFormats.Text) ?? false;
+		}
+		catch
+		{
+			CanPasteClipboardContent = false;
+		}
+	}
+
+	// Ported from: TextBoxBase.cpp EnsureProofingMenu (line 5470)
+	private void EnsureProofingMenu()
+	{
+		_proofingMenu ??= new MenuFlyout();
+	}
+
+	// Ported from: TextBoxBase.cpp UpdateProofingMenu (line 5536)
+	private void UpdateProofingMenu()
+	{
+		_proofingMenu.Items.Clear();
+
+		if (!_isSkiaTextBox || TextBoxView?.DisplayBlock?.ParsedText is not UnicodeText unicodeText)
+		{
+			return;
+		}
+
+		// Find correction at cursor position
+		var correction = unicodeText.GetCorrectionAtIndex(SelectionStart);
+		if (correction is null)
+		{
+			return;
+		}
+
+		var (correctionStart, correctionEnd) = correction.Value;
+
+		// Get suggestions (matches WinUI AddSpellingSuggestions, max 3 suggestions)
+		var suggestionsResult = unicodeText.GetSpellCheckSuggestions(correctionStart, correctionEnd);
+		if (suggestionsResult is not { } result || result.suggestions.Count == 0)
+		{
+			return;
+		}
+
+		var (replaceStart, replaceEnd, suggestions) = result;
+		var maxSuggestions = Math.Min(suggestions.Count, 3); // WinUI uses maxSuggestionCount = 3
+
+		for (var i = 0; i < maxSuggestions; i++)
+		{
+			var suggestion = suggestions[i];
+			var item = new MenuFlyoutItem { Text = suggestion };
+			item.Click += (_, _) => ReplaceWithSuggestion(replaceStart, replaceEnd, suggestion);
+			_proofingMenu.Items.Add(item);
+		}
+	}
+
+	// Ported from: TextBoxBase.cpp pattern for applying text replacement (similar to PasteFromClipboardPartial)
+	private void ReplaceWithSuggestion(int replaceStart, int replaceEnd, string suggestion)
+	{
+		if (IsReadOnly || !_isSkiaTextBox)
+		{
+			return;
+		}
+
+		TrySetCurrentlyTyping(false);
+
+		var oldText = Text;
+		var newText = oldText.Remove(replaceStart, replaceEnd - replaceStart).Insert(replaceStart, suggestion);
+
+		CommitAction(new ReplaceAction(oldText, newText, replaceStart + suggestion.Length));
+
+		_clearHistoryOnTextChanged = false;
+		_pendingSelection = (replaceStart + suggestion.Length, 0);
+		ProcessTextInput(newText);
+		_clearHistoryOnTextChanged = true;
+	}
+
+	private void OnClipboardContentChanged(object sender, object e)
+	{
+		if (DispatcherQueue.HasThreadAccess)
+		{
+			UpdateCanPasteClipboardContent();
+		}
+		else
+		{
+			DispatcherQueue.TryEnqueue(() => UpdateCanPasteClipboardContent());
+		}
 	}
 
 	private void TrySetCurrentlyTyping(bool newValue)
@@ -155,7 +323,6 @@ public partial class TextBox
 				_selectionWhenTypingStarted.start,
 				_selectionWhenTypingStarted.length,
 				_selectionWhenTypingStarted.selectionEndsAtTheStart));
-			UpdateCanUndoRedo();
 		}
 
 		_currentlyTyping = newValue;
@@ -163,13 +330,21 @@ public partial class TextBox
 
 	partial void OnUnloadedPartial()
 	{
+		_forceFocusedVisualState = false;
 		_timer.Stop();
-		_selectionStartThumbfulCaret?.Hide();
-		_selectionEndThumbfulCaret?.Hide();
+		_gripperPresenter?.Hide();
 		CaretMode = CaretDisplayMode.ThumblessCaretHidden;
+		_clipboardChangeSubscription.Disposable = null;
 	}
 
-	partial void OnForegroundColorChangedPartial(Brush newValue) => TextBoxView?.OnForegroundChanged(newValue);
+	partial void OnIsReadonlyChangedPartial() => UpdateCanPasteClipboardContent();
+
+	partial void OnForegroundColorChangedPartial(Brush newValue)
+	{
+		TextBoxView?.OnForegroundChanged(newValue);
+		// Update the caret brush to match the new foreground color.
+		UpdateDisplaySelection();
+	}
 
 	partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush) => TextBoxView?.OnSelectionHighlightColorChanged(brush);
 
@@ -180,7 +355,14 @@ public partial class TextBox
 
 	partial void OnInputScopeChangedPartial(InputScope newValue) => TextBoxView?.UpdateProperties();
 
-	partial void OnIsSpellCheckEnabledChangedPartial(bool newValue) => TextBoxView?.UpdateProperties();
+	partial void OnIsSpellCheckEnabledChangedPartial(bool newValue)
+	{
+		if (TextBoxView is not null)
+		{
+			TextBoxView.DisplayBlock.IsSpellCheckEnabled = newValue;
+			TextBoxView.UpdateProperties();
+		}
+	}
 
 	partial void OnIsTextPredictionEnabledChangedPartial(bool newValue) => TextBoxView?.UpdateProperties();
 
@@ -224,27 +406,10 @@ public partial class TextBox
 
 				if (_isSkiaTextBox)
 				{
-					_selectionStartThumbfulCaret = new();
-					_selectionEndThumbfulCaret = new();
-
-					foreach (var caret in (ReadOnlySpan<CaretWithStemAndThumb>)[_selectionStartThumbfulCaret, _selectionEndThumbfulCaret])
-					{
-						caret.PointerPressed += CaretOnPointerPressed;
-						caret.PointerReleased += CaretOnPointerReleased;
-						caret.PointerMoved += CaretOnPointerMoved;
-						caret.PointerCanceled += ClearCaretPointerState;
-						caret.PointerCaptureLost += ClearCaretPointerState;
-					}
-
-					displayBlock.DrawingFinished += () =>
-					{
-						// Only invalidate the carets after drawing is complete
-						// to avoid modifying the children visuals while they are being enumerated.
-						NativeDispatcher.Main.Enqueue(() =>
-						{
-							UpdateFlyoutPosition();
-						}, NativeDispatcherPriority.Normal);
-					};
+					// The presenter owns the touch-selection gripper visuals and their drag/positioning
+					// logic (shared with selectable TextBlock). It subscribes to DisplayBlock.DrawingFinished
+					// to keep the grippers glued to the selection ends as the text is (re)drawn.
+					_gripperPresenter ??= new TextSelectionGripperPresenter(this);
 				}
 			}
 
@@ -252,48 +417,9 @@ public partial class TextBox
 		}
 	}
 
-	private void UpdateFlyoutPosition()
-	{
-		if (CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing or CaretDisplayMode.CaretWithThumbsBothEndsShowing)
-		{
-			var (selectionStart, selectionEnd) = IsBackwardSelection ? (SelectionStart + SelectionLength, SelectionLength) : (SelectionStart, SelectionStart + SelectionLength);
-			foreach (var (index, caret) in (ReadOnlySpan<(int, CaretWithStemAndThumb)>)[(selectionStart, _selectionStartThumbfulCaret), (selectionEnd, _selectionEndThumbfulCaret)])
-			{
-				var rect = _textBoxView.DisplayBlock.ParsedText.GetRectForIndex(index);
-				rect.Width = TextBlock.CaretThickness;
-				caret.Height = rect.Height + 16;
-				var transform = TextBoxView.DisplayBlock.TransformToVisual(null);
-				if (transform.TransformBounds(rect).IntersectWith(this.GetAbsoluteBoundsRect()) is not null)
-				{
-					var matrixTransform = (MatrixTransform)transform;
-
-					var textBoxMatrix = matrixTransform.Matrix.ToMatrix3x2();
-
-					// Calculate the center point of the caret in local coordinates
-					var localCenterX = rect.GetMidX() - caret.Width / 2;
-					var localPoint = new Point(localCenterX, rect.Top);
-
-					// Create translation matrix based on the target point
-					var translationMatrix = Matrix3x2.CreateTranslation((float)localPoint.X, (float)localPoint.Y);
-					var totalMatrix = Matrix3x2.Multiply(translationMatrix, textBoxMatrix);
-					caret.ShowAt(XamlRoot, totalMatrix);
-				}
-			}
-			if (CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing)
-			{
-				_selectionStartThumbfulCaret.Hide();
-				_selectionEndThumbfulCaret.SetStemVisible(SelectionLength == 0);
-			}
-		}
-		else
-		{
-			_selectionStartThumbfulCaret.Hide();
-			_selectionEndThumbfulCaret.Hide();
-		}
-	}
-
 	partial void OnFocusStateChangedPartial(FocusState focusState, bool initial)
 	{
+		_clipboardChangeSubscription.Disposable = null;
 		TextBoxView?.OnFocusStateChanged(focusState);
 
 		if (_isSkiaTextBox)
@@ -302,11 +428,36 @@ public partial class TextBox
 			{
 				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
 				_textBoxNotificationsSingleton?.OnFocused(this);
+				StartImeSession();
+				UpdateCanPasteClipboardContent();
+				Clipboard.ContentChanged += OnClipboardContentChanged;
+				_clipboardChangeSubscription.Disposable = Disposable.Create(() => Clipboard.ContentChanged -= OnClipboardContentChanged);
 			}
 			else
 			{
+				// Ported from: TextBoxBase.cpp UpdateFocusState (lines 4996-5008)
+				// Check if focus is moving to a text control flyout before deciding to unfocus.
+				_forceFocusedVisualState = ShouldForceFocusedVisualState();
+
+				// Ported from: TextBoxBase.cpp UpdateFocusState (lines 5009-5016)
+				// Hide touch caret thumbs when context flyout is opening.
+				if (_forceFocusedVisualState && ShouldHideGrippersOnFlyoutOpening()
+					&& CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing
+						or CaretDisplayMode.CaretWithThumbsBothEndsShowing)
+				{
+					CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+				}
+			}
+
+			if (focusState == FocusState.Unfocused && !_forceFocusedVisualState)
+			{
+				EndImeSession();
 				TrySetCurrentlyTyping(false);
 				CaretMode = CaretDisplayMode.ThumblessCaretHidden;
+				if (SelectionFlyout?.IsOpen == true)
+				{
+					SelectionFlyout.Hide();
+				}
 				if (!initial)
 				{
 					_textBoxNotificationsSingleton?.OnUnfocused(this);
@@ -315,6 +466,36 @@ public partial class TextBox
 			}
 			UpdateDisplaySelection();
 		}
+	}
+
+	// Ported from: TextBoxBase.cpp ShouldForceFocusedVisualState (lines 5286-5290)
+	private bool ShouldForceFocusedVisualState()
+	{
+		return TextControlFlyoutHelper.IsGettingFocus(SelectionFlyout, this)
+			|| TextControlFlyoutHelper.IsGettingFocus(ContextFlyout, this);
+	}
+
+	// Ported from: TextBoxBase.cpp ShouldHideGrippersOnFlyoutOpening (lines 5291-5294)
+	private bool ShouldHideGrippersOnFlyoutOpening()
+	{
+		return TextControlFlyoutHelper.IsGettingFocus(ContextFlyout, this);
+	}
+
+	// Ported from: TextBoxBase.cpp DismissAllFlyouts (lines 5566-5574)
+	internal void DismissAllFlyouts()
+	{
+		TextControlFlyoutHelper.CloseIfOpen(_proofingMenu);
+		TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);
+		TextControlFlyoutHelper.CloseIfOpen(ContextFlyout);
+	}
+
+	// Ported from: TextBoxBase.cpp ForceFocusLoss (lines 5551-5560)
+	internal void ForceFocusLoss()
+	{
+		_forceFocusedVisualState = false;
+		// Trigger the unfocus behavior that was deferred
+		OnFocusStateChangedPartial(FocusState.Unfocused, initial: false);
+		UpdateVisualState();
 	}
 
 #if false // Removing temporarily. We'll need to add it back.
@@ -387,7 +568,7 @@ public partial class TextBox
 		if (_isSkiaTextBox && TextBoxView?.DisplayBlock is { } displayBlock)
 		{
 			displayBlock.Selection = new TextBlock.Range(SelectionStart, SelectionStart + SelectionLength);
-			var isFocused = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
+			var isFocused = FocusState != FocusState.Unfocused || _forceFocusedVisualState;
 			displayBlock.RenderSelection = isFocused;
 			if (CaretMode is CaretDisplayMode.ThumblessCaretShowing &&
 				SelectionLength == 0 &&
@@ -395,15 +576,58 @@ public partial class TextBox
 				!IsReadOnly &&
 				!FeatureConfiguration.TextBox.HideCaret)
 			{
-				var brush = DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor());
-				displayBlock.RenderCaret = (IsBackwardSelection ? SelectionStart : SelectionStart + SelectionLength, brush);
+				// WinUI uses DestInvert composite mode with a white brush so the caret
+				// is always visible regardless of theme. Uno doesn't support DestInvert,
+				// so we use the TextBox's own Foreground (element-theme-aware via
+				// ThemeResource) with fully opaque alpha for maximum caret visibility.
+				var caretBrush = GetOpaqueCaretBrush();
+				displayBlock.RenderCaret = (IsBackwardSelection ? SelectionStart : SelectionStart + SelectionLength, caretBrush);
 			}
 			else
 			{
 				displayBlock.RenderCaret = null;
 			}
 			((IBlock)TextBoxView.DisplayBlock).Invalidate(false);
+
+			var currentSelection = (SelectionStart, SelectionLength, IsBackwardSelection);
+			if (currentSelection != _lastNotifiedSelection)
+			{
+				_lastNotifiedSelection = currentSelection;
+				_textBoxNotificationsSingleton?.NotifySelectionChanged(this);
+			}
 		}
+	}
+
+	/// <summary>
+	/// Gets a fully opaque composition brush derived from the TextBox's Foreground for caret rendering.
+	/// WinUI uses DestInvert composite mode (white brush + invert), but Uno doesn't support that.
+	/// Instead, we use the element-theme-aware Foreground with full opacity for maximum visibility.
+	/// </summary>
+	private CompositionBrush GetOpaqueCaretBrush()
+	{
+		var compositor = Compositor.GetSharedCompositor();
+		if (Foreground is SolidColorBrush scb)
+		{
+			var color = scb.Color;
+			if (color.A < 255)
+			{
+				// Force fully opaque for caret visibility
+				color = Color.FromArgb(255, color.R, color.G, color.B);
+			}
+
+			if (_cachedCaretBrush is not null && _cachedCaretColor == color)
+			{
+				return _cachedCaretBrush;
+			}
+
+			_cachedCaretColor = color;
+			_cachedCaretBrush = compositor.CreateColorBrush(color);
+			return _cachedCaretBrush;
+		}
+
+		_cachedCaretBrush = null;
+		_cachedCaretColor = default;
+		return DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(compositor);
 	}
 
 	private void UpdateScrolling() => UpdateScrolling(true);
@@ -436,6 +660,153 @@ public partial class TextBox
 		return point;
 	}
 
+	#region SelectionFlyout Support
+
+	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.h (lines 225-226)
+	// m_lastInputDeviceType, m_lastPointerPositionForFlyout, m_isSelectionFlyoutUpdateQueued
+	private PointerDeviceType _lastInputDeviceType;
+	private Point _lastPointerPosition;
+	private bool _isSelectionFlyoutUpdateQueued;
+
+	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (lines 5292-5302)
+	private bool HasSelectionFlyout() => SelectionFlyout is not null;
+
+	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (lines 5349-5377)
+	// QueueUpdateSelectionFlyoutVisibility - queues async visibility update
+	private void QueueUpdateSelectionFlyoutVisibility(PointerDeviceType deviceType, Point position)
+	{
+		_lastInputDeviceType = deviceType;
+		_lastPointerPosition = position;
+
+		// Line 5358-5360: Prevent duplicate queued updates
+		if (!_isSelectionFlyoutUpdateQueued)
+		{
+			_isSelectionFlyoutUpdateQueued = true;
+			DispatcherQueue.TryEnqueue(() => UpdateSelectionFlyoutVisibility());
+		}
+	}
+
+	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (lines 5379-5452)
+	// UpdateSelectionFlyoutVisibility - shows/hides SelectionFlyout based on device type and selection
+	private void UpdateSelectionFlyoutVisibility()
+	{
+		// Line 5381: Reset the queued flag
+		_isSelectionFlyoutUpdateQueued = false;
+
+		// Line 5383: Only shows SelectionFlyout if ContextFlyout is NOT open
+		if (!HasSelectionFlyout() || TextControlFlyoutHelper.IsOpen(ContextFlyout))
+		{
+			return;
+		}
+
+		var selectionLength = SelectionLength;
+		var showMode = FlyoutShowMode.Transient;
+		var shouldShow = false;
+
+		switch (_lastInputDeviceType)
+		{
+			case PointerDeviceType.Mouse:
+				// Line 5389-5401: Mouse input - only for RichEditBox, NOT TextBox
+				shouldShow = false;
+				break;
+
+			case PointerDeviceType.Pen:
+			case PointerDeviceType.Touch:
+				// Line 5403-5411: Pen/Touch - show if selection exists
+				if (selectionLength > 0)
+				{
+					shouldShow = true;
+					showMode = FlyoutShowMode.Transient;
+				}
+				break;
+
+			default:
+				// Line 5413-5415: Keyboard/other - never show SelectionFlyout
+				shouldShow = false;
+				break;
+		}
+
+		if (shouldShow)
+		{
+			// Line 5424-5441: Get selection bounds and adjust flyout position
+			var position = _lastPointerPosition;
+
+			if (_isSkiaTextBox && TextBoxView?.DisplayBlock?.ParsedText is { } parsedText)
+			{
+				// Get selection bounding rect in DisplayBlock coordinates
+				var startRect = parsedText.GetRectForIndex(SelectionStart);
+				var endRect = parsedText.GetRectForIndex(SelectionStart + SelectionLength);
+
+				// Compute union of start and end rects for full selection bounds
+				var selectionTop = Math.Min(startRect.Top, endRect.Top);
+
+				// Transform from DisplayBlock coordinates to TextBox coordinates
+				var transform = TextBoxView.DisplayBlock.TransformToVisual(this);
+				var transformedTop = transform.TransformPoint(new Point(0, selectionTop));
+
+				// Set Y position to top of selection for consistent placement
+				// (WinUI: "We want the point to appear at a consistent location regardless of
+				// whether it overlaps the selection, so we'll set its vertical position to be
+				// the top of the exclusion rectangle.")
+				position = new Point(position.X, transformedTop.Y);
+			}
+
+			if (SelectionFlyout is { } selectionFlyout)
+			{
+				TextControlFlyoutHelper.ShowAt(selectionFlyout, this, position, showMode);
+			}
+		}
+		else
+		{
+			// Line 5444-5447: Close SelectionFlyout if it's open and we shouldn't show it
+			if (SelectionFlyout?.IsOpen == true)
+			{
+				SelectionFlyout.Hide();
+			}
+		}
+
+		// Line 5450: Reset input device type after processing
+		_lastInputDeviceType = default;
+	}
+
+	#endregion
+
+	/// <summary>
+	/// Narrows the BringIntoView target rect to the caret position so that parent
+	/// ScrollViewers scroll to the cursor rather than the full TextBox bounds.
+	/// </summary>
+	/// <remarks>
+	/// When a TextBox has its internal scrolling disabled and relies on an outer
+	/// ScrollViewer, the default BringIntoView uses the full element bounds.
+	/// For a tall TextBox this causes the outer ScrollViewer to scroll to the
+	/// element edges rather than to the cursor position.
+	/// </remarks>
+	protected override void OnBringIntoViewRequested(BringIntoViewRequestedEventArgs e)
+	{
+		base.OnBringIntoViewRequested(e);
+
+		if (_isSkiaTextBox
+			&& (e.TargetElement is null || e.TargetElement == this)
+			&& FocusState != FocusState.Unfocused
+			&& _contentElement is ScrollViewer { VerticalScrollMode: ScrollMode.Disabled }
+			&& TextBoxView?.DisplayBlock is { } displayBlock
+			&& displayBlock.ParsedText is { } parsedText)
+		{
+			var selectionEnd = _selection.selectionEndsAtTheStart
+				? _selection.start
+				: _selection.start + _selection.length;
+
+			var caretRect = parsedText.GetRectForIndex(selectionEnd);
+			caretRect = caretRect with { Width = Math.Max(caretRect.Width, TextBlock.CaretThickness) };
+
+			// Transform from TextBlock coordinate space to TextBox coordinate space
+			var transform = displayBlock.TransformToVisual(this);
+			var caretRectInTextBox = transform.TransformBounds(caretRect);
+
+			e.TargetRect = caretRectInTextBox;
+		}
+	}
+
 	/// <summary>
 	/// Scrolls the <see cref="_contentElement"/> so that the caret is inside the visible viewport
 	/// </summary>
@@ -464,6 +835,14 @@ public partial class TextBox
 			var newVerticalOffset = verticalOffset.AtMost(caretRect.Top).AtLeast(caretRect.Bottom - sv.ViewportHeight);
 
 			sv.ChangeView(newHorizontalOffset, newVerticalOffset, null);
+		}
+
+		// When the TextBox's internal scrolling is disabled, an outer ScrollViewer
+		// handles scrolling. Notify it so the caret stays visible after text changes.
+		if (FocusState != FocusState.Unfocused
+			&& _contentElement is ScrollViewer { VerticalScrollMode: ScrollMode.Disabled })
+		{
+			StartBringIntoView(new BringIntoViewOptions { AnimationDesired = false });
 		}
 	}
 
@@ -499,8 +878,8 @@ public partial class TextBox
 				}
 				return;
 			case VirtualKey.Up:
-				// on macOS start of document is `Command` and `Up`
-				if (ctrl && OperatingSystem.IsMacOS())
+				// on Apple platforms start of document is `Command` and `Up`
+				if (ctrl && DeviceTargetHelper.UsesAppleKeyboardLayout)
 				{
 					KeyDownHome(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 				}
@@ -510,8 +889,8 @@ public partial class TextBox
 				}
 				break;
 			case VirtualKey.Down:
-				// on macOS end of document is `Command` and `Down`
-				if (ctrl && OperatingSystem.IsMacOS())
+				// on Apple platforms end of document is `Command` and `Down`
+				if (ctrl && DeviceTargetHelper.UsesAppleKeyboardLayout)
 				{
 					KeyDownEnd(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 				}
@@ -543,6 +922,11 @@ public partial class TextBox
 
 	private void OnKeyDownSkia(KeyRoutedEventArgs args)
 	{
+		if (SelectionFlyout?.IsOpen == true)
+		{
+			SelectionFlyout.Hide();
+		}
+
 		if (_selection.length != 0 &&
 			args.Key is not (VirtualKey.Up or VirtualKey.Down or VirtualKey.Left or VirtualKey.Right))
 		{
@@ -600,6 +984,11 @@ public partial class TextBox
 			case VirtualKey.Control:
 			case VirtualKey.LeftControl:
 			case VirtualKey.RightControl:
+			case VirtualKey.Menu:
+			case VirtualKey.LeftMenu:
+			case VirtualKey.RightMenu:
+			case VirtualKey.LeftWindows:
+			case VirtualKey.RightWindows:
 				// No-op when pressing these key specifically.
 				return;
 		}
@@ -608,8 +997,8 @@ public partial class TextBox
 		switch (args.Key)
 		{
 			case VirtualKey.Up:
-				// on macOS start of document is `Command` and `Up`
-				if (ctrl && OperatingSystem.IsMacOS())
+				// on Apple platforms start of document is `Command` and `Up`
+				if (ctrl && DeviceTargetHelper.UsesAppleKeyboardLayout)
 				{
 					KeyDownHome(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 				}
@@ -619,8 +1008,8 @@ public partial class TextBox
 				}
 				break;
 			case VirtualKey.Down:
-				// on macOS end of document is `Command` and `Down`
-				if (ctrl && OperatingSystem.IsMacOS())
+				// on Apple platforms end of document is `Command` and `Down`
+				if (ctrl && DeviceTargetHelper.UsesAppleKeyboardLayout)
 				{
 					KeyDownEnd(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 				}
@@ -660,8 +1049,26 @@ public partial class TextBox
 				}
 				break;
 			default:
+				// During IME composition, skip normal character insertion.
+				// The IME extension handles text updates via OnImeCompositionUpdated → ProcessTextInput.
+				// On platforms where the platform applies text directly (e.g., Android),
+				// key events are independent of composition events and should not be swallowed.
+				if (ShouldSwallowKeyDuringComposition)
+				{
+					return;
+				}
 				var isEnterKey = args.UnicodeKey is '\r' or '\n' || args.Key == VirtualKey.Enter;
-				if (!IsReadOnly && !HasPointerCapture && args.UnicodeKey is { } key && (!isEnterKey || AcceptsReturn))
+				// Don't insert characters when shortcut modifier keys are held down.
+				// On non-Apple platforms, AltGr (Ctrl+Alt together) produces valid characters (like @, €),
+				// so we must not suppress those. On Apple, Option (Menu/Alt) produces special characters.
+				var altHeld = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
+				var ctrlHeld = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control);
+				var isAltGr = !DeviceTargetHelper.UsesAppleKeyboardLayout && ctrlHeld && altHeld;
+				var hasShortcutModifier = !isAltGr && (
+					ctrlHeld ||
+					args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Windows) ||
+					(!DeviceTargetHelper.UsesAppleKeyboardLayout && altHeld));
+				if (!IsReadOnly && !HasPointerCapture && !hasShortcutModifier && args.UnicodeKey is { } key && (!isEnterKey || AcceptsReturn))
 				{
 					TrySetCurrentlyTyping(true);
 					var start = Math.Min(selectionStart, selectionStart + selectionLength);
@@ -714,8 +1121,8 @@ public partial class TextBox
 
 	private void KeyDownBack(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		// on macOS it is `option` + `delete` (same location as backspace on PC keyboards) that removes the previous word
-		if (OperatingSystem.IsMacOS())
+		// on Apple platforms it is `option` + `delete` (same location as backspace on PC keyboards) that removes the previous word
+		if (DeviceTargetHelper.UsesAppleKeyboardLayout)
 		{
 			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
 		}
@@ -865,10 +1272,10 @@ public partial class TextBox
 
 	private void KeyDownRightArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		// on macOS it is:
+		// on Apple platforms it is:
 		// * `option` + `right` that moves to the next word
 		// * `shift` + `option` + `right` that select the next word
-		if (OperatingSystem.IsMacOS())
+		if (DeviceTargetHelper.UsesAppleKeyboardLayout)
 		{
 			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
 		}
@@ -998,8 +1405,8 @@ public partial class TextBox
 
 	private void KeyDownDelete(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		// on macOS it is `option` + `delete>` that removes the next word
-		if (OperatingSystem.IsMacOS())
+		// on Apple platforms it is `option` + `delete>` that removes the next word
+		if (DeviceTargetHelper.UsesAppleKeyboardLayout)
 		{
 			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
 		}
@@ -1074,7 +1481,6 @@ public partial class TextBox
 			{
 				CaretMode = CaretDisplayMode.ThumblessCaretHidden;
 			}
-			UpdateDisplaySelection();
 		}
 	}
 
@@ -1178,15 +1584,16 @@ public partial class TextBox
 		return index == -1 ? Text.Length - 1 : index;
 	}
 
-	partial void InitializePartial()
-	{
-		_ = ApiExtensibility.CreateInstance(null, out _textBoxNotificationsSingleton);
-	}
-
 	partial void OnTextChangedPartial()
 	{
 		if (_isSkiaTextBox)
 		{
+			CancelCompositionOnExternalChange();
+
+			// Ported from: TextBoxBase.cpp TxNotify EN_CHANGE (line 3113)
+			// Close the selection flyout when text changes.
+			TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);
+
 			if (_pendingSelection is { } selection)
 			{
 				SelectInternal(selection.start, selection.length);
@@ -1289,7 +1696,6 @@ public partial class TextBox
 			_history.Add(new HistoryRecord(SentinelAction.Instance, _selection.start, _selection.length, _selection.selectionEndsAtTheStart));
 		}
 		_historyIndex = Math.Max(0, Math.Min(_history.Count - 1, _historyIndex));
-		UpdateCanUndoRedo();
 	}
 
 	public void ClearUndoRedoHistory()
@@ -1307,7 +1713,6 @@ public partial class TextBox
 		_historyIndex++;
 		_history.RemoveAllAt(_historyIndex);
 		_history.Add(new HistoryRecord(action, _selection.start, _selection.length, _selection.selectionEndsAtTheStart));
-		UpdateCanUndoRedo();
 	}
 
 	public void Undo()
@@ -1347,7 +1752,6 @@ public partial class TextBox
 				break;
 		}
 		_clearHistoryOnTextChanged = true;
-		UpdateCanUndoRedo();
 	}
 
 	public void Redo()
@@ -1385,7 +1789,6 @@ public partial class TextBox
 				break;
 		}
 		_clearHistoryOnTextChanged = true;
-		UpdateCanUndoRedo();
 	}
 
 	internal override bool IsDelegatingFocusToTemplateChild()
@@ -1437,112 +1840,75 @@ public partial class TextBox
 #pragma warning restore 67 // An event was declared but never used in the class in which it was declared.
 	}
 
-	private class CaretWithStemAndThumb : Grid
+	#region ITextSelectionGripperHost
+	// The touch-selection grippers are driven by the shared TextSelectionGripperPresenter. The presenter
+	// owns the visuals/drag mechanics; these members expose just enough of TextBox's selection model and
+	// text surface for it to do its job.
+
+	TextBlock ITextSelectionGripperHost.GripperTextSurface => TextBoxView.DisplayBlock;
+
+	Rect ITextSelectionGripperHost.GripperClipBounds => this.GetAbsoluteBoundsRect();
+
+	GripperMode ITextSelectionGripperHost.GripperMode => _caretMode switch
 	{
-		// This is equal to the default system accent color on Windows.
-		// This is, however, a constant color that doesn't depend on the
-		// current system accent color. Changing the accent color does NOT
-		// change the thumb color on WinUI, only the selection color.
-		private static readonly Color ThumbFillColor = Colors.FromARGB("FF0078D7");
+		CaretDisplayMode.CaretWithThumbsOnlyEndShowing => GripperMode.EndOnly,
+		CaretDisplayMode.CaretWithThumbsBothEndsShowing => GripperMode.Both,
+		_ => GripperMode.Hidden,
+	};
 
-		private readonly Ellipse _thumb;
-		private readonly Ellipse _thumbRing;
-		private readonly Rectangle _stem;
-		private Popup _popup;
+	int ITextSelectionGripperHost.SelectionLowerIndex => SelectionStart;
 
-		public PointerPoint LastPointerDown { get; set; }
+	int ITextSelectionGripperHost.SelectionUpperIndex => SelectionStart + SelectionLength;
 
-		public CaretWithStemAndThumb()
-		{
-			// Numbers and colors below are partially measured by hand from WinUI and partially made up to be reasonable.
+	void ITextSelectionGripperHost.SetGripperSelection(int start, int end) => SelectInternal(start, end - start);
 
-			Background = new SolidColorBrush(Colors.Transparent); // to hit-test positively everywhere in the grid
+	void ITextSelectionGripperHost.MoveGripperCaret(int index) => Select(index, 0);
 
-			Width = 16;
+	void ITextSelectionGripperHost.ScrollForGripper(bool isEndGripper) => UpdateScrolling(isEndGripper);
 
-			RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-			RowDefinitions.Add(new RowDefinition { Height = new GridLength(16, GridUnitType.Pixel) });
+	void ITextSelectionGripperHost.OnGripperPressed() => DismissSelectionFlyoutForPointerPress();
 
-			_thumb = new Ellipse
-			{
-				Fill = new SolidColorBrush(Colors.White),
-				Width = 16,
-				Height = 16
-			};
+	// Dismiss the selection flyout (the floating copy/paste bar) when a touch interaction begins, so it
+	// doesn't linger next to a context menu opened on the same gesture.
+	internal void DismissSelectionFlyoutForPointerPress() => TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);
 
-			_thumbRing = new Ellipse
-			{
-				Stroke = new SolidColorBrush(ThumbFillColor),
-				StrokeThickness = 2,
-				Width = 14,
-				Height = 14,
-				Margin = new Thickness(1)
-			};
+	void ITextSelectionGripperHost.RequestGripperContextMenu(PointerRoutedEventArgs args)
+	{
+		// Ported from TextBoxBase.cpp OnGripperHeld: a held gripper opens the context flyout.
+		var contextArgs = new ContextRequestedEventArgs();
+		contextArgs.SetGlobalPoint(args.GetCurrentPoint(null).Position);
+		OnContextRequested(this, contextArgs);
+	}
 
-			_stem = new Rectangle
-			{
-				Visibility = Visibility.Collapsed,
-				IsHitTestVisible = false,
-				HorizontalAlignment = HorizontalAlignment.Center,
-				Stroke = new SolidColorBrush(ThumbFillColor),
-				Width = 2
-			};
+	void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args)
+		=> QueueUpdateSelectionFlyoutVisibility(args.Pointer.PointerDeviceType, args.GetCurrentPoint(this).Position);
 
-			Grid.SetRow(_stem, 0);
-			Grid.SetRow(_thumb, 1);
-			Grid.SetRow(_thumbRing, 1);
+	void ITextSelectionGripperHost.OnGripperTapped(PointerRoutedEventArgs args)
+		=> TouchTap(args.GetCurrentPoint(TextBoxView.DisplayBlock).Position, true);
+	#endregion
 
-			Children.Add(_stem);
-			Children.Add(_thumb);
-			Children.Add(_thumbRing);
-		}
+	/// <summary>
+	/// Fires the ContextMenuOpening event synchronously and returns whether it was handled.
+	/// </summary>
+	/// <remarks>
+	/// Ported from CTextBoxBase::FireContextMenuOpeningEventSynchronously (TextBoxBase.cpp:5304)
+	/// and TextControlHelper::OnContextMenuOpeningHandler (TextControlHelper.h:10).
+	///
+	/// WinUI does m_pView->TransformToRoot(point) then divides by rasterization scale
+	/// to convert physical pixels to DIPs. In Uno/Skia, TransformToVisual(null) already
+	/// yields DIP coordinates, so no rasterization scale division is needed.
+	/// </remarks>
+	internal bool FireContextMenuOpeningEventSynchronously(Point point)
+	{
+		// WinUI: m_pView->TransformToRoot + pointerPosition /= zoomScale
+		var rootPoint = TransformToVisual(null).TransformPoint(point);
 
-		public void SetStemVisible(bool visible) => _stem.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
-
-		public void ShowAt(XamlRoot xamlRoot, Matrix3x2 transform)
-		{
-			_popup ??= new Popup
-			{
-				Child = this,
-				IsLightDismissEnabled = false,
-				XamlRoot = xamlRoot
-			};
-			_popup.PopupPanel.Visual.ZIndex = VisualTree.TextBoxTouchKnobPopupZIndex;
-
-			if (this.RenderTransform is not MatrixTransform matrixTransform)
-			{
-				matrixTransform = new MatrixTransform();
-				this.RenderTransform = matrixTransform;
-			}
-			matrixTransform.Matrix = new Matrix(transform);
-			if (!_popup.IsOpen)
-			{
-				_popup.IsOpen = true;
-				((CompositionTarget)Visual.CompositionTarget)!.FrameRendered += OnFrameRendered;
-			}
-		}
-
-		private void OnFrameRendered()
-		{
-			NativeDispatcher.Main.Enqueue(() =>
-			{
-				if (FocusManager.GetFocusedElement(XamlRoot!) is TextBox textBox)
-				{
-					textBox.UpdateFlyoutPosition();
-				}
-			}, NativeDispatcherPriority.Idle);
-		}
-
-		public void Hide()
-		{
-			if (Visual.CompositionTarget is CompositionTarget target)
-			{
-				target.FrameRendered -= OnFrameRendered;
-			}
-			if (_popup is not null)
-			{
-				_popup.IsOpen = false;
-			}
-		}
+		// WinUI: TextControlHelper::OnContextMenuOpeningHandler
+		// — creates ContextMenuEventArgs, sets CursorLeft/CursorTop, Handled=false
+		// — raises event synchronously
+		// — reads back Handled
+		var args = new ContextMenuEventArgs(rootPoint.X, rootPoint.Y);
+		ContextMenuOpening?.Invoke(this, args);
+		return args.Handled;
 	}
 }

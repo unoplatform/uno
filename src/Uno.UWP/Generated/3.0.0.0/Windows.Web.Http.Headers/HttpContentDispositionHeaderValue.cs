@@ -10,43 +10,15 @@ namespace Windows.Web.Http.Headers
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ulong? Size
+		public string DispositionType
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong? HttpContentDispositionHeaderValue.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%3F%20HttpContentDispositionHeaderValue.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentDispositionHeaderValue", "DispositionType");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentDispositionHeaderValue", "ulong? HttpContentDispositionHeaderValue.Size");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Name
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string HttpContentDispositionHeaderValue.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpContentDispositionHeaderValue.Name");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentDispositionHeaderValue", "string HttpContentDispositionHeaderValue.Name");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string FileNameStar
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string HttpContentDispositionHeaderValue.FileNameStar is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpContentDispositionHeaderValue.FileNameStar");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentDispositionHeaderValue", "string HttpContentDispositionHeaderValue.FileNameStar");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentDispositionHeaderValue", "DispositionType");
 			}
 		}
 #endif
@@ -56,25 +28,39 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpContentDispositionHeaderValue.FileName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpContentDispositionHeaderValue.FileName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentDispositionHeaderValue", "FileName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentDispositionHeaderValue", "string HttpContentDispositionHeaderValue.FileName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentDispositionHeaderValue", "FileName");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DispositionType
+		public string FileNameStar
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpContentDispositionHeaderValue.DispositionType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpContentDispositionHeaderValue.DispositionType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentDispositionHeaderValue", "FileNameStar");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentDispositionHeaderValue", "string HttpContentDispositionHeaderValue.DispositionType");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentDispositionHeaderValue", "FileNameStar");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Name
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentDispositionHeaderValue", "Name");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentDispositionHeaderValue", "Name");
 			}
 		}
 #endif
@@ -84,7 +70,21 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<HttpNameValueHeaderValue> HttpContentDispositionHeaderValue.Parameters is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CHttpNameValueHeaderValue%3E%20HttpContentDispositionHeaderValue.Parameters");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentDispositionHeaderValue", "Parameters");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ulong? Size
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentDispositionHeaderValue", "Size");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentDispositionHeaderValue", "Size");
 			}
 		}
 #endif
@@ -92,10 +92,31 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HttpContentDispositionHeaderValue(string dispositionType)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentDispositionHeaderValue", "HttpContentDispositionHeaderValue.HttpContentDispositionHeaderValue(string dispositionType)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentDispositionHeaderValue", "HttpContentDispositionHeaderValue(string dispositionType)");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentDispositionHeaderValue.HttpContentDispositionHeaderValue(string)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Web.Http.Headers.HttpContentDispositionHeaderValue Parse(string input)
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentDispositionHeaderValue", "Parse(string input)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpContentDispositionHeaderValue contentDispositionHeaderValue)
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentDispositionHeaderValue", "TryParse(string input, out HttpContentDispositionHeaderValue contentDispositionHeaderValue)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public override string ToString()
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Headers.HttpContentDispositionHeaderValue", "ToString()");
+		}
+#endif
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentDispositionHeaderValue.DispositionType.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentDispositionHeaderValue.DispositionType.set
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentDispositionHeaderValue.FileName.get
@@ -107,26 +128,5 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentDispositionHeaderValue.Parameters.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentDispositionHeaderValue.Size.get
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentDispositionHeaderValue.Size.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public override string ToString()
-		{
-			throw new global::System.NotImplementedException("The member string HttpContentDispositionHeaderValue.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpContentDispositionHeaderValue.ToString%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Web.Http.Headers.HttpContentDispositionHeaderValue Parse(string input)
-		{
-			throw new global::System.NotImplementedException("The member HttpContentDispositionHeaderValue HttpContentDispositionHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpContentDispositionHeaderValue%20HttpContentDispositionHeaderValue.Parse%28string%20input%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpContentDispositionHeaderValue contentDispositionHeaderValue)
-		{
-			throw new global::System.NotImplementedException("The member bool HttpContentDispositionHeaderValue.TryParse(string input, out HttpContentDispositionHeaderValue contentDispositionHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpContentDispositionHeaderValue.TryParse%28string%20input%2C%20out%20HttpContentDispositionHeaderValue%20contentDispositionHeaderValue%29");
-		}
-#endif
 	}
 }

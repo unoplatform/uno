@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxChangeType EmailMailboxChange.ChangeType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMailboxChangeType%20EmailMailboxChange.ChangeType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxChange", "ChangeType");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailFolder EmailMailboxChange.Folder is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailFolder%20EmailMailboxChange.Folder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxChange", "Folder");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<EmailMailboxAction> EmailMailboxChange.MailboxActions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CEmailMailboxAction%3E%20EmailMailboxChange.MailboxActions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxChange", "MailboxActions");
 			}
 		}
 #endif
@@ -49,13 +49,13 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMessage EmailMailboxChange.Message is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMessage%20EmailMailboxChange.Message");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailMailboxChange", "Message");
 			}
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChange.ChangeType.get
+		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChange.Folder.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChange.MailboxActions.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChange.Message.get
-		// Forced skipping of method Windows.ApplicationModel.Email.EmailMailboxChange.Folder.get
 	}
 }

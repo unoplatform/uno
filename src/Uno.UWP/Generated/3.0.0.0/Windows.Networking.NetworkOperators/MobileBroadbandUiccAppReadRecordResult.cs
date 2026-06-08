@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer MobileBroadbandUiccAppReadRecordResult.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20MobileBroadbandUiccAppReadRecordResult.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult", "Data");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MobileBroadbandUiccAppOperationStatus MobileBroadbandUiccAppReadRecordResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandUiccAppOperationStatus%20MobileBroadbandUiccAppReadRecordResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult", "Status");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult.Status.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult.Data.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppReadRecordResult.Status.get
 	}
 }

@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset StoreLicense.ExpirationDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20StoreLicense.ExpirationDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreLicense", "ExpirationDate");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreLicense.ExtendedJsonData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreLicense.ExtendedJsonData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreLicense", "ExtendedJsonData");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreLicense.InAppOfferToken is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreLicense.InAppOfferToken");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreLicense", "InAppOfferToken");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StoreLicense.IsActive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreLicense.IsActive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreLicense", "IsActive");
 			}
 		}
 #endif
@@ -59,14 +59,14 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreLicense.SkuStoreId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreLicense.SkuStoreId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreLicense", "SkuStoreId");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreLicense.SkuStoreId.get
-		// Forced skipping of method Windows.Services.Store.StoreLicense.IsActive.get
 		// Forced skipping of method Windows.Services.Store.StoreLicense.ExpirationDate.get
 		// Forced skipping of method Windows.Services.Store.StoreLicense.ExtendedJsonData.get
 		// Forced skipping of method Windows.Services.Store.StoreLicense.InAppOfferToken.get
+		// Forced skipping of method Windows.Services.Store.StoreLicense.IsActive.get
+		// Forced skipping of method Windows.Services.Store.StoreLicense.SkuStoreId.get
 	}
 }

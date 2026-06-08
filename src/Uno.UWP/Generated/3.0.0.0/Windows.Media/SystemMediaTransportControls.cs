@@ -15,169 +15,15 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsPlayEnabled
+		public global::Windows.Media.MediaPlaybackAutoRepeatMode AutoRepeatMode
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SystemMediaTransportControls.IsPlayEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemMediaTransportControls.IsPlayEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControls", "AutoRepeatMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "bool SystemMediaTransportControls.IsPlayEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsPauseEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SystemMediaTransportControls.IsPauseEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemMediaTransportControls.IsPauseEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "bool SystemMediaTransportControls.IsPauseEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsNextEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SystemMediaTransportControls.IsNextEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemMediaTransportControls.IsNextEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "bool SystemMediaTransportControls.IsNextEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsPreviousEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SystemMediaTransportControls.IsPreviousEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemMediaTransportControls.IsPreviousEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "bool SystemMediaTransportControls.IsPreviousEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SystemMediaTransportControls.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemMediaTransportControls.IsEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "bool SystemMediaTransportControls.IsEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsChannelDownEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SystemMediaTransportControls.IsChannelDownEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemMediaTransportControls.IsChannelDownEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "bool SystemMediaTransportControls.IsChannelDownEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsFastForwardEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SystemMediaTransportControls.IsFastForwardEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemMediaTransportControls.IsFastForwardEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "bool SystemMediaTransportControls.IsFastForwardEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsChannelUpEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SystemMediaTransportControls.IsChannelUpEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemMediaTransportControls.IsChannelUpEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "bool SystemMediaTransportControls.IsChannelUpEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.MediaPlaybackStatus PlaybackStatus
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackStatus SystemMediaTransportControls.PlaybackStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackStatus%20SystemMediaTransportControls.PlaybackStatus");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "MediaPlaybackStatus SystemMediaTransportControls.PlaybackStatus");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsStopEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SystemMediaTransportControls.IsStopEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemMediaTransportControls.IsStopEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "bool SystemMediaTransportControls.IsStopEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsRewindEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SystemMediaTransportControls.IsRewindEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemMediaTransportControls.IsRewindEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "bool SystemMediaTransportControls.IsRewindEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsRecordEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SystemMediaTransportControls.IsRecordEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemMediaTransportControls.IsRecordEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "bool SystemMediaTransportControls.IsRecordEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "AutoRepeatMode");
 			}
 		}
 #endif
@@ -187,31 +33,161 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SystemMediaTransportControlsDisplayUpdater SystemMediaTransportControls.DisplayUpdater is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemMediaTransportControlsDisplayUpdater%20SystemMediaTransportControls.DisplayUpdater");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControls", "DisplayUpdater");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.SoundLevel SoundLevel
+		public bool IsChannelDownEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SoundLevel SystemMediaTransportControls.SoundLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SoundLevel%20SystemMediaTransportControls.SoundLevel");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ShuffleEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SystemMediaTransportControls.ShuffleEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemMediaTransportControls.ShuffleEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControls", "IsChannelDownEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "bool SystemMediaTransportControls.ShuffleEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "IsChannelDownEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsChannelUpEnabled
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControls", "IsChannelUpEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "IsChannelUpEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsEnabled
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControls", "IsEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "IsEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsFastForwardEnabled
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControls", "IsFastForwardEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "IsFastForwardEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsNextEnabled
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControls", "IsNextEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "IsNextEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsPauseEnabled
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControls", "IsPauseEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "IsPauseEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsPlayEnabled
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControls", "IsPlayEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "IsPlayEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsPreviousEnabled
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControls", "IsPreviousEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "IsPreviousEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsRecordEnabled
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControls", "IsRecordEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "IsRecordEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsRewindEnabled
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControls", "IsRewindEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "IsRewindEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsStopEnabled
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControls", "IsStopEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "IsStopEnabled");
 			}
 		}
 #endif
@@ -221,86 +197,110 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double SystemMediaTransportControls.PlaybackRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SystemMediaTransportControls.PlaybackRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControls", "PlaybackRate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "double SystemMediaTransportControls.PlaybackRate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "PlaybackRate");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.MediaPlaybackAutoRepeatMode AutoRepeatMode
+		public global::Windows.Media.MediaPlaybackStatus PlaybackStatus
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackAutoRepeatMode SystemMediaTransportControls.AutoRepeatMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackAutoRepeatMode%20SystemMediaTransportControls.AutoRepeatMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControls", "PlaybackStatus");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "MediaPlaybackAutoRepeatMode SystemMediaTransportControls.AutoRepeatMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "PlaybackStatus");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.PlaybackStatus.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.PlaybackStatus.set
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.DisplayUpdater.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.SoundLevel.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsEnabled.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsEnabled.set
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsPlayEnabled.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsPlayEnabled.set
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsStopEnabled.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsStopEnabled.set
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsPauseEnabled.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsPauseEnabled.set
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsRecordEnabled.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsRecordEnabled.set
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsFastForwardEnabled.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsFastForwardEnabled.set
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsRewindEnabled.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsRewindEnabled.set
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsPreviousEnabled.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsPreviousEnabled.set
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsNextEnabled.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsNextEnabled.set
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsChannelUpEnabled.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsChannelUpEnabled.set
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsChannelDownEnabled.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsChannelDownEnabled.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool ShuffleEnabled
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControls", "ShuffleEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "ShuffleEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.SoundLevel SoundLevel
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControls", "SoundLevel");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Media.SystemMediaTransportControls GetForCurrentView()
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SystemMediaTransportControls", "GetForCurrentView()");
+		}
+#endif
 		// Forced skipping of method Windows.Media.SystemMediaTransportControls.ButtonPressed.add
 		// Forced skipping of method Windows.Media.SystemMediaTransportControls.ButtonPressed.remove
 		// Forced skipping of method Windows.Media.SystemMediaTransportControls.PropertyChanged.add
 		// Forced skipping of method Windows.Media.SystemMediaTransportControls.PropertyChanged.remove
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.AutoRepeatMode.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.AutoRepeatMode.set
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.ShuffleEnabled.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.ShuffleEnabled.set
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.PlaybackRate.get
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.PlaybackRate.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void UpdateTimelineProperties(global::Windows.Media.SystemMediaTransportControlsTimelineProperties timelineProperties)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "void SystemMediaTransportControls.UpdateTimelineProperties(SystemMediaTransportControlsTimelineProperties timelineProperties)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "UpdateTimelineProperties(SystemMediaTransportControlsTimelineProperties timelineProperties)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.AutoRepeatModeChangeRequested.add
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.AutoRepeatModeChangeRequested.remove
 		// Forced skipping of method Windows.Media.SystemMediaTransportControls.PlaybackPositionChangeRequested.add
 		// Forced skipping of method Windows.Media.SystemMediaTransportControls.PlaybackPositionChangeRequested.remove
 		// Forced skipping of method Windows.Media.SystemMediaTransportControls.PlaybackRateChangeRequested.add
 		// Forced skipping of method Windows.Media.SystemMediaTransportControls.PlaybackRateChangeRequested.remove
 		// Forced skipping of method Windows.Media.SystemMediaTransportControls.ShuffleEnabledChangeRequested.add
 		// Forced skipping of method Windows.Media.SystemMediaTransportControls.ShuffleEnabledChangeRequested.remove
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.AutoRepeatModeChangeRequested.add
-		// Forced skipping of method Windows.Media.SystemMediaTransportControls.AutoRepeatModeChangeRequested.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Media.SystemMediaTransportControls GetForCurrentView()
-		{
-			throw new global::System.NotImplementedException("The member SystemMediaTransportControls SystemMediaTransportControls.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemMediaTransportControls%20SystemMediaTransportControls.GetForCurrentView%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.AutoRepeatMode.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.AutoRepeatMode.set
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.DisplayUpdater.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsChannelDownEnabled.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsChannelDownEnabled.set
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsChannelUpEnabled.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsChannelUpEnabled.set
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsEnabled.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsEnabled.set
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsFastForwardEnabled.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsFastForwardEnabled.set
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsNextEnabled.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsNextEnabled.set
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsPauseEnabled.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsPauseEnabled.set
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsPlayEnabled.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsPlayEnabled.set
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsPreviousEnabled.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsPreviousEnabled.set
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsRecordEnabled.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsRecordEnabled.set
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsRewindEnabled.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsRewindEnabled.set
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsStopEnabled.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.IsStopEnabled.set
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.PlaybackRate.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.PlaybackRate.set
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.PlaybackStatus.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.PlaybackStatus.set
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.ShuffleEnabled.get
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.ShuffleEnabled.set
+		// Forced skipping of method Windows.Media.SystemMediaTransportControls.SoundLevel.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.SystemMediaTransportControls, global::Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs> ButtonPressed
@@ -308,12 +308,12 @@ namespace Windows.Media
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event TypedEventHandler<SystemMediaTransportControls, SystemMediaTransportControlsButtonPressedEventArgs> SystemMediaTransportControls.ButtonPressed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event ButtonPressed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event TypedEventHandler<SystemMediaTransportControls, SystemMediaTransportControlsButtonPressedEventArgs> SystemMediaTransportControls.ButtonPressed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event ButtonPressed");
 			}
 		}
 #endif
@@ -324,12 +324,12 @@ namespace Windows.Media
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event TypedEventHandler<SystemMediaTransportControls, SystemMediaTransportControlsPropertyChangedEventArgs> SystemMediaTransportControls.PropertyChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event PropertyChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event TypedEventHandler<SystemMediaTransportControls, SystemMediaTransportControlsPropertyChangedEventArgs> SystemMediaTransportControls.PropertyChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event PropertyChanged");
 			}
 		}
 #endif
@@ -340,12 +340,12 @@ namespace Windows.Media
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event TypedEventHandler<SystemMediaTransportControls, AutoRepeatModeChangeRequestedEventArgs> SystemMediaTransportControls.AutoRepeatModeChangeRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event AutoRepeatModeChangeRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event TypedEventHandler<SystemMediaTransportControls, AutoRepeatModeChangeRequestedEventArgs> SystemMediaTransportControls.AutoRepeatModeChangeRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event AutoRepeatModeChangeRequested");
 			}
 		}
 #endif
@@ -356,12 +356,12 @@ namespace Windows.Media
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event TypedEventHandler<SystemMediaTransportControls, PlaybackPositionChangeRequestedEventArgs> SystemMediaTransportControls.PlaybackPositionChangeRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event PlaybackPositionChangeRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event TypedEventHandler<SystemMediaTransportControls, PlaybackPositionChangeRequestedEventArgs> SystemMediaTransportControls.PlaybackPositionChangeRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event PlaybackPositionChangeRequested");
 			}
 		}
 #endif
@@ -372,12 +372,12 @@ namespace Windows.Media
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event TypedEventHandler<SystemMediaTransportControls, PlaybackRateChangeRequestedEventArgs> SystemMediaTransportControls.PlaybackRateChangeRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event PlaybackRateChangeRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event TypedEventHandler<SystemMediaTransportControls, PlaybackRateChangeRequestedEventArgs> SystemMediaTransportControls.PlaybackRateChangeRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event PlaybackRateChangeRequested");
 			}
 		}
 #endif
@@ -388,12 +388,12 @@ namespace Windows.Media
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event TypedEventHandler<SystemMediaTransportControls, ShuffleEnabledChangeRequestedEventArgs> SystemMediaTransportControls.ShuffleEnabledChangeRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event ShuffleEnabledChangeRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event TypedEventHandler<SystemMediaTransportControls, ShuffleEnabledChangeRequestedEventArgs> SystemMediaTransportControls.ShuffleEnabledChangeRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "event ShuffleEnabledChangeRequested");
 			}
 		}
 #endif

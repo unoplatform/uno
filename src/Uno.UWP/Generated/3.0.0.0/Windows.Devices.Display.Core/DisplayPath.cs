@@ -15,99 +15,15 @@ namespace Windows.Devices.Display.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Display.Core.DisplayWireFormat WireFormat
+		public bool? IsInterlaced
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayWireFormat DisplayPath.WireFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayWireFormat%20DisplayPath.WireFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "IsInterlaced");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "DisplayWireFormat DisplayPath.WireFormat");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.SizeInt32? TargetResolution
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SizeInt32? DisplayPath.TargetResolution is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SizeInt32%3F%20DisplayPath.TargetResolution");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "SizeInt32? DisplayPath.TargetResolution");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.SizeInt32? SourceResolution
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SizeInt32? DisplayPath.SourceResolution is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SizeInt32%3F%20DisplayPath.SourceResolution");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "SizeInt32? DisplayPath.SourceResolution");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.DirectX.DirectXPixelFormat SourcePixelFormat
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DirectXPixelFormat DisplayPath.SourcePixelFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DirectXPixelFormat%20DisplayPath.SourcePixelFormat");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "DirectXPixelFormat DisplayPath.SourcePixelFormat");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Display.Core.DisplayPathScaling Scaling
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DisplayPathScaling DisplayPath.Scaling is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayPathScaling%20DisplayPath.Scaling");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "DisplayPathScaling DisplayPath.Scaling");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Display.Core.DisplayRotation Rotation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DisplayRotation DisplayPath.Rotation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayRotation%20DisplayPath.Rotation");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "DisplayRotation DisplayPath.Rotation");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Display.Core.DisplayPresentationRate? PresentationRate
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DisplayPresentationRate? DisplayPath.PresentationRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayPresentationRate%3F%20DisplayPath.PresentationRate");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "DisplayPresentationRate? DisplayPath.PresentationRate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "IsInterlaced");
 			}
 		}
 #endif
@@ -117,25 +33,25 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DisplayPath.IsStereo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DisplayPath.IsStereo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "IsStereo");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "bool DisplayPath.IsStereo");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "IsStereo");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool? IsInterlaced
+		public global::Windows.Devices.Display.Core.DisplayPresentationRate? PresentationRate
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool? DisplayPath.IsInterlaced is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%3F%20DisplayPath.IsInterlaced");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "PresentationRate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "bool? DisplayPath.IsInterlaced");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "PresentationRate");
 			}
 		}
 #endif
@@ -145,7 +61,63 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<Guid, object> DisplayPath.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3CGuid%2C%20object%3E%20DisplayPath.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "Properties");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Display.Core.DisplayRotation Rotation
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "Rotation");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "Rotation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Display.Core.DisplayPathScaling Scaling
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "Scaling");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "Scaling");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.DirectX.DirectXPixelFormat SourcePixelFormat
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "SourcePixelFormat");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "SourcePixelFormat");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.SizeInt32? SourceResolution
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "SourceResolution");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "SourceResolution");
 			}
 		}
 #endif
@@ -155,7 +127,7 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayPathStatus DisplayPath.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayPathStatus%20DisplayPath.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "Status");
 			}
 		}
 #endif
@@ -165,7 +137,21 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayTarget DisplayPath.Target is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayTarget%20DisplayPath.Target");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "Target");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.SizeInt32? TargetResolution
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "TargetResolution");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "TargetResolution");
 			}
 		}
 #endif
@@ -175,61 +161,59 @@ namespace Windows.Devices.Display.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayView DisplayPath.View is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayView%20DisplayPath.View");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "View");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Display.Core.DisplayPresentationRate? PhysicalPresentationRate
+		public global::Windows.Devices.Display.Core.DisplayWireFormat WireFormat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayPresentationRate? DisplayPath.PhysicalPresentationRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayPresentationRate%3F%20DisplayPath.PhysicalPresentationRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "WireFormat");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "DisplayPresentationRate? DisplayPath.PhysicalPresentationRate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "WireFormat");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.View.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.Target.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.Status.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.SourceResolution.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.SourceResolution.set
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.SourcePixelFormat.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.SourcePixelFormat.set
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.IsStereo.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.IsStereo.set
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.TargetResolution.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.TargetResolution.set
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.PresentationRate.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.PresentationRate.set
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.IsInterlaced.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.IsInterlaced.set
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.WireFormat.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.WireFormat.set
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.Rotation.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.Rotation.set
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.Scaling.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.Scaling.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Display.Core.DisplayModeInfo> FindModes(global::Windows.Devices.Display.Core.DisplayModeQueryOptions flags)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<DisplayModeInfo> DisplayPath.FindModes(DisplayModeQueryOptions flags) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CDisplayModeInfo%3E%20DisplayPath.FindModes%28DisplayModeQueryOptions%20flags%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayPath", "FindModes(DisplayModeQueryOptions flags)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ApplyPropertiesFromMode(global::Windows.Devices.Display.Core.DisplayModeInfo modeResult)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "void DisplayPath.ApplyPropertiesFromMode(DisplayModeInfo modeResult)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "ApplyPropertiesFromMode(DisplayModeInfo modeResult)");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.IsInterlaced.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.IsInterlaced.set
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.IsStereo.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.IsStereo.set
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.PresentationRate.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.PresentationRate.set
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.Properties.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.PhysicalPresentationRate.get
-		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.PhysicalPresentationRate.set
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.Rotation.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.Rotation.set
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.Scaling.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.Scaling.set
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.SourcePixelFormat.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.SourcePixelFormat.set
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.SourceResolution.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.SourceResolution.set
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.Status.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.Target.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.TargetResolution.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.TargetResolution.set
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.View.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.WireFormat.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.WireFormat.set
 	}
 }

@@ -19,7 +19,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ProxyConfiguration.CanConnectDirectly is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ProxyConfiguration.CanConnectDirectly");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ProxyConfiguration", "CanConnectDirectly");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Uri> ProxyConfiguration.ProxyUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CUri%3E%20ProxyConfiguration.ProxyUris");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ProxyConfiguration", "ProxyUris");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.ProxyConfiguration.ProxyUris.get
 		// Forced skipping of method Windows.Networking.Connectivity.ProxyConfiguration.CanConnectDirectly.get
+		// Forced skipping of method Windows.Networking.Connectivity.ProxyConfiguration.ProxyUris.get
 	}
 }

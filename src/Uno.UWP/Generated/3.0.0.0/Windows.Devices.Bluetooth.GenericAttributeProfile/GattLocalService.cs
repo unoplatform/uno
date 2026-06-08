@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<GattLocalCharacteristic> GattLocalService.Characteristics is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CGattLocalCharacteristic%3E%20GattLocalService.Characteristics");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalService", "Characteristics");
 			}
 		}
 #endif
@@ -29,18 +29,18 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattLocalService.Uuid is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20GattLocalService.Uuid");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalService", "Uuid");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalService.Uuid.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicResult> CreateCharacteristicAsync(global::System.Guid characteristicUuid, global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalCharacteristicParameters parameters)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<GattLocalCharacteristicResult> GattLocalService.CreateCharacteristicAsync(Guid characteristicUuid, GattLocalCharacteristicParameters parameters) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGattLocalCharacteristicResult%3E%20GattLocalService.CreateCharacteristicAsync%28Guid%20characteristicUuid%2C%20GattLocalCharacteristicParameters%20parameters%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalService", "CreateCharacteristicAsync(Guid characteristicUuid, GattLocalCharacteristicParameters parameters)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalService.Characteristics.get
+		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalService.Uuid.get
 	}
 }

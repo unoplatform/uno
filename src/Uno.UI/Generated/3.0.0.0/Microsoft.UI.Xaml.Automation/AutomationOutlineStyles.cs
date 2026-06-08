@@ -3,24 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	public enum AutomationOutlineStyles
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		None = 0,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Outline = 1,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Shadow = 2,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Engraved = 3,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Embossed = 4,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationOutlineStyles.None
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationOutlineStyles.Outline
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationOutlineStyles.Shadow
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationOutlineStyles.Engraved
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationOutlineStyles.Embossed
 	}
 #endif
 }

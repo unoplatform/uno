@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -14,15 +14,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.UI;
 using Uno.UI.Toolkit.DevTools.Input;
-
 using Color = Windows.UI.Color;
-
-#if HAS_UNO_WINUI || WINAPPSDK || WINUI
-using Colors = Microsoft.UI.Colors;
-#else
-using Colors = Windows.UI.Colors;
-#endif
-
 using static Private.Infrastructure.TestServices;
 using SamplesApp.UITests;
 using Windows.UI.Input.Preview.Injection;
@@ -33,6 +25,11 @@ using Windows.UI.ViewManagement;
 using Private.Infrastructure;
 using Combinatorial.MSTest;
 
+#if HAS_UNO_WINUI || WINAPPSDK || WINUI
+using Colors = Microsoft.UI.Colors;
+#else
+using Colors = Windows.UI.Colors;
+#endif
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
@@ -43,12 +40,23 @@ using Uno.ApplicationModel.DataTransfer;
 using Uno.Foundation.Extensibility;
 #endif
 
+#if WINAPPSDK || __SKIA__
+using Windows.System;
+#endif
+
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
 	[RunsOnUIThread]
 	public partial class Given_TextBox
 	{
+#if __SKIA__
+		// Apple platforms (macOS, iOS, Mac Catalyst, tvOS) use Command key for standard shortcuts
+		private readonly VirtualKeyModifiers _platformCtrlKey = DeviceTargetHelper.PlatformCommandModifier;
+#elif WINAPPSDK
+		private readonly VirtualKeyModifiers _platformCtrlKey = VirtualKeyModifiers.Control;
+#endif
+
 		[TestMethod]
 		[DataRow(UpdateSourceTrigger.Default, false)]
 		[DataRow(UpdateSourceTrigger.PropertyChanged, false)]
@@ -286,6 +294,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Calling_Select_With_In_Range_Values()
 		{
 			var textBox = new TextBox
@@ -310,6 +319,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Calling_Select_With_Out_Of_Range_Length()
 		{
 			var textBox = new TextBox
@@ -334,6 +344,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Calling_Select_With_Out_Of_Range_Start()
 		{
 			var textBox = new TextBox
@@ -437,6 +448,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_IsEnabled_Set()
 		{
 			var foregroundColor = new SolidColorBrush(Colors.Red);
@@ -962,6 +974,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __ANDROID__
 		[Ignore("https://github.com/unoplatform/uno/issues/15457")]
 #endif
@@ -1101,6 +1114,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private void Given_TextBox_Showing(InputPane sender, InputPaneVisibilityEventArgs args) => throw new NotImplementedException();
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Size_Zero_Default()
 		{
 			using var uwpStyles = StyleHelper.UseUwpStyles();
@@ -1150,8 +1164,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var scp1Bounds = scp1.GetAbsoluteBounds();
 			var scp2Bounds = scp2.GetAbsoluteBounds();
 
-			Assert.IsTrue(tb1Bounds.X < scp1Bounds.X);
-			Assert.IsTrue(tb2Bounds.X < scp2Bounds.X);
+			Assert.IsLessThan(scp1Bounds.X, tb1Bounds.X);
+			Assert.IsLessThan(scp2Bounds.X, tb2Bounds.X);
 
 			var clickPosition1 = new Point((tb1Bounds.X + scp1Bounds.X) / 2, (tb1Bounds.Top + tb1Bounds.Bottom) / 2);
 			var clickPosition2 = new Point((tb2Bounds.X + scp2Bounds.X) / 2, (tb2Bounds.Top + tb2Bounds.Bottom) / 2);
@@ -1160,21 +1174,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var mouse = injector.GetMouse();
 
 			mouse.MoveTo(clickPosition2);
-			Assert.AreEqual(0, list.Count);
+			Assert.IsEmpty(list);
 			mouse.Press(clickPosition2);
 			await WindowHelper.WaitForIdle();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(1, list.Count);
+			Assert.HasCount(1, list);
 			Assert.AreEqual("Second", list[0]);
 
 			mouse.MoveTo(clickPosition1);
-			Assert.AreEqual(1, list.Count);
+			Assert.HasCount(1, list);
 			mouse.Press(clickPosition1);
 			await WindowHelper.WaitForIdle();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(2, list.Count);
+			Assert.HasCount(2, list);
 			Assert.AreEqual("First", list[1]);
 
 			FocusManager.GotFocus -= FocusManager_GotFocus;

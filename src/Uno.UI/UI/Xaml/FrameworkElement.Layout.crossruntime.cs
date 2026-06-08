@@ -491,11 +491,13 @@ namespace Microsoft.UI.Xaml
 			{
 				void ArrangeCoreWithTrace(Rect finalRect)
 				{
+#pragma warning disable CA1305 // Specify IFormatProvider
 					var traceActivity = _trace.WriteEventActivity(
 										TraceProvider.FrameworkElement_ArrangeStart,
 										TraceProvider.FrameworkElement_ArrangeStop,
 										new object[] { GetType().Name, this.GetDependencyObjectId(), Name, finalRect.ToString() }
 									);
+#pragma warning restore CA1305 // Specify IFormatProvider
 
 					using (traceActivity)
 					{
@@ -515,6 +517,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private static bool IsLessThanAndNotCloseTo(double a, double b) => a < (b - SIZE_EPSILON);
+		private static bool IsCloseTo(double a, double b) => Math.Abs(a - b) < SIZE_EPSILON;
 
 		private void InnerArrangeCore(Rect finalRect)
 		{
@@ -576,7 +579,7 @@ namespace Microsoft.UI.Xaml
 				if (roundedMarginWidth != marginWidth && arrangeSizeWithoutMargin.Width != unclippedDesiredSize.Width)
 				{
 					double arrangeWidthWithoutRoundedMargin = Math.Max(arrangeSize.Width - roundedMarginWidth, 0);
-					if (arrangeWidthWithoutRoundedMargin == unclippedDesiredSize.Width)
+					if (IsCloseTo(arrangeWidthWithoutRoundedMargin, unclippedDesiredSize.Width))
 					{
 						// The rounding difference between arrangeSizeWithoutMargin.width and unclippedDesiredSize.width
 						// comes from the horizontal margin. The rounded value of that margin must be used so that this
@@ -597,7 +600,7 @@ namespace Microsoft.UI.Xaml
 				if (roundedMarginHeight != marginHeight && arrangeSizeWithoutMargin.Height != unclippedDesiredSize.Height)
 				{
 					double arrangeHeightWithoutRoundedMargin = Math.Max(arrangeSize.Height - roundedMarginHeight, 0);
-					if (arrangeHeightWithoutRoundedMargin == unclippedDesiredSize.Height)
+					if (IsCloseTo(arrangeHeightWithoutRoundedMargin, unclippedDesiredSize.Height))
 					{
 						// The rounding difference between arrangeSizeWithoutMargin.height and unclippedDesiredSize.height
 						// comes from the vertical margin. The rounded value of that margin must be used so that this

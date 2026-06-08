@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PurchaseResults.OfferId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PurchaseResults.OfferId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.PurchaseResults", "OfferId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PurchaseResults.ReceiptXml is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PurchaseResults.ReceiptXml");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.PurchaseResults", "ReceiptXml");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ProductPurchaseStatus PurchaseResults.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProductPurchaseStatus%20PurchaseResults.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.PurchaseResults", "Status");
 			}
 		}
 #endif
@@ -49,13 +49,13 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PurchaseResults.TransactionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PurchaseResults.TransactionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.PurchaseResults", "TransactionId");
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.OfferId.get
+		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.ReceiptXml.get
 		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.Status.get
 		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.TransactionId.get
-		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.ReceiptXml.get
-		// Forced skipping of method Windows.ApplicationModel.Store.PurchaseResults.OfferId.get
 	}
 }

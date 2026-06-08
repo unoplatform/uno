@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer MobileBroadbandDeviceServiceCommandResult.ResponseData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20MobileBroadbandDeviceServiceCommandResult.ResponseData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandResult", "ResponseData");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MobileBroadbandDeviceServiceCommandResult.StatusCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MobileBroadbandDeviceServiceCommandResult.StatusCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandResult", "StatusCode");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandResult.StatusCode.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandResult.ResponseData.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandResult.StatusCode.get
 	}
 }

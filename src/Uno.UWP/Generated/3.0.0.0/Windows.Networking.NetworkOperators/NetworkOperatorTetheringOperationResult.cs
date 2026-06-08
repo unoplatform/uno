@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NetworkOperatorTetheringOperationResult.AdditionalErrorMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NetworkOperatorTetheringOperationResult.AdditionalErrorMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult", "AdditionalErrorMessage");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TetheringOperationStatus NetworkOperatorTetheringOperationResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TetheringOperationStatus%20NetworkOperatorTetheringOperationResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult", "Status");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult.Status.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult.AdditionalErrorMessage.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult.Status.get
 	}
 }

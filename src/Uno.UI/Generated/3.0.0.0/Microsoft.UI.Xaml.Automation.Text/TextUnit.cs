@@ -3,30 +3,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Text
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	public enum TextUnit
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Character = 0,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Format = 1,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Word = 2,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Line = 3,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Paragraph = 4,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Page = 5,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Document = 6,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.Text.TextUnit.Character
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.Text.TextUnit.Format
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.Text.TextUnit.Word
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.Text.TextUnit.Line
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.Text.TextUnit.Paragraph
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.Text.TextUnit.Page
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.Text.TextUnit.Document
 	}
 #endif
 }

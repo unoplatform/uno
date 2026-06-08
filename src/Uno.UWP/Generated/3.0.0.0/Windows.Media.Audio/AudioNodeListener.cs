@@ -10,29 +10,15 @@ namespace Windows.Media.Audio
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double SpeedOfSound
+		public global::System.Numerics.Vector3 DopplerVelocity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AudioNodeListener.SpeedOfSound is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AudioNodeListener.SpeedOfSound");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeListener", "DopplerVelocity");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeListener", "double AudioNodeListener.SpeedOfSound");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 Position
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 AudioNodeListener.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20AudioNodeListener.Position");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeListener", "Vector3 AudioNodeListener.Position");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeListener", "DopplerVelocity");
 			}
 		}
 #endif
@@ -42,25 +28,39 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Quaternion AudioNodeListener.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Quaternion%20AudioNodeListener.Orientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeListener", "Orientation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeListener", "Quaternion AudioNodeListener.Orientation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeListener", "Orientation");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 DopplerVelocity
+		public global::System.Numerics.Vector3 Position
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 AudioNodeListener.DopplerVelocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20AudioNodeListener.DopplerVelocity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeListener", "Position");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeListener", "Vector3 AudioNodeListener.DopplerVelocity");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeListener", "Position");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double SpeedOfSound
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioNodeListener", "SpeedOfSound");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeListener", "SpeedOfSound");
 			}
 		}
 #endif
@@ -68,17 +68,17 @@ namespace Windows.Media.Audio
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public AudioNodeListener()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeListener", "AudioNodeListener.AudioNodeListener()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeListener", "AudioNodeListener()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.AudioNodeListener()
-		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.Position.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.Position.set
-		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.Orientation.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.Orientation.set
-		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.SpeedOfSound.get
-		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.SpeedOfSound.set
 		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.DopplerVelocity.get
 		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.DopplerVelocity.set
+		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.Orientation.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.Orientation.set
+		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.Position.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.Position.set
+		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.SpeedOfSound.get
+		// Forced skipping of method Windows.Media.Audio.AudioNodeListener.SpeedOfSound.set
 	}
 }

@@ -12,14 +12,13 @@ namespace Windows.Devices.Sensors
 		// Skipping already declared property MagneticFieldX
 		// Skipping already declared property MagneticFieldY
 		// Skipping already declared property MagneticFieldZ
-		// Skipping already declared property Timestamp
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.TimeSpan? PerformanceCount
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? MagnetometerReading.PerformanceCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20MagnetometerReading.PerformanceCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.MagnetometerReading", "PerformanceCount");
 			}
 		}
 #endif
@@ -29,16 +28,17 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> MagnetometerReading.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20object%3E%20MagnetometerReading.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.MagnetometerReading", "Properties");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReading.Timestamp.get
+		// Skipping already declared property Timestamp
+		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReading.DirectionalAccuracy.get
 		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReading.MagneticFieldX.get
 		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReading.MagneticFieldY.get
 		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReading.MagneticFieldZ.get
-		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReading.DirectionalAccuracy.get
 		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReading.PerformanceCount.get
 		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReading.Properties.get
+		// Forced skipping of method Windows.Devices.Sensors.MagnetometerReading.Timestamp.get
 	}
 }

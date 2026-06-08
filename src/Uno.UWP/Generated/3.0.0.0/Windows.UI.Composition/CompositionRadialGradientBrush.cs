@@ -15,15 +15,15 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector2 GradientOriginOffset
+		public global::System.Numerics.Vector2 EllipseCenter
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionRadialGradientBrush.GradientOriginOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionRadialGradientBrush.GradientOriginOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionRadialGradientBrush", "EllipseCenter");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionRadialGradientBrush", "Vector2 CompositionRadialGradientBrush.GradientOriginOffset");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionRadialGradientBrush", "EllipseCenter");
 			}
 		}
 #endif
@@ -33,25 +33,25 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionRadialGradientBrush.EllipseRadius is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionRadialGradientBrush.EllipseRadius");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionRadialGradientBrush", "EllipseRadius");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionRadialGradientBrush", "Vector2 CompositionRadialGradientBrush.EllipseRadius");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionRadialGradientBrush", "EllipseRadius");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector2 EllipseCenter
+		public global::System.Numerics.Vector2 GradientOriginOffset
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionRadialGradientBrush.EllipseCenter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionRadialGradientBrush.EllipseCenter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionRadialGradientBrush", "GradientOriginOffset");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionRadialGradientBrush", "Vector2 CompositionRadialGradientBrush.EllipseCenter");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionRadialGradientBrush", "GradientOriginOffset");
 			}
 		}
 #endif

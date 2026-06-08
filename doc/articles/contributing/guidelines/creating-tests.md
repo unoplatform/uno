@@ -26,13 +26,13 @@ These are the main types of tests in Uno:
  Unit tests                  | <https://github.com/unoplatform/uno/tree/master/src/Uno.UI.Tests>
  Platform runtime unit tests | <https://github.com/unoplatform/uno/tree/master/src/Uno.UI.RuntimeTests>
  XAML code generation tests  | <https://github.com/unoplatform/uno/tree/master/src/SourceGenerators/XamlGenerationTests>
- UI snapshot tests           | <https://github.com/unoplatform/uno/tree/master/src/SamplesApp/UITests.Shared>
+ UI snapshot tests           | <https://github.com/unoplatform/uno/tree/master/src/SamplesApp/SamplesApp.Samples>
 
  All these tests are run on each CI build, and all tests must pass before a PR can be merged.
 
 ### UI tests
 
-Uno's UI tests use the [Uno.UITest](https://github.com/unoplatform/Uno.UITest) testing harness, which mimics the [`Xamarin.UITest` API](https://learn.microsoft.com/appcenter/test-cloud/uitest/) and extends it to WebAssembly. These tests run out-of-process and interact with a running app (the [SamplesApp](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/UITests.Shared)) to confirm that it behaves correctly on each supported platform.
+Uno's UI tests use the [Uno.UITest](https://github.com/unoplatform/Uno.UITest) testing harness, which mimics the [`Xamarin.UITest` API](https://learn.microsoft.com/appcenter/test-cloud/uitest/) and extends it to WebAssembly. These tests run out-of-process and interact with a running app (the [SamplesApp](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/SamplesApp.Samples)) to confirm that it behaves correctly on each supported platform.
 
 UI tests can mimic the actions of a user:
 
@@ -80,7 +80,7 @@ These can be used to assert that a given input to a given source generator produ
 
 ### UI snapshot tests
 
-These are 'semi-automated' tests that takes a screenshot of each sample in the [SamplesApp](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/UITests.Shared).
+These are 'semi-automated' tests that takes a screenshot of each sample in the [SamplesApp](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/SamplesApp.Samples).
 
 On Android, iOS, and Wasm, a minimal UI test is [generated](https://github.com/unoplatform/uno/blob/master/src/SamplesApp/SamplesApp.UITests.Generator/SnapShotTestGenerator.cs) which simply runs the sample (which automatically takes a screenshot of the loaded sample).
 
@@ -139,4 +139,4 @@ Some UI behaviors are difficult to test in an automated fashion, such as transie
 
 Some non-UI APIs may not be testable in the emulated environment on the CI build.
 
-If you're working on something that falls under one of these descriptions, you should add a [sample](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/UITests.Shared) that covers the bug or feature you're working on, and verify that the existing samples in the same feature category aren't negatively affected by your changes. Also, you should mark such sample as a manual test. For more information about manual tests, see [Adding a manual test sample section in Using the SamplesApp documentation](../../uno-development/working-with-the-samples-apps.md#adding-a-manual-test-sample).
+If you're working on something that falls under one of these descriptions, you should add a [sample](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/SamplesApp.Samples) that covers the bug or feature you're working on, and verify that the existing samples in the same feature category aren't negatively affected by your changes. Also, you should mark such sample as a manual test. For more information about manual tests, see [Adding a manual test sample section in Using the SamplesApp documentation](../../uno-development/working-with-the-samples-apps.md#adding-a-manual-test-sample).

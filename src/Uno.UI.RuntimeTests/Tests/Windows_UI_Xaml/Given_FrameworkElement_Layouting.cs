@@ -204,6 +204,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 #endif
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_DP_IsEnabled_Null()
 		{
 			var grid = new UserControl();

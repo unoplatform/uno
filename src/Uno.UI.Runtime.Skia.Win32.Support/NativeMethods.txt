@@ -99,6 +99,9 @@ WM_SETCURSOR
 WM_SETICON
 WM_SIZE
 WM_SYSCOMMAND
+WM_IME_STARTCOMPOSITION
+WM_IME_ENDCOMPOSITION
+WM_IME_COMPOSITION
 
 // Structs
 BITMAP
@@ -114,18 +117,35 @@ IEnumUnknown
 IFileOpenDialog
 IFileSaveDialog
 IGlobalInterfaceTable
+ITaskbarList3
 MINMAXINFO
 MONITORINFOEXW
 PIXELFORMATDESCRIPTOR
 RECT
 MARGINS
+STGC
 
 // Enums
 BI_COMPRESSION
 DI_FLAGS
 DWM_WINDOW_CORNER_PREFERENCE
+IME_COMPOSITION_STRING
+NOTIFY_IME_ACTION
+NOTIFY_IME_INDEX
 
 // Functions
+// IMM32 (Input Method Manager) APIs for IME/emoji picker positioning
+ImmGetCompositionString
+ImmGetContext
+ImmNotifyIME
+ImmReleaseContext
+ImmSetCandidateWindow
+ImmSetCompositionWindow
+// System Caret APIs for OS caret position awareness
+CreateCaret
+SetCaretPos
+DestroyCaret
+
 AdjustWindowRectEx
 AdjustWindowRectExForDpi
 AddClipboardFormatListener
@@ -218,6 +238,7 @@ PeekMessage
 PostMessage
 RegGetValue
 RegisterClassEx
+RegisterClipboardFormat
 RegisterDragDrop
 RegisterTouchWindow
 RegisterWindowMessage
@@ -246,6 +267,7 @@ SetWindowText
 SHCreateItemFromParsingName
 SHCreateItemInKnownFolder
 ShowWindow
+StgCreateStorageEx
 SwapBuffers
 TranslateMessage
 wglCreateContext

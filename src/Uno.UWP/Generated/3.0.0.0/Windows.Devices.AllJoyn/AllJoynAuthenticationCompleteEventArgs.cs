@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.AllJoyn
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -20,7 +19,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AllJoynAuthenticationMechanism AllJoynAuthenticationCompleteEventArgs.AuthenticationMechanism is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AllJoynAuthenticationMechanism%20AllJoynAuthenticationCompleteEventArgs.AuthenticationMechanism");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs", "AuthenticationMechanism");
 			}
 		}
 #endif
@@ -30,7 +29,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AllJoynAuthenticationCompleteEventArgs.PeerUniqueName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AllJoynAuthenticationCompleteEventArgs.PeerUniqueName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs", "PeerUniqueName");
 			}
 		}
 #endif
@@ -40,7 +39,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AllJoynAuthenticationCompleteEventArgs.Succeeded is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AllJoynAuthenticationCompleteEventArgs.Succeeded");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynAuthenticationCompleteEventArgs", "Succeeded");
 			}
 		}
 #endif

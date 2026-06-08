@@ -19,7 +19,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnPickedCredential.AdditionalPin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnPickedCredential.AdditionalPin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPickedCredential", "AdditionalPin");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential VpnPickedCredential.OldPasswordCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PasswordCredential%20VpnPickedCredential.OldPasswordCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPickedCredential", "OldPasswordCredential");
 			}
 		}
 #endif
@@ -39,12 +39,12 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential VpnPickedCredential.PasskeyCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PasswordCredential%20VpnPickedCredential.PasskeyCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPickedCredential", "PasskeyCredential");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Vpn.VpnPickedCredential.PasskeyCredential.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnPickedCredential.AdditionalPin.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnPickedCredential.OldPasswordCredential.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnPickedCredential.PasskeyCredential.get
 	}
 }

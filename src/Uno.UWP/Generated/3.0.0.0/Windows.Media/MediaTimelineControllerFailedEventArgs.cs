@@ -19,7 +19,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception MediaTimelineControllerFailedEventArgs.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20MediaTimelineControllerFailedEventArgs.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaTimelineControllerFailedEventArgs", "ExtendedError");
 			}
 		}
 #endif

@@ -15,11 +15,21 @@ namespace Windows.Media.Streaming.Adaptive
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Exception ExtendedError
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult", "ExtendedError");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Web.Http.HttpResponseMessage HttpResponseMessage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpResponseMessage AdaptiveMediaSourceCreationResult.HttpResponseMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpResponseMessage%20AdaptiveMediaSourceCreationResult.HttpResponseMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult", "HttpResponseMessage");
 			}
 		}
 #endif
@@ -29,7 +39,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AdaptiveMediaSource AdaptiveMediaSourceCreationResult.MediaSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AdaptiveMediaSource%20AdaptiveMediaSourceCreationResult.MediaSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult", "MediaSource");
 			}
 		}
 #endif
@@ -39,23 +49,13 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AdaptiveMediaSourceCreationStatus AdaptiveMediaSourceCreationResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AdaptiveMediaSourceCreationStatus%20AdaptiveMediaSourceCreationResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult", "Status");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Exception ExtendedError
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Exception AdaptiveMediaSourceCreationResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20AdaptiveMediaSourceCreationResult.ExtendedError");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.Status.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.MediaSource.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.HttpResponseMessage.get
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.ExtendedError.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.HttpResponseMessage.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.MediaSource.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult.Status.get
 	}
 }

@@ -59,7 +59,7 @@ namespace Microsoft.UI.Xaml.Controls
 					true == (item.GetValue(IsDestructiveProperty) as bool?) ? UIAlertActionStyle.Destructive : UIAlertActionStyle.Default,
 					_ =>
 					{
-						item.InvokeClick();
+						item.Invoke();
 						Hide();
 					}
 				))

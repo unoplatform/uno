@@ -15,31 +15,11 @@ namespace Windows.Gaming.Input
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Gaming.Input.Headset Headset
+		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Gaming.Input.RacingWheel> RacingWheels
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Headset RacingWheel.Headset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Headset%20RacingWheel.Headset");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsWireless
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool RacingWheel.IsWireless is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RacingWheel.IsWireless");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.System.User User
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member User RacingWheel.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20RacingWheel.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.RacingWheel", "RacingWheels");
 			}
 		}
 #endif
@@ -49,7 +29,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RacingWheel.HasClutch is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RacingWheel.HasClutch");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.RacingWheel", "HasClutch");
 			}
 		}
 #endif
@@ -59,7 +39,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RacingWheel.HasHandbrake is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RacingWheel.HasHandbrake");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.RacingWheel", "HasHandbrake");
 			}
 		}
 #endif
@@ -69,7 +49,27 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RacingWheel.HasPatternShifter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RacingWheel.HasPatternShifter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.RacingWheel", "HasPatternShifter");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Gaming.Input.Headset Headset
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.RacingWheel", "Headset");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsWireless
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.RacingWheel", "IsWireless");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int RacingWheel.MaxPatternShifterGear is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20RacingWheel.MaxPatternShifterGear");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.RacingWheel", "MaxPatternShifterGear");
 			}
 		}
 #endif
@@ -89,7 +89,17 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double RacingWheel.MaxWheelAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20RacingWheel.MaxWheelAngle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.RacingWheel", "MaxWheelAngle");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.System.User User
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.RacingWheel", "User");
 			}
 		}
 #endif
@@ -99,38 +109,34 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ForceFeedbackMotor RacingWheel.WheelMotor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ForceFeedbackMotor%20RacingWheel.WheelMotor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.RacingWheel", "WheelMotor");
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Gaming.Input.RacingWheel.RacingWheelAdded.add
+		// Forced skipping of method Windows.Gaming.Input.RacingWheel.RacingWheelAdded.remove
+		// Forced skipping of method Windows.Gaming.Input.RacingWheel.RacingWheelRemoved.add
+		// Forced skipping of method Windows.Gaming.Input.RacingWheel.RacingWheelRemoved.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Gaming.Input.RacingWheel> RacingWheels
+		public static global::Windows.Gaming.Input.RacingWheel FromGameController(global::Windows.Gaming.Input.IGameController gameController)
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<RacingWheel> RacingWheel.RacingWheels is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CRacingWheel%3E%20RacingWheel.RacingWheels");
-			}
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.RacingWheel", "FromGameController(IGameController gameController)");
 		}
 #endif
-		// Forced skipping of method Windows.Gaming.Input.RacingWheel.HasClutch.get
-		// Forced skipping of method Windows.Gaming.Input.RacingWheel.HasHandbrake.get
-		// Forced skipping of method Windows.Gaming.Input.RacingWheel.HasPatternShifter.get
-		// Forced skipping of method Windows.Gaming.Input.RacingWheel.MaxPatternShifterGear.get
-		// Forced skipping of method Windows.Gaming.Input.RacingWheel.MaxWheelAngle.get
-		// Forced skipping of method Windows.Gaming.Input.RacingWheel.WheelMotor.get
+		// Forced skipping of method Windows.Gaming.Input.RacingWheel.RacingWheels.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Gaming.Input.GameControllerButtonLabel GetButtonLabel(global::Windows.Gaming.Input.RacingWheelButtons button)
 		{
-			throw new global::System.NotImplementedException("The member GameControllerButtonLabel RacingWheel.GetButtonLabel(RacingWheelButtons button) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameControllerButtonLabel%20RacingWheel.GetButtonLabel%28RacingWheelButtons%20button%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.RacingWheel", "GetButtonLabel(RacingWheelButtons button)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Gaming.Input.RacingWheelReading GetCurrentReading()
 		{
-			throw new global::System.NotImplementedException("The member RacingWheelReading RacingWheel.GetCurrentReading() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RacingWheelReading%20RacingWheel.GetCurrentReading%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.RacingWheel", "GetCurrentReading()");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.RacingWheel.HeadsetConnected.add
@@ -139,76 +145,22 @@ namespace Windows.Gaming.Input
 		// Forced skipping of method Windows.Gaming.Input.RacingWheel.HeadsetDisconnected.remove
 		// Forced skipping of method Windows.Gaming.Input.RacingWheel.UserChanged.add
 		// Forced skipping of method Windows.Gaming.Input.RacingWheel.UserChanged.remove
-		// Forced skipping of method Windows.Gaming.Input.RacingWheel.Headset.get
-		// Forced skipping of method Windows.Gaming.Input.RacingWheel.IsWireless.get
-		// Forced skipping of method Windows.Gaming.Input.RacingWheel.User.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Power.BatteryReport TryGetBatteryReport()
 		{
-			throw new global::System.NotImplementedException("The member BatteryReport RacingWheel.TryGetBatteryReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BatteryReport%20RacingWheel.TryGetBatteryReport%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.RacingWheel", "TryGetBatteryReport()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Gaming.Input.RacingWheel FromGameController(global::Windows.Gaming.Input.IGameController gameController)
-		{
-			throw new global::System.NotImplementedException("The member RacingWheel RacingWheel.FromGameController(IGameController gameController) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RacingWheel%20RacingWheel.FromGameController%28IGameController%20gameController%29");
-		}
-#endif
-		// Forced skipping of method Windows.Gaming.Input.RacingWheel.RacingWheelAdded.add
-		// Forced skipping of method Windows.Gaming.Input.RacingWheel.RacingWheelAdded.remove
-		// Forced skipping of method Windows.Gaming.Input.RacingWheel.RacingWheelRemoved.add
-		// Forced skipping of method Windows.Gaming.Input.RacingWheel.RacingWheelRemoved.remove
-		// Forced skipping of method Windows.Gaming.Input.RacingWheel.RacingWheels.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Gaming.Input.IGameController, global::Windows.Gaming.Input.Headset> HeadsetConnected
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.RacingWheel", "event TypedEventHandler<IGameController, Headset> RacingWheel.HeadsetConnected");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.RacingWheel", "event TypedEventHandler<IGameController, Headset> RacingWheel.HeadsetConnected");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Gaming.Input.IGameController, global::Windows.Gaming.Input.Headset> HeadsetDisconnected
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.RacingWheel", "event TypedEventHandler<IGameController, Headset> RacingWheel.HeadsetDisconnected");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.RacingWheel", "event TypedEventHandler<IGameController, Headset> RacingWheel.HeadsetDisconnected");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Gaming.Input.IGameController, global::Windows.System.UserChangedEventArgs> UserChanged
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.RacingWheel", "event TypedEventHandler<IGameController, UserChangedEventArgs> RacingWheel.UserChanged");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.RacingWheel", "event TypedEventHandler<IGameController, UserChangedEventArgs> RacingWheel.UserChanged");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.Gaming.Input.RacingWheel.HasClutch.get
+		// Forced skipping of method Windows.Gaming.Input.RacingWheel.HasHandbrake.get
+		// Forced skipping of method Windows.Gaming.Input.RacingWheel.HasPatternShifter.get
+		// Forced skipping of method Windows.Gaming.Input.RacingWheel.Headset.get
+		// Forced skipping of method Windows.Gaming.Input.RacingWheel.IsWireless.get
+		// Forced skipping of method Windows.Gaming.Input.RacingWheel.MaxPatternShifterGear.get
+		// Forced skipping of method Windows.Gaming.Input.RacingWheel.MaxWheelAngle.get
+		// Forced skipping of method Windows.Gaming.Input.RacingWheel.User.get
+		// Forced skipping of method Windows.Gaming.Input.RacingWheel.WheelMotor.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static event global::System.EventHandler<global::Windows.Gaming.Input.RacingWheel> RacingWheelAdded
@@ -216,12 +168,12 @@ namespace Windows.Gaming.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.RacingWheel", "event EventHandler<RacingWheel> RacingWheel.RacingWheelAdded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.RacingWheel", "event RacingWheelAdded");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.RacingWheel", "event EventHandler<RacingWheel> RacingWheel.RacingWheelAdded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.RacingWheel", "event RacingWheelAdded");
 			}
 		}
 #endif
@@ -232,12 +184,60 @@ namespace Windows.Gaming.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.RacingWheel", "event EventHandler<RacingWheel> RacingWheel.RacingWheelRemoved");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.RacingWheel", "event RacingWheelRemoved");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.RacingWheel", "event EventHandler<RacingWheel> RacingWheel.RacingWheelRemoved");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.RacingWheel", "event RacingWheelRemoved");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Gaming.Input.IGameController, global::Windows.Gaming.Input.Headset> HeadsetConnected
+		{
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.RacingWheel", "event HeadsetConnected");
+			}
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.RacingWheel", "event HeadsetConnected");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Gaming.Input.IGameController, global::Windows.Gaming.Input.Headset> HeadsetDisconnected
+		{
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.RacingWheel", "event HeadsetDisconnected");
+			}
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.RacingWheel", "event HeadsetDisconnected");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Gaming.Input.IGameController, global::Windows.System.UserChangedEventArgs> UserChanged
+		{
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.RacingWheel", "event UserChanged");
+			}
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.RacingWheel", "event UserChanged");
 			}
 		}
 #endif

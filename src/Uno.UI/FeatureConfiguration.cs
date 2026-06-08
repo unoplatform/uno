@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -69,6 +70,14 @@ namespace Uno.UI
 			/// Note: This is incompatible with the way accessibility works on UWP.
 			/// </remarks>
 			public static bool UseSimpleAccessibility { get; set; }
+
+			/// <summary>
+			/// When set to <c>true</c>, enables the accessibility semantic tree automatically
+			/// on WebAssembly without requiring user interaction with the "Enable Accessibility" button.
+			/// This is similar to Flutter's <c>SemanticsBinding.instance.ensureSemantics()</c>.
+			/// Set this in your application startup before the host is built. The default value is <c>false</c>.
+			/// </summary>
+			public static bool AutoEnableAccessibility { get; set; }
 		}
 
 		public static class ComboBox
@@ -215,12 +224,30 @@ namespace Uno.UI
 			/// </summary>
 			public static bool IgnoreTextScaleFactor { get; set; }
 
-#if __ANDROID__ || __APPLE_UIKIT__
 			/// <summary>
 			/// Allows the user to limit the scale factor without having to ignore it.
 			/// </summary>
 			public static float? MaximumTextScaleFactor { get; set; }
-#endif
+
+			/// <summary>
+			/// Overrides the font fallback mechanism used to resolve typefaces for codepoints
+			/// that the requested font family cannot render. When <c>null</c> (the default),
+			/// the platform-registered service is used.
+			/// </summary>
+			/// <remarks>
+			/// Customers wanting to keep the built-in coverage but change how font bytes are obtained
+			/// (e.g. to avoid CORS restrictions on WebAssembly) typically supply a
+			/// <see cref="Microsoft.UI.Xaml.Documents.TextFormatting.CoverageTableFontFallbackService"/>
+			/// constructed with their own coverage table and stream provider.
+			/// </remarks>
+			public static Microsoft.UI.Xaml.Documents.TextFormatting.IFontFallbackService FallbackService { get; set; }
+
+			/// <summary>
+			/// Overrides the OS-reported text scale factor with a manual value.
+			/// When set, this value takes precedence over the OS-reported scale factor.
+			/// Useful for platforms without OS text scaling support (macOS, WASM, Linux FrameBuffer) or for testing.
+			/// </summary>
+			public static double? TextScaleFactor { get; set; }
 		}
 
 		public static class FrameworkElement
@@ -551,6 +578,15 @@ namespace Uno.UI
 			/// This option must be set on application startup before the cache is initialized.
 			/// </summary>
 			public static int JavaStringCachedCapacity { get; set; } = 1000;
+
+			/// <summary>
+			/// On Skia targets, determines if the TextBlock should render whitespace characters.
+			/// There's usually no effect between toggling this flag on and off, but it can have
+			/// an effect when the font used to draw the TextBlock doesn't have a glyph for the
+			/// whitespace characters, in which case disabling this flag will prevent the TextBlock
+			/// from rendering the font's "replacement character" symbol (e.g. �) instead of just a white space.
+			/// </summary>
+			public static bool RenderWhiteSpace { get; set; }
 		}
 
 		public static class TextBox
@@ -567,6 +603,25 @@ namespace Uno.UI
 			/// Uno skia-based TextBox implementation.
 			/// </summary>
 			public static bool UseOverlayOnSkia { get; set; }
+
+			/// <summary>
+			/// Hunspell dictionaries to be used for spell checking in TextBox and RichEditBox controls.
+			/// By default, an english dictionary is provided.
+			/// This is currently a skia-only feature.
+			/// </summary>
+			public static List<(Stream dictionary, Stream affixes)> CustomSpellCheckDictionaries { get; set; }
+
+			/// <summary>
+			/// When set to <see langword="true"/>, disables the floating number pad popover that iOS 26
+			/// introduced for <c>UITextField</c> when a numeric keyboard is used on iPad (by setting
+			/// <c>UITextField.allowsNumberPadPopover</c> to <see langword="false"/>).
+			/// Defaults to <see langword="false"/> (native iOS 26 behavior is preserved).
+			/// </summary>
+			/// <remarks>
+			/// This is currently an iOS Skia-only feature and has no effect on other platforms or
+			/// on iOS versions prior to 26.
+			/// </remarks>
+			public static bool DisableNumberPadPopover { get; set; }
 
 #if __ANDROID__
 			/// <summary>
@@ -753,6 +808,25 @@ namespace Uno.UI
 
 		public static class WebView2
 		{
+			/// <summary>
+			/// Enables the platform-native developer tools for the <see cref="WebView2"/> control.
+			/// </summary>
+			/// <remarks>
+			/// <para>Defaults to <c>true</c> in DEBUG builds and <c>false</c> in RELEASE builds.</para>
+			/// <para>Per-platform behavior:</para>
+			/// <list type="bullet">
+			///   <item><description>Windows / Linux (Skia): toggles Chromium DevTools (right-click "Inspect" / F12).</description></item>
+			///   <item><description>iOS / Mac Catalyst / macOS: enables Safari Web Inspector against the <c>WKWebView</c> (requires iOS 16.4+, macOS 13.3+).</description></item>
+			///   <item><description>Android: enables Chrome DevTools remote debugging at <c>chrome://inspect</c>.</description></item>
+			///   <item><description>WebAssembly: no-op; use the host browser's developer tools.</description></item>
+			/// </list>
+			/// <para>Set this once during application startup before any <c>WebView2</c> is materialized.</para>
+			/// </remarks>
+			public static bool EnableDevTools { get; set; }
+#if DEBUG
+				= true;
+#endif
+
 #if __IOS__ || UNO_REFERENCE_API
 			/// <summary>
 			/// Sets whether the <see cref="WebView2"/> object is inspectable or not.
@@ -761,7 +835,12 @@ namespace Uno.UI
 			/// On iOS and Catalyst this means that developers can use the Safari Web Developers tools to debug apps with <see cref="WebView2"/>
 			/// Important: It will only work when the app runs in Debug mode.
 			/// </remarks>
-			public static bool IsInspectable { get; set; }
+			[System.Obsolete("Use " + nameof(EnableDevTools) + " instead. This cross-platform flag controls the same behavior on all targets.")]
+			public static bool IsInspectable
+			{
+				get => EnableDevTools;
+				set => EnableDevTools = value;
+			}
 #endif
 		}
 
@@ -901,9 +980,30 @@ namespace Uno.UI
 			public static bool? UseOpenGLOnWin32 { get; set; }
 
 			/// <summary>
+			/// Determines if Vulkan rendering should be enabled on the X11 target.
+			/// When true, attempts to use Vulkan for hardware-accelerated rendering. Falls back to
+			/// OpenGL (or software rendering) if Vulkan is unavailable.
+			/// </summary>
+			public static bool UseVulkanOnX11 { get; set; }
+
+			/// <summary>
+			/// Determines if Vulkan rendering should be enabled on the Win32 target.
+			/// When true, attempts to use Vulkan for hardware-accelerated rendering. Falls back to
+			/// OpenGL (or software rendering) if Vulkan is unavailable.
+			/// </summary>
+			public static bool UseVulkanOnWin32 { get; set; }
+
+			/// <summary>
 			/// Determines if OpenGL rendering should be enabled on the Android target when using the skia renderer.
 			/// </summary>
 			public static bool UseOpenGLOnSkiaAndroid { get; set; } = true;
+
+			/// <summary>
+			/// Determines if Vulkan rendering should be enabled on the Android target when using the skia renderer.
+			/// When true, attempts to use Vulkan for hardware-accelerated rendering. Falls back to OpenGL ES
+			/// (or software rendering) if Vulkan is unavailable.
+			/// </summary>
+			public static bool UseVulkanOnSkiaAndroid { get; set; }
 
 			/// <summary>
 			/// Enables certain optimizations that skip rendering some subtrees
@@ -957,6 +1057,21 @@ namespace Uno.UI
 			/// If null (default) use Metal if available, otherwise fallback to Software rendering.
 			/// </summary>
 			public static bool? UseMetalOnMacOS { get; set; }
+		}
+
+		public static class ElementRefHandle
+		{
+			/// <summary>
+			/// Accessing the element ref handle registry must only happen on the UI thread.
+			/// By default, attempting to access it from a non-UI thread throws an
+			/// <see cref="InvalidOperationException"/>.
+			/// <para>
+			/// Setting this to <see langword="true"/> suppresses that exception.
+			/// This is intended only for unit-test environments where a real UI thread is not
+			/// available. Do not set this in production code.
+			/// </para>
+			/// </summary>
+			public static bool DisableThreadingCheck { get; internal set; }
 		}
 
 		public static class DependencyProperty

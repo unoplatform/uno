@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class StateTrigger : global::Microsoft.UI.Xaml.StateTriggerBase
 	{
-		// Skipping already declared property IsActive
 		// Skipping already declared property IsActiveProperty
+		// Skipping already declared property IsActive
 		// Skipping already declared method Microsoft.UI.Xaml.StateTrigger.StateTrigger()
 		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.StateTrigger()
+		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.IsActiveProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.IsActive.get
 		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.IsActive.set
-		// Forced skipping of method Microsoft.UI.Xaml.StateTrigger.IsActiveProperty.get
 	}
 }

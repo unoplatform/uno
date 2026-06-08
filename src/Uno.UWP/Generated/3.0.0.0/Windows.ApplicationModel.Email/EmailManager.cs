@@ -8,20 +8,20 @@ namespace Windows.ApplicationModel.Email
 #endif
 	public static partial class EmailManager
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.ApplicationModel.Email.EmailManagerForUser GetForUser(global::Windows.System.User user)
-		{
-			throw new global::System.NotImplementedException("The member EmailManagerForUser EmailManager.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailManagerForUser%20EmailManager.GetForUser%28User%20user%29");
-		}
-#endif
+		// Skipping already declared method Windows.ApplicationModel.Email.EmailManager.ShowComposeNewEmailAsync(Windows.ApplicationModel.Email.EmailMessage)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Email.EmailStore> RequestStoreAsync(global::Windows.ApplicationModel.Email.EmailStoreAccessType accessType)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<EmailStore> EmailManager.RequestStoreAsync(EmailStoreAccessType accessType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CEmailStore%3E%20EmailManager.RequestStoreAsync%28EmailStoreAccessType%20accessType%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailManager", "RequestStoreAsync(EmailStoreAccessType accessType)");
 		}
 #endif
-		// Skipping already declared method Windows.ApplicationModel.Email.EmailManager.ShowComposeNewEmailAsync(Windows.ApplicationModel.Email.EmailMessage)
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.ApplicationModel.Email.EmailManagerForUser GetForUser(global::Windows.System.User user)
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Email.EmailManager", "GetForUser(User user)");
+		}
+#endif
 	}
 }

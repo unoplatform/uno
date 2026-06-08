@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,6 +28,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		public void Init()
 		{
 			UnitTestsApp.App.EnsureApplication();
+		}
+
+		[TestMethod]
+		public void When_CreateWithCapacity_NegativeCapacity_Throws()
+		{
+			var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(
+				() => ResourceDictionary.CreateWithCapacity(-1));
+			Assert.AreEqual("initialCapacity", ex.ParamName);
 		}
 
 		[TestMethod]
@@ -300,6 +308,85 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual(Colors.DarkSlateBlue, (rd["Blu"] as SolidColorBrush).Color);
 		}
+
+#if !NETFX_CORE
+		// Application's _requestedTheme field defaults to ApplicationTheme.Dark. When
+		// App.xaml declares RequestedTheme="Dark", the equality check in SetRequestedTheme
+		// turns the call into a no-op — which also skips UpdateRequestedThemesForResources,
+		// the only path that syncs ResourceDictionary's Themes.Active. Without the
+		// unconditional sync in InitializeSystemTheme, Themes.Active would stay at its
+		// static initial "Default" while Application.Current.RequestedTheme reports "Dark",
+		// and ThemeDictionary lookups on dicts with only "Light"/"Dark" sub-dictionaries
+		// would resolve against the wrong theme.
+		[TestMethod]
+		public void When_App_RequestedTheme_Matches_Default_InternalRequestedTheme_ThemesActive_Syncs()
+		{
+			UnitTestsApp.App.EnsureApplication();
+
+			var app = Application.Current;
+			var priorActive = ResourceDictionary.GetActiveTheme();
+			var priorRequested = app.RequestedTheme;
+			var priorExplicit = app.IsThemeSetExplicitly;
+
+			try
+			{
+				// Force _requestedTheme back to its default (Dark) to mimic the moment
+				// before App.xaml's RequestedTheme="Dark" is processed.
+				var field = typeof(Application).GetField(
+					"_requestedTheme",
+					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+				Assert.IsNotNull(field);
+				field.SetValue(app, ApplicationTheme.Dark);
+
+				// Reset IsThemeSetExplicitly via SetExplicitRequestedTheme(null).
+				app.SetExplicitRequestedTheme(null);
+				app.SetExplicitRequestedTheme(null); // ensure IsThemeSetExplicitly=false
+
+				// App.xaml RequestedTheme="Dark" path. Because _requestedTheme is already
+				// Dark, SetRequestedTheme short-circuits and Themes.Active is not synced.
+				app.SetExplicitRequestedTheme(ApplicationTheme.Dark);
+				Assert.IsTrue(app.IsThemeSetExplicitly);
+
+				// Force Themes.Active back to "Default" to mimic the static initial value.
+				ResourceDictionary.SetActiveTheme(new SpecializedResourceDictionary.ResourceKey("Default"));
+
+				// InvokeOnLaunched → InitializeSystemTheme. The fix calls
+				// UpdateRequestedThemesForResources unconditionally so Themes.Active
+				// matches InternalRequestedTheme even on the IsThemeSetExplicitly=true path.
+				app.InitializeSystemTheme();
+
+				Assert.AreEqual("Dark", ResourceDictionary.GetActiveTheme().Key,
+					"InitializeSystemTheme must sync Themes.Active with Application.RequestedTheme. "
+					+ "Regression: SetExplicitRequestedTheme(Dark) is a no-op when "
+					+ "_requestedTheme already defaults to Dark, leaving Themes.Active stale.");
+
+				// End-to-end check: a ThemeDictionary lookup with only Light+Dark entries
+				// must return the Dark sub-dictionary's value under app theme Dark.
+				var rd = new ResourceDictionary();
+				var light = new ResourceDictionary();
+				light["Brushie"] = new SolidColorBrush(Colors.White);
+				var dark = new ResourceDictionary();
+				dark["Brushie"] = new SolidColorBrush(Colors.Black);
+				rd.ThemeDictionaries["Light"] = light;
+				rd.ThemeDictionaries["Dark"] = dark;
+
+				Assert.AreEqual(Colors.Black, ((SolidColorBrush)rd["Brushie"]).Color,
+					"ThemeDictionary lookup should return the Dark entry when Application.RequestedTheme=Dark.");
+			}
+			finally
+			{
+				ResourceDictionary.SetActiveTheme(priorActive);
+				if (priorExplicit)
+				{
+					app.SetExplicitRequestedTheme(priorRequested);
+				}
+				else
+				{
+					app.SetExplicitRequestedTheme(null);
+				}
+			}
+		}
+#endif
 
 		[TestMethod]
 		public void When_Has_Custom_Theme()
@@ -697,11 +784,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		{
 			var testControl = new Test_Control();
 
-			Assert.AreEqual(2, testControl.SubliminalGradientBrushByName.GradientStops.Count);
+			Assert.HasCount(2, testControl.SubliminalGradientBrushByName.GradientStops);
 
 			var fromResources = testControl.Resources["SubliminalGradientBrush"] as LinearGradientBrush;
 			Assert.IsNotNull(fromResources);
-			Assert.AreEqual(2, fromResources.GradientStops.Count);
+			Assert.HasCount(2, fromResources.GradientStops);
 		}
 
 		[TestMethod]

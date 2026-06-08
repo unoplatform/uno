@@ -6,7 +6,7 @@ namespace Windows.Media.Protection.PlayReady
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PlayReadySecureStopIterator : global::Windows.Foundation.Collections.IIterator<global::Windows.Media.Protection.PlayReady.IPlayReadySecureStopServiceRequest>
+	public partial class PlayReadySecureStopIterator : global::System.Collections.Generic.IEnumerator<global::Windows.Media.Protection.PlayReady.IPlayReadySecureStopServiceRequest>, global::System.Collections.IEnumerator, global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal PlayReadySecureStopIterator()
@@ -19,36 +19,45 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPlayReadySecureStopServiceRequest PlayReadySecureStopIterator.Current is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPlayReadySecureStopServiceRequest%20PlayReadySecureStopIterator.Current");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator", "Current");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool HasCurrent
+		object global::System.Collections.IEnumerator.Current
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PlayReadySecureStopIterator.HasCurrent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PlayReadySecureStopIterator.HasCurrent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator", "Current");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator.Current.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator.HasCurrent.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool MoveNext()
 		{
-			throw new global::System.NotImplementedException("The member bool PlayReadySecureStopIterator.MoveNext() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PlayReadySecureStopIterator.MoveNext%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator", "MoveNext()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint GetMany(global::Windows.Media.Protection.PlayReady.IPlayReadySecureStopServiceRequest[] items)
+		public void Reset()
 		{
-			throw new global::System.NotImplementedException("The member uint PlayReadySecureStopIterator.GetMany(IPlayReadySecureStopServiceRequest[] items) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PlayReadySecureStopIterator.GetMany%28IPlayReadySecureStopServiceRequest%5B%5D%20items%29");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator", "Reset()");
 		}
 #endif
-		// Processing: Windows.Foundation.Collections.IIterator<Windows.Media.Protection.PlayReady.IPlayReadySecureStopServiceRequest>
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator", "Dispose()");
+		}
+#endif
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator.Current.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopIterator.System.Collections.IEnumerator.Current.get
+		// Processing: System.Collections.Generic.IEnumerator<Windows.Media.Protection.PlayReady.IPlayReadySecureStopServiceRequest>
+		// Processing: System.Collections.IEnumerator
+		// Processing: System.IDisposable
 	}
 }

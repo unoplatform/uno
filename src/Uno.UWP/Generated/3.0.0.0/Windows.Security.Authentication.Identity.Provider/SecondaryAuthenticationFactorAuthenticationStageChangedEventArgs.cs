@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Security.Authentication.Identity.Provider
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -20,7 +19,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SecondaryAuthenticationFactorAuthenticationStageInfo SecondaryAuthenticationFactorAuthenticationStageChangedEventArgs.StageInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SecondaryAuthenticationFactorAuthenticationStageInfo%20SecondaryAuthenticationFactorAuthenticationStageChangedEventArgs.StageInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthenticationStageChangedEventArgs", "StageInfo");
 			}
 		}
 #endif

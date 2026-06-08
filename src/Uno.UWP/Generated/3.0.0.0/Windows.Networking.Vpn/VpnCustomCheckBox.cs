@@ -10,15 +10,15 @@ namespace Windows.Networking.Vpn
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool InitialCheckState
+		public bool Bordered
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomCheckBox.InitialCheckState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomCheckBox.InitialCheckState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomCheckBox", "Bordered");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomCheckBox", "bool VpnCustomCheckBox.InitialCheckState");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomCheckBox", "Bordered");
 			}
 		}
 #endif
@@ -28,21 +28,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomCheckBox.Checked is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomCheckBox.Checked");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Label
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string VpnCustomCheckBox.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnCustomCheckBox.Label");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomCheckBox", "string VpnCustomCheckBox.Label");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomCheckBox", "Checked");
 			}
 		}
 #endif
@@ -52,25 +38,39 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomCheckBox.Compulsory is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomCheckBox.Compulsory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomCheckBox", "Compulsory");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomCheckBox", "bool VpnCustomCheckBox.Compulsory");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomCheckBox", "Compulsory");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Bordered
+		public bool InitialCheckState
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomCheckBox.Bordered is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VpnCustomCheckBox.Bordered");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomCheckBox", "InitialCheckState");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomCheckBox", "bool VpnCustomCheckBox.Bordered");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomCheckBox", "InitialCheckState");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Label
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCustomCheckBox", "Label");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomCheckBox", "Label");
 			}
 		}
 #endif
@@ -78,19 +78,19 @@ namespace Windows.Networking.Vpn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VpnCustomCheckBox()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomCheckBox", "VpnCustomCheckBox.VpnCustomCheckBox()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnCustomCheckBox", "VpnCustomCheckBox()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.VpnCustomCheckBox()
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.InitialCheckState.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.InitialCheckState.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.Checked.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.Label.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.Label.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.Compulsory.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.Compulsory.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.Bordered.set
 		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.Bordered.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.Bordered.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.Checked.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.Compulsory.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.Compulsory.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.InitialCheckState.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.InitialCheckState.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.Label.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCustomCheckBox.Label.set
 		// Processing: Windows.Networking.Vpn.IVpnCustomPrompt
 	}
 }

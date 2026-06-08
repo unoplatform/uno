@@ -15,81 +15,11 @@ namespace Windows.Media.Streaming.Adaptive
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint InitialBitrate
+		public global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceAdvancedSettings AdvancedSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AdaptiveMediaSource.InitialBitrate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AdaptiveMediaSource.InitialBitrate");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "uint AdaptiveMediaSource.InitialBitrate");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan InboundBitsPerSecondWindow
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan AdaptiveMediaSource.InboundBitsPerSecondWindow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20AdaptiveMediaSource.InboundBitsPerSecondWindow");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "TimeSpan AdaptiveMediaSource.InboundBitsPerSecondWindow");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint? DesiredMaxBitrate
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint? AdaptiveMediaSource.DesiredMaxBitrate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20AdaptiveMediaSource.DesiredMaxBitrate");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "uint? AdaptiveMediaSource.DesiredMaxBitrate");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan DesiredLiveOffset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan AdaptiveMediaSource.DesiredLiveOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20AdaptiveMediaSource.DesiredLiveOffset");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "TimeSpan AdaptiveMediaSource.DesiredLiveOffset");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint? DesiredMinBitrate
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint? AdaptiveMediaSource.DesiredMinBitrate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20AdaptiveMediaSource.DesiredMinBitrate");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "uint? AdaptiveMediaSource.DesiredMinBitrate");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint CurrentPlaybackBitrate
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint AdaptiveMediaSource.CurrentPlaybackBitrate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AdaptiveMediaSource.CurrentPlaybackBitrate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "AdvancedSettings");
 			}
 		}
 #endif
@@ -99,17 +29,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AdaptiveMediaSource.AudioOnlyPlayback is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AdaptiveMediaSource.AudioOnlyPlayback");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ulong InboundBitsPerSecond
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ulong AdaptiveMediaSource.InboundBitsPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20AdaptiveMediaSource.InboundBitsPerSecond");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "AudioOnlyPlayback");
 			}
 		}
 #endif
@@ -119,7 +39,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> AdaptiveMediaSource.AvailableBitrates is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cuint%3E%20AdaptiveMediaSource.AvailableBitrates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "AvailableBitrates");
 			}
 		}
 #endif
@@ -129,27 +49,59 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AdaptiveMediaSource.CurrentDownloadBitrate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AdaptiveMediaSource.CurrentDownloadBitrate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "CurrentDownloadBitrate");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsLive
+		public uint CurrentPlaybackBitrate
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AdaptiveMediaSource.IsLive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AdaptiveMediaSource.IsLive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "CurrentPlaybackBitrate");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceAdvancedSettings AdvancedSettings
+		public global::System.TimeSpan DesiredLiveOffset
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AdaptiveMediaSourceAdvancedSettings AdaptiveMediaSource.AdvancedSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AdaptiveMediaSourceAdvancedSettings%20AdaptiveMediaSource.AdvancedSettings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "DesiredLiveOffset");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "DesiredLiveOffset");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint? DesiredMaxBitrate
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "DesiredMaxBitrate");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "DesiredMaxBitrate");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint? DesiredMinBitrate
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "DesiredMinBitrate");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "DesiredMinBitrate");
 			}
 		}
 #endif
@@ -159,11 +111,11 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? AdaptiveMediaSource.DesiredSeekableWindowSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20AdaptiveMediaSource.DesiredSeekableWindowSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "DesiredSeekableWindowSize");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "TimeSpan? AdaptiveMediaSource.DesiredSeekableWindowSize");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "DesiredSeekableWindowSize");
 			}
 		}
 #endif
@@ -173,7 +125,55 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AdaptiveMediaSourceDiagnostics AdaptiveMediaSource.Diagnostics is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AdaptiveMediaSourceDiagnostics%20AdaptiveMediaSource.Diagnostics");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "Diagnostics");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ulong InboundBitsPerSecond
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "InboundBitsPerSecond");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan InboundBitsPerSecondWindow
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "InboundBitsPerSecondWindow");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "InboundBitsPerSecondWindow");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint InitialBitrate
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "InitialBitrate");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "InitialBitrate");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsLive
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "IsLive");
 			}
 		}
 #endif
@@ -183,7 +183,7 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? AdaptiveMediaSource.MaxSeekableWindowSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20AdaptiveMediaSource.MaxSeekableWindowSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "MaxSeekableWindowSize");
 			}
 		}
 #endif
@@ -193,91 +193,91 @@ namespace Windows.Media.Streaming.Adaptive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? AdaptiveMediaSource.MinLiveOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20AdaptiveMediaSource.MinLiveOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "MinLiveOffset");
 			}
-		}
-#endif
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.IsLive.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DesiredLiveOffset.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DesiredLiveOffset.set
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.InitialBitrate.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.InitialBitrate.set
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.CurrentDownloadBitrate.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.CurrentPlaybackBitrate.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.AvailableBitrates.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DesiredMinBitrate.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DesiredMinBitrate.set
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DesiredMaxBitrate.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DesiredMaxBitrate.set
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.AudioOnlyPlayback.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.InboundBitsPerSecond.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.InboundBitsPerSecondWindow.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.InboundBitsPerSecondWindow.set
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DownloadBitrateChanged.add
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DownloadBitrateChanged.remove
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.PlaybackBitrateChanged.add
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.PlaybackBitrateChanged.remove
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DownloadRequested.add
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DownloadRequested.remove
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DownloadCompleted.add
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DownloadCompleted.remove
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DownloadFailed.add
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DownloadFailed.remove
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.AdvancedSettings.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.MinLiveOffset.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.MaxSeekableWindowSize.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DesiredSeekableWindowSize.get
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DesiredSeekableWindowSize.set
-		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.Diagnostics.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCorrelatedTimes GetCorrelatedTimes()
-		{
-			throw new global::System.NotImplementedException("The member AdaptiveMediaSourceCorrelatedTimes AdaptiveMediaSource.GetCorrelatedTimes() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AdaptiveMediaSourceCorrelatedTimes%20AdaptiveMediaSource.GetCorrelatedTimes%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "void AdaptiveMediaSource.Dispose()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsContentTypeSupported(string contentType)
 		{
-			throw new global::System.NotImplementedException("The member bool AdaptiveMediaSource.IsContentTypeSupported(string contentType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AdaptiveMediaSource.IsContentTypeSupported%28string%20contentType%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "IsContentTypeSupported(string contentType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult> CreateFromUriAsync(global::System.Uri uri)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AdaptiveMediaSourceCreationResult> AdaptiveMediaSource.CreateFromUriAsync(Uri uri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAdaptiveMediaSourceCreationResult%3E%20AdaptiveMediaSource.CreateFromUriAsync%28Uri%20uri%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "CreateFromUriAsync(Uri uri)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult> CreateFromUriAsync(global::System.Uri uri, global::Windows.Web.Http.HttpClient httpClient)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AdaptiveMediaSourceCreationResult> AdaptiveMediaSource.CreateFromUriAsync(Uri uri, HttpClient httpClient) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAdaptiveMediaSourceCreationResult%3E%20AdaptiveMediaSource.CreateFromUriAsync%28Uri%20uri%2C%20HttpClient%20httpClient%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "CreateFromUriAsync(Uri uri, HttpClient httpClient)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult> CreateFromStreamAsync(global::Windows.Storage.Streams.IInputStream stream, global::System.Uri uri, string contentType)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AdaptiveMediaSourceCreationResult> AdaptiveMediaSource.CreateFromStreamAsync(IInputStream stream, Uri uri, string contentType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAdaptiveMediaSourceCreationResult%3E%20AdaptiveMediaSource.CreateFromStreamAsync%28IInputStream%20stream%2C%20Uri%20uri%2C%20string%20contentType%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "CreateFromStreamAsync(IInputStream stream, Uri uri, string contentType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult> CreateFromStreamAsync(global::Windows.Storage.Streams.IInputStream stream, global::System.Uri uri, string contentType, global::Windows.Web.Http.HttpClient httpClient)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AdaptiveMediaSourceCreationResult> AdaptiveMediaSource.CreateFromStreamAsync(IInputStream stream, Uri uri, string contentType, HttpClient httpClient) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAdaptiveMediaSourceCreationResult%3E%20AdaptiveMediaSource.CreateFromStreamAsync%28IInputStream%20stream%2C%20Uri%20uri%2C%20string%20contentType%2C%20HttpClient%20httpClient%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "CreateFromStreamAsync(IInputStream stream, Uri uri, string contentType, HttpClient httpClient)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DownloadBitrateChanged.add
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DownloadBitrateChanged.remove
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DownloadCompleted.add
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DownloadCompleted.remove
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DownloadFailed.add
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DownloadFailed.remove
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DownloadRequested.add
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DownloadRequested.remove
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.PlaybackBitrateChanged.add
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.PlaybackBitrateChanged.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCorrelatedTimes GetCorrelatedTimes()
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "GetCorrelatedTimes()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "Dispose()");
+		}
+#endif
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.AdvancedSettings.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.AudioOnlyPlayback.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.AvailableBitrates.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.CurrentDownloadBitrate.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.CurrentPlaybackBitrate.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DesiredLiveOffset.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DesiredLiveOffset.set
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DesiredMaxBitrate.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DesiredMaxBitrate.set
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DesiredMinBitrate.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DesiredMinBitrate.set
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DesiredSeekableWindowSize.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.DesiredSeekableWindowSize.set
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.Diagnostics.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.InboundBitsPerSecond.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.InboundBitsPerSecondWindow.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.InboundBitsPerSecondWindow.set
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.InitialBitrate.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.InitialBitrate.set
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.IsLive.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.MaxSeekableWindowSize.get
+		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSource.MinLiveOffset.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSource, global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDownloadBitrateChangedEventArgs> DownloadBitrateChanged
@@ -285,12 +285,12 @@ namespace Windows.Media.Streaming.Adaptive
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "event TypedEventHandler<AdaptiveMediaSource, AdaptiveMediaSourceDownloadBitrateChangedEventArgs> AdaptiveMediaSource.DownloadBitrateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "event DownloadBitrateChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "event TypedEventHandler<AdaptiveMediaSource, AdaptiveMediaSourceDownloadBitrateChangedEventArgs> AdaptiveMediaSource.DownloadBitrateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "event DownloadBitrateChanged");
 			}
 		}
 #endif
@@ -301,12 +301,12 @@ namespace Windows.Media.Streaming.Adaptive
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "event TypedEventHandler<AdaptiveMediaSource, AdaptiveMediaSourceDownloadCompletedEventArgs> AdaptiveMediaSource.DownloadCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "event DownloadCompleted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "event TypedEventHandler<AdaptiveMediaSource, AdaptiveMediaSourceDownloadCompletedEventArgs> AdaptiveMediaSource.DownloadCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "event DownloadCompleted");
 			}
 		}
 #endif
@@ -317,12 +317,12 @@ namespace Windows.Media.Streaming.Adaptive
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "event TypedEventHandler<AdaptiveMediaSource, AdaptiveMediaSourceDownloadFailedEventArgs> AdaptiveMediaSource.DownloadFailed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "event DownloadFailed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "event TypedEventHandler<AdaptiveMediaSource, AdaptiveMediaSourceDownloadFailedEventArgs> AdaptiveMediaSource.DownloadFailed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "event DownloadFailed");
 			}
 		}
 #endif
@@ -333,12 +333,12 @@ namespace Windows.Media.Streaming.Adaptive
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "event TypedEventHandler<AdaptiveMediaSource, AdaptiveMediaSourceDownloadRequestedEventArgs> AdaptiveMediaSource.DownloadRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "event DownloadRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "event TypedEventHandler<AdaptiveMediaSource, AdaptiveMediaSourceDownloadRequestedEventArgs> AdaptiveMediaSource.DownloadRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "event DownloadRequested");
 			}
 		}
 #endif
@@ -349,12 +349,12 @@ namespace Windows.Media.Streaming.Adaptive
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "event TypedEventHandler<AdaptiveMediaSource, AdaptiveMediaSourcePlaybackBitrateChangedEventArgs> AdaptiveMediaSource.PlaybackBitrateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "event PlaybackBitrateChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "event TypedEventHandler<AdaptiveMediaSource, AdaptiveMediaSourcePlaybackBitrateChangedEventArgs> AdaptiveMediaSource.PlaybackBitrateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Streaming.Adaptive.AdaptiveMediaSource", "event PlaybackBitrateChanged");
 			}
 		}
 #endif

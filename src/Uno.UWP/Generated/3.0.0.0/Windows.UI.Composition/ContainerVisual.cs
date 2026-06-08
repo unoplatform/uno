@@ -9,17 +9,12 @@ namespace Windows.UI.Composition
 	public partial class ContainerVisual : global::Windows.UI.Composition.Visual
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal ContainerVisual()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.VisualCollection Children
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VisualCollection ContainerVisual.Children is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VisualCollection%20ContainerVisual.Children");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.ContainerVisual", "Children");
 			}
 		}
 #endif

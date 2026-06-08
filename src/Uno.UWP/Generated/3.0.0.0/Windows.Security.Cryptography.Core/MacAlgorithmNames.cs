@@ -14,7 +14,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MacAlgorithmNames.AesCmac is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MacAlgorithmNames.AesCmac");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.MacAlgorithmNames", "AesCmac");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MacAlgorithmNames.HmacMd5 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MacAlgorithmNames.HmacMd5");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.MacAlgorithmNames", "HmacMd5");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MacAlgorithmNames.HmacSha1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MacAlgorithmNames.HmacSha1");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.MacAlgorithmNames", "HmacSha1");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MacAlgorithmNames.HmacSha256 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MacAlgorithmNames.HmacSha256");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.MacAlgorithmNames", "HmacSha256");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MacAlgorithmNames.HmacSha384 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MacAlgorithmNames.HmacSha384");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.MacAlgorithmNames", "HmacSha384");
 			}
 		}
 #endif
@@ -64,15 +64,15 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MacAlgorithmNames.HmacSha512 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MacAlgorithmNames.HmacSha512");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.MacAlgorithmNames", "HmacSha512");
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmNames.AesCmac.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmNames.HmacMd5.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmNames.HmacSha1.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmNames.HmacSha256.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmNames.HmacSha384.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmNames.HmacSha512.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.MacAlgorithmNames.AesCmac.get
 	}
 }

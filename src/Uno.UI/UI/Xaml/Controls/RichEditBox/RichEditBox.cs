@@ -8,5 +8,21 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class RichEditBox : Control
 	{
+		internal override string GetPlainText()
+		{
+			if (Header is not null)
+			{
+				var plainText = FrameworkElement.GetStringFromObject(Header);
+				if (!string.IsNullOrEmpty(plainText))
+				{
+					return plainText;
+				}
+			}
+
+			return PlaceholderText ?? string.Empty;
+		}
+
+		protected override Automation.Peers.AutomationPeer OnCreateAutomationPeer()
+			=> new Automation.Peers.RichEditBoxAutomationPeer(this);
 	}
 }

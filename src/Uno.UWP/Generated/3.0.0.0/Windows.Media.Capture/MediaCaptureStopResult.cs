@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoFrame MediaCaptureStopResult.LastFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoFrame%20MediaCaptureStopResult.LastFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureStopResult", "LastFrame");
 			}
 		}
 #endif
@@ -29,19 +29,20 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaCaptureStopResult.RecordDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaCaptureStopResult.RecordDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCaptureStopResult", "RecordDuration");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureStopResult.LastFrame.get
-		// Forced skipping of method Windows.Media.Capture.MediaCaptureStopResult.RecordDuration.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureStopResult.~MediaCaptureStopResult()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureStopResult", "void MediaCaptureStopResult.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureStopResult", "Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureStopResult.LastFrame.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureStopResult.RecordDuration.get
 		// Processing: System.IDisposable
 	}
 }

@@ -19,7 +19,7 @@ namespace Microsoft.Windows.AppLifecycle
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object AppActivationArguments.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20AppActivationArguments.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.AppLifecycle.AppActivationArguments", "Data");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Microsoft.Windows.AppLifecycle
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExtendedActivationKind AppActivationArguments.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ExtendedActivationKind%20AppActivationArguments.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.AppLifecycle.AppActivationArguments", "Kind");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppActivationArguments.Kind.get
 		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppActivationArguments.Data.get
+		// Forced skipping of method Microsoft.Windows.AppLifecycle.AppActivationArguments.Kind.get
 	}
 }

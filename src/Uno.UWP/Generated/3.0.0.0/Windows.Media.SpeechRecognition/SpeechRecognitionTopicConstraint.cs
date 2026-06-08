@@ -10,15 +10,15 @@ namespace Windows.Media.SpeechRecognition
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Tag
+		public bool IsEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpeechRecognitionTopicConstraint.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SpeechRecognitionTopicConstraint.Tag");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "IsEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "string SpeechRecognitionTopicConstraint.Tag");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "IsEnabled");
 			}
 		}
 #endif
@@ -28,35 +28,11 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintProbability SpeechRecognitionTopicConstraint.Probability is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognitionConstraintProbability%20SpeechRecognitionTopicConstraint.Probability");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "Probability");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "SpeechRecognitionConstraintProbability SpeechRecognitionTopicConstraint.Probability");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SpeechRecognitionTopicConstraint.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpeechRecognitionTopicConstraint.IsEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "bool SpeechRecognitionTopicConstraint.IsEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.SpeechRecognition.SpeechRecognitionConstraintType Type
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintType SpeechRecognitionTopicConstraint.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognitionConstraintType%20SpeechRecognitionTopicConstraint.Type");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "Probability");
 			}
 		}
 #endif
@@ -66,7 +42,21 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionScenario SpeechRecognitionTopicConstraint.Scenario is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechRecognitionScenario%20SpeechRecognitionTopicConstraint.Scenario");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "Scenario");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Tag
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "Tag");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "Tag");
 			}
 		}
 #endif
@@ -76,7 +66,17 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpeechRecognitionTopicConstraint.TopicHint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SpeechRecognitionTopicConstraint.TopicHint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "TopicHint");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.SpeechRecognition.SpeechRecognitionConstraintType Type
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "Type");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Media.SpeechRecognition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SpeechRecognitionTopicConstraint(global::Windows.Media.SpeechRecognition.SpeechRecognitionScenario scenario, string topicHint)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "SpeechRecognitionTopicConstraint.SpeechRecognitionTopicConstraint(SpeechRecognitionScenario scenario, string topicHint)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "SpeechRecognitionTopicConstraint(SpeechRecognitionScenario scenario, string topicHint)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.SpeechRecognitionTopicConstraint(Windows.Media.SpeechRecognition.SpeechRecognitionScenario, string)
@@ -92,19 +92,19 @@ namespace Windows.Media.SpeechRecognition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SpeechRecognitionTopicConstraint(global::Windows.Media.SpeechRecognition.SpeechRecognitionScenario scenario, string topicHint, string tag)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "SpeechRecognitionTopicConstraint.SpeechRecognitionTopicConstraint(SpeechRecognitionScenario scenario, string topicHint, string tag)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "SpeechRecognitionTopicConstraint(SpeechRecognitionScenario scenario, string topicHint, string tag)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.SpeechRecognitionTopicConstraint(Windows.Media.SpeechRecognition.SpeechRecognitionScenario, string, string)
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.Scenario.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.TopicHint.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.IsEnabled.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.IsEnabled.set
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.Tag.get
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.Tag.set
-		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.Type.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.Probability.get
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.Probability.set
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.Scenario.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.Tag.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.Tag.set
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.TopicHint.get
+		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.Type.get
 		// Processing: Windows.Media.SpeechRecognition.ISpeechRecognitionConstraint
 	}
 }

@@ -19,7 +19,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbBulkInPipe> UsbInterface.BulkInPipes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CUsbBulkInPipe%3E%20UsbInterface.BulkInPipes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterface", "BulkInPipes");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbBulkOutPipe> UsbInterface.BulkOutPipes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CUsbBulkOutPipe%3E%20UsbInterface.BulkOutPipes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterface", "BulkOutPipes");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbDescriptor> UsbInterface.Descriptors is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CUsbDescriptor%3E%20UsbInterface.Descriptors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterface", "Descriptors");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbInterface.InterfaceNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20UsbInterface.InterfaceNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterface", "InterfaceNumber");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbInterfaceSetting> UsbInterface.InterfaceSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CUsbInterfaceSetting%3E%20UsbInterface.InterfaceSettings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterface", "InterfaceSettings");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbInterruptInPipe> UsbInterface.InterruptInPipes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CUsbInterruptInPipe%3E%20UsbInterface.InterruptInPipes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterface", "InterruptInPipes");
 			}
 		}
 #endif
@@ -79,16 +79,16 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UsbInterruptOutPipe> UsbInterface.InterruptOutPipes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CUsbInterruptOutPipe%3E%20UsbInterface.InterruptOutPipes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbInterface", "InterruptOutPipes");
 			}
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Usb.UsbInterface.BulkInPipes.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterruptInPipes.get
 		// Forced skipping of method Windows.Devices.Usb.UsbInterface.BulkOutPipes.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterruptOutPipes.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterfaceSettings.get
-		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterfaceNumber.get
 		// Forced skipping of method Windows.Devices.Usb.UsbInterface.Descriptors.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterfaceNumber.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterfaceSettings.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterruptInPipes.get
+		// Forced skipping of method Windows.Devices.Usb.UsbInterface.InterruptOutPipes.get
 	}
 }

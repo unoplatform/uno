@@ -15,15 +15,15 @@ namespace Windows.Graphics.Printing
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AllowCustomSetOfPages
+		public bool AllowAllPages
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PrintPageRangeOptions.AllowCustomSetOfPages is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintPageRangeOptions.AllowCustomSetOfPages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintPageRangeOptions", "AllowAllPages");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintPageRangeOptions", "bool PrintPageRangeOptions.AllowCustomSetOfPages");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintPageRangeOptions", "AllowAllPages");
 			}
 		}
 #endif
@@ -33,33 +33,33 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PrintPageRangeOptions.AllowCurrentPage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintPageRangeOptions.AllowCurrentPage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintPageRangeOptions", "AllowCurrentPage");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintPageRangeOptions", "bool PrintPageRangeOptions.AllowCurrentPage");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintPageRangeOptions", "AllowCurrentPage");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AllowAllPages
+		public bool AllowCustomSetOfPages
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PrintPageRangeOptions.AllowAllPages is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintPageRangeOptions.AllowAllPages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintPageRangeOptions", "AllowCustomSetOfPages");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintPageRangeOptions", "bool PrintPageRangeOptions.AllowAllPages");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintPageRangeOptions", "AllowCustomSetOfPages");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.AllowAllPages.set
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.AllowAllPages.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.AllowCurrentPage.set
+		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.AllowAllPages.set
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.AllowCurrentPage.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.AllowCustomSetOfPages.set
+		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.AllowCurrentPage.set
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.AllowCustomSetOfPages.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintPageRangeOptions.AllowCustomSetOfPages.set
 	}
 }

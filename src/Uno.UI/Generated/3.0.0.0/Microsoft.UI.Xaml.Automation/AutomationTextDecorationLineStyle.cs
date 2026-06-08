@@ -3,66 +3,28 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	public enum AutomationTextDecorationLineStyle
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		None = 0,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Single = 1,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		WordsOnly = 2,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Double = 3,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Dot = 4,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Dash = 5,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		DashDot = 6,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		DashDotDot = 7,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Wavy = 8,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		ThickSingle = 9,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		DoubleWavy = 10,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		ThickWavy = 11,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		LongDash = 12,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		ThickDash = 13,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		ThickDashDot = 14,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		ThickDashDotDot = 15,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		ThickDot = 16,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		ThickLongDash = 17,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Other = 18,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.None
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.Single
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.WordsOnly
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.Double
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.Dot
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.Dash
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.DashDot
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.DashDotDot
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.Wavy
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.ThickSingle
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.DoubleWavy
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.ThickWavy
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.LongDash
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.ThickDash
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.ThickDashDot
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.ThickDashDotDot
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.ThickDot
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.ThickLongDash
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationTextDecorationLineStyle.Other
 	}
 #endif
 }

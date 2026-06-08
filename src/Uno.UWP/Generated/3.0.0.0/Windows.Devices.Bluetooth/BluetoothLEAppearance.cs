@@ -11,10 +11,10 @@ namespace Windows.Devices.Bluetooth
 		// Skipping already declared property Category
 		// Skipping already declared property RawValue
 		// Skipping already declared property SubCategory
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.RawValue.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.Category.get
-		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.SubCategory.get
 		// Skipping already declared method Windows.Devices.Bluetooth.BluetoothLEAppearance.FromRawValue(ushort)
 		// Skipping already declared method Windows.Devices.Bluetooth.BluetoothLEAppearance.FromParts(ushort, ushort)
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.Category.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.RawValue.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearance.SubCategory.get
 	}
 }

@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MicrosoftAccountMultiFactorServiceResponse MicrosoftAccountMultiFactorUnregisteredAccountsAndSessionInfo.ServiceResponse is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MicrosoftAccountMultiFactorServiceResponse%20MicrosoftAccountMultiFactorUnregisteredAccountsAndSessionInfo.ServiceResponse");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorUnregisteredAccountsAndSessionInfo", "ServiceResponse");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MicrosoftAccountMultiFactorSessionInfo> MicrosoftAccountMultiFactorUnregisteredAccountsAndSessionInfo.Sessions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMicrosoftAccountMultiFactorSessionInfo%3E%20MicrosoftAccountMultiFactorUnregisteredAccountsAndSessionInfo.Sessions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorUnregisteredAccountsAndSessionInfo", "Sessions");
 			}
 		}
 #endif
@@ -39,12 +39,12 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> MicrosoftAccountMultiFactorUnregisteredAccountsAndSessionInfo.UnregisteredAccounts is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20MicrosoftAccountMultiFactorUnregisteredAccountsAndSessionInfo.UnregisteredAccounts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorUnregisteredAccountsAndSessionInfo", "UnregisteredAccounts");
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorUnregisteredAccountsAndSessionInfo.ServiceResponse.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorUnregisteredAccountsAndSessionInfo.Sessions.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorUnregisteredAccountsAndSessionInfo.UnregisteredAccounts.get
-		// Forced skipping of method Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorUnregisteredAccountsAndSessionInfo.ServiceResponse.get
 	}
 }

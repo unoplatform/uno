@@ -19,31 +19,11 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebViewControlNewWindowRequestedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WebViewControlNewWindowRequestedEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs", "bool WebViewControlNewWindowRequestedEventArgs.Handled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri Referrer
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Uri WebViewControlNewWindowRequestedEventArgs.Referrer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20WebViewControlNewWindowRequestedEventArgs.Referrer");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri Uri
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Uri WebViewControlNewWindowRequestedEventArgs.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20WebViewControlNewWindowRequestedEventArgs.Uri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs", "Handled");
 			}
 		}
 #endif
@@ -53,26 +33,46 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IWebViewControl WebViewControlNewWindowRequestedEventArgs.NewWindow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IWebViewControl%20WebViewControlNewWindowRequestedEventArgs.NewWindow");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs", "NewWindow");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs", "IWebViewControl WebViewControlNewWindowRequestedEventArgs.NewWindow");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs", "NewWindow");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.Uri.get
-		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.Referrer.get
-		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.Handled.get
-		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.Handled.set
-		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.NewWindow.get
-		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.NewWindow.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Uri Referrer
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs", "Referrer");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Uri Uri
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs", "Uri");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral WebViewControlNewWindowRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20WebViewControlNewWindowRequestedEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs", "GetDeferral()");
 		}
 #endif
+		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.Handled.get
+		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.Handled.set
+		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.NewWindow.get
+		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.NewWindow.set
+		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.Referrer.get
+		// Forced skipping of method Windows.Web.UI.WebViewControlNewWindowRequestedEventArgs.Uri.get
 	}
 }

@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -15,7 +14,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionInfraredFrameSourceProperties.ActiveIlluminationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionInfraredFrameSourceProperties.ActiveIlluminationEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionInfraredFrameSourceProperties", "ActiveIlluminationEnabled");
 			}
 		}
 #endif
@@ -25,7 +24,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionInfraredFrameSourceProperties.AmbientSubtractionEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionInfraredFrameSourceProperties.AmbientSubtractionEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionInfraredFrameSourceProperties", "AmbientSubtractionEnabled");
 			}
 		}
 #endif
@@ -35,7 +34,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionInfraredFrameSourceProperties.AutoExposureEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionInfraredFrameSourceProperties.AutoExposureEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionInfraredFrameSourceProperties", "AutoExposureEnabled");
 			}
 		}
 #endif
@@ -45,7 +44,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionInfraredFrameSourceProperties.Exposure is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionInfraredFrameSourceProperties.Exposure");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionInfraredFrameSourceProperties", "Exposure");
 			}
 		}
 #endif
@@ -55,7 +54,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionInfraredFrameSourceProperties.ExposureCompensation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionInfraredFrameSourceProperties.ExposureCompensation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionInfraredFrameSourceProperties", "ExposureCompensation");
 			}
 		}
 #endif
@@ -65,7 +64,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionInfraredFrameSourceProperties.InterleavedIlluminationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionInfraredFrameSourceProperties.InterleavedIlluminationEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionInfraredFrameSourceProperties", "InterleavedIlluminationEnabled");
 			}
 		}
 #endif
@@ -75,16 +74,16 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionInfraredFrameSourceProperties.StructureLightPatternEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionInfraredFrameSourceProperties.StructureLightPatternEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionInfraredFrameSourceProperties", "StructureLightPatternEnabled");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionInfraredFrameSourceProperties.Exposure.get
-		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionInfraredFrameSourceProperties.AutoExposureEnabled.get
-		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionInfraredFrameSourceProperties.ExposureCompensation.get
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionInfraredFrameSourceProperties.ActiveIlluminationEnabled.get
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionInfraredFrameSourceProperties.AmbientSubtractionEnabled.get
-		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionInfraredFrameSourceProperties.StructureLightPatternEnabled.get
+		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionInfraredFrameSourceProperties.AutoExposureEnabled.get
+		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionInfraredFrameSourceProperties.Exposure.get
+		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionInfraredFrameSourceProperties.ExposureCompensation.get
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionInfraredFrameSourceProperties.InterleavedIlluminationEnabled.get
+		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionInfraredFrameSourceProperties.StructureLightPatternEnabled.get
 	}
 }

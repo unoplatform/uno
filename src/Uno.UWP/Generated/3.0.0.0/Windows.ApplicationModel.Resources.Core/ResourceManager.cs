@@ -15,11 +15,21 @@ namespace Windows.ApplicationModel.Resources.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.ApplicationModel.Resources.Core.ResourceManager Current
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceManager", "Current");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.ApplicationModel.Resources.Core.ResourceMap> AllResourceMaps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, ResourceMap> ResourceManager.AllResourceMaps is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20ResourceMap%3E%20ResourceManager.AllResourceMaps");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceManager", "AllResourceMaps");
 			}
 		}
 #endif
@@ -29,7 +39,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ResourceContext ResourceManager.DefaultContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceContext%20ResourceManager.DefaultContext");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceManager", "DefaultContext");
 			}
 		}
 #endif
@@ -39,58 +49,48 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ResourceMap ResourceManager.MainResourceMap is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceMap%20ResourceManager.MainResourceMap");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceManager", "MainResourceMap");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.ApplicationModel.Resources.Core.ResourceManager Current
+		public static bool IsResourceReference(string resourceReference)
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ResourceManager ResourceManager.Current is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceManager%20ResourceManager.Current");
-			}
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceManager", "IsResourceReference(string resourceReference)");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.MainResourceMap.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.AllResourceMaps.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.DefaultContext.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.Current.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void LoadPriFiles(global::System.Collections.Generic.IEnumerable<global::Windows.Storage.IStorageFile> files)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Resources.Core.ResourceManager", "void ResourceManager.LoadPriFiles(IEnumerable<IStorageFile> files)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Resources.Core.ResourceManager", "LoadPriFiles(IEnumerable<IStorageFile> files)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void UnloadPriFiles(global::System.Collections.Generic.IEnumerable<global::Windows.Storage.IStorageFile> files)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Resources.Core.ResourceManager", "void ResourceManager.UnloadPriFiles(IEnumerable<IStorageFile> files)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Resources.Core.ResourceManager", "UnloadPriFiles(IEnumerable<IStorageFile> files)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Resources.Core.NamedResource> GetAllNamedResourcesForPackage(string packageName, global::Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo resourceLayoutInfo)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<NamedResource> ResourceManager.GetAllNamedResourcesForPackage(string packageName, ResourceLayoutInfo resourceLayoutInfo) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CNamedResource%3E%20ResourceManager.GetAllNamedResourcesForPackage%28string%20packageName%2C%20ResourceLayoutInfo%20resourceLayoutInfo%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceManager", "GetAllNamedResourcesForPackage(string packageName, ResourceLayoutInfo resourceLayoutInfo)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Resources.Core.ResourceMap> GetAllSubtreesForPackage(string packageName, global::Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo resourceLayoutInfo)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<ResourceMap> ResourceManager.GetAllSubtreesForPackage(string packageName, ResourceLayoutInfo resourceLayoutInfo) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CResourceMap%3E%20ResourceManager.GetAllSubtreesForPackage%28string%20packageName%2C%20ResourceLayoutInfo%20resourceLayoutInfo%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceManager", "GetAllSubtreesForPackage(string packageName, ResourceLayoutInfo resourceLayoutInfo)");
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.Current.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool IsResourceReference(string resourceReference)
-		{
-			throw new global::System.NotImplementedException("The member bool ResourceManager.IsResourceReference(string resourceReference) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ResourceManager.IsResourceReference%28string%20resourceReference%29");
-		}
-#endif
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.AllResourceMaps.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.DefaultContext.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceManager.MainResourceMap.get
 	}
 }

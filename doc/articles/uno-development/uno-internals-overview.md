@@ -34,7 +34,7 @@ APIs for non-UI features, for example [`Windows.System.Power`](../features/windo
 
 ### Generated `NotImplemented` stubs
 
-WinUI has a very large API surface area, and not all features in it have been implemented by Uno Platform. We want pre-existing WinUI apps and libraries that reference these features to still be able to at least compile on Uno Platform. To support this, an [internal automated tool](https://github.com/unoplatform/uno/tree/master/src/Uno.UWPSyncGenerator) inspects the WinUI framework, compares it to authored code in Uno Platform, and generates stubs for all types and type members that exist in WinUI but are not implemented on Uno. For example:
+WinUI has a very large API surface area, and not all features in it have been implemented by Uno Platform. We want pre-existing WinUI apps and libraries that reference these features to still be able to at least compile on Uno Platform. To support this, an [internal automated tool](https://github.com/unoplatform/uno/tree/master/src/Uno.WinAppSDKSyncGenerator) inspects the WinUI framework, compares it to authored code in Uno Platform, and generates stubs for all types and type members that exist in WinUI but are not implemented on Uno. For example:
 
 ```csharp
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__
@@ -73,7 +73,7 @@ Uno Platform uses existing libraries to parse a given XAML file into a XAML obje
 
 ### DependencyObject implementation generator
 
-On [Android](uno-internals-android.md), [iOS](uno-internals-ios.md), and [macOS](uno-internals-macos.md), `UIElement` (the base view type in WinUI) inherits from the native view class on the respective platform. This poses a challenge because `UIElement` inherits from the `DependencyObject` class in UWP/WinUI, which is a key part of the dependency property system. Uno makes this work by breaking from WinUI and having `DependencyObject` be an interface rather than a type.
+On [Android](uno-internals-android.md) and [iOS](uno-internals-ios.md), `UIElement` (the base view type in WinUI) inherits from the native view class on the respective platform. This poses a challenge because `UIElement` inherits from the `DependencyObject` class in UWP/WinUI, which is a key part of the dependency property system. Uno makes this work by breaking from WinUI and having `DependencyObject` be an interface rather than a type.
 
 Class library authors and app authors sometimes inherit directly from `DependencyObject` rather than a more derived type. To support this scenario seamlessly, the [`DependencyObjectGenerator` task](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs) looks for such classes and [generates](https://github.com/unoplatform/Uno.SourceGeneration) a partial implementation for the `DependencyObject` interface, ie, the methods that on UWP would be inherited from the base class.
 

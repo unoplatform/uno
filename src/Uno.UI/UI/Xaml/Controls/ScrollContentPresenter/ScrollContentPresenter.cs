@@ -185,7 +185,18 @@ namespace Microsoft.UI.Xaml.Controls
 				bool childPreventsInfiniteAvailableWidth = false;
 				bool childPreventsInfiniteAvailableHeight = false;
 
-				if (CanVerticallyScroll)
+				// The decision to allow the content to overflow during measure is driven by ScrollBarVisibility,
+				// not by Can[H|V]erticallyScroll. The latter is tied to ScrollMode (user-input gate) and is used by
+				// the pointer-wheel and direct-manipulation paths; gating layout on it would also disable layout overflow
+				// whenever ScrollMode is Disabled (e.g. PipsPager), which then traps the content inside a viewport-sized
+				// layout slot and produces a LayoutClip that masks any content that scrolls in via programmatic
+				// ChangeView / BringIntoView.
+				var allowVerticalOverflow = ScrollOwner is not ScrollViewer verticallyOwningScrollViewer
+					|| verticallyOwningScrollViewer.VerticalScrollBarVisibility != ScrollBarVisibility.Disabled;
+				var allowHorizontalOverflow = ScrollOwner is not ScrollViewer horizontallyOwningScrollViewer
+					|| horizontallyOwningScrollViewer.HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled;
+
+				if (allowVerticalOverflow)
 				{
 					childPreventsInfiniteAvailableHeight = !child.WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation.Vertical);
 					if (!sizesContentToTemplatedParent && !childPreventsInfiniteAvailableHeight)
@@ -193,7 +204,7 @@ namespace Microsoft.UI.Xaml.Controls
 						slotSize.Height = double.PositiveInfinity;
 					}
 				}
-				if (CanHorizontallyScroll)
+				if (allowHorizontalOverflow)
 				{
 					childPreventsInfiniteAvailableWidth = !child.WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation.Horizontal);
 					if (!sizesContentToTemplatedParent && !childPreventsInfiniteAvailableWidth)
@@ -213,6 +224,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 				// Give opportunity to the the content to define the viewport size itself
 				(child as ICustomScrollInfo)?.ApplyViewport(ref desired);
+
+				// Mirror of ScrollViewer_Partial.cpp:9440 OnScrollContentPresenterMeasured.
+				// When the SCP is (re-)measured and the owning ScrollViewer has anchoring active,
+				// force ArrangeOverride to re-run so the anchoring offset correction fires.
+				Scroller?.OnScrollContentPresenterMeasured();
 
 				return new Size(
 					Math.Min(availableSize.Width, desired.Width),
@@ -254,6 +270,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void PointerWheelScroll(object sender, Input.PointerRoutedEventArgs e)
 		{
+			// Wheel input invalidates any previously-armed offset intent so the recompute step
+			// in ScrollViewer.UpdateDimensionProperties does not push the offset back toward the
+			// intent (which would visibly fight the user's wheel direction). Mirrors the user's
+			// requirement: "mouse wheel ticks must never trigger automatic ChangeView counter-shifts".
+			Scroller?.ClearOffsetIntents();
+
 			var properties = e.GetCurrentPoint(null).Properties;
 
 			if (Content is UIElement)
@@ -272,15 +294,66 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else if (canScrollHorizontally && (properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift))
 				{
+#if __WASM__
 					success = Set(
 						horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
 						disableAnimation: false);
+#else
+					// Trackpad/touchpad-style scroll events can arrive at display-refresh rate (~60/s) with precise
+					// pixel-level deltas. The 1-second composition animation is NOT suitable because:
+					// 1. When many events have accumulated the target far ahead of the visual, the animation's
+					// first step jumps (target-visual)*0.149 pixels, causing a blank frame before items can be realized for the new position.
+					// 2. VerticalOffset accumulates the target at 68px*60fps, hitting ScrollableHeight quickly and making scroll appear to stop prematurely.
+					// Immediate updates (DisableAnimation:true, IsIntermediate:false) ensure that:
+					// visual == logical == new position, one small per-event delta, no animation lag.
+					// On iOS/macOS, all wheel events currently take this immediate path because we do not have a reliable
+					// signal to distinguish touchpad/precise scrolling from discrete mouse-wheel input.
+					if (OperatingSystem.IsIOS() || OperatingSystem.IsMacOS())
+					{
+						// Continuous trackpad scroll sends small per-frame deltas (|delta| < 120)
+						// that the GetScrollWheelDelta formula (designed for discrete 120-unit notches)
+						// would shrink by up to 60%, making fast scroll sluggish and LoopingSelector
+						// (inline pickers) nearly unresponsive. Use delta directly as pixel offset
+						// for 1:1 trackpad-to-scroll mapping. Discrete mouse wheel (|delta| >= 120)
+						// still uses the standard formula for correct per-notch distance.
+						var hScrollAmount = Math.Abs(delta) < ScrollViewerDefaultMouseWheelDelta
+							? (double)delta
+							: GetHorizontalScrollWheelDelta(DesiredSize, delta);
+						success = Set(
+							horizontalOffset: HorizontalOffset + hScrollAmount,
+							options: new(DisableAnimation: true, IsIntermediate: false));
+					}
+					else
+					{
+						success = Set(
+							horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
+							disableAnimation: false);
+					}
+#endif
 				}
 				else if (canScrollVertically && !properties.IsHorizontalMouseWheel)
 				{
+#if __WASM__
 					success = Set(
 						verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
 						disableAnimation: false);
+#else
+					if (OperatingSystem.IsIOS() || OperatingSystem.IsMacOS())
+					{
+						var vScrollAmount = Math.Abs(delta) < ScrollViewerDefaultMouseWheelDelta
+							? (double)(-delta)
+							: GetVerticalScrollWheelDelta(DesiredSize, -delta);
+						success = Set(
+							verticalOffset: VerticalOffset + vScrollAmount,
+							options: new(DisableAnimation: true, IsIntermediate: false));
+					}
+					else
+					{
+						success = Set(
+							verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
+							disableAnimation: false);
+					}
+#endif
 				}
 
 				// This is not similar to what WinUI is doing, since we already differ quite a bit from
@@ -292,10 +365,20 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public void SetVerticalOffset(double offset)
-			=> Set(verticalOffset: offset, disableAnimation: true);
+		{
+			// Direct offset setters represent an explicit programmatic request, equivalent to
+			// ScrollViewer.ChangeView. Update the Scroller's offset intent so the post-layout
+			// recompute respects this value rather than chasing a stale intent left over from a
+			// prior ChangeView/Set call.
+			Scroller?.SetVerticalOffsetIntent(offset);
+			Set(verticalOffset: offset, disableAnimation: true);
+		}
 
 		public void SetHorizontalOffset(double offset)
-			=> Set(horizontalOffset: offset, disableAnimation: true);
+		{
+			Scroller?.SetHorizontalOffsetIntent(offset);
+			Set(horizontalOffset: offset, disableAnimation: true);
+		}
 
 		// Ensure the offset we're scrolling to is valid.
 		private double ValidateInputOffset(double offset, int minOffset, double maxOffset)

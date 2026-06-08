@@ -19,7 +19,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CellularClass SmsSendMessageResult.CellularClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CellularClass%20SmsSendMessageResult.CellularClass");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsSendMessageResult", "CellularClass");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SmsSendMessageResult.IsErrorTransient is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SmsSendMessageResult.IsErrorTransient");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsSendMessageResult", "IsErrorTransient");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SmsSendMessageResult.IsSuccessful is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SmsSendMessageResult.IsSuccessful");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsSendMessageResult", "IsSuccessful");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<int> SmsSendMessageResult.MessageReferenceNumbers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cint%3E%20SmsSendMessageResult.MessageReferenceNumbers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsSendMessageResult", "MessageReferenceNumbers");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsModemErrorCode SmsSendMessageResult.ModemErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsModemErrorCode%20SmsSendMessageResult.ModemErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsSendMessageResult", "ModemErrorCode");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int SmsSendMessageResult.NetworkCauseCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmsSendMessageResult.NetworkCauseCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsSendMessageResult", "NetworkCauseCode");
 			}
 		}
 #endif
@@ -79,15 +79,15 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int SmsSendMessageResult.TransportFailureCause is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmsSendMessageResult.TransportFailureCause");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsSendMessageResult", "TransportFailureCause");
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.CellularClass.get
+		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.IsErrorTransient.get
 		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.IsSuccessful.get
 		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.MessageReferenceNumbers.get
-		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.CellularClass.get
 		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.ModemErrorCode.get
-		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.IsErrorTransient.get
 		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.NetworkCauseCode.get
 		// Forced skipping of method Windows.Devices.Sms.SmsSendMessageResult.TransportFailureCause.get
 	}

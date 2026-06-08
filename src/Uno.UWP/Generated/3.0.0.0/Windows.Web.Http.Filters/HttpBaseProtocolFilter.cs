@@ -10,85 +10,15 @@ namespace Windows.Web.Http.Filters
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool UseProxy
+		public bool AllowAutoRedirect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HttpBaseProtocolFilter.UseProxy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpBaseProtocolFilter.UseProxy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "AllowAutoRedirect");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "bool HttpBaseProtocolFilter.UseProxy");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Security.Credentials.PasswordCredential ServerCredential
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PasswordCredential HttpBaseProtocolFilter.ServerCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PasswordCredential%20HttpBaseProtocolFilter.ServerCredential");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "PasswordCredential HttpBaseProtocolFilter.ServerCredential");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Security.Credentials.PasswordCredential ProxyCredential
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PasswordCredential HttpBaseProtocolFilter.ProxyCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PasswordCredential%20HttpBaseProtocolFilter.ProxyCredential");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "PasswordCredential HttpBaseProtocolFilter.ProxyCredential");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint MaxConnectionsPerServer
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint HttpBaseProtocolFilter.MaxConnectionsPerServer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20HttpBaseProtocolFilter.MaxConnectionsPerServer");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "uint HttpBaseProtocolFilter.MaxConnectionsPerServer");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Security.Cryptography.Certificates.Certificate ClientCertificate
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Certificate HttpBaseProtocolFilter.ClientCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Certificate%20HttpBaseProtocolFilter.ClientCertificate");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "Certificate HttpBaseProtocolFilter.ClientCertificate");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AutomaticDecompression
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool HttpBaseProtocolFilter.AutomaticDecompression is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpBaseProtocolFilter.AutomaticDecompression");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "bool HttpBaseProtocolFilter.AutomaticDecompression");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "AllowAutoRedirect");
 			}
 		}
 #endif
@@ -98,25 +28,25 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HttpBaseProtocolFilter.AllowUI is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpBaseProtocolFilter.AllowUI");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "AllowUI");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "bool HttpBaseProtocolFilter.AllowUI");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "AllowUI");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AllowAutoRedirect
+		public bool AutomaticDecompression
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HttpBaseProtocolFilter.AllowAutoRedirect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpBaseProtocolFilter.AllowAutoRedirect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "AutomaticDecompression");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "bool HttpBaseProtocolFilter.AllowAutoRedirect");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "AutomaticDecompression");
 			}
 		}
 #endif
@@ -126,7 +56,21 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpCacheControl HttpBaseProtocolFilter.CacheControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpCacheControl%20HttpBaseProtocolFilter.CacheControl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "CacheControl");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Security.Cryptography.Certificates.Certificate ClientCertificate
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "ClientCertificate");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "ClientCertificate");
 			}
 		}
 #endif
@@ -136,31 +80,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpCookieManager HttpBaseProtocolFilter.CookieManager is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpCookieManager%20HttpBaseProtocolFilter.CookieManager");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Security.Cryptography.Certificates.ChainValidationResult> IgnorableServerCertificateErrors
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<ChainValidationResult> HttpBaseProtocolFilter.IgnorableServerCertificateErrors is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CChainValidationResult%3E%20HttpBaseProtocolFilter.IgnorableServerCertificateErrors");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Web.Http.HttpVersion MaxVersion
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member HttpVersion HttpBaseProtocolFilter.MaxVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpVersion%20HttpBaseProtocolFilter.MaxVersion");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "HttpVersion HttpBaseProtocolFilter.MaxVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "CookieManager");
 			}
 		}
 #endif
@@ -170,11 +90,91 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpCookieUsageBehavior HttpBaseProtocolFilter.CookieUsageBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpCookieUsageBehavior%20HttpBaseProtocolFilter.CookieUsageBehavior");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "CookieUsageBehavior");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "HttpCookieUsageBehavior HttpBaseProtocolFilter.CookieUsageBehavior");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "CookieUsageBehavior");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IList<global::Windows.Security.Cryptography.Certificates.ChainValidationResult> IgnorableServerCertificateErrors
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "IgnorableServerCertificateErrors");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint MaxConnectionsPerServer
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "MaxConnectionsPerServer");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "MaxConnectionsPerServer");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Web.Http.HttpVersion MaxVersion
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "MaxVersion");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "MaxVersion");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Security.Credentials.PasswordCredential ProxyCredential
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "ProxyCredential");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "ProxyCredential");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Security.Credentials.PasswordCredential ServerCredential
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "ServerCredential");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "ServerCredential");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool UseProxy
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "UseProxy");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "UseProxy");
 			}
 		}
 #endif
@@ -184,7 +184,7 @@ namespace Windows.Web.Http.Filters
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User HttpBaseProtocolFilter.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20HttpBaseProtocolFilter.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "User");
 			}
 		}
 #endif
@@ -192,10 +192,40 @@ namespace Windows.Web.Http.Filters
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public HttpBaseProtocolFilter()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "HttpBaseProtocolFilter.HttpBaseProtocolFilter()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "HttpBaseProtocolFilter()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.HttpBaseProtocolFilter()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Web.Http.Filters.HttpBaseProtocolFilter CreateForUser(global::Windows.System.User user)
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "CreateForUser(User user)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void ClearAuthenticationCache()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "ClearAuthenticationCache()");
+		}
+#endif
+		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.ServerCustomValidationRequested.add
+		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.ServerCustomValidationRequested.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Http.HttpResponseMessage, global::Windows.Web.Http.HttpProgress> SendRequestAsync(global::Windows.Web.Http.HttpRequestMessage request)
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "SendRequestAsync(HttpRequestMessage request)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "Dispose()");
+		}
+#endif
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.AllowAutoRedirect.get
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.AllowAutoRedirect.set
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.AllowUI.get
@@ -203,53 +233,23 @@ namespace Windows.Web.Http.Filters
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.AutomaticDecompression.get
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.AutomaticDecompression.set
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.CacheControl.get
-		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.CookieManager.get
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.ClientCertificate.get
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.ClientCertificate.set
+		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.CookieManager.get
+		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.CookieUsageBehavior.get
+		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.CookieUsageBehavior.set
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.IgnorableServerCertificateErrors.get
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.MaxConnectionsPerServer.get
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.MaxConnectionsPerServer.set
+		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.MaxVersion.get
+		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.MaxVersion.set
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.ProxyCredential.get
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.ProxyCredential.set
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.ServerCredential.get
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.ServerCredential.set
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.UseProxy.get
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.UseProxy.set
-		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.MaxVersion.get
-		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.MaxVersion.set
-		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.CookieUsageBehavior.get
-		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.CookieUsageBehavior.set
-		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.ServerCustomValidationRequested.add
-		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.ServerCustomValidationRequested.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void ClearAuthenticationCache()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "void HttpBaseProtocolFilter.ClearAuthenticationCache()");
-		}
-#endif
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.User.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Http.HttpResponseMessage, global::Windows.Web.Http.HttpProgress> SendRequestAsync(global::Windows.Web.Http.HttpRequestMessage request)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> HttpBaseProtocolFilter.SendRequestAsync(HttpRequestMessage request) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CHttpResponseMessage%2C%20HttpProgress%3E%20HttpBaseProtocolFilter.SendRequestAsync%28HttpRequestMessage%20request%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "void HttpBaseProtocolFilter.Dispose()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Web.Http.Filters.HttpBaseProtocolFilter CreateForUser(global::Windows.System.User user)
-		{
-			throw new global::System.NotImplementedException("The member HttpBaseProtocolFilter HttpBaseProtocolFilter.CreateForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpBaseProtocolFilter%20HttpBaseProtocolFilter.CreateForUser%28User%20user%29");
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Web.Http.Filters.HttpBaseProtocolFilter, global::Windows.Web.Http.Filters.HttpServerCustomValidationRequestedEventArgs> ServerCustomValidationRequested
@@ -257,12 +257,12 @@ namespace Windows.Web.Http.Filters
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "event TypedEventHandler<HttpBaseProtocolFilter, HttpServerCustomValidationRequestedEventArgs> HttpBaseProtocolFilter.ServerCustomValidationRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "event ServerCustomValidationRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "event TypedEventHandler<HttpBaseProtocolFilter, HttpServerCustomValidationRequestedEventArgs> HttpBaseProtocolFilter.ServerCustomValidationRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Filters.HttpBaseProtocolFilter", "event ServerCustomValidationRequested");
 			}
 		}
 #endif

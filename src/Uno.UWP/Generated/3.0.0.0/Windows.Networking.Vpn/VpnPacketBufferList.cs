@@ -6,7 +6,7 @@ namespace Windows.Networking.Vpn
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class VpnPacketBufferList : global::System.Collections.Generic.IEnumerable<global::Windows.Networking.Vpn.VpnPacketBuffer>
+	public partial class VpnPacketBufferList : global::System.Collections.Generic.IEnumerable<global::Windows.Networking.Vpn.VpnPacketBuffer>, global::System.Collections.IEnumerable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal VpnPacketBufferList()
@@ -15,25 +15,25 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.Vpn.VpnPacketBufferStatus Status
+		public uint Size
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnPacketBufferStatus VpnPacketBufferList.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnPacketBufferStatus%20VpnPacketBufferList.Status");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBufferList", "VpnPacketBufferStatus VpnPacketBufferList.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPacketBufferList", "Size");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
+		public global::Windows.Networking.Vpn.VpnPacketBufferStatus Status
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint VpnPacketBufferList.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20VpnPacketBufferList.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPacketBufferList", "Status");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBufferList", "Status");
 			}
 		}
 #endif
@@ -41,50 +41,49 @@ namespace Windows.Networking.Vpn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Append(global::Windows.Networking.Vpn.VpnPacketBuffer nextVpnPacketBuffer)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBufferList", "void VpnPacketBufferList.Append(VpnPacketBuffer nextVpnPacketBuffer)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBufferList", "Append(VpnPacketBuffer nextVpnPacketBuffer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AddAtBegin(global::Windows.Networking.Vpn.VpnPacketBuffer nextVpnPacketBuffer)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBufferList", "void VpnPacketBufferList.AddAtBegin(VpnPacketBuffer nextVpnPacketBuffer)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBufferList", "AddAtBegin(VpnPacketBuffer nextVpnPacketBuffer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Vpn.VpnPacketBuffer RemoveAtEnd()
 		{
-			throw new global::System.NotImplementedException("The member VpnPacketBuffer VpnPacketBufferList.RemoveAtEnd() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnPacketBuffer%20VpnPacketBufferList.RemoveAtEnd%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPacketBufferList", "RemoveAtEnd()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Networking.Vpn.VpnPacketBuffer RemoveAtBegin()
 		{
-			throw new global::System.NotImplementedException("The member VpnPacketBuffer VpnPacketBufferList.RemoveAtBegin() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnPacketBuffer%20VpnPacketBufferList.RemoveAtBegin%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPacketBufferList", "RemoveAtBegin()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Clear()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBufferList", "void VpnPacketBufferList.Clear()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBufferList", "Clear()");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBufferList.Status.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBufferList.Status.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBufferList.Size.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBufferList.First()
-		// Processing: System.Collections.Generic.IEnumerable<Windows.Networking.Vpn.VpnPacketBuffer>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Networking.Vpn.VpnPacketBuffer>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Networking.Vpn.VpnPacketBuffer> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPacketBufferList", "GetEnumerator()");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBufferList.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBufferList.Size.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBufferList.Status.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBufferList.Status.set
+		// Processing: System.Collections.Generic.IEnumerable<Windows.Networking.Vpn.VpnPacketBuffer>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable

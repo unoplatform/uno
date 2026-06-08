@@ -52,5 +52,8 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		internal bool IsFlyoutOpen { get; set; }
+
+		protected override Automation.Peers.AutomationPeer OnCreateAutomationPeer()
+			=> new Automation.Peers.MenuBarAutomationPeer(this);
 	}
 }

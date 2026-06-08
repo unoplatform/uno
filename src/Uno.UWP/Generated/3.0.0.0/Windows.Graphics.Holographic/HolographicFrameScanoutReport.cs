@@ -19,7 +19,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HolographicFrameScanoutReport.MissedScanoutCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20HolographicFrameScanoutReport.MissedScanoutCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFrameScanoutReport", "MissedScanoutCount");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HolographicFrameRenderingReport HolographicFrameScanoutReport.RenderingReport is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicFrameRenderingReport%20HolographicFrameScanoutReport.RenderingReport");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFrameScanoutReport", "RenderingReport");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan HolographicFrameScanoutReport.SystemRelativeLatchTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20HolographicFrameScanoutReport.SystemRelativeLatchTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFrameScanoutReport", "SystemRelativeLatchTime");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan HolographicFrameScanoutReport.SystemRelativePhotonTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20HolographicFrameScanoutReport.SystemRelativePhotonTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFrameScanoutReport", "SystemRelativePhotonTime");
 			}
 		}
 #endif
@@ -59,14 +59,14 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan HolographicFrameScanoutReport.SystemRelativeScanoutStartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20HolographicFrameScanoutReport.SystemRelativeScanoutStartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFrameScanoutReport", "SystemRelativeScanoutStartTime");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.RenderingReport.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.MissedScanoutCount.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.RenderingReport.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.SystemRelativeLatchTime.get
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.SystemRelativeScanoutStartTime.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.SystemRelativePhotonTime.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrameScanoutReport.SystemRelativeScanoutStartTime.get
 	}
 }

@@ -95,15 +95,15 @@ To correct this, you'll need to modify your `csproj` file in order to make the p
 You can change this line:
 
 ```xml
-<TargetFrameworks>net9.0-android;net9.0-ios;net9.0-windows10.0.26100;net9.0-browserwasm;net9.0-desktop</TargetFrameworks>
+<TargetFrameworks>net10.0-android;net10.0-ios;net10.0-windows10.0.26100;net10.0-browserwasm;net10.0-desktop</TargetFrameworks>
 ```
 
 To be:
 
 ```xml
-<TargetFrameworks>net9.0-android;net9.0-browserwasm;net9.0-desktop</TargetFrameworks>
-<TargetFrameworks Condition=" $([MSBuild]::IsOSPlatform('windows')) ">$(TargetFrameworks);net9.0-windows10.0.26100</TargetFrameworks>
-<TargetFrameworks Condition=" !$([MSBuild]::IsOSPlatform('linux')) ">$(TargetFrameworks);net9.0-ios</TargetFrameworks>
+<TargetFrameworks>net10.0-android;net10.0-browserwasm;net10.0-desktop</TargetFrameworks>
+<TargetFrameworks Condition=" $([MSBuild]::IsOSPlatform('windows')) ">$(TargetFrameworks);net10.0-windows10.0.26100</TargetFrameworks>
+<TargetFrameworks Condition=" !$([MSBuild]::IsOSPlatform('linux')) ">$(TargetFrameworks);net10.0-ios</TargetFrameworks>
 ```
 
 Make sure to adjust the list of target frameworks based on the platforms you have in your original list.
@@ -174,8 +174,35 @@ Select the **MyUnoApp** debug profile with the mobile Apple logo, then click the
 
 ![A view of the Rider taskbar for iOS](Assets/quick-start/run-ios-rider.png)
 
-> [!NOTE]
-> Debugging iOS apps is only supported on macOS
+#### Rider for Mac
+
+Debugging iOS apps on **Rider for Mac** works directly with a local simulator or connected device.
+
+#### Rider for Windows (Rider 2026.1+)
+
+Starting with **[Rider 2026.1](https://www.jetbrains.com/rider/whatsnew/2026-1/)**, you can build, deploy, and debug iOS apps from Windows via a remote Mac build host. Rider automatically verifies that the Mac has the correct macOS version, Xcode, .NET SDK, and required workloads and can install missing components automatically.
+
+Since Uno Platform uses the same .NET iOS toolchain as MAUI, this capability works with Uno Platform projects out of the box.
+
+**Setup steps:**
+
+1. Next to the **MyUnoApp** debug profile with the mobile Apple logo, you have the **Connect to Mac...** button in the toolbar:
+
+   ![Rider toolbar showing the Connect to Mac button for iOS](Assets/quick-start/rider-ios-connect-to-mac-button.png)
+
+2. By clicking on it, it will open the **Remote Mac Computers** dialog. Click **+** and enter your Mac's IP address or hostname, then click **OK** and **Connect**. Rider will connect over SSH (make sure **[Remote Login](https://support.apple.com/guide/mac-help/allow-a-remote-computer-to-access-your-mac-mchlp1066/mac)** is enabled on your Mac under **System Settings** > **General** > **Sharing**).
+
+   ![Rider Remote Mac Computers dialog](Assets/quick-start/rider-ios-remote-mac-dialog.png)
+
+3. Once connected, Rider verifies the remote environment and installs any missing components. Press **Run** or **Debug** to deploy to the selected simulator or device.
+
+#### Invalid Codesign Key
+
+If you see an **"Invalid Codesign Key"** dialog when running, click **Set Codesign Key...** to open **Project Properties** > **iOS** > **Bundle Signing**, then set **Signing identity** to **Developer (Automatic)**.
+
+![Rider Invalid Codesign Key dialog](Assets/quick-start/rider-ios-invalid-codesign-key.png)
+
+![Rider iOS Bundle Signing — set Signing identity to Developer (Automatic)](Assets/quick-start/rider-ios-signing-identity.png)
 
 ### [**WinUI/WinAppSDK**](#tab/winui)
 

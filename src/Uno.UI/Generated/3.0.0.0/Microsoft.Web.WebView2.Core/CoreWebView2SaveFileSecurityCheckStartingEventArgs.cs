@@ -15,29 +15,15 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool SuppressDefaultPolicy
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2SaveFileSecurityCheckStartingEventArgs.SuppressDefaultPolicy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2SaveFileSecurityCheckStartingEventArgs.SuppressDefaultPolicy");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2SaveFileSecurityCheckStartingEventArgs", "bool CoreWebView2SaveFileSecurityCheckStartingEventArgs.SuppressDefaultPolicy");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool CancelSave
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2SaveFileSecurityCheckStartingEventArgs.CancelSave is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2SaveFileSecurityCheckStartingEventArgs.CancelSave");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveFileSecurityCheckStartingEventArgs", "CancelSave");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2SaveFileSecurityCheckStartingEventArgs", "bool CoreWebView2SaveFileSecurityCheckStartingEventArgs.CancelSave");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2SaveFileSecurityCheckStartingEventArgs", "CancelSave");
 			}
 		}
 #endif
@@ -47,7 +33,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2SaveFileSecurityCheckStartingEventArgs.DocumentOriginUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2SaveFileSecurityCheckStartingEventArgs.DocumentOriginUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveFileSecurityCheckStartingEventArgs", "DocumentOriginUri");
 			}
 		}
 #endif
@@ -57,7 +43,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2SaveFileSecurityCheckStartingEventArgs.FileExtension is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2SaveFileSecurityCheckStartingEventArgs.FileExtension");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveFileSecurityCheckStartingEventArgs", "FileExtension");
 			}
 		}
 #endif
@@ -67,8 +53,29 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2SaveFileSecurityCheckStartingEventArgs.FilePath is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2SaveFileSecurityCheckStartingEventArgs.FilePath");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveFileSecurityCheckStartingEventArgs", "FilePath");
 			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool SuppressDefaultPolicy
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveFileSecurityCheckStartingEventArgs", "SuppressDefaultPolicy");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2SaveFileSecurityCheckStartingEventArgs", "SuppressDefaultPolicy");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.Deferral GetDeferral()
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2SaveFileSecurityCheckStartingEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveFileSecurityCheckStartingEventArgs.CancelSave.get
@@ -78,12 +85,5 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveFileSecurityCheckStartingEventArgs.FilePath.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveFileSecurityCheckStartingEventArgs.SuppressDefaultPolicy.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2SaveFileSecurityCheckStartingEventArgs.SuppressDefaultPolicy.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Deferral GetDeferral()
-		{
-			throw new global::System.NotImplementedException("The member Deferral CoreWebView2SaveFileSecurityCheckStartingEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreWebView2SaveFileSecurityCheckStartingEventArgs.GetDeferral%28%29");
-		}
-#endif
 	}
 }

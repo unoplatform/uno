@@ -15,11 +15,21 @@ namespace Windows.Devices.Sms
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Body
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsVoicemailMessage", "Body");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Sms.CellularClass CellularClass
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CellularClass SmsVoicemailMessage.CellularClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CellularClass%20SmsVoicemailMessage.CellularClass");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsVoicemailMessage", "CellularClass");
 			}
 		}
 #endif
@@ -29,7 +39,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsVoicemailMessage.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsVoicemailMessage.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsVoicemailMessage", "DeviceId");
 			}
 		}
 #endif
@@ -39,37 +49,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsMessageClass SmsVoicemailMessage.MessageClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageClass%20SmsVoicemailMessage.MessageClass");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Sms.SmsMessageType MessageType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SmsMessageType SmsVoicemailMessage.MessageType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageType%20SmsVoicemailMessage.MessageType");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string SimIccId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SmsVoicemailMessage.SimIccId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsVoicemailMessage.SimIccId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Body
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SmsVoicemailMessage.Body is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsVoicemailMessage.Body");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsVoicemailMessage", "MessageClass");
 			}
 		}
 #endif
@@ -79,7 +59,27 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? SmsVoicemailMessage.MessageCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20SmsVoicemailMessage.MessageCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsVoicemailMessage", "MessageCount");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Sms.SmsMessageType MessageType
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsVoicemailMessage", "MessageType");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string SimIccId
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsVoicemailMessage", "SimIccId");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset SmsVoicemailMessage.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20SmsVoicemailMessage.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsVoicemailMessage", "Timestamp");
 			}
 		}
 #endif
@@ -99,19 +99,19 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsVoicemailMessage.To is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsVoicemailMessage.To");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsVoicemailMessage", "To");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sms.SmsVoicemailMessage.Timestamp.get
-		// Forced skipping of method Windows.Devices.Sms.SmsVoicemailMessage.To.get
 		// Forced skipping of method Windows.Devices.Sms.SmsVoicemailMessage.Body.get
+		// Forced skipping of method Windows.Devices.Sms.SmsVoicemailMessage.CellularClass.get
+		// Forced skipping of method Windows.Devices.Sms.SmsVoicemailMessage.DeviceId.get
+		// Forced skipping of method Windows.Devices.Sms.SmsVoicemailMessage.MessageClass.get
 		// Forced skipping of method Windows.Devices.Sms.SmsVoicemailMessage.MessageCount.get
 		// Forced skipping of method Windows.Devices.Sms.SmsVoicemailMessage.MessageType.get
-		// Forced skipping of method Windows.Devices.Sms.SmsVoicemailMessage.DeviceId.get
-		// Forced skipping of method Windows.Devices.Sms.SmsVoicemailMessage.CellularClass.get
-		// Forced skipping of method Windows.Devices.Sms.SmsVoicemailMessage.MessageClass.get
 		// Forced skipping of method Windows.Devices.Sms.SmsVoicemailMessage.SimIccId.get
+		// Forced skipping of method Windows.Devices.Sms.SmsVoicemailMessage.Timestamp.get
+		// Forced skipping of method Windows.Devices.Sms.SmsVoicemailMessage.To.get
 		// Processing: Windows.Devices.Sms.ISmsMessageBase
 	}
 }

@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<object> ItemsPickedEventArgs.AddedItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cobject%3E%20ItemsPickedEventArgs.AddedItems");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs", "AddedItems");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<object> ItemsPickedEventArgs.RemovedItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cobject%3E%20ItemsPickedEventArgs.RemovedItems");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs", "RemovedItems");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ItemsPickedEventArgs() : base()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs", "ItemsPickedEventArgs.ItemsPickedEventArgs()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs", "ItemsPickedEventArgs()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPickedEventArgs.ItemsPickedEventArgs()

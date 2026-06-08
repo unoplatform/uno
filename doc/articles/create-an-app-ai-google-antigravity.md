@@ -13,10 +13,10 @@ uid: Uno.GettingStarted.CreateAnApp.AI.GoogleAntigravity
     ```
 
 1. Open the project you just created inside Google Antigravity (for example, `MyApp`).
-1. Open a terminal in the project folder and sign in with the Uno Dev Server:
+1. Open a terminal in the project folder and run the following command, which will launch the Uno Studio app that will allow you to [sign in or create an account](xref:Uno.GetStarted.Licensing) and get access to the [Uno App MCP](xref:Uno.Features.Uno.MCPs).
 
     ```bash
-    dnx -y uno.devserver login
+    dotnet dnx -y uno.devserver login
     ```
 
 1. Launch Google Antigravity from the same folder (or reload the window).
@@ -26,7 +26,7 @@ uid: Uno.GettingStarted.CreateAnApp.AI.GoogleAntigravity
     Set the uno platform mcp roots to initialize app support.
     ```
 
-1. When asked, approve the execution of the `uno_app_set_roots` tool.
+1. When asked, approve the execution of the `uno_app_initialize` tool.
 1. Restart or reload Antigravity to ensure the Uno Platform App MCP is fully initialized.
 
 ## Next Steps

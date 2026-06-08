@@ -7,6 +7,9 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using System.Diagnostics.CodeAnalysis;
+#if !WINAPPSDK
+using DirectUI;
+#endif
 
 namespace Private.Infrastructure
 {
@@ -23,8 +26,15 @@ namespace Private.Infrastructure
 			{
 			}
 
-			internal static void InjectBackButtonPress(ref bool backButtonPressHandled)
+			internal static async Task<bool> InjectBackButtonPress()
 			{
+#if !WINAPPSDK
+				var handled = false;
+				await RunOnUIThread(() => handled = BackButtonIntegration.InjectBackButtonPress());
+				return handled;
+#else
+				throw new NotSupportedException("Back button injection is only supported in Uno Platform targets");
+#endif
 			}
 
 			public static void SetTimeZone(string tzid)
@@ -47,7 +57,23 @@ namespace Private.Infrastructure
 
 		internal static async Task RunOnUIThread(Action action)
 		{
-			await WindowHelper.RootElementDispatcher.RunAsync(() => action());
+			Exception exception = null;
+			await WindowHelper.RootElementDispatcher.RunAsync(() =>
+			{
+				try
+				{
+					action();
+				}
+				catch (Exception ex)
+				{
+					exception = ex;
+				}
+			});
+
+			if (exception != null)
+			{
+				throw new InvalidOperationException("Exception thrown by action on the UI thread", exception);
+			}
 		}
 
 		internal static async Task RunOnUIThread(Func<Task> asyncAction)
@@ -117,22 +143,22 @@ namespace Private.Infrastructure
 
 		public static void VERIFY_IS_LESS_THAN(double actual, double expected)
 		{
-			Assert.IsTrue(actual < expected, $"{actual} is not less than {expected}");
+			Assert.IsLessThan(expected, actual, $"{actual} is not less than {expected}");
 		}
 
 		public static void VERIFY_IS_LESS_THAN_OR_EQUAL(double actual, double expected)
 		{
-			Assert.IsTrue(actual <= expected, $"{actual} is not less than {expected}");
+			Assert.IsLessThanOrEqualTo(expected, actual, $"{actual} is not less than or equal to {expected}");
 		}
 
 		public static void VERIFY_IS_GREATER_THAN(double actual, double expected)
 		{
-			Assert.IsTrue(actual > expected, $"{actual} is not greater than {expected}");
+			Assert.IsGreaterThan(expected, actual, $"{actual} is not greater than {expected}");
 		}
 
 		public static void VERIFY_IS_GREATER_THAN_OR_EQUAL(double actual, double expected)
 		{
-			Assert.IsTrue(actual >= expected, $"{actual} is not greater than {expected}");
+			Assert.IsGreaterThanOrEqualTo(expected, actual, $"{actual} is not greater than or equal to {expected}");
 		}
 
 		public static void VERIFY_THROWS_WINRT(Action action, Type exceptionType)
@@ -183,7 +209,7 @@ namespace Private.Infrastructure
 		internal static void VERIFY_ARE_VERY_CLOSE(double actual, double expected, double tolerance = 0.1d, string message = null)
 		{
 			var difference = Math.Abs(actual - expected);
-			Assert.IsTrue(difference <= tolerance, $"Expected <{expected}>, actual <{actual}> (tolerance = {tolerance}) {message}");
+			Assert.IsLessThanOrEqualTo(tolerance, difference, $"Expected <{expected}>, actual <{actual}> (tolerance = {tolerance}) {message}");
 		}
 
 		internal static void VERIFY_DATES_ARE_EQUAL(DateTimeOffset actual, DateTimeOffset expected, string message = null)

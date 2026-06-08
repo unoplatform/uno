@@ -8,8 +8,8 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ScrollingZoomOptions
 	{
-		// Skipping already declared property SnapPointsMode
 		// Skipping already declared property AnimationMode
+		// Skipping already declared property SnapPointsMode
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollingZoomOptions.ScrollingZoomOptions(Microsoft.UI.Xaml.Controls.ScrollingAnimationMode)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomOptions.ScrollingZoomOptions(Microsoft.UI.Xaml.Controls.ScrollingAnimationMode)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollingZoomOptions.ScrollingZoomOptions(Microsoft.UI.Xaml.Controls.ScrollingAnimationMode, Microsoft.UI.Xaml.Controls.ScrollingSnapPointsMode)

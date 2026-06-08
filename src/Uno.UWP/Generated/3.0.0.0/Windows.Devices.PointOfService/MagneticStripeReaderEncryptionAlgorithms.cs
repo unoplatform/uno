@@ -14,7 +14,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderEncryptionAlgorithms.ExtendedBase is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MagneticStripeReaderEncryptionAlgorithms.ExtendedBase");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderEncryptionAlgorithms", "ExtendedBase");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderEncryptionAlgorithms.None is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MagneticStripeReaderEncryptionAlgorithms.None");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderEncryptionAlgorithms", "None");
 			}
 		}
 #endif
@@ -34,12 +34,12 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MagneticStripeReaderEncryptionAlgorithms.TripleDesDukpt is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MagneticStripeReaderEncryptionAlgorithms.TripleDesDukpt");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderEncryptionAlgorithms", "TripleDesDukpt");
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderEncryptionAlgorithms.ExtendedBase.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderEncryptionAlgorithms.None.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderEncryptionAlgorithms.TripleDesDukpt.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderEncryptionAlgorithms.ExtendedBase.get
 	}
 }

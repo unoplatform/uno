@@ -19,7 +19,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastReceiverConnection MiracastReceiverMediaSourceCreatedEventArgs.Connection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MiracastReceiverConnection%20MiracastReceiverMediaSourceCreatedEventArgs.Connection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverMediaSourceCreatedEventArgs", "Connection");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastReceiverCursorImageChannelSettings MiracastReceiverMediaSourceCreatedEventArgs.CursorImageChannelSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MiracastReceiverCursorImageChannelSettings%20MiracastReceiverMediaSourceCreatedEventArgs.CursorImageChannelSettings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverMediaSourceCreatedEventArgs", "CursorImageChannelSettings");
 			}
 		}
 #endif
@@ -39,19 +39,19 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaSource MiracastReceiverMediaSourceCreatedEventArgs.MediaSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MiracastReceiverMediaSourceCreatedEventArgs.MediaSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverMediaSourceCreatedEventArgs", "MediaSource");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverMediaSourceCreatedEventArgs.Connection.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverMediaSourceCreatedEventArgs.MediaSource.get
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverMediaSourceCreatedEventArgs.CursorImageChannelSettings.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral MiracastReceiverMediaSourceCreatedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20MiracastReceiverMediaSourceCreatedEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverMediaSourceCreatedEventArgs", "GetDeferral()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverMediaSourceCreatedEventArgs.Connection.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverMediaSourceCreatedEventArgs.CursorImageChannelSettings.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverMediaSourceCreatedEventArgs.MediaSource.get
 	}
 }

@@ -10,15 +10,15 @@ namespace Windows.ApplicationModel.UserActivities
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Uri IconUri
+		public bool AddImageQuery
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri UserActivityAttribution.IconUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20UserActivityAttribution.IconUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityAttribution", "AddImageQuery");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityAttribution", "Uri UserActivityAttribution.IconUri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityAttribution", "AddImageQuery");
 			}
 		}
 #endif
@@ -28,49 +28,49 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserActivityAttribution.AlternateText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserActivityAttribution.AlternateText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityAttribution", "AlternateText");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityAttribution", "string UserActivityAttribution.AlternateText");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityAttribution", "AlternateText");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AddImageQuery
+		public global::System.Uri IconUri
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool UserActivityAttribution.AddImageQuery is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20UserActivityAttribution.AddImageQuery");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityAttribution", "IconUri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityAttribution", "bool UserActivityAttribution.AddImageQuery");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityAttribution", "IconUri");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public UserActivityAttribution(global::System.Uri iconUri)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityAttribution", "UserActivityAttribution.UserActivityAttribution(Uri iconUri)");
-		}
-#endif
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.UserActivityAttribution(System.Uri)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public UserActivityAttribution()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityAttribution", "UserActivityAttribution.UserActivityAttribution()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityAttribution", "UserActivityAttribution()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.UserActivityAttribution()
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.IconUri.get
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.IconUri.set
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.AlternateText.get
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.AlternateText.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public UserActivityAttribution(global::System.Uri iconUri)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityAttribution", "UserActivityAttribution(Uri iconUri)");
+		}
+#endif
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.UserActivityAttribution(System.Uri)
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.AddImageQuery.get
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.AddImageQuery.set
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.AlternateText.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.AlternateText.set
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.IconUri.get
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityAttribution.IconUri.set
 	}
 }

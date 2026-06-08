@@ -19,17 +19,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Appointment AppointmentStoreChange.Appointment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Appointment%20AppointmentStoreChange.Appointment");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Appointments.AppointmentStoreChangeType ChangeType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AppointmentStoreChangeType AppointmentStoreChange.ChangeType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentStoreChangeType%20AppointmentStoreChange.ChangeType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentStoreChange", "Appointment");
 			}
 		}
 #endif
@@ -39,12 +29,22 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppointmentCalendar AppointmentStoreChange.AppointmentCalendar is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentCalendar%20AppointmentStoreChange.AppointmentCalendar");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentStoreChange", "AppointmentCalendar");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Appointments.AppointmentStoreChangeType ChangeType
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentStoreChange", "ChangeType");
 			}
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChange.Appointment.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChange.ChangeType.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChange.AppointmentCalendar.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentStoreChange.ChangeType.get
 	}
 }

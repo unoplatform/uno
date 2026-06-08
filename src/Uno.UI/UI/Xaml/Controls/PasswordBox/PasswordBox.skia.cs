@@ -1,4 +1,6 @@
 ﻿using System;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -16,4 +18,22 @@ public partial class PasswordBox
 	}
 
 	partial void SetPasswordRevealState(PasswordRevealState state) => TextBoxView?.SetPasswordRevealState(state);
+
+	public new FlyoutBase SelectionFlyout
+	{
+		get => base.SelectionFlyout;
+		set => base.SelectionFlyout = value;
+	}
+
+	public static new DependencyProperty SelectionFlyoutProperty => TextBox.SelectionFlyoutProperty;
+
+	public static new DependencyProperty CanPasteClipboardContentProperty => TextBox.CanPasteClipboardContentProperty;
+
+	public new bool CanPasteClipboardContent => base.CanPasteClipboardContent;
+
+	public new event ContextMenuOpeningEventHandler ContextMenuOpening
+	{
+		add => base.ContextMenuOpening += value;
+		remove => base.ContextMenuOpening -= value;
+	}
 }

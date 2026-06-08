@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, StoreLicense> StoreAppLicense.AddOnLicenses is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20StoreLicense%3E%20StoreAppLicense.AddOnLicenses");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAppLicense", "AddOnLicenses");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset StoreAppLicense.ExpirationDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20StoreAppLicense.ExpirationDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAppLicense", "ExpirationDate");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreAppLicense.ExtendedJsonData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreAppLicense.ExtendedJsonData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAppLicense", "ExtendedJsonData");
 			}
 		}
 #endif
@@ -49,57 +49,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StoreAppLicense.IsActive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreAppLicense.IsActive");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsTrial
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool StoreAppLicense.IsTrial is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreAppLicense.IsTrial");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsTrialOwnedByThisUser
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool StoreAppLicense.IsTrialOwnedByThisUser is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreAppLicense.IsTrialOwnedByThisUser");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string SkuStoreId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string StoreAppLicense.SkuStoreId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreAppLicense.SkuStoreId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan TrialTimeRemaining
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan StoreAppLicense.TrialTimeRemaining is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20StoreAppLicense.TrialTimeRemaining");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string TrialUniqueId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string StoreAppLicense.TrialUniqueId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StoreAppLicense.TrialUniqueId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAppLicense", "IsActive");
 			}
 		}
 #endif
@@ -109,19 +59,69 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StoreAppLicense.IsDiscLicense is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreAppLicense.IsDiscLicense");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAppLicense", "IsDiscLicense");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.SkuStoreId.get
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.IsActive.get
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.IsTrial.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsTrial
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAppLicense", "IsTrial");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsTrialOwnedByThisUser
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAppLicense", "IsTrialOwnedByThisUser");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string SkuStoreId
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAppLicense", "SkuStoreId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan TrialTimeRemaining
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAppLicense", "TrialTimeRemaining");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string TrialUniqueId
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreAppLicense", "TrialUniqueId");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.AddOnLicenses.get
 		// Forced skipping of method Windows.Services.Store.StoreAppLicense.ExpirationDate.get
 		// Forced skipping of method Windows.Services.Store.StoreAppLicense.ExtendedJsonData.get
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.AddOnLicenses.get
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.TrialTimeRemaining.get
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.IsTrialOwnedByThisUser.get
-		// Forced skipping of method Windows.Services.Store.StoreAppLicense.TrialUniqueId.get
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.IsActive.get
 		// Forced skipping of method Windows.Services.Store.StoreAppLicense.IsDiscLicense.get
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.IsTrial.get
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.IsTrialOwnedByThisUser.get
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.SkuStoreId.get
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.TrialTimeRemaining.get
+		// Forced skipping of method Windows.Services.Store.StoreAppLicense.TrialUniqueId.get
 	}
 }

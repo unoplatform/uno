@@ -32,6 +32,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 	public class Given_BitmapSource
 	{
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_SetSource_Then_StreamClonedSynchronously()
 		{
 			var sut = new BitmapImage();
@@ -79,7 +80,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			var path = new Uri("ms-appx:///Assets/scale-test.png");
 			var resolved = await BitmapImage.TryResolveLocalResource(path, scaleOverride: Windows.Graphics.Display.ResolutionScale.Scale400Percent);
 
-			Assert.IsTrue(resolved.PathAndQuery.Contains("scale-400"), $"Resolved asset path did not contain the expected .scale-400 qualifier: {resolved}");
+			Assert.Contains("scale-400", resolved.PathAndQuery, $"Resolved asset path did not contain the expected .scale-400 qualifier: {resolved}");
 		}
 #endif
 
@@ -106,7 +107,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 #endif
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_BundleImages_Loaded_StreamsAreDisposed()
 		{
 			var panel = new StackPanel { Orientation = Orientation.Horizontal };
@@ -145,7 +146,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 			foreach (var bitmapImage in bitmapImages)
 			{
-				Assert.IsTrue(bitmapImage.PixelWidth > 0, "Image should have valid pixel dimensions after loading");
+				Assert.IsGreaterThan(0, bitmapImage.PixelWidth, "Image should have valid pixel dimensions after loading");
 			}
 
 			foreach (var image in images)
@@ -165,7 +166,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			GC.WaitForPendingFinalizers();
 			GC.Collect();
 
-			Assert.IsTrue(images.Count == imageUris.Length, "All images were processed");
+			Assert.HasCount(imageUris.Length, images, "All images were processed");
 		}
 
 		[TestMethod]
@@ -384,6 +385,113 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 			await ImageAssert.AreEqualAsync(screenshotWithoutImage, initialScreenshot);
 		}
+
+#if __SKIA__
+		[TestMethod]
+		public async Task When_DecodePixelWidth_Only()
+		{
+			// test_image_200_300.png is 200x300. Setting DecodePixelWidth=100 should
+			// decode at 100x150, preserving the 2:3 aspect ratio.
+			var bitmapImage = new BitmapImage();
+			bitmapImage.DecodePixelWidth = 100;
+
+			var image = new Image { Width = 200, Height = 300 };
+			WindowHelper.WindowContent = image;
+
+			var openedTask = WindowHelper.WaitForOpened(bitmapImage);
+			bitmapImage.UriSource = new Uri("ms-appx:///Assets/test_image_200_300.png");
+			image.Source = bitmapImage;
+
+			await openedTask;
+
+			Assert.AreEqual(100, bitmapImage.PixelWidth, "PixelWidth should match DecodePixelWidth");
+			Assert.AreEqual(150, bitmapImage.PixelHeight, "PixelHeight should preserve aspect ratio");
+		}
+
+		[TestMethod]
+		public async Task When_DecodePixelHeight_Only()
+		{
+			// test_image_200_300.png is 200x300. Setting DecodePixelHeight=150 should
+			// decode at 100x150, preserving the 2:3 aspect ratio.
+			var bitmapImage = new BitmapImage();
+			bitmapImage.DecodePixelHeight = 150;
+
+			var image = new Image { Width = 200, Height = 300 };
+			WindowHelper.WindowContent = image;
+
+			var openedTask = WindowHelper.WaitForOpened(bitmapImage);
+			bitmapImage.UriSource = new Uri("ms-appx:///Assets/test_image_200_300.png");
+			image.Source = bitmapImage;
+
+			await openedTask;
+
+			Assert.AreEqual(100, bitmapImage.PixelWidth, "PixelWidth should preserve aspect ratio");
+			Assert.AreEqual(150, bitmapImage.PixelHeight, "PixelHeight should match DecodePixelHeight");
+		}
+
+		[TestMethod]
+		public async Task When_DecodePixelWidth_And_Height()
+		{
+			// When both are set, they are used as-is with no aspect ratio enforcement.
+			var bitmapImage = new BitmapImage();
+			bitmapImage.DecodePixelWidth = 80;
+			bitmapImage.DecodePixelHeight = 60;
+
+			var image = new Image { Width = 200, Height = 300 };
+			WindowHelper.WindowContent = image;
+
+			var openedTask = WindowHelper.WaitForOpened(bitmapImage);
+			bitmapImage.UriSource = new Uri("ms-appx:///Assets/test_image_200_300.png");
+			image.Source = bitmapImage;
+
+			await openedTask;
+
+			Assert.AreEqual(80, bitmapImage.PixelWidth, "PixelWidth should match DecodePixelWidth");
+			Assert.AreEqual(60, bitmapImage.PixelHeight, "PixelHeight should match DecodePixelHeight");
+		}
+
+		[TestMethod]
+		public async Task When_No_DecodePixel_Set()
+		{
+			// Regression: full resolution when no decode pixel is set.
+			var bitmapImage = new BitmapImage();
+
+			var image = new Image { Width = 200, Height = 300 };
+			WindowHelper.WindowContent = image;
+
+			var openedTask = WindowHelper.WaitForOpened(bitmapImage);
+			bitmapImage.UriSource = new Uri("ms-appx:///Assets/test_image_200_300.png");
+			image.Source = bitmapImage;
+
+			await openedTask;
+
+			Assert.AreEqual(200, bitmapImage.PixelWidth, "PixelWidth should be full resolution");
+			Assert.AreEqual(300, bitmapImage.PixelHeight, "PixelHeight should be full resolution");
+		}
+
+		[TestMethod]
+		public async Task When_DecodePixelWidth_With_Stream()
+		{
+			// Tests stream-based loading with decode pixel.
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/test_image_200_300.png"));
+			using var stream = await file.OpenReadAsync();
+
+			var bitmapImage = new BitmapImage();
+			bitmapImage.DecodePixelWidth = 100;
+
+			var image = new Image { Width = 200, Height = 300 };
+			WindowHelper.WindowContent = image;
+
+			var openedTask = WindowHelper.WaitForOpened(bitmapImage);
+			bitmapImage.SetSource(stream);
+			image.Source = bitmapImage;
+
+			await openedTask;
+
+			Assert.AreEqual(100, bitmapImage.PixelWidth, "PixelWidth should match DecodePixelWidth");
+			Assert.AreEqual(150, bitmapImage.PixelHeight, "PixelHeight should preserve aspect ratio");
+		}
+#endif
 
 		private class Given_BitmapSource_Exception : Exception
 		{

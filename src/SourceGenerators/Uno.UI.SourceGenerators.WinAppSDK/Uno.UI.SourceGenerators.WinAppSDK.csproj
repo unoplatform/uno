@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<!-- Generators must be on netstandard2.0 so that they run in VS (.NET Framework) and dotnet build (.NET Core) -->
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<AssemblyName>Uno.UI.SourceGenerators.WinAppSDK</AssemblyName>
+		<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" ExcludeAssets="runtime" />
+	</ItemGroup>
+
+	<!-- Link shared code-behind files from Uno.UI.SourceGenerators -->
+	<ItemGroup>
+		<Compile Include="..\Uno.UI.SourceGenerators\XamlGenerator\XamlCodeBehindParser.cs" Link="XamlGenerator\XamlCodeBehindParser.cs" />
+		<Compile Include="..\Uno.UI.SourceGenerators\XamlGenerator\XamlCodeBehindEmitter.cs" Link="XamlGenerator\XamlCodeBehindEmitter.cs" />
+		<Compile Include="..\Uno.UI.SourceGenerators\XamlGenerator\XamlClassInfo.cs" Link="XamlGenerator\XamlClassInfo.cs" />
+		<Compile Include="..\Uno.UI.SourceGenerators\XamlGenerator\XamlCodeGeneration.Diagnostics.cs" Link="XamlGenerator\XamlCodeGeneration.Diagnostics.cs" />
+	</ItemGroup>
+
+	<!-- Link _Compat files for IsExternalInit (needed for record struct) -->
+	<ItemGroup>
+		<Compile Include="..\..\Uno.Foundation\_Compat\*.cs" Link="_Compat\%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<Target Name="GetTargetPath" />
+	<Target Name="GetCopyToPublishDirectoryItems" />
+</Project>

@@ -19,7 +19,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyDomain.AccountId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyDomain.AccountId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomain", "AccountId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri PlayReadyDomain.DomainJoinUrl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20PlayReadyDomain.DomainJoinUrl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomain", "DomainJoinUrl");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PlayReadyDomain.FriendlyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PlayReadyDomain.FriendlyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomain", "FriendlyName");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PlayReadyDomain.Revision is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PlayReadyDomain.Revision");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomain", "Revision");
 			}
 		}
 #endif
@@ -59,15 +59,15 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyDomain.ServiceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyDomain.ServiceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.PlayReadyDomain", "ServiceId");
 			}
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomain.AccountId.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomain.ServiceId.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomain.Revision.get
-		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomain.FriendlyName.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomain.DomainJoinUrl.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomain.FriendlyName.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomain.Revision.get
+		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomain.ServiceId.get
 		// Processing: Windows.Media.Protection.PlayReady.IPlayReadyDomain
 	}
 }

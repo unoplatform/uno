@@ -15,25 +15,25 @@ namespace Windows.UI.ViewManagement
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsUserInitiated
+		public bool IsAppInitiated
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ApplicationViewConsolidatedEventArgs.IsUserInitiated is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationViewConsolidatedEventArgs.IsUserInitiated");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs", "IsAppInitiated");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsAppInitiated
+		public bool IsUserInitiated
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ApplicationViewConsolidatedEventArgs.IsAppInitiated is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationViewConsolidatedEventArgs.IsAppInitiated");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs", "IsUserInitiated");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs.IsUserInitiated.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs.IsAppInitiated.get
+		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs.IsUserInitiated.get
 	}
 }

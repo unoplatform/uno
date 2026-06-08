@@ -8,55 +8,13 @@ namespace Windows.Devices.Sensors
 #endif
 	public partial class Accelerometer
 	{
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint ReportInterval
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint Accelerometer.ReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Accelerometer.ReportInterval");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Accelerometer", "uint Accelerometer.ReportInterval");
-			}
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint MinimumReportInterval
+		public string DeviceId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Accelerometer.MinimumReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Accelerometer.MinimumReportInterval");
-			}
-		}
-#endif
-#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Display.DisplayOrientations ReadingTransform
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DisplayOrientations Accelerometer.ReadingTransform is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayOrientations%20Accelerometer.ReadingTransform");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Accelerometer", "DisplayOrientations Accelerometer.ReadingTransform");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint ReportLatency
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint Accelerometer.ReportLatency is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Accelerometer.ReportLatency");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Accelerometer", "uint Accelerometer.ReportLatency");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Accelerometer", "DeviceId");
 			}
 		}
 #endif
@@ -66,7 +24,31 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Accelerometer.MaxBatchSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20Accelerometer.MaxBatchSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Accelerometer", "MaxBatchSize");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint MinimumReportInterval
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Accelerometer", "MinimumReportInterval");
+			}
+		}
+#endif
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.Display.DisplayOrientations ReadingTransform
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Accelerometer", "ReadingTransform");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Accelerometer", "ReadingTransform");
 			}
 		}
 #endif
@@ -76,7 +58,35 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AccelerometerReadingType Accelerometer.ReadingType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AccelerometerReadingType%20Accelerometer.ReadingType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Accelerometer", "ReadingType");
+			}
+		}
+#endif
+#if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint ReportInterval
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Accelerometer", "ReportInterval");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Accelerometer", "ReportInterval");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint ReportLatency
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Accelerometer", "ReportLatency");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Accelerometer", "ReportLatency");
 			}
 		}
 #endif
@@ -86,64 +96,54 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AccelerometerDataThreshold Accelerometer.ReportThreshold is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AccelerometerDataThreshold%20Accelerometer.ReportThreshold");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Accelerometer", "ReportThreshold");
 			}
 		}
 #endif
+		// Skipping already declared method Windows.Devices.Sensors.Accelerometer.GetDefault()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DeviceId
+		public static global::Windows.Devices.Sensors.Accelerometer GetDefault(global::Windows.Devices.Sensors.AccelerometerReadingType readingType)
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Accelerometer.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Accelerometer.DeviceId");
-			}
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Accelerometer", "GetDefault(AccelerometerReadingType readingType)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Sensors.AccelerometerReading GetCurrentReading()
-		{
-			throw new global::System.NotImplementedException("The member AccelerometerReading Accelerometer.GetCurrentReading() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AccelerometerReading%20Accelerometer.GetCurrentReading%28%29");
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.MinimumReportInterval.get
-		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.ReportInterval.set
-		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.ReportInterval.get
-		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.ReadingChanged.add
-		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.ReadingChanged.remove
-		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.Shaken.add
-		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.Shaken.remove
-		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.DeviceId.get
-		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.ReadingTransform.set
-		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.ReadingTransform.get
-		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.ReportLatency.set
-		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.ReportLatency.get
-		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.MaxBatchSize.get
-		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.ReadingType.get
-		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.ReportThreshold.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.Accelerometer> FromIdAsync(string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Accelerometer> Accelerometer.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAccelerometer%3E%20Accelerometer.FromIdAsync%28string%20deviceId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Accelerometer", "FromIdAsync(string deviceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector(global::Windows.Devices.Sensors.AccelerometerReadingType readingType)
 		{
-			throw new global::System.NotImplementedException("The member string Accelerometer.GetDeviceSelector(AccelerometerReadingType readingType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Accelerometer.GetDeviceSelector%28AccelerometerReadingType%20readingType%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Accelerometer", "GetDeviceSelector(AccelerometerReadingType readingType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Devices.Sensors.Accelerometer GetDefault(global::Windows.Devices.Sensors.AccelerometerReadingType readingType)
+		public global::Windows.Devices.Sensors.AccelerometerReading GetCurrentReading()
 		{
-			throw new global::System.NotImplementedException("The member Accelerometer Accelerometer.GetDefault(AccelerometerReadingType readingType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Accelerometer%20Accelerometer.GetDefault%28AccelerometerReadingType%20readingType%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Accelerometer", "GetCurrentReading()");
 		}
 #endif
-		// Skipping already declared method Windows.Devices.Sensors.Accelerometer.GetDefault()
+		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.ReadingChanged.add
+		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.ReadingChanged.remove
+		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.Shaken.add
+		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.Shaken.remove
+		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.DeviceId.get
+		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.MaxBatchSize.get
+		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.MinimumReportInterval.get
+		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.ReadingTransform.get
+		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.ReadingTransform.set
+		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.ReadingType.get
+		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.ReportInterval.get
+		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.ReportInterval.set
+		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.ReportLatency.get
+		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.ReportLatency.set
+		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.ReportThreshold.get
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sensors.Accelerometer, global::Windows.Devices.Sensors.AccelerometerReadingChangedEventArgs> ReadingChanged
@@ -151,12 +151,12 @@ namespace Windows.Devices.Sensors
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Accelerometer", "event TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs> Accelerometer.ReadingChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Accelerometer", "event ReadingChanged");
 			}
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Accelerometer", "event TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs> Accelerometer.ReadingChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Accelerometer", "event ReadingChanged");
 			}
 		}
 #endif
@@ -167,12 +167,12 @@ namespace Windows.Devices.Sensors
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Accelerometer", "event TypedEventHandler<Accelerometer, AccelerometerShakenEventArgs> Accelerometer.Shaken");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Accelerometer", "event Shaken");
 			}
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Accelerometer", "event TypedEventHandler<Accelerometer, AccelerometerShakenEventArgs> Accelerometer.Shaken");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.Accelerometer", "event Shaken");
 			}
 		}
 #endif

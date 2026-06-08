@@ -10,29 +10,29 @@ namespace Windows.ApplicationModel.Search
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Enabled
+		public string AqsFilter
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LocalContentSuggestionSettings.Enabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LocalContentSuggestionSettings.Enabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.LocalContentSuggestionSettings", "AqsFilter");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Search.LocalContentSuggestionSettings", "bool LocalContentSuggestionSettings.Enabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Search.LocalContentSuggestionSettings", "AqsFilter");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string AqsFilter
+		public bool Enabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LocalContentSuggestionSettings.AqsFilter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20LocalContentSuggestionSettings.AqsFilter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.LocalContentSuggestionSettings", "Enabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Search.LocalContentSuggestionSettings", "string LocalContentSuggestionSettings.AqsFilter");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Search.LocalContentSuggestionSettings", "Enabled");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<StorageFolder> LocalContentSuggestionSettings.Locations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CStorageFolder%3E%20LocalContentSuggestionSettings.Locations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.LocalContentSuggestionSettings", "Locations");
 			}
 		}
 #endif
@@ -52,7 +52,7 @@ namespace Windows.ApplicationModel.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> LocalContentSuggestionSettings.PropertiesToMatch is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20LocalContentSuggestionSettings.PropertiesToMatch");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Search.LocalContentSuggestionSettings", "PropertiesToMatch");
 			}
 		}
 #endif
@@ -60,15 +60,15 @@ namespace Windows.ApplicationModel.Search
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public LocalContentSuggestionSettings()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Search.LocalContentSuggestionSettings", "LocalContentSuggestionSettings.LocalContentSuggestionSettings()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Search.LocalContentSuggestionSettings", "LocalContentSuggestionSettings()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.LocalContentSuggestionSettings()
-		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.Enabled.set
-		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.Enabled.get
-		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.Locations.get
-		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.AqsFilter.set
 		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.AqsFilter.get
+		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.AqsFilter.set
+		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.Enabled.get
+		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.Enabled.set
+		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.Locations.get
 		// Forced skipping of method Windows.ApplicationModel.Search.LocalContentSuggestionSettings.PropertiesToMatch.get
 	}
 }

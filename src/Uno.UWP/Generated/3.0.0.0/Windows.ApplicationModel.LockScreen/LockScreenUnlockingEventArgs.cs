@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.LockScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset LockScreenUnlockingEventArgs.Deadline is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20LockScreenUnlockingEventArgs.Deadline");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs", "Deadline");
 			}
 		}
 #endif
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.LockScreen
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.LockScreen.LockScreenUnlockingDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member LockScreenUnlockingDeferral LockScreenUnlockingEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LockScreenUnlockingDeferral%20LockScreenUnlockingEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs.Deadline.get

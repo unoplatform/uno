@@ -23,6 +23,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_StackLayout);
 			LayoutId = "StackLayout";
+
+			UpdateIndexBasedLayoutOrientation(Orientation.Vertical);
 		}
 
 		#endregion
@@ -181,13 +183,53 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					MUX_ASSERT(lastRealized != null);
 
-					var firstRealizedMajor = (float)(MajorStart(firstRealizedLayoutBounds) - firstRealizedItemIndex * averageElementSize);
-					// Uno workaround [BEGIN]: Make sure to not move items above the viewport. This can be the case if an items is significantly higher than previous items (will increase the average items size)
-					firstRealizedMajor = Math.Max(0.0f, firstRealizedMajor);
-					// Uno workaround [END]
-					SetMajorStart(ref extent, firstRealizedMajor);
+					// WinUI parity formula for extent.MajorStart (the layout origin) is:
+					//   firstRealizedLayoutBounds.MajorStart - firstRealizedItemIndex * averageElementSize
+					// This subtracts the implied size of the unrealized leading items from the first
+					// realized item's algorithm-Y position. averageElementSize is recomputed each
+					// measure from a 100-slot running mean, so the formula drifts a few pixels
+					// whenever a tall item enters or leaves the buffer. Items' IR-local Y is
+					// (algorithm Y - layout origin Y), so even a small drift in the origin shows up
+					// as items "jumping" during wheel scroll on chat-style lists with high-variance
+					// heights (issue #23042 / studio.live#816).
+					//
+					// Uno workaround: hold the previously-reported MajorStart stable across measure
+					// passes. The Uno SCV doesn't currently consume the IR's m_pendingViewportShift,
+					// so a layout-origin shift here isn't compensated by a matching SCV offset
+					// shift — it surfaces directly as a visual jump. Resetting on
+					// firstRealizedItemIndex == 0 keeps the natural origin=0 at the top of the list;
+					// otherwise the origin is held and any post-MakeAnchor algorithm-coord shift is
+					// absorbed into extent.MajorSize so realized items always fit within the IR's
+					// frame.
+					var formulaMajorStart = (float)(MajorStart(firstRealizedLayoutBounds) - firstRealizedItemIndex * averageElementSize);
+					var hasPrior = !float.IsNaN(stackState.Uno_LastReportedExtentMajorStart);
+					// Also release the stable origin when realized items extend ABOVE it
+					// (firstRealizedLayoutBounds.MajorStart < stable). This catches the wheel-up
+					// scroll cascade where Generate backward places items at negative algorithm-Y
+					// because the previous anchor was positioned at the avg-estimate offset (smaller
+					// than the true cumulative height of items 0..firstIdx-1). Holding stable=0
+					// would leave those items above the IR's frame and the user could not scroll all
+					// the way to the top — VerticalOffset clamps to 0 but the actual first items are
+					// outside the visible range. Shifting to formula re-anchors the origin so items
+					// align with their natural IR-local positions.
+					var itemsAboveStable = hasPrior
+						&& (float)MajorStart(firstRealizedLayoutBounds) < stackState.Uno_LastReportedExtentMajorStart;
+					var useFormula = !hasPrior || firstRealizedItemIndex == 0 || itemsAboveStable;
+					var stableMajorStart = useFormula
+						? formulaMajorStart
+						: stackState.Uno_LastReportedExtentMajorStart;
+					SetMajorStart(ref extent, stableMajorStart);
+
+					// extent.MajorSize spans from the stable origin to the trailing edge of the
+					// realized range, plus the avg-based estimate for trailing unrealized items.
+					// Using the stable (not formula) origin guarantees realized items always sit
+					// within [stable, stable + extent.MajorSize], so they never get clipped by the
+					// IR's frame even when MakeAnchor places anchors far from the natural
+					// firstIdx * averageElementSize position.
 					var remainingItems = itemsCount - lastRealizedItemIndex - 1;
-					SetMajorSize(ref extent, MajorEnd(lastRealizedLayoutBounds) - MajorStart(extent) + (float)(remainingItems * averageElementSize));
+					SetMajorSize(ref extent, MajorEnd(lastRealizedLayoutBounds) - stableMajorStart + (float)(remainingItems * averageElementSize));
+
+					stackState.Uno_LastReportedExtentMajorStart = stableMajorStart;
 				}
 				else
 				{
@@ -328,6 +370,8 @@ namespace Microsoft.UI.Xaml.Controls
 				//Horizontal Orientation means we have a Horizontal ScrollOrientation.
 				ScrollOrientation scrollOrientation = (orientation == Orientation.Horizontal) ? ScrollOrientation.Horizontal : ScrollOrientation.Vertical;
 				ScrollOrientation = scrollOrientation;
+
+				UpdateIndexBasedLayoutOrientation(orientation);
 			}
 			else if (property == SpacingProperty)
 			{
@@ -335,6 +379,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			InvalidateLayout();
+		}
+
+		private void UpdateIndexBasedLayoutOrientation(Orientation orientation)
+		{
+			SetIndexBasedLayoutOrientation(orientation == Orientation.Horizontal ?
+				IndexBasedLayoutOrientation.LeftToRight : IndexBasedLayoutOrientation.TopToBottom);
 		}
 
 		#region private helpers

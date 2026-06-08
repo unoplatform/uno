@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MobileBroadbandAccountUpdatedEventArgs.HasDeviceInformationChanged is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MobileBroadbandAccountUpdatedEventArgs.HasDeviceInformationChanged");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandAccountUpdatedEventArgs", "HasDeviceInformationChanged");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MobileBroadbandAccountUpdatedEventArgs.HasNetworkChanged is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MobileBroadbandAccountUpdatedEventArgs.HasNetworkChanged");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandAccountUpdatedEventArgs", "HasNetworkChanged");
 			}
 		}
 #endif
@@ -39,12 +39,12 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MobileBroadbandAccountUpdatedEventArgs.NetworkAccountId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MobileBroadbandAccountUpdatedEventArgs.NetworkAccountId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandAccountUpdatedEventArgs", "NetworkAccountId");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountUpdatedEventArgs.NetworkAccountId.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountUpdatedEventArgs.HasDeviceInformationChanged.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountUpdatedEventArgs.HasNetworkChanged.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccountUpdatedEventArgs.NetworkAccountId.get
 	}
 }

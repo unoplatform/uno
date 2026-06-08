@@ -15,15 +15,11 @@ namespace Windows.UI.ViewManagement.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool TransferHandled
+		public global::Windows.UI.ViewManagement.Core.CoreInputViewXYFocusTransferDirection Direction
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreInputViewTransferringXYFocusEventArgs.TransferHandled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreInputViewTransferringXYFocusEventArgs.TransferHandled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "bool CoreInputViewTransferringXYFocusEventArgs.TransferHandled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "Direction");
 			}
 		}
 #endif
@@ -33,21 +29,11 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreInputViewTransferringXYFocusEventArgs.KeepPrimaryViewVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreInputViewTransferringXYFocusEventArgs.KeepPrimaryViewVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "KeepPrimaryViewVisible");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "bool CoreInputViewTransferringXYFocusEventArgs.KeepPrimaryViewVisible");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.ViewManagement.Core.CoreInputViewXYFocusTransferDirection Direction
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreInputViewXYFocusTransferDirection CoreInputViewTransferringXYFocusEventArgs.Direction is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreInputViewXYFocusTransferDirection%20CoreInputViewTransferringXYFocusEventArgs.Direction");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "KeepPrimaryViewVisible");
 			}
 		}
 #endif
@@ -57,15 +43,29 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect CoreInputViewTransferringXYFocusEventArgs.Origin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20CoreInputViewTransferringXYFocusEventArgs.Origin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "Origin");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.Origin.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool TransferHandled
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "TransferHandled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs", "TransferHandled");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.Direction.get
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.TransferHandled.set
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.TransferHandled.get
-		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.KeepPrimaryViewVisible.set
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.KeepPrimaryViewVisible.get
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.KeepPrimaryViewVisible.set
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.Origin.get
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.TransferHandled.get
+		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputViewTransferringXYFocusEventArgs.TransferHandled.set
 	}
 }

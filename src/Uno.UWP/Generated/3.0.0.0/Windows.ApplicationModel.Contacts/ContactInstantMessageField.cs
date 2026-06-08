@@ -14,37 +14,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactFieldCategory ContactInstantMessageField.Category is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactFieldCategory%20ContactInstantMessageField.Category");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Name
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ContactInstantMessageField.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactInstantMessageField.Name");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Contacts.ContactFieldType Type
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ContactFieldType ContactInstantMessageField.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactFieldType%20ContactInstantMessageField.Type");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Value
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ContactInstantMessageField.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactInstantMessageField.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInstantMessageField", "Category");
 			}
 		}
 #endif
@@ -54,7 +24,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactInstantMessageField.DisplayText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactInstantMessageField.DisplayText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInstantMessageField", "DisplayText");
 			}
 		}
 #endif
@@ -64,7 +34,17 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri ContactInstantMessageField.LaunchUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20ContactInstantMessageField.LaunchUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInstantMessageField", "LaunchUri");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Name
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInstantMessageField", "Name");
 			}
 		}
 #endif
@@ -74,7 +54,17 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactInstantMessageField.Service is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactInstantMessageField.Service");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInstantMessageField", "Service");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.Contacts.ContactFieldType Type
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInstantMessageField", "Type");
 			}
 		}
 #endif
@@ -84,7 +74,17 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactInstantMessageField.UserName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactInstantMessageField.UserName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInstantMessageField", "UserName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Value
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactInstantMessageField", "Value");
 			}
 		}
 #endif
@@ -92,7 +92,7 @@ namespace Windows.ApplicationModel.Contacts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ContactInstantMessageField(string userName)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactInstantMessageField", "ContactInstantMessageField.ContactInstantMessageField(string userName)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactInstantMessageField", "ContactInstantMessageField(string userName)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.ContactInstantMessageField(string)
@@ -100,7 +100,7 @@ namespace Windows.ApplicationModel.Contacts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ContactInstantMessageField(string userName, global::Windows.ApplicationModel.Contacts.ContactFieldCategory category)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactInstantMessageField", "ContactInstantMessageField.ContactInstantMessageField(string userName, ContactFieldCategory category)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactInstantMessageField", "ContactInstantMessageField(string userName, ContactFieldCategory category)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.ContactInstantMessageField(string, Windows.ApplicationModel.Contacts.ContactFieldCategory)
@@ -108,17 +108,17 @@ namespace Windows.ApplicationModel.Contacts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ContactInstantMessageField(string userName, global::Windows.ApplicationModel.Contacts.ContactFieldCategory category, string service, string displayText, global::System.Uri verb)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactInstantMessageField", "ContactInstantMessageField.ContactInstantMessageField(string userName, ContactFieldCategory category, string service, string displayText, Uri verb)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactInstantMessageField", "ContactInstantMessageField(string userName, ContactFieldCategory category, string service, string displayText, Uri verb)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.ContactInstantMessageField(string, Windows.ApplicationModel.Contacts.ContactFieldCategory, string, string, System.Uri)
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.UserName.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.Service.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.Category.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.DisplayText.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.LaunchUri.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.Type.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.Category.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.Name.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.Service.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.Type.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.UserName.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInstantMessageField.Value.get
 		// Processing: Windows.ApplicationModel.Contacts.IContactField
 	}

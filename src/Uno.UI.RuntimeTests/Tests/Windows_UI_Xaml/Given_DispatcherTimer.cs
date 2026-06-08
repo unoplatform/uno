@@ -13,6 +13,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 public class Given_DispatcherTimer
 {
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // https://github.com/unoplatform/uno/issues/22862
 	public async Task When_No_Interval_Set()
 	{
 		var dispatcherTimer = new DispatcherTimer();
@@ -61,7 +62,7 @@ public class Given_DispatcherTimer
 
 			// The second tick must be scheduled only after the first one finishes completely -
 			// around 200ms must have elapsed on the stopwatch.
-			Assert.IsTrue(stopwatch.ElapsedMilliseconds >= 180);
+			Assert.IsGreaterThanOrEqualTo(180, stopwatch.ElapsedMilliseconds);
 		}
 		finally
 		{
@@ -70,6 +71,7 @@ public class Given_DispatcherTimer
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // https://github.com/unoplatform/uno/issues/22862
 	public async Task When_Change_Interval_Higher()
 	{
 		var dispatcherTimer = new DispatcherTimer();
@@ -90,7 +92,7 @@ public class Given_DispatcherTimer
 			await TestServices.WindowHelper.WaitFor(() => !dispatcherTimer.IsEnabled);
 			// We increased the interval to 600ms after about 100ms elapsed, so the next tick should be scheduled
 			// around 500ms after stopwatch started.
-			Assert.IsTrue(stopwatch.ElapsedMilliseconds >= 400);
+			Assert.IsGreaterThanOrEqualTo(400, stopwatch.ElapsedMilliseconds);
 		}
 		finally
 		{
@@ -99,6 +101,7 @@ public class Given_DispatcherTimer
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Exception_In_Tick()
 	{
 		var dispatcherTimer = new DispatcherTimer();

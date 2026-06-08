@@ -10,29 +10,29 @@ namespace Windows.Storage.Search
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object Value
+		public string Language
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object ValueAndLanguage.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ValueAndLanguage.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ValueAndLanguage", "Language");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.ValueAndLanguage", "object ValueAndLanguage.Value");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.ValueAndLanguage", "Language");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Language
+		public object Value
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ValueAndLanguage.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ValueAndLanguage.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.ValueAndLanguage", "Value");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.ValueAndLanguage", "string ValueAndLanguage.Language");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.ValueAndLanguage", "Value");
 			}
 		}
 #endif
@@ -40,7 +40,7 @@ namespace Windows.Storage.Search
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ValueAndLanguage()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.ValueAndLanguage", "ValueAndLanguage.ValueAndLanguage()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.ValueAndLanguage", "ValueAndLanguage()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Search.ValueAndLanguage.ValueAndLanguage()

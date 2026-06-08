@@ -8,48 +8,48 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class DatePickerFlyoutItem : global::Microsoft.UI.Xaml.DependencyObject, global::Microsoft.UI.Xaml.Data.ICustomPropertyProvider
 	{
-		// Skipping already declared property SecondaryText
+		// Skipping already declared property PrimaryTextProperty
+		// Skipping already declared property SecondaryTextProperty
 		// Skipping already declared property PrimaryText
+		// Skipping already declared property SecondaryText
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Type Type
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Type DatePickerFlyoutItem.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Type%20DatePickerFlyoutItem.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem", "Type");
 			}
 		}
 #endif
-		// Skipping already declared property PrimaryTextProperty
-		// Skipping already declared property SecondaryTextProperty
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.PrimaryText.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.PrimaryText.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.SecondaryText.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.SecondaryText.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.PrimaryTextProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.SecondaryTextProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Data.ICustomProperty GetCustomProperty(string name)
 		{
-			throw new global::System.NotImplementedException("The member ICustomProperty DatePickerFlyoutItem.GetCustomProperty(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICustomProperty%20DatePickerFlyoutItem.GetCustomProperty%28string%20name%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem", "GetCustomProperty(string name)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Data.ICustomProperty GetIndexedProperty(string name, global::System.Type type)
 		{
-			throw new global::System.NotImplementedException("The member ICustomProperty DatePickerFlyoutItem.GetIndexedProperty(string name, Type type) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICustomProperty%20DatePickerFlyoutItem.GetIndexedProperty%28string%20name%2C%20Type%20type%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem", "GetIndexedProperty(string name, Type type)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string GetStringRepresentation()
 		{
-			throw new global::System.NotImplementedException("The member string DatePickerFlyoutItem.GetStringRepresentation() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DatePickerFlyoutItem.GetStringRepresentation%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem", "GetStringRepresentation()");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.PrimaryText.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.PrimaryText.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.SecondaryText.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.SecondaryText.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.Type.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.PrimaryTextProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem.SecondaryTextProperty.get
 		// Processing: Microsoft.UI.Xaml.Data.ICustomPropertyProvider
 	}
 }

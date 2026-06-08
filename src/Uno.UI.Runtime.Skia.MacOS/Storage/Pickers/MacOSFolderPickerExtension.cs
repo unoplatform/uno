@@ -3,6 +3,7 @@ using Windows.Storage.Pickers;
 
 using Uno.Foundation.Extensibility;
 using Uno.Extensions.Storage.Pickers;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
@@ -40,7 +41,29 @@ internal class MacOSFolderPickerExtension : IFolderPickerExtension
 
 	public async Task<StorageFolder?> PickSingleFolderAsync(CancellationToken token)
 	{
-		var folder = NativeUno.uno_pick_single_folder(_prompt, _identifier, (int)_suggestedStartLocation);
+		// Always Enqueue — running NSOpenPanel.runModal reentrantly from an in-flight
+		// pointer handler crashes InputManager and corrupts return state. See
+		// MacOSFileOpenPickerExtension.PickMultipleFilesAsync for full context.
+		var tcs = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
+		using var registration = token.CanBeCanceled ? token.Register(() => tcs.TrySetCanceled(token)) : default;
+		NativeDispatcher.Main.Enqueue(() =>
+		{
+			if (token.IsCancellationRequested)
+			{
+				tcs.TrySetCanceled(token);
+				return;
+			}
+			try
+			{
+				tcs.TrySetResult(NativeUno.uno_pick_single_folder(_prompt, _identifier, (int)_suggestedStartLocation));
+			}
+			catch (Exception ex)
+			{
+				tcs.TrySetException(ex);
+			}
+		});
+		var folder = await tcs.Task;
+
 		return folder is null ? null : await StorageFolder.GetFolderFromPathAsync(folder);
 	}
 }

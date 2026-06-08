@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect CandidateWindowBoundsChangedEventArgs.Bounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20CandidateWindowBoundsChangedEventArgs.Bounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.CandidateWindowBoundsChangedEventArgs", "Bounds");
 			}
 		}
 #endif

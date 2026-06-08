@@ -10,25 +10,25 @@ namespace Windows.UI.ViewManagement
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int ViewId
+		public static string DataPackageFormatId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ApplicationViewTransferContext.ViewId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ApplicationViewTransferContext.ViewId");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationViewTransferContext", "int ApplicationViewTransferContext.ViewId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationViewTransferContext", "DataPackageFormatId");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string DataPackageFormatId
+		public int ViewId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ApplicationViewTransferContext.DataPackageFormatId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ApplicationViewTransferContext.DataPackageFormatId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.ApplicationViewTransferContext", "ViewId");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationViewTransferContext", "ViewId");
 			}
 		}
 #endif
@@ -36,12 +36,12 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ApplicationViewTransferContext()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationViewTransferContext", "ApplicationViewTransferContext.ApplicationViewTransferContext()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationViewTransferContext", "ApplicationViewTransferContext()");
 		}
 #endif
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.ApplicationViewTransferContext()
+		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.DataPackageFormatId.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.ViewId.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.ViewId.set
-		// Forced skipping of method Windows.UI.ViewManagement.ApplicationViewTransferContext.DataPackageFormatId.get
 	}
 }

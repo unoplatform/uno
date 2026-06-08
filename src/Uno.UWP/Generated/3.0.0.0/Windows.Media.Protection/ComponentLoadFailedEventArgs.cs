@@ -19,7 +19,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaProtectionServiceCompletion ComponentLoadFailedEventArgs.Completion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaProtectionServiceCompletion%20ComponentLoadFailedEventArgs.Completion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.ComponentLoadFailedEventArgs", "Completion");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RevocationAndRenewalInformation ComponentLoadFailedEventArgs.Information is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RevocationAndRenewalInformation%20ComponentLoadFailedEventArgs.Information");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.ComponentLoadFailedEventArgs", "Information");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Protection.ComponentLoadFailedEventArgs.Information.get
 		// Forced skipping of method Windows.Media.Protection.ComponentLoadFailedEventArgs.Completion.get
+		// Forced skipping of method Windows.Media.Protection.ComponentLoadFailedEventArgs.Information.get
 	}
 }

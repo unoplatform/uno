@@ -19,7 +19,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect PdfPageDimensions.ArtBox is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20PdfPageDimensions.ArtBox");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPageDimensions", "ArtBox");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect PdfPageDimensions.BleedBox is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20PdfPageDimensions.BleedBox");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPageDimensions", "BleedBox");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect PdfPageDimensions.CropBox is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20PdfPageDimensions.CropBox");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPageDimensions", "CropBox");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect PdfPageDimensions.MediaBox is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20PdfPageDimensions.MediaBox");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPageDimensions", "MediaBox");
 			}
 		}
 #endif
@@ -59,14 +59,14 @@ namespace Windows.Data.Pdf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect PdfPageDimensions.TrimBox is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20PdfPageDimensions.TrimBox");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Pdf.PdfPageDimensions", "TrimBox");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.MediaBox.get
-		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.CropBox.get
-		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.BleedBox.get
-		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.TrimBox.get
 		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.ArtBox.get
+		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.BleedBox.get
+		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.CropBox.get
+		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.MediaBox.get
+		// Forced skipping of method Windows.Data.Pdf.PdfPageDimensions.TrimBox.get
 	}
 }

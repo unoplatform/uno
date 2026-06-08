@@ -19,11 +19,11 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer HidOutputReport.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20HidOutputReport.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidOutputReport", "Data");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.HumanInterfaceDevice.HidOutputReport", "IBuffer HidOutputReport.Data");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.HumanInterfaceDevice.HidOutputReport", "Data");
 			}
 		}
 #endif
@@ -33,40 +33,40 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort HidOutputReport.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20HidOutputReport.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidOutputReport", "Id");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidOutputReport.Id.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidOutputReport.Data.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidOutputReport.Data.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.HumanInterfaceDevice.HidBooleanControl GetBooleanControl(ushort usagePage, ushort usageId)
 		{
-			throw new global::System.NotImplementedException("The member HidBooleanControl HidOutputReport.GetBooleanControl(ushort usagePage, ushort usageId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HidBooleanControl%20HidOutputReport.GetBooleanControl%28ushort%20usagePage%2C%20ushort%20usageId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidOutputReport", "GetBooleanControl(ushort usagePage, ushort usageId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.HumanInterfaceDevice.HidBooleanControl GetBooleanControlByDescription(global::Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription controlDescription)
 		{
-			throw new global::System.NotImplementedException("The member HidBooleanControl HidOutputReport.GetBooleanControlByDescription(HidBooleanControlDescription controlDescription) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HidBooleanControl%20HidOutputReport.GetBooleanControlByDescription%28HidBooleanControlDescription%20controlDescription%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidOutputReport", "GetBooleanControlByDescription(HidBooleanControlDescription controlDescription)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.HumanInterfaceDevice.HidNumericControl GetNumericControl(ushort usagePage, ushort usageId)
 		{
-			throw new global::System.NotImplementedException("The member HidNumericControl HidOutputReport.GetNumericControl(ushort usagePage, ushort usageId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HidNumericControl%20HidOutputReport.GetNumericControl%28ushort%20usagePage%2C%20ushort%20usageId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidOutputReport", "GetNumericControl(ushort usagePage, ushort usageId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.HumanInterfaceDevice.HidNumericControl GetNumericControlByDescription(global::Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription controlDescription)
 		{
-			throw new global::System.NotImplementedException("The member HidNumericControl HidOutputReport.GetNumericControlByDescription(HidNumericControlDescription controlDescription) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HidNumericControl%20HidOutputReport.GetNumericControlByDescription%28HidNumericControlDescription%20controlDescription%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidOutputReport", "GetNumericControlByDescription(HidNumericControlDescription controlDescription)");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidOutputReport.Data.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidOutputReport.Data.set
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidOutputReport.Id.get
 	}
 }

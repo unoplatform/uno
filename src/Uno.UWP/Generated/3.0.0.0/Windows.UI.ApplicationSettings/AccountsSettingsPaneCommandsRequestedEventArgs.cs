@@ -15,25 +15,11 @@ namespace Windows.UI.ApplicationSettings
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string HeaderText
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AccountsSettingsPaneCommandsRequestedEventArgs.HeaderText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AccountsSettingsPaneCommandsRequestedEventArgs.HeaderText");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "string AccountsSettingsPaneCommandsRequestedEventArgs.HeaderText");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.UI.ApplicationSettings.SettingsCommand> Commands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<SettingsCommand> AccountsSettingsPaneCommandsRequestedEventArgs.Commands is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CSettingsCommand%3E%20AccountsSettingsPaneCommandsRequestedEventArgs.Commands");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "Commands");
 			}
 		}
 #endif
@@ -43,27 +29,21 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<CredentialCommand> AccountsSettingsPaneCommandsRequestedEventArgs.CredentialCommands is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CCredentialCommand%3E%20AccountsSettingsPaneCommandsRequestedEventArgs.CredentialCommands");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "CredentialCommands");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.UI.ApplicationSettings.WebAccountCommand> WebAccountCommands
+		public string HeaderText
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<WebAccountCommand> AccountsSettingsPaneCommandsRequestedEventArgs.WebAccountCommands is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CWebAccountCommand%3E%20AccountsSettingsPaneCommandsRequestedEventArgs.WebAccountCommands");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "HeaderText");
 			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.UI.ApplicationSettings.WebAccountProviderCommand> WebAccountProviderCommands
-		{
-			get
+			set
 			{
-				throw new global::System.NotImplementedException("The member IList<WebAccountProviderCommand> AccountsSettingsPaneCommandsRequestedEventArgs.WebAccountProviderCommands is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CWebAccountProviderCommand%3E%20AccountsSettingsPaneCommandsRequestedEventArgs.WebAccountProviderCommands");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "HeaderText");
 			}
 		}
 #endif
@@ -73,23 +53,43 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User AccountsSettingsPaneCommandsRequestedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20AccountsSettingsPaneCommandsRequestedEventArgs.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "User");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.WebAccountProviderCommands.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.WebAccountCommands.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.CredentialCommands.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.Commands.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.HeaderText.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.HeaderText.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IList<global::Windows.UI.ApplicationSettings.WebAccountCommand> WebAccountCommands
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "WebAccountCommands");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IList<global::Windows.UI.ApplicationSettings.WebAccountProviderCommand> WebAccountProviderCommands
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "WebAccountProviderCommands");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.ApplicationSettings.AccountsSettingsPaneEventDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member AccountsSettingsPaneEventDeferral AccountsSettingsPaneCommandsRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AccountsSettingsPaneEventDeferral%20AccountsSettingsPaneCommandsRequestedEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs", "GetDeferral()");
 		}
 #endif
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.Commands.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.CredentialCommands.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.HeaderText.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.HeaderText.set
 		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.User.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.WebAccountCommands.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.WebAccountProviderCommands.get
 	}
 }

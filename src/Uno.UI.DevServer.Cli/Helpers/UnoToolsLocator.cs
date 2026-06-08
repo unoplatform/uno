@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -6,12 +6,294 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using Uno.UI.RemoteControl.Host;
 
 namespace Uno.UI.DevServer.Cli.Helpers;
 
-internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger)
+internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInResolver? addInResolver = null)
 {
 	private readonly ILogger<UnoToolsLocator> _logger = logger;
+	private readonly TargetsAddInResolver? _addInResolver = addInResolver;
+	private string? _workDirectory;
+
+	public async Task<DiscoveryInfo> DiscoverAsync(string workDirectory)
+		=> await DiscoverAsync(workDirectory, null);
+
+	public async Task<DiscoveryInfo> DiscoverAsync(string workDirectory, WorkspaceResolution? workspaceResolution)
+	{
+		var discoveryStopwatch = Stopwatch.StartNew();
+
+		var normalizedWorkDirectory = Path.GetFullPath(workDirectory);
+		workspaceResolution ??= new WorkspaceResolution
+		{
+			RequestedWorkingDirectory = normalizedWorkDirectory,
+			EffectiveWorkspaceDirectory = normalizedWorkDirectory,
+			ResolutionKind = WorkspaceResolutionKind.CurrentDirectory,
+			CandidateSolutions = SolutionFileFinder.FindSolutionFiles(normalizedWorkDirectory),
+		};
+
+		if (!workspaceResolution.IsResolved)
+		{
+			discoveryStopwatch.Stop();
+			return new DiscoveryInfo
+			{
+				RequestedWorkingDirectory = workspaceResolution.RequestedWorkingDirectory,
+				WorkingDirectory = workspaceResolution.RequestedWorkingDirectory,
+				EffectiveWorkspaceDirectory = workspaceResolution.EffectiveWorkspaceDirectory,
+				SelectedSolutionPath = workspaceResolution.SelectedSolutionPath,
+				SelectedGlobalJsonPath = workspaceResolution.SelectedGlobalJsonPath,
+				ResolutionKind = workspaceResolution.ResolutionKind,
+				SelectionSource = workspaceResolution.SelectionSource,
+				CandidateSolutions = workspaceResolution.CandidateSolutions,
+				DiscoveryDurationMs = discoveryStopwatch.ElapsedMilliseconds,
+				Errors = workspaceResolution.ResolutionKind == WorkspaceResolutionKind.NoCandidates
+					? []
+					: ["Workspace could not be resolved."],
+			};
+		}
+
+		workDirectory = workspaceResolution.EffectiveWorkspaceDirectory!;
+		_workDirectory = workDirectory;
+		string? globalJsonPath = null;
+		string? unoSdkSource = null;
+		string? unoSdkSourcePath = null;
+		string? unoSdkPackage = null;
+		string? unoSdkVersion = null;
+		string? unoSdkPath = null;
+		string? packagesJsonPath = null;
+		string? devServerPackageVersion = null;
+		string? devServerPackagePath = null;
+		string? settingsPackageVersion = null;
+		string? settingsPackagePath = null;
+		string? dotNetVersion = null;
+		string? dotNetTfm = null;
+		string? hostPath = null;
+		string? settingsPath = null;
+		var warnings = new List<string>();
+		var errors = new List<string>();
+
+		var globalJsonResult = await GlobalJsonLocator.ParseGlobalJsonForUnoSdkAsync(workDirectory, _logger);
+		globalJsonPath = globalJsonResult.globalJsonPath;
+		unoSdkPackage = globalJsonResult.sdkPackage;
+		unoSdkVersion = globalJsonResult.sdkVersion;
+		if (globalJsonPath is not null)
+		{
+			unoSdkSource = "global.json";
+			unoSdkSourcePath = globalJsonPath;
+		}
+
+		if (globalJsonResult.globalJsonPath is null)
+		{
+			errors.Add("No global.json found in current directory or parent directories.");
+		}
+		else if (unoSdkPackage is null || unoSdkVersion is null)
+		{
+			errors.Add("global.json does not define Uno.Sdk or Uno.Sdk.Private in msbuild-sdks.");
+		}
+
+		if (!string.IsNullOrWhiteSpace(unoSdkPackage) && !string.IsNullOrWhiteSpace(unoSdkVersion))
+		{
+			unoSdkPath = await EnsureNugetPackage(unoSdkPackage, unoSdkVersion, tryInstall: false);
+			if (unoSdkPath is null)
+			{
+				errors.Add($"Uno SDK package not found in NuGet cache: {unoSdkPackage} {unoSdkVersion}.");
+			}
+		}
+
+		if (!string.IsNullOrWhiteSpace(unoSdkPath))
+		{
+			packagesJsonPath = Path.Combine(unoSdkPath, "targets", "netstandard2.0", "packages.json");
+			if (!File.Exists(packagesJsonPath))
+			{
+				errors.Add($"packages.json not found at {packagesJsonPath}.");
+				packagesJsonPath = null;
+			}
+		}
+
+		devServerPackageVersion = unoSdkPath is null
+			? null
+			: await GetDevServerPackageVersion(unoSdkPath);
+		if (unoSdkPath is not null && devServerPackageVersion is null)
+		{
+			errors.Add("Uno.WinUI.DevServer version not found in packages.json.");
+		}
+
+		settingsPackageVersion = unoSdkPath is null
+			? null
+			: await GetSettingsPackageVersion(unoSdkPath);
+		if (unoSdkPath is not null && settingsPackageVersion is null)
+		{
+			warnings.Add("uno.settings.devserver version not found in packages.json.");
+		}
+
+		if (!string.IsNullOrWhiteSpace(devServerPackageVersion))
+		{
+			devServerPackagePath = await EnsureNugetPackage("Uno.WinUI.DevServer", devServerPackageVersion, tryInstall: false);
+			if (devServerPackagePath is null)
+			{
+				errors.Add($"Uno.WinUI.DevServer not found in NuGet cache: {devServerPackageVersion}.");
+			}
+		}
+
+		if (!string.IsNullOrWhiteSpace(settingsPackageVersion))
+		{
+			settingsPackagePath = await EnsureNugetPackage("uno.settings.devserver", settingsPackageVersion, tryInstall: false);
+			if (settingsPackagePath is null)
+			{
+				warnings.Add($"uno.settings.devserver not found in NuGet cache: {settingsPackageVersion}.");
+			}
+		}
+
+		var dotnetInfo = await TryGetDotNetVersionInfo(logErrors: false, globalJsonPath: globalJsonPath);
+		dotNetVersion = dotnetInfo.rawVersion;
+		dotNetTfm = dotnetInfo.tfm;
+		if (dotNetVersion is null)
+		{
+			errors.Add("Unable to determine dotnet --version.");
+		}
+
+		var hostRequiresMajorRollForward = false;
+		if (!string.IsNullOrWhiteSpace(devServerPackagePath) && !string.IsNullOrWhiteSpace(dotNetTfm))
+		{
+			// Uses the same resolver as ResolveHostExecutableAsync so the two entry points
+			// never disagree about whether a host is available (the old exact-TFM probe here
+			// would return null even when the fallback resolver found a compatible binary,
+			// which misled MCP / doctor diagnostics and DevServerMonitor).
+			var plan = TryResolveHostLaunchPlan(devServerPackagePath!, dotNetTfm!);
+			if (plan is not null)
+			{
+				hostPath = plan.HostPath;
+				hostRequiresMajorRollForward = plan.RequiresMajorRollForward;
+			}
+			else
+			{
+				var available = EnumerateHostTfms(Path.Combine(devServerPackagePath!, "tools", "rc", "host"));
+				errors.Add(available.Length == 0
+					? "DevServer host not found in package at expected paths."
+					: $"DevServer host not found in package: no compatible TFM available for {dotNetTfm} (present: {string.Join(", ", available)}).");
+			}
+		}
+
+		if (!string.IsNullOrWhiteSpace(settingsPackagePath))
+		{
+			var settingsPathCandidate = Path.Combine(settingsPackagePath, "tools", "manager", "Uno.Settings.dll");
+			if (File.Exists(settingsPathCandidate))
+			{
+				settingsPath = settingsPathCandidate;
+			}
+			else
+			{
+				warnings.Add("Settings application not found in package at expected path.");
+			}
+		}
+
+		// Convention-based add-in discovery
+		var resolvedAddIns = new List<ResolvedAddIn>();
+		string? addInsDiscoveryMethod = null;
+		long addInsDiscoveryDurationMs = 0;
+		bool addInDiscoveryFailed = false;
+
+		if (_addInResolver is not null && packagesJsonPath is not null)
+		{
+			var addInStopwatch = Stopwatch.StartNew();
+			try
+			{
+				var projectAssetsFiles = ProjectAssetsParser.FindProjectAssetsFiles(workDirectory, _logger);
+				resolvedAddIns = _addInResolver.ResolveAddIns(packagesJsonPath, projectAssetsFiles, NuGetCacheHelper.GetNuGetCachePaths(workDirectory));
+				addInsDiscoveryMethod = resolvedAddIns.Count > 0
+					? string.Join("+", resolvedAddIns.Select(a => a.DiscoverySource).Distinct())
+					: null;
+			}
+			catch (Exception ex)
+			{
+				addInDiscoveryFailed = true;
+				warnings.Add($"Convention-based add-in discovery failed: {ex.Message}");
+			}
+			addInsDiscoveryDurationMs = addInStopwatch.ElapsedMilliseconds;
+		}
+
+		// Lookup active DevServers via AmbientRegistry
+		// Show all servers on this machine, with IsInWorkspace flag for matching solution or directory.
+		var activeServers = new List<ActiveServerInfo>();
+		try
+		{
+			var localSolutions = Directory.EnumerateFiles(workDirectory, "*.sln")
+				.Concat(Directory.EnumerateFiles(workDirectory, "*.slnx"))
+				.Select(f => Path.GetFullPath(f))
+				.ToHashSet(StringComparer.OrdinalIgnoreCase);
+			var workDirFull = Path.GetFullPath(workDirectory);
+
+			var ambient = new AmbientRegistry(NullLogger.Instance);
+			activeServers = ambient.GetActiveDevServers()
+				.Where(s => s.MachineName == Environment.MachineName && s.UserName == Environment.UserName)
+				.Select(s =>
+				{
+					var isInWorkspace = IsServerLocal(s.SolutionPath, localSolutions, workDirFull);
+					return new ActiveServerInfo
+					{
+						ProcessId = s.ProcessId,
+						Port = s.Port,
+						McpEndpoint = $"http://localhost:{s.Port}/mcp",
+						ParentProcessId = s.ParentProcessId,
+						StartTime = s.StartTime,
+						IdeChannelId = s.IdeChannelId,
+						SolutionPath = s.SolutionPath,
+						ProcessChain = ambient.GetProcessChain(s)
+							.Select(node => new ProcessChainEntry
+							{
+								ProcessId = node.ProcessId,
+								ProcessName = node.ProcessName,
+							})
+							.ToList(),
+						IsInWorkspace = isInWorkspace,
+					};
+				})
+				.ToList();
+		}
+		catch (Exception ex)
+		{
+			_logger.LogDebug(ex, "AmbientRegistry lookup failed");
+		}
+
+		discoveryStopwatch.Stop();
+
+		return new DiscoveryInfo
+		{
+			RequestedWorkingDirectory = workspaceResolution.RequestedWorkingDirectory,
+			WorkingDirectory = workDirectory,
+			EffectiveWorkspaceDirectory = workspaceResolution.EffectiveWorkspaceDirectory,
+			SelectedSolutionPath = workspaceResolution.SelectedSolutionPath,
+			SelectedGlobalJsonPath = workspaceResolution.SelectedGlobalJsonPath,
+			ResolutionKind = workspaceResolution.ResolutionKind,
+			SelectionSource = workspaceResolution.SelectionSource,
+			CandidateSolutions = workspaceResolution.CandidateSolutions,
+			DiscoveryDurationMs = discoveryStopwatch.ElapsedMilliseconds,
+			GlobalJsonPath = globalJsonPath,
+			UnoSdkSource = unoSdkSource,
+			UnoSdkSourcePath = unoSdkSourcePath,
+			UnoSdkPackage = unoSdkPackage,
+			UnoSdkVersion = unoSdkVersion,
+			UnoSdkPath = unoSdkPath,
+			PackagesJsonPath = packagesJsonPath,
+			DevServerPackageVersion = devServerPackageVersion,
+			DevServerPackagePath = devServerPackagePath,
+			SettingsPackageVersion = settingsPackageVersion,
+			SettingsPackagePath = settingsPackagePath,
+			DotNetVersion = dotNetVersion,
+			DotNetTfm = dotNetTfm,
+			HostPath = hostPath,
+			HostRequiresMajorRollForward = hostRequiresMajorRollForward,
+			SettingsPath = settingsPath,
+			AddIns = resolvedAddIns,
+			AddInsDiscoveryMethod = addInsDiscoveryMethod,
+			AddInsDiscoveryDurationMs = addInsDiscoveryDurationMs,
+			AddInDiscoveryFailed = addInDiscoveryFailed,
+			ActiveServers = activeServers,
+			Warnings = warnings,
+			Errors = errors
+		};
+	}
 
 	public async Task<string?> ResolveSettingsExecutableAsync(string workDirectory)
 	{
@@ -45,7 +327,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger)
 		return studioPath;
 	}
 
-	public async Task<string?> ResolveHostExecutableAsync(string workDirectory)
+	public async Task<HostLaunchPlan?> ResolveHostExecutableAsync(string workDirectory)
 	{
 		var sdkVersion = await GetSdkVersionFromGlobalJson(workDirectory);
 		if (sdkVersion.sdkVersion == null || sdkVersion.sdkPackage == null)
@@ -63,75 +345,37 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger)
 		}
 		_logger.LogDebug("Found Uno SDK: {UnoSdkPath}", unoSdkPath);
 
-		var hostPath = await GetHostExecutable(unoSdkPath);
-		if (hostPath is null)
+		var plan = await GetHostLaunchPlan(unoSdkPath);
+		if (plan is null)
 		{
 			_logger.LogError("Could not determine DevServer host executable path.");
 			return null;
 		}
-		return hostPath;
-	}
-
-	private static string? FindGlobalJson(string startPath)
-	{
-		var currentPath = startPath;
-		while (currentPath != null)
-		{
-			var globalJsonPath = Path.Combine(currentPath, "global.json");
-			if (File.Exists(globalJsonPath))
-			{
-				return globalJsonPath;
-			}
-
-			var parent = Directory.GetParent(currentPath);
-			currentPath = parent?.FullName;
-		}
-
-		return null;
+		return plan;
 	}
 
 	private async Task<(string? sdkPackage, string? sdkVersion)> GetSdkVersionFromGlobalJson(string searchDirectory)
 	{
-		try
+		var result = await ParseGlobalJsonForUnoSdk(searchDirectory);
+		if (result.globalJsonPath is null)
 		{
-			var globalJsonPath = FindGlobalJson(searchDirectory);
-			if (globalJsonPath is null)
-			{
-				_logger.LogError("No global.json found in current directory or parent directories. Please run this command from within a project that uses Uno SDK.");
-				return (null, null);
-			}
-
-			_logger.LogDebug("Found global.json: {GlobalJsonPath}", globalJsonPath);
-
-			var content = await File.ReadAllTextAsync(globalJsonPath);
-			using var document = JsonDocument.Parse(
-				content,
-				new()
-				{
-					CommentHandling = JsonCommentHandling.Skip,
-					AllowTrailingCommas = true
-				});
-
-			if (document.RootElement.TryGetProperty("msbuild-sdks", out var sdksElement))
-			{
-				if (sdksElement.TryGetProperty("Uno.Sdk", out var unoSdkElement))
-				{
-					return ("Uno.Sdk", unoSdkElement.GetString() ?? "");
-				}
-
-				if (sdksElement.TryGetProperty("Uno.Sdk.Private", out var unoSdkPrivateElement))
-				{
-					return ("Uno.Sdk.Private", unoSdkPrivateElement.GetString() ?? "");
-				}
-			}
-		}
-		catch (Exception ex)
-		{
-			_logger.LogWarning(ex, "Failed to parse global.json: {ErrorMessage}", ex.Message);
+			_logger.LogError("No global.json found in current directory or parent directories. Please run this command from within a project that uses Uno SDK.");
+			return (null, null);
 		}
 
-		return (null, null);
+		_logger.LogDebug("Found global.json: {GlobalJsonPath}", result.globalJsonPath);
+
+		if (result.sdkPackage is null || result.sdkVersion is null)
+		{
+			_logger.LogWarning("global.json does not define Uno.Sdk or Uno.Sdk.Private in msbuild-sdks.");
+			return (null, null);
+		}
+
+		return (result.sdkPackage, result.sdkVersion);
 	}
+
+	private async Task<(string? globalJsonPath, string? sdkPackage, string? sdkVersion)> ParseGlobalJsonForUnoSdk(string searchDirectory)
+		=> await GlobalJsonLocator.ParseGlobalJsonForUnoSdkAsync(searchDirectory, _logger);
 
 	private async Task InstallUnoSdk(string packageId, string version)
 	{
@@ -168,21 +412,81 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger)
 		}
 	}
 
+	/// <summary>
+	/// Determines if a server is "local" to the working directory by matching
+	/// its solution against any solution in the directory, or by checking if
+	/// the solution resides within the working directory (for solution-less or
+	/// multi-solution repos).
+	/// </summary>
+	private static bool IsServerLocal(string? serverSolutionPath, HashSet<string> localSolutions, string workDirFull)
+	{
+		if (string.IsNullOrWhiteSpace(serverSolutionPath))
+		{
+			return false;
+		}
+
+		string serverSolutionFull;
+		try
+		{
+			serverSolutionFull = Path.GetFullPath(serverSolutionPath);
+		}
+		catch (Exception ex) when (ex is ArgumentException or NotSupportedException or PathTooLongException)
+		{
+			// Malformed path from AmbientRegistry — treat as non-workspace
+			return false;
+		}
+
+		// Direct match: server's solution is one of the solutions in the working directory
+		if (localSolutions.Contains(serverSolutionFull))
+		{
+			return true;
+		}
+
+		// Directory match: server's solution is inside the working directory tree
+		var serverDir = Path.GetDirectoryName(serverSolutionFull);
+		if (serverDir is not null)
+		{
+			var normalizedServerDir = serverDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+			var normalizedWorkDir = workDirFull.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+			if (normalizedServerDir.StartsWith(normalizedWorkDir, StringComparison.OrdinalIgnoreCase)
+				&& (normalizedServerDir.Length == normalizedWorkDir.Length
+					|| normalizedServerDir[normalizedWorkDir.Length] is '/' or '\\'))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	internal static IReadOnlyList<string> GetNuGetCachePaths(string? workingDirectory = null)
+		=> NuGetCacheHelper.GetNuGetCachePaths(workingDirectory);
+
 	private async Task<string?> EnsureNugetPackage(string packageId, string version, bool tryInstall = true)
 	{
-		var possiblePaths = new[]
+		// NuGet normalizes 2-part versions to 3-part (e.g. "1.8-dev.19" → "1.8.0-dev.19").
+		// Try both the original version string and the normalized form.
+		var versions = new List<string> { version };
+		var normalized = NuGetCacheHelper.NormalizeNuGetVersion(version);
+		if (normalized != version)
 		{
-			Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".nuget", "packages", packageId.ToLowerInvariant(), version),
-			Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "NuGet", "packages", packageId.ToLowerInvariant(), version),
-			Path.Combine(Environment.GetEnvironmentVariable("NUGET_PACKAGES") ?? "", packageId.ToLowerInvariant(), version)
-		};
+			versions.Add(normalized);
+		}
 
-		foreach (var path in possiblePaths)
+		var cachePaths = GetNuGetCachePaths(_workDirectory);
+		foreach (var v in versions)
 		{
-			if (Directory.Exists(path))
+			var possiblePaths = cachePaths
+				.Select(p => Path.Combine(p, packageId.ToLowerInvariant(), v))
+				.ToArray();
+
+			foreach (var path in possiblePaths)
 			{
-				_logger.LogDebug("Found package {SdkPackage} version {Version} at {Path}", packageId, version, path);
-				return path;
+				if (Directory.Exists(path))
+				{
+					_logger.LogDebug("Found package {SdkPackage} version {Version} at {Path}", packageId, v, path);
+					return path;
+				}
 			}
 		}
 
@@ -200,7 +504,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger)
 		}
 	}
 
-	private async Task<string?> GetHostExecutable(string unoSdkPath)
+	private async Task<HostLaunchPlan?> GetHostLaunchPlan(string unoSdkPath)
 	{
 		try
 		{
@@ -222,28 +526,237 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger)
 				return null;
 			}
 
-			var hostExe = Path.Combine(devServerPackagePath, "tools", "rc", "host", dotnetVersion, "Uno.UI.RemoteControl.Host.exe");
-			if (File.Exists(hostExe))
+			var plan = TryResolveHostLaunchPlan(devServerPackagePath, dotnetVersion);
+			if (plan is null)
 			{
-				_logger.LogDebug("Found DevServer Host: {Path}", hostExe);
-				return hostExe;
+				var available = EnumerateHostTfms(Path.Combine(devServerPackagePath, "tools", "rc", "host"));
+				_logger.LogError(
+					"DevServer host not found in package: no compatible TFM available for {RequestedTfm} (present: {AvailableTfms}).",
+					dotnetVersion,
+					available.Length == 0 ? "<none>" : string.Join(", ", available));
+				return null;
 			}
 
-			var hostDll = Path.Combine(devServerPackagePath, "tools", "rc", "host", dotnetVersion, "Uno.UI.RemoteControl.Host.dll");
-			if (File.Exists(hostDll))
+			if (plan.RequiresMajorRollForward)
 			{
-				_logger.LogDebug("Found DevServer Host: {Path}", hostDll);
-				return hostDll;
+				// One-major fallback only (see TryResolveHostTfm): the spawn path must be told
+				// to set DOTNET_ROLL_FORWARD=Major via HostLaunchPlan.RequiresMajorRollForward,
+				// otherwise the older-TFM host's runtimeconfig rollForward=minor will refuse to
+				// start on a newer-major runtime.
+				_logger.LogInformation(
+					"Uno.WinUI.DevServer {Version} does not ship a host for {RequestedTfm}; falling back to an older-major binary ({HostPath}). DOTNET_ROLL_FORWARD=Major will be set on the spawn so the host starts on the installed runtime.",
+					devServerPackageVersion,
+					dotnetVersion,
+					plan.HostPath);
 			}
 
-			_logger.LogError("DevServer host not found in package at expected paths");
-			return null;
+			_logger.LogDebug("Found DevServer Host: {Path}", plan.HostPath);
+			return plan;
 		}
 		catch (Exception ex)
 		{
 			_logger.LogWarning(ex, "Failed to locate host executable: {Message}", ex.Message);
 			return null;
 		}
+	}
+
+	/// <summary>
+	/// Pure, test-friendly resolver shared by <see cref="GetHostLaunchPlan"/> and
+	/// <see cref="DiscoverAsync"/>. Given the DevServer NuGet package path and the
+	/// TFM requested by the current runtime, it returns the host path and whether
+	/// the caller must enable <c>DOTNET_ROLL_FORWARD=Major</c> on the spawn.
+	/// Returns <c>null</c> when the package does not ship a compatible host
+	/// (either nothing at all, or only TFMs newer than the runtime, or only TFMs
+	/// more than one major below the runtime — see <see cref="TryResolveHostTfm"/>
+	/// for the one-major cap rationale).
+	/// </summary>
+	internal static HostLaunchPlan? TryResolveHostLaunchPlan(string devServerPackagePath, string requestedTfm)
+	{
+		var hostRoot = Path.Combine(devServerPackagePath, "tools", "rc", "host");
+		var availableTfms = EnumerateHostTfms(hostRoot);
+		var resolvedTfm = TryResolveHostTfm(availableTfms, requestedTfm);
+		if (resolvedTfm is null)
+		{
+			return null;
+		}
+
+		var hostDir = Path.Combine(hostRoot, resolvedTfm);
+		var hostExe = Path.Combine(hostDir, "Uno.UI.RemoteControl.Host.exe");
+		var hostDll = Path.Combine(hostDir, "Uno.UI.RemoteControl.Host.dll");
+
+		// `Uno.UI.RemoteControl.Host.exe` is a Windows PE — `dotnet <exe>` on Linux/macOS
+		// fails. Prefer the framework-dependent `.dll` everywhere except Windows, where
+		// the `.exe` is the conventional entry point and `dotnet <exe>` is well-defined.
+		string? hostPath = OperatingSystem.IsWindows()
+			? File.Exists(hostExe)
+				? hostExe
+				: File.Exists(hostDll)
+					? hostDll
+					: null
+			: File.Exists(hostDll)
+				? hostDll
+				: null;
+
+		if (hostPath is null)
+		{
+			return null;
+		}
+
+		// Major-only downgrade is the trigger for DOTNET_ROLL_FORWARD=Major. A minor
+		// fallback (e.g. requested net10.5, available net10.0 — hypothetical today)
+		// stays inside the same major and shouldn't override the user's roll-forward
+		// policy. Equal TFMs need no roll-forward at all.
+		var requiresMajorRollForward = IsOneMajorFallback(requestedTfm, resolvedTfm);
+		return new HostLaunchPlan(hostPath, requiresMajorRollForward);
+	}
+
+	private static bool IsOneMajorFallback(string requestedTfm, string resolvedTfm)
+		=> TryParseNetTfm(requestedTfm, out var requestedMajor, out _)
+			&& TryParseNetTfm(resolvedTfm, out var resolvedMajor, out _)
+			&& resolvedMajor < requestedMajor;
+
+	/// <summary>
+	/// Enumerates the <c>net{X}.{Y}</c> subdirectories that exist under
+	/// <paramref name="hostRoot"/> (i.e. <c>tools/rc/host</c>). Non-matching entries
+	/// (pre-net5 monikers, feature folders, …) are ignored. Returns an empty array
+	/// when the directory does not exist so the caller can surface a clean error.
+	/// The result is sorted by parsed (major, minor) in ascending order; string-ordinal
+	/// sort would incorrectly place <c>net10.0</c> before <c>net9.0</c>, which is
+	/// harmless for <see cref="TryResolveHostTfm"/> (it scans in a single pass and is
+	/// order-independent) but misleads the user-facing "present" list in the error log.
+	/// </summary>
+	internal static string[] EnumerateHostTfms(string hostRoot)
+	{
+		if (!Directory.Exists(hostRoot))
+		{
+			return [];
+		}
+
+		// Explicit single pass — the LINQ chain we used to have had to carry a nullable
+		// sentinel through a Where filter and drop spurious `!` suppressions at the end.
+		// A loop is both shorter and free of null-forgiving.
+		var parsed = new List<(string name, int major, int minor)>();
+		foreach (var path in Directory.EnumerateDirectories(hostRoot))
+		{
+			var name = Path.GetFileName(path);
+			if (name is { Length: > 0 } && TryParseNetTfm(name, out var major, out var minor))
+			{
+				parsed.Add((name, major, minor));
+			}
+		}
+
+		parsed.Sort(static (a, b) =>
+		{
+			var c = a.major.CompareTo(b.major);
+			return c != 0 ? c : a.minor.CompareTo(b.minor);
+		});
+
+		var result = new string[parsed.Count];
+		for (var i = 0; i < parsed.Count; i++)
+		{
+			result[i] = parsed[i].name;
+		}
+		return result;
+	}
+
+	/// <summary>
+	/// Picks the best available TFM for <paramref name="requestedTfm"/> from
+	/// <paramref name="availableTfms"/>. Exact matches win. Otherwise returns the
+	/// highest <c>net{X}.{Y}</c> that is <b>less than or equal to</b>
+	/// <paramref name="requestedTfm"/> and within one major of it — we never pick
+	/// a TFM newer than the runtime, because .NET cannot roll back to a version
+	/// the host wasn't compiled against, and we never pick more than one major
+	/// below either, because that is exactly what <c>DOTNET_ROLL_FORWARD=Major</c>
+	/// covers (one major jump). A wider gap would silently select a host the
+	/// runtime cannot actually load.
+	/// Returns <c>null</c> when nothing suitable is available.
+	/// </summary>
+	internal static string? TryResolveHostTfm(string[] availableTfms, string requestedTfm)
+	{
+		if (availableTfms.Length == 0 || !TryParseNetTfm(requestedTfm, out var reqMajor, out var reqMinor))
+		{
+			return null;
+		}
+
+		// One-major cap: DOTNET_ROLL_FORWARD=Major allows exactly one major jump.
+		// Anything further (e.g. net5 host under net10) is not loadable even with
+		// roll-forward enabled, and picking such a host would be misleading.
+		const int MaxMajorGap = 1;
+		var minMajor = reqMajor - MaxMajorGap;
+
+		// Single-pass "max under a cap". The cardinality here is the number of net{X}.{Y}
+		// folders shipped by a single DevServer package (currently 2-3) so we do not pay
+		// for a List + LINQ OrderByDescending chain; the explicit shape also handles the
+		// exact-match short-circuit without a second pass.
+		string? best = null;
+		var bestMajor = -1;
+		var bestMinor = -1;
+
+		foreach (var tfm in availableTfms)
+		{
+			if (string.Equals(tfm, requestedTfm, StringComparison.OrdinalIgnoreCase))
+			{
+				return tfm;
+			}
+
+			if (!TryParseNetTfm(tfm, out var major, out var minor)
+				|| major < minMajor
+				|| major > reqMajor
+				|| (major == reqMajor && minor > reqMinor))
+			{
+				continue;
+			}
+
+			if (major > bestMajor || (major == bestMajor && minor > bestMinor))
+			{
+				best = tfm;
+				bestMajor = major;
+				bestMinor = minor;
+			}
+		}
+
+		return best;
+	}
+
+	/// <summary>
+	/// Parses a short <c>net{X}.{Y}</c> TFM (no OS platform suffix). Returns
+	/// <c>false</c> for pre-net5 monikers (<c>netstandard2.0</c>, <c>netcoreapp3.1</c>, …)
+	/// and anything with an OS bucket (<c>net10.0-windows</c>), which we don't use for
+	/// the DevServer host.
+	/// </summary>
+	internal static bool TryParseNetTfm(string? name, out int major, out int minor)
+	{
+		major = 0;
+		minor = 0;
+
+		// `string.IsNullOrEmpty` narrows nullability on the false branch, so no `!`
+		// suppression is needed on the subsequent AsSpan / StartsWith calls.
+		if (string.IsNullOrEmpty(name) || !name.StartsWith("net", StringComparison.OrdinalIgnoreCase))
+		{
+			return false;
+		}
+
+		// Zero-copy parsing: slice the input as a span and let int.TryParse(ReadOnlySpan<char>)
+		// do the work. Avoids two Substring allocations per folder on every discovery.
+		var rest = name.AsSpan(3);
+
+		// Reject OS-suffixed monikers outright. uno.winui.devserver host buckets are the
+		// short net{major}.{minor} form; a dash here means either a platform suffix
+		// (net10.0-windows…) or a feature band we don't want in the candidate list.
+		if (rest.IndexOf('-') >= 0)
+		{
+			return false;
+		}
+
+		var dot = rest.IndexOf('.');
+		if (dot < 0)
+		{
+			return false;
+		}
+
+		return int.TryParse(rest[..dot], out major)
+			&& int.TryParse(rest[(dot + 1)..], out minor)
+			&& major >= 5; // exclude netstandard, netcoreapp, netfx
 	}
 
 	private async Task<string?> GetSettingsExecutable(string unoSdkPath)
@@ -340,6 +853,12 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger)
 
 	private async Task<string?> GetDotNetVersion()
 	{
+		var result = await TryGetDotNetVersionInfo(logErrors: true);
+		return result.tfm;
+	}
+
+	private async Task<(string? rawVersion, string? tfm)> TryGetDotNetVersionInfo(bool logErrors, string? globalJsonPath = null)
+	{
 		try
 		{
 			var processInfo = new ProcessStartInfo
@@ -355,8 +874,11 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger)
 			using var process = Process.Start(processInfo);
 			if (process == null)
 			{
-				_logger.LogWarning("Failed to start dotnet --version process");
-				return null;
+				if (logErrors)
+				{
+					_logger.LogWarning("Failed to start dotnet --version process");
+				}
+				return (null, null);
 			}
 
 			var output = await process.StandardOutput.ReadToEndAsync();
@@ -365,32 +887,47 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger)
 			if (process.ExitCode == 0 && !string.IsNullOrWhiteSpace(output))
 			{
 				var version = output.Trim();
-				_logger.LogDebug("Raw .NET version output: {Version}", version);
+				if (logErrors)
+				{
+					_logger.LogDebug("Raw .NET version output: {Version}", version);
+				}
 
 				var sanitizedVersion = version.Split('-')[0]; // Remove any pre-release suffix
 
 				if (Version.TryParse(sanitizedVersion, out var parsedVersion))
 				{
 					var targetFramework = $"net{parsedVersion.Major}.{parsedVersion.Minor}";
-					_logger.LogDebug("Parsed target framework: {TargetFramework}", targetFramework);
-					return targetFramework;
+					if (logErrors)
+					{
+						_logger.LogDebug("Parsed target framework: {TargetFramework}", targetFramework);
+					}
+					return (version, targetFramework);
 				}
 				else
 				{
-					_logger.LogDebug("Failed to parse .NET Version");
+					if (logErrors)
+					{
+						_logger.LogDebug("Failed to parse .NET Version");
+					}
 				}
 			}
 			else
 			{
-				_logger.LogWarning("dotnet --version failed with exit code {ExitCode}", process.ExitCode);
+				if (logErrors)
+				{
+					_logger.LogWarning("dotnet --version failed with exit code {ExitCode}", process.ExitCode);
+				}
 			}
 
-			return null;
+			return (null, null);
 		}
 		catch (Exception ex)
 		{
-			_logger.LogError(ex, "Error getting .NET version: {ErrorMessage}", ex.Message);
-			return null;
+			if (logErrors)
+			{
+				_logger.LogError(ex, "Error getting .NET version: {ErrorMessage}", ex.Message);
+			}
+			return (null, null);
 		}
 	}
 }

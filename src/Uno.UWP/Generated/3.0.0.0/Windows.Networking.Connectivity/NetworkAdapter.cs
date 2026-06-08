@@ -19,7 +19,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint NetworkAdapter.IanaInterfaceType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20NetworkAdapter.IanaInterfaceType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkAdapter", "IanaInterfaceType");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong NetworkAdapter.InboundMaxBitsPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20NetworkAdapter.InboundMaxBitsPerSecond");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkAdapter", "InboundMaxBitsPerSecond");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid NetworkAdapter.NetworkAdapterId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20NetworkAdapter.NetworkAdapterId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkAdapter", "NetworkAdapterId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NetworkItem NetworkAdapter.NetworkItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NetworkItem%20NetworkAdapter.NetworkItem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkAdapter", "NetworkItem");
 			}
 		}
 #endif
@@ -59,21 +59,21 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong NetworkAdapter.OutboundMaxBitsPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20NetworkAdapter.OutboundMaxBitsPerSecond");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkAdapter", "OutboundMaxBitsPerSecond");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.OutboundMaxBitsPerSecond.get
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.InboundMaxBitsPerSecond.get
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.IanaInterfaceType.get
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.NetworkItem.get
-		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.NetworkAdapterId.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.Connectivity.ConnectionProfile> GetConnectedProfileAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ConnectionProfile> NetworkAdapter.GetConnectedProfileAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CConnectionProfile%3E%20NetworkAdapter.GetConnectedProfileAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.NetworkAdapter", "GetConnectedProfileAsync()");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.IanaInterfaceType.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.InboundMaxBitsPerSecond.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.NetworkAdapterId.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.NetworkItem.get
+		// Forced skipping of method Windows.Networking.Connectivity.NetworkAdapter.OutboundMaxBitsPerSecond.get
 	}
 }

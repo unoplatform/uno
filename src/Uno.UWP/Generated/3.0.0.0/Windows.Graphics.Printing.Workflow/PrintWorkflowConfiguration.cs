@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintWorkflowConfiguration.JobTitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintWorkflowConfiguration.JobTitle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration", "JobTitle");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintWorkflowConfiguration.SessionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintWorkflowConfiguration.SessionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration", "SessionId");
 			}
 		}
 #endif
@@ -39,19 +39,12 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintWorkflowConfiguration.SourceAppDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PrintWorkflowConfiguration.SourceAppDisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration", "SourceAppDisplayName");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void AbortPrintFlow(global::Windows.Graphics.Printing.Workflow.PrintWorkflowJobAbortReason reason)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration", "void PrintWorkflowConfiguration.AbortPrintFlow(PrintWorkflowJobAbortReason reason)");
-		}
-#endif
-		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration.SourceAppDisplayName.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration.JobTitle.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration.SessionId.get
+		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration.SourceAppDisplayName.get
 	}
 }

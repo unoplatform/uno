@@ -15,31 +15,15 @@ namespace Windows.Graphics.Printing
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Printing.PrintTaskOptions Options
+		public bool Is3DManufacturingTargetEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTaskOptions PrintTask.Options is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTaskOptions%20PrintTask.Options");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTask", "Is3DManufacturingTargetEnabled");
 			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.DataTransfer.DataPackagePropertySet Properties
-		{
-			get
+			set
 			{
-				throw new global::System.NotImplementedException("The member DataPackagePropertySet PrintTask.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataPackagePropertySet%20PrintTask.Properties");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Printing.IPrintDocumentSource Source
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IPrintDocumentSource PrintTask.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPrintDocumentSource%20PrintTask.Source");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "Is3DManufacturingTargetEnabled");
 			}
 		}
 #endif
@@ -49,11 +33,11 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PrintTask.IsPreviewEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintTask.IsPreviewEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTask", "IsPreviewEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "bool PrintTask.IsPreviewEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "IsPreviewEnabled");
 			}
 		}
 #endif
@@ -63,45 +47,61 @@ namespace Windows.Graphics.Printing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PrintTask.IsPrinterTargetEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintTask.IsPrinterTargetEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTask", "IsPrinterTargetEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "bool PrintTask.IsPrinterTargetEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "IsPrinterTargetEnabled");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Is3DManufacturingTargetEnabled
+		public global::Windows.Graphics.Printing.PrintTaskOptions Options
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PrintTask.Is3DManufacturingTargetEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintTask.Is3DManufacturingTargetEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "bool PrintTask.Is3DManufacturingTargetEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTask", "Options");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Properties.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Source.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Options.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Previewing.add
-		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Previewing.remove
-		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Submitting.add
-		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Submitting.remove
-		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Progressing.add
-		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Progressing.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.ApplicationModel.DataTransfer.DataPackagePropertySet Properties
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTask", "Properties");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.Printing.IPrintDocumentSource Source
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Printing.PrintTask", "Source");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Completed.add
 		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Completed.remove
-		// Forced skipping of method Windows.Graphics.Printing.PrintTask.IsPrinterTargetEnabled.set
-		// Forced skipping of method Windows.Graphics.Printing.PrintTask.IsPrinterTargetEnabled.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Is3DManufacturingTargetEnabled.set
+		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Previewing.add
+		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Previewing.remove
+		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Progressing.add
+		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Progressing.remove
+		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Submitting.add
+		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Submitting.remove
 		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Is3DManufacturingTargetEnabled.get
-		// Forced skipping of method Windows.Graphics.Printing.PrintTask.IsPreviewEnabled.set
+		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Is3DManufacturingTargetEnabled.set
 		// Forced skipping of method Windows.Graphics.Printing.PrintTask.IsPreviewEnabled.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTask.IsPreviewEnabled.set
+		// Forced skipping of method Windows.Graphics.Printing.PrintTask.IsPrinterTargetEnabled.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTask.IsPrinterTargetEnabled.set
+		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Options.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Properties.get
+		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Source.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.PrintTask, global::Windows.Graphics.Printing.PrintTaskCompletedEventArgs> Completed
@@ -109,12 +109,12 @@ namespace Windows.Graphics.Printing
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "event TypedEventHandler<PrintTask, PrintTaskCompletedEventArgs> PrintTask.Completed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "event Completed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "event TypedEventHandler<PrintTask, PrintTaskCompletedEventArgs> PrintTask.Completed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "event Completed");
 			}
 		}
 #endif
@@ -125,12 +125,12 @@ namespace Windows.Graphics.Printing
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "event TypedEventHandler<PrintTask, object> PrintTask.Previewing");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "event Previewing");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "event TypedEventHandler<PrintTask, object> PrintTask.Previewing");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "event Previewing");
 			}
 		}
 #endif
@@ -141,12 +141,12 @@ namespace Windows.Graphics.Printing
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "event TypedEventHandler<PrintTask, PrintTaskProgressingEventArgs> PrintTask.Progressing");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "event Progressing");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "event TypedEventHandler<PrintTask, PrintTaskProgressingEventArgs> PrintTask.Progressing");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "event Progressing");
 			}
 		}
 #endif
@@ -157,12 +157,12 @@ namespace Windows.Graphics.Printing
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "event TypedEventHandler<PrintTask, object> PrintTask.Submitting");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "event Submitting");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "event TypedEventHandler<PrintTask, object> PrintTask.Submitting");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "event Submitting");
 			}
 		}
 #endif

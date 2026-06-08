@@ -33,9 +33,22 @@ public partial class ResourceCandidate
 	{
 		var logicalPath = GetLogicalPath(relativePath);
 
-		var qualifiers = relativePath
-			.Split(Path.DirectorySeparatorChar, '_', '.')
-			.Select(ResourceQualifier.Parse)
+		var directoryPart = Path.GetDirectoryName(relativePath) ?? string.Empty;
+		var fileName = Path.GetFileName(relativePath);
+
+		// MRT: bare BCP-47 language tags (e.g. `en-US`) are allowed only
+		// as folder names. File-name segments must use the explicit
+		// `lang-` / `language-` prefix. See ResourceQualifier.Parse.
+		var folderQualifiers = directoryPart
+			.Split(Path.DirectorySeparatorChar, '_')
+			.Select(s => ResourceQualifier.Parse(s, allowBareLanguageTag: true));
+
+		var fileQualifiers = fileName
+			.Split('_', '.')
+			.Select(s => ResourceQualifier.Parse(s, allowBareLanguageTag: false));
+
+		var qualifiers = folderQualifiers
+			.Concat(fileQualifiers)
 			.Reverse()
 			.Where(p => p != null)
 			.ToArray();
@@ -45,16 +58,15 @@ public partial class ResourceCandidate
 
 	private static string GetLogicalPath(string path)
 	{
-		var directoryNameWithoutQualifiers = Path
-			.GetDirectoryName(path)
+		var directoryNameWithoutQualifiers = (Path.GetDirectoryName(path) ?? string.Empty)
 			.Split(new[] { Path.DirectorySeparatorChar })
-			.Where(x => ResourceQualifier.Parse(x) == null)
+			.Where(x => ResourceQualifier.Parse(x, allowBareLanguageTag: true) == null)
 			.ToArray();
 
 		var fileNameWithoutQualifiers = Path
 			.GetFileName(path)
 			.Split(_dotArray)
-			.Where(x => ResourceQualifier.Parse(x) == null);
+			.Where(x => ResourceQualifier.Parse(x, allowBareLanguageTag: false) == null);
 
 		return Path.Combine(Path.Combine(directoryNameWithoutQualifiers), string.Join(".", fileNameWithoutQualifiers));
 	}

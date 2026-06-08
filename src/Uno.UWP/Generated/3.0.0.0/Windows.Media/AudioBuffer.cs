@@ -15,45 +15,46 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Length
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint AudioBuffer.Length is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AudioBuffer.Length");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.AudioBuffer", "uint AudioBuffer.Length");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint Capacity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AudioBuffer.Capacity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AudioBuffer.Capacity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioBuffer", "Capacity");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.AudioBuffer.Capacity.get
-		// Forced skipping of method Windows.Media.AudioBuffer.Length.get
-		// Forced skipping of method Windows.Media.AudioBuffer.Length.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint Length
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioBuffer", "Length");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.AudioBuffer", "Length");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.AudioBuffer.~AudioBuffer()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IMemoryBufferReference CreateReference()
 		{
-			throw new global::System.NotImplementedException("The member IMemoryBufferReference AudioBuffer.CreateReference() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IMemoryBufferReference%20AudioBuffer.CreateReference%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.AudioBuffer", "CreateReference()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.AudioBuffer", "void AudioBuffer.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.AudioBuffer", "Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.AudioBuffer.Capacity.get
+		// Forced skipping of method Windows.Media.AudioBuffer.Length.get
+		// Forced skipping of method Windows.Media.AudioBuffer.Length.set
 		// Processing: Windows.Foundation.IMemoryBuffer
 		// Processing: System.IDisposable
 	}

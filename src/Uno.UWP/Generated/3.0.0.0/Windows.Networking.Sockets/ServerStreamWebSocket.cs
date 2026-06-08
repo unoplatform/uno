@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ServerStreamWebSocketInformation ServerStreamWebSocket.Information is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ServerStreamWebSocketInformation%20ServerStreamWebSocket.Information");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ServerStreamWebSocket", "Information");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IInputStream ServerStreamWebSocket.InputStream is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IInputStream%20ServerStreamWebSocket.InputStream");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ServerStreamWebSocket", "InputStream");
 			}
 		}
 #endif
@@ -39,29 +39,29 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IOutputStream ServerStreamWebSocket.OutputStream is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IOutputStream%20ServerStreamWebSocket.OutputStream");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ServerStreamWebSocket", "OutputStream");
 			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Close(ushort code, string reason)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ServerStreamWebSocket", "Close(ushort code, string reason)");
+		}
+#endif
+		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocket.Closed.add
+		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocket.Closed.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ServerStreamWebSocket", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocket.Information.get
 		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocket.InputStream.get
 		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocket.OutputStream.get
-		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocket.Closed.add
-		// Forced skipping of method Windows.Networking.Sockets.ServerStreamWebSocket.Closed.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Close(ushort code, string reason)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ServerStreamWebSocket", "void ServerStreamWebSocket.Close(ushort code, string reason)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ServerStreamWebSocket", "void ServerStreamWebSocket.Dispose()");
-		}
-#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.Sockets.ServerStreamWebSocket, global::Windows.Networking.Sockets.WebSocketClosedEventArgs> Closed
@@ -69,12 +69,12 @@ namespace Windows.Networking.Sockets
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ServerStreamWebSocket", "event TypedEventHandler<ServerStreamWebSocket, WebSocketClosedEventArgs> ServerStreamWebSocket.Closed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ServerStreamWebSocket", "event Closed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ServerStreamWebSocket", "event TypedEventHandler<ServerStreamWebSocket, WebSocketClosedEventArgs> ServerStreamWebSocket.Closed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.ServerStreamWebSocket", "event Closed");
 			}
 		}
 #endif

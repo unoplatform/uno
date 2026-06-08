@@ -10,43 +10,15 @@ namespace Windows.ApplicationModel.Chat
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string TransportAddress
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ChatRecipientDeliveryInfo.TransportAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ChatRecipientDeliveryInfo.TransportAddress");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "string ChatRecipientDeliveryInfo.TransportAddress");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.DateTimeOffset? ReadTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? ChatRecipientDeliveryInfo.ReadTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20ChatRecipientDeliveryInfo.ReadTime");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "DateTimeOffset? ChatRecipientDeliveryInfo.ReadTime");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.DateTimeOffset? DeliveryTime
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? ChatRecipientDeliveryInfo.DeliveryTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20ChatRecipientDeliveryInfo.DeliveryTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "DeliveryTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "DateTimeOffset? ChatRecipientDeliveryInfo.DeliveryTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "DeliveryTime");
 			}
 		}
 #endif
@@ -56,7 +28,21 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChatRecipientDeliveryInfo.IsErrorPermanent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChatRecipientDeliveryInfo.IsErrorPermanent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "IsErrorPermanent");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.DateTimeOffset? ReadTime
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "ReadTime");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "ReadTime");
 			}
 		}
 #endif
@@ -66,7 +52,21 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ChatMessageStatus ChatRecipientDeliveryInfo.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChatMessageStatus%20ChatRecipientDeliveryInfo.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "Status");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string TransportAddress
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "TransportAddress");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "TransportAddress");
 			}
 		}
 #endif
@@ -76,7 +76,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ChatRecipientDeliveryInfo.TransportErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ChatRecipientDeliveryInfo.TransportErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "TransportErrorCode");
 			}
 		}
 #endif
@@ -86,7 +86,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ChatTransportErrorCodeCategory ChatRecipientDeliveryInfo.TransportErrorCodeCategory is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChatTransportErrorCodeCategory%20ChatRecipientDeliveryInfo.TransportErrorCodeCategory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "TransportErrorCodeCategory");
 			}
 		}
 #endif
@@ -96,7 +96,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ChatTransportInterpretedErrorCode ChatRecipientDeliveryInfo.TransportInterpretedErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChatTransportInterpretedErrorCode%20ChatRecipientDeliveryInfo.TransportInterpretedErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "TransportInterpretedErrorCode");
 			}
 		}
 #endif
@@ -104,20 +104,20 @@ namespace Windows.ApplicationModel.Chat
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ChatRecipientDeliveryInfo()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "ChatRecipientDeliveryInfo.ChatRecipientDeliveryInfo()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo", "ChatRecipientDeliveryInfo()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.ChatRecipientDeliveryInfo()
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.TransportAddress.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.TransportAddress.set
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.DeliveryTime.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.DeliveryTime.set
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.IsErrorPermanent.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.ReadTime.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.ReadTime.set
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.Status.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.TransportAddress.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.TransportAddress.set
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.TransportErrorCode.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.TransportErrorCodeCategory.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.TransportInterpretedErrorCode.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.TransportErrorCode.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.IsErrorPermanent.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatRecipientDeliveryInfo.Status.get
 	}
 }

@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2HttpResponseHeaders CoreWebView2WebResourceResponseView.Headers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2HttpResponseHeaders%20CoreWebView2WebResourceResponseView.Headers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView", "Headers");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2WebResourceResponseView.ReasonPhrase is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2WebResourceResponseView.ReasonPhrase");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView", "ReasonPhrase");
 			}
 		}
 #endif
@@ -39,19 +39,19 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CoreWebView2WebResourceResponseView.StatusCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2WebResourceResponseView.StatusCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView", "StatusCode");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.Headers.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.StatusCode.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.ReasonPhrase.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetContentAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> CoreWebView2WebResourceResponseView.GetContentAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStream%3E%20CoreWebView2WebResourceResponseView.GetContentAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView", "GetContentAsync()");
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.Headers.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.ReasonPhrase.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView.StatusCode.get
 	}
 }

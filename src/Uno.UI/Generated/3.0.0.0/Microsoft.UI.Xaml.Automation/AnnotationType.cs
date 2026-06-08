@@ -3,78 +3,32 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	public enum AnnotationType
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Unknown = 60000,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		SpellingError = 60001,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		GrammarError = 60002,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Comment = 60003,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		FormulaError = 60004,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		TrackChanges = 60005,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Header = 60006,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Footer = 60007,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Highlighted = 60008,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Endnote = 60009,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Footnote = 60010,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		InsertionChange = 60011,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		DeletionChange = 60012,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		MoveChange = 60013,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		FormatChange = 60014,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		UnsyncedChange = 60015,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		EditingLockedChange = 60016,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		ExternalChange = 60017,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		ConflictingChange = 60018,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Author = 60019,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		AdvancedProofingIssue = 60020,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		DataValidationError = 60021,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		CircularReferenceError = 60022,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.Unknown
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.SpellingError
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.GrammarError
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.Comment
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.FormulaError
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.TrackChanges
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.Header
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.Footer
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.Highlighted
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.Endnote
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.Footnote
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.InsertionChange
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.DeletionChange
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.MoveChange
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.FormatChange
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.UnsyncedChange
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.EditingLockedChange
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.ExternalChange
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.ConflictingChange
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.Author
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.AdvancedProofingIssue
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.DataValidationError
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AnnotationType.CircularReferenceError
 	}
 #endif
 }

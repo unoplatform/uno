@@ -20,6 +20,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 
 	private SKRect _currentBounds;
 	private SKImageFilter? _filter;
+	private SKPaint? _opacityPaint;
 	private bool _hasBackdropBrushInput;
 	private bool _hasBackdropBrushInputPrivate; // this one is reset and set during effect generation and is only copied to _hasBackdropBrushInput once done. This avoids needless invalidations when HasBackdropBrushInput is reset then set immediately.
 
@@ -31,7 +32,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 
 	internal override bool RequiresRepaintOnEveryFrame => HasBackdropBrushInput;
 
-	internal bool UseBlurPadding { get; set; }
+	internal bool UseBackdropBlurClamp { get; set; }
 
 	private SKImageFilter? GenerateGaussianBlurEffect(IGraphicsEffectD2D1Interop effectInterop, SKRect bounds)
 	{
@@ -49,16 +50,17 @@ public partial class CompositionEffectBrush : CompositionBrush
 			effectInterop.GetNamedPropertyMapping("BlurAmount", out uint sigmaProp, out _);
 			float sigma = (float)(effectInterop.GetProperty(sigmaProp) ?? throw new InvalidOperationException("The effect property was null"));
 
-			return SKImageFilter.CreateBlur(sigma, sigma, sourceFilter,
-				UseBlurPadding ?
-				bounds with
-				{
-					Left = -100,
-					Top = -100,
-					Right = bounds.Right + 100,
-					Bottom = bounds.Bottom + 100
-				}
-				: bounds);
+			if (UseBackdropBlurClamp)
+			{
+				// Use Clamp tile mode to prevent the blur from sampling outside the
+				// element's backdrop area. Without clamping, a backdrop blur will read
+				// pixels from surrounding elements (e.g. a black border), causing
+				// visible color bleeding (grey tint on what should be a white surface).
+				// Clamp repeats edge pixels, matching WinUI's backdrop blur behavior.
+				return SKImageFilter.CreateBlur(sigma, sigma, SKShaderTileMode.Clamp, sourceFilter, bounds);
+			}
+
+			return SKImageFilter.CreateBlur(sigma, sigma, sourceFilter, bounds);
 		}
 
 		return null;
@@ -1592,7 +1594,15 @@ $$"""
 	internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
 	{
 		UpdateFilter(bounds);
-		canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = _filter });
+		var rec = new SKCanvasSaveLayerRec { Backdrop = _filter };
+		if (opacity < 1)
+		{
+			_opacityPaint ??= new SKPaint();
+			_opacityPaint.Color = new SKColor(0xFF, 0xFF, 0xFF, (byte)(0xFF * opacity));
+			rec.Paint = _opacityPaint;
+		}
+
+		canvas.SaveLayer(rec);
 		canvas.Restore();
 	}
 
@@ -1614,6 +1624,7 @@ $$"""
 		base.DisposeInternal();
 
 		_filter?.Dispose();
+		_opacityPaint?.Dispose();
 	}
 
 	internal override bool CanPaint() => _effect is not null;

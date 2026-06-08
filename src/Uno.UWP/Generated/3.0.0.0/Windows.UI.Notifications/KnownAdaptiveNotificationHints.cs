@@ -14,7 +14,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationHints.Align is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownAdaptiveNotificationHints.Align");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationHints", "Align");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationHints.MaxLines is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownAdaptiveNotificationHints.MaxLines");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationHints", "MaxLines");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationHints.MinLines is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownAdaptiveNotificationHints.MinLines");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationHints", "MinLines");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationHints.Style is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownAdaptiveNotificationHints.Style");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationHints", "Style");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationHints.TextStacking is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownAdaptiveNotificationHints.TextStacking");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationHints", "TextStacking");
 			}
 		}
 #endif
@@ -64,15 +64,15 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationHints.Wrap is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownAdaptiveNotificationHints.Wrap");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.KnownAdaptiveNotificationHints", "Wrap");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationHints.Style.get
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationHints.Wrap.get
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationHints.Align.get
 		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationHints.MaxLines.get
 		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationHints.MinLines.get
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationHints.Style.get
 		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationHints.TextStacking.get
-		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationHints.Align.get
+		// Forced skipping of method Windows.UI.Notifications.KnownAdaptiveNotificationHints.Wrap.get
 	}
 }

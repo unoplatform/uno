@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<WebTokenResponse> WebTokenRequestResult.ResponseData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CWebTokenResponse%3E%20WebTokenRequestResult.ResponseData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequestResult", "ResponseData");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebProviderError WebTokenRequestResult.ResponseError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebProviderError%20WebTokenRequestResult.ResponseError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequestResult", "ResponseError");
 			}
 		}
 #endif
@@ -39,19 +39,19 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebTokenRequestStatus WebTokenRequestResult.ResponseStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebTokenRequestStatus%20WebTokenRequestResult.ResponseStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequestResult", "ResponseStatus");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.ResponseData.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.ResponseStatus.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.ResponseError.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction InvalidateCacheAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction WebTokenRequestResult.InvalidateCacheAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebTokenRequestResult.InvalidateCacheAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenRequestResult", "InvalidateCacheAsync()");
 		}
 #endif
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.ResponseData.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.ResponseError.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequestResult.ResponseStatus.get
 	}
 }

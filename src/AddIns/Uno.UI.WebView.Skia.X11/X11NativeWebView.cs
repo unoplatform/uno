@@ -145,9 +145,7 @@ public class X11NativeWebView : INativeWebView
 			webview.Settings.EnableSmoothScrolling = true;
 			webview.Settings.EnableJavascript = true;
 			webview.Settings.AllowFileAccessFromFileUrls = true;
-#if DEBUG
-			webview.Settings.EnableDeveloperExtras = true;
-#endif
+			webview.Settings.EnableDeveloperExtras = global::Uno.UI.FeatureConfiguration.WebView2.EnableDevTools;
 			return (window, webview);
 		});
 

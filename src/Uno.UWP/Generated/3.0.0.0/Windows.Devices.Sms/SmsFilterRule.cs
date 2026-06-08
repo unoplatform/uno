@@ -10,25 +10,11 @@ namespace Windows.Devices.Sms
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Sms.CellularClass CellularClass
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CellularClass SmsFilterRule.CellularClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CellularClass%20SmsFilterRule.CellularClass");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsFilterRule", "CellularClass SmsFilterRule.CellularClass");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<int> BroadcastChannels
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<int> SmsFilterRule.BroadcastChannels is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cint%3E%20SmsFilterRule.BroadcastChannels");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsFilterRule", "BroadcastChannels");
 			}
 		}
 #endif
@@ -38,7 +24,21 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<SmsBroadcastType> SmsFilterRule.BroadcastTypes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CSmsBroadcastType%3E%20SmsFilterRule.BroadcastTypes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsFilterRule", "BroadcastTypes");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Sms.CellularClass CellularClass
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsFilterRule", "CellularClass");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsFilterRule", "CellularClass");
 			}
 		}
 #endif
@@ -48,7 +48,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> SmsFilterRule.DeviceIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20SmsFilterRule.DeviceIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsFilterRule", "DeviceIds");
 			}
 		}
 #endif
@@ -58,7 +58,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> SmsFilterRule.ImsiPrefixes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20SmsFilterRule.ImsiPrefixes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsFilterRule", "ImsiPrefixes");
 			}
 		}
 #endif
@@ -68,7 +68,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsMessageType SmsFilterRule.MessageType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageType%20SmsFilterRule.MessageType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsFilterRule", "MessageType");
 			}
 		}
 #endif
@@ -78,7 +78,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<int> SmsFilterRule.PortNumbers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cint%3E%20SmsFilterRule.PortNumbers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsFilterRule", "PortNumbers");
 			}
 		}
 #endif
@@ -88,7 +88,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<int> SmsFilterRule.ProtocolIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cint%3E%20SmsFilterRule.ProtocolIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsFilterRule", "ProtocolIds");
 			}
 		}
 #endif
@@ -98,7 +98,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> SmsFilterRule.SenderNumbers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20SmsFilterRule.SenderNumbers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsFilterRule", "SenderNumbers");
 			}
 		}
 #endif
@@ -108,7 +108,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<int> SmsFilterRule.TeleserviceIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cint%3E%20SmsFilterRule.TeleserviceIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsFilterRule", "TeleserviceIds");
 			}
 		}
 #endif
@@ -118,7 +118,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> SmsFilterRule.TextMessagePrefixes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20SmsFilterRule.TextMessagePrefixes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsFilterRule", "TextMessagePrefixes");
 			}
 		}
 #endif
@@ -128,7 +128,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> SmsFilterRule.WapApplicationIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20SmsFilterRule.WapApplicationIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsFilterRule", "WapApplicationIds");
 			}
 		}
 #endif
@@ -138,7 +138,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> SmsFilterRule.WapContentTypes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20SmsFilterRule.WapContentTypes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsFilterRule", "WapContentTypes");
 			}
 		}
 #endif
@@ -146,23 +146,23 @@ namespace Windows.Devices.Sms
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SmsFilterRule(global::Windows.Devices.Sms.SmsMessageType messageType)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsFilterRule", "SmsFilterRule.SmsFilterRule(SmsMessageType messageType)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsFilterRule", "SmsFilterRule(SmsMessageType messageType)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.SmsFilterRule(Windows.Devices.Sms.SmsMessageType)
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.MessageType.get
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.ImsiPrefixes.get
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.DeviceIds.get
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.SenderNumbers.get
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.TextMessagePrefixes.get
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.PortNumbers.get
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.BroadcastChannels.get
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.BroadcastTypes.get
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.CellularClass.get
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.CellularClass.set
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.DeviceIds.get
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.ImsiPrefixes.get
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.MessageType.get
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.PortNumbers.get
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.ProtocolIds.get
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.SenderNumbers.get
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.TeleserviceIds.get
+		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.TextMessagePrefixes.get
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.WapApplicationIds.get
 		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.WapContentTypes.get
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.BroadcastTypes.get
-		// Forced skipping of method Windows.Devices.Sms.SmsFilterRule.BroadcastChannels.get
 	}
 }

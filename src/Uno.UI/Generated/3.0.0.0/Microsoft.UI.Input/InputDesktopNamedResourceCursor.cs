@@ -19,7 +19,7 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string InputDesktopNamedResourceCursor.ModuleName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20InputDesktopNamedResourceCursor.ModuleName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputDesktopNamedResourceCursor", "ModuleName");
 			}
 		}
 #endif
@@ -29,25 +29,25 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string InputDesktopNamedResourceCursor.ResourceName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20InputDesktopNamedResourceCursor.ResourceName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputDesktopNamedResourceCursor", "ResourceName");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.ModuleName.get
-		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.ResourceName.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Input.InputDesktopNamedResourceCursor Create(string resourceName)
 		{
-			throw new global::System.NotImplementedException("The member InputDesktopNamedResourceCursor InputDesktopNamedResourceCursor.Create(string resourceName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputDesktopNamedResourceCursor%20InputDesktopNamedResourceCursor.Create%28string%20resourceName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputDesktopNamedResourceCursor", "Create(string resourceName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Input.InputDesktopNamedResourceCursor CreateFromModule(string moduleName, string resourceName)
 		{
-			throw new global::System.NotImplementedException("The member InputDesktopNamedResourceCursor InputDesktopNamedResourceCursor.CreateFromModule(string moduleName, string resourceName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputDesktopNamedResourceCursor%20InputDesktopNamedResourceCursor.CreateFromModule%28string%20moduleName%2C%20string%20resourceName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputDesktopNamedResourceCursor", "CreateFromModule(string moduleName, string resourceName)");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.ModuleName.get
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopNamedResourceCursor.ResourceName.get
 	}
 }

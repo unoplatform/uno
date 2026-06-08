@@ -31,6 +31,7 @@ public enum RuntimeTestPlatforms
 	// Combined platforms
 	NativeUIKit = NativeIOS | NativeTvOS | NativeMacCatalyst,
 	SkiaUIKit = SkiaIOS | SkiaTvOS | SkiaMacCatalyst,
+	NativeMobile = NativeAndroid | NativeUIKit,
 	SkiaMobile = SkiaAndroid | SkiaUIKit,
 	SkiaDesktop = SkiaWpf | SkiaWin32 | SkiaX11 | SkiaMacOS | SkiaIslands | SkiaFrameBuffer,
 	Skia = SkiaDesktop | SkiaWasm | SkiaMobile,

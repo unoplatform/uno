@@ -15,11 +15,21 @@ namespace Windows.Devices.Geolocation.Geofencing
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Devices.Geolocation.Geofencing.GeofenceMonitor Current
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "Current");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<global::Windows.Devices.Geolocation.Geofencing.Geofence> Geofences
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Geofence> GeofenceMonitor.Geofences is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CGeofence%3E%20GeofenceMonitor.Geofences");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "Geofences");
 			}
 		}
 #endif
@@ -29,7 +39,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Geoposition GeofenceMonitor.LastKnownGeoposition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Geoposition%20GeofenceMonitor.LastKnownGeoposition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "LastKnownGeoposition");
 			}
 		}
 #endif
@@ -39,35 +49,25 @@ namespace Windows.Devices.Geolocation.Geofencing
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GeofenceMonitorStatus GeofenceMonitor.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GeofenceMonitorStatus%20GeofenceMonitor.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "Status");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Devices.Geolocation.Geofencing.GeofenceMonitor Current
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member GeofenceMonitor GeofenceMonitor.Current is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GeofenceMonitor%20GeofenceMonitor.Current");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.Status.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.Geofences.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.LastKnownGeoposition.get
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.GeofenceStateChanged.add
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.GeofenceStateChanged.remove
+		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.Current.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport> ReadReports()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<GeofenceStateChangeReport> GeofenceMonitor.ReadReports() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CGeofenceStateChangeReport%3E%20GeofenceMonitor.ReadReports%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "ReadReports()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.GeofenceStateChanged.add
+		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.GeofenceStateChanged.remove
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.StatusChanged.add
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.StatusChanged.remove
-		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.Current.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.Geofences.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.LastKnownGeoposition.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.Status.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Geolocation.Geofencing.GeofenceMonitor, object> GeofenceStateChanged
@@ -75,12 +75,12 @@ namespace Windows.Devices.Geolocation.Geofencing
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "event TypedEventHandler<GeofenceMonitor, object> GeofenceMonitor.GeofenceStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "event GeofenceStateChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "event TypedEventHandler<GeofenceMonitor, object> GeofenceMonitor.GeofenceStateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "event GeofenceStateChanged");
 			}
 		}
 #endif
@@ -91,12 +91,12 @@ namespace Windows.Devices.Geolocation.Geofencing
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "event TypedEventHandler<GeofenceMonitor, object> GeofenceMonitor.StatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "event StatusChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "event TypedEventHandler<GeofenceMonitor, object> GeofenceMonitor.StatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geofencing.GeofenceMonitor", "event StatusChanged");
 			}
 		}
 #endif

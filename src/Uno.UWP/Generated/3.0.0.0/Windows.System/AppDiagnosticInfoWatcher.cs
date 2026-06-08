@@ -19,33 +19,33 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppDiagnosticInfoWatcherStatus AppDiagnosticInfoWatcher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppDiagnosticInfoWatcherStatus%20AppDiagnosticInfoWatcher.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppDiagnosticInfoWatcher", "Status");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Added.add
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Added.remove
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Removed.add
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Removed.remove
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.EnumerationCompleted.add
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.EnumerationCompleted.remove
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Stopped.add
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Stopped.remove
-		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Status.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppDiagnosticInfoWatcher", "void AppDiagnosticInfoWatcher.Start()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppDiagnosticInfoWatcher", "Start()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Stop()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppDiagnosticInfoWatcher", "void AppDiagnosticInfoWatcher.Stop()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppDiagnosticInfoWatcher", "Stop()");
 		}
 #endif
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Added.add
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Added.remove
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.EnumerationCompleted.add
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.EnumerationCompleted.remove
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Removed.add
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Removed.remove
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Stopped.add
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Stopped.remove
+		// Forced skipping of method Windows.System.AppDiagnosticInfoWatcher.Status.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.System.AppDiagnosticInfoWatcher, global::Windows.System.AppDiagnosticInfoWatcherEventArgs> Added
@@ -53,12 +53,12 @@ namespace Windows.System
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppDiagnosticInfoWatcher", "event TypedEventHandler<AppDiagnosticInfoWatcher, AppDiagnosticInfoWatcherEventArgs> AppDiagnosticInfoWatcher.Added");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppDiagnosticInfoWatcher", "event Added");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppDiagnosticInfoWatcher", "event TypedEventHandler<AppDiagnosticInfoWatcher, AppDiagnosticInfoWatcherEventArgs> AppDiagnosticInfoWatcher.Added");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppDiagnosticInfoWatcher", "event Added");
 			}
 		}
 #endif
@@ -69,12 +69,12 @@ namespace Windows.System
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppDiagnosticInfoWatcher", "event TypedEventHandler<AppDiagnosticInfoWatcher, object> AppDiagnosticInfoWatcher.EnumerationCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppDiagnosticInfoWatcher", "event EnumerationCompleted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppDiagnosticInfoWatcher", "event TypedEventHandler<AppDiagnosticInfoWatcher, object> AppDiagnosticInfoWatcher.EnumerationCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppDiagnosticInfoWatcher", "event EnumerationCompleted");
 			}
 		}
 #endif
@@ -85,12 +85,12 @@ namespace Windows.System
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppDiagnosticInfoWatcher", "event TypedEventHandler<AppDiagnosticInfoWatcher, AppDiagnosticInfoWatcherEventArgs> AppDiagnosticInfoWatcher.Removed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppDiagnosticInfoWatcher", "event Removed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppDiagnosticInfoWatcher", "event TypedEventHandler<AppDiagnosticInfoWatcher, AppDiagnosticInfoWatcherEventArgs> AppDiagnosticInfoWatcher.Removed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppDiagnosticInfoWatcher", "event Removed");
 			}
 		}
 #endif
@@ -101,12 +101,12 @@ namespace Windows.System
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppDiagnosticInfoWatcher", "event TypedEventHandler<AppDiagnosticInfoWatcher, object> AppDiagnosticInfoWatcher.Stopped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppDiagnosticInfoWatcher", "event Stopped");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppDiagnosticInfoWatcher", "event TypedEventHandler<AppDiagnosticInfoWatcher, object> AppDiagnosticInfoWatcher.Stopped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppDiagnosticInfoWatcher", "event Stopped");
 			}
 		}
 #endif

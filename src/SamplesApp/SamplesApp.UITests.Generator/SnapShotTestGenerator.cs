@@ -27,7 +27,7 @@ namespace Uno.Samples.UITest.Generator
 
 		private static readonly string[] _defaultCategories = new[] { "Default" };
 
-		private const int GroupCount = 5;
+		private const int GroupCount = 8;
 
 		public void Initialize(GeneratorInitializationContext context)
 		{
@@ -201,7 +201,7 @@ namespace Uno.Samples.UITest.Generator
 
 		private static Compilation GetCompilation(GeneratorExecutionContext context)
 		{
-			return context.Compilation.AddSyntaxTrees(GetSyntaxTrees(context, "UITests.Shared").Concat(GetSyntaxTrees(context, "SamplesApp.UnitTests.Shared")));
+			return context.Compilation.AddSyntaxTrees(GetSyntaxTrees(context, "SamplesApp.Samples").Concat(GetSyntaxTrees(context, "SamplesApp.UnitTests.Shared")));
 		}
 
 		private static IEnumerable<SyntaxTree> GetSyntaxTrees(GeneratorExecutionContext context, string baseName)

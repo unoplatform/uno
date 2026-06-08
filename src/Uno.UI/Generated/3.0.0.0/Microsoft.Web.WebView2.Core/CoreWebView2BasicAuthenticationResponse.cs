@@ -15,35 +15,35 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string UserName
+		public string Password
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2BasicAuthenticationResponse.UserName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2BasicAuthenticationResponse.UserName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse", "Password");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse", "string CoreWebView2BasicAuthenticationResponse.UserName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse", "Password");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Password
+		public string UserName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2BasicAuthenticationResponse.Password is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2BasicAuthenticationResponse.Password");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse", "UserName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse", "string CoreWebView2BasicAuthenticationResponse.Password");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse", "UserName");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse.UserName.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse.UserName.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse.Password.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse.Password.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse.UserName.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationResponse.UserName.set
 	}
 }

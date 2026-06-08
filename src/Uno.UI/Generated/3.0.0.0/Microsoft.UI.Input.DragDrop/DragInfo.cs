@@ -19,7 +19,7 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DataPackageOperation DragInfo.AllowedOperations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataPackageOperation%20DragInfo.AllowedOperations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragInfo", "AllowedOperations");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DataPackageView DragInfo.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataPackageView%20DragInfo.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragInfo", "Data");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DragDropModifiers DragInfo.Modifiers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DragDropModifiers%20DragInfo.Modifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragInfo", "Modifiers");
 			}
 		}
 #endif
@@ -49,13 +49,13 @@ namespace Microsoft.UI.Input.DragDrop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point DragInfo.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20DragInfo.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.DragDrop.DragInfo", "Position");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.Position.get
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.AllowedOperations.get
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.Data.get
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.Modifiers.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.AllowedOperations.get
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragInfo.Position.get
 	}
 }

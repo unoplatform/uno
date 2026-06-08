@@ -14,7 +14,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialGestureSettings SpatialGestureRecognizer.GestureSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialGestureSettings%20SpatialGestureRecognizer.GestureSettings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "GestureSettings");
 			}
 		}
 #endif
@@ -22,59 +22,59 @@ namespace Windows.UI.Input.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SpatialGestureRecognizer(global::Windows.UI.Input.Spatial.SpatialGestureSettings settings)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "SpatialGestureRecognizer.SpatialGestureRecognizer(SpatialGestureSettings settings)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "SpatialGestureRecognizer(SpatialGestureSettings settings)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.SpatialGestureRecognizer(Windows.UI.Input.Spatial.SpatialGestureSettings)
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.RecognitionStarted.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.RecognitionStarted.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.RecognitionEnded.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.RecognitionEnded.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.Tapped.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.Tapped.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldStarted.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldStarted.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldCompleted.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldCompleted.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldCanceled.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldCanceled.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationStarted.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationStarted.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationUpdated.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationUpdated.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationCompleted.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationCompleted.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationCanceled.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationCanceled.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationStarted.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationStarted.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationUpdated.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationUpdated.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationCompleted.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationCompleted.remove
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationCanceled.add
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationCanceled.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CaptureInteraction(global::Windows.UI.Input.Spatial.SpatialInteraction interaction)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "void SpatialGestureRecognizer.CaptureInteraction(SpatialInteraction interaction)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "CaptureInteraction(SpatialInteraction interaction)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CancelPendingGestures()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "void SpatialGestureRecognizer.CancelPendingGestures()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "CancelPendingGestures()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool TrySetGestureSettings(global::Windows.UI.Input.Spatial.SpatialGestureSettings settings)
 		{
-			throw new global::System.NotImplementedException("The member bool SpatialGestureRecognizer.TrySetGestureSettings(SpatialGestureSettings settings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialGestureRecognizer.TrySetGestureSettings%28SpatialGestureSettings%20settings%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "TrySetGestureSettings(SpatialGestureSettings settings)");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldCanceled.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldCanceled.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldCompleted.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldCompleted.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldStarted.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.HoldStarted.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationCanceled.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationCanceled.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationCompleted.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationCompleted.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationStarted.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationStarted.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationUpdated.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.ManipulationUpdated.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationCanceled.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationCanceled.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationCompleted.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationCompleted.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationStarted.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationStarted.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationUpdated.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationUpdated.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.RecognitionEnded.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.RecognitionEnded.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.RecognitionStarted.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.RecognitionStarted.remove
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.Tapped.add
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.Tapped.remove
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.GestureSettings.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -83,12 +83,12 @@ namespace Windows.UI.Input.Spatial
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialHoldCanceledEventArgs> SpatialGestureRecognizer.HoldCanceled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event HoldCanceled");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialHoldCanceledEventArgs> SpatialGestureRecognizer.HoldCanceled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event HoldCanceled");
 			}
 		}
 #endif
@@ -99,12 +99,12 @@ namespace Windows.UI.Input.Spatial
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialHoldCompletedEventArgs> SpatialGestureRecognizer.HoldCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event HoldCompleted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialHoldCompletedEventArgs> SpatialGestureRecognizer.HoldCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event HoldCompleted");
 			}
 		}
 #endif
@@ -115,12 +115,12 @@ namespace Windows.UI.Input.Spatial
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialHoldStartedEventArgs> SpatialGestureRecognizer.HoldStarted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event HoldStarted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialHoldStartedEventArgs> SpatialGestureRecognizer.HoldStarted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event HoldStarted");
 			}
 		}
 #endif
@@ -131,12 +131,12 @@ namespace Windows.UI.Input.Spatial
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialManipulationCanceledEventArgs> SpatialGestureRecognizer.ManipulationCanceled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event ManipulationCanceled");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialManipulationCanceledEventArgs> SpatialGestureRecognizer.ManipulationCanceled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event ManipulationCanceled");
 			}
 		}
 #endif
@@ -147,12 +147,12 @@ namespace Windows.UI.Input.Spatial
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialManipulationCompletedEventArgs> SpatialGestureRecognizer.ManipulationCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event ManipulationCompleted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialManipulationCompletedEventArgs> SpatialGestureRecognizer.ManipulationCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event ManipulationCompleted");
 			}
 		}
 #endif
@@ -163,12 +163,12 @@ namespace Windows.UI.Input.Spatial
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialManipulationStartedEventArgs> SpatialGestureRecognizer.ManipulationStarted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event ManipulationStarted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialManipulationStartedEventArgs> SpatialGestureRecognizer.ManipulationStarted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event ManipulationStarted");
 			}
 		}
 #endif
@@ -179,12 +179,12 @@ namespace Windows.UI.Input.Spatial
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialManipulationUpdatedEventArgs> SpatialGestureRecognizer.ManipulationUpdated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event ManipulationUpdated");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialManipulationUpdatedEventArgs> SpatialGestureRecognizer.ManipulationUpdated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event ManipulationUpdated");
 			}
 		}
 #endif
@@ -195,12 +195,12 @@ namespace Windows.UI.Input.Spatial
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialNavigationCanceledEventArgs> SpatialGestureRecognizer.NavigationCanceled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event NavigationCanceled");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialNavigationCanceledEventArgs> SpatialGestureRecognizer.NavigationCanceled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event NavigationCanceled");
 			}
 		}
 #endif
@@ -211,12 +211,12 @@ namespace Windows.UI.Input.Spatial
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialNavigationCompletedEventArgs> SpatialGestureRecognizer.NavigationCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event NavigationCompleted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialNavigationCompletedEventArgs> SpatialGestureRecognizer.NavigationCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event NavigationCompleted");
 			}
 		}
 #endif
@@ -227,12 +227,12 @@ namespace Windows.UI.Input.Spatial
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialNavigationStartedEventArgs> SpatialGestureRecognizer.NavigationStarted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event NavigationStarted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialNavigationStartedEventArgs> SpatialGestureRecognizer.NavigationStarted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event NavigationStarted");
 			}
 		}
 #endif
@@ -243,12 +243,12 @@ namespace Windows.UI.Input.Spatial
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialNavigationUpdatedEventArgs> SpatialGestureRecognizer.NavigationUpdated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event NavigationUpdated");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialNavigationUpdatedEventArgs> SpatialGestureRecognizer.NavigationUpdated");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event NavigationUpdated");
 			}
 		}
 #endif
@@ -259,12 +259,12 @@ namespace Windows.UI.Input.Spatial
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialRecognitionEndedEventArgs> SpatialGestureRecognizer.RecognitionEnded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event RecognitionEnded");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialRecognitionEndedEventArgs> SpatialGestureRecognizer.RecognitionEnded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event RecognitionEnded");
 			}
 		}
 #endif
@@ -275,12 +275,12 @@ namespace Windows.UI.Input.Spatial
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialRecognitionStartedEventArgs> SpatialGestureRecognizer.RecognitionStarted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event RecognitionStarted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialRecognitionStartedEventArgs> SpatialGestureRecognizer.RecognitionStarted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event RecognitionStarted");
 			}
 		}
 #endif
@@ -291,12 +291,12 @@ namespace Windows.UI.Input.Spatial
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialTappedEventArgs> SpatialGestureRecognizer.Tapped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event Tapped");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event TypedEventHandler<SpatialGestureRecognizer, SpatialTappedEventArgs> SpatialGestureRecognizer.Tapped");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "event Tapped");
 			}
 		}
 #endif

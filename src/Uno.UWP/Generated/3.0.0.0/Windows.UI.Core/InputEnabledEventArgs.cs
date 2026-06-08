@@ -19,11 +19,11 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InputEnabledEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InputEnabledEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.InputEnabledEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.InputEnabledEventArgs", "bool InputEnabledEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.InputEnabledEventArgs", "Handled");
 			}
 		}
 #endif
@@ -33,13 +33,13 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InputEnabledEventArgs.InputEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InputEnabledEventArgs.InputEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.InputEnabledEventArgs", "InputEnabled");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Core.InputEnabledEventArgs.InputEnabled.get
 		// Forced skipping of method Windows.UI.Core.InputEnabledEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Core.InputEnabledEventArgs.Handled.set
+		// Forced skipping of method Windows.UI.Core.InputEnabledEventArgs.InputEnabled.get
 		// Processing: Windows.UI.Core.ICoreWindowEventArgs
 	}
 }

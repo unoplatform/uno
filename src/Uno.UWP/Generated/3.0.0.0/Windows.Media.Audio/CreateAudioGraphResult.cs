@@ -15,11 +15,21 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Exception ExtendedError
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.CreateAudioGraphResult", "ExtendedError");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Audio.AudioGraph Graph
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioGraph CreateAudioGraphResult.Graph is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioGraph%20CreateAudioGraphResult.Graph");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.CreateAudioGraphResult", "Graph");
 			}
 		}
 #endif
@@ -29,22 +39,12 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioGraphCreationStatus CreateAudioGraphResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioGraphCreationStatus%20CreateAudioGraphResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.CreateAudioGraphResult", "Status");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Exception ExtendedError
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Exception CreateAudioGraphResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20CreateAudioGraphResult.ExtendedError");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Media.Audio.CreateAudioGraphResult.Status.get
-		// Forced skipping of method Windows.Media.Audio.CreateAudioGraphResult.Graph.get
 		// Forced skipping of method Windows.Media.Audio.CreateAudioGraphResult.ExtendedError.get
+		// Forced skipping of method Windows.Media.Audio.CreateAudioGraphResult.Graph.get
+		// Forced skipping of method Windows.Media.Audio.CreateAudioGraphResult.Status.get
 	}
 }

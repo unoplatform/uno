@@ -639,11 +639,6 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <remarks>Unlike the LayoutInformation.GetLayoutSlot(), this property is set **BEFORE** arranging the children of the ScrollViewer</remarks>
 		internal Size ViewportArrangeSize { get; private set; }
 
-		// Note for implementers: Search for SharedHelpers.IsRS5OrHigher() in ItemsRepeaterScrollHost.cs
-		// => This should be re-enabled AND this class also gives the base implementation for the anchoring
-		[global::Uno.NotImplemented]
-		public UIElement? CurrentAnchor => null;
-
 		/// <summary>
 		/// Cached value of <see cref="Uno.UI.Xaml.Controls.ScrollViewer.UpdatesModeProperty"/>,
 		/// in order to not access the DP on each scroll (perf considerations)
@@ -686,11 +681,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			ViewportArrangeSize = finalSize;
 
-			var arrangeSize = base.ArrangeOverride(finalSize);
-			TrimOverscroll(Orientation.Horizontal);
-			TrimOverscroll(Orientation.Vertical);
-
-			return arrangeSize;
+			return AnchoringArrangeOverride(finalSize, size => base.ArrangeOverride(size));
 		}
 
 		partial void TrimOverscroll(Orientation orientation);
@@ -705,7 +696,14 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnLayoutUpdated();
 #endif
-			UpdateDimensionProperties();
+			if (m_dimensionsUpdatedInArrange)
+			{
+				m_dimensionsUpdatedInArrange = false;
+			}
+			else
+			{
+				UpdateDimensionProperties();
+			}
 			UpdateZoomedContentAlignment();
 		}
 
@@ -821,8 +819,30 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateComputedVerticalScrollability(invalidate: false);
 			UpdateComputedHorizontalScrollability(invalidate: false);
 
-			TrimOverscroll(Orientation.Vertical);
-			TrimOverscroll(Orientation.Horizontal);
+			// Prefer the WinUI-parity recompute when the caller has expressed an offset intent (most
+			// recent programmatic ChangeView). The recompute keeps VerticalOffset/HorizontalOffset
+			// aligned with the user's intent (clamped to the current ScrollableHeight) across the
+			// realization cascades that virtualizing content (ItemsRepeater) produces. If the
+			// recompute applied an adjustment, skip the legacy TrimOverscroll so we don't double-clamp
+			// in the same arrange cycle.
+			// When no intent is armed (e.g. wheel-driven or touch-driven scrolling), only run the
+			// legacy TrimOverscroll if the SV's *viewport* (its own size) actually changed. Pure
+			// extent shrinkage from virtualizing content's realization must NOT be auto-clamped —
+			// that's the path that produces the "wheel fight" the user reports on high-variance
+			// ItemsRepeater content (issue #23041 / studio.live#816). The viewport-resize case
+			// (When_SizeChanged_Offsets_Adjusted) still runs because that pass sees ViewportHeight
+			// or ViewportWidth different from its previous snapshot.
+			var viewportChanged =
+				!NumericExtensions.AreClose(vpHeight, _lastTrimViewportHeight) ||
+				!NumericExtensions.AreClose(vpWidth, _lastTrimViewportWidth);
+			_lastTrimViewportHeight = vpHeight;
+			_lastTrimViewportWidth = vpWidth;
+
+			if (!RecomputeOffsetsFromIntent() && viewportChanged)
+			{
+				TrimOverscroll(Orientation.Vertical);
+				TrimOverscroll(Orientation.Horizontal);
+			}
 
 			var newSize = new Size(ExtentWidth, ExtentWidth);
 			if (oldSize != newSize)
@@ -1322,7 +1342,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			_ = Dispatcher.RunIdleAsync(e =>
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				if (_hasPendingUpdate)
 				{
@@ -1341,6 +1361,17 @@ namespace Microsoft.UI.Xaml.Controls
 
 			HorizontalOffset = _pendingHorizontalOffset;
 			VerticalOffset = _pendingVerticalOffset;
+
+			if (!isIntermediate && (oldHorizontalOffset != HorizontalOffset || oldVerticalOffset != VerticalOffset))
+			{
+				// Mirrors ScrollContentPresenter_Partial.cpp:871 (SetHorizontalOffsetPrivate /
+				// SetVerticalOffsetPrivate): discrete offset changes schedule an arrange so that
+				// AnchoringArrangeOverride re-selects CurrentAnchor against the new viewport.
+				// Intermediate ticks (DManip-driven inertia / drag) are skipped to match WinUI,
+				// which lets the compositor drive offsets during manipulation without re-running
+				// layout per frame.
+				InvalidateArrange();
+			}
 
 			// Not ideal, and doesn't match WinUI. This can miss raising some automation events.
 			if (AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged) &&
@@ -1485,6 +1516,25 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().LogDebug($"ChangeView(horizontalOffset={horizontalOffset}, verticalOffset={verticalOffset}, zoomFactor={zoomFactor}, disableAnimation={disableAnimation})");
 			}
 
+			// Capture the caller's offset intent so the post-layout recompute can preserve it across
+			// realization-driven extent fluctuations. The recompute (RecomputeOffsetsFromIntent) clamps
+			// the intent to the current ScrollableHeight without overwriting the intent itself, mirroring
+			// WinUI's m_Offset.Y vs m_ComputedOffset.Y separation in ScrollContentPresenter
+			// (ScrollContentPresenter_Partial.cpp:902 SetVerticalOffsetPrivate vs :3170 CoerceOffsets).
+			// Intent is only updated when this is an external/programmatic ChangeView; internal calls
+			// (TrimOverscroll, the recompute itself) set _isInternalOffsetAdjustment to suppress this.
+			if (!_isInternalOffsetAdjustment)
+			{
+				if (horizontalOffset is double hh)
+				{
+					_horizontalOffsetIntent = hh;
+				}
+				if (verticalOffset is double vv)
+				{
+					_verticalOffsetIntent = vv;
+				}
+			}
+
 			if (horizontalOffset == null && verticalOffset == null && zoomFactor == null)
 			{
 				return true; // nothing to do
@@ -1506,6 +1556,104 @@ namespace Microsoft.UI.Xaml.Controls
 			else
 			{
 				return false;
+			}
+		}
+
+		// Tracks the caller-requested offset (the user's intent) separately from VerticalOffset/
+		// HorizontalOffset (the displayed/clamped value). Mirrors WinUI's pattern in
+		// ScrollContentPresenter where m_Offset is the requested offset (validated only against the
+		// CURRENT ScrollableHeight at request time) and m_ComputedOffset is the one returned to
+		// callers (recoerced after every layout pass).
+		// Cleared on user input (mouse wheel, touch press) so wheel-driven scrolling never gets
+		// auto-pushed back toward a stale programmatic intent.
+		private double? _verticalOffsetIntent;
+		private double? _horizontalOffsetIntent;
+		private bool _isInternalOffsetAdjustment;
+
+		// Snapshot of the SV's previous viewport (own ActualWidth/Height) at the end of each
+		// UpdateDimensionProperties pass. Used to differentiate "viewport actually shrank" (the
+		// legitimate When_SizeChanged_Offsets_Adjusted case where the legacy TrimOverscroll must
+		// run) from "only the content's extent shrank during virtualization realization" (the
+		// wheel-fight case where TrimOverscroll must stay quiet).
+		private double _lastTrimViewportHeight;
+		private double _lastTrimViewportWidth;
+
+		// Called by ScrollContentPresenter from user-input paths (mouse wheel, touch start) so the
+		// recompute does not fight subsequent input by chasing a previously-armed programmatic
+		// intent. Maintains the user's "no fighting" expectation.
+		internal void ClearOffsetIntents()
+		{
+			_verticalOffsetIntent = null;
+			_horizontalOffsetIntent = null;
+		}
+
+		// Called by ScrollContentPresenter from its public SetVerticalOffset/SetHorizontalOffset
+		// entry points which bypass ScrollViewer.ChangeView. These represent explicit programmatic
+		// requests in the same sense as ChangeView; the new value supersedes any prior intent so
+		// the recompute step does not pull the offset back to a stale intent (which the user has
+		// just explicitly overridden).
+		internal void SetVerticalOffsetIntent(double offset) => _verticalOffsetIntent = offset;
+
+		internal void SetHorizontalOffsetIntent(double offset) => _horizontalOffsetIntent = offset;
+
+		// Recomputes VerticalOffset/HorizontalOffset = clamp(intent, 0, ScrollableHeight/Width) when
+		// an intent is armed. Called from UpdateDimensionProperties after the SV's extent/viewport
+		// are refreshed. Returns true when an offset adjustment was applied so the caller can avoid
+		// an immediate redundant TrimOverscroll on top of it.
+		private bool RecomputeOffsetsFromIntent()
+		{
+			// Skip when a scroll animation is in flight: the animation already drives VO toward the
+			// target progressively, and a synchronous instant Set here would interrupt the animation
+			// and stop intermediate effects (e.g. ListViewBase IncrementalLoading triggered by the
+			// progressive viewport move). Once the animation completes the next layout pass runs
+			// the recompute and seats the offset at clamp(intent, SH).
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+			if ((_presenter as ScrollContentPresenter)?.IsScrollAnimationInProgress == true)
+			{
+				return false;
+			}
+#endif
+
+			var changed = false;
+
+			if (_verticalOffsetIntent is double vIntent)
+			{
+				var clamped = Math.Max(0, Math.Min(vIntent, ScrollableHeight));
+				if (Math.Abs(VerticalOffset - clamped) > 0.5)
+				{
+					ChangeViewInternal(null, clamped);
+					changed = true;
+				}
+			}
+
+			if (_horizontalOffsetIntent is double hIntent)
+			{
+				var clamped = Math.Max(0, Math.Min(hIntent, ScrollableWidth));
+				if (Math.Abs(HorizontalOffset - clamped) > 0.5)
+				{
+					ChangeViewInternal(clamped, null);
+					changed = true;
+				}
+			}
+
+			return changed;
+		}
+
+		// Internal-only ChangeView used by the recompute step and TrimOverscroll. Sets the
+		// _isInternalOffsetAdjustment guard so the public ChangeView path skips updating
+		// _verticalOffsetIntent/_horizontalOffsetIntent — those represent the caller's most recent
+		// explicit request, not the framework's intermediate corrections.
+		private void ChangeViewInternal(double? horizontalOffset, double? verticalOffset)
+		{
+			var wasInternal = _isInternalOffsetAdjustment;
+			_isInternalOffsetAdjustment = true;
+			try
+			{
+				ChangeView(horizontalOffset, verticalOffset, null, disableAnimation: true);
+			}
+			finally
+			{
+				_isInternalOffsetAdjustment = wasInternal;
 			}
 		}
 

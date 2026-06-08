@@ -19,7 +19,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PlatformDiagnosticTraceInfo.IsAutoLogger is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PlatformDiagnosticTraceInfo.IsAutoLogger");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo", "IsAutoLogger");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PlatformDiagnosticTraceInfo.IsExclusive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PlatformDiagnosticTraceInfo.IsExclusive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo", "IsExclusive");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long PlatformDiagnosticTraceInfo.MaxTraceDurationFileTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=long%20PlatformDiagnosticTraceInfo.MaxTraceDurationFileTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo", "MaxTraceDurationFileTime");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlatformDiagnosticTracePriority PlatformDiagnosticTraceInfo.Priority is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlatformDiagnosticTracePriority%20PlatformDiagnosticTraceInfo.Priority");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo", "Priority");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong PlatformDiagnosticTraceInfo.ProfileHash is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20PlatformDiagnosticTraceInfo.ProfileHash");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo", "ProfileHash");
 			}
 		}
 #endif
@@ -69,15 +69,15 @@ namespace Windows.System.Diagnostics.TraceReporting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlatformDiagnosticTraceInfo.ScenarioId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlatformDiagnosticTraceInfo.ScenarioId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo", "ScenarioId");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo.ScenarioId.get
-		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo.ProfileHash.get
-		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo.IsExclusive.get
 		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo.IsAutoLogger.get
+		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo.IsExclusive.get
 		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo.MaxTraceDurationFileTime.get
 		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo.Priority.get
+		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo.ProfileHash.get
+		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceInfo.ScenarioId.get
 	}
 }

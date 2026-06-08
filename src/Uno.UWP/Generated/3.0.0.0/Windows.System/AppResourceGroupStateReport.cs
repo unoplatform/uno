@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppResourceGroupEnergyQuotaState AppResourceGroupStateReport.EnergyQuotaState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppResourceGroupEnergyQuotaState%20AppResourceGroupStateReport.EnergyQuotaState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupStateReport", "EnergyQuotaState");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppResourceGroupExecutionState AppResourceGroupStateReport.ExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppResourceGroupExecutionState%20AppResourceGroupStateReport.ExecutionState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupStateReport", "ExecutionState");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.AppResourceGroupStateReport.ExecutionState.get
 		// Forced skipping of method Windows.System.AppResourceGroupStateReport.EnergyQuotaState.get
+		// Forced skipping of method Windows.System.AppResourceGroupStateReport.ExecutionState.get
 	}
 }

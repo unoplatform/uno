@@ -15,15 +15,15 @@ namespace Windows.Devices.Bluetooth.Background
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Bluetooth.BluetoothServiceCapabilities ServiceCapabilities
+		public global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId LocalServiceId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothServiceCapabilities RfcommInboundConnectionInformation.ServiceCapabilities is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothServiceCapabilities%20RfcommInboundConnectionInformation.ServiceCapabilities");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation", "LocalServiceId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation", "BluetoothServiceCapabilities RfcommInboundConnectionInformation.ServiceCapabilities");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation", "LocalServiceId");
 			}
 		}
 #endif
@@ -33,32 +33,32 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer RfcommInboundConnectionInformation.SdpRecord is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20RfcommInboundConnectionInformation.SdpRecord");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation", "SdpRecord");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation", "IBuffer RfcommInboundConnectionInformation.SdpRecord");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation", "SdpRecord");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId LocalServiceId
+		public global::Windows.Devices.Bluetooth.BluetoothServiceCapabilities ServiceCapabilities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RfcommServiceId RfcommInboundConnectionInformation.LocalServiceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RfcommServiceId%20RfcommInboundConnectionInformation.LocalServiceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation", "ServiceCapabilities");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation", "RfcommServiceId RfcommInboundConnectionInformation.LocalServiceId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation", "ServiceCapabilities");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.SdpRecord.get
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.SdpRecord.set
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.LocalServiceId.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.LocalServiceId.set
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.SdpRecord.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.SdpRecord.set
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.ServiceCapabilities.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommInboundConnectionInformation.ServiceCapabilities.set
 	}

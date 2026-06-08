@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BandwidthStatistics ServerMessageWebSocketInformation.BandwidthStatistics is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BandwidthStatistics%20ServerMessageWebSocketInformation.BandwidthStatistics");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ServerMessageWebSocketInformation", "BandwidthStatistics");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName ServerMessageWebSocketInformation.LocalAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20ServerMessageWebSocketInformation.LocalAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ServerMessageWebSocketInformation", "LocalAddress");
 			}
 		}
 #endif
@@ -39,12 +39,12 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ServerMessageWebSocketInformation.Protocol is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ServerMessageWebSocketInformation.Protocol");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.ServerMessageWebSocketInformation", "Protocol");
 			}
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocketInformation.BandwidthStatistics.get
-		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocketInformation.Protocol.get
 		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocketInformation.LocalAddress.get
+		// Forced skipping of method Windows.Networking.Sockets.ServerMessageWebSocketInformation.Protocol.get
 	}
 }

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception PackageCatalogAddOptionalPackageResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20PackageCatalogAddOptionalPackageResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult", "ExtendedError");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Package PackageCatalogAddOptionalPackageResult.Package is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Package%20PackageCatalogAddOptionalPackageResult.Package");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult", "Package");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult.Package.get
 		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult.ExtendedError.get
+		// Forced skipping of method Windows.ApplicationModel.PackageCatalogAddOptionalPackageResult.Package.get
 	}
 }

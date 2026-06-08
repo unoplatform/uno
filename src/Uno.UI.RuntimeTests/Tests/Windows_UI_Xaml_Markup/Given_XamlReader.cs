@@ -1,11 +1,10 @@
-﻿#if HAS_UNO
+#if HAS_UNO
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Uno.UI.Extensions;
 using Uno.UI.Helpers;
-using Uno.Xaml;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
@@ -30,13 +29,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			var rectangle = (Rectangle)Microsoft.UI.Xaml.Markup.XamlReader.Load("""
 				<Rectangle xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" StrokeDashArray="1,2" />
 				""");
-			Assert.AreEqual(2, rectangle.StrokeDashArray.Count);
+			Assert.HasCount(2, rectangle.StrokeDashArray);
 			Assert.AreEqual(1, rectangle.StrokeDashArray[0]);
 			Assert.AreEqual(2, rectangle.StrokeDashArray[1]);
 
 			var value = Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(DoubleCollection), "1,2") as DoubleCollection;
 			Assert.IsNotNull(value);
-			Assert.AreEqual(2, value.Count);
+			Assert.HasCount(2, value);
 			Assert.AreEqual(1, value[0]);
 			Assert.AreEqual(2, value[1]);
 		}
@@ -47,14 +46,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			var polygon = (Polygon)Microsoft.UI.Xaml.Markup.XamlReader.Load("""
 				<Polygon xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Points="0,1 2,3 4,5" />
 				""");
-			Assert.AreEqual(3, polygon.Points.Count);
+			Assert.HasCount(3, polygon.Points);
 			Assert.AreEqual(new Point(0, 1), polygon.Points[0]);
 			Assert.AreEqual(new Point(2, 3), polygon.Points[1]);
 			Assert.AreEqual(new Point(4, 5), polygon.Points[2]);
 
 			var value = Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(PointCollection), "0,1 2,3 4,5") as PointCollection;
 			Assert.IsNotNull(value);
-			Assert.AreEqual(3, value.Count);
+			Assert.HasCount(3, value);
 			Assert.AreEqual(new Point(0, 1), value[0]);
 			Assert.AreEqual(new Point(2, 3), value[1]);
 			Assert.AreEqual(new Point(4, 5), value[2]);
@@ -90,8 +89,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 				</ResourceDictionary>
 			""");
 
-			Assert.AreEqual(2, sut.ThemeDictionaries.Count);
-			Assert.AreEqual(1, sut.MergedDictionaries.Count);
+			Assert.HasCount(2, sut.ThemeDictionaries);
+			Assert.HasCount(1, sut.MergedDictionaries);
 			Assert.IsTrue(sut.TryGetValue("Color1", out var _, shouldCheckSystem: false), "Failed to resolve key: Color1");
 			Assert.IsTrue(sut.TryGetValue("Color2", out var _, shouldCheckSystem: false), "Failed to resolve key: Color2");
 			Assert.IsTrue(sut.TryGetValue("Color3", out var _, shouldCheckSystem: false), "Failed to resolve key: Color3");
@@ -126,8 +125,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			""");
 			var sut = setup.Resources;
 
-			Assert.AreEqual(2, sut.ThemeDictionaries.Count);
-			Assert.AreEqual(1, sut.MergedDictionaries.Count);
+			Assert.HasCount(2, sut.ThemeDictionaries);
+			Assert.HasCount(1, sut.MergedDictionaries);
 			Assert.IsTrue(sut.TryGetValue("Color1", out var _, shouldCheckSystem: false), "Failed to resolve key: Color1");
 			Assert.IsTrue(sut.TryGetValue("Color2", out var _, shouldCheckSystem: false), "Failed to resolve key: Color2");
 			Assert.IsTrue(sut.TryGetValue("Color3", out var _, shouldCheckSystem: false), "Failed to resolve key: Color3");
@@ -649,7 +648,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 					""")
 			);
 
-			Assert.AreEqual(4, ex.LineNumber);
+			StringAssert.Contains(ex.Message, "[Line: 4");
 			Assert.AreEqual("Requested value 'Invalid' was not found.", ex.InnerException.Message);
 		}
 
@@ -683,9 +682,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			);
 
 			var aggregateException = (AggregateException)ex.InnerException;
-			Assert.AreEqual(5, (aggregateException.InnerExceptions[0] as XamlParseException).LineNumber);
 			Assert.AreEqual("Requested value 'Invalid' was not found. [Line: 5 Position: 6]", (aggregateException.InnerExceptions[0] as XamlParseException).Message);
-			Assert.AreEqual(11, (aggregateException.InnerExceptions[1] as XamlParseException).LineNumber);
 			Assert.AreEqual("Requested value 'Invalid2' was not found. [Line: 11 Position: 9]", (aggregateException.InnerExceptions[1] as XamlParseException).Message);
 		}
 
@@ -851,8 +848,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 
 				// The type 'Microsoft.UI.Xaml.Data.Binding' does not contain a property or event named 'Test'. [Line: 7 Position: 6]"
 				Assert.AreEqual("The type 'Microsoft.UI.Xaml.Data.Binding' does not contain a property or event named 'Test'. [Line: 7 Position: 6]", ex.Message);
-				Assert.AreEqual(7, ex.LineNumber);
-				Assert.AreEqual(6, ex.LinePosition);
 			}
 		}
 
@@ -988,10 +983,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 				Assert.HasCount(2, ae.InnerExceptions);
 				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[0]);
 				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[1]);
-				Assert.AreEqual(2, (ae.InnerExceptions[0] as XamlParseException).LineNumber);
-				Assert.AreEqual(3, (ae.InnerExceptions[0] as XamlParseException).LinePosition);
-				Assert.AreEqual(3, (ae.InnerExceptions[1] as XamlParseException).LineNumber);
-				Assert.AreEqual(3, (ae.InnerExceptions[1] as XamlParseException).LinePosition);
+				StringAssert.Contains(ae.InnerExceptions[0].Message, "[Line: 2 Position: 3]");
+				StringAssert.Contains(ae.InnerExceptions[1].Message, "[Line: 3 Position: 3]");
 			}
 		}
 
@@ -1016,10 +1009,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 				Assert.HasCount(2, ae.InnerExceptions);
 				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[0]);
 				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[1]);
-				Assert.AreEqual(2, (ae.InnerExceptions[0] as XamlParseException).LineNumber);
-				Assert.AreEqual(3, (ae.InnerExceptions[0] as XamlParseException).LinePosition);
-				Assert.AreEqual(4, (ae.InnerExceptions[1] as XamlParseException).LineNumber);
-				Assert.AreEqual(4, (ae.InnerExceptions[1] as XamlParseException).LinePosition);
+				StringAssert.Contains(ae.InnerExceptions[0].Message, "[Line: 2 Position: 3]");
+				StringAssert.Contains(ae.InnerExceptions[1].Message, "[Line: 4 Position: 4]");
 			}
 		}
 
@@ -1044,10 +1035,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 				Assert.HasCount(2, ae.InnerExceptions);
 				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[0]);
 				Assert.IsInstanceOfType<XamlParseException>(ae.InnerExceptions[1]);
-				Assert.AreEqual(2, (ae.InnerExceptions[0] as XamlParseException).LineNumber);
-				Assert.AreEqual(3, (ae.InnerExceptions[0] as XamlParseException).LinePosition);
-				Assert.AreEqual(4, (ae.InnerExceptions[1] as XamlParseException).LineNumber);
-				Assert.AreEqual(4, (ae.InnerExceptions[1] as XamlParseException).LinePosition);
+				StringAssert.Contains(ae.InnerExceptions[0].Message, "[Line: 2 Position: 3]");
+				StringAssert.Contains(ae.InnerExceptions[1].Message, "[Line: 4 Position: 4]");
 			}
 		}
 
@@ -1125,7 +1114,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			var expectations = expectedTree.Split('\n', StringSplitOptions.TrimEntries);
 			var descendants = FlattenInlines(tb.Inlines).ToArray();
 
-			Assert.AreEqual(expectations.Length, descendants.Length, "Mismatched descendant size");
+			Assert.HasCount(expectations.Length, descendants, "Mismatched descendant size");
 			for (int i = 0; i < expectations.Length; i++)
 			{
 				var line = expectations[i].TrimStart("0123456789. ".ToArray());

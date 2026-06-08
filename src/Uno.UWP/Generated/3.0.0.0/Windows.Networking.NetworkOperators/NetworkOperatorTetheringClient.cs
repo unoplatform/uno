@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<HostName> NetworkOperatorTetheringClient.HostNames is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CHostName%3E%20NetworkOperatorTetheringClient.HostNames");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorTetheringClient", "HostNames");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NetworkOperatorTetheringClient.MacAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20NetworkOperatorTetheringClient.MacAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorTetheringClient", "MacAddress");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringClient.MacAddress.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringClient.HostNames.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringClient.MacAddress.get
 	}
 }

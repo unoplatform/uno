@@ -222,5 +222,10 @@ namespace Uno.UI.Samples.Controls
 				_ = ((SampleChooserViewModel)DataContext).OpenSample(CancellationToken.None, control);
 			}
 		}
+
+		private void InfoFlyout_Opening(object sender, object e)
+		{
+			SampleInfoFlyoutContent.DataContext = ViewModel?.CurrentSelectedSample;
+		}
 	}
 }

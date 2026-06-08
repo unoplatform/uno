@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaSourceState MediaSourceStateChangedEventArgs.NewState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSourceState%20MediaSourceStateChangedEventArgs.NewState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaSourceStateChangedEventArgs", "NewState");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaSourceState MediaSourceStateChangedEventArgs.OldState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSourceState%20MediaSourceStateChangedEventArgs.OldState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.MediaSourceStateChangedEventArgs", "OldState");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.MediaSourceStateChangedEventArgs.OldState.get
 		// Forced skipping of method Windows.Media.Core.MediaSourceStateChangedEventArgs.NewState.get
+		// Forced skipping of method Windows.Media.Core.MediaSourceStateChangedEventArgs.OldState.get
 	}
 }

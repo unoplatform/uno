@@ -19,7 +19,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnChannelActivityEventType VpnChannelActivityEventArgs.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnChannelActivityEventType%20VpnChannelActivityEventArgs.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnChannelActivityEventArgs", "Type");
 			}
 		}
 #endif

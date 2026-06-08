@@ -6,7 +6,11 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Shapes;
+#if !WINAPPSDK
+using Uno.Media;
+#endif
 using SamplesApp.UITests;
+using Path = Microsoft.UI.Xaml.Shapes.Path;
 using Uno.UI.RuntimeTests.Helpers;
 using System.Threading;
 using static Private.Infrastructure.TestServices;
@@ -29,6 +33,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void Should_Not_Include_Control_Points_Bounds()
 		{
 			var SUT = new Path { Data = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry), "M 0 0 C 0 0 25 25 0 50") };
@@ -38,8 +43,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 #if WINAPPSDK
 			Assert.AreEqual(new Size(11, 50), SUT.DesiredSize);
 #else
-			Assert.IsTrue(Math.Abs(11 - SUT.DesiredSize.Width) <= 1, $"Actual size: {SUT.DesiredSize}");
-			Assert.IsTrue(Math.Abs(50 - SUT.DesiredSize.Height) <= 1, $"Actual size: {SUT.DesiredSize}");
+			Assert.IsLessThanOrEqualTo(1, Math.Abs(11 - SUT.DesiredSize.Width), $"Actual size: {SUT.DesiredSize}");
+			Assert.IsLessThanOrEqualTo(1, Math.Abs(50 - SUT.DesiredSize.Height), $"Actual size: {SUT.DesiredSize}");
 #endif
 		}
 
@@ -169,6 +174,300 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			ImageAssert.HasColorAt(screenShot, new Point(90, 50), "#FF38FF52");
 		}
 
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3238")]
+#if !__SKIA__ && !WINAPPSDK
+		[Ignore("Geometry.Transform is only implemented on Skia and WinUI.")]
+#endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_Geometry_Transform_Translates_Rendering()
+		{
+			var path = new Path
+			{
+				Data = new RectangleGeometry
+				{
+					Rect = new Rect(0, 0, 50, 50),
+					Transform = new TranslateTransform { X = 60, Y = 60 }
+				},
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 150,
+				Height = 150
+			};
+
+			await UITestHelper.Load(path);
+
+			var screenshot = await UITestHelper.ScreenShot(path);
+
+			// The rectangle is at (0,0)-(50,50) but translated by (60,60),
+			// so it should render at (60,60)-(110,110).
+			// Origin area should NOT be red
+			ImageAssert.DoesNotHaveColorAt(screenshot, new Point(10, 10), Microsoft.UI.Colors.Red);
+			// Translated position should be red
+			ImageAssert.HasColorAt(screenshot, new Point(85, 85), Microsoft.UI.Colors.Red);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3238")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+#if !__SKIA__ && !WINAPPSDK
+		[Ignore("Geometry.Transform is only implemented on Skia and WinUI.")]
+#endif
+		public async Task When_Geometry_Transform_Changed_At_Runtime()
+		{
+			var translate = new TranslateTransform { X = 0, Y = 0 };
+			var path = new Path
+			{
+				Data = new RectangleGeometry
+				{
+					Rect = new Rect(0, 0, 50, 50),
+					Transform = translate
+				},
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 150,
+				Height = 150
+			};
+
+			await UITestHelper.Load(path);
+
+			// Initially, the rect is at (0,0)
+			var screenshotBefore = await UITestHelper.ScreenShot(path);
+			ImageAssert.HasColorAt(screenshotBefore, new Point(25, 25), Microsoft.UI.Colors.Red);
+			ImageAssert.DoesNotHaveColorAt(screenshotBefore, new Point(125, 125), Microsoft.UI.Colors.Red);
+
+			// Change the transform at runtime (simulates what an animation would do)
+			translate.X = 80;
+			translate.Y = 80;
+
+			await WindowHelper.WaitForIdle();
+
+			// After transform change, the rect should have moved
+			var screenshotAfter = await UITestHelper.ScreenShot(path);
+			ImageAssert.HasColorAt(screenshotAfter, new Point(105, 105), Microsoft.UI.Colors.Red);
+			// Origin should no longer be red
+			ImageAssert.DoesNotHaveColorAt(screenshotAfter, new Point(10, 10), Microsoft.UI.Colors.Red);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3238")]
+#if !__SKIA__ && !WINAPPSDK
+		[Ignore("Geometry.Transform is only implemented on Skia and WinUI.")]
+#endif
+		public async Task When_GeometryGroup_Children_Have_Transforms()
+		{
+			var path = new Path
+			{
+				Data = new GeometryGroup
+				{
+					Children =
+					{
+						new RectangleGeometry
+						{
+							Rect = new Rect(0, 0, 40, 40),
+						},
+						new RectangleGeometry
+						{
+							Rect = new Rect(0, 0, 40, 40),
+							Transform = new TranslateTransform { X = 80, Y = 80 }
+						}
+					}
+				},
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 150,
+				Height = 150
+			};
+
+			await UITestHelper.Load(path);
+
+			var screenshot = await UITestHelper.ScreenShot(path);
+
+			// First rect at origin should be red
+			ImageAssert.HasColorAt(screenshot, new Point(20, 20), Microsoft.UI.Colors.Red);
+			// Second rect translated to (80,80) should be red
+			ImageAssert.HasColorAt(screenshot, new Point(100, 100), Microsoft.UI.Colors.Red);
+			// Gap between the two rects should NOT be red
+			ImageAssert.DoesNotHaveColorAt(screenshot, new Point(60, 60), Microsoft.UI.Colors.Red);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19957")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+#if !__SKIA__ && !WINAPPSDK
+		[Ignore("PolyLineSegment stroke rendering is validated on Skia and WinUI.")]
+#endif
+		public async Task When_PolyLineSegment_Is_Stroked_Renders_All_Points()
+		{
+			// A PathGeometry containing a LineSegment followed by a PolyLineSegment,
+			// both stroke-only (no fill).  Before the fix, the PolyLineSegment portion
+			// was invisible on Skia because the canvas Save() was missing before ClipPath().
+			var SUT = new Path
+			{
+				Width = 200,
+				Height = 100,
+				Stroke = new SolidColorBrush(Microsoft.UI.Colors.Black),
+				StrokeThickness = 4,
+				Data = new PathGeometry
+				{
+					Figures = new PathFigureCollection
+					{
+						new PathFigure
+						{
+							StartPoint = new Point(0, 50),
+							IsClosed = false,
+							Segments = new PathSegmentCollection
+							{
+								// Single LineSegment — always rendered correctly
+								new LineSegment { Point = new Point(60, 50) },
+								// PolyLineSegment — was silently dropped before the fix
+								new PolyLineSegment
+								{
+									Points = new PointCollection
+									{
+										new Point(120, 50),
+										new Point(200, 50),
+									}
+								},
+							}
+						}
+					}
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+
+			// Mid-point of the LineSegment portion — should be black
+			ImageAssert.HasColorAt(screenshot, new Point(30, 50), Microsoft.UI.Colors.Black);
+
+			// Mid-point of the PolyLineSegment portion — must also be black
+			ImageAssert.HasColorAt(screenshot, new Point(160, 50), Microsoft.UI.Colors.Black);
+
+			// Area well above the line — must NOT be black
+			ImageAssert.DoesNotHaveColorAt(screenshot, new Point(30, 10), Microsoft.UI.Colors.Black);
+			ImageAssert.DoesNotHaveColorAt(screenshot, new Point(160, 10), Microsoft.UI.Colors.Black);
+		}
+
 		private void Brush_ImageOpened(object sender, Microsoft.UI.Xaml.RoutedEventArgs e) => throw new NotImplementedException();
+
+		// Repro tests for https://github.com/unoplatform/uno/issues/2228
+#if !WINAPPSDK
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/2228")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+		public async Task When_Path_ArcTo_Multiple_Arcs_Does_Not_Throw()
+		{
+			var path = new Path
+			{
+				Data = "m 822.6875,43.4375 a 1.375,1.3125 0 0 1 -1.375,1.3125 1.375,1.3125 0 0 1 -1.375,-1.3125 1.375,1.3125 0 0 1 1.375,-1.3125 1.375,1.3125 0 0 1 1.375,1.3125 z",
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			};
+
+			WindowHelper.WindowContent = path;
+			await WindowHelper.WaitForLoaded(path);
+			await WindowHelper.WaitForIdle();
+		}
+#endif
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/2228")]
+#if !__SKIA__
+		[Ignore("StreamGeometry elliptical arcs are only implemented on Skia (issue #2228 scope).")]
+#endif
+		public void When_SvgPath_String_With_Elliptical_Arc_Parses()
+		{
+			// SVG path strings with elliptical arc commands (rx != ry) used to throw
+			// NotImplementedException in PathStreamGeometryContext.ArcTo when going through
+			// PathMarkupParser -> StreamGeometry. Validates that the parser succeeds and the
+			// resulting geometry has finite, non-empty bounds.
+			var data = (Geometry)XamlBindingHelper.ConvertValue(
+				typeof(Geometry),
+				"M 10,10 A 5,3 0 0 1 20,15 A 7,2 30 1 0 30,30 Z");
+
+			Assert.IsNotNull(data);
+
+			var path = new Path { Data = data, Stroke = new SolidColorBrush(Microsoft.UI.Colors.Black), StrokeThickness = 1 };
+			path.Measure(new Size(100, 100));
+
+			Assert.IsTrue(path.DesiredSize.Width > 0, $"Expected non-zero width, got {path.DesiredSize}");
+			Assert.IsTrue(path.DesiredSize.Height > 0, $"Expected non-zero height, got {path.DesiredSize}");
+		}
+
+#if !WINAPPSDK
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("StreamGeometryContext.PolyBezierTo is only implemented on Skia.")]
+#endif
+		public void When_StreamGeometry_PolyBezierTo_Renders()
+		{
+			var stream = new StreamGeometry();
+			using (var ctx = stream.Open())
+			{
+				ctx.BeginFigure(new Point(0, 0), true);
+				ctx.PolyBezierTo(new[]
+				{
+					new Point(10, 0), new Point(10, 10), new Point(20, 10),
+					new Point(30, 10), new Point(30, 20), new Point(40, 20),
+				}, true, false);
+				ctx.SetClosedState(false);
+			}
+
+			var path = new Path { Data = stream, Stroke = new SolidColorBrush(Microsoft.UI.Colors.Black), StrokeThickness = 1 };
+			path.Measure(new Size(100, 100));
+
+			Assert.IsTrue(path.DesiredSize.Width > 0);
+			Assert.IsTrue(path.DesiredSize.Height > 0);
+		}
+
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("StreamGeometryContext.PolyQuadraticBezierTo is only implemented on Skia.")]
+#endif
+		public void When_StreamGeometry_PolyQuadraticBezierTo_Renders()
+		{
+			var stream = new StreamGeometry();
+			using (var ctx = stream.Open())
+			{
+				ctx.BeginFigure(new Point(0, 0), true);
+				ctx.PolyQuadraticBezierTo(new[]
+				{
+					new Point(10, 0), new Point(10, 10),
+					new Point(20, 10), new Point(20, 20),
+				}, true, false);
+				ctx.SetClosedState(false);
+			}
+
+			var path = new Path { Data = stream, Stroke = new SolidColorBrush(Microsoft.UI.Colors.Black), StrokeThickness = 1 };
+			path.Measure(new Size(100, 100));
+
+			Assert.IsTrue(path.DesiredSize.Width > 0);
+			Assert.IsTrue(path.DesiredSize.Height > 0);
+		}
+
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("EllipseGeometry -> StreamGeometry conversion is only validated on Skia (iOS workaround for #6849).")]
+#endif
+		public void When_EllipseGeometry_To_StreamGeometry_Round_Trips()
+		{
+			// Position the ellipse so its bounding box starts at (0, 0) — DesiredSize is measured
+			// from origin and includes the full extent of the geometry in absolute coordinates.
+			var ellipse = new EllipseGeometry
+			{
+				Center = new Point(30, 20),
+				RadiusX = 30,
+				RadiusY = 20,
+			};
+
+			var stream = ellipse.ToStreamGeometry();
+			Assert.IsNotNull(stream);
+
+			var path = new Path { Data = stream, Fill = new SolidColorBrush(Microsoft.UI.Colors.Black) };
+			path.Measure(new Size(200, 200));
+
+			// Ellipse occupies 60x40 (2*RadiusX by 2*RadiusY) — measured shape should match within 1 px.
+			Assert.IsLessThanOrEqualTo(1, Math.Abs(60 - path.DesiredSize.Width), $"Width: {path.DesiredSize}");
+			Assert.IsLessThanOrEqualTo(1, Math.Abs(40 - path.DesiredSize.Height), $"Height: {path.DesiredSize}");
+		}
+#endif
 	}
 }

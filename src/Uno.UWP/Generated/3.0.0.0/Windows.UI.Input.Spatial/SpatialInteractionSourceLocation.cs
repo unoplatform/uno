@@ -15,21 +15,11 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3? Position
+		public global::System.Numerics.Vector3? AngularVelocity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3? SpatialInteractionSourceLocation.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%3F%20SpatialInteractionSourceLocation.Position");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3? Velocity
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3? SpatialInteractionSourceLocation.Velocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%3F%20SpatialInteractionSourceLocation.Velocity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceLocation", "AngularVelocity");
 			}
 		}
 #endif
@@ -39,17 +29,17 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Quaternion? SpatialInteractionSourceLocation.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Quaternion%3F%20SpatialInteractionSourceLocation.Orientation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceLocation", "Orientation");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3? AngularVelocity
+		public global::System.Numerics.Vector3? Position
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3? SpatialInteractionSourceLocation.AngularVelocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%3F%20SpatialInteractionSourceLocation.AngularVelocity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceLocation", "Position");
 			}
 		}
 #endif
@@ -59,7 +49,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialInteractionSourcePositionAccuracy SpatialInteractionSourceLocation.PositionAccuracy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialInteractionSourcePositionAccuracy%20SpatialInteractionSourceLocation.PositionAccuracy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceLocation", "PositionAccuracy");
 			}
 		}
 #endif
@@ -69,15 +59,25 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialPointerInteractionSourcePose SpatialInteractionSourceLocation.SourcePointerPose is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialPointerInteractionSourcePose%20SpatialInteractionSourceLocation.SourcePointerPose");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceLocation", "SourcePointerPose");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.Position.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.Velocity.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.Orientation.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.PositionAccuracy.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector3? Velocity
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceLocation", "Velocity");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.AngularVelocity.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.Orientation.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.Position.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.PositionAccuracy.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.SourcePointerPose.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceLocation.Velocity.get
 	}
 }

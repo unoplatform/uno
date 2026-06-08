@@ -9,49 +9,16 @@ namespace Microsoft.Web.WebView2.Core
 	public partial class CoreWebView2Controller
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal CoreWebView2Controller()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double ZoomFactor
+		public bool AllowExternalDrop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CoreWebView2Controller.ZoomFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CoreWebView2Controller.ZoomFactor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "AllowExternalDrop");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "double CoreWebView2Controller.ZoomFactor");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference ParentWindow
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreWebView2ControllerWindowReference CoreWebView2Controller.ParentWindow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ControllerWindowReference%20CoreWebView2Controller.ParentWindow");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "CoreWebView2ControllerWindowReference CoreWebView2Controller.ParentWindow");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsVisible
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2Controller.IsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2Controller.IsVisible");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "bool CoreWebView2Controller.IsVisible");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "AllowExternalDrop");
 			}
 		}
 #endif
@@ -61,63 +28,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect CoreWebView2Controller.Bounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20CoreWebView2Controller.Bounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "Bounds");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "Rect CoreWebView2Controller.Bounds");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2 CoreWebView2
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreWebView2 CoreWebView2Controller.CoreWebView2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2%20CoreWebView2Controller.CoreWebView2");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color DefaultBackgroundColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color CoreWebView2Controller.DefaultBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20CoreWebView2Controller.DefaultBackgroundColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "Color CoreWebView2Controller.DefaultBackgroundColor");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ShouldDetectMonitorScaleChanges
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2Controller.ShouldDetectMonitorScaleChanges is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2Controller.ShouldDetectMonitorScaleChanges");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "bool CoreWebView2Controller.ShouldDetectMonitorScaleChanges");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double RasterizationScale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double CoreWebView2Controller.RasterizationScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CoreWebView2Controller.RasterizationScale");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "double CoreWebView2Controller.RasterizationScale");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "Bounds");
 			}
 		}
 #endif
@@ -127,25 +42,35 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2BoundsMode CoreWebView2Controller.BoundsMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2BoundsMode%20CoreWebView2Controller.BoundsMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "BoundsMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "CoreWebView2BoundsMode CoreWebView2Controller.BoundsMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "BoundsMode");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AllowExternalDrop
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2 CoreWebView2
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2Controller.AllowExternalDrop is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2Controller.AllowExternalDrop");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "CoreWebView2");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color DefaultBackgroundColor
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "DefaultBackgroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "bool CoreWebView2Controller.AllowExternalDrop");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "DefaultBackgroundColor");
 			}
 		}
 #endif
@@ -155,70 +80,140 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2Controller.IsBrowserHitTransparent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2Controller.IsBrowserHitTransparent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "IsBrowserHitTransparent");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.DefaultBackgroundColor.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.DefaultBackgroundColor.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.RasterizationScale.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.RasterizationScale.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.ShouldDetectMonitorScaleChanges.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.ShouldDetectMonitorScaleChanges.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.BoundsMode.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.BoundsMode.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsVisible
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "IsVisible");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "IsVisible");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference ParentWindow
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "ParentWindow");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "ParentWindow");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double RasterizationScale
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "RasterizationScale");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "RasterizationScale");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool ShouldDetectMonitorScaleChanges
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "ShouldDetectMonitorScaleChanges");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "ShouldDetectMonitorScaleChanges");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double ZoomFactor
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "ZoomFactor");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "ZoomFactor");
+			}
+		}
+#endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.RasterizationScaleChanged.add
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.RasterizationScaleChanged.remove
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.AllowExternalDrop.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.AllowExternalDrop.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.IsBrowserHitTransparent.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.IsVisible.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.IsVisible.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.Bounds.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.Bounds.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.ZoomFactor.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.ZoomFactor.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.ParentWindow.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.ParentWindow.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.CoreWebView2.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.ZoomFactorChanged.add
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.ZoomFactorChanged.remove
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.MoveFocusRequested.add
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.MoveFocusRequested.remove
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.GotFocus.add
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.GotFocus.remove
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.LostFocus.add
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.LostFocus.remove
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.AcceleratorKeyPressed.add
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.AcceleratorKeyPressed.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetBoundsAndZoomFactor(global::Windows.Foundation.Rect Bounds, double ZoomFactor)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "void CoreWebView2Controller.SetBoundsAndZoomFactor(Rect Bounds, double ZoomFactor)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "SetBoundsAndZoomFactor(Rect Bounds, double ZoomFactor)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void MoveFocus(global::Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusReason reason)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "void CoreWebView2Controller.MoveFocus(CoreWebView2MoveFocusReason reason)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "MoveFocus(CoreWebView2MoveFocusReason reason)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void NotifyParentWindowPositionChanged()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "void CoreWebView2Controller.NotifyParentWindowPositionChanged()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "NotifyParentWindowPositionChanged()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Close()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "void CoreWebView2Controller.Close()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "Close()");
 		}
 #endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.AcceleratorKeyPressed.add
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.AcceleratorKeyPressed.remove
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.GotFocus.add
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.GotFocus.remove
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.LostFocus.add
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.LostFocus.remove
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.MoveFocusRequested.add
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.MoveFocusRequested.remove
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.ZoomFactorChanged.add
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.ZoomFactorChanged.remove
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.AllowExternalDrop.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.AllowExternalDrop.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.Bounds.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.Bounds.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.BoundsMode.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.BoundsMode.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.CoreWebView2.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.DefaultBackgroundColor.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.DefaultBackgroundColor.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.IsBrowserHitTransparent.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.IsVisible.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.IsVisible.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.ParentWindow.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.ParentWindow.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.RasterizationScale.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.RasterizationScale.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.ShouldDetectMonitorScaleChanges.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.ShouldDetectMonitorScaleChanges.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.ZoomFactor.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.ZoomFactor.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2Controller, object> RasterizationScaleChanged
@@ -226,12 +221,12 @@ namespace Microsoft.Web.WebView2.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event TypedEventHandler<CoreWebView2Controller, object> CoreWebView2Controller.RasterizationScaleChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event RasterizationScaleChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event TypedEventHandler<CoreWebView2Controller, object> CoreWebView2Controller.RasterizationScaleChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event RasterizationScaleChanged");
 			}
 		}
 #endif
@@ -242,12 +237,12 @@ namespace Microsoft.Web.WebView2.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event TypedEventHandler<CoreWebView2Controller, CoreWebView2AcceleratorKeyPressedEventArgs> CoreWebView2Controller.AcceleratorKeyPressed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event AcceleratorKeyPressed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event TypedEventHandler<CoreWebView2Controller, CoreWebView2AcceleratorKeyPressedEventArgs> CoreWebView2Controller.AcceleratorKeyPressed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event AcceleratorKeyPressed");
 			}
 		}
 #endif
@@ -258,12 +253,12 @@ namespace Microsoft.Web.WebView2.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event TypedEventHandler<CoreWebView2Controller, object> CoreWebView2Controller.GotFocus");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event GotFocus");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event TypedEventHandler<CoreWebView2Controller, object> CoreWebView2Controller.GotFocus");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event GotFocus");
 			}
 		}
 #endif
@@ -274,12 +269,12 @@ namespace Microsoft.Web.WebView2.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event TypedEventHandler<CoreWebView2Controller, object> CoreWebView2Controller.LostFocus");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event LostFocus");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event TypedEventHandler<CoreWebView2Controller, object> CoreWebView2Controller.LostFocus");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event LostFocus");
 			}
 		}
 #endif
@@ -290,12 +285,12 @@ namespace Microsoft.Web.WebView2.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event TypedEventHandler<CoreWebView2Controller, CoreWebView2MoveFocusRequestedEventArgs> CoreWebView2Controller.MoveFocusRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event MoveFocusRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event TypedEventHandler<CoreWebView2Controller, CoreWebView2MoveFocusRequestedEventArgs> CoreWebView2Controller.MoveFocusRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event MoveFocusRequested");
 			}
 		}
 #endif
@@ -306,12 +301,12 @@ namespace Microsoft.Web.WebView2.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event TypedEventHandler<CoreWebView2Controller, object> CoreWebView2Controller.ZoomFactorChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event ZoomFactorChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event TypedEventHandler<CoreWebView2Controller, object> CoreWebView2Controller.ZoomFactorChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event ZoomFactorChanged");
 			}
 		}
 #endif

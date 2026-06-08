@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DirectXAlphaMode CompositionMipmapSurface.AlphaMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DirectXAlphaMode%20CompositionMipmapSurface.AlphaMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionMipmapSurface", "AlphaMode");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CompositionMipmapSurface.LevelCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CompositionMipmapSurface.LevelCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionMipmapSurface", "LevelCount");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DirectXPixelFormat CompositionMipmapSurface.PixelFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DirectXPixelFormat%20CompositionMipmapSurface.PixelFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionMipmapSurface", "PixelFormat");
 			}
 		}
 #endif
@@ -49,21 +49,21 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SizeInt32 CompositionMipmapSurface.SizeInt32 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SizeInt32%20CompositionMipmapSurface.SizeInt32");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionMipmapSurface", "SizeInt32");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionMipmapSurface.LevelCount.get
-		// Forced skipping of method Windows.UI.Composition.CompositionMipmapSurface.AlphaMode.get
-		// Forced skipping of method Windows.UI.Composition.CompositionMipmapSurface.PixelFormat.get
-		// Forced skipping of method Windows.UI.Composition.CompositionMipmapSurface.SizeInt32.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Composition.CompositionDrawingSurface GetDrawingSurfaceForLevel(uint level)
 		{
-			throw new global::System.NotImplementedException("The member CompositionDrawingSurface CompositionMipmapSurface.GetDrawingSurfaceForLevel(uint level) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionDrawingSurface%20CompositionMipmapSurface.GetDrawingSurfaceForLevel%28uint%20level%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionMipmapSurface", "GetDrawingSurfaceForLevel(uint level)");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Composition.CompositionMipmapSurface.AlphaMode.get
+		// Forced skipping of method Windows.UI.Composition.CompositionMipmapSurface.LevelCount.get
+		// Forced skipping of method Windows.UI.Composition.CompositionMipmapSurface.PixelFormat.get
+		// Forced skipping of method Windows.UI.Composition.CompositionMipmapSurface.SizeInt32.get
 		// Processing: Windows.UI.Composition.ICompositionSurface
 	}
 }

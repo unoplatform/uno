@@ -19,7 +19,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppDataPaths.Cookies is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppDataPaths.Cookies");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AppDataPaths", "Cookies");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppDataPaths.Desktop is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppDataPaths.Desktop");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AppDataPaths", "Desktop");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppDataPaths.Documents is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppDataPaths.Documents");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AppDataPaths", "Documents");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppDataPaths.Favorites is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppDataPaths.Favorites");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AppDataPaths", "Favorites");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppDataPaths.History is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppDataPaths.History");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AppDataPaths", "History");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppDataPaths.InternetCache is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppDataPaths.InternetCache");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AppDataPaths", "InternetCache");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppDataPaths.LocalAppData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppDataPaths.LocalAppData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AppDataPaths", "LocalAppData");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppDataPaths.ProgramData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppDataPaths.ProgramData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AppDataPaths", "ProgramData");
 			}
 		}
 #endif
@@ -99,8 +99,22 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppDataPaths.RoamingAppData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppDataPaths.RoamingAppData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AppDataPaths", "RoamingAppData");
 			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Storage.AppDataPaths GetForUser(global::Windows.System.User user)
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AppDataPaths", "GetForUser(User user)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Storage.AppDataPaths GetDefault()
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.AppDataPaths", "GetDefault()");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.AppDataPaths.Cookies.get
@@ -112,19 +126,5 @@ namespace Windows.Storage
 		// Forced skipping of method Windows.Storage.AppDataPaths.LocalAppData.get
 		// Forced skipping of method Windows.Storage.AppDataPaths.ProgramData.get
 		// Forced skipping of method Windows.Storage.AppDataPaths.RoamingAppData.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Storage.AppDataPaths GetForUser(global::Windows.System.User user)
-		{
-			throw new global::System.NotImplementedException("The member AppDataPaths AppDataPaths.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppDataPaths%20AppDataPaths.GetForUser%28User%20user%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Storage.AppDataPaths GetDefault()
-		{
-			throw new global::System.NotImplementedException("The member AppDataPaths AppDataPaths.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppDataPaths%20AppDataPaths.GetDefault%28%29");
-		}
-#endif
 	}
 }

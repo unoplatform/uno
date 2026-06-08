@@ -10,57 +10,15 @@ namespace Windows.Media.Devices
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool WaitForFocus
+		public global::Windows.Media.Devices.AutoFocusRange AutoFocusRange
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FocusSettings.WaitForFocus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FocusSettings.WaitForFocus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.FocusSettings", "AutoFocusRange");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.FocusSettings", "bool FocusSettings.WaitForFocus");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint? Value
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint? FocusSettings.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20FocusSettings.Value");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.FocusSettings", "uint? FocusSettings.Value");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Devices.FocusMode Mode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FocusMode FocusSettings.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FocusMode%20FocusSettings.Mode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.FocusSettings", "FocusMode FocusSettings.Mode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Devices.ManualFocusDistance? Distance
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ManualFocusDistance? FocusSettings.Distance is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ManualFocusDistance%3F%20FocusSettings.Distance");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.FocusSettings", "ManualFocusDistance? FocusSettings.Distance");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.FocusSettings", "AutoFocusRange");
 			}
 		}
 #endif
@@ -70,25 +28,67 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FocusSettings.DisableDriverFallback is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FocusSettings.DisableDriverFallback");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.FocusSettings", "DisableDriverFallback");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.FocusSettings", "bool FocusSettings.DisableDriverFallback");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.FocusSettings", "DisableDriverFallback");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Devices.AutoFocusRange AutoFocusRange
+		public global::Windows.Media.Devices.ManualFocusDistance? Distance
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutoFocusRange FocusSettings.AutoFocusRange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AutoFocusRange%20FocusSettings.AutoFocusRange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.FocusSettings", "Distance");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.FocusSettings", "AutoFocusRange FocusSettings.AutoFocusRange");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.FocusSettings", "Distance");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Devices.FocusMode Mode
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.FocusSettings", "Mode");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.FocusSettings", "Mode");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint? Value
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.FocusSettings", "Value");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.FocusSettings", "Value");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool WaitForFocus
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.FocusSettings", "WaitForFocus");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.FocusSettings", "WaitForFocus");
 			}
 		}
 #endif
@@ -96,21 +96,21 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public FocusSettings()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.FocusSettings", "FocusSettings.FocusSettings()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.FocusSettings", "FocusSettings()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.FocusSettings.FocusSettings()
-		// Forced skipping of method Windows.Media.Devices.FocusSettings.Mode.get
-		// Forced skipping of method Windows.Media.Devices.FocusSettings.Mode.set
 		// Forced skipping of method Windows.Media.Devices.FocusSettings.AutoFocusRange.get
 		// Forced skipping of method Windows.Media.Devices.FocusSettings.AutoFocusRange.set
-		// Forced skipping of method Windows.Media.Devices.FocusSettings.Value.get
-		// Forced skipping of method Windows.Media.Devices.FocusSettings.Value.set
-		// Forced skipping of method Windows.Media.Devices.FocusSettings.Distance.get
-		// Forced skipping of method Windows.Media.Devices.FocusSettings.Distance.set
-		// Forced skipping of method Windows.Media.Devices.FocusSettings.WaitForFocus.get
-		// Forced skipping of method Windows.Media.Devices.FocusSettings.WaitForFocus.set
 		// Forced skipping of method Windows.Media.Devices.FocusSettings.DisableDriverFallback.get
 		// Forced skipping of method Windows.Media.Devices.FocusSettings.DisableDriverFallback.set
+		// Forced skipping of method Windows.Media.Devices.FocusSettings.Distance.get
+		// Forced skipping of method Windows.Media.Devices.FocusSettings.Distance.set
+		// Forced skipping of method Windows.Media.Devices.FocusSettings.Mode.get
+		// Forced skipping of method Windows.Media.Devices.FocusSettings.Mode.set
+		// Forced skipping of method Windows.Media.Devices.FocusSettings.Value.get
+		// Forced skipping of method Windows.Media.Devices.FocusSettings.Value.set
+		// Forced skipping of method Windows.Media.Devices.FocusSettings.WaitForFocus.get
+		// Forced skipping of method Windows.Media.Devices.FocusSettings.WaitForFocus.set
 	}
 }

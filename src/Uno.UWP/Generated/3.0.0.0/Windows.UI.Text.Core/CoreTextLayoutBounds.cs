@@ -15,35 +15,35 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Rect TextBounds
+		public global::Windows.Foundation.Rect ControlBounds
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect CoreTextLayoutBounds.TextBounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20CoreTextLayoutBounds.TextBounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutBounds", "ControlBounds");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextLayoutBounds", "Rect CoreTextLayoutBounds.TextBounds");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextLayoutBounds", "ControlBounds");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Rect ControlBounds
+		public global::Windows.Foundation.Rect TextBounds
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect CoreTextLayoutBounds.ControlBounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20CoreTextLayoutBounds.ControlBounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextLayoutBounds", "TextBounds");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextLayoutBounds", "Rect CoreTextLayoutBounds.ControlBounds");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextLayoutBounds", "TextBounds");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutBounds.TextBounds.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutBounds.TextBounds.set
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutBounds.ControlBounds.get
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutBounds.ControlBounds.set
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutBounds.TextBounds.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextLayoutBounds.TextBounds.set
 	}
 }

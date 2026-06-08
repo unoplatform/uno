@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapControlMapServiceErrorOccurredEventArgs.DiagnosticMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MapControlMapServiceErrorOccurredEventArgs.DiagnosticMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.MapControlMapServiceErrorOccurredEventArgs", "DiagnosticMessage");
 			}
 		}
 #endif

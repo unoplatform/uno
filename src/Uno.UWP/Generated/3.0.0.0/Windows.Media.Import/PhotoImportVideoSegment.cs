@@ -19,7 +19,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset PhotoImportVideoSegment.Date is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20PhotoImportVideoSegment.Date");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportVideoSegment", "Date");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhotoImportVideoSegment.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhotoImportVideoSegment.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportVideoSegment", "Name");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhotoImportSidecar PhotoImportVideoSegment.Sibling is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhotoImportSidecar%20PhotoImportVideoSegment.Sibling");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportVideoSegment", "Sibling");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PhotoImportSidecar> PhotoImportVideoSegment.Sidecars is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPhotoImportSidecar%3E%20PhotoImportVideoSegment.Sidecars");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportVideoSegment", "Sidecars");
 			}
 		}
 #endif
@@ -59,14 +59,14 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong PhotoImportVideoSegment.SizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20PhotoImportVideoSegment.SizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportVideoSegment", "SizeInBytes");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Import.PhotoImportVideoSegment.Name.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportVideoSegment.SizeInBytes.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportVideoSegment.Date.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportVideoSegment.Name.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportVideoSegment.Sibling.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportVideoSegment.Sidecars.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportVideoSegment.SizeInBytes.get
 	}
 }

@@ -13,6 +13,9 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.System;
+#if __SKIA__
+using Microsoft.UI.Xaml.Internal;
+#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -28,10 +31,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (focusManager != null)
 				{
-					// Set the focus on the next focusable element.
-					// If we remove the currently focused element from the live tree, inside a GettingFocus or LosingFocus handler,
-					// we failfast. This is being tracked by Bug 9840123
-					focusManager.SetFocusOnNextFocusableElement(FocusState, true);
+					// Ported from: Control.cpp LeaveImpl (lines 513-518)
+					// Skip SetFocusOnNextFocusableElement when inside a proofing flyout,
+					// because Popup::Close will restore focus instead.
+#if __SKIA__
+					if (!TextControlFlyoutHelper.IsElementChildOfProofingFlyout(this))
+#endif
+					{
+						// Set the focus on the next focusable element.
+						// If we remove the currently focused element from the live tree, inside a GettingFocus or LosingFocus handler,
+						// we failfast. This is being tracked by Bug 9840123
+						focusManager.SetFocusOnNextFocusableElement(FocusState, true);
+					}
 				}
 
 				UpdateFocusState(FocusState.Unfocused);

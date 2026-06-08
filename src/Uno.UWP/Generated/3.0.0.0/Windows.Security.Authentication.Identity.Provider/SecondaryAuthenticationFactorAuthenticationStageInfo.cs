@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Security.Authentication.Identity.Provider
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -20,7 +19,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SecondaryAuthenticationFactorAuthenticationStageInfo.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SecondaryAuthenticationFactorAuthenticationStageInfo.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthenticationStageInfo", "DeviceId");
 			}
 		}
 #endif
@@ -30,7 +29,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SecondaryAuthenticationFactorAuthenticationScenario SecondaryAuthenticationFactorAuthenticationStageInfo.Scenario is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SecondaryAuthenticationFactorAuthenticationScenario%20SecondaryAuthenticationFactorAuthenticationStageInfo.Scenario");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthenticationStageInfo", "Scenario");
 			}
 		}
 #endif
@@ -40,12 +39,12 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SecondaryAuthenticationFactorAuthenticationStage SecondaryAuthenticationFactorAuthenticationStageInfo.Stage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SecondaryAuthenticationFactorAuthenticationStage%20SecondaryAuthenticationFactorAuthenticationStageInfo.Stage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthenticationStageInfo", "Stage");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthenticationStageInfo.Stage.get
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthenticationStageInfo.Scenario.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthenticationStageInfo.DeviceId.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthenticationStageInfo.Scenario.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthenticationStageInfo.Stage.get
 	}
 }

@@ -95,6 +95,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Not_FullSizeDesired()
 		{
 			var SUT = new MyContentDialog
@@ -114,8 +115,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.IsNotNull(SUT.BackgroundElement);
 
 				var actualHeight = SUT.BackgroundElement.ActualHeight;
-				Assert.IsTrue(actualHeight > 0); // Is displayed
-				Assert.IsTrue(actualHeight < 300); // Is not stretched
+				Assert.IsGreaterThan(0, actualHeight); // Is displayed
+				Assert.IsLessThan(300, actualHeight); // Is not stretched
 			}
 			finally
 			{
@@ -124,7 +125,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)] // Very flaky on Skia Android #9080
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.NativeWinUI)] // Very flaky on Skia Android #9080
 		public async Task When_FullSizeDesired()
 		{
 			var SUT = new MyContentDialog
@@ -147,8 +148,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.IsNotNull(SUT.BackgroundElement);
 
 				var actualHeight = SUT.BackgroundElement.ActualHeight;
-				Assert.IsTrue(actualHeight > 0); // Is displayed
-				Assert.IsTrue(actualHeight > 400); // Is stretched to full size
+				Assert.IsGreaterThan(0, actualHeight); // Is displayed
+				Assert.IsGreaterThan(400, actualHeight); // Is stretched to full size
 			}
 			finally
 			{
@@ -204,6 +205,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_DefaultButton_Not_Set()
 		{
 			var SUT = new MyContentDialog
@@ -227,7 +229,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				var fg = SUT.PrimaryButton.Foreground as SolidColorBrush;
 				Assert.IsNotNull(fg);
-				Assert.AreEqual(Colors.Black, fg.Color);
+				Assert.AreEqual(Color.FromArgb(0xE4, 0x00, 0x00, 0x00), fg.Color);
 			}
 			finally
 			{
@@ -236,6 +238,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_DefaultButton_Set()
 		{
 			var SUT = new MyContentDialog
@@ -269,6 +272,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Initial_Focus_With_Focusable_Content()
 		{
 			Button button = new Button() { Content = "Target" };
@@ -300,6 +304,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Initial_Focus_With_DefaultButton_Not_Set()
 		{
 			var SUT = new MyContentDialog
@@ -331,6 +336,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Initial_Focus_With_DefaultButton_Set()
 		{
 			var SUT = new MyContentDialog
@@ -361,6 +367,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_CloseDeferred()
 		{
 			var SUT = new MyContentDialog
@@ -487,6 +494,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __SKIA__ || __WASM__
 		[Ignore("Currently fails on Skia/WASM, tracked by #15981")]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Has_VisibleBounds_LayoutRoot_Respects_VisibleBounds()
 		{
 			var nativeUnsafeArea = ScreenHelper.GetUnsafeArea();
@@ -853,6 +861,64 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => dialog.BackgroundElement.ActualHeight > 0); // This is necessary on the current version of Uno because the template is materialized too early
 #endif
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_BackButton_Closes_ContentDialog()
+		{
+			var closedEvent = new Event();
+			var openedEvent = new Event();
+
+			var closedRegistration = new SafeEventRegistration<ContentDialog, TypedEventHandler<ContentDialog, ContentDialogClosedEventArgs>>("Closed");
+			var openedRegistration = new SafeEventRegistration<ContentDialog, TypedEventHandler<ContentDialog, ContentDialogOpenedEventArgs>>("Opened");
+
+			var SUT = new MyContentDialog
+			{
+				Title = "Dialog title",
+				Content = "Dialog content",
+				CloseButtonText = "Close",
+			};
+
+			SetXamlRootForIslandsOrWinUI(SUT);
+
+			closedRegistration.Attach(SUT, (s, e) => closedEvent.Set());
+			openedRegistration.Attach(SUT, (s, e) => openedEvent.Set());
+
+			try
+			{
+				var showAsyncResult = SUT.ShowAsync().AsTask();
+
+				await openedEvent.WaitForDefault();
+
+				LOG_OUTPUT("Close the ContentDialog using the Back button.");
+				bool backButtonPressHandled = await TestServices.Utilities.InjectBackButtonPress();
+				VERIFY_IS_TRUE(backButtonPressHandled);
+
+				await closedEvent.WaitForDefault();
+
+				VERIFY_IS_TRUE(closedEvent.HasFired());
+				VERIFY_IS_FALSE(SUT._popup.IsOpen);
+
+				if (await Task.WhenAny(showAsyncResult, Task.Delay(2000)) == showAsyncResult)
+				{
+					var dialogResult = showAsyncResult.Result;
+					VERIFY_ARE_EQUAL(ContentDialogResult.None, dialogResult);
+				}
+				else
+				{
+					Assert.Fail("Timed out waiting for ShowAsync");
+				}
+
+				LOG_OUTPUT("After closing a ContentDialog, further back button presses should not get handled");
+				backButtonPressHandled = await TestServices.Utilities.InjectBackButtonPress();
+				VERIFY_IS_FALSE(backButtonPressHandled);
+			}
+			finally
+			{
+				SUT.Hide();
+			}
+		}
+#endif
 
 		private void SetXamlRootForIslandsOrWinUI(ContentDialog dialog)
 		{

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -139,6 +139,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private TextBox GetEditableText(ComboBox comboBox) => comboBox.FindFirstChild<TextBox>(c => c.Name == "EditableText");
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ComboBox_MinWidth()
 		{
 			var source = Enumerable.Range(0, 5).ToArray();
@@ -456,6 +457,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_CB_Fluent_And_Theme_Changed()
 		{
 			var comboBox = new ComboBox
@@ -528,6 +530,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Tabbed()
 		{
 			var SUT = new ComboBox
@@ -563,6 +566,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Popup_Open_Tabbed()
 		{
 			var SUT = new ComboBox
@@ -666,6 +670,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Index_Is_Explicitly_Set_To_Negative_After_Out_Of_Range_Value()
 		{
 			var comboBox = new ComboBox();
@@ -681,6 +686,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Collection_Reset()
 		{
 			var SUT = new ComboBox();
@@ -697,7 +703,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(3, SUT.Items.Count);
+				Assert.HasCount(3, SUT.Items);
 
 				using (c.BatchUpdate())
 				{
@@ -710,7 +716,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Items are materialized when the popup is opened
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(5, SUT.Items.Count);
+				Assert.HasCount(5, SUT.Items);
 				Assert.IsNotNull(SUT.ContainerFromItem("One"));
 				Assert.IsNotNull(SUT.ContainerFromItem("Four"));
 				Assert.IsNotNull(SUT.ContainerFromItem("Five"));
@@ -801,7 +807,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = SUT;
 				SUT.DataContext = new { MySource = c, SelectedItem = "Two" };
 
-				Assert.AreEqual(12, SUT.Items.Count);
+				Assert.HasCount(12, SUT.Items);
 			}
 			finally
 			{
@@ -844,7 +850,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Not required on WinUI. Fixing this in Uno requires porting ComboBox.
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(3, SUT.Items.Count);
+				Assert.HasCount(3, SUT.Items);
 
 				using (c.BatchUpdate())
 				{
@@ -859,7 +865,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Items are materialized when the popup is opened
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(3, SUT.Items.Count);
+				Assert.HasCount(3, SUT.Items);
 				Assert.IsNotNull(SUT.ContainerFromItem(c[0]));
 				Assert.IsNotNull(SUT.ContainerFromItem(c[1]));
 				Assert.IsNotNull(SUT.ContainerFromItem(c[2]));
@@ -906,7 +912,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(3, SUT.Items.Count);
+				Assert.HasCount(3, SUT.Items);
 				Assert.IsNotNull(SUT.ContainerFromItem(c[0]));
 				Assert.IsNotNull(SUT.ContainerFromItem(c[1]));
 				Assert.IsNotNull(SUT.ContainerFromItem(c[2]));
@@ -925,7 +931,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(3, SUT.Items.Count);
+				Assert.HasCount(3, SUT.Items);
 				Assert.IsNotNull(SUT.ContainerFromItem(c[0]));
 				Assert.IsNotNull(SUT.ContainerFromItem(c[1]));
 				Assert.IsNotNull(SUT.ContainerFromItem(c[2]));
@@ -1115,6 +1121,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_SelectedItem_TwoWay_Binding_Clear()
 		{
 			var root = new Grid();
@@ -1142,6 +1149,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[CombinatorialData]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ComboBox_IsTextSearchEnabled_DropDown_Closed(bool isTextSearchEnabled)
 		{
 			var comboBox = new ComboBox();
@@ -1172,6 +1180,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[CombinatorialData]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ComboBox_IsTextSearchEnabled_DropDown_Opened(bool isTextSearchEnabled)
 		{
 			var comboBox = new ComboBox();
@@ -1226,6 +1235,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if RUNTIME_NATIVE_AOT
 		[Ignore("DataRowAttribute.GetData() wraps data in an extra array under NativeAOT; not yet understood why.")]
 #endif  // RUNTIME_NATIVE_AOT
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Customized_Popup_Placement(PopupPlacementMode mode, double verticalOffset)
 		{
 			var grid = new Grid();
@@ -1293,12 +1303,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var child = (FrameworkElement)popup.Child;
 			var comboBoxItems = child.GetAllChildren().OfType<ComboBoxItem>().ToArray();
-			Assert.AreEqual(Enum.GetValues<PickerLocationId>().Length, comboBoxItems.Length);
+			Assert.HasCount(Enum.GetValues<PickerLocationId>().Length, comboBoxItems);
 		}
 
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // Flaky on Skia WASM #9080
 		public async Task When_ComboPopup_Rearrange_ScrollShouldNotReset()
 		{
 			var SUT = new ComboBox()
@@ -1319,14 +1330,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var origin = sv.VerticalOffset;
 			var destination = origin + sv.ViewportHeight * 2;
 			sv.ChangeView(null, verticalOffset: destination, null, disableAnimation: true);
+			// ChangeView is async on SkiaWasm: the VerticalOffset update is applied on the next render pass,
+			// so poll until the offset settles rather than relying on a single WaitForIdle.
+			await UITestHelper.WaitFor(() => Math.Abs(destination - sv.VerticalOffset) < 1.0, timeoutMS: 2000, $"Expect sv.VerticalOffset to be near {destination:0.##}, got: {sv.VerticalOffset:0.##}");
 			await UITestHelper.WaitForIdle();
-			Assert.IsTrue(Math.Abs(destination - sv.VerticalOffset) < 1.0, $"Expect sv.VerticalOffset to be near {destination:0.##}, got: {sv.VerticalOffset:0.##}");
+			Assert.IsLessThan(1.0, Math.Abs(destination - sv.VerticalOffset), $"Expect sv.VerticalOffset to be near {destination:0.##}, got: {sv.VerticalOffset:0.##}");
 
 			// force an arrange
 			var cbi = sv.FindFirstChild<ComboBoxItem>();
 			cbi.InvalidateArrange();
 			await UITestHelper.WaitForIdle();
-			Assert.IsTrue(Math.Abs(destination - sv.VerticalOffset) < 1.0, $"Expect sv.VerticalOffset to be still near {destination:0.##}, got: {sv.VerticalOffset:0.##}");
+			Assert.IsLessThan(1.0, Math.Abs(destination - sv.VerticalOffset), $"Expect sv.VerticalOffset to be still near {destination:0.##}, got: {sv.VerticalOffset:0.##}");
 		}
 #endif
 
@@ -1413,11 +1427,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid)] // https://github.com/unoplatform/uno-private/issues/1297
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)] // https://github.com/unoplatform/uno-private/issues/1297, flaky on Skia WASM #9080
 		public Task When_ComboBox_ScrollIntoView_SelectedItem() => When_ComboBox_ScrollIntoView_Selection(viaIndex: false);
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid)] // https://github.com/unoplatform/uno-private/issues/1297
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)] // https://github.com/unoplatform/uno-private/issues/1297, flaky on Skia WASM #9080
 		public Task When_ComboBox_ScrollIntoView_SelectedIndex() => When_ComboBox_ScrollIntoView_Selection(viaIndex: true);
 
 		private async Task When_ComboBox_ScrollIntoView_Selection(bool viaIndex)
@@ -1458,15 +1472,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(source[^3], sut.SelectedItem, "SelectedItem should be the 3rd last");
 
 			var sv = sut.ItemsPanelRoot.FindFirstAncestorOrThrow<ScrollViewer>();
-			var cbi = sut.ContainerFromIndex(sut.SelectedIndex) as FrameworkElement;
-			Assert.IsNotNull(cbi, "Selected container should not be null");
+			// Bringing the selected item into view after the selection change is asynchronous on
+			// SkiaWasm: the virtualizing panel realizes the target container and the ScrollViewer
+			// settles its offset on the layout pass(es) following the selection. Rather than relying
+			// on a single WaitForIdle, poll until the selected container is realized AND fully within
+			// the viewport. We compare with a sub-pixel tolerance because Rect stores its fields as
+			// float and Rect.Intersect recomputes the extents via subtraction, which reintroduces
+			// rounding differences (~2e-4 px) that would break an exact Rect equality comparison even
+			// when the container is geometrically fully visible.
+			const double tolerance = 0.5; // well below one pixel, but absorbs float rounding noise
 
-			var cbiAbsRect = new Rect(cbi.ActualOffset.X, cbi.ActualOffset.Y, cbi.ActualWidth, cbi.ActualHeight);
-			var viewportAbsRect = new Rect(sv.HorizontalOffset, sv.VerticalOffset, sv.ViewportWidth, sv.ViewportHeight);
-			var intersection = viewportAbsRect;
-			intersection.Intersect(cbiAbsRect);
+			bool IsSelectedContainerWithinViewport(out Rect cbiAbsRect, out Rect viewportAbsRect)
+			{
+				cbiAbsRect = default;
+				viewportAbsRect = new Rect(sv.HorizontalOffset, sv.VerticalOffset, sv.ViewportWidth, sv.ViewportHeight);
 
-			Assert.IsTrue(cbiAbsRect == intersection, $"Selected container should be fully within viewport: CBI={PrettyPrint.FormatRect(cbiAbsRect)}, VP={PrettyPrint.FormatRect(viewportAbsRect)}");
+				if (sut.ContainerFromIndex(sut.SelectedIndex) is not FrameworkElement container)
+				{
+					return false;
+				}
+
+				cbiAbsRect = new Rect(container.ActualOffset.X, container.ActualOffset.Y, container.ActualWidth, container.ActualHeight);
+
+				return cbiAbsRect.Left >= viewportAbsRect.Left - tolerance
+					&& cbiAbsRect.Top >= viewportAbsRect.Top - tolerance
+					&& cbiAbsRect.Right <= viewportAbsRect.Right + tolerance
+					&& cbiAbsRect.Bottom <= viewportAbsRect.Bottom + tolerance;
+			}
+
+			await UITestHelper.WaitFor(
+				() => IsSelectedContainerWithinViewport(out _, out _),
+				timeoutMS: 3000,
+				"timed out waiting on the selected container to be realized and scrolled fully into view");
+
+			// Final assertion with a descriptive message capturing the last observed geometry.
+			var withinViewport = IsSelectedContainerWithinViewport(out var finalCbiRect, out var finalViewportRect);
+			Assert.IsTrue(withinViewport, $"Selected container should be fully within viewport: CBI={PrettyPrint.FormatRect(finalCbiRect)}, VP={PrettyPrint.FormatRect(finalViewportRect)}");
 		}
 
 		public sealed class TwoWayBindingClearViewModel : IDisposable

@@ -10,57 +10,15 @@ namespace Windows.Media.PlayTo
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool SupportsVideo
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool PlayToReceiver.SupportsVideo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PlayToReceiver.SupportsVideo");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "bool PlayToReceiver.SupportsVideo");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool SupportsImage
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool PlayToReceiver.SupportsImage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PlayToReceiver.SupportsImage");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "bool PlayToReceiver.SupportsImage");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool SupportsAudio
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool PlayToReceiver.SupportsAudio is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PlayToReceiver.SupportsAudio");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "bool PlayToReceiver.SupportsAudio");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string FriendlyName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PlayToReceiver.FriendlyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PlayToReceiver.FriendlyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToReceiver", "FriendlyName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "string PlayToReceiver.FriendlyName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "FriendlyName");
 			}
 		}
 #endif
@@ -70,7 +28,49 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet PlayToReceiver.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPropertySet%20PlayToReceiver.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToReceiver", "Properties");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool SupportsAudio
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToReceiver", "SupportsAudio");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "SupportsAudio");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool SupportsImage
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToReceiver", "SupportsImage");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "SupportsImage");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool SupportsVideo
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToReceiver", "SupportsVideo");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "SupportsVideo");
 			}
 		}
 #endif
@@ -78,135 +78,135 @@ namespace Windows.Media.PlayTo
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PlayToReceiver()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "PlayToReceiver.PlayToReceiver()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "PlayToReceiver()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.PlayToReceiver()
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.PlayRequested.add
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.PlayRequested.remove
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.PauseRequested.add
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.PauseRequested.remove
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.SourceChangeRequested.add
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.SourceChangeRequested.remove
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.PlaybackRateChangeRequested.add
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.PlaybackRateChangeRequested.remove
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.CurrentTimeChangeRequested.add
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.CurrentTimeChangeRequested.remove
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.MuteChangeRequested.add
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.MuteChangeRequested.remove
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.VolumeChangeRequested.add
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.VolumeChangeRequested.remove
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.TimeUpdateRequested.add
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.TimeUpdateRequested.remove
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.StopRequested.add
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.StopRequested.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void NotifyVolumeChange(double volume, bool mute)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "void PlayToReceiver.NotifyVolumeChange(double volume, bool mute)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "NotifyVolumeChange(double volume, bool mute)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void NotifyRateChange(double rate)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "void PlayToReceiver.NotifyRateChange(double rate)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "NotifyRateChange(double rate)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void NotifyLoadedMetadata()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "void PlayToReceiver.NotifyLoadedMetadata()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "NotifyLoadedMetadata()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void NotifyTimeUpdate(global::System.TimeSpan currentTime)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "void PlayToReceiver.NotifyTimeUpdate(TimeSpan currentTime)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "NotifyTimeUpdate(TimeSpan currentTime)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void NotifyDurationChange(global::System.TimeSpan duration)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "void PlayToReceiver.NotifyDurationChange(TimeSpan duration)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "NotifyDurationChange(TimeSpan duration)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void NotifySeeking()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "void PlayToReceiver.NotifySeeking()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "NotifySeeking()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void NotifySeeked()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "void PlayToReceiver.NotifySeeked()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "NotifySeeked()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void NotifyPaused()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "void PlayToReceiver.NotifyPaused()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "NotifyPaused()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void NotifyPlaying()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "void PlayToReceiver.NotifyPlaying()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "NotifyPlaying()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void NotifyEnded()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "void PlayToReceiver.NotifyEnded()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "NotifyEnded()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void NotifyError()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "void PlayToReceiver.NotifyError()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "NotifyError()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void NotifyStopped()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "void PlayToReceiver.NotifyStopped()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "NotifyStopped()");
 		}
 #endif
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.FriendlyName.get
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.FriendlyName.set
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.SupportsImage.set
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.SupportsImage.get
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.SupportsAudio.set
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.SupportsAudio.get
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.SupportsVideo.set
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.SupportsVideo.get
-		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.Properties.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction StartAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction PlayToReceiver.StartAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20PlayToReceiver.StartAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToReceiver", "StartAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction StopAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction PlayToReceiver.StopAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20PlayToReceiver.StopAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToReceiver", "StopAsync()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.CurrentTimeChangeRequested.add
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.CurrentTimeChangeRequested.remove
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.MuteChangeRequested.add
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.MuteChangeRequested.remove
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.PauseRequested.add
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.PauseRequested.remove
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.PlayRequested.add
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.PlayRequested.remove
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.PlaybackRateChangeRequested.add
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.PlaybackRateChangeRequested.remove
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.SourceChangeRequested.add
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.SourceChangeRequested.remove
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.StopRequested.add
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.StopRequested.remove
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.TimeUpdateRequested.add
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.TimeUpdateRequested.remove
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.VolumeChangeRequested.add
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.VolumeChangeRequested.remove
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.FriendlyName.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.FriendlyName.set
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.Properties.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.SupportsAudio.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.SupportsAudio.set
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.SupportsImage.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.SupportsImage.set
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.SupportsVideo.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.SupportsVideo.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.PlayTo.PlayToReceiver, global::Windows.Media.PlayTo.CurrentTimeChangeRequestedEventArgs> CurrentTimeChangeRequested
@@ -214,12 +214,12 @@ namespace Windows.Media.PlayTo
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event TypedEventHandler<PlayToReceiver, CurrentTimeChangeRequestedEventArgs> PlayToReceiver.CurrentTimeChangeRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event CurrentTimeChangeRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event TypedEventHandler<PlayToReceiver, CurrentTimeChangeRequestedEventArgs> PlayToReceiver.CurrentTimeChangeRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event CurrentTimeChangeRequested");
 			}
 		}
 #endif
@@ -230,12 +230,12 @@ namespace Windows.Media.PlayTo
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event TypedEventHandler<PlayToReceiver, MuteChangeRequestedEventArgs> PlayToReceiver.MuteChangeRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event MuteChangeRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event TypedEventHandler<PlayToReceiver, MuteChangeRequestedEventArgs> PlayToReceiver.MuteChangeRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event MuteChangeRequested");
 			}
 		}
 #endif
@@ -246,12 +246,12 @@ namespace Windows.Media.PlayTo
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event TypedEventHandler<PlayToReceiver, object> PlayToReceiver.PauseRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event PauseRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event TypedEventHandler<PlayToReceiver, object> PlayToReceiver.PauseRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event PauseRequested");
 			}
 		}
 #endif
@@ -262,12 +262,12 @@ namespace Windows.Media.PlayTo
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event TypedEventHandler<PlayToReceiver, object> PlayToReceiver.PlayRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event PlayRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event TypedEventHandler<PlayToReceiver, object> PlayToReceiver.PlayRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event PlayRequested");
 			}
 		}
 #endif
@@ -278,12 +278,12 @@ namespace Windows.Media.PlayTo
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event TypedEventHandler<PlayToReceiver, PlaybackRateChangeRequestedEventArgs> PlayToReceiver.PlaybackRateChangeRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event PlaybackRateChangeRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event TypedEventHandler<PlayToReceiver, PlaybackRateChangeRequestedEventArgs> PlayToReceiver.PlaybackRateChangeRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event PlaybackRateChangeRequested");
 			}
 		}
 #endif
@@ -294,12 +294,12 @@ namespace Windows.Media.PlayTo
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event TypedEventHandler<PlayToReceiver, SourceChangeRequestedEventArgs> PlayToReceiver.SourceChangeRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event SourceChangeRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event TypedEventHandler<PlayToReceiver, SourceChangeRequestedEventArgs> PlayToReceiver.SourceChangeRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event SourceChangeRequested");
 			}
 		}
 #endif
@@ -310,12 +310,12 @@ namespace Windows.Media.PlayTo
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event TypedEventHandler<PlayToReceiver, object> PlayToReceiver.StopRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event StopRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event TypedEventHandler<PlayToReceiver, object> PlayToReceiver.StopRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event StopRequested");
 			}
 		}
 #endif
@@ -326,12 +326,12 @@ namespace Windows.Media.PlayTo
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event TypedEventHandler<PlayToReceiver, object> PlayToReceiver.TimeUpdateRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event TimeUpdateRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event TypedEventHandler<PlayToReceiver, object> PlayToReceiver.TimeUpdateRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event TimeUpdateRequested");
 			}
 		}
 #endif
@@ -342,12 +342,12 @@ namespace Windows.Media.PlayTo
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event TypedEventHandler<PlayToReceiver, VolumeChangeRequestedEventArgs> PlayToReceiver.VolumeChangeRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event VolumeChangeRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event TypedEventHandler<PlayToReceiver, VolumeChangeRequestedEventArgs> PlayToReceiver.VolumeChangeRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "event VolumeChangeRequested");
 			}
 		}
 #endif

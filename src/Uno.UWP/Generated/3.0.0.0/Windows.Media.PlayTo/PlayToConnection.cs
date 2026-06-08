@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.PlayTo
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -20,17 +19,17 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlayToConnectionState PlayToConnection.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlayToConnectionState%20PlayToConnection.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToConnection", "State");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.State.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.Error.add
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.Error.remove
 		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.StateChanged.add
 		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.StateChanged.remove
 		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.Transferred.add
 		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.Transferred.remove
-		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.Error.add
-		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.Error.remove
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.State.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.PlayTo.PlayToConnection, global::Windows.Media.PlayTo.PlayToConnectionErrorEventArgs> Error
@@ -38,12 +37,12 @@ namespace Windows.Media.PlayTo
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToConnection", "event TypedEventHandler<PlayToConnection, PlayToConnectionErrorEventArgs> PlayToConnection.Error");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToConnection", "event Error");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToConnection", "event TypedEventHandler<PlayToConnection, PlayToConnectionErrorEventArgs> PlayToConnection.Error");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToConnection", "event Error");
 			}
 		}
 #endif
@@ -54,12 +53,12 @@ namespace Windows.Media.PlayTo
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToConnection", "event TypedEventHandler<PlayToConnection, PlayToConnectionStateChangedEventArgs> PlayToConnection.StateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToConnection", "event StateChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToConnection", "event TypedEventHandler<PlayToConnection, PlayToConnectionStateChangedEventArgs> PlayToConnection.StateChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToConnection", "event StateChanged");
 			}
 		}
 #endif
@@ -70,12 +69,12 @@ namespace Windows.Media.PlayTo
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToConnection", "event TypedEventHandler<PlayToConnection, PlayToConnectionTransferredEventArgs> PlayToConnection.Transferred");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToConnection", "event Transferred");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToConnection", "event TypedEventHandler<PlayToConnection, PlayToConnectionTransferredEventArgs> PlayToConnection.Transferred");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToConnection", "event Transferred");
 			}
 		}
 #endif

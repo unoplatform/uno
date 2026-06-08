@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MobileBroadbandModemConfiguration.HomeProviderId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MobileBroadbandModemConfiguration.HomeProviderId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandModemConfiguration", "HomeProviderId");
 			}
 		}
 #endif
@@ -29,17 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MobileBroadbandModemConfiguration.HomeProviderName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MobileBroadbandModemConfiguration.HomeProviderName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.NetworkOperators.MobileBroadbandUicc Uicc
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MobileBroadbandUicc MobileBroadbandModemConfiguration.Uicc is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandUicc%20MobileBroadbandModemConfiguration.Uicc");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandModemConfiguration", "HomeProviderName");
 			}
 		}
 #endif
@@ -49,13 +39,23 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MobileBroadbandSarManager MobileBroadbandModemConfiguration.SarManager is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandSarManager%20MobileBroadbandModemConfiguration.SarManager");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandModemConfiguration", "SarManager");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandModemConfiguration.Uicc.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Networking.NetworkOperators.MobileBroadbandUicc Uicc
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandModemConfiguration", "Uicc");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandModemConfiguration.HomeProviderId.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandModemConfiguration.HomeProviderName.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandModemConfiguration.SarManager.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandModemConfiguration.Uicc.get
 	}
 }

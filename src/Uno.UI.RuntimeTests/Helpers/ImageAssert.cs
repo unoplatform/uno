@@ -291,12 +291,15 @@ public static partial class ImageAssert
 
 			for (var y = 0; y < actual.Height; y++)
 			{
-				var expectedAlpha = expected[x, y].A * scale;
-				var actualAlpha = actual[x, y].A * scale;
+				var expectedPixel = expected[x, y];
+				var actualPixel = actual[x, y];
 
-				var r = scale * (expectedAlpha * expected[x, y].R - actualAlpha * actual[x, y].R);
-				var g = scale * (expectedAlpha * expected[x, y].G - actualAlpha * actual[x, y].G);
-				var b = scale * (expectedAlpha * expected[x, y].B - actualAlpha * actual[x, y].B);
+				var expectedAlpha = expectedPixel.A * scale;
+				var actualAlpha = actualPixel.A * scale;
+
+				var r = scale * (expectedAlpha * expectedPixel.R - actualAlpha * actualPixel.R);
+				var g = scale * (expectedAlpha * expectedPixel.G - actualAlpha * actualPixel.G);
+				var b = scale * (expectedAlpha * expectedPixel.B - actualAlpha * actualPixel.B);
 				var a = expectedAlpha - actualAlpha;
 
 				var error = r * r + g * g + b * b + a * a;

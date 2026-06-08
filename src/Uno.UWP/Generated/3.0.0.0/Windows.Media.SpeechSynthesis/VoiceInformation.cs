@@ -19,7 +19,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceInformation.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceInformation.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.VoiceInformation", "Description");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceInformation.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceInformation.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.VoiceInformation", "DisplayName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VoiceGender VoiceInformation.Gender is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VoiceGender%20VoiceInformation.Gender");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.VoiceInformation", "Gender");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceInformation.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceInformation.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.VoiceInformation", "Id");
 			}
 		}
 #endif
@@ -59,14 +59,14 @@ namespace Windows.Media.SpeechSynthesis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceInformation.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VoiceInformation.Language");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechSynthesis.VoiceInformation", "Language");
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.Description.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.DisplayName.get
+		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.Gender.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.Id.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.Language.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.Description.get
-		// Forced skipping of method Windows.Media.SpeechSynthesis.VoiceInformation.Gender.get
 	}
 }

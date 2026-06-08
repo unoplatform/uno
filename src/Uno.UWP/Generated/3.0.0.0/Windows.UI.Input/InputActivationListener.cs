@@ -19,13 +19,13 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InputActivationState InputActivationListener.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputActivationState%20InputActivationListener.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.InputActivationListener", "State");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.InputActivationListener.State.get
 		// Forced skipping of method Windows.UI.Input.InputActivationListener.InputActivationChanged.add
 		// Forced skipping of method Windows.UI.Input.InputActivationListener.InputActivationChanged.remove
+		// Forced skipping of method Windows.UI.Input.InputActivationListener.State.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.InputActivationListener, global::Windows.UI.Input.InputActivationListenerActivationChangedEventArgs> InputActivationChanged
@@ -33,12 +33,12 @@ namespace Windows.UI.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.InputActivationListener", "event TypedEventHandler<InputActivationListener, InputActivationListenerActivationChangedEventArgs> InputActivationListener.InputActivationChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.InputActivationListener", "event InputActivationChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.InputActivationListener", "event TypedEventHandler<InputActivationListener, InputActivationListenerActivationChangedEventArgs> InputActivationListener.InputActivationChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.InputActivationListener", "event InputActivationChanged");
 			}
 		}
 #endif

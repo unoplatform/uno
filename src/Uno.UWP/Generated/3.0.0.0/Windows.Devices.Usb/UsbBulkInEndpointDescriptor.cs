@@ -19,7 +19,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbBulkInEndpointDescriptor.EndpointNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20UsbBulkInEndpointDescriptor.EndpointNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbBulkInEndpointDescriptor", "EndpointNumber");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint UsbBulkInEndpointDescriptor.MaxPacketSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20UsbBulkInEndpointDescriptor.MaxPacketSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbBulkInEndpointDescriptor", "MaxPacketSize");
 			}
 		}
 #endif
@@ -39,12 +39,12 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbBulkInPipe UsbBulkInEndpointDescriptor.Pipe is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbBulkInPipe%20UsbBulkInEndpointDescriptor.Pipe");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbBulkInEndpointDescriptor", "Pipe");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Usb.UsbBulkInEndpointDescriptor.MaxPacketSize.get
 		// Forced skipping of method Windows.Devices.Usb.UsbBulkInEndpointDescriptor.EndpointNumber.get
+		// Forced skipping of method Windows.Devices.Usb.UsbBulkInEndpointDescriptor.MaxPacketSize.get
 		// Forced skipping of method Windows.Devices.Usb.UsbBulkInEndpointDescriptor.Pipe.get
 	}
 }

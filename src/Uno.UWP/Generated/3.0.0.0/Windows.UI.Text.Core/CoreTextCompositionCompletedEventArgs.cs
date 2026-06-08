@@ -19,7 +19,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<CoreTextCompositionSegment> CoreTextCompositionCompletedEventArgs.CompositionSegments is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CCoreTextCompositionSegment%3E%20CoreTextCompositionCompletedEventArgs.CompositionSegments");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs", "CompositionSegments");
 			}
 		}
 #endif
@@ -29,18 +29,18 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreTextCompositionCompletedEventArgs.IsCanceled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreTextCompositionCompletedEventArgs.IsCanceled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs", "IsCanceled");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs.IsCanceled.get
-		// Forced skipping of method Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs.CompositionSegments.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral CoreTextCompositionCompletedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreTextCompositionCompletedEventArgs.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs", "GetDeferral()");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs.CompositionSegments.get
+		// Forced skipping of method Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs.IsCanceled.get
 	}
 }

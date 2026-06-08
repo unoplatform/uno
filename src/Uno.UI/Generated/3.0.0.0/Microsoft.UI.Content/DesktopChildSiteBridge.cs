@@ -19,11 +19,11 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentSizePolicy DesktopChildSiteBridge.ResizePolicy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentSizePolicy%20DesktopChildSiteBridge.ResizePolicy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopChildSiteBridge", "ResizePolicy");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopChildSiteBridge", "ContentSizePolicy DesktopChildSiteBridge.ResizePolicy");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopChildSiteBridge", "ResizePolicy");
 			}
 		}
 #endif
@@ -33,26 +33,26 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentSiteView DesktopChildSiteBridge.SiteView is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentSiteView%20DesktopChildSiteBridge.SiteView");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopChildSiteBridge", "SiteView");
 			}
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.SiteView.get
-		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.ResizePolicy.get
-		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.ResizePolicy.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Content.DesktopChildSiteBridge CreateWithDispatcherQueue(global::Microsoft.UI.Dispatching.DispatcherQueue queue, global::Microsoft.UI.WindowId parentWindowId)
-		{
-			throw new global::System.NotImplementedException("The member DesktopChildSiteBridge DesktopChildSiteBridge.CreateWithDispatcherQueue(DispatcherQueue queue, WindowId parentWindowId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DesktopChildSiteBridge%20DesktopChildSiteBridge.CreateWithDispatcherQueue%28DispatcherQueue%20queue%2C%20WindowId%20parentWindowId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Content.DesktopChildSiteBridge Create(global::Microsoft.UI.Composition.Compositor compositor, global::Microsoft.UI.WindowId parentWindowId)
 		{
-			throw new global::System.NotImplementedException("The member DesktopChildSiteBridge DesktopChildSiteBridge.Create(Compositor compositor, WindowId parentWindowId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DesktopChildSiteBridge%20DesktopChildSiteBridge.Create%28Compositor%20compositor%2C%20WindowId%20parentWindowId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopChildSiteBridge", "Create(Compositor compositor, WindowId parentWindowId)");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Content.DesktopChildSiteBridge CreateWithDispatcherQueue(global::Microsoft.UI.Dispatching.DispatcherQueue queue, global::Microsoft.UI.WindowId parentWindowId)
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopChildSiteBridge", "CreateWithDispatcherQueue(DispatcherQueue queue, WindowId parentWindowId)");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.ResizePolicy.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.ResizePolicy.set
+		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.SiteView.get
 	}
 }

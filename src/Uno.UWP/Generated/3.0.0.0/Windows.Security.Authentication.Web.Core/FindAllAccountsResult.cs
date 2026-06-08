@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<WebAccount> FindAllAccountsResult.Accounts is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CWebAccount%3E%20FindAllAccountsResult.Accounts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.FindAllAccountsResult", "Accounts");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebProviderError FindAllAccountsResult.ProviderError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebProviderError%20FindAllAccountsResult.ProviderError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.FindAllAccountsResult", "ProviderError");
 			}
 		}
 #endif
@@ -39,12 +39,12 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FindAllWebAccountsStatus FindAllAccountsResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FindAllWebAccountsStatus%20FindAllAccountsResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.FindAllAccountsResult", "Status");
 			}
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.Accounts.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.Status.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.ProviderError.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.FindAllAccountsResult.Status.get
 	}
 }

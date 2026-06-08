@@ -8,8 +8,8 @@ namespace Microsoft.UI.Content
 #endif
 	public partial class ContentIslandAutomationProviderRequestedEventArgs
 	{
-		// Skipping already declared property Handled
 		// Skipping already declared property AutomationProvider
+		// Skipping already declared property Handled
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.AutomationProvider.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.AutomationProvider.set
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.Handled.get

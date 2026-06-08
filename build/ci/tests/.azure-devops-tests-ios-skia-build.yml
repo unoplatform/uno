@@ -7,7 +7,6 @@ parameters:
   xCodeRootTest: ''
   xCodeRootBuild: ''
   poolName: ''
-  UNO_UWP_BUILD: ''
   XAML_FLAVOR_BUILD: ''
 
 jobs:
@@ -24,7 +23,6 @@ jobs:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
-    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
 
@@ -64,7 +62,8 @@ jobs:
       flattenFolders: false
 
   - pwsh: |
-      $artifactName = "uitests-ios-skia-build-$env:XAML_FLAVOR_BUILD-attempt$env:SYSTEM_JOBATTEMPT"
+      $artifactName = "samplesapp-ios-skia"
+      if ([int]$env:SYSTEM_JOBATTEMPT -gt 1) { $artifactName += "-attempt$env:SYSTEM_JOBATTEMPT" }
       Write-Host "Publishing iOS Samples artifact: $artifactName"
       Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName]$artifactName"
       Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName;isOutput=true]$artifactName"
@@ -83,5 +82,5 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: skia-samples-app-binlog
+      ArtifactName: samplesapp-ios-skia-logs
       ArtifactType: Container

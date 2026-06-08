@@ -37,6 +37,19 @@ By default, Android has a limit of 200% for the text scaling which is not the ca
 
 Use `Uno.UI.FeatureConfiguration.Font.MaximumTextScaleFactor` to control this.
 
+## Rendering backend (Skia)
+
+The rendering backend for the Skia renderer can be configured per platform. On desktop, the preferred approach is the [host builder API](xref:Uno.Skia.Vulkan). The feature flags below are kept for backwards compatibility and for platforms (like Android) that don't use a host builder.
+
+- `Uno.UI.FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid` — Enables Vulkan rendering on Android (Skia). Default: `false`.
+- `Uno.UI.FeatureConfiguration.Rendering.UseVulkanOnX11` — Enables Vulkan rendering on Linux/X11. Default: `false`.
+- `Uno.UI.FeatureConfiguration.Rendering.UseVulkanOnWin32` — Enables Vulkan rendering on Windows/Win32. Default: `false`.
+- `Uno.UI.FeatureConfiguration.Rendering.UseOpenGLOnSkiaAndroid` — Enables OpenGL ES rendering on Android (Skia). Default: `true`.
+- `Uno.UI.FeatureConfiguration.Rendering.UseOpenGLOnX11` — Enables OpenGL rendering on Linux/X11. Default: `null` (auto-detect).
+- `Uno.UI.FeatureConfiguration.Rendering.UseOpenGLOnWin32` — Enables OpenGL rendering on Windows/Win32. Default: `null` (auto-detect).
+
+For details, see [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
+
 ## ComboBox
 
 ### Default preferred placement
@@ -93,6 +106,18 @@ When `ContentDialog` version is used, it uses the default `ContentDialog` style.
 WinRTFeatureConfiguration.MessageDialog.StyleOverride = "CustomMessageDialogStyle";
 ```
 
+## TextBox
+
+### Disable the iPadOS 26 floating number pad popover (iOS)
+
+On iPadOS 26, `UITextField` displays the numeric keyboard as a floating popover instead of a docked keyboard. Setting `Uno.UI.FeatureConfiguration.TextBox.DisableNumberPadPopover` to `true` opts out of this behavior and restores the docked keyboard:
+
+```csharp
+Uno.UI.FeatureConfiguration.TextBox.DisableNumberPadPopover = true;
+```
+
+The flag only takes effect on iOS Skia, on iOS 26 or later, and only affects `TextBox` instances configured for a numeric keyboard on iPad. It has no effect on other platforms, on iOS versions prior to 26, or on non-numeric keyboards. Defaults to `false`.
+
 ## ToolTips
 
 By default, `ToolTips` are disabled on all platforms except for WebAssembly and Skia (see [#10791](https://github.com/unoplatform/uno/issues/10791)). To enable them on a specific platform, set the `UseToolTips` configuration flag to `true`. You can add the following in the end of the `App` constructor:
@@ -105,23 +130,22 @@ It is also possible to adjust the delay in milliseconds (`Uno.UI.FeatureConfigur
 
 ## WebView2
 
-### Inspectable (iOS)
+### EnableDevTools
 
-To enable inspecting applications using `WebView2` controls from macOS with the Safari Developer Tools, set the `IsInspectable` configuration flag to `true` in your `App.Xaml.cs`:
+Toggles the platform-native developer tools for the underlying web engine of `WebView2` (Chromium DevTools on Windows / Linux Skia, Chrome DevTools remote debugging on Android, Safari Web Inspector on iOS / Mac Catalyst / macOS). Defaults to `true` in `DEBUG` builds and `false` in `RELEASE` builds. Set it during application startup before any `WebView2` is materialized:
 
 ```csharp
 public App()
 {
+    Uno.UI.FeatureConfiguration.WebView2.EnableDevTools = true;
     this.InitializeComponent();
-#if __IOS__
-    Uno.UI.FeatureConfiguration.WebView2.IsInspectable = true;
-#endif
 }
 ```
 
+See [WebView2 → Enabling native developer tools](xref:Uno.Controls.WebView2#enabling-native-developer-tools) for the per-platform inspection workflow.
+
 > [!IMPORTANT]
->
-> This feature will only work for security reasons when the application runs in Debug mode.
+> On Apple platforms the OS only honors this flag for development-signed apps (DEBUG builds). The legacy iOS-only `IsInspectable` property is now an obsolete alias for `EnableDevTools`.
 
 ## `ApplicationData`
 

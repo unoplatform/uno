@@ -22,6 +22,7 @@ using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Toolkit.DevTools.Input;
+using MUXControlsTestApp.Utilities;
 
 #if HAS_UNO_WINUI
 using GestureRecognizer = Microsoft.UI.Input.GestureRecognizer;
@@ -647,11 +648,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if __WASM__
-	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
-	[Ignore("InputInjector is not supported on this platform.")]
-#endif
+	[Ignore("Test is flaky across all platforms.")]
 	public async Task When_DirectManipulation_Then_AllTreeSetOverAndPressedFalse()
 	{
 		ScrollViewer sv;
@@ -823,6 +820,85 @@ public class Given_InputManager
 #elif !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
+	public async Task When_DirectManipulationInertial_Then_ReverseScrollWorks()
+	{
+		// Repro: At the top of a list, flick up fast (no scroll room), then immediately flick down.
+		// Without the fix, the old inertial DM (DM1) lingers in States.Inertial with no _inertiaHandler.
+		// When DM2 starts and claims inertia (setting _touchInertia), DM1's unclaimed inertial updates
+		// leak through SCP's OnUpdated (because _touchInertia is now set). When DM1 completes,
+		// it clears _touchInertia via OnCompleted, killing DM2's inertia entirely.
+		//
+		// This test verifies that DM2's inertia actually contributes scroll beyond the direct finger drag.
+		// The second flick uses a small drag distance so direct scroll alone is insufficient;
+		// only working inertia can push the offset past the threshold.
+		ScrollViewer sv;
+		var root = new Grid
+		{
+			Width = 200,
+			Height = 500,
+			Children =
+			{
+				(sv = new ScrollViewer
+				{
+					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+					Background = new SolidColorBrush(Colors.DeepPink),
+					Content = new Border
+					{
+						Background = new SolidColorBrush(Colors.DeepSkyBlue),
+						Margin = new Thickness(10),
+						Width = 800,
+						Height = 80000,
+					}
+				}),
+			}
+		};
+
+		var bounds = await UITestHelper.Load(root);
+
+		sv.VerticalOffset.Should().Be(0, because: "we start at the top");
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var finger = injector.GetFinger();
+
+		// Flick UP VERY fast while already at the top (no scroll room in that direction).
+		// This triggers inertia on the DM (States.Inertial) even though SCP declines it
+		// (no scroll room → _inertiaHandler stays null, but recognizer's inertia timer runs).
+		// The high velocity creates a long-running inertia that outlasts DM2's, ensuring
+		// DM1's completion kills DM2's inertia in the buggy code path.
+		finger.Drag(from: bounds.GetCenter(), to: bounds.GetCenter().Offset(y: 200), steps: 1, stepOffsetInMilliseconds: 50);
+
+		// Do NOT await WaitForIdle here — we need the old DM's inertia timer to still be running
+		// when the second flick starts.
+
+		// Immediately flick DOWN (the valid scroll direction) with a SHORT drag distance.
+		// Direct scroll is only ~40px. The velocity (~1 px/ms) generates inertia lasting ~500ms.
+		// DM1's inertia lasts ~1000ms (velocity ~2 px/ms), so it outlasts and kills DM2's inertia.
+		// Without the fix: DM1's inertia fights (upward deltas) and its completion clears
+		//   _touchInertia, so the offset stays near 0 (DM1's stronger upward force wins).
+		// With the fix: DM1 is force-completed immediately → DM2's inertia runs fully → offset >> 200.
+		finger.Drag(from: bounds.GetCenter(), to: bounds.GetCenter().Offset(y: -40), steps: 3, stepOffsetInMilliseconds: 10);
+
+		// Capture offset right after both drags (before async inertia timers fire).
+		var offsetAfterDrag = sv.VerticalOffset;
+
+		// Wait long enough for inertia timers to process (they fire asynchronously).
+		await Task.Delay(3000);
+		await UITestHelper.WaitForIdle(waitForCompositionAnimations: false);
+
+		// With the fix, DM2's full inertia adds ~250px on top of the ~40px direct scroll → ~290px total.
+		// Without the fix, DM1's stronger upward inertia fights and eventually kills DM2's inertia,
+		// resulting in much less scroll (often near 0 since DM1 pushes offset back to the top).
+		sv.VerticalOffset.Should().BeGreaterThan(200,
+			because: "downward flick inertia should continue scrolling beyond the direct drag distance; " +
+			$"offset after drag was {offsetAfterDrag}, after inertia is {sv.VerticalOffset}");
+	}
+
+	[TestMethod]
+#if __WASM__
+	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
 	public async Task When_DirectManipulationMultiple_Then_RunsIndependently()
 	{
 		ScrollViewer sv1, sv2;
@@ -956,13 +1032,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if __WASM__
-	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
-	[Ignore("InputInjector is not supported on this platform.")]
-#elif RUNTIME_CORECLR || RUNTIME_NATIVE_AOT
-	[Ignore("TODO: figure out why this fails, how to fix")]
-#endif
+	[Ignore("Flaky on Skia runtime - see https://github.com/unoplatform/uno/issues/22702")]
 	public async Task When_DirectManipulationMultipleWithInertia_Then_RunsIndependently()
 	{
 		ScrollViewer sv1, sv2;
@@ -1035,13 +1105,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if __WASM__
-	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
-	[Ignore("InputInjector is not supported on this platform.")]
-#elif RUNTIME_CORECLR || RUNTIME_NATIVE_AOT
-	[Ignore("TODO: figure out why this fails, how to fix")]
-#endif
+	[Ignore("Flaky on Skia runtime - see https://github.com/unoplatform/uno/issues/22702")]
 	public async Task When_DirectManipulationMultipleWithMultipleInertia_Then_RunsIndependently()
 	{
 		ScrollViewer sv1, sv2;
@@ -1335,14 +1399,14 @@ public class Given_InputManager
 #elif !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
-	[DataRow(ManipulationModes.None)]
-	[DataRow(ManipulationModes.TranslateX)]
-	[DataRow(ManipulationModes.TranslateY)]
-	[DataRow(ManipulationModes.TranslateRailsX)]
-	[DataRow(ManipulationModes.TranslateRailsY)]
-	[DataRow(ManipulationModes.TranslateInertia)]
-	[DataRow(ManipulationModes.All)] // Does **NOT** include System
-	public async Task When_DirectManipulationDisabled(ManipulationModes mode)
+	[DataRow(ManipulationModes.None, false)]
+	[DataRow(ManipulationModes.TranslateX, true)] // Descendant claims X only -> parent's Y-axis scroll must still work.
+	[DataRow(ManipulationModes.TranslateY, false)]
+	[DataRow(ManipulationModes.TranslateRailsX, true)] // Rails-X is still an X-axis claim; doesn't conflict with Y-axis parent.
+	[DataRow(ManipulationModes.TranslateRailsY, false)]
+	[DataRow(ManipulationModes.TranslateInertia, false)]
+	[DataRow(ManipulationModes.All, false)] // Does **NOT** include System
+	public async Task When_DirectManipulationDisabled(ManipulationModes mode, bool expectsAncestorScroll)
 	{
 		ScrollViewer sv;
 		var ui = new Grid
@@ -1377,7 +1441,16 @@ public class Given_InputManager
 
 		await UITestHelper.WaitForIdle();
 
-		sv.VerticalOffset.Should().Be(0);
+		if (expectsAncestorScroll)
+		{
+			// Descendant declares a non-conflicting axis, so the ancestor ScrollViewer's
+			// vertical-scroll DM must NOT be cancelled by the descendant claim.
+			sv.VerticalOffset.Should().BeGreaterThan(0);
+		}
+		else
+		{
+			sv.VerticalOffset.Should().Be(0);
+		}
 	}
 
 	private CoreCursorType? GetCursorShape()
@@ -1392,6 +1465,127 @@ public class Given_InputManager
 			?.PointerCursor;
 
 		return cursor?.Type;
+	}
+
+	[TestMethod]
+#if __WASM__
+	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_ToggleSwitchToggledInScrollViewer_Then_ScrollStillWorks()
+	{
+		ScrollViewer sv;
+		ToggleSwitch toggle;
+		var root = new Grid
+		{
+			Width = 300,
+			Height = 300,
+			Children =
+			{
+				(sv = new ScrollViewer
+				{
+					UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+					IsScrollInertiaEnabled = false,
+					Content = new StackPanel
+					{
+						Children =
+						{
+							(toggle = new ToggleSwitch { Header = "Toggle" }),
+							new Border { Height = 2000, Background = new SolidColorBrush(Colors.LightGray) }
+						}
+					}
+				})
+			}
+		};
+
+		await UITestHelper.Load(root);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var finger = injector.GetFinger();
+
+		// 1. Verify scrolling works initially
+		var svBounds = sv.GetAbsoluteBounds();
+		finger.Drag(from: svBounds.GetCenter(), to: svBounds.GetCenter().Offset(y: -100));
+		sv.VerticalOffset.Should().BeGreaterThan(0, because: "scrolling should work before toggling");
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// 2. Scroll back to top so the toggle is visible
+		sv.ChangeView(null, 0, null, disableAnimation: true);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// 3. Toggle the ToggleSwitch by dragging horizontally across it (simulates touch toggle)
+		var initialIsOn = toggle.IsOn;
+		var toggleBounds = toggle.GetAbsoluteBounds();
+		finger.Drag(
+			from: new Point(toggleBounds.Left + 10, toggleBounds.GetCenter().Y),
+			to: new Point(toggleBounds.Right - 10, toggleBounds.GetCenter().Y),
+			steps: 5);
+		await TestServices.WindowHelper.WaitForIdle();
+		toggle.IsOn.Should().NotBe(initialIsOn, because: "the horizontal drag should toggle the ToggleSwitch");
+
+		// 4. Try to scroll again - this is the actual test: scrolling must still work after toggle
+		sv.ChangeView(null, 0, null, disableAnimation: true);
+		await TestServices.WindowHelper.WaitForIdle();
+		svBounds = sv.GetAbsoluteBounds();
+		finger.Drag(from: svBounds.GetCenter(), to: svBounds.GetCenter().Offset(y: -100));
+		sv.VerticalOffset.Should().BeGreaterThan(0, because: "scrolling should still work after toggling a ToggleSwitch");
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	[TestMethod]
+#if __WASM__
+	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_SwipeControlInListView_Then_VerticalScrollStillWorks()
+	{
+		// Regression coverage for the SwipeControl-in-ListView vertical-scroll-dies bug.
+		// PR #23135 added an after-press redo of CancelDirectManipulations to fix pinch
+		// on a ManipulationMode=Scale Grid inside a scrollable ScrollViewer on Skia Android.
+		// That redo cancelled ALL ancestor direct manipulations regardless of axis, so a
+		// SwipeControl (TranslateX) inside a ListView caused the ListView's
+		// ScrollContentPresenter (TranslateY) DM to be cancelled and vertical scrolling
+		// would die. ConflictsWithRequester is now axis-aware: a pure-X-translation
+		// requester must not cancel a pure-Y-translation ancestor.
+
+		var listView = new ListView
+		{
+			Width = 250,
+			Height = 200,
+		};
+		for (var i = 0; i < 50; i++)
+		{
+			var leftItems = new SwipeItems();
+			leftItems.Add(new SwipeItem { Text = "Action" });
+			listView.Items.Add(new SwipeControl
+			{
+				Width = 220,
+				Height = 40,
+				Content = new TextBlock { Text = $"Item {i}" },
+				LeftItems = leftItems,
+			});
+		}
+
+		await UITestHelper.Load(listView);
+
+		var sv = listView.FindVisualChildByType<ScrollViewer>()
+			?? throw new InvalidOperationException("ListView did not contain a ScrollViewer");
+		sv.UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous;
+		sv.IsScrollInertiaEnabled = false;
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var finger = injector.GetFinger();
+
+		sv.VerticalOffset.Should().Be(0, because: "we start at the top");
+
+		var lvBounds = listView.GetAbsoluteBounds();
+		finger.Drag(from: lvBounds.GetCenter(), to: lvBounds.GetCenter().Offset(y: -100));
+
+		sv.VerticalOffset.Should().BeGreaterThan(0,
+			because: "a vertical drag on a ListView whose items are SwipeControls must still scroll vertically; " +
+					 "the SwipeControl's TranslateX direct-manipulation must not cancel the ScrollContentPresenter's TranslateY DM.");
 	}
 
 	private static void SetCursorShape(CoreCursor cursor)

@@ -19,7 +19,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialCoordinateSystem HandMeshVertexState.CoordinateSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialCoordinateSystem%20HandMeshVertexState.CoordinateSystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshVertexState", "CoordinateSystem");
 			}
 		}
 #endif
@@ -29,18 +29,18 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PerceptionTimestamp HandMeshVertexState.UpdateTimestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionTimestamp%20HandMeshVertexState.UpdateTimestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Perception.People.HandMeshVertexState", "UpdateTimestamp");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Perception.People.HandMeshVertexState.CoordinateSystem.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void GetVertices(global::Windows.Perception.People.HandMeshVertex[] vertices)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.People.HandMeshVertexState", "void HandMeshVertexState.GetVertices(HandMeshVertex[] vertices)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.People.HandMeshVertexState", "GetVertices(HandMeshVertex[] vertices)");
 		}
 #endif
+		// Forced skipping of method Windows.Perception.People.HandMeshVertexState.CoordinateSystem.get
 		// Forced skipping of method Windows.Perception.People.HandMeshVertexState.UpdateTimestamp.get
 	}
 }

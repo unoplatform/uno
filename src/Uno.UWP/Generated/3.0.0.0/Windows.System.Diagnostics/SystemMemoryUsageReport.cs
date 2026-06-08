@@ -19,7 +19,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong SystemMemoryUsageReport.AvailableSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20SystemMemoryUsageReport.AvailableSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemMemoryUsageReport", "AvailableSizeInBytes");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong SystemMemoryUsageReport.CommittedSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20SystemMemoryUsageReport.CommittedSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemMemoryUsageReport", "CommittedSizeInBytes");
 			}
 		}
 #endif
@@ -39,12 +39,12 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong SystemMemoryUsageReport.TotalPhysicalSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20SystemMemoryUsageReport.TotalPhysicalSizeInBytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemMemoryUsageReport", "TotalPhysicalSizeInBytes");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsageReport.TotalPhysicalSizeInBytes.get
 		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsageReport.AvailableSizeInBytes.get
 		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsageReport.CommittedSizeInBytes.get
+		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsageReport.TotalPhysicalSizeInBytes.get
 	}
 }

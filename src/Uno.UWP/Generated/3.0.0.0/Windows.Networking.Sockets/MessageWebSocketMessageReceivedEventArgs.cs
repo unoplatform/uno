@@ -15,39 +15,40 @@ namespace Windows.Networking.Sockets
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.Sockets.SocketMessageType MessageType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SocketMessageType MessageWebSocketMessageReceivedEventArgs.MessageType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SocketMessageType%20MessageWebSocketMessageReceivedEventArgs.MessageType");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsMessageComplete
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MessageWebSocketMessageReceivedEventArgs.IsMessageComplete is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MessageWebSocketMessageReceivedEventArgs.IsMessageComplete");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketMessageReceivedEventArgs", "IsMessageComplete");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketMessageReceivedEventArgs.MessageType.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Networking.Sockets.SocketMessageType MessageType
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketMessageReceivedEventArgs", "MessageType");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketMessageReceivedEventArgs.~MessageWebSocketMessageReceivedEventArgs()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.DataReader GetDataReader()
 		{
-			throw new global::System.NotImplementedException("The member DataReader MessageWebSocketMessageReceivedEventArgs.GetDataReader() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataReader%20MessageWebSocketMessageReceivedEventArgs.GetDataReader%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketMessageReceivedEventArgs", "GetDataReader()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IInputStream GetDataStream()
 		{
-			throw new global::System.NotImplementedException("The member IInputStream MessageWebSocketMessageReceivedEventArgs.GetDataStream() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IInputStream%20MessageWebSocketMessageReceivedEventArgs.GetDataStream%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.MessageWebSocketMessageReceivedEventArgs", "GetDataStream()");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketMessageReceivedEventArgs.IsMessageComplete.get
+		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocketMessageReceivedEventArgs.MessageType.get
 	}
 }

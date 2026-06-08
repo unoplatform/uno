@@ -9,9 +9,9 @@ namespace Windows.Storage
 	public partial class StorageStreamTransaction : global::System.IDisposable
 	{
 		// Skipping already declared property Stream
-		// Forced skipping of method Windows.Storage.StorageStreamTransaction.Stream.get
 		// Skipping already declared method Windows.Storage.StorageStreamTransaction.CommitAsync()
 		// Skipping already declared method Windows.Storage.StorageStreamTransaction.Dispose()
+		// Forced skipping of method Windows.Storage.StorageStreamTransaction.Stream.get
 		// Processing: System.IDisposable
 	}
 }

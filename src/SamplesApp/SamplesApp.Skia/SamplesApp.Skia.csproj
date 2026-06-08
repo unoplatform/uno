@@ -36,6 +36,7 @@
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Skia.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Reference.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.Skia.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.SpellChecking\Uno.WinUI.SpellChecking.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Reference.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.Skia.csproj" />
@@ -71,15 +72,17 @@
 			<!-- Workaround for https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/2617 -->
 			<Version>5.56.0</Version>
 		</PackageReference>
+		<!-- Override vulnerable transitive Microsoft.Kiota.Abstractions 1.9.1 (GHSA-7j59-v9qr-6fq9, fixed in 1.22.0) pulled in by Microsoft.Graph 5.56.0 -->
+		<PackageReference Include="Microsoft.Kiota.Abstractions" Version="1.22.2" Condition="'$(Configuration)'!='Debug'" />
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
 
-	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" />
+	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.props" />
 
-	<Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
+	<Import Project="..\SamplesApp.Samples\SamplesApp.Samples.props" />
 
-	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
+	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.props" />
 
 	<Import Project="..\Benchmarks.Shared\Benchmarks.Shared.projitems" Label="Shared" />
 

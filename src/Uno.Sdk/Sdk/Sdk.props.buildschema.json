@@ -95,6 +95,10 @@
 			"description": "Disables the extra targets from being loaded which implicitly add NuGet packages.",
 			"type": "bool"
 		},
+		"DisableImplicitUnoWinAppSdkPackages": {
+			"description": "When set to true on a library, prevents the Uno.Sdk from implicitly adding the base Uno.* package references (Uno.WinUI, Uno.Resizetizer, Uno.Sdk.Extras, Uno.Settings.DevServer) on the Windows App SDK (net*-windows10*) target framework. UnoFeatures-driven packages (Toolkit, Material, Extensions, ...) still flow as usual. Use for WinUI libraries cross-targeted to Uno that want to avoid leaking Uno.WinUI as a transitive dependency to WinAppSdk consumers or to compile to a strong-named assembly on Windows.",
+			"type": "bool"
+		},
 		"DisableImplicitUnoNamespaces": {
 			"description": "Disables implicit namespaces that come specifically from the Uno.Sdk.",
 			"type": "bool"
@@ -282,9 +286,41 @@
 			"description": "Provides an explicit override for the version of AndroidX.Collection to use.",
 			"type": "nuget-version"
 		},
+		"AndroidXLeanbackVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.Leanback to use.",
+			"type": "nuget-version"
+		},
+		"AndroidXCarAppVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.Car.App to use.",
+			"type": "nuget-version"
+		},
+		"AndroidXWearVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.Wear to use.",
+			"type": "nuget-version"
+		},
+		"AndroidXWearTilesVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.Wear.Tiles to use.",
+			"type": "nuget-version"
+		},
 		"MicrosoftIdentityClientVersion": {
 			"description": "Provides an explicit override for the version of Microsoft.Identity.Client to use.",
 			"type": "nuget-version"
+		},
+		"UnoSplashScreenFile": {
+			"description": "The path to the splash screen image file.",
+			"type": "file"
+		},
+		"UnoSplashScreenBaseSize": {
+			"description": "The base size of the splash screen image. e.g.: '300,300'.",
+			"type": "string"
+		},
+		"UnoSplashScreenColor": {
+			"description": "The background color of the splash screen.",
+			"type": "color"
+		},
+		"UnoSplashScreenScale": {
+			"description": "Used to scale the image that will be used as the SplashScreen.",
+			"type": "float"
 		}
 	},
 	"metadata": [
@@ -339,27 +375,27 @@
 					"description": "The path to the image file used in the foreground for your icon."
 				},
 				"ForegroundScale": {
-					"type": "int",
+					"type": "float",
 					"description": "The scale factor for the foreground image."
 				},
 				"AndroidForegroundScale": {
-					"type": "int",
+					"type": "float",
 					"description": "The scale factor for the foreground image on Android."
 				},
 				"WasmForegroundScale": {
-					"type": "int",
+					"type": "float",
 					"description": "The scale factor for the foreground image on WebAssembly."
 				},
 				"WindowsForegroundScale": {
-					"type": "int",
+					"type": "float",
 					"description": "The scale factor for the foreground image on Windows."
 				},
 				"IOSForegroundScale": {
-					"type": "int",
+					"type": "float",
 					"description": "The scale factor for the foreground image on iOS."
 				},
 				"SkiaForegroundScale": {
-					"type": "int",
+					"type": "float",
 					"description": "The scale factor for the foreground image on Skia."
 				}
 			}
@@ -369,27 +405,27 @@
 			"description": "Provides a splash screen asset for Uno.Resizetizer to use for the application.",
 			"metadata": {
 				"Scale": {
-					"type": "int",
+					"type": "float",
 					"description": "Used to scale the image that will be used as SplashScreen. This property will be overridden by any platform-specific scale."
 				},
 				"AndroidScale": {
-					"type": "int",
+					"type": "float",
 					"description": "Used to scale the image that will be used as SplashScreen on Android."
 				},
 				"IOSScale": {
-					"type": "int",
+					"type": "float",
 					"description": "Used to scale the image that will be used as SplashScreen on iOS."
 				},
 				"WindowsScale": {
-					"type": "int",
+					"type": "float",
 					"description": "Used to scale the image that will be used as SplashScreen on Windows."
 				},
 				"WasmScale": {
-					"type": "int",
+					"type": "float",
 					"description": "Used to scale the image that will be used as SplashScreen on WebAssembly."
 				},
 				"SkiaScale": {
-					"type": "int",
+					"type": "float",
 					"description": "Used to scale the image that will be used as SplashScreen on Skia."
 				}
 			}
@@ -515,6 +551,10 @@
 					"description": "Adds support for using Skia as a UI renderer on all targets.",
 					"helpUrl": "https://aka.platform.uno/skia-rendering"
 				},
+				"NativeRenderer": {
+					"description": "Adds support for using native platform UI components as a renderer on iOS, Android, and WebAssembly.",
+					"helpUrl": "https://aka.platform.uno/native-rendering"
+				},
 				"Storage": {
 					"description": "Adds support for Storage using Uno.Extensions.",
 					"helpUrl": "https://aka.platform.uno/feature-storage"
@@ -530,6 +570,10 @@
 				"Cupertino": {
 					"description": "Adds support for the Cupertino Design Toolkit.",
 					"helpUrl": "https://aka.platform.uno/feature-cupertino"
+				},
+				"SimpleTheme": {
+					"description": "Adds support for the Simple Design Toolkit.",
+					"helpUrl": "https://aka.platform.uno/feature-simpletheme"
 				},
 				"Dsp": {
 					"description": "Adds support for the Uno.Dsp.Tasks package.",
@@ -557,6 +601,21 @@
 				},
 				"GLCanvas": {
 					"description": "Adds support for 3D graphics APIs based on OpenGL."
+				},
+				"SpellChecking": {
+					"description": "Adds support for spell checking."
+				},
+				"AndroidTV": {
+					"description": "Configures the Android head for Android TV (adds Xamarin.AndroidX.Leanback). Pair with template-stamped manifest entries for Leanback launcher, banner, and focus highlight overrides.",
+					"helpUrl": "https://aka.platform.uno/feature-android-tv"
+				},
+				"AndroidAuto": {
+					"description": "Configures the Android head for Android Auto / Automotive OS (adds Xamarin.AndroidX.Car.App.App).",
+					"helpUrl": "https://aka.platform.uno/feature-android-auto"
+				},
+				"AndroidWear": {
+					"description": "Adds Wear OS support to the Android head (adds Xamarin.AndroidX.Wear and Xamarin.AndroidX.Wear.Tiles). Single APK targets both phone and watch.",
+					"helpUrl": "https://aka.platform.uno/feature-android-wear"
 				}
 			}
 		}

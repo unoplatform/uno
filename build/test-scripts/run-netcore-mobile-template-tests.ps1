@@ -167,7 +167,7 @@ if ($IsWindows)
 }
 else
 {
-    $default = @('-v:m', '-p:AotAssemblies=false', '-p:ValidateXcodeVersion=false')
+    $default = @('-v:m', '-p:AotAssemblies=false')
 }
 
 $debug = $default + '-p:Configuration=Debug'

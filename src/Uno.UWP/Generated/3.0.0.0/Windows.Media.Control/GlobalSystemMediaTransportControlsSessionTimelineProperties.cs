@@ -19,7 +19,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan GlobalSystemMediaTransportControlsSessionTimelineProperties.EndTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20GlobalSystemMediaTransportControlsSessionTimelineProperties.EndTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties", "EndTime");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset GlobalSystemMediaTransportControlsSessionTimelineProperties.LastUpdatedTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20GlobalSystemMediaTransportControlsSessionTimelineProperties.LastUpdatedTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties", "LastUpdatedTime");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan GlobalSystemMediaTransportControlsSessionTimelineProperties.MaxSeekTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20GlobalSystemMediaTransportControlsSessionTimelineProperties.MaxSeekTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties", "MaxSeekTime");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan GlobalSystemMediaTransportControlsSessionTimelineProperties.MinSeekTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20GlobalSystemMediaTransportControlsSessionTimelineProperties.MinSeekTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties", "MinSeekTime");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan GlobalSystemMediaTransportControlsSessionTimelineProperties.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20GlobalSystemMediaTransportControlsSessionTimelineProperties.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties", "Position");
 			}
 		}
 #endif
@@ -69,15 +69,15 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan GlobalSystemMediaTransportControlsSessionTimelineProperties.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20GlobalSystemMediaTransportControlsSessionTimelineProperties.StartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties", "StartTime");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.StartTime.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.EndTime.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.MinSeekTime.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.MaxSeekTime.get
-		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.Position.get
 		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.LastUpdatedTime.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.MaxSeekTime.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.MinSeekTime.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.Position.get
+		// Forced skipping of method Windows.Media.Control.GlobalSystemMediaTransportControlsSessionTimelineProperties.StartTime.get
 	}
 }

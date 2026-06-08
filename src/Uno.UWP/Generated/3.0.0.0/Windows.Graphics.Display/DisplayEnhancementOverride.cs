@@ -15,29 +15,15 @@ namespace Windows.Graphics.Display
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.Display.ColorOverrideSettings ColorOverrideSettings
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ColorOverrideSettings DisplayEnhancementOverride.ColorOverrideSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ColorOverrideSettings%20DisplayEnhancementOverride.ColorOverrideSettings");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayEnhancementOverride", "ColorOverrideSettings DisplayEnhancementOverride.ColorOverrideSettings");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Display.BrightnessOverrideSettings BrightnessOverrideSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BrightnessOverrideSettings DisplayEnhancementOverride.BrightnessOverrideSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BrightnessOverrideSettings%20DisplayEnhancementOverride.BrightnessOverrideSettings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayEnhancementOverride", "BrightnessOverrideSettings");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayEnhancementOverride", "BrightnessOverrideSettings DisplayEnhancementOverride.BrightnessOverrideSettings");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayEnhancementOverride", "BrightnessOverrideSettings");
 			}
 		}
 #endif
@@ -47,7 +33,21 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DisplayEnhancementOverride.CanOverride is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DisplayEnhancementOverride.CanOverride");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayEnhancementOverride", "CanOverride");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.Display.ColorOverrideSettings ColorOverrideSettings
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayEnhancementOverride", "ColorOverrideSettings");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayEnhancementOverride", "ColorOverrideSettings");
 			}
 		}
 #endif
@@ -57,50 +57,50 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DisplayEnhancementOverride.IsOverrideActive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DisplayEnhancementOverride.IsOverrideActive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayEnhancementOverride", "IsOverrideActive");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.ColorOverrideSettings.get
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.ColorOverrideSettings.set
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.BrightnessOverrideSettings.get
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.BrightnessOverrideSettings.set
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.CanOverride.get
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.IsOverrideActive.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Windows.Graphics.Display.DisplayEnhancementOverride GetForCurrentView()
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayEnhancementOverride", "GetForCurrentView()");
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities GetCurrentDisplayEnhancementOverrideCapabilities()
 		{
-			throw new global::System.NotImplementedException("The member DisplayEnhancementOverrideCapabilities DisplayEnhancementOverride.GetCurrentDisplayEnhancementOverrideCapabilities() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayEnhancementOverrideCapabilities%20DisplayEnhancementOverride.GetCurrentDisplayEnhancementOverrideCapabilities%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Display.DisplayEnhancementOverride", "GetCurrentDisplayEnhancementOverrideCapabilities()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RequestOverride()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayEnhancementOverride", "void DisplayEnhancementOverride.RequestOverride()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayEnhancementOverride", "RequestOverride()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void StopOverride()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayEnhancementOverride", "void DisplayEnhancementOverride.StopOverride()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayEnhancementOverride", "StopOverride()");
 		}
 #endif
 		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.CanOverrideChanged.add
 		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.CanOverrideChanged.remove
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.IsOverrideActiveChanged.add
-		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.IsOverrideActiveChanged.remove
 		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.DisplayEnhancementOverrideCapabilitiesChanged.add
 		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.DisplayEnhancementOverrideCapabilitiesChanged.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Graphics.Display.DisplayEnhancementOverride GetForCurrentView()
-		{
-			throw new global::System.NotImplementedException("The member DisplayEnhancementOverride DisplayEnhancementOverride.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayEnhancementOverride%20DisplayEnhancementOverride.GetForCurrentView%28%29");
-		}
-#endif
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.IsOverrideActiveChanged.add
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.IsOverrideActiveChanged.remove
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.BrightnessOverrideSettings.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.BrightnessOverrideSettings.set
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.CanOverride.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.ColorOverrideSettings.get
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.ColorOverrideSettings.set
+		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverride.IsOverrideActive.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.DisplayEnhancementOverride, object> CanOverrideChanged
@@ -108,12 +108,12 @@ namespace Windows.Graphics.Display
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayEnhancementOverride", "event TypedEventHandler<DisplayEnhancementOverride, object> DisplayEnhancementOverride.CanOverrideChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayEnhancementOverride", "event CanOverrideChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayEnhancementOverride", "event TypedEventHandler<DisplayEnhancementOverride, object> DisplayEnhancementOverride.CanOverrideChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayEnhancementOverride", "event CanOverrideChanged");
 			}
 		}
 #endif
@@ -124,12 +124,12 @@ namespace Windows.Graphics.Display
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayEnhancementOverride", "event TypedEventHandler<DisplayEnhancementOverride, DisplayEnhancementOverrideCapabilitiesChangedEventArgs> DisplayEnhancementOverride.DisplayEnhancementOverrideCapabilitiesChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayEnhancementOverride", "event DisplayEnhancementOverrideCapabilitiesChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayEnhancementOverride", "event TypedEventHandler<DisplayEnhancementOverride, DisplayEnhancementOverrideCapabilitiesChangedEventArgs> DisplayEnhancementOverride.DisplayEnhancementOverrideCapabilitiesChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayEnhancementOverride", "event DisplayEnhancementOverrideCapabilitiesChanged");
 			}
 		}
 #endif
@@ -140,12 +140,12 @@ namespace Windows.Graphics.Display
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayEnhancementOverride", "event TypedEventHandler<DisplayEnhancementOverride, object> DisplayEnhancementOverride.IsOverrideActiveChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayEnhancementOverride", "event IsOverrideActiveChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayEnhancementOverride", "event TypedEventHandler<DisplayEnhancementOverride, object> DisplayEnhancementOverride.IsOverrideActiveChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.DisplayEnhancementOverride", "event IsOverrideActiveChanged");
 			}
 		}
 #endif

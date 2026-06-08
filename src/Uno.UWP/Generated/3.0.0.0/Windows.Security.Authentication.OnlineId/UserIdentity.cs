@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserIdentity.FirstName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserIdentity.FirstName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "FirstName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserIdentity.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserIdentity.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "Id");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool UserIdentity.IsBetaAccount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20UserIdentity.IsBetaAccount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "IsBetaAccount");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool UserIdentity.IsConfirmedPC is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20UserIdentity.IsConfirmedPC");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "IsConfirmedPC");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserIdentity.LastName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserIdentity.LastName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "LastName");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserIdentity.SafeCustomerId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserIdentity.SafeCustomerId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "SafeCustomerId");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserIdentity.SignInName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserIdentity.SignInName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "SignInName");
 			}
 		}
 #endif
@@ -89,17 +89,17 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<OnlineIdServiceTicket> UserIdentity.Tickets is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3COnlineIdServiceTicket%3E%20UserIdentity.Tickets");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.OnlineId.UserIdentity", "Tickets");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.Tickets.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.Id.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.SafeCustomerId.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.SignInName.get
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.FirstName.get
-		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.LastName.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.Id.get
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.IsBetaAccount.get
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.IsConfirmedPC.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.LastName.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.SafeCustomerId.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.SignInName.get
+		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserIdentity.Tickets.get
 	}
 }

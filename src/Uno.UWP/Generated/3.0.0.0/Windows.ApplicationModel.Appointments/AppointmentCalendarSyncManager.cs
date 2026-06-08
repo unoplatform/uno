@@ -15,15 +15,15 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Appointments.AppointmentCalendarSyncStatus Status
+		public global::System.DateTimeOffset LastAttemptedSyncTime
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppointmentCalendarSyncStatus AppointmentCalendarSyncManager.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppointmentCalendarSyncStatus%20AppointmentCalendarSyncManager.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager", "LastAttemptedSyncTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager", "AppointmentCalendarSyncStatus AppointmentCalendarSyncManager.Status");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager", "LastAttemptedSyncTime");
 			}
 		}
 #endif
@@ -33,43 +33,43 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset AppointmentCalendarSyncManager.LastSuccessfulSyncTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20AppointmentCalendarSyncManager.LastSuccessfulSyncTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager", "LastSuccessfulSyncTime");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager", "DateTimeOffset AppointmentCalendarSyncManager.LastSuccessfulSyncTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager", "LastSuccessfulSyncTime");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.DateTimeOffset LastAttemptedSyncTime
+		public global::Windows.ApplicationModel.Appointments.AppointmentCalendarSyncStatus Status
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset AppointmentCalendarSyncManager.LastAttemptedSyncTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20AppointmentCalendarSyncManager.LastAttemptedSyncTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager", "Status");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager", "DateTimeOffset AppointmentCalendarSyncManager.LastAttemptedSyncTime");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager", "Status");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.Status.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.LastSuccessfulSyncTime.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.LastAttemptedSyncTime.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> SyncAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppointmentCalendarSyncManager.SyncAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20AppointmentCalendarSyncManager.SyncAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager", "SyncAsync()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.SyncStatusChanged.add
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.SyncStatusChanged.remove
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.Status.set
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.LastSuccessfulSyncTime.set
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.LastAttemptedSyncTime.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.LastAttemptedSyncTime.set
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.LastSuccessfulSyncTime.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.LastSuccessfulSyncTime.set
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.Status.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager.Status.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager, object> SyncStatusChanged
@@ -77,12 +77,12 @@ namespace Windows.ApplicationModel.Appointments
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager", "event TypedEventHandler<AppointmentCalendarSyncManager, object> AppointmentCalendarSyncManager.SyncStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager", "event SyncStatusChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager", "event TypedEventHandler<AppointmentCalendarSyncManager, object> AppointmentCalendarSyncManager.SyncStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentCalendarSyncManager", "event SyncStatusChanged");
 			}
 		}
 #endif

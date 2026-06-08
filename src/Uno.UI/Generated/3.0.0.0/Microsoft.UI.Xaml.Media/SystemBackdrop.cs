@@ -3,45 +3,39 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class SystemBackdrop : global::Microsoft.UI.Xaml.DependencyObject
 	{
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected SystemBackdrop() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.SystemBackdrop", "SystemBackdrop.SystemBackdrop()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Media.SystemBackdrop.SystemBackdrop()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.SystemBackdrop.SystemBackdrop()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration GetDefaultSystemBackdropConfiguration(global::Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop target, global::Microsoft.UI.Xaml.XamlRoot xamlRoot)
 		{
-			throw new global::System.NotImplementedException("The member SystemBackdropConfiguration SystemBackdrop.GetDefaultSystemBackdropConfiguration(ICompositionSupportsSystemBackdrop target, XamlRoot xamlRoot) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemBackdropConfiguration%20SystemBackdrop.GetDefaultSystemBackdropConfiguration%28ICompositionSupportsSystemBackdrop%20target%2C%20XamlRoot%20xamlRoot%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.SystemBackdrop", "GetDefaultSystemBackdropConfiguration(ICompositionSupportsSystemBackdrop target, XamlRoot xamlRoot)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual void OnTargetConnected(global::Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop connectedTarget, global::Microsoft.UI.Xaml.XamlRoot xamlRoot)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.SystemBackdrop", "void SystemBackdrop.OnTargetConnected(ICompositionSupportsSystemBackdrop connectedTarget, XamlRoot xamlRoot)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.SystemBackdrop", "OnTargetConnected(ICompositionSupportsSystemBackdrop connectedTarget, XamlRoot xamlRoot)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual void OnTargetDisconnected(global::Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop disconnectedTarget)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.SystemBackdrop", "void SystemBackdrop.OnTargetDisconnected(ICompositionSupportsSystemBackdrop disconnectedTarget)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.SystemBackdrop", "OnTargetDisconnected(ICompositionSupportsSystemBackdrop disconnectedTarget)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		protected virtual void OnDefaultSystemBackdropConfigurationChanged(global::Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop target, global::Microsoft.UI.Xaml.XamlRoot xamlRoot)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.SystemBackdrop", "void SystemBackdrop.OnDefaultSystemBackdropConfigurationChanged(ICompositionSupportsSystemBackdrop target, XamlRoot xamlRoot)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.SystemBackdrop", "OnDefaultSystemBackdropConfigurationChanged(ICompositionSupportsSystemBackdrop target, XamlRoot xamlRoot)");
 		}
 #endif
 	}

@@ -13,32 +13,33 @@ namespace Windows.Graphics.Imaging
 		{
 		}
 #endif
+		// Forced skipping of method Windows.Graphics.Imaging.BitmapBuffer.~BitmapBuffer()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int GetPlaneCount()
 		{
-			throw new global::System.NotImplementedException("The member int BitmapBuffer.GetPlaneCount() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20BitmapBuffer.GetPlaneCount%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapBuffer", "GetPlaneCount()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Graphics.Imaging.BitmapPlaneDescription GetPlaneDescription(int index)
 		{
-			throw new global::System.NotImplementedException("The member BitmapPlaneDescription BitmapBuffer.GetPlaneDescription(int index) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapPlaneDescription%20BitmapBuffer.GetPlaneDescription%28int%20index%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapBuffer", "GetPlaneDescription(int index)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IMemoryBufferReference CreateReference()
 		{
-			throw new global::System.NotImplementedException("The member IMemoryBufferReference BitmapBuffer.CreateReference() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IMemoryBufferReference%20BitmapBuffer.CreateReference%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Imaging.BitmapBuffer", "CreateReference()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapBuffer", "void BitmapBuffer.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapBuffer", "Dispose()");
 		}
 #endif
 		// Processing: Windows.Foundation.IMemoryBuffer

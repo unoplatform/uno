@@ -19,32 +19,32 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VideoStabilizationEffect.Enabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20VideoStabilizationEffect.Enabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoStabilizationEffect", "Enabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.VideoStabilizationEffect", "bool VideoStabilizationEffect.Enabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.VideoStabilizationEffect", "Enabled");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffect.Enabled.set
-		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffect.Enabled.get
-		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffect.EnabledChanged.add
-		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffect.EnabledChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Capture.VideoStreamConfiguration GetRecommendedStreamConfiguration(global::Windows.Media.Devices.VideoDeviceController controller, global::Windows.Media.MediaProperties.VideoEncodingProperties desiredProperties)
 		{
-			throw new global::System.NotImplementedException("The member VideoStreamConfiguration VideoStabilizationEffect.GetRecommendedStreamConfiguration(VideoDeviceController controller, VideoEncodingProperties desiredProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoStreamConfiguration%20VideoStabilizationEffect.GetRecommendedStreamConfiguration%28VideoDeviceController%20controller%2C%20VideoEncodingProperties%20desiredProperties%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoStabilizationEffect", "GetRecommendedStreamConfiguration(VideoDeviceController controller, VideoEncodingProperties desiredProperties)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffect.EnabledChanged.add
+		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffect.EnabledChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetProperties(global::Windows.Foundation.Collections.IPropertySet configuration)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.VideoStabilizationEffect", "void VideoStabilizationEffect.SetProperties(IPropertySet configuration)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.VideoStabilizationEffect", "SetProperties(IPropertySet configuration)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffect.Enabled.get
+		// Forced skipping of method Windows.Media.Core.VideoStabilizationEffect.Enabled.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.VideoStabilizationEffect, global::Windows.Media.Core.VideoStabilizationEffectEnabledChangedEventArgs> EnabledChanged
@@ -52,12 +52,12 @@ namespace Windows.Media.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.VideoStabilizationEffect", "event TypedEventHandler<VideoStabilizationEffect, VideoStabilizationEffectEnabledChangedEventArgs> VideoStabilizationEffect.EnabledChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.VideoStabilizationEffect", "event EnabledChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.VideoStabilizationEffect", "event TypedEventHandler<VideoStabilizationEffect, VideoStabilizationEffectEnabledChangedEventArgs> VideoStabilizationEffect.EnabledChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.VideoStabilizationEffect", "event EnabledChanged");
 			}
 		}
 #endif

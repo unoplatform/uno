@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MapElement MapElementClickEventArgs.Element is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MapElement%20MapElementClickEventArgs.Element");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.MapElementClickEventArgs", "Element");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Geopoint MapElementClickEventArgs.Location is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Geopoint%20MapElementClickEventArgs.Location");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.MapElementClickEventArgs", "Location");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementClickEventArgs.Location.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementClickEventArgs.Element.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MapElementClickEventArgs.Location.get
 	}
 }

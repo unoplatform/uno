@@ -8,8 +8,8 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ScrollingAnchorRequestedEventArgs
 	{
-		// Skipping already declared property AnchorElement
 		// Skipping already declared property AnchorCandidates
+		// Skipping already declared property AnchorElement
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs.AnchorCandidates.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs.AnchorElement.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs.AnchorElement.set

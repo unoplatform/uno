@@ -19,7 +19,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RemoteSystemSession RemoteSystemSessionJoinResult.Session is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemSession%20RemoteSystemSessionJoinResult.Session");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSessionJoinResult", "Session");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RemoteSystemSessionJoinStatus RemoteSystemSessionJoinResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemSessionJoinStatus%20RemoteSystemSessionJoinResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSessionJoinResult", "Status");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinResult.Status.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinResult.Session.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionJoinResult.Status.get
 	}
 }

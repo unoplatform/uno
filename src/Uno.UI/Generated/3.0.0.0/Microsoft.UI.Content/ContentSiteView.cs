@@ -14,7 +14,17 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 ContentSiteView.ActualSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20ContentSiteView.ActualSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "ActualSize");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Content.ContentAutomationOptions AutomationOption
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "AutomationOption");
 			}
 		}
 #endif
@@ -24,7 +34,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SizeInt32 ContentSiteView.ClientSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SizeInt32%20ContentSiteView.ClientSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "ClientSize");
 			}
 		}
 #endif
@@ -34,7 +44,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentCoordinateConverter ContentSiteView.CoordinateConverter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentCoordinateConverter%20ContentSiteView.CoordinateConverter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "CoordinateConverter");
 			}
 		}
 #endif
@@ -44,7 +54,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DispatcherQueue ContentSiteView.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherQueue%20ContentSiteView.DispatcherQueue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "DispatcherQueue");
 			}
 		}
 #endif
@@ -54,7 +64,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentSiteEnvironmentView ContentSiteView.EnvironmentView is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentSiteEnvironmentView%20ContentSiteView.EnvironmentView");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "EnvironmentView");
 			}
 		}
 #endif
@@ -64,7 +74,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContentSiteView.IsConnected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSiteView.IsConnected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "IsConnected");
 			}
 		}
 #endif
@@ -74,7 +84,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContentSiteView.IsSiteEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSiteView.IsSiteEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "IsSiteEnabled");
 			}
 		}
 #endif
@@ -85,30 +95,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentLayoutDirection ContentSiteView.LayoutDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentLayoutDirection%20ContentSiteView.LayoutDirection");
-			}
-		}
-#endif
-		// Skipping already declared property OverrideScale
-		// Skipping already declared property ParentScale
-		// Skipping already declared property RasterizationScale
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector2 RequestedSize
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 ContentSiteView.RequestedSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20ContentSiteView.RequestedSize");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ShouldApplyRasterizationScale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ContentSiteView.ShouldApplyRasterizationScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSiteView.ShouldApplyRasterizationScale");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "LayoutDirection");
 			}
 		}
 #endif
@@ -118,7 +105,7 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Matrix4x4 ContentSiteView.LocalToClientTransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix4x4%20ContentSiteView.LocalToClientTransformMatrix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "LocalToClientTransformMatrix");
 			}
 		}
 #endif
@@ -128,17 +115,19 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Matrix4x4 ContentSiteView.LocalToParentTransformMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix4x4%20ContentSiteView.LocalToParentTransformMatrix");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "LocalToParentTransformMatrix");
 			}
 		}
 #endif
+		// Skipping already declared property OverrideScale
+		// Skipping already declared property ParentScale
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ProcessesKeyboardInput
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContentSiteView.ProcessesKeyboardInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSiteView.ProcessesKeyboardInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "ProcessesKeyboardInput");
 			}
 		}
 #endif
@@ -148,21 +137,33 @@ namespace Microsoft.UI.Content
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContentSiteView.ProcessesPointerInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSiteView.ProcessesPointerInput");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "ProcessesPointerInput");
+			}
+		}
+#endif
+		// Skipping already declared property RasterizationScale
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector2 RequestedSize
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "RequestedSize");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Content.ContentAutomationOptions AutomationOption
+		public bool ShouldApplyRasterizationScale
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentAutomationOptions ContentSiteView.AutomationOption is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentAutomationOptions%20ContentSiteView.AutomationOption");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteView", "ShouldApplyRasterizationScale");
 			}
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.ActualSize.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.AutomationOption.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.ClientSize.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.CoordinateConverter.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.DispatcherQueue.get
@@ -171,15 +172,14 @@ namespace Microsoft.UI.Content
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.IsSiteEnabled.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.IsSiteVisible.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.LayoutDirection.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.LocalToClientTransformMatrix.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.LocalToParentTransformMatrix.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.OverrideScale.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.ParentScale.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.ProcessesKeyboardInput.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.ProcessesPointerInput.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.RasterizationScale.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.RequestedSize.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.ShouldApplyRasterizationScale.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.LocalToClientTransformMatrix.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.LocalToParentTransformMatrix.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.ProcessesKeyboardInput.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.ProcessesPointerInput.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.AutomationOption.get
 	}
 }

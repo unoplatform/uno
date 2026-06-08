@@ -47,7 +47,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 
 			double distanceA = CalculatePrimaryAxisDistance(FocusNavigationDirection.Right, current, candidateA);
 			double distanceB = CalculatePrimaryAxisDistance(FocusNavigationDirection.Right, current, candidateB);
-			Assert.IsTrue(distanceA < distanceB);
+			Assert.IsLessThan(distanceB, distanceA);
 		}
 
 		/*
@@ -78,12 +78,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 
 			double distanceA = CalculateSecondaryAxisDistance(FocusNavigationDirection.Right, current, candidateA);
 			double distanceB = CalculateSecondaryAxisDistance(FocusNavigationDirection.Right, current, candidateB);
-			Assert.IsTrue(distanceA < distanceB);
+			Assert.IsLessThan(distanceB, distanceA);
 
 			// We can have situations where the secondary distance is shorter although the primary distance is longer
 			distanceA = CalculatePrimaryAxisDistance(FocusNavigationDirection.Right, current, candidateA);
 			distanceB = CalculatePrimaryAxisDistance(FocusNavigationDirection.Right, current, candidateB);
-			Assert.IsTrue(distanceA > distanceB);
+			Assert.IsGreaterThan(distanceB, distanceA);
 		}
 
 		/*

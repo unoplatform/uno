@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
@@ -44,6 +45,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Parent_Resource_Override_On_Loaded()
 		{
 			using (StyleHelper.UseAppLevelResources(new App_Level_Resources()))
@@ -75,6 +77,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_AppLevel_Resource_CheckBox_Override()
 		{
 			// Use fluent styles to rely on known Theme Resources
@@ -97,6 +100,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_AppLevel_Resource_SplitButton_Override()
 		{
 			// Use fluent styles to rely on known Theme Resources
@@ -139,6 +143,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Theme_Changed()
 		{
 			var control = new ThemeResource_Theme_Changing_Override();
@@ -289,5 +294,210 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				Assert.AreEqual(darkThemeColor, contentPresenterForegroundBrush.Color);
 			}
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_HotReload_Updates_ThemeResource_Bindings_Without_HotReload_Flag()
+		{
+			// This test simulates the scenario where a library (e.g., Uno.Toolkit.Material)
+			// is compiled without Hot Reload support, so its resource bindings only have
+			// the ThemeResource flag, not the HotReload flag.
+			// When a standalone ResourceDictionary is hot-reloaded with updated brush values,
+			// these library bindings should also be re-evaluated.
+
+			var initialBrush = new SolidColorBrush(Colors.Red);
+			var updatedBrush = new SolidColorBrush(Colors.Blue);
+
+			// Set up an app-level resource
+			var overrideDict = new ResourceDictionary();
+			overrideDict["TestHRBrush"] = initialBrush;
+
+			using var cleanup = StyleHelper.UseAppLevelResources(overrideDict);
+
+			var border = new Border { Width = 50, Height = 50 };
+
+			// Manually set a resource binding with ONLY ThemeResource flag (no HotReload)
+			// This simulates a library-compiled {ThemeResource TestHRBrush} binding
+			var resourceKey = new SpecializedResourceDictionary.ResourceKey("TestHRBrush");
+			(border as IDependencyObjectStoreProvider).Store.SetResourceBinding(
+				Border.BackgroundProperty,
+				resourceKey,
+				ResourceUpdateReason.ThemeResource, // Only ThemeResource, no HotReload - simulates library
+				context: null,
+				precedence: null,
+				setterBindingPath: null);
+
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+
+			// Verify initial value
+			Assert.AreEqual(Colors.Red, (border.Background as SolidColorBrush)?.Color,
+				"Initial brush should be Red");
+
+			// Simulate a hot-reload update: change the resource value
+			overrideDict["TestHRBrush"] = updatedBrush;
+
+			// Trigger hot reload resource binding update
+			Application.Current.UpdateResourceBindingsForHotReload();
+
+			// The binding should now reflect the updated value
+			Assert.AreEqual(Colors.Blue, (border.Background as SolidColorBrush)?.Color,
+				"After hot reload, brush should be updated to Blue even for ThemeResource-only bindings");
+		}
+#endif
+
+#if HAS_UNO
+		// Regression: a subtree pinned to an explicit RequestedTheme that differs from the
+		// application/OS theme must resolve {ThemeResource} values against the subtree's
+		// theme, not against Themes.Active. This exercises the out-of-walk lookup paths
+		// (parse-time ApplyResource, RefreshValue, InnerUpdateResourceBindingsUnsafe).
+		// Without ThemeResourceReference.PushOwnerThemeIfDifferent, the parse-time lookup
+		// would select the Dark sub-dictionary because Themes.Active = Dark (the app theme),
+		// even though the Border's inherited ActualTheme is Light from its pinned ancestor.
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_Light_Pinned_Subtree_Inside_Dark_App_Resolves_Light_ThemeResource()
+		{
+			using var _ = ThemeHelper.UseApplicationDarkTheme();
+
+			var resources = new ResourceDictionary();
+			resources.ThemeDictionaries["Light"] = new ResourceDictionary
+			{
+				["OwnerThemePushTestBrush"] = new SolidColorBrush(Colors.LightYellow),
+			};
+			resources.ThemeDictionaries["Dark"] = new ResourceDictionary
+			{
+				["OwnerThemePushTestBrush"] = new SolidColorBrush(Colors.DarkSlateBlue),
+			};
+			Application.Current.Resources.MergedDictionaries.Add(resources);
+
+			try
+			{
+				var lightPinnedRoot = (Border)XamlReader.Load(
+					"""
+					<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+							xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+							RequestedTheme="Light"
+							Width="150" Height="150">
+						<Border x:Name="Inner" Background="{ThemeResource OwnerThemePushTestBrush}" />
+					</Border>
+					""");
+
+				WindowHelper.WindowContent = lightPinnedRoot;
+				await WindowHelper.WaitForLoaded(lightPinnedRoot);
+
+				var inner = (Border)lightPinnedRoot.FindName("Inner");
+				var brush = inner.Background as SolidColorBrush;
+				Assert.IsNotNull(brush, "Background brush should be resolved");
+				Assert.AreEqual(
+					Colors.LightYellow,
+					brush.Color,
+					"Inner Border inherits Light from the pinned ancestor; the {ThemeResource} must " +
+					"resolve from the Light sub-dictionary, not from Themes.Active (Dark).");
+			}
+			finally
+			{
+				Application.Current.Resources.MergedDictionaries.Remove(resources);
+			}
+		}
+#endif
+
+#if HAS_UNO
+		// Regression for the reflection-free owner-theme walk: a non-UIElement DependencyObject
+		// (a Microsoft.Xaml.Behaviors-style behaviour) whose {ThemeResource}-bound property is
+		// resolved OUTSIDE any theme walk must pick up its host element's inherited theme, reached
+		// purely through DependencyObjectStore.Parent. The behaviour is attached the same way
+		// Interaction.Behaviors does it — via a DependencyObjectCollection whose parent is the host —
+		// so ThemeResourceReference.GetThemeResolutionParent follows Store.Parent up to the
+		// Light-pinned Border without reflecting for an "AssociatedObject" property.
+		//
+		// Before the reflection was removed, ResolveInheritedBaseTheme could only hop to a property
+		// literally named "AssociatedObject"; a behaviour without one (like this fake) dead-ended,
+		// no Light theme was pushed, and the lookup resolved against Themes.Active (Dark).
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_NonFE_Behaviour_Inside_Light_Pinned_Subtree_Resolves_Light_ThemeResource()
+		{
+			using var _ = ThemeHelper.UseApplicationDarkTheme();
+
+			var lightPinnedRoot = new Border
+			{
+				RequestedTheme = ElementTheme.Light,
+				Width = 150,
+				Height = 150,
+			};
+
+			var borderResources = new ResourceDictionary();
+			borderResources.ThemeDictionaries["Light"] = new ResourceDictionary
+			{
+				["OwnerThemePushTestBrush"] = new SolidColorBrush(Colors.LightYellow),
+			};
+			borderResources.ThemeDictionaries["Dark"] = new ResourceDictionary
+			{
+				["OwnerThemePushTestBrush"] = new SolidColorBrush(Colors.DarkSlateBlue),
+			};
+			lightPinnedRoot.Resources = borderResources;
+
+			WindowHelper.WindowContent = lightPinnedRoot;
+			await WindowHelper.WaitForLoaded(lightPinnedRoot);
+
+			// Attach the behaviour the way Interaction.Behaviors does: a DependencyObjectCollection
+			// whose parent is the host element. Adding the behaviour wires its Store.Parent to the
+			// host (DependencyObjectCollection.OnAdded -> SetParent(collection.GetParent() ?? collection)).
+			var behavior = new FakeThemeBehavior();
+			var behaviorCollection = new DependencyObjectCollection(lightPinnedRoot);
+			behaviorCollection.Add(behavior);
+
+			Assert.AreSame(
+				lightPinnedRoot,
+				behavior.GetParent(),
+				"Behaviour's Store.Parent should be wired to the host element, like Interaction.Behaviors.");
+
+			// Register a {ThemeResource}-style binding on the behaviour's property (mirrors how a
+			// library-compiled {ThemeResource} binding is set up) and resolve it out of any theme walk.
+			var resourceKey = new SpecializedResourceDictionary.ResourceKey("OwnerThemePushTestBrush");
+			var store = ((IDependencyObjectStoreProvider)behavior).Store;
+			store.SetResourceBinding(
+				FakeThemeBehavior.TestBrushProperty,
+				resourceKey,
+				ResourceUpdateReason.ThemeResource,
+				context: null,
+				precedence: null,
+				setterBindingPath: null);
+
+			store.UpdateResourceBindings(
+				ResourceUpdateReason.ThemeResource,
+				resourceContextProvider: lightPinnedRoot);
+
+			var brush = behavior.TestBrush as SolidColorBrush;
+			Assert.IsNotNull(brush, "Behaviour's TestBrush should be resolved");
+			Assert.AreEqual(
+				Colors.LightYellow,
+				brush.Color,
+				"The behaviour inherits Light from its host element via Store.Parent; the {ThemeResource} " +
+				"must resolve from the Light sub-dictionary, not from Themes.Active (Dark).");
+		}
+#endif
 	}
+
+#if HAS_UNO
+	// Minimal stand-in for a Microsoft.Xaml.Behaviors-style behaviour: a non-UIElement
+	// DependencyObject carrying a {ThemeResource}-bindable property. It deliberately has no
+	// "AssociatedObject" property — theme resolution must reach its host purely through
+	// DependencyObjectStore.Parent (wired by the Interaction.Behaviors DependencyObjectCollection).
+	public partial class FakeThemeBehavior : DependencyObject
+	{
+		public static readonly DependencyProperty TestBrushProperty = DependencyProperty.Register(
+			nameof(TestBrush),
+			typeof(Brush),
+			typeof(FakeThemeBehavior),
+			new PropertyMetadata(null));
+
+		public Brush TestBrush
+		{
+			get => (Brush)GetValue(TestBrushProperty);
+			set => SetValue(TestBrushProperty, value);
+		}
+	}
+#endif
 }

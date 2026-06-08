@@ -15,30 +15,30 @@ namespace Windows.Devices.Input.Preview
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Handled
+		public global::Windows.Devices.Input.Preview.GazePointPreview CurrentPoint
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GazeExitedPreviewEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GazeExitedPreviewEventArgs.Handled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.Preview.GazeExitedPreviewEventArgs", "bool GazeExitedPreviewEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazeExitedPreviewEventArgs", "CurrentPoint");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Input.Preview.GazePointPreview CurrentPoint
+		public bool Handled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GazePointPreview GazeExitedPreviewEventArgs.CurrentPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GazePointPreview%20GazeExitedPreviewEventArgs.CurrentPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.Preview.GazeExitedPreviewEventArgs", "Handled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.Preview.GazeExitedPreviewEventArgs", "Handled");
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Input.Preview.GazeExitedPreviewEventArgs.CurrentPoint.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeExitedPreviewEventArgs.Handled.get
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeExitedPreviewEventArgs.Handled.set
-		// Forced skipping of method Windows.Devices.Input.Preview.GazeExitedPreviewEventArgs.CurrentPoint.get
 	}
 }

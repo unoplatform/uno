@@ -10,29 +10,29 @@ namespace Windows.Networking.Vpn
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Value
+		public global::Windows.Networking.Vpn.VpnAppIdType Type
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnAppId.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnAppId.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnAppId", "Type");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnAppId", "string VpnAppId.Value");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnAppId", "Type");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.Vpn.VpnAppIdType Type
+		public string Value
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnAppIdType VpnAppId.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnAppIdType%20VpnAppId.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnAppId", "Value");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnAppId", "VpnAppIdType VpnAppId.Type");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnAppId", "Value");
 			}
 		}
 #endif
@@ -40,7 +40,7 @@ namespace Windows.Networking.Vpn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VpnAppId(global::Windows.Networking.Vpn.VpnAppIdType type, string value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnAppId", "VpnAppId.VpnAppId(VpnAppIdType type, string value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnAppId", "VpnAppId(VpnAppIdType type, string value)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnAppId.VpnAppId(Windows.Networking.Vpn.VpnAppIdType, string)

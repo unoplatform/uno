@@ -19,7 +19,7 @@ namespace Windows.Security.DataProtection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataAvailability UserDataStorageItemProtectionInfo.Availability is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataAvailability%20UserDataStorageItemProtectionInfo.Availability");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.DataProtection.UserDataStorageItemProtectionInfo", "Availability");
 			}
 		}
 #endif

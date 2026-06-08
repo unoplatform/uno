@@ -16,7 +16,7 @@ public class Given_HttpRequestHeaderCollection
 	{
 		var uri = new Uri("https://google.com");
 		var headers = GetNewHeaders(uri);
-		Assert.AreEqual(0, headers.Count);
+		Assert.IsEmpty(headers);
 		var refererUri = new Uri("https://google2.com");
 		Assert.IsTrue(refererUri.IsAbsoluteUri);
 		headers.Referer = refererUri;
@@ -33,7 +33,7 @@ public class Given_HttpRequestHeaderCollection
 		Assert.AreEqual("https://google2.com/", headers["Referer"]);
 
 		headers = GetNewHeaders(uri);
-		Assert.AreEqual(0, headers.Count);
+		Assert.IsEmpty(headers);
 		headers["Referer"] = "https://google2.com";
 		Assert.IsFalse(ReferenceEquals(refererUri, headers.Referer));
 		Assert.IsFalse(ReferenceEquals(headers.Referer, headers.Referer));
@@ -53,7 +53,7 @@ public class Given_HttpRequestHeaderCollection
 	{
 		var uri = new Uri("https://google.com");
 		var headers = GetNewHeaders(uri);
-		Assert.AreEqual(0, headers.Count);
+		Assert.IsEmpty(headers);
 		var refererUri = new Uri("Relative With Spaces", UriKind.Relative);
 		Assert.IsFalse(refererUri.IsAbsoluteUri);
 		headers.Referer = refererUri; // This crashes in Windows.
@@ -67,7 +67,7 @@ public class Given_HttpRequestHeaderCollection
 		Assert.AreEqual("https://google.com/Relative%20With%20Spaces", ref2);
 
 		headers = GetNewHeaders(uri);
-		Assert.AreEqual(0, headers.Count);
+		Assert.IsEmpty(headers);
 		headers["Referer"] = "Rleative With Spaces";
 		Assert.IsFalse(ReferenceEquals(headers.Referer, headers.Referer));
 		Assert.AreEqual("https://google.com/Rleative With Spaces", headers.Referer.ToString());

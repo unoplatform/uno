@@ -19,11 +19,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CleanUpVirtualizedItemEventArgs.Cancel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CleanUpVirtualizedItemEventArgs.Cancel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs", "Cancel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs", "bool CleanUpVirtualizedItemEventArgs.Cancel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs", "Cancel");
 			}
 		}
 #endif
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UIElement CleanUpVirtualizedItemEventArgs.UIElement is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UIElement%20CleanUpVirtualizedItemEventArgs.UIElement");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs", "UIElement");
 			}
 		}
 #endif
@@ -43,13 +43,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object CleanUpVirtualizedItemEventArgs.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20CleanUpVirtualizedItemEventArgs.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs", "Value");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs.Value.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs.UIElement.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs.Cancel.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs.UIElement.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs.Value.get
 	}
 }

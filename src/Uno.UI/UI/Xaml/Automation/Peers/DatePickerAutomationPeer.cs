@@ -1,7 +1,8 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference DatePickerAutomationPeer_Partial.cpp, tag winui3/release/1.4.2
+// MUX reference DatePickerAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
 
+using DirectUI;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
@@ -20,38 +21,25 @@ public partial class DatePickerAutomationPeer : FrameworkElementAutomationPeer
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.Group;
 
-	//IFACEMETHODIMP DatePickerAutomationPeer::GetNameCore(_Out_ HSTRING* returnValue)
-	//{
-	//	XUINT32 pLength = 0;
+	protected override string GetNameCore()
+	{
+		var baseName = base.GetNameCore();
+		if (!string.IsNullOrEmpty(baseName))
+		{
+			return baseName;
+		}
 
-	//	IFC_RETURN(DatePickerAutomationPeerGenerated::GetNameCore(returnValue));
+		// WinUI3 uses Header as the accessible name when no Name/LabeledBy is set,
+		// falling back to the localized "DatePicker" string for narrator parity.
+		if (Owner is DatePicker { Header: { } header })
+		{
+			var headerText = FrameworkElement.GetStringFromObject(header);
+			if (!string.IsNullOrEmpty(headerText))
+			{
+				return headerText;
+			}
+		}
 
-	//	pLength = WindowsGetStringLen(*returnValue);
-	//	if (pLength == 0)
-	//	{
-	//		ctl::ComPtr<xaml::IUIElement> spOwnerAsUIE;
-	//		ctl::ComPtr<IInspectable> spHeaderAsInspectable;
-
-	//		DELETE_STRING(*returnValue);
-	//		*returnValue = nullptr;
-
-	//		IFC_RETURN(get_Owner(&spOwnerAsUIE));
-
-	//		IFC_RETURN(spOwnerAsUIE.Cast<DatePicker>()->get_Header(&spHeaderAsInspectable));
-	//		if (spHeaderAsInspectable)
-	//		{
-	//			IFC_RETURN(FrameworkElement::GetStringFromObject(spHeaderAsInspectable.Get(), returnValue));
-	//			pLength = WindowsGetStringLen(*returnValue);
-	//		}
-
-	//		if (pLength == 0)
-	//		{
-	//			DELETE_STRING(*returnValue);
-	//			*returnValue = nullptr;
-	//			IFC_RETURN(DXamlCore::GetCurrentNoCreate()->GetLocalizedResourceString(UIA_AP_DATEPICKER, returnValue));
-	//		}
-	//	}
-
-	//	return S_OK;
-	//}
+		return DXamlCore.GetCurrentNoCreate()?.GetLocalizedResourceString("UIA_AP_DATEPICKER") ?? "DatePicker";
+	}
 }

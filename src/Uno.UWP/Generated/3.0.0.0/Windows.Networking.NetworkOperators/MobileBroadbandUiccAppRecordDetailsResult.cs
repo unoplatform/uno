@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UiccAppRecordKind MobileBroadbandUiccAppRecordDetailsResult.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UiccAppRecordKind%20MobileBroadbandUiccAppRecordDetailsResult.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult", "Kind");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UiccAccessCondition MobileBroadbandUiccAppRecordDetailsResult.ReadAccessCondition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UiccAccessCondition%20MobileBroadbandUiccAppRecordDetailsResult.ReadAccessCondition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult", "ReadAccessCondition");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MobileBroadbandUiccAppRecordDetailsResult.RecordCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20MobileBroadbandUiccAppRecordDetailsResult.RecordCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult", "RecordCount");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MobileBroadbandUiccAppRecordDetailsResult.RecordSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20MobileBroadbandUiccAppRecordDetailsResult.RecordSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult", "RecordSize");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MobileBroadbandUiccAppOperationStatus MobileBroadbandUiccAppRecordDetailsResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandUiccAppOperationStatus%20MobileBroadbandUiccAppRecordDetailsResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult", "Status");
 			}
 		}
 #endif
@@ -69,15 +69,15 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UiccAccessCondition MobileBroadbandUiccAppRecordDetailsResult.WriteAccessCondition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UiccAccessCondition%20MobileBroadbandUiccAppRecordDetailsResult.WriteAccessCondition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult", "WriteAccessCondition");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.Status.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.Kind.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.ReadAccessCondition.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.RecordCount.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.RecordSize.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.ReadAccessCondition.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.Status.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandUiccAppRecordDetailsResult.WriteAccessCondition.get
 	}
 }

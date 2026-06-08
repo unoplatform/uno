@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.AllJoyn
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -20,7 +19,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort AllJoynCredentialsRequestedEventArgs.AttemptCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20AllJoynCredentialsRequestedEventArgs.AttemptCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs", "AttemptCount");
 			}
 		}
 #endif
@@ -30,7 +29,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AllJoynCredentials AllJoynCredentialsRequestedEventArgs.Credentials is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AllJoynCredentials%20AllJoynCredentialsRequestedEventArgs.Credentials");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs", "Credentials");
 			}
 		}
 #endif
@@ -40,7 +39,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AllJoynCredentialsRequestedEventArgs.PeerUniqueName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AllJoynCredentialsRequestedEventArgs.PeerUniqueName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs", "PeerUniqueName");
 			}
 		}
 #endif
@@ -50,20 +49,20 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AllJoynCredentialsRequestedEventArgs.RequestedUserName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AllJoynCredentialsRequestedEventArgs.RequestedUserName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs", "RequestedUserName");
 			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.Deferral GetDeferral()
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs", "GetDeferral()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs.AttemptCount.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs.Credentials.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs.PeerUniqueName.get
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynCredentialsRequestedEventArgs.RequestedUserName.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Deferral GetDeferral()
-		{
-			throw new global::System.NotImplementedException("The member Deferral AllJoynCredentialsRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20AllJoynCredentialsRequestedEventArgs.GetDeferral%28%29");
-		}
-#endif
 	}
 }

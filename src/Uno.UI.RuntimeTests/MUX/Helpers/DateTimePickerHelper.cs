@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
@@ -48,7 +48,7 @@ internal static class DateTimePickerHelper
 		await RunOnUIThread(async () =>
 		{
 			// The flyout should be the same width as the datepicker.
-			var flyoutPresenter = FlyoutHelper.GetOpenFlyoutPresenter(WindowHelper.XamlRoot);
+			var flyoutPresenter = FlyoutHelper.GetOpenFlyoutPresenter();
 			VERIFY_ARE_EQUAL(flyoutPresenter.ActualWidth, dateTimePicker.ActualWidth);
 
 			// We expect the HighlightRect to be centered vertically and horizontally over the button.
@@ -114,7 +114,7 @@ internal static class DateTimePickerHelper
 			// The best we can do is find them by type, and rely on their order in the tree to distinguish them.
 			List<LoopingSelector> loopingSelectors = new();
 			TreeHelper.GetVisualChildrenByType(timePickerFlyoutPresenter, ref loopingSelectors);
-			Assert.AreEqual(3, loopingSelectors.Count, "Expected to find 3 LoopingSelectors");
+			Assert.HasCount(3, loopingSelectors, "Expected to find 3 LoopingSelectors");
 
 			// Uno Specific: we use GetOrder as the order may vary
 #if HAS_UNO

@@ -46,7 +46,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 
 			double scoreA = ProximityStrategy.GetScore(direction, focusedElement, candidateElementA, maxDistance, false);
 			double scoreB = ProximityStrategy.GetScore(direction, focusedElement, candidateElementB, maxDistance, false);
-			Assert.IsTrue(scoreA > scoreB);
+			Assert.IsGreaterThan(scoreB, scoreA);
 		}
 
 		/*
@@ -81,7 +81,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 
 			double scoreA = ProximityStrategy.GetScore(direction, focusedElement, candidateElementA, maxDistance, false);
 			double scoreB = ProximityStrategy.GetScore(direction, focusedElement, candidateElementB, maxDistance, false);
-			Assert.IsTrue(scoreA > scoreB);
+			Assert.IsGreaterThan(scoreB, scoreA);
 		}
 
 		/*
@@ -116,7 +116,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 
 			double scoreA = ProximityStrategy.GetScore(direction, focusedElement, candidateElementA, maxDistance, true);
 			double scoreB = ProximityStrategy.GetScore(direction, focusedElement, candidateElementB, maxDistance, true);
-			Assert.IsTrue(scoreB > scoreA);
+			Assert.IsGreaterThan(scoreA, scoreB);
 		}
 
 		/*

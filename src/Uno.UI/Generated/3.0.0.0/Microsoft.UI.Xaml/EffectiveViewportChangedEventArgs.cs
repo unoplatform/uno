@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EffectiveViewportChangedEventArgs.BringIntoViewDistanceX is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20EffectiveViewportChangedEventArgs.BringIntoViewDistanceX");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs", "BringIntoViewDistanceX");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EffectiveViewportChangedEventArgs.BringIntoViewDistanceY is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20EffectiveViewportChangedEventArgs.BringIntoViewDistanceY");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs", "BringIntoViewDistanceY");
 			}
 		}
 #endif
@@ -35,13 +35,13 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect EffectiveViewportChangedEventArgs.MaxViewport is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20EffectiveViewportChangedEventArgs.MaxViewport");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs", "MaxViewport");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.EffectiveViewport.get
-		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.MaxViewport.get
 		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.BringIntoViewDistanceX.get
 		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.BringIntoViewDistanceY.get
+		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.EffectiveViewport.get
+		// Forced skipping of method Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs.MaxViewport.get
 	}
 }

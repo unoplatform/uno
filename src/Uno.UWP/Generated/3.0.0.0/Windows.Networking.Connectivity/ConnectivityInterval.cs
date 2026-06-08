@@ -19,7 +19,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan ConnectivityInterval.ConnectionDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20ConnectivityInterval.ConnectionDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectivityInterval", "ConnectionDuration");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset ConnectivityInterval.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20ConnectivityInterval.StartTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectivityInterval", "StartTime");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.ConnectivityInterval.StartTime.get
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectivityInterval.ConnectionDuration.get
+		// Forced skipping of method Windows.Networking.Connectivity.ConnectivityInterval.StartTime.get
 	}
 }

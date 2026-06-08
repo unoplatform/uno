@@ -15,25 +15,25 @@ namespace Windows.System
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.System.User User
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.System.UserWatcherUpdateKind> ChangedPropertyKinds
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User UserChangedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20UserChangedEventArgs.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserChangedEventArgs", "ChangedPropertyKinds");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.System.UserWatcherUpdateKind> ChangedPropertyKinds
+		public global::Windows.System.User User
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UserWatcherUpdateKind> UserChangedEventArgs.ChangedPropertyKinds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CUserWatcherUpdateKind%3E%20UserChangedEventArgs.ChangedPropertyKinds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserChangedEventArgs", "User");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.UserChangedEventArgs.User.get
 		// Forced skipping of method Windows.System.UserChangedEventArgs.ChangedPropertyKinds.get
+		// Forced skipping of method Windows.System.UserChangedEventArgs.User.get
 	}
 }

@@ -15,25 +15,25 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Playback.MediaCommandEnablingRule EnablingRule
+		public global::Windows.Media.Playback.MediaPlaybackCommandManager CommandManager
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCommandEnablingRule MediaPlaybackCommandManagerCommandBehavior.EnablingRule is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaCommandEnablingRule%20MediaPlaybackCommandManagerCommandBehavior.EnablingRule");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior", "MediaCommandEnablingRule MediaPlaybackCommandManagerCommandBehavior.EnablingRule");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior", "CommandManager");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Playback.MediaPlaybackCommandManager CommandManager
+		public global::Windows.Media.Playback.MediaCommandEnablingRule EnablingRule
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManager MediaPlaybackCommandManagerCommandBehavior.CommandManager is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackCommandManager%20MediaPlaybackCommandManagerCommandBehavior.CommandManager");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior", "EnablingRule");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior", "EnablingRule");
 			}
 		}
 #endif
@@ -43,16 +43,16 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaPlaybackCommandManagerCommandBehavior.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlaybackCommandManagerCommandBehavior.IsEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior", "IsEnabled");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior.CommandManager.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior.IsEnabled.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior.EnablingRule.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior.EnablingRule.set
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior.IsEnabledChanged.add
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior.IsEnabledChanged.remove
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior.CommandManager.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior.EnablingRule.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior.EnablingRule.set
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior.IsEnabled.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior, object> IsEnabledChanged
@@ -60,12 +60,12 @@ namespace Windows.Media.Playback
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior", "event TypedEventHandler<MediaPlaybackCommandManagerCommandBehavior, object> MediaPlaybackCommandManagerCommandBehavior.IsEnabledChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior", "event IsEnabledChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior", "event TypedEventHandler<MediaPlaybackCommandManagerCommandBehavior, object> MediaPlaybackCommandManagerCommandBehavior.IsEnabledChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior", "event IsEnabledChanged");
 			}
 		}
 #endif

@@ -50,22 +50,26 @@ namespace TestRepro
 			base.IsParsing = true;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.ContentControl
-			{
-				IsParsing = true,
-				Name = "root",
-				ContentTemplate = 				new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_ConCon_ConTemΞ0_DatTem)
-				,
-				// Source 0\MainPage.xaml (Line 5:6)
-			}
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-			{
-			__nameScope.RegisterName("root", __p1);
-			__that.root = __p1;
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-			__p1.CreationComplete();
-			}
-			))
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.ContentControl
+				{
+					IsParsing = true,
+					Name = "root",
+					ContentTemplate = 					global::MyProject.GlobalStaticResources.__PreserveProperties(
+						new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_ConCon_ConTemΞ0_DatTem)
+					)
+					,
+					// Source 0\MainPage.xaml (Line 5:6)
+				}
+				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+				{
+				__nameScope.RegisterName("root", __p1);
+				__that.root = __p1;
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+				__p1.CreationComplete();
+				}
+				))
+			)
 			;
 			
 			this
@@ -122,19 +126,21 @@ namespace TestRepro
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;
 					this.__rootInstance = 
-					new global::Microsoft.UI.Xaml.Controls.Button
-					{
-						IsParsing = true,
-						// Source 0\MainPage.xaml (Line 8:18)
-					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
-					{
-					/* _isTopLevelDictionary:False */
-					__that._component_0 = __p1;
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-					__p1.CreationComplete();
-					}
-					))
+					global::MyProject.GlobalStaticResources.__PreserveProperties(
+						new global::Microsoft.UI.Xaml.Controls.Button
+						{
+							IsParsing = true,
+							// Source 0\MainPage.xaml (Line 8:18)
+						}
+						.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+						{
+						/* _isTopLevelDictionary:False */
+						__that._component_0 = __p1;
+						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+						__p1.CreationComplete();
+						}
+						))
+					)
 					;
 					if (__rootInstance is FrameworkElement __fe)
 					{

@@ -6,29 +6,37 @@ namespace Windows.Foundation.Collections
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class StringMap : global::System.Collections.Generic.IDictionary<string, string>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>>, global::Windows.Foundation.Collections.IObservableMap<string, string>
+	public partial class StringMap : global::System.Collections.Generic.IDictionary<string, string>, global::System.Collections.Generic.ICollection<global::System.Collections.Generic.KeyValuePair<string, string>>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>>, global::System.Collections.IEnumerable, global::Windows.Foundation.Collections.IObservableMap<string, string>
 	{
-		// Skipping already declared property Size
+		// Skipping already declared property Keys
+		// Skipping already declared property Values
+		// Skipping already declared property Count
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property this[]
 		// Skipping already declared method Windows.Foundation.Collections.StringMap.StringMap()
 		// Forced skipping of method Windows.Foundation.Collections.StringMap.StringMap()
-		// Forced skipping of method Windows.Foundation.Collections.StringMap.Lookup(string)
-		// Forced skipping of method Windows.Foundation.Collections.StringMap.Size.get
-		// Forced skipping of method Windows.Foundation.Collections.StringMap.HasKey(string)
-		// Forced skipping of method Windows.Foundation.Collections.StringMap.GetView()
-		// Forced skipping of method Windows.Foundation.Collections.StringMap.Insert(string, string)
-		// Forced skipping of method Windows.Foundation.Collections.StringMap.Remove(string)
-		// Forced skipping of method Windows.Foundation.Collections.StringMap.Clear()
-		// Forced skipping of method Windows.Foundation.Collections.StringMap.First()
+		// Forced skipping of method Windows.Foundation.Collections.StringMap.Keys.get
+		// Forced skipping of method Windows.Foundation.Collections.StringMap.Values.get
+		// Forced skipping of method Windows.Foundation.Collections.StringMap.Count.get
+		// Forced skipping of method Windows.Foundation.Collections.StringMap.IsReadOnly.get
+		// Forced skipping of method Windows.Foundation.Collections.StringMap.this[string].get
+		// Forced skipping of method Windows.Foundation.Collections.StringMap.this[string].set
+		// Skipping already declared method Windows.Foundation.Collections.StringMap.Add(string, string)
+		// Skipping already declared method Windows.Foundation.Collections.StringMap.ContainsKey(string)
+		// Skipping already declared method Windows.Foundation.Collections.StringMap.Remove(string)
+		// Skipping already declared method Windows.Foundation.Collections.StringMap.TryGetValue(string, out string)
+		// Skipping already declared method Windows.Foundation.Collections.StringMap.Add(System.Collections.Generic.KeyValuePair<string, string>)
+		// Skipping already declared method Windows.Foundation.Collections.StringMap.Clear()
+		// Skipping already declared method Windows.Foundation.Collections.StringMap.Contains(System.Collections.Generic.KeyValuePair<string, string>)
+		// Skipping already declared method Windows.Foundation.Collections.StringMap.CopyTo(System.Collections.Generic.KeyValuePair<string, string>[], int)
+		// Forced skipping of method Windows.Foundation.Collections.StringMap.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>.Remove(System.Collections.Generic.KeyValuePair<string, string>)
+		// Skipping already declared method Windows.Foundation.Collections.StringMap.GetEnumerator()
+		// Forced skipping of method Windows.Foundation.Collections.StringMap.System.Collections.IEnumerable.GetEnumerator()
 		// Forced skipping of method Windows.Foundation.Collections.StringMap.MapChanged.add
 		// Forced skipping of method Windows.Foundation.Collections.StringMap.MapChanged.remove
 		// Skipping already declared event Windows.Foundation.Collections.StringMap.MapChanged
 		// Processing: System.Collections.Generic.IDictionary<string, string>
-		// Skipping already implement System.Collections.Generic.IDictionary<string, string>.this[string]
-		// Skipping already implement System.Collections.Generic.IDictionary<string, string>.Keys
-		// Skipping already implement System.Collections.Generic.IDictionary<string, string>.Values
 		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>
-		// Skipping already implement System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>.Count
-		// Skipping already implement System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>
 		// Processing: System.Collections.IEnumerable
 		// Processing: Windows.Foundation.Collections.IObservableMap<string, string>

@@ -3,21 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	public enum AutomationFlowDirections
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Default = 0,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		RightToLeft = 1,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		BottomToTop = 2,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Vertical = 3,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationFlowDirections.Default
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationFlowDirections.RightToLeft
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationFlowDirections.BottomToTop
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationFlowDirections.Vertical
 	}
 #endif
 }

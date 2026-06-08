@@ -10,71 +10,15 @@ namespace Windows.Devices.Sms
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int ProtocolId
+		public global::Windows.Storage.Streams.IBuffer BinaryBody
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int SmsAppMessage.ProtocolId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmsAppMessage.ProtocolId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsAppMessage", "BinaryBody");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsAppMessage", "int SmsAppMessage.ProtocolId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int PortNumber
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int SmsAppMessage.PortNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmsAppMessage.PortNumber");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsAppMessage", "int SmsAppMessage.PortNumber");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsDeliveryNotificationEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool SmsAppMessage.IsDeliveryNotificationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SmsAppMessage.IsDeliveryNotificationEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsAppMessage", "bool SmsAppMessage.IsDeliveryNotificationEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int RetryAttemptCount
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int SmsAppMessage.RetryAttemptCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmsAppMessage.RetryAttemptCount");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsAppMessage", "int SmsAppMessage.RetryAttemptCount");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Sms.SmsEncoding Encoding
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SmsEncoding SmsAppMessage.Encoding is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsEncoding%20SmsAppMessage.Encoding");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsAppMessage", "SmsEncoding SmsAppMessage.Encoding");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsAppMessage", "BinaryBody");
 			}
 		}
 #endif
@@ -84,11 +28,11 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsAppMessage.Body is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsAppMessage.Body");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsAppMessage", "Body");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsAppMessage", "string SmsAppMessage.Body");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsAppMessage", "Body");
 			}
 		}
 #endif
@@ -98,73 +42,11 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsAppMessage.CallbackNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsAppMessage.CallbackNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsAppMessage", "CallbackNumber");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsAppMessage", "string SmsAppMessage.CallbackNumber");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.IBuffer BinaryBody
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IBuffer SmsAppMessage.BinaryBody is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20SmsAppMessage.BinaryBody");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsAppMessage", "IBuffer SmsAppMessage.BinaryBody");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string To
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SmsAppMessage.To is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsAppMessage.To");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsAppMessage", "string SmsAppMessage.To");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int TeleserviceId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int SmsAppMessage.TeleserviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmsAppMessage.TeleserviceId");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsAppMessage", "int SmsAppMessage.TeleserviceId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string From
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string SmsAppMessage.From is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsAppMessage.From");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.DateTimeOffset Timestamp
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset SmsAppMessage.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20SmsAppMessage.Timestamp");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsAppMessage", "CallbackNumber");
 			}
 		}
 #endif
@@ -174,7 +56,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CellularClass SmsAppMessage.CellularClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CellularClass%20SmsAppMessage.CellularClass");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsAppMessage", "CellularClass");
 			}
 		}
 #endif
@@ -184,7 +66,45 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsAppMessage.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsAppMessage.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsAppMessage", "DeviceId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Sms.SmsEncoding Encoding
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsAppMessage", "Encoding");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsAppMessage", "Encoding");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string From
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsAppMessage", "From");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsDeliveryNotificationEnabled
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsAppMessage", "IsDeliveryNotificationEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsAppMessage", "IsDeliveryNotificationEnabled");
 			}
 		}
 #endif
@@ -194,7 +114,7 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsMessageClass SmsAppMessage.MessageClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageClass%20SmsAppMessage.MessageClass");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsAppMessage", "MessageClass");
 			}
 		}
 #endif
@@ -204,7 +124,49 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmsMessageType SmsAppMessage.MessageType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageType%20SmsAppMessage.MessageType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsAppMessage", "MessageType");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int PortNumber
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsAppMessage", "PortNumber");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsAppMessage", "PortNumber");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int ProtocolId
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsAppMessage", "ProtocolId");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsAppMessage", "ProtocolId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int RetryAttemptCount
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsAppMessage", "RetryAttemptCount");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsAppMessage", "RetryAttemptCount");
 			}
 		}
 #endif
@@ -214,7 +176,45 @@ namespace Windows.Devices.Sms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmsAppMessage.SimIccId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmsAppMessage.SimIccId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsAppMessage", "SimIccId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int TeleserviceId
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsAppMessage", "TeleserviceId");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsAppMessage", "TeleserviceId");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.DateTimeOffset Timestamp
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsAppMessage", "Timestamp");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string To
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sms.SmsAppMessage", "To");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsAppMessage", "To");
 			}
 		}
 #endif
@@ -222,37 +222,37 @@ namespace Windows.Devices.Sms
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SmsAppMessage()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsAppMessage", "SmsAppMessage.SmsAppMessage()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsAppMessage", "SmsAppMessage()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.SmsAppMessage()
-		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.Timestamp.get
-		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.To.get
-		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.To.set
-		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.From.get
+		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.BinaryBody.get
+		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.BinaryBody.set
 		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.Body.get
 		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.Body.set
 		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.CallbackNumber.get
 		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.CallbackNumber.set
-		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.IsDeliveryNotificationEnabled.get
-		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.IsDeliveryNotificationEnabled.set
-		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.RetryAttemptCount.get
-		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.RetryAttemptCount.set
+		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.CellularClass.get
+		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.DeviceId.get
 		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.Encoding.get
 		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.Encoding.set
+		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.From.get
+		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.IsDeliveryNotificationEnabled.get
+		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.IsDeliveryNotificationEnabled.set
+		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.MessageClass.get
+		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.MessageType.get
 		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.PortNumber.get
 		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.PortNumber.set
-		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.TeleserviceId.get
-		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.TeleserviceId.set
 		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.ProtocolId.get
 		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.ProtocolId.set
-		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.BinaryBody.get
-		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.BinaryBody.set
-		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.MessageType.get
-		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.DeviceId.get
-		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.CellularClass.get
-		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.MessageClass.get
+		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.RetryAttemptCount.get
+		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.RetryAttemptCount.set
 		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.SimIccId.get
+		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.TeleserviceId.get
+		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.TeleserviceId.set
+		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.Timestamp.get
+		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.To.get
+		// Forced skipping of method Windows.Devices.Sms.SmsAppMessage.To.set
 		// Processing: Windows.Devices.Sms.ISmsMessageBase
 	}
 }

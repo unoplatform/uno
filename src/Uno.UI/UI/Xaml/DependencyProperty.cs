@@ -83,6 +83,7 @@ namespace Microsoft.UI.Xaml
 			{
 				_flags |= frameworkMetadata.Options.HasWeakStorage() ? Flags.HasWeakStorage : Flags.None;
 				_flags |= frameworkMetadata.Options.HasInherits() ? Flags.IsInherited : Flags.None;
+				_flags |= frameworkMetadata.IsPropMethodCall ? Flags.IsPropMethodCall : Flags.None;
 			}
 
 			_flags |= ownerType.Assembly.Equals(typeof(DependencyProperty).Assembly) ? Flags.IsUnoType : Flags.None;
@@ -342,6 +343,9 @@ namespace Microsoft.UI.Xaml
 		internal bool IsInherited
 			=> (_flags & Flags.IsInherited) != 0;
 
+		internal bool IsPropMethodCall
+			=> (_flags & Flags.IsPropMethodCall) != 0;
+
 		/// <summary>
 		/// Determines if the owner type is declared by Uno.UI
 		/// </summary>
@@ -519,15 +523,18 @@ namespace Microsoft.UI.Xaml
 				return value;
 			}
 
-			if (this == FrameworkElement.FocusVisualPrimaryBrushProperty &&
-				ResourceResolver.TryStaticRetrieval("SystemControlFocusVisualPrimaryBrush", null, out var primaryBrush))
+			// MUX Reference: DependencyProperty.cpp GetDefaultFocusVisualBrush — WinUI resolves
+			// the focus visual brush against `targetObject->GetTheme()` so an element with
+			// an explicit RequestedTheme (different from the app's) still gets brushes from
+			// its own theme dictionary. Mirror that here by pushing the element's effective
+			// theme onto the resource resolution stack.
+			if (this == FrameworkElement.FocusVisualPrimaryBrushProperty)
 			{
-				return primaryBrush;
+				return ResolveFocusVisualBrushDefault(referenceObject, "SystemControlFocusVisualPrimaryBrush");
 			}
-			else if (this == FrameworkElement.FocusVisualSecondaryBrushProperty &&
-				ResourceResolver.TryStaticRetrieval("SystemControlFocusVisualSecondaryBrush", null, out var secondaryBrush))
+			else if (this == FrameworkElement.FocusVisualSecondaryBrushProperty)
 			{
-				return secondaryBrush;
+				return ResolveFocusVisualBrushDefault(referenceObject, "SystemControlFocusVisualSecondaryBrush");
 			}
 
 			if (this == UIElement.IsTabStopProperty)
@@ -543,6 +550,22 @@ namespace Microsoft.UI.Xaml
 
 				return Boxes.BooleanBoxes.BoxedFalse;
 			}
+
+#if __SKIA__
+			// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/components/DependencyObject/DependencyProperty.cpp (lines 249-276)
+			// WinUI calls GetDefaultTextControlContextFlyout/GetDefaultTextControlSelectionFlyout for text controls
+			if (this == UIElement.ContextFlyoutProperty &&
+				(typeof(TextBlock).IsAssignableFrom(forType) || typeof(RichTextBlock).IsAssignableFrom(forType)))
+			{
+				return GetDefaultTextControlContextFlyout();
+			}
+
+			if (this == TextBlock.SelectionFlyoutProperty ||
+				this == RichTextBlock.SelectionFlyoutProperty)
+			{
+				return GetDefaultTextControlSelectionFlyout();
+			}
+#endif
 
 			if (this == Shape.StretchProperty)
 			{
@@ -597,7 +620,101 @@ namespace Microsoft.UI.Xaml
 			return _ownerTypeMetadata.DefaultValue;
 		}
 
+		// MUX Reference: microsoft-ui-xaml2/src/dxaml/xcp/core/core/elements/DependencyProperty.cpp
+		// lines 131-150 (GetDefaultFocusVisualBrush) and 309-345. WinUI passes
+		// `targetObject->GetTheme()` to the resource lookup so an element with
+		// an explicit RequestedTheme picks brushes from its own theme dictionary
+		// rather than the app's active theme.
+		private static object ResolveFocusVisualBrushDefault(DependencyObject referenceObject, string resourceKey)
+		{
+			var themeKey = GetEffectiveThemeKey(referenceObject);
+			var activeTheme = ResourceDictionary.GetActiveTheme();
+			var needsPush = themeKey is not null && !themeKey.Equals(activeTheme.Key);
+
+			if (needsPush)
+			{
+				ResourceDictionary.PushRequestedThemeForSubTree(themeKey);
+			}
+
+			try
+			{
+				if (ResourceResolver.TryStaticRetrieval(resourceKey, null, out var brush))
+				{
+					return brush;
+				}
+			}
+			finally
+			{
+				if (needsPush)
+				{
+					ResourceDictionary.PopRequestedThemeForSubTree();
+				}
+			}
+
+			return null;
+		}
+
+		// Returns the base theme key ("Light"/"Dark") that applies to the element,
+		// mirroring FrameworkElement.ActualTheme's resolution: prefer the element's
+		// own _theme (set during the theme walk), then fall back to the application
+		// theme. Returns null when neither is available.
+		private static string GetEffectiveThemeKey(DependencyObject referenceObject)
+		{
+			if (referenceObject is UIElement element)
+			{
+				var baseTheme = Theming.GetBaseValue(element.GetTheme());
+				if (baseTheme == Theme.None)
+				{
+					baseTheme = Theming.FromElementTheme(
+						Application.Current?.ActualElementTheme ?? ElementTheme.Light);
+				}
+
+				if (baseTheme == Theme.Light)
+				{
+					return "Light";
+				}
+				if (baseTheme == Theme.Dark)
+				{
+					return "Dark";
+				}
+			}
+
+			return null;
+		}
+
 		public override int GetHashCode() => CachedHashCode;
+
+#if __SKIA__
+		// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/components/DependencyObject/DependencyProperty.cpp (lines 249-261)
+		// CDependencyProperty::GetDefaultTextControlContextFlyout
+		private static FlyoutBase GetDefaultTextControlContextFlyout()
+		{
+			const string resourceKey = "TextControlCommandBarContextFlyout";
+			return GetTextControlFlyoutResource(resourceKey);
+		}
+
+		// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/components/DependencyObject/DependencyProperty.cpp (lines 264-276)
+		// CDependencyProperty::GetDefaultTextControlSelectionFlyout
+		private static FlyoutBase GetDefaultTextControlSelectionFlyout()
+		{
+			const string resourceKey = "TextControlCommandBarSelectionFlyout";
+			return GetTextControlFlyoutResource(resourceKey);
+		}
+
+		// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/components/DependencyObject/DependencyProperty.cpp (lines 211-246)
+		// GetTextControlFlyoutResource - looks up flyout from app resources, then theme resources
+		private static FlyoutBase GetTextControlFlyoutResource(string resourceKey)
+		{
+			if (Application.Current?.Resources?.TryGetValue(resourceKey, out var flyout) == true
+				&& flyout is FlyoutBase flyoutBase)
+			{
+				return flyoutBase;
+			}
+
+			var resolved = ResourceResolver.ResolveResourceStatic(resourceKey, typeof(FlyoutBase));
+			return resolved as FlyoutBase;
+		}
+#endif
 
 		[Flags]
 		private enum Flags
@@ -638,6 +755,8 @@ namespace Microsoft.UI.Xaml
 			/// Set when the property is an inherited property
 			/// </summary>
 			IsInherited = (1 << 6),
+
+			IsPropMethodCall = (1 << 7),
 		}
 	}
 }

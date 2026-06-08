@@ -19,7 +19,7 @@ namespace Windows.Devices.Enumeration.Pnp
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PnpObjectUpdate.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PnpObjectUpdate.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObjectUpdate", "Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Enumeration.Pnp
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> PnpObjectUpdate.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20object%3E%20PnpObjectUpdate.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObjectUpdate", "Properties");
 			}
 		}
 #endif
@@ -39,12 +39,12 @@ namespace Windows.Devices.Enumeration.Pnp
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PnpObjectType PnpObjectUpdate.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PnpObjectType%20PnpObjectUpdate.Type");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.Pnp.PnpObjectUpdate", "Type");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectUpdate.Type.get
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectUpdate.Id.get
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectUpdate.Properties.get
+		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObjectUpdate.Type.get
 	}
 }

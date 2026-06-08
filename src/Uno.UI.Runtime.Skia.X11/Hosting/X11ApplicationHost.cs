@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.Marshalling;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Media.Playback;
+using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -29,6 +30,13 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
 {
 	[ThreadStatic] private static bool _isDispatcherThread;
+	private static readonly X11CoreApplicationExtension _coreApplicationExtension = new();
+
+	// Kick off D-Bus IME detection as early as possible (this initializer runs before
+	// the static ctor body) so it can overlap with the rest of startup. InitializeAsync
+	// blocks on the task's result.
+	private static readonly Task<IX11InputMethod?> _imeDetectionTask = X11InputMethodDetector.DetectAsync();
+
 	private readonly EventLoop _eventLoop;
 
 	private readonly Func<Application> _appBuilder;
@@ -40,19 +48,19 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		_ = X11Helper.XInitThreads();
 
 		// keyboard input fails without this, not sure why this works but Avalonia and xev make similar calls, cf. https://stackoverflow.com/a/18288346
-		// This disables IME, cf. https://tedyin.com/posts/a-brief-intro-to-linux-input-method-framework/
+		// Use "" to enable the system's default input method (from XMODIFIERS env var)
 		setlocale(/* LC_ALL */ 6, "");
-		if (XLib.XSetLocaleModifiers("@im=none") == IntPtr.Zero)
+		if (XLib.XSetLocaleModifiers("") == IntPtr.Zero)
 		{
 			setlocale(/* LC_ALL */ 6, "en_US.UTF-8");
-			if (XLib.XSetLocaleModifiers("@im=none") == IntPtr.Zero)
+			if (XLib.XSetLocaleModifiers("") == IntPtr.Zero)
 			{
 				setlocale(/* LC_ALL */ 6, "C.UTF-8");
-				XLib.XSetLocaleModifiers("@im=none");
+				XLib.XSetLocaleModifiers("");
 			}
 		}
 
-		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), _ => new X11CoreApplicationExtension());
+		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), _ => _coreApplicationExtension);
 		ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new X11ApplicationViewExtension(o));
 		ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => new X11DisplayInformationExtension(o));
 
@@ -65,6 +73,9 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 
 		ApiExtensibility.Register(typeof(IClipboardExtension), _ => X11ClipboardExtension.Instance);
 
+		ApiExtensibility.Register(typeof(Uno.UI.Xaml.Controls.Extensions.IImeTextBoxExtension), _ => X11ImeTextBoxExtension.Instance);
+		ApiExtensibility.Register(typeof(Uno.UI.Xaml.Controls.Extensions.ITextBoxNotificationsProviderSingleton), _ => X11TextBoxNotificationsProviderSingleton.Instance);
+
 		ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new LinuxFilePickerExtension(o));
 		ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new LinuxFilePickerExtension(o));
 		ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), o => new LinuxFileSaverExtension(o));
@@ -76,6 +87,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		ApiExtensibility.Register<XamlRoot>(typeof(Uno.Graphics.INativeOpenGLWrapper), xamlRoot => new X11NativeOpenGLWrapper(xamlRoot));
 
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), _ => LinuxSystemThemeHelper.Instance);
+		ApiExtensibility.Register(typeof(ITextScaleFactorExtension), _ => X11TextScaleFactorExtension.Instance);
 
 		if (Type.GetType("Uno.UI.MediaPlayer.Skia.X11.X11MediaPlayerPresenterExtension, Uno.UI.MediaPlayer.Skia.X11") is { } mediaPresenterExtensionType
 			&& Type.GetType("Uno.UI.MediaPlayer.Skia.X11.SharedMediaPlayerExtension, Uno.UI.MediaPlayer.Skia.X11") is { } mediaExtensionType)
@@ -200,7 +212,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		Thread.CurrentThread.Name = "Main Thread (keep-alive)";
 		_eventLoop.Schedule(StartApp);
 
-		while (!X11XamlRootHost.AllWindowsDone())
+		while (!ShouldExit())
 		{
 			Thread.Sleep(100);
 		}
@@ -211,6 +223,17 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		}
 
 		return Task.CompletedTask;
+	}
+
+	private bool ShouldExit()
+	{
+		if (_coreApplicationExtension.ExitRequested)
+		{
+			return true;
+		}
+
+		return Application.Current?.DispatcherShutdownMode == DispatcherShutdownMode.OnLastWindowClose
+			&& X11XamlRootHost.AllWindowsDone();
 	}
 
 	private void StartApp()
@@ -226,6 +249,11 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 
 	protected override void Initialize()
 	{
+		// Block until D-Bus IME detection completes, then publish the result. We return
+		// Task.CompletedTask so UnoPlatformHost.Run can finish RunCore synchronously —
+		// RunAsync triggers Win32 OleInitialize / STA breakage so we can't rely on real
+		// awaits here.
+		X11InputMethodDetector.DetectedInputMethod = _imeDetectionTask.Result;
 	}
 
 	public void Dispose()

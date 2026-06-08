@@ -19,7 +19,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Certificate> CmsTimestampInfo.Certificates is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CCertificate%3E%20CmsTimestampInfo.Certificates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsTimestampInfo", "Certificates");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate CmsTimestampInfo.SigningCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Certificate%20CmsTimestampInfo.SigningCertificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsTimestampInfo", "SigningCertificate");
 			}
 		}
 #endif
@@ -39,12 +39,12 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset CmsTimestampInfo.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20CmsTimestampInfo.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.CmsTimestampInfo", "Timestamp");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsTimestampInfo.SigningCertificate.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsTimestampInfo.Certificates.get
+		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsTimestampInfo.SigningCertificate.get
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsTimestampInfo.Timestamp.get
 	}
 }

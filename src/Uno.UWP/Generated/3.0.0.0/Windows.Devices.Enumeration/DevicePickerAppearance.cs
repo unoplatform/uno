@@ -15,71 +15,15 @@ namespace Windows.Devices.Enumeration
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Title
+		public global::Windows.UI.Color AccentColor
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DevicePickerAppearance.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DevicePickerAppearance.Title");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "AccentColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "string DevicePickerAppearance.Title");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color SelectedForegroundColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color DevicePickerAppearance.SelectedForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20DevicePickerAppearance.SelectedForegroundColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.SelectedForegroundColor");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color SelectedBackgroundColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color DevicePickerAppearance.SelectedBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20DevicePickerAppearance.SelectedBackgroundColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.SelectedBackgroundColor");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color SelectedAccentColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color DevicePickerAppearance.SelectedAccentColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20DevicePickerAppearance.SelectedAccentColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.SelectedAccentColor");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color ForegroundColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color DevicePickerAppearance.ForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20DevicePickerAppearance.ForegroundColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.ForegroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "AccentColor");
 			}
 		}
 #endif
@@ -89,41 +33,97 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color DevicePickerAppearance.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20DevicePickerAppearance.BackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "BackgroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.BackgroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "BackgroundColor");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color AccentColor
+		public global::Windows.UI.Color ForegroundColor
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color DevicePickerAppearance.AccentColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20DevicePickerAppearance.AccentColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "ForegroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "Color DevicePickerAppearance.AccentColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "ForegroundColor");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.Title.get
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.Title.set
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.ForegroundColor.get
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.ForegroundColor.set
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.BackgroundColor.get
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.BackgroundColor.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color SelectedAccentColor
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "SelectedAccentColor");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "SelectedAccentColor");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color SelectedBackgroundColor
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "SelectedBackgroundColor");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "SelectedBackgroundColor");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color SelectedForegroundColor
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "SelectedForegroundColor");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "SelectedForegroundColor");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Title
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DevicePickerAppearance", "Title");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePickerAppearance", "Title");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.AccentColor.get
 		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.AccentColor.set
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.SelectedForegroundColor.get
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.SelectedForegroundColor.set
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.SelectedBackgroundColor.get
-		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.SelectedBackgroundColor.set
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.BackgroundColor.get
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.BackgroundColor.set
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.ForegroundColor.get
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.ForegroundColor.set
 		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.SelectedAccentColor.get
 		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.SelectedAccentColor.set
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.SelectedBackgroundColor.get
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.SelectedBackgroundColor.set
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.SelectedForegroundColor.get
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.SelectedForegroundColor.set
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.Title.get
+		// Forced skipping of method Windows.Devices.Enumeration.DevicePickerAppearance.Title.set
 	}
 }

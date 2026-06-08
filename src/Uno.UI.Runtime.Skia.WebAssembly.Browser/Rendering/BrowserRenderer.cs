@@ -13,10 +13,11 @@ internal partial class BrowserRenderer
 	private readonly Stopwatch _renderStopwatch = new Stopwatch();
 	private readonly IXamlRootHost _host;
 	private readonly IBrowserRenderer _renderer;
-	private readonly JSObject _nativeInstance;
+	private JSObject? _nativeInstance;
 
 	private int _renderCount;
 	private SKCanvas? _canvas;
+	private bool _pendingInvalidate;
 
 	public BrowserRenderer(IXamlRootHost host, bool forceSoftwareRendering)
 	{
@@ -39,11 +40,19 @@ internal partial class BrowserRenderer
 		{
 			throw new InvalidOperationException("Unable to create renderer");
 		}
-
-		_nativeInstance = NativeMethods.CreateInstance(this, WebAssemblyWindowWrapper.Instance.CanvasId);
 	}
 
-	internal void InvalidateRender() => NativeMethods.Invalidate(_nativeInstance);
+	internal void InvalidateRender()
+	{
+		if (_pendingInvalidate)
+		{
+			return;
+		}
+
+		_pendingInvalidate = true;
+		_nativeInstance ??= NativeMethods.CreateInstance(this, WebAssemblyWindowWrapper.Instance.CanvasId);
+		NativeMethods.Invalidate(_nativeInstance);
+	}
 
 	[JSExport]
 	internal static void RenderFrame([JSMarshalAs<JSType.Any>] object instance)
@@ -53,6 +62,15 @@ internal partial class BrowserRenderer
 
 	private void RenderFrame()
 	{
+		_pendingInvalidate = false;
+
+		// The RootElement may not be set yet during startup because the JavaScript
+		// requestAnimationFrame can fire before the app initialization completes.
+		if (_host.RootElement is not { Visual.CompositionTarget: CompositionTarget compositionTarget })
+		{
+			return;
+		}
+
 		_renderStopwatch.Restart();
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
@@ -68,7 +86,7 @@ internal partial class BrowserRenderer
 			_canvas = null;
 		}
 
-		var currentClipPath = ((CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_canvas, size =>
+		var currentClipPath = compositionTarget.OnNativePlatformFrameRequested(_canvas, size =>
 		{
 			return _canvas = _renderer.Resize((int)size.Width, (int)size.Height);
 		});

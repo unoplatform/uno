@@ -10,43 +10,15 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Title
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string QuickLink.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20QuickLink.Title");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "string QuickLink.Title");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.RandomAccessStreamReference Thumbnail
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member RandomAccessStreamReference QuickLink.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RandomAccessStreamReference%20QuickLink.Thumbnail");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "RandomAccessStreamReference QuickLink.Thumbnail");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Id
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string QuickLink.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20QuickLink.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "Id");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "string QuickLink.Id");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "Id");
 			}
 		}
 #endif
@@ -56,7 +28,7 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> QuickLink.SupportedDataFormats is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20QuickLink.SupportedDataFormats");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "SupportedDataFormats");
 			}
 		}
 #endif
@@ -66,7 +38,35 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> QuickLink.SupportedFileTypes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20QuickLink.SupportedFileTypes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "SupportedFileTypes");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Streams.RandomAccessStreamReference Thumbnail
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "Thumbnail");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "Thumbnail");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Title
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "Title");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "Title");
 			}
 		}
 #endif
@@ -74,17 +74,17 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public QuickLink()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "QuickLink.QuickLink()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink", "QuickLink()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.QuickLink()
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.Title.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.Title.set
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.Thumbnail.get
-		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.Thumbnail.set
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.Id.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.Id.set
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.SupportedDataFormats.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.SupportedFileTypes.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.Thumbnail.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.Thumbnail.set
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.Title.get
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink.Title.set
 	}
 }

@@ -19,17 +19,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothError BluetoothLEAdvertisementPublisherTriggerDetails.Error is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothError%20BluetoothLEAdvertisementPublisherTriggerDetails.Error");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisherStatus Status
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisementPublisherStatus BluetoothLEAdvertisementPublisherTriggerDetails.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothLEAdvertisementPublisherStatus%20BluetoothLEAdvertisementPublisherTriggerDetails.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails", "Error");
 			}
 		}
 #endif
@@ -39,12 +29,22 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member short? BluetoothLEAdvertisementPublisherTriggerDetails.SelectedTransmitPowerLevelInDBm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=short%3F%20BluetoothLEAdvertisementPublisherTriggerDetails.SelectedTransmitPowerLevelInDBm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails", "SelectedTransmitPowerLevelInDBm");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.Status.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisherStatus Status
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails", "Status");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.Error.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.SelectedTransmitPowerLevelInDBm.get
+		// Forced skipping of method Windows.Devices.Bluetooth.Background.BluetoothLEAdvertisementPublisherTriggerDetails.Status.get
 	}
 }

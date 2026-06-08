@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2DevToolsProtocolEventReceivedEventArgs.ParameterObjectAsJson is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2DevToolsProtocolEventReceivedEventArgs.ParameterObjectAsJson");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceivedEventArgs", "ParameterObjectAsJson");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2DevToolsProtocolEventReceivedEventArgs.SessionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2DevToolsProtocolEventReceivedEventArgs.SessionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceivedEventArgs", "SessionId");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceivedEventArgs.SessionId.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceivedEventArgs.ParameterObjectAsJson.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceivedEventArgs.SessionId.get
 	}
 }

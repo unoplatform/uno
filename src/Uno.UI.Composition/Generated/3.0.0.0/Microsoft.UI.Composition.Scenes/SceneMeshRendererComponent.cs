@@ -15,29 +15,29 @@ namespace Microsoft.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.Scenes.SceneMesh Mesh
+		public global::Microsoft.UI.Composition.Scenes.SceneMaterial Material
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneMesh SceneMeshRendererComponent.Mesh is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneMesh%20SceneMeshRendererComponent.Mesh");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent", "Material");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent", "SceneMesh SceneMeshRendererComponent.Mesh");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent", "Material");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.Scenes.SceneMaterial Material
+		public global::Microsoft.UI.Composition.Scenes.SceneMesh Mesh
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneMaterial SceneMeshRendererComponent.Material is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneMaterial%20SceneMeshRendererComponent.Material");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent", "Mesh");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent", "SceneMaterial SceneMeshRendererComponent.Material");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent", "Mesh");
 			}
 		}
 #endif
@@ -47,21 +47,21 @@ namespace Microsoft.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneMeshMaterialAttributeMap SceneMeshRendererComponent.UVMappings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneMeshMaterialAttributeMap%20SceneMeshRendererComponent.UVMappings");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent", "UVMappings");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.Mesh.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.Mesh.set
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.UVMappings.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.Material.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.Material.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent Create(global::Microsoft.UI.Composition.Compositor compositor)
 		{
-			throw new global::System.NotImplementedException("The member SceneMeshRendererComponent SceneMeshRendererComponent.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneMeshRendererComponent%20SceneMeshRendererComponent.Create%28Compositor%20compositor%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent", "Create(Compositor compositor)");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.Material.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.Material.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.Mesh.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.Mesh.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.UVMappings.get
 	}
 }

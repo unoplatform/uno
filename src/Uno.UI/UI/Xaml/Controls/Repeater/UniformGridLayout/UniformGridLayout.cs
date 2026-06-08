@@ -19,6 +19,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_UniformGridLayout);
 			LayoutId = "UniformGridLayout";
+
+			UpdateIndexBasedLayoutOrientation(Orientation.Horizontal);
 		}
 
 		#endregion
@@ -290,6 +292,8 @@ namespace Microsoft.UI.Xaml.Controls
 					? ScrollOrientation.Vertical
 					: ScrollOrientation.Horizontal;
 				ScrollOrientation = scrollOrientation;
+
+				UpdateIndexBasedLayoutOrientation(orientation);
 			}
 			else if (property == MinColumnSpacingProperty)
 			{
@@ -323,6 +327,12 @@ namespace Microsoft.UI.Xaml.Controls
 			InvalidateLayout();
 		}
 
+		private void UpdateIndexBasedLayoutOrientation(Orientation orientation)
+		{
+			SetIndexBasedLayoutOrientation(orientation == Orientation.Horizontal ?
+				IndexBasedLayoutOrientation.LeftToRight : IndexBasedLayoutOrientation.TopToBottom);
+		}
+
 		#region private helpers
 
 		private uint GetItemsPerLine(Size availableSize, VirtualizingLayoutContext context)
@@ -332,8 +342,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (availableSizeMinor.IsFinite())
 			{
+				// Floor the computed count at 1 to match WinUI: when the available minor size is smaller than a
+				// single item, the (uint) cast would otherwise truncate to 0, leading to a DivideByZeroException
+				// in GetMajorSize / GetLayoutRectForDataIndex. See https://github.com/unoplatform/uno/issues/23366.
 				return Math.Min(
-					(uint)((availableSizeMinor + MinItemSpacing()) / GetMinorItemSizeWithSpacing(context)),
+					Math.Max(1u, (uint)((availableSizeMinor + MinItemSpacing()) / GetMinorItemSizeWithSpacing(context))),
 					maximumRowsOrColumns);
 			}
 

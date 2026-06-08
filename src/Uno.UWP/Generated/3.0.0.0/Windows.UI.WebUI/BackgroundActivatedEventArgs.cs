@@ -19,7 +19,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBackgroundTaskInstance BackgroundActivatedEventArgs.TaskInstance is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBackgroundTaskInstance%20BackgroundActivatedEventArgs.TaskInstance");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.WebUI.BackgroundActivatedEventArgs", "TaskInstance");
 			}
 		}
 #endif

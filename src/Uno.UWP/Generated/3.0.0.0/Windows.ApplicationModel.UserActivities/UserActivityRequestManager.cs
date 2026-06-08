@@ -13,15 +13,15 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.UserActivityRequested.add
-		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.UserActivityRequested.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.UserActivities.UserActivityRequestManager GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member UserActivityRequestManager UserActivityRequestManager.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserActivityRequestManager%20UserActivityRequestManager.GetForCurrentView%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserActivities.UserActivityRequestManager", "GetForCurrentView()");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.UserActivityRequested.add
+		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.UserActivityRequested.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.UserActivities.UserActivityRequestManager, global::Windows.ApplicationModel.UserActivities.UserActivityRequestedEventArgs> UserActivityRequested
@@ -29,12 +29,12 @@ namespace Windows.ApplicationModel.UserActivities
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityRequestManager", "event TypedEventHandler<UserActivityRequestManager, UserActivityRequestedEventArgs> UserActivityRequestManager.UserActivityRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityRequestManager", "event UserActivityRequested");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityRequestManager", "event TypedEventHandler<UserActivityRequestManager, UserActivityRequestedEventArgs> UserActivityRequestManager.UserActivityRequested");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityRequestManager", "event UserActivityRequested");
 			}
 		}
 #endif

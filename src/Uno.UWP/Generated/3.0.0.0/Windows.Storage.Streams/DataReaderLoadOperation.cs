@@ -15,11 +15,25 @@ namespace Windows.Storage.Streams
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.AsyncOperationCompletedHandler<uint> Completed
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.DataReaderLoadOperation", "Completed");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataReaderLoadOperation", "Completed");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Exception ErrorCode
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception DataReaderLoadOperation.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20DataReaderLoadOperation.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.DataReaderLoadOperation", "ErrorCode");
 			}
 		}
 #endif
@@ -29,7 +43,7 @@ namespace Windows.Storage.Streams
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint DataReaderLoadOperation.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20DataReaderLoadOperation.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.DataReaderLoadOperation", "Id");
 			}
 		}
 #endif
@@ -39,50 +53,36 @@ namespace Windows.Storage.Streams
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AsyncStatus DataReaderLoadOperation.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AsyncStatus%20DataReaderLoadOperation.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.DataReaderLoadOperation", "Status");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.AsyncOperationCompletedHandler<uint> Completed
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AsyncOperationCompletedHandler<uint> DataReaderLoadOperation.Completed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AsyncOperationCompletedHandler%3Cuint%3E%20DataReaderLoadOperation.Completed");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataReaderLoadOperation", "AsyncOperationCompletedHandler<uint> DataReaderLoadOperation.Completed");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.Completed.set
-		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.Completed.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint GetResults()
 		{
-			throw new global::System.NotImplementedException("The member uint DataReaderLoadOperation.GetResults() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20DataReaderLoadOperation.GetResults%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.DataReaderLoadOperation", "GetResults()");
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.Id.get
-		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.Status.get
-		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.ErrorCode.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Cancel()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataReaderLoadOperation", "void DataReaderLoadOperation.Cancel()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataReaderLoadOperation", "Cancel()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Close()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataReaderLoadOperation", "void DataReaderLoadOperation.Close()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataReaderLoadOperation", "Close()");
 		}
 #endif
+		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.Completed.get
+		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.Completed.set
+		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.ErrorCode.get
+		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.Id.get
+		// Forced skipping of method Windows.Storage.Streams.DataReaderLoadOperation.Status.get
 		// Processing: Windows.Foundation.IAsyncOperation<uint>
 		// Processing: Windows.Foundation.IAsyncInfo
 	}

@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AppMemoryUsageLimitChangingEventArgs.NewLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20AppMemoryUsageLimitChangingEventArgs.NewLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppMemoryUsageLimitChangingEventArgs", "NewLimit");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AppMemoryUsageLimitChangingEventArgs.OldLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20AppMemoryUsageLimitChangingEventArgs.OldLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppMemoryUsageLimitChangingEventArgs", "OldLimit");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.AppMemoryUsageLimitChangingEventArgs.OldLimit.get
 		// Forced skipping of method Windows.System.AppMemoryUsageLimitChangingEventArgs.NewLimit.get
+		// Forced skipping of method Windows.System.AppMemoryUsageLimitChangingEventArgs.OldLimit.get
 	}
 }

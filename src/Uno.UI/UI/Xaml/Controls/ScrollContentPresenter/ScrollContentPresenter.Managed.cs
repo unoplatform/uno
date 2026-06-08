@@ -101,6 +101,27 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal Size? CustomContentExtent => null;
 
+		// True while a scroll animation is in flight on the content's AnchorPoint. Used by
+		// ScrollViewer.RecomputeOffsetsFromIntent to avoid interrupting an ongoing animation
+		// (e.g. the wheel-driven or programmatic-with-animation scroll) with an instant Set.
+		// The recompute will run again on the next layout pass after the animation completes.
+		internal bool IsScrollAnimationInProgress
+		{
+			get
+			{
+				if (Content is UIElement contentElt && contentElt.Visual is { } visual
+					&& visual.TryGetAnimationController(nameof(Visual.AnchorPoint)) is { } controller)
+				{
+					// A KeyFrameAnimation that completed naturally stays in the owning
+					// CompositionObject's animation dictionary (only StopAnimation removes it),
+					// so the controller's mere presence is not a reliable "in progress" signal.
+					// Check the remaining time instead.
+					return controller.Remaining > TimeSpan.Zero;
+				}
+				return false;
+			}
+		}
+
 		private object RealContent => Content;
 
 		private readonly SerialDisposable _eventSubscriptions = new();
@@ -352,6 +373,10 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
+			// Touch/pen press invalidates any armed offset intent so subsequent layout cascades from
+			// realization don't push the offset back toward the intent during the user's manipulation.
+			Scroller?.ClearOffsetIntents();
+
 			XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.RegisterDirectManipulationHandler(args.Pointer.UniqueId, this);
 		}
 
@@ -359,6 +384,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 		/// <inheritdoc />
 		ManipulationModes IDirectManipulationHandler.OnStarting(GestureRecognizer _, ManipulationStartingEventArgs args)
+		{
+			// If a previous inertia is still tracked, clear it immediately so old inertial deltas
+			// cannot fight with the new manipulation's direction.
+			_touchInertia = null;
+
+			return ComputeAcceptedManipulationModes();
+		}
+
+		/// <inheritdoc />
+		ManipulationModes IDirectManipulationHandler.GetCurrentlyAcceptedModes()
+			=> ComputeAcceptedManipulationModes();
+
+		private ManipulationModes ComputeAcceptedManipulationModes()
 		{
 			var mode = ManipulationModes.None;
 			var scrollable = GetScrollableOffsets();
@@ -463,10 +501,34 @@ namespace Microsoft.UI.Xaml.Controls
 				return false;
 			}
 
-			var scrollable = GetScrollableOffsets();
+			if (Scroller is not { IsScrollInertiaEnabled: true } sv)
+			{
+				_touchInertia = null;
+				return false;
+			}
+
 			var direction = GetDirection(args.Velocities);
-			if (Scroller is not { IsScrollInertiaEnabled: true } sv
-				|| !scrollable.IsValid(direction) // Nothing to scroll
+
+			// Check if we have snap points configured - if so, we should handle inertia even with limited scrollable space
+			bool hasValidSnapPoints(ScrollDirection dir)
+			{
+				if (dir.HasFlag(ScrollDirection.Left) || dir.HasFlag(ScrollDirection.Right))
+				{
+					return sv.HorizontalSnapPointsType is not SnapPointsType.None;
+				}
+				if (dir.HasFlag(ScrollDirection.Up) || dir.HasFlag(ScrollDirection.Down))
+				{
+					return sv.VerticalSnapPointsType is not SnapPointsType.None;
+				}
+
+				return false;
+			}
+
+			var scrollable = GetScrollableOffsets();
+			var isScrollableValid = scrollable.IsValid(direction);
+			var hasSnapPoints = hasValidSnapPoints(direction);
+
+			if ((!isScrollableValid && !hasSnapPoints) // Nothing to scroll and no snap points
 				|| recognizer.PendingManipulation is null) // Stopped by a child element (e.g. a child SV that is scrolling to a mandatory snap-point) - safety, should already be isHandled = true
 			{
 				// Inertia is starting but we cannot handle it.

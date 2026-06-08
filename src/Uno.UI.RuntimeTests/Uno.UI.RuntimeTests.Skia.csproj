@@ -10,6 +10,7 @@
 		<RootNamespace>Uno.UI.RuntimeTests</RootNamespace>
 
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
+		<UnoEnableImplicitXamlNamespaces>true</UnoEnableImplicitXamlNamespaces>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
 		<NoWarn>$(NoWarn);CS1998</NoWarn>
@@ -76,6 +77,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
+		<ProjectReference Include="..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Skia.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup>
@@ -112,11 +114,4 @@
 		</Page>
 	</ItemGroup>
 
-	<!-- Multiwindowing is only supported on Uno.WinUI -->
-	<ItemGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
-		<Compile Remove="$(MSBuildThisFileDirectory)Tests\Windows_UI_Xaml\Controls\Multiwindow\**\*.xaml.cs" />
-	</ItemGroup>
-	<PropertyGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
-		<PageExclusions>$(MSBuildThisFileDirectory)Tests\Windows_UI_Xaml\Controls\Multiwindow\**\*.xaml</PageExclusions>
-	</PropertyGroup>
 </Project>

@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -20,11 +19,11 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PerceptionDepthFrameReader.IsPaused is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PerceptionDepthFrameReader.IsPaused");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionDepthFrameReader", "IsPaused");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameReader", "bool PerceptionDepthFrameReader.IsPaused");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameReader", "IsPaused");
 			}
 		}
 #endif
@@ -34,29 +33,29 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PerceptionDepthFrameSource PerceptionDepthFrameReader.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionDepthFrameSource%20PerceptionDepthFrameReader.Source");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionDepthFrameReader", "Source");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.FrameArrived.add
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.FrameArrived.remove
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.Source.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.IsPaused.get
-		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.IsPaused.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Perception.PerceptionDepthFrame TryReadLatestFrame()
 		{
-			throw new global::System.NotImplementedException("The member PerceptionDepthFrame PerceptionDepthFrameReader.TryReadLatestFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionDepthFrame%20PerceptionDepthFrameReader.TryReadLatestFrame%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionDepthFrameReader", "TryReadLatestFrame()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.FrameArrived.add
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.FrameArrived.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameReader", "void PerceptionDepthFrameReader.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameReader", "Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.IsPaused.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.IsPaused.set
+		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameReader.Source.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Perception.PerceptionDepthFrameReader, global::Windows.Devices.Perception.PerceptionDepthFrameArrivedEventArgs> FrameArrived
@@ -64,12 +63,12 @@ namespace Windows.Devices.Perception
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameReader", "event TypedEventHandler<PerceptionDepthFrameReader, PerceptionDepthFrameArrivedEventArgs> PerceptionDepthFrameReader.FrameArrived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameReader", "event FrameArrived");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameReader", "event TypedEventHandler<PerceptionDepthFrameReader, PerceptionDepthFrameArrivedEventArgs> PerceptionDepthFrameReader.FrameArrived");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionDepthFrameReader", "event FrameArrived");
 			}
 		}
 #endif

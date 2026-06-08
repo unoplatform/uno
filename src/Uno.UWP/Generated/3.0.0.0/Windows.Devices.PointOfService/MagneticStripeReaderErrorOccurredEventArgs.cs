@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UnifiedPosErrorData MagneticStripeReaderErrorOccurredEventArgs.ErrorData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UnifiedPosErrorData%20MagneticStripeReaderErrorOccurredEventArgs.ErrorData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "ErrorData");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagneticStripeReaderReport MagneticStripeReaderErrorOccurredEventArgs.PartialInputData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MagneticStripeReaderReport%20MagneticStripeReaderErrorOccurredEventArgs.PartialInputData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "PartialInputData");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagneticStripeReaderTrackErrorType MagneticStripeReaderErrorOccurredEventArgs.Track1Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MagneticStripeReaderTrackErrorType%20MagneticStripeReaderErrorOccurredEventArgs.Track1Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "Track1Status");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagneticStripeReaderTrackErrorType MagneticStripeReaderErrorOccurredEventArgs.Track2Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MagneticStripeReaderTrackErrorType%20MagneticStripeReaderErrorOccurredEventArgs.Track2Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "Track2Status");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagneticStripeReaderTrackErrorType MagneticStripeReaderErrorOccurredEventArgs.Track3Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MagneticStripeReaderTrackErrorType%20MagneticStripeReaderErrorOccurredEventArgs.Track3Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "Track3Status");
 			}
 		}
 #endif
@@ -69,15 +69,15 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagneticStripeReaderTrackErrorType MagneticStripeReaderErrorOccurredEventArgs.Track4Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MagneticStripeReaderTrackErrorType%20MagneticStripeReaderErrorOccurredEventArgs.Track4Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs", "Track4Status");
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs.ErrorData.get
+		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs.PartialInputData.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs.Track1Status.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs.Track2Status.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs.Track3Status.get
 		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs.Track4Status.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs.ErrorData.get
-		// Forced skipping of method Windows.Devices.PointOfService.MagneticStripeReaderErrorOccurredEventArgs.PartialInputData.get
 	}
 }

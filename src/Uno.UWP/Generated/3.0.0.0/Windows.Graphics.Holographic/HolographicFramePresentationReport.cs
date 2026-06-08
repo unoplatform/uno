@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Holographic
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -20,7 +19,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan HolographicFramePresentationReport.AppGpuDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20HolographicFramePresentationReport.AppGpuDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFramePresentationReport", "AppGpuDuration");
 			}
 		}
 #endif
@@ -30,7 +29,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan HolographicFramePresentationReport.AppGpuOverrun is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20HolographicFramePresentationReport.AppGpuOverrun");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFramePresentationReport", "AppGpuOverrun");
 			}
 		}
 #endif
@@ -40,7 +39,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan HolographicFramePresentationReport.CompositorGpuDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20HolographicFramePresentationReport.CompositorGpuDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFramePresentationReport", "CompositorGpuDuration");
 			}
 		}
 #endif
@@ -50,7 +49,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HolographicFramePresentationReport.MissedPresentationOpportunityCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20HolographicFramePresentationReport.MissedPresentationOpportunityCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFramePresentationReport", "MissedPresentationOpportunityCount");
 			}
 		}
 #endif
@@ -60,13 +59,13 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HolographicFramePresentationReport.PresentationCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20HolographicFramePresentationReport.PresentationCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicFramePresentationReport", "PresentationCount");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.CompositorGpuDuration.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.AppGpuDuration.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.AppGpuOverrun.get
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.CompositorGpuDuration.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.MissedPresentationOpportunityCount.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFramePresentationReport.PresentationCount.get
 	}

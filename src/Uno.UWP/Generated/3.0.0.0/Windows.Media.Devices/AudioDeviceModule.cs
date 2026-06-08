@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AudioDeviceModule.ClassId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AudioDeviceModule.ClassId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModule", "ClassId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AudioDeviceModule.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AudioDeviceModule.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModule", "DisplayName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AudioDeviceModule.InstanceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AudioDeviceModule.InstanceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModule", "InstanceId");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AudioDeviceModule.MajorVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AudioDeviceModule.MajorVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModule", "MajorVersion");
 			}
 		}
 #endif
@@ -59,8 +59,15 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint AudioDeviceModule.MinorVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20AudioDeviceModule.MinorVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModule", "MinorVersion");
 			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Devices.ModuleCommandResult> SendCommandAsync(global::Windows.Storage.Streams.IBuffer Command)
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.AudioDeviceModule", "SendCommandAsync(IBuffer Command)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.AudioDeviceModule.ClassId.get
@@ -68,12 +75,5 @@ namespace Windows.Media.Devices
 		// Forced skipping of method Windows.Media.Devices.AudioDeviceModule.InstanceId.get
 		// Forced skipping of method Windows.Media.Devices.AudioDeviceModule.MajorVersion.get
 		// Forced skipping of method Windows.Media.Devices.AudioDeviceModule.MinorVersion.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Devices.ModuleCommandResult> SendCommandAsync(global::Windows.Storage.Streams.IBuffer Command)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ModuleCommandResult> AudioDeviceModule.SendCommandAsync(IBuffer Command) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CModuleCommandResult%3E%20AudioDeviceModule.SendCommandAsync%28IBuffer%20Command%29");
-		}
-#endif
 	}
 }

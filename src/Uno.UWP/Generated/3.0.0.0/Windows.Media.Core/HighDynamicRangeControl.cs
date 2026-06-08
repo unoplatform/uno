@@ -19,15 +19,15 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HighDynamicRangeControl.Enabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HighDynamicRangeControl.Enabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.HighDynamicRangeControl", "Enabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.HighDynamicRangeControl", "bool HighDynamicRangeControl.Enabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.HighDynamicRangeControl", "Enabled");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.HighDynamicRangeControl.Enabled.set
 		// Forced skipping of method Windows.Media.Core.HighDynamicRangeControl.Enabled.get
+		// Forced skipping of method Windows.Media.Core.HighDynamicRangeControl.Enabled.set
 	}
 }

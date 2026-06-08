@@ -10,71 +10,15 @@ namespace Windows.UI.Input.Inking
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double Radius
+		public global::Windows.UI.Color AccentColor
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double InkPresenterProtractor.Radius is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InkPresenterProtractor.Radius");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "AccentColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "double InkPresenterProtractor.Radius");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsResizable
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.IsResizable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkPresenterProtractor.IsResizable");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.IsResizable");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsCenterMarkerVisible
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.IsCenterMarkerVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkPresenterProtractor.IsCenterMarkerVisible");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.IsCenterMarkerVisible");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsAngleReadoutVisible
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.IsAngleReadoutVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkPresenterProtractor.IsAngleReadoutVisible");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.IsAngleReadoutVisible");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool AreTickMarksVisible
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.AreTickMarksVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkPresenterProtractor.AreTickMarksVisible");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.AreTickMarksVisible");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "AccentColor");
 			}
 		}
 #endif
@@ -84,67 +28,25 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.AreRaysVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkPresenterProtractor.AreRaysVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "AreRaysVisible");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.AreRaysVisible");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "AreRaysVisible");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color AccentColor
+		public bool AreTickMarksVisible
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color InkPresenterProtractor.AccentColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20InkPresenterProtractor.AccentColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "AreTickMarksVisible");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "Color InkPresenterProtractor.AccentColor");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Matrix3x2 Transform
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Matrix3x2 InkPresenterProtractor.Transform is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix3x2%20InkPresenterProtractor.Transform");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "Matrix3x2 InkPresenterProtractor.Transform");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsVisible
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterProtractor.IsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkPresenterProtractor.IsVisible");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "bool InkPresenterProtractor.IsVisible");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color ForegroundColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color InkPresenterProtractor.ForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20InkPresenterProtractor.ForegroundColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "Color InkPresenterProtractor.ForegroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "AreTickMarksVisible");
 			}
 		}
 #endif
@@ -154,11 +56,81 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color InkPresenterProtractor.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20InkPresenterProtractor.BackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "BackgroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "Color InkPresenterProtractor.BackgroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "BackgroundColor");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color ForegroundColor
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "ForegroundColor");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "ForegroundColor");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsAngleReadoutVisible
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "IsAngleReadoutVisible");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "IsAngleReadoutVisible");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsCenterMarkerVisible
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "IsCenterMarkerVisible");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "IsCenterMarkerVisible");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsResizable
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "IsResizable");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "IsResizable");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsVisible
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "IsVisible");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "IsVisible");
 			}
 		}
 #endif
@@ -168,7 +140,35 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkPresenterStencilKind InkPresenterProtractor.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkPresenterStencilKind%20InkPresenterProtractor.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "Kind");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double Radius
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "Radius");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "Radius");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Matrix3x2 Transform
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterProtractor", "Transform");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "Transform");
 			}
 		}
 #endif
@@ -176,31 +176,31 @@ namespace Windows.UI.Input.Inking
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public InkPresenterProtractor(global::Windows.UI.Input.Inking.InkPresenter inkPresenter)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "InkPresenterProtractor.InkPresenterProtractor(InkPresenter inkPresenter)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterProtractor", "InkPresenterProtractor(InkPresenter inkPresenter)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.InkPresenterProtractor(Windows.UI.Input.Inking.InkPresenter)
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.AreTickMarksVisible.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.AreTickMarksVisible.set
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.AreRaysVisible.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.AreRaysVisible.set
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.IsCenterMarkerVisible.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.IsCenterMarkerVisible.set
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.IsAngleReadoutVisible.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.IsAngleReadoutVisible.set
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.IsResizable.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.IsResizable.set
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.Radius.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.Radius.set
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.AccentColor.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.AccentColor.set
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.Kind.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.IsVisible.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.IsVisible.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.AreRaysVisible.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.AreRaysVisible.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.AreTickMarksVisible.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.AreTickMarksVisible.set
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.BackgroundColor.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.BackgroundColor.set
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.ForegroundColor.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.ForegroundColor.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.IsAngleReadoutVisible.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.IsAngleReadoutVisible.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.IsCenterMarkerVisible.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.IsCenterMarkerVisible.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.IsResizable.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.IsResizable.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.IsVisible.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.IsVisible.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.Kind.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.Radius.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.Radius.set
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.Transform.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterProtractor.Transform.set
 		// Processing: Windows.UI.Input.Inking.IInkPresenterStencil

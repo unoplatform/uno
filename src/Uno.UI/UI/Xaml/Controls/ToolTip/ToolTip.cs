@@ -2,6 +2,7 @@
 
 using System;
 using DirectUI;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
@@ -18,6 +19,9 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ToolTip : ContentControl
 	{
+		protected override AutomationPeer OnCreateAutomationPeer()
+			=> new ToolTipAutomationPeer(this);
+
 		private const double TOOLTIP_TOLERANCE = 2.0;    // Used in PlacementMode.Mouse positioning to avoid screen edges.
 		private const double DEFAULT_KEYBOARD_OFFSET = 12;  // Default offset for automatic tooltips opened by keyboard.
 		internal const double DEFAULT_MOUSE_OFFSET = 20;   // Default offset for automatic tooltips opened by mouse.
@@ -63,6 +67,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool m_bCallPerformPlacementAtNextPopupOpen;
 		internal AutomaticToolTipInputMode m_inputMode = AutomaticToolTipInputMode.Mouse; // TODO Uno: This should be set from ToolTipService
 		internal bool m_isSliderThumbToolTip;
+		private bool m_isToolTipRequestedThemeOverridden;
 #pragma warning restore CS0649
 #pragma warning restore CS0169
 #pragma warning restore CS0414
@@ -142,7 +147,11 @@ namespace Microsoft.UI.Xaml.Controls
 			Popup.IsOpen = isOpen;
 			if (isOpen && IsEnabled)
 			{
+				ForwardOwnerThemePropertyToToolTip();
 				AttachToPopup();
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				SubscribeOwnerThemeChanged();
+#endif
 
 				Opened?.Invoke(this, new RoutedEventArgs(this));
 				GoToElementState("Opened", useTransitions: true);
@@ -156,6 +165,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				UnsubscribeOwnerThemeChanged();
+#endif
 				Closed?.Invoke(this, new RoutedEventArgs(this));
 				GoToElementState("Closed", useTransitions: true);
 			}
@@ -183,6 +195,102 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public void SetAnchor(UIElement element) => _owner = element;
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		private void SubscribeOwnerThemeChanged()
+		{
+			var ownerFe = GetOwnerFrameworkElement();
+			if (ownerFe is not null)
+			{
+				ownerFe.ActualThemeChanged += OnOwnerActualThemeChanged;
+			}
+		}
+
+		private void UnsubscribeOwnerThemeChanged()
+		{
+			var ownerFe = GetOwnerFrameworkElement();
+			if (ownerFe is not null)
+			{
+				ownerFe.ActualThemeChanged -= OnOwnerActualThemeChanged;
+			}
+		}
+
+		private void OnOwnerActualThemeChanged(FrameworkElement sender, object args)
+		{
+			// Owner's effective theme changed (e.g., ancestor RequestedTheme changed).
+			// Re-forward the theme to keep the ToolTip in sync.
+			ForwardOwnerThemePropertyToToolTip();
+		}
+#endif
+
+		// MUX Reference: ToolTip_Partial.cpp ForwardOwnerThemePropertyToToolTip (lines 2510-2575)
+		// Walks up from the owner/placement target to find the nearest non-Default
+		// RequestedTheme and applies it to this ToolTip, ensuring tooltip content
+		// matches the theme of the subtree it was opened from.
+		private void ForwardOwnerThemePropertyToToolTip()
+		{
+			// MUX Reference: ToolTip_Partial.cpp lines 2530-2545
+			// Handle TextElement owners (e.g., Hyperlink) by finding containing FE.
+			var owner = GetOwnerFrameworkElement();
+			if (owner is null)
+			{
+				return;
+			}
+
+			// Only override if ToolTip's RequestedTheme hasn't been explicitly set,
+			// or was previously overridden by us.
+			var currentTheme = RequestedTheme;
+			if (currentTheme != ElementTheme.Default && !m_isToolTipRequestedThemeOverridden)
+			{
+				return;
+			}
+
+			// Walk up from owner to find nearest non-Default RequestedTheme
+			var requestedTheme = ElementTheme.Default;
+			DependencyObject current = owner;
+			while (current is FrameworkElement currentFe)
+			{
+				requestedTheme = currentFe.RequestedTheme;
+				if (requestedTheme != ElementTheme.Default)
+				{
+					break;
+				}
+
+				var parent = VisualTreeHelper.GetParent(current);
+				if (parent is Primitives.PopupRoot)
+				{
+					// If the owner is inside a Popup's visual tree, skip PopupRoot
+					// and use the logical parent instead.
+					parent = currentFe.Parent;
+				}
+
+				current = parent;
+			}
+
+			if (requestedTheme != currentTheme)
+			{
+				RequestedTheme = requestedTheme;
+				m_isToolTipRequestedThemeOverridden = true;
+			}
+		}
+
+		// MUX Reference: ToolTip_Partial.cpp lines 2530-2545
+		// Resolves _owner to a FrameworkElement, handling TextElement owners
+		// (e.g., Hyperlink) by finding the containing FrameworkElement.
+		private FrameworkElement? GetOwnerFrameworkElement()
+		{
+			if (_owner is FrameworkElement fe)
+			{
+				return fe;
+			}
+
+			if (_owner is Documents.TextElement textElement)
+			{
+				return textElement.GetContainingFrameworkElement();
+			}
+
+			return null;
+		}
 
 		public event RoutedEventHandler? Closed;
 

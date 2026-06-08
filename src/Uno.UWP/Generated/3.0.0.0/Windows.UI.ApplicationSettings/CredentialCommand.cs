@@ -14,7 +14,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CredentialCommandCredentialDeletedHandler CredentialCommand.CredentialDeleted is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CredentialCommandCredentialDeletedHandler%20CredentialCommand.CredentialDeleted");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.CredentialCommand", "CredentialDeleted");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential CredentialCommand.PasswordCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PasswordCredential%20CredentialCommand.PasswordCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.CredentialCommand", "PasswordCredential");
 			}
 		}
 #endif
@@ -32,7 +32,7 @@ namespace Windows.UI.ApplicationSettings
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CredentialCommand(global::Windows.Security.Credentials.PasswordCredential passwordCredential)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.CredentialCommand", "CredentialCommand.CredentialCommand(PasswordCredential passwordCredential)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.CredentialCommand", "CredentialCommand(PasswordCredential passwordCredential)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.CredentialCommand(Windows.Security.Credentials.PasswordCredential)
@@ -40,11 +40,11 @@ namespace Windows.UI.ApplicationSettings
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CredentialCommand(global::Windows.Security.Credentials.PasswordCredential passwordCredential, global::Windows.UI.ApplicationSettings.CredentialCommandCredentialDeletedHandler deleted)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.CredentialCommand", "CredentialCommand.CredentialCommand(PasswordCredential passwordCredential, CredentialCommandCredentialDeletedHandler deleted)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.CredentialCommand", "CredentialCommand(PasswordCredential passwordCredential, CredentialCommandCredentialDeletedHandler deleted)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.CredentialCommand(Windows.Security.Credentials.PasswordCredential, Windows.UI.ApplicationSettings.CredentialCommandCredentialDeletedHandler)
-		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.PasswordCredential.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.CredentialDeleted.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.PasswordCredential.get
 	}
 }

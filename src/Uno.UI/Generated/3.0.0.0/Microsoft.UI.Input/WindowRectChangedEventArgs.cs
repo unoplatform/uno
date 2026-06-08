@@ -19,7 +19,7 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MoveSizeOperation WindowRectChangedEventArgs.MoveSizeOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MoveSizeOperation%20WindowRectChangedEventArgs.MoveSizeOperation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangedEventArgs", "MoveSizeOperation");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RectInt32 WindowRectChangedEventArgs.NewWindowRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RectInt32%20WindowRectChangedEventArgs.NewWindowRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangedEventArgs", "NewWindowRect");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RectInt32 WindowRectChangedEventArgs.OldWindowRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RectInt32%20WindowRectChangedEventArgs.OldWindowRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangedEventArgs", "OldWindowRect");
 			}
 		}
 #endif
@@ -49,13 +49,13 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PointInt32 WindowRectChangedEventArgs.PointerScreenPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointInt32%20WindowRectChangedEventArgs.PointerScreenPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangedEventArgs", "PointerScreenPoint");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.WindowRectChangedEventArgs.PointerScreenPoint.get
 		// Forced skipping of method Microsoft.UI.Input.WindowRectChangedEventArgs.MoveSizeOperation.get
-		// Forced skipping of method Microsoft.UI.Input.WindowRectChangedEventArgs.OldWindowRect.get
 		// Forced skipping of method Microsoft.UI.Input.WindowRectChangedEventArgs.NewWindowRect.get
+		// Forced skipping of method Microsoft.UI.Input.WindowRectChangedEventArgs.OldWindowRect.get
+		// Forced skipping of method Microsoft.UI.Input.WindowRectChangedEventArgs.PointerScreenPoint.get
 	}
 }

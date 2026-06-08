@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -133,6 +133,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task Pivot_Single_ItemContent_Visible()
 		{
 			var items = Enumerable.Range(0, 3).ToArray();
@@ -145,7 +146,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var containers = items.Select((x, i) => setup.ContainerFromIndex(i)).OfType<PivotItem>().ToArray();
 
-			Assert.AreEqual(3, containers.Length, "Should have 3 containers");
+			Assert.HasCount(3, containers, "Should have 3 containers");
 			Assert.AreEqual(1, containers.Count(x => x.Visibility == Visibility.Visible), "Only one PivotItem should be visible");
 		}
 

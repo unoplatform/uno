@@ -336,7 +336,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 					if (SharedHelpers.IsTrue(elementAsToggle.IsChecked))
 					{
-						Select(-1);
+#if HAS_UNO
+						// Only reset selection if the item was actually removed from the source.
+						// When the repeater unloads, Uno sends a fake Reset to mark containers as recyclable,
+						// but the source is unchanged and selection should be preserved.
+						if (IsLoaded && IsInLiveTree)
+#endif
+						{
+							Select(-1);
+						}
 					}
 				}
 			}
@@ -728,5 +736,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			return null;
 		}
+
+		protected override Automation.Peers.AutomationPeer OnCreateAutomationPeer()
+			=> new Automation.Peers.RadioButtonsAutomationPeer(this);
 	}
 }

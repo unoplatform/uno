@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentsProviderLaunchActionVerbs.AddAppointment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentsProviderLaunchActionVerbs.AddAppointment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs", "AddAppointment");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentsProviderLaunchActionVerbs.RemoveAppointment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentsProviderLaunchActionVerbs.RemoveAppointment");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs", "RemoveAppointment");
 			}
 		}
 #endif
@@ -34,17 +34,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentsProviderLaunchActionVerbs.ReplaceAppointment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentsProviderLaunchActionVerbs.ReplaceAppointment");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string ShowTimeFrame
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppointmentsProviderLaunchActionVerbs.ShowTimeFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentsProviderLaunchActionVerbs.ShowTimeFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs", "ReplaceAppointment");
 			}
 		}
 #endif
@@ -54,14 +44,24 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentsProviderLaunchActionVerbs.ShowAppointmentDetails is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppointmentsProviderLaunchActionVerbs.ShowAppointmentDetails");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs", "ShowAppointmentDetails");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs.ShowAppointmentDetails.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string ShowTimeFrame
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs", "ShowTimeFrame");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs.AddAppointment.get
-		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs.ReplaceAppointment.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs.RemoveAppointment.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs.ReplaceAppointment.get
+		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs.ShowAppointmentDetails.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs.ShowTimeFrame.get
 	}
 }

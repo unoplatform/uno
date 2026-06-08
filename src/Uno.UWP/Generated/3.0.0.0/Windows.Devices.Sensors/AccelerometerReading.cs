@@ -14,7 +14,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AccelerometerReading.AccelerationX is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AccelerometerReading.AccelerationX");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.AccelerometerReading", "AccelerationX");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AccelerometerReading.AccelerationY is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AccelerometerReading.AccelerationY");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.AccelerometerReading", "AccelerationY");
 			}
 		}
 #endif
@@ -34,17 +34,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AccelerometerReading.AccelerationZ is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20AccelerometerReading.AccelerationZ");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.DateTimeOffset Timestamp
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset AccelerometerReading.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20AccelerometerReading.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.AccelerometerReading", "AccelerationZ");
 			}
 		}
 #endif
@@ -54,7 +44,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? AccelerometerReading.PerformanceCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20AccelerometerReading.PerformanceCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.AccelerometerReading", "PerformanceCount");
 			}
 		}
 #endif
@@ -64,15 +54,25 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> AccelerometerReading.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20object%3E%20AccelerometerReading.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.AccelerometerReading", "Properties");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.Timestamp.get
+#if false || false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.DateTimeOffset Timestamp
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.AccelerometerReading", "Timestamp");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.AccelerationX.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.AccelerationY.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.AccelerationZ.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.PerformanceCount.get
 		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.Properties.get
+		// Forced skipping of method Windows.Devices.Sensors.AccelerometerReading.Timestamp.get
 	}
 }

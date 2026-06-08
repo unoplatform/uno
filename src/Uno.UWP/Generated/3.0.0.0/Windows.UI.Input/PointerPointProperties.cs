@@ -15,7 +15,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect PointerPointProperties.ContactRectRaw is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20PointerPointProperties.ContactRectRaw");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPointProperties", "ContactRectRaw");
 			}
 		}
 #endif
@@ -24,16 +24,7 @@ namespace Windows.UI.Input
 		// Skipping already declared property IsEraser
 		// Skipping already declared property IsHorizontalMouseWheel
 		// Skipping already declared property IsInRange
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsInverted
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool PointerPointProperties.IsInverted is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PointerPointProperties.IsInverted");
-			}
-		}
-#endif
+		// Skipping already declared property IsInverted
 		// Skipping already declared property IsLeftButtonPressed
 		// Skipping already declared property IsMiddleButtonPressed
 		// Skipping already declared property IsPrimary
@@ -45,16 +36,7 @@ namespace Windows.UI.Input
 		// Skipping already declared property PointerUpdateKind
 		// Skipping already declared property Pressure
 		// Skipping already declared property TouchConfidence
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float Twist
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float PointerPointProperties.Twist is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20PointerPointProperties.Twist");
-			}
-		}
-#endif
+		// Skipping already declared property Twist
 		// Skipping already declared property XTilt
 		// Skipping already declared property YTilt
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -63,46 +45,46 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float? PointerPointProperties.ZDistance is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%3F%20PointerPointProperties.ZDistance");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPointProperties", "ZDistance");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.Pressure.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsInverted.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsEraser.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.Orientation.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.XTilt.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.YTilt.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.Twist.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.ContactRect.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.ContactRectRaw.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.TouchConfidence.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsLeftButtonPressed.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsRightButtonPressed.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsMiddleButtonPressed.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.MouseWheelDelta.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsHorizontalMouseWheel.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsPrimary.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsInRange.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsCanceled.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsBarrelButtonPressed.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsXButton1Pressed.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsXButton2Pressed.get
-		// Forced skipping of method Windows.UI.Input.PointerPointProperties.PointerUpdateKind.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool HasUsage(uint usagePage, uint usageId)
 		{
-			throw new global::System.NotImplementedException("The member bool PointerPointProperties.HasUsage(uint usagePage, uint usageId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PointerPointProperties.HasUsage%28uint%20usagePage%2C%20uint%20usageId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPointProperties", "HasUsage(uint usagePage, uint usageId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int GetUsageValue(uint usagePage, uint usageId)
 		{
-			throw new global::System.NotImplementedException("The member int PointerPointProperties.GetUsageValue(uint usagePage, uint usageId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20PointerPointProperties.GetUsageValue%28uint%20usagePage%2C%20uint%20usageId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPointProperties", "GetUsageValue(uint usagePage, uint usageId)");
 		}
 #endif
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.ContactRect.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.ContactRectRaw.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsBarrelButtonPressed.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsCanceled.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsEraser.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsHorizontalMouseWheel.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsInRange.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsInverted.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsLeftButtonPressed.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsMiddleButtonPressed.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsPrimary.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsRightButtonPressed.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsXButton1Pressed.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsXButton2Pressed.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.MouseWheelDelta.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.Orientation.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.PointerUpdateKind.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.Pressure.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.TouchConfidence.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.Twist.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.XTilt.get
+		// Forced skipping of method Windows.UI.Input.PointerPointProperties.YTilt.get
 		// Forced skipping of method Windows.UI.Input.PointerPointProperties.ZDistance.get
 	}
 }

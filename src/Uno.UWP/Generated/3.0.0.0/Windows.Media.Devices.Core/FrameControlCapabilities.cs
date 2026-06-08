@@ -19,7 +19,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FrameExposureCapabilities FrameControlCapabilities.Exposure is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FrameExposureCapabilities%20FrameControlCapabilities.Exposure");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameControlCapabilities", "Exposure");
 			}
 		}
 #endif
@@ -29,37 +29,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FrameExposureCompensationCapabilities FrameControlCapabilities.ExposureCompensation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FrameExposureCompensationCapabilities%20FrameControlCapabilities.ExposureCompensation");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Devices.Core.FrameFocusCapabilities Focus
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FrameFocusCapabilities FrameControlCapabilities.Focus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FrameFocusCapabilities%20FrameControlCapabilities.Focus");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Devices.Core.FrameIsoSpeedCapabilities IsoSpeed
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FrameIsoSpeedCapabilities FrameControlCapabilities.IsoSpeed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FrameIsoSpeedCapabilities%20FrameControlCapabilities.IsoSpeed");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool PhotoConfirmationSupported
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool FrameControlCapabilities.PhotoConfirmationSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FrameControlCapabilities.PhotoConfirmationSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameControlCapabilities", "ExposureCompensation");
 			}
 		}
 #endif
@@ -69,15 +39,45 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FrameFlashCapabilities FrameControlCapabilities.Flash is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FrameFlashCapabilities%20FrameControlCapabilities.Flash");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameControlCapabilities", "Flash");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Devices.Core.FrameFocusCapabilities Focus
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameControlCapabilities", "Focus");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Devices.Core.FrameIsoSpeedCapabilities IsoSpeed
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameControlCapabilities", "IsoSpeed");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool PhotoConfirmationSupported
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.Core.FrameControlCapabilities", "PhotoConfirmationSupported");
 			}
 		}
 #endif
 		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.Exposure.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.ExposureCompensation.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.IsoSpeed.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.Focus.get
-		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.PhotoConfirmationSupported.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.Flash.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.Focus.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.IsoSpeed.get
+		// Forced skipping of method Windows.Media.Devices.Core.FrameControlCapabilities.PhotoConfirmationSupported.get
 	}
 }

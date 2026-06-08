@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using Uno.UI.Xaml.Media;
 using Windows.Storage;
 using Windows.Storage.Helpers;
 using Windows.UI.Text;
+using Uno.Foundation.Extensibility;
 using Uno.Helpers;
 using SKFontStyleWidth = SkiaSharp.SKFontStyleWidth;
 
@@ -33,6 +35,9 @@ internal static class FontDetailsCache
 
 	private static readonly Dictionary<FontEntry, Task<SKTypeface?>> _fontCache = new();
 	private static readonly object _fontCacheGate = new();
+	private static readonly IFontFallbackService? _fontFallbackService =
+		FeatureConfiguration.Font.FallbackService
+		?? (ApiExtensibility.CreateInstance<IFontFallbackService>(typeof(FontDetailsCache), out var service) ? service : null);
 
 	private static async Task<SKTypeface?> LoadTypefaceFromApplicationUriAsync(Uri uri, FontWeight weight, FontStyle style, FontStretch stretch)
 	{
@@ -72,7 +77,7 @@ internal static class FontDetailsCache
 		}
 	}
 
-	private static Task<SKTypeface?> GetFontInternal(
+	private static async Task<SKTypeface?> GetFontInternal(
 		string name,
 		FontWeight weight,
 		FontStretch stretch,
@@ -90,13 +95,27 @@ internal static class FontDetailsCache
 
 		if (Uri.TryCreate(name, UriKind.Absolute, out var uri))
 		{
-			return LoadTypefaceFromApplicationUriAsync(uri, weight, style, stretch);
+			return await LoadTypefaceFromApplicationUriAsync(uri, weight, style, stretch);
 		}
-		else
+
+		SKTypeface? fallbackTypeface = null;
+		if (_fontFallbackService is { } fallbackService)
 		{
-			// FromFontFamilyName may return null: https://github.com/mono/SkiaSharp/issues/1058
-			return Task.FromResult<SKTypeface?>(SKTypeface.FromFamilyName(name, skWeight, skWidth, skSlant));
+			try
+			{
+				if (await fallbackService.GetFontStreamForFontFamily(name, weight, stretch, style) is { } fallbackStream)
+				{
+					fallbackTypeface = SKTypeface.FromStream(fallbackStream);
+				}
+			}
+			catch (Exception e)
+			{
+				typeof(FontDetailsCache).LogError()?.Error($"Font fallback service threw resolving {name}", e);
+			}
 		}
+
+		// FromFontFamilyName may return null: https://github.com/mono/SkiaSharp/issues/1058
+		return fallbackTypeface ?? SKTypeface.FromFamilyName(name, skWeight, skWidth, skSlant);
 	}
 
 	private static readonly Func<string?, float, FontWeight, FontStretch, FontStyle, (FontDetails details, Task<FontDetails> loadedTask)> _getFont = FuncMemoizeExtensions.AsLockedMemoized((
@@ -147,16 +166,28 @@ internal static class FontDetailsCache
 		}
 
 		var details = FontDetails.Create(typeface, fontSize);
+		var detailsTask = AwaitDetails(typefaceTask);
+		return (details, detailsTask);
 
-		var detailsTask = typefaceTask.ContinueWith(t =>
+		async Task<FontDetails> AwaitDetails(Task<SKTypeface?> t)
 		{
-			var loadedTypeface = t.IsCompletedSuccessfully ? t.Result : null;
+			SKTypeface? loadedTypeface = null;
+			Exception? exception = null;
+
+			try
+			{
+				loadedTypeface = await t;
+			}
+			catch (Exception e)
+			{
+				exception = e;
+			}
 
 			if (loadedTypeface is null)
 			{
 				if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Error))
 				{
-					typeof(FontDetailsCache).Log().LogError($"Failed to load {key}", t.Exception);
+					typeof(FontDetailsCache).Log().LogError($"Failed to load {key}", exception);
 				}
 
 				return details;
@@ -165,8 +196,7 @@ internal static class FontDetailsCache
 			{
 				return FontDetails.Create(loadedTypeface, details.SKFontSize);
 			}
-		});
-		return (details, detailsTask);
+		}
 	});
 
 	public static (FontDetails details, Task<FontDetails> loadedTask) GetFont(
@@ -175,4 +205,39 @@ internal static class FontDetailsCache
 		FontWeight weight,
 		FontStretch stretch,
 		FontStyle style) => _getFont(name, fontSize, weight, stretch, style);
+
+	public static async Task<FontDetails?> GetFontForCodepoint(
+		int codepoint,
+		float fontSize,
+		FontWeight weight,
+		FontStretch stretch,
+		FontStyle style)
+	{
+		if (_fontFallbackService is { } fallbackService)
+		{
+			string? fallbackServiceResult = null;
+			try
+			{
+				fallbackServiceResult = await fallbackService.GetFontFamilyForCodepoint(codepoint);
+			}
+			catch (Exception e)
+			{
+				typeof(UnicodeText).LogError()?.Error($"Font fallback service failed to get font for codepoint U+{codepoint:X4}", e);
+			}
+
+			if (fallbackServiceResult is null)
+			{
+				return null;
+			}
+			else
+			{
+				var fallbackFont = await GetFont(fallbackServiceResult, fontSize, weight, stretch, style).loadedTask;
+				return fallbackFont;
+			}
+		}
+		else
+		{
+			return null;
+		}
+	}
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -23,6 +23,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public class Given_TimePicker
 	{
 #if HAS_UNO
@@ -58,6 +59,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22207")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_12HourClock_Should_Display_12_Instead_Of_0()
 		{
 			var timePicker = new TimePicker();
@@ -92,7 +94,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(hourLoopingSelector, "HourLoopingSelector should be found");
 
 			var items = hourLoopingSelector.Items;
-			Assert.IsTrue(items.Count > 0, "Hour items should be populated");
+			Assert.IsGreaterThan(0, items.Count, "Hour items should be populated");
 
 			var firstItem = items[0] as DatePickerFlyoutItem;
 			Assert.IsNotNull(firstItem, "First item should be a DatePickerFlyoutItem");
@@ -247,7 +249,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO // FlyoutBase.OpenFlyouts also includes native popups like NativeTimePickerFlyout
 			var openFlyouts = FlyoutBase.OpenFlyouts;
-			Assert.AreEqual(1, openFlyouts.Count);
+			Assert.HasCount(1, openFlyouts);
 			var associatedFlyout = openFlyouts[0];
 			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.TimePickerFlyout));
 #endif
@@ -298,7 +300,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
 
 			var openFlyouts = FlyoutBase.OpenFlyouts;
-			Assert.AreEqual(1, openFlyouts.Count);
+			Assert.HasCount(1, openFlyouts);
 			var associatedFlyout = openFlyouts[0];
 
 			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.TimePickerFlyout));
@@ -321,10 +323,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if __APPLE_UIKIT__
 		[TestMethod]
+		[RequiresFullWindow]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/15263")]
 		public async Task When_App_Theme_Dark_Native_Flyout_Theme()
 		{
-			using var _ = ThemeHelper.UseDarkTheme();
+			// Native iOS TimePicker reads CoreApplication.RequestedTheme for
+			// OverrideUserInterfaceStyle, so application-level theme is needed.
+			using var _ = ThemeHelper.UseApplicationDarkTheme();
 			await When_Native_Flyout_Theme(UIKit.UIUserInterfaceStyle.Dark);
 		}
 
@@ -344,7 +349,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
 
 			var openFlyouts = FlyoutBase.OpenFlyouts;
-			Assert.AreEqual(1, openFlyouts.Count);
+			Assert.HasCount(1, openFlyouts);
 			var associatedFlyout = openFlyouts[0];
 			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.TimePickerFlyout));
 			var timePickerFlyout = (TimePickerFlyout)associatedFlyout;

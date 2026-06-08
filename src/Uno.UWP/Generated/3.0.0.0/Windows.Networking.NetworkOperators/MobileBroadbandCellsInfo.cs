@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellCdma> MobileBroadbandCellsInfo.NeighboringCellsCdma is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMobileBroadbandCellCdma%3E%20MobileBroadbandCellsInfo.NeighboringCellsCdma");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "NeighboringCellsCdma");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellGsm> MobileBroadbandCellsInfo.NeighboringCellsGsm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMobileBroadbandCellGsm%3E%20MobileBroadbandCellsInfo.NeighboringCellsGsm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "NeighboringCellsGsm");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellLte> MobileBroadbandCellsInfo.NeighboringCellsLte is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMobileBroadbandCellLte%3E%20MobileBroadbandCellsInfo.NeighboringCellsLte");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "NeighboringCellsLte");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellTdscdma> MobileBroadbandCellsInfo.NeighboringCellsTdscdma is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMobileBroadbandCellTdscdma%3E%20MobileBroadbandCellsInfo.NeighboringCellsTdscdma");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "NeighboringCellsTdscdma");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellUmts> MobileBroadbandCellsInfo.NeighboringCellsUmts is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMobileBroadbandCellUmts%3E%20MobileBroadbandCellsInfo.NeighboringCellsUmts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "NeighboringCellsUmts");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellCdma> MobileBroadbandCellsInfo.ServingCellsCdma is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMobileBroadbandCellCdma%3E%20MobileBroadbandCellsInfo.ServingCellsCdma");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "ServingCellsCdma");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellGsm> MobileBroadbandCellsInfo.ServingCellsGsm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMobileBroadbandCellGsm%3E%20MobileBroadbandCellsInfo.ServingCellsGsm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "ServingCellsGsm");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellLte> MobileBroadbandCellsInfo.ServingCellsLte is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMobileBroadbandCellLte%3E%20MobileBroadbandCellsInfo.ServingCellsLte");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "ServingCellsLte");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellTdscdma> MobileBroadbandCellsInfo.ServingCellsTdscdma is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMobileBroadbandCellTdscdma%3E%20MobileBroadbandCellsInfo.ServingCellsTdscdma");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "ServingCellsTdscdma");
 			}
 		}
 #endif
@@ -109,27 +109,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellUmts> MobileBroadbandCellsInfo.ServingCellsUmts is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMobileBroadbandCellUmts%3E%20MobileBroadbandCellsInfo.ServingCellsUmts");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.NetworkOperators.MobileBroadbandCellNR> NeighboringCellsNR
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellNR> MobileBroadbandCellsInfo.NeighboringCellsNR is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMobileBroadbandCellNR%3E%20MobileBroadbandCellsInfo.NeighboringCellsNR");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.NetworkOperators.MobileBroadbandCellNR> ServingCellsNR
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandCellNR> MobileBroadbandCellsInfo.ServingCellsNR is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMobileBroadbandCellNR%3E%20MobileBroadbandCellsInfo.ServingCellsNR");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "ServingCellsUmts");
 			}
 		}
 #endif
@@ -143,7 +123,5 @@ namespace Windows.Networking.NetworkOperators
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.ServingCellsLte.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.ServingCellsTdscdma.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.ServingCellsUmts.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.NeighboringCellsNR.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.ServingCellsNR.get
 	}
 }

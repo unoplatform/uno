@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppServiceConnection AppServiceTriggerDetails.AppServiceConnection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppServiceConnection%20AppServiceTriggerDetails.AppServiceConnection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceTriggerDetails", "AppServiceConnection");
 			}
 		}
 #endif
@@ -29,27 +29,7 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppServiceTriggerDetails.CallerPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppServiceTriggerDetails.CallerPackageFamilyName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Name
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppServiceTriggerDetails.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppServiceTriggerDetails.Name");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsRemoteSystemConnection
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AppServiceTriggerDetails.IsRemoteSystemConnection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppServiceTriggerDetails.IsRemoteSystemConnection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceTriggerDetails", "CallerPackageFamilyName");
 			}
 		}
 #endif
@@ -59,21 +39,41 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppServiceTriggerDetails.CallerRemoteConnectionToken is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppServiceTriggerDetails.CallerRemoteConnectionToken");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceTriggerDetails", "CallerRemoteConnectionToken");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.Name.get
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.CallerPackageFamilyName.get
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.AppServiceConnection.get
-		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.IsRemoteSystemConnection.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsRemoteSystemConnection
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceTriggerDetails", "IsRemoteSystemConnection");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Name
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceTriggerDetails", "Name");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> CheckCallerForCapabilityAsync(string capabilityName)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppServiceTriggerDetails.CheckCallerForCapabilityAsync(string capabilityName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20AppServiceTriggerDetails.CheckCallerForCapabilityAsync%28string%20capabilityName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppService.AppServiceTriggerDetails", "CheckCallerForCapabilityAsync(string capabilityName)");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.AppServiceConnection.get
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.CallerPackageFamilyName.get
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.CallerRemoteConnectionToken.get
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.IsRemoteSystemConnection.get
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.Name.get
 	}
 }

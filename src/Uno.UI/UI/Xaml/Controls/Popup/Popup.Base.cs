@@ -1,6 +1,8 @@
 ﻿using System;
+using DirectUI;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Input;
@@ -14,7 +16,7 @@ using UIKit;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
-public partial class Popup : FrameworkElement, IPopup
+public partial class Popup : FrameworkElement, IPopup, IBackButtonListener
 {
 	private ManagedWeakReference _lastFocusedElement;
 	private FocusState _lastFocusState = FocusState.Unfocused;
@@ -76,6 +78,12 @@ public partial class Popup : FrameworkElement, IPopup
 	{
 		if (newIsOpen)
 		{
+			//set up back button support if necessary
+			if (DXamlCore.Current.BackButtonSupported && ShouldDismiss(DismissalTriggerFlags.BackPress))
+			{
+				BackButtonIntegration.RegisterListener(this);
+			}
+
 			var xamlRoot = XamlRoot ?? Child?.XamlRoot ?? WinUICoreServices.Instance.ContentRootCoordinator.Unsafe_IslandsIncompatible_CoreWindowContentRoot?.XamlRoot;
 
 			if (xamlRoot != XamlRoot)
@@ -107,7 +115,7 @@ public partial class Popup : FrameworkElement, IPopup
 
 				// Usually, FrameworkElements handle focus management inside OnLoaded/OnUnloaded,
 				// but since popups are (un)loaded, we have to do it here.
-				if (Child is FrameworkElement fw && fw.AllowFocusOnInteraction)
+				if (m_shouldTakeFocus && Child is FrameworkElement fw && fw.AllowFocusOnInteraction)
 				{
 					// Give the child focus if allowed
 					Focus(FocusState.Programmatic);
@@ -117,6 +125,9 @@ public partial class Popup : FrameworkElement, IPopup
 		else
 		{
 			_openPopupRegistration?.Dispose();
+
+			BackButtonIntegration.UnregisterListener(this);
+
 			if (IsLightDismissEnabled)
 			{
 				var focusManager = VisualTree.GetFocusManagerForElement(this);
@@ -124,7 +135,20 @@ public partial class Popup : FrameworkElement, IPopup
 
 				if (_lastFocusedElement != null && _lastFocusedElement.Target is UIElement target && focusedElement != target)
 				{
+#if __SKIA__
+					// Ported from: Popup.cpp Close (lines 1233-1244)
+					// When restoring focus to an element inside an opened text control flyout,
+					// use Keyboard focus instead of Pointer to preserve selection highlight.
+					var focusState = _lastFocusState;
+					if (focusState == FocusState.Pointer
+						&& Internal.TextControlFlyoutHelper.IsElementChildOfOpenedFlyout(target))
+					{
+						focusState = FocusState.Keyboard;
+					}
+					target.Focus(focusState);
+#else
 					target.Focus(_lastFocusState);
+#endif
 					_lastFocusedElement = null;
 				}
 			}
@@ -204,6 +228,17 @@ public partial class Popup : FrameworkElement, IPopup
 
 	partial void OnIsLightDismissEnabledChangedPartial(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
 	{
+		BackButtonIntegration.UnregisterListener(this);
+
+		if (!IsOpen || !DXamlCore.Current.BackButtonSupported)
+		{
+			return;
+		}
+
+		if (ShouldDismiss(DismissalTriggerFlags.BackPress))
+		{
+			BackButtonIntegration.RegisterListener(this);
+		}
 	}
 
 	event EventHandler<object> IPopup.Closed

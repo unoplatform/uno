@@ -156,8 +156,7 @@ public partial class Compass
 				e.Values?.CopyTo(_lastAccelerometer, 0);
 				_lastAccelerometerSet = true;
 			}
-			else
-			if (e.Sensor?.Name == _magnetometer && !_lastMagnetometerSet)
+			else if (e.Sensor?.Name == _magnetometer && !_lastMagnetometerSet)
 			{
 				e.Values?.CopyTo(_lastMagnetometer, 0);
 				_lastMagnetometerSet = true;

@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Protection.PlayReady
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -13,7 +12,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public NDStorageFileHelper()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDStorageFileHelper", "NDStorageFileHelper.NDStorageFileHelper()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDStorageFileHelper", "NDStorageFileHelper()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDStorageFileHelper.NDStorageFileHelper()
@@ -21,7 +20,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IList<string> GetFileURLs(global::Windows.Storage.IStorageFile file)
 		{
-			throw new global::System.NotImplementedException("The member IList<string> NDStorageFileHelper.GetFileURLs(IStorageFile file) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20NDStorageFileHelper.GetFileURLs%28IStorageFile%20file%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDStorageFileHelper", "GetFileURLs(IStorageFile file)");
 		}
 #endif
 		// Processing: Windows.Media.Protection.PlayReady.INDStorageFileHelper

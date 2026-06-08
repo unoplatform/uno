@@ -8,36 +8,6 @@ namespace Windows.Media.Playback
 #endif
 	public partial class MediaPlaybackSession
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.MediaProperties.StereoscopicVideoPackingMode StereoscopicVideoPackingMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member StereoscopicVideoPackingMode MediaPlaybackSession.StereoscopicVideoPackingMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StereoscopicVideoPackingMode%20MediaPlaybackSession.StereoscopicVideoPackingMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "StereoscopicVideoPackingMode MediaPlaybackSession.StereoscopicVideoPackingMode");
-			}
-		}
-#endif
-		// Skipping already declared property Position
-		// Skipping already declared property PlaybackRate
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Rect NormalizedSourceRect
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Rect MediaPlaybackSession.NormalizedSourceRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20MediaPlaybackSession.NormalizedSourceRect");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "Rect MediaPlaybackSession.NormalizedSourceRect");
-			}
-		}
-#endif
 		// Skipping already declared property BufferingProgress
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -45,7 +15,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaPlaybackSession.CanPause is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlaybackSession.CanPause");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSession", "CanPause");
 			}
 		}
 #endif
@@ -55,7 +25,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaPlaybackSession.CanSeek is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlaybackSession.CanSeek");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSession", "CanSeek");
 			}
 		}
 #endif
@@ -65,7 +35,21 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MediaPlaybackSession.DownloadProgress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20MediaPlaybackSession.DownloadProgress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSession", "DownloadProgress");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsMirroring
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSession", "IsMirroring");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "IsMirroring");
 			}
 		}
 #endif
@@ -75,7 +59,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaPlaybackSession.IsProtected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlaybackSession.IsProtected");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSession", "IsProtected");
 			}
 		}
 #endif
@@ -87,7 +71,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MediaPlaybackSession.NaturalVideoHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MediaPlaybackSession.NaturalVideoHeight");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSession", "NaturalVideoHeight");
 			}
 		}
 #endif
@@ -97,87 +81,113 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MediaPlaybackSession.NaturalVideoWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MediaPlaybackSession.NaturalVideoWidth");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSession", "NaturalVideoWidth");
 			}
 		}
 #endif
-		// Skipping already declared property PlaybackState
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsMirroring
+		public global::Windows.Foundation.Rect NormalizedSourceRect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaPlaybackSession.IsMirroring is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlaybackSession.IsMirroring");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSession", "NormalizedSourceRect");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "bool MediaPlaybackSession.IsMirroring");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "NormalizedSourceRect");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Playback.MediaPlaybackSphericalVideoProjection SphericalVideoProjection
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackSphericalVideoProjection MediaPlaybackSession.SphericalVideoProjection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackSphericalVideoProjection%20MediaPlaybackSession.SphericalVideoProjection");
-			}
-		}
-#endif
+		// Skipping already declared property PlaybackRate
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.MediaRotation PlaybackRotation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaRotation MediaPlaybackSession.PlaybackRotation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaRotation%20MediaPlaybackSession.PlaybackRotation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSession", "PlaybackRotation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "MediaRotation MediaPlaybackSession.PlaybackRotation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "PlaybackRotation");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PlaybackStateChanged.add
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PlaybackStateChanged.remove
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PlaybackRateChanged.add
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PlaybackRateChanged.remove
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.SeekCompleted.add
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.SeekCompleted.remove
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.BufferingStarted.add
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.BufferingStarted.remove
+		// Skipping already declared property PlaybackState
+		// Skipping already declared property Position
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Playback.MediaPlaybackSphericalVideoProjection SphericalVideoProjection
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSession", "SphericalVideoProjection");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.MediaProperties.StereoscopicVideoPackingMode StereoscopicVideoPackingMode
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSession", "StereoscopicVideoPackingMode");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "StereoscopicVideoPackingMode");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.BufferingEnded.add
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.BufferingEnded.remove
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.BufferingProgressChanged.add
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.BufferingProgressChanged.remove
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.BufferingStarted.add
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.BufferingStarted.remove
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.DownloadProgressChanged.add
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.DownloadProgressChanged.remove
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.NaturalDurationChanged.add
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.NaturalDurationChanged.remove
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PositionChanged.add
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PositionChanged.remove
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.NaturalVideoSizeChanged.add
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.NaturalVideoSizeChanged.remove
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.MediaPlayer.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.NaturalDuration.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.Position.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.Position.set
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PlaybackState.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.CanSeek.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.CanPause.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.IsProtected.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PlaybackRate.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PlaybackRate.set
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.BufferingProgress.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.DownloadProgress.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.NaturalVideoHeight.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.NaturalVideoWidth.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.NormalizedSourceRect.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.NormalizedSourceRect.set
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.StereoscopicVideoPackingMode.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.StereoscopicVideoPackingMode.set
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PlaybackRateChanged.add
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PlaybackRateChanged.remove
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PlaybackStateChanged.add
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PlaybackStateChanged.remove
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PositionChanged.add
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PositionChanged.remove
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.SeekCompleted.add
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.SeekCompleted.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.MediaTimeRange> GetBufferedRanges()
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSession", "GetBufferedRanges()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.MediaTimeRange> GetPlayedRanges()
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSession", "GetPlayedRanges()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.MediaTimeRange> GetSeekableRanges()
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSession", "GetSeekableRanges()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsSupportedPlaybackRateRange(double rate1, double rate2)
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSession", "IsSupportedPlaybackRateRange(double rate1, double rate2)");
+		}
+#endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.BufferedRangesChanged.add
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.BufferedRangesChanged.remove
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PlayedRangesChanged.add
@@ -186,46 +196,36 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.SeekableRangesChanged.remove
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.SupportedPlaybackRatesChanged.add
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.SupportedPlaybackRatesChanged.remove
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.SphericalVideoProjection.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.IsMirroring.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.IsMirroring.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.MediaTimeRange> GetBufferedRanges()
-		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<MediaTimeRange> MediaPlaybackSession.GetBufferedRanges() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaTimeRange%3E%20MediaPlaybackSession.GetBufferedRanges%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.MediaTimeRange> GetPlayedRanges()
-		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<MediaTimeRange> MediaPlaybackSession.GetPlayedRanges() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaTimeRange%3E%20MediaPlaybackSession.GetPlayedRanges%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.MediaTimeRange> GetSeekableRanges()
-		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<MediaTimeRange> MediaPlaybackSession.GetSeekableRanges() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaTimeRange%3E%20MediaPlaybackSession.GetSeekableRanges%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsSupportedPlaybackRateRange(double rate1, double rate2)
-		{
-			throw new global::System.NotImplementedException("The member bool MediaPlaybackSession.IsSupportedPlaybackRateRange(double rate1, double rate2) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlaybackSession.IsSupportedPlaybackRateRange%28double%20rate1%2C%20double%20rate2%29");
-		}
-#endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PlaybackRotation.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PlaybackRotation.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Playback.MediaPlaybackSessionOutputDegradationPolicyState GetOutputDegradationPolicyState()
 		{
-			throw new global::System.NotImplementedException("The member MediaPlaybackSessionOutputDegradationPolicyState MediaPlaybackSession.GetOutputDegradationPolicyState() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackSessionOutputDegradationPolicyState%20MediaPlaybackSession.GetOutputDegradationPolicyState%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackSession", "GetOutputDegradationPolicyState()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.BufferingProgress.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.CanPause.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.CanSeek.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.DownloadProgress.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.IsMirroring.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.IsMirroring.set
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.IsProtected.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.MediaPlayer.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.NaturalDuration.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.NaturalVideoHeight.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.NaturalVideoWidth.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.NormalizedSourceRect.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.NormalizedSourceRect.set
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PlaybackRate.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PlaybackRate.set
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PlaybackRotation.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PlaybackRotation.set
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PlaybackState.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.Position.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.Position.set
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.SphericalVideoProjection.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.StereoscopicVideoPackingMode.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.StereoscopicVideoPackingMode.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackSession, object> BufferingEnded
@@ -233,12 +233,12 @@ namespace Windows.Media.Playback
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event TypedEventHandler<MediaPlaybackSession, object> MediaPlaybackSession.BufferingEnded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event BufferingEnded");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event TypedEventHandler<MediaPlaybackSession, object> MediaPlaybackSession.BufferingEnded");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event BufferingEnded");
 			}
 		}
 #endif
@@ -250,12 +250,12 @@ namespace Windows.Media.Playback
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event TypedEventHandler<MediaPlaybackSession, object> MediaPlaybackSession.BufferingStarted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event BufferingStarted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event TypedEventHandler<MediaPlaybackSession, object> MediaPlaybackSession.BufferingStarted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event BufferingStarted");
 			}
 		}
 #endif
@@ -266,12 +266,12 @@ namespace Windows.Media.Playback
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event TypedEventHandler<MediaPlaybackSession, object> MediaPlaybackSession.DownloadProgressChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event DownloadProgressChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event TypedEventHandler<MediaPlaybackSession, object> MediaPlaybackSession.DownloadProgressChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event DownloadProgressChanged");
 			}
 		}
 #endif
@@ -283,12 +283,12 @@ namespace Windows.Media.Playback
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event TypedEventHandler<MediaPlaybackSession, object> MediaPlaybackSession.NaturalVideoSizeChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event NaturalVideoSizeChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event TypedEventHandler<MediaPlaybackSession, object> MediaPlaybackSession.NaturalVideoSizeChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event NaturalVideoSizeChanged");
 			}
 		}
 #endif
@@ -302,12 +302,12 @@ namespace Windows.Media.Playback
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event TypedEventHandler<MediaPlaybackSession, object> MediaPlaybackSession.SeekCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event SeekCompleted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event TypedEventHandler<MediaPlaybackSession, object> MediaPlaybackSession.SeekCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event SeekCompleted");
 			}
 		}
 #endif
@@ -318,12 +318,12 @@ namespace Windows.Media.Playback
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event TypedEventHandler<MediaPlaybackSession, object> MediaPlaybackSession.BufferedRangesChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event BufferedRangesChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event TypedEventHandler<MediaPlaybackSession, object> MediaPlaybackSession.BufferedRangesChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event BufferedRangesChanged");
 			}
 		}
 #endif
@@ -334,12 +334,12 @@ namespace Windows.Media.Playback
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event TypedEventHandler<MediaPlaybackSession, object> MediaPlaybackSession.PlayedRangesChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event PlayedRangesChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event TypedEventHandler<MediaPlaybackSession, object> MediaPlaybackSession.PlayedRangesChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event PlayedRangesChanged");
 			}
 		}
 #endif
@@ -350,12 +350,12 @@ namespace Windows.Media.Playback
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event TypedEventHandler<MediaPlaybackSession, object> MediaPlaybackSession.SeekableRangesChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event SeekableRangesChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event TypedEventHandler<MediaPlaybackSession, object> MediaPlaybackSession.SeekableRangesChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event SeekableRangesChanged");
 			}
 		}
 #endif
@@ -366,12 +366,12 @@ namespace Windows.Media.Playback
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event TypedEventHandler<MediaPlaybackSession, object> MediaPlaybackSession.SupportedPlaybackRatesChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event SupportedPlaybackRatesChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event TypedEventHandler<MediaPlaybackSession, object> MediaPlaybackSession.SupportedPlaybackRatesChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackSession", "event SupportedPlaybackRatesChanged");
 			}
 		}
 #endif

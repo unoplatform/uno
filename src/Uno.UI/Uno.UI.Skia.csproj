@@ -23,7 +23,7 @@
 		<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
 		<UnoXamlResourcesUpriTrimming>true</UnoXamlResourcesUpriTrimming>
 
-		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI</PackageId>
+		<PackageId>Uno.WinUI</PackageId>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -51,7 +51,7 @@
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
 	<ItemGroup>
-	  <EmbeddedResource Include="Resources\NoiseAsset256x256.png" />
+		<EmbeddedResource Include="Resources\NoiseAsset256x256.png" />
 	</ItemGroup>
 
 	<ItemGroup>

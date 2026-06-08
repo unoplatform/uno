@@ -19,7 +19,7 @@ namespace Windows.Devices.Sensors.Custom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CustomSensorReading CustomSensorReadingChangedEventArgs.Reading is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CustomSensorReading%20CustomSensorReadingChangedEventArgs.Reading");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.Custom.CustomSensorReadingChangedEventArgs", "Reading");
 			}
 		}
 #endif

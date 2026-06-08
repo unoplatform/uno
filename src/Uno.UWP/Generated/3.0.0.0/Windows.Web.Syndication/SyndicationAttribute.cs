@@ -10,15 +10,15 @@ namespace Windows.Web.Syndication
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Value
+		public string Name
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationAttribute.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationAttribute.Value");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationAttribute", "Name");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationAttribute", "string SyndicationAttribute.Value");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationAttribute", "Name");
 			}
 		}
 #endif
@@ -28,44 +28,44 @@ namespace Windows.Web.Syndication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationAttribute.Namespace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationAttribute.Namespace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationAttribute", "Namespace");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationAttribute", "string SyndicationAttribute.Namespace");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationAttribute", "Namespace");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Name
+		public string Value
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SyndicationAttribute.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SyndicationAttribute.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Syndication.SyndicationAttribute", "Value");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationAttribute", "string SyndicationAttribute.Name");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationAttribute", "Value");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public SyndicationAttribute(string attributeName, string attributeNamespace, string attributeValue)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationAttribute", "SyndicationAttribute.SyndicationAttribute(string attributeName, string attributeNamespace, string attributeValue)");
-		}
-#endif
-		// Forced skipping of method Windows.Web.Syndication.SyndicationAttribute.SyndicationAttribute(string, string, string)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SyndicationAttribute()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationAttribute", "SyndicationAttribute.SyndicationAttribute()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationAttribute", "SyndicationAttribute()");
 		}
 #endif
 		// Forced skipping of method Windows.Web.Syndication.SyndicationAttribute.SyndicationAttribute()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public SyndicationAttribute(string attributeName, string attributeNamespace, string attributeValue)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationAttribute", "SyndicationAttribute(string attributeName, string attributeNamespace, string attributeValue)");
+		}
+#endif
+		// Forced skipping of method Windows.Web.Syndication.SyndicationAttribute.SyndicationAttribute(string, string, string)
 		// Forced skipping of method Windows.Web.Syndication.SyndicationAttribute.Name.get
 		// Forced skipping of method Windows.Web.Syndication.SyndicationAttribute.Name.set
 		// Forced skipping of method Windows.Web.Syndication.SyndicationAttribute.Namespace.get

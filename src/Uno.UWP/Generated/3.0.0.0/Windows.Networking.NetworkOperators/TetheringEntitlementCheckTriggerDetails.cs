@@ -19,24 +19,24 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TetheringEntitlementCheckTriggerDetails.NetworkAccountId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20TetheringEntitlementCheckTriggerDetails.NetworkAccountId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails", "NetworkAccountId");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.NetworkAccountId.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void AllowTethering()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails", "void TetheringEntitlementCheckTriggerDetails.AllowTethering()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails", "AllowTethering()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void DenyTethering(string entitlementFailureReason)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails", "void TetheringEntitlementCheckTriggerDetails.DenyTethering(string entitlementFailureReason)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails", "DenyTethering(string entitlementFailureReason)");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.TetheringEntitlementCheckTriggerDetails.NetworkAccountId.get
 	}
 }

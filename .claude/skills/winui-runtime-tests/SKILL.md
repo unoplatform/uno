@@ -1,0 +1,447 @@
+---
+description: Build, install, and run runtime tests against the WinUI (WinAppSDK) SamplesApp on Windows. Use when testing against native WinUI to validate parity with Uno.
+---
+
+## User Input
+
+```text
+$ARGUMENTS
+```
+
+You **MUST** consider the user input before proceeding (if not empty).
+
+---
+
+## Overview
+
+You are executing the **WinUI Runtime Tests Skill**. This skill builds the WinAppSDK SamplesApp as an MSIX package, installs it, and runs runtime tests via the app execution alias. This is used to validate behavior against native WinUI — the reference implementation that Uno Platform targets.
+
+**Requirements**: Windows only. Requires MSBuild (Visual Studio) and PowerShell (`pwsh` preferred, `powershell.exe` works too).
+
+**Helper scripts** are in the same directory as this SKILL.md (`.claude/skills/winui-runtime-tests/`):
+- `setup-cert.ps1` — One-time certificate generation + trust (requires admin elevation once)
+- `install-msix.ps1` — Remove old package + install built MSIX
+- `run-tests.ps1` — Launch app and wait for test results
+- `cleanup.ps1` — Uninstall package
+
+---
+
+## Critical Pitfalls (Read First)
+
+These are real issues encountered in practice — not theoretical:
+
+1. **MSBuild switch syntax in bash**: Forward-slash switches (`/r`, `/p:`) are interpreted as Unix paths by bash. **Always use dash syntax**: `-restore`, `-t:Publish`, `-p:Configuration=Release`.
+
+2. **PowerShell from bash**: Complex PowerShell with `$()`, `$_`, `.Property` gets mangled by bash escaping. **Always write a `.ps1` file and run with `pwsh -NoProfile -File script.ps1`** instead of inline `-Command` strings. The helper scripts in this skill directory handle this for you.
+
+3. **`Cert:` PowerShell drive may not work**: On some environments the `Cert:\` PSDrive and PKI module are unavailable (even in Windows PowerShell 5.1). **Always use `certutil`** command-line tool instead of `New-SelfSignedCertificate`, `Import-PfxCertificate`, `Export-Certificate`, etc. The `certutil` tool works everywhere.
+
+4. **Signing certificate**: CI uses a secret cert. Locally, `setup-cert.ps1` **generates a unique self-signed cert per machine** via `certreq`. The private key never leaves the local cert store and is **not committed to source control**. The thumbprint is saved to `~/.uno-dev-cert-thumbprint` (user home — shared across all worktrees).
+
+5. **Certificate trust for MSIX install**: The self-signed cert must be in `LocalMachine\Root` (Trusted Root CAs) before `Add-AppxPackage` will accept it. This requires **admin elevation on first run only** — `setup-cert.ps1` handles this via `Start-Process -Verb RunAs`. On subsequent runs it's already trusted.
+
+6. **Use `PackageCertificateThumbprint` for signing**: Always build with `-p:PackageCertificateThumbprint=<thumbprint>` (NOT `PackageCertificateKeyFile`). The thumbprint approach is the most reliable across environments. The `PackageCertificateKeyFile` approach often fails with `APPX0105: Cannot import the key file`.
+
+7. **Existing package conflict**: If a SamplesApp is already installed with the same version, `Add-AppxPackage` fails with `0x80073CFB`. **Always remove existing packages first** — `install-msix.ps1` handles this.
+
+8. **crosstargeting_override.props MUST be set**: The SamplesApp.Windows project targets `$(NetPreviousWinAppSDK)` = `net9.0-windows10.0.19041.0`. **You MUST create/set `src/crosstargeting_override.props`** with `<UnoTargetFrameworkOverride>net9.0-windows10.0.19041.0</UnoTargetFrameworkOverride>`. If the file is missing or set to a different value (e.g., `net10.0`), the build will pull in Skia/Wasm projects as transitive dependencies — those projects require source generators to have already run and will fail with hundreds of `CS0535: does not implement interface member 'DependencyObject.XXX'` errors. **"File not found" is NOT acceptable** — always create it.
+
+9. **MAX_PATH (260 chars)**: The PRI resource generator uses Win32 APIs with the 260-char path limit. If you see `PRI175`/`PRI252` errors, shorten the repo path or use `subst` drive mapping.
+
+10. **Results file is UTF-16 encoded XML**: The NUnit XML results file is written in UTF-16 encoding. The `Read` tool will often fail with token limits on this file, and `head`/`cat` will show garbled double-spaced output. **Always use the python parsing snippet** from Phase 6 instead of the Read tool.
+
+11. **Graphics3DGL Windows TFM**: `Uno.WinUI.Graphics3DGL.csproj` only builds Skia TFMs by default. SamplesApp.Windows references it but MSBuild picks the Skia `net9.0` build, causing `CS0012: The type 'Grid' is defined in an assembly that is not referenced` errors. **Fix**: Before building SamplesApp.Windows, restore Graphics3DGL with the Windows TFM enabled:
+    ```bash
+    "$MSBUILD" "src/AddIns/Uno.WinUI.Graphics3DGL/Uno.WinUI.Graphics3DGL.csproj" \
+        -restore -v:m -p:BuildGraphics3DGLForWindows=true \
+        -p:Platform=x64 -p:Configuration=Release
+    ```
+    Also ensure `SamplesApp.Windows.csproj` has `AdditionalProperties="BuildGraphics3DGLForWindows=true"` on that ProjectReference.
+
+12. **ParseArgs base64 truncation**: `App.Tests.cs:ParseArgs` uses `Split('=')` to parse CLI args, which breaks base64 filter values containing `=` padding. The filter is silently dropped and **all tests run instead of filtered tests**. If you see all tests running when a filter was provided, verify that `ParseArgs` uses `Split('=', 2)` to split only on the first `=`.
+
+---
+
+## Execution Workflow
+
+### Phase 0: Parse User Input
+
+Determine what to run from the user's input:
+- **All tests**: No filter needed
+- **Specific test class**: e.g., `Given_Button` → resolve to fully qualified name
+- **Specific test method**: e.g., `Given_Button.When_ContentSet` → resolve to fully qualified name
+- **Multiple tests**: Pipe-separated list of fully qualified names
+
+If the user provides partial names, search `src/Uno.UI.RuntimeTests/Tests/` to resolve fully qualified test names (namespace + class + method).
+
+**Strict mode**: If the user input contains the keyword `strict`, omit the `-p:UnoFastDevBuild=true` flag from the MSBuild command in Phase 2 so the build runs with full CI-equivalent analyzer coverage. Use this only when verifying CI strictness — for normal iteration the fast-dev flag should be left on. (Note: `UnoTargetFrameworkOverride` does not apply here — the WinAppSDK head is already single-TFM `net9.0-windows10.0.19041.0`, configured in Phase 1c.)
+
+### Phase 1: Prerequisites
+
+Run all prerequisite checks/setup in sequence.
+
+#### 1a. Detect PowerShell
+
+Determine which PowerShell to use for helper scripts:
+```bash
+if command -v pwsh &>/dev/null; then
+    PS_CMD="pwsh"
+else
+    PS_CMD="powershell.exe"
+fi
+```
+
+Use `$PS_CMD -NoProfile -ExecutionPolicy Bypass -File script.ps1` for all script invocations.
+
+#### 1b. Find MSBuild
+
+**IMPORTANT**: Use `-prerelease -all` flags — without them, `vswhere` skips preview/insiders installations and may return nothing:
+```bash
+MSBUILD=$(pwsh -NoProfile -Command "& 'C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe' -prerelease -all -latest -requires Microsoft.Component.MSBuild -find 'MSBuild\**\Bin\MSBuild.exe'" 2>/dev/null)
+```
+
+**Why PowerShell instead of bash**: The `vswhere.exe` path contains `(x86)` which bash interprets as a subshell. Using `pwsh -Command` with single-quoted paths avoids this. If you must use bash directly, escape or quote the path carefully.
+
+If `vswhere` returns nothing even with `-prerelease -all`, verify Visual Studio is installed and includes the MSBuild component.
+
+#### 1c. Set crosstargeting_override.props (MANDATORY)
+
+The file `src/crosstargeting_override.props` **MUST exist** and contain `net9.0-windows10.0.19041.0`. Without it, MSBuild resolves all target frameworks and pulls in Skia/Wasm projects that fail to build.
+
+**Check and fix:**
+```bash
+# If file doesn't exist, create from sample
+if [ ! -f src/crosstargeting_override.props ]; then
+    cp src/crosstargeting_override.props.sample src/crosstargeting_override.props
+fi
+```
+
+Then ensure it contains:
+```xml
+<UnoTargetFrameworkOverride>net9.0-windows10.0.19041.0</UnoTargetFrameworkOverride>
+```
+
+If it's set to anything else (e.g., `net10.0` for Skia development), **change it** to `net9.0-windows10.0.19041.0` before building. Remember to **restore the previous value** after WinUI testing is complete if the user was working with a different target.
+
+**Symptoms of a wrong/missing override:**
+- `CS0535: does not implement interface member 'DependencyObject.XXX'` — Uno.UI.Skia is being built as a transitive dependency
+- `MSB4062: ResourcesGenerationTask_v0 could not be loaded` — Uno.UI.Tasks hasn't been built for the expected configuration
+- Hundreds of errors from `Uno.UI.Skia.csproj::TargetFramework=net9.0` — dead giveaway
+
+#### 1d. Setup signing certificate (first time)
+
+Run the setup script. It's idempotent — skips if already set up:
+```bash
+SKILL_DIR=".claude/skills/winui-runtime-tests"
+$PS_CMD -NoProfile -ExecutionPolicy Bypass -File "$SKILL_DIR/setup-cert.ps1"
+```
+
+**On first run on a new machine**, this will:
+1. Generate a new self-signed cert with subject `CN=Uno Platform` via `certreq`
+2. Save the thumbprint to `~/.uno-dev-cert-thumbprint` (shared across worktrees)
+3. Prompt UAC elevation to trust the cert in `LocalMachine\Root`
+
+On subsequent runs (including from other worktrees), it detects the cert is already set up and exits immediately.
+
+#### 1e. Read the thumbprint
+
+After `setup-cert.ps1` runs, read the thumbprint for the build step:
+```bash
+THUMBPRINT=$(cat ~/.uno-dev-cert-thumbprint)
+```
+
+#### 1f. Restore Graphics3DGL with Windows TFM
+
+The `Uno.WinUI.Graphics3DGL` project only builds Skia targets by default. SamplesApp.Windows references it, so it must also have a Windows TFM available:
+```bash
+"$MSBUILD" "src/AddIns/Uno.WinUI.Graphics3DGL/Uno.WinUI.Graphics3DGL.csproj" \
+    -restore -v:m -p:BuildGraphics3DGLForWindows=true \
+    -p:Platform=x64 -p:Configuration=Release
+```
+
+This is idempotent — safe to run every time. Skip only if you know Graphics3DGL was already restored with the Windows TFM.
+
+### Phase 2: Build the MSIX Package
+
+**CRITICAL**: Set bash timeout to **600000** (10 minutes). **NEVER cancel builds.**
+
+The default build below passes `-p:UnoFastDevBuild=true`, which disables analyzers and code-style enforcement for local iteration. Uno.UI compile on Windows has the same analyzer dominance as on Skia (~30s per compile), so this is a meaningful win. The flag is no-op on CI (guarded by `ContinuousIntegrationBuild`). Omit it if the user requested `strict` mode (see Phase 0).
+
+```bash
+"$MSBUILD" "src/SamplesApp/SamplesApp.Windows/SamplesApp.Windows.csproj" \
+    -restore -t:Publish -m -v:m \
+    -p:Configuration=Release \
+    -p:Platform=x64 \
+    -p:RuntimeIdentifier=win-x64 \
+    -p:GenerateAppxPackageOnBuild=true \
+    -p:UnoFastDevBuild=true \
+    -p:PackageCertificateThumbprint=$THUMBPRINT
+```
+
+**Key points:**
+- Use **dash syntax** (`-restore`, not `/r`) — forward slashes are eaten by bash
+- Use **`PackageCertificateThumbprint`** — most reliable signing method
+- The cert must be in the user's cert store already (Phase 1d handles this)
+- `-p:UnoFastDevBuild=true` is the local fast-iteration toggle; drop it under `strict` mode
+
+#### Build failure diagnostics
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `CS0535: does not implement 'DependencyObject.XXX'` from `Uno.UI.Skia.csproj` | **`crosstargeting_override.props` missing or set to wrong TFM.** MSBuild resolves all TFMs and pulls in Skia which needs source generators. | **Set override to `net9.0-windows10.0.19041.0`** (Phase 1c). This is the #1 most common build failure. |
+| `MSB4062: ResourcesGenerationTask_v0 could not be loaded` | Uno.UI.Tasks.v0.dll not built; cascading from wrong TFM pulling in unexpected dependencies | Set override to `net9.0-windows10.0.19041.0` (Phase 1c) |
+| `NU1201: not compatible with net9.0-...` | `crosstargeting_override.props` TFM mismatch | Set to `net9.0-windows10.0.19041.0` |
+| `PRI175` / `PRI252: .xbf not found` | MAX_PATH >= 260 chars | Shorten repo path or `subst` drive |
+| `APPX0101: signing key required` | No cert in store | Run `setup-cert.ps1` (Phase 1d) |
+| `APPX0105: Cannot import key file` | Used `PackageCertificateKeyFile` instead of thumbprint | Switch to `PackageCertificateThumbprint` |
+| `MSB1008: Only one project` | Bash mangled `/r` as path | Use dash syntax: `-restore` |
+| `CS0012: type 'Grid' defined in unreferenced assembly 'Uno.UI'` | Graphics3DGL built for Skia only | Run Phase 1f (restore Graphics3DGL with Windows TFM) |
+| `NETSDK1005: Assets file doesn't have target for windows10` | Graphics3DGL not restored with Windows TFM | Run Phase 1f before building SamplesApp |
+
+### Phase 3: Install the MSIX Package
+
+Run the install helper script:
+```bash
+$PS_CMD -NoProfile -ExecutionPolicy Bypass -File "$SKILL_DIR/install-msix.ps1" \
+    -RepoRoot "."
+```
+
+This handles removing existing packages and finding/installing the bundle.
+
+#### Install failure diagnostics
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `0x800B0109: root certificate must be trusted` | Cert not in LocalMachine\Root | Run `setup-cert.ps1` |
+| `0x80073CFB: same identity already installed` | Old package present | Script handles this automatically |
+| `0x80073D2C: publisher not in unsigned namespace` | MSIX was built without signing | Rebuild with thumbprint (Phase 2) |
+| `0x80070057: E_INVALIDARG` | MSIX built with signing disabled has structural issues | Rebuild with signing enabled |
+
+### Phase 4: Construct the Filter
+
+If running specific tests (not all tests):
+
+1. **Format the filter string**: Fully qualified test names, pipe-separated
+   - Single: `Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Given_Control.When_Scenario`
+   - Multiple: `Test1|Test2|Test3`
+
+2. **Base64 encode in bash**:
+   ```bash
+   FILTER=$(echo -n "fully.qualified.TestName" | base64 -w 0)
+   ```
+
+   Or for PowerShell:
+   ```powershell
+   $filter = [Convert]::ToBase64String(
+       [System.Text.Encoding]::UTF8.GetBytes("fully.qualified.TestName"))
+   ```
+
+### Phase 5: Run Tests
+
+Run the test helper script:
+```bash
+RESULTS_FILE="$(pwd)/winui-test-results.xml"
+
+# Without filter (all tests):
+$PS_CMD -NoProfile -ExecutionPolicy Bypass -File "$SKILL_DIR/run-tests.ps1" \
+    -ResultsFile "$RESULTS_FILE"
+
+# With filter:
+$PS_CMD -NoProfile -ExecutionPolicy Bypass -File "$SKILL_DIR/run-tests.ps1" \
+    -ResultsFile "$RESULTS_FILE" -Filter "$FILTER"
+```
+
+Set bash timeout to **600000** (10 minutes).
+
+Results are output in NUnit XML format.
+
+### Phase 6: Parse Results and Cleanup
+
+**IMPORTANT**: The results file is **UTF-16 encoded** XML. Do NOT use the `Read` tool (token limits) or `head`/`cat` (garbled output). Use this python snippet:
+
+```bash
+python3 -c "
+import re
+with open('RESULTS_FILE_PATH', 'r', encoding='utf-16') as f:
+    content = f.read()
+
+m = re.search(r'<test-run[^>]+total=\"(\d+)\"[^>]+passed=\"(\d+)\"[^>]+failed=\"(\d+)\"[^>]+skipped=\"(\d+)\"', content)
+if m:
+    total, passed, failed, skipped = m.groups()
+    print(f'TOTAL: {total}  PASSED: {passed}  FAILED: {failed}  SKIPPED: {skipped}')
+print()
+
+for m in re.finditer(r'<test-case\s+name=\"([^\"]+)\"[^>]*result=\"(\w+)\"', content):
+    name, result = m.groups()
+    status = '  PASS' if result == 'Passed' else '**FAIL' if result == 'Failed' else '  SKIP'
+    print(f'{status}  {name}')
+"
+```
+
+Replace `RESULTS_FILE_PATH` with the actual path.
+
+To extract failure messages for failed tests:
+```bash
+python3 -c "
+import re
+with open('RESULTS_FILE_PATH', 'r', encoding='utf-16') as f:
+    content = f.read()
+
+for m in re.finditer(r'<test-case\s+name=\"([^\"]+)\"[^>]*result=\"Failed\".*?<message>(.*?)</message>', content, re.DOTALL):
+    name, msg = m.groups()
+    print(f'FAILED: {name}')
+    print(f'  {msg.strip()[:500]}')
+    print()
+"
+```
+
+**Cleanup steps:**
+1. **Restore `crosstargeting_override.props`**: If you changed it in Phase 1c (e.g., from `net10.0` to `net9.0-windows10.0.19041.0`), **restore it to the user's previous value** so their Skia/Wasm development workflow isn't broken.
+
+**Interpreting WinUI failures**: Tests that fail on WinUI represent the native WinUI behavior. If a test passes on Uno but fails on WinUI (or vice versa), this reveals a parity gap. Use the `[PlatformCondition]` attribute to exclude tests from WinUI:
+```csharp
+[TestMethod]
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+public void When_Test_That_Diverges_On_WinUI() { ... }
+```
+
+---
+
+## Quick Reference: Complete Bash Flow
+
+This is the **exact sequence** to execute. Copy-paste each step:
+
+```bash
+# --- Config ---
+SKILL_DIR=".claude/skills/winui-runtime-tests"
+PS_CMD="pwsh"  # or "powershell.exe" if pwsh unavailable
+MSBUILD=$($PS_CMD -NoProfile -Command "& 'C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe' -prerelease -all -latest -requires Microsoft.Component.MSBuild -find 'MSBuild\**\Bin\MSBuild.exe'" 2>/dev/null)
+
+# --- Phase 1a: Save and set crosstargeting override (MANDATORY) ---
+# Save current value if it exists so we can restore later
+OVERRIDE_FILE="src/crosstargeting_override.props"
+OVERRIDE_BACKUP=""
+if [ -f "$OVERRIDE_FILE" ]; then
+    OVERRIDE_BACKUP=$(cat "$OVERRIDE_FILE")
+fi
+# Create from sample if missing, then set to Windows TFM
+if [ ! -f "$OVERRIDE_FILE" ]; then
+    cp src/crosstargeting_override.props.sample "$OVERRIDE_FILE"
+fi
+# Ensure it contains net9.0-windows10.0.19041.0
+# (use Edit tool to set UnoTargetFrameworkOverride)
+
+# --- Phase 1b: Setup cert (idempotent, first time prompts UAC) ---
+$PS_CMD -NoProfile -ExecutionPolicy Bypass -File "$SKILL_DIR/setup-cert.ps1"
+THUMBPRINT=$(cat ~/.uno-dev-cert-thumbprint)
+
+# --- Phase 1f: Restore Graphics3DGL with Windows TFM (timeout: 600000ms) ---
+"$MSBUILD" "src/AddIns/Uno.WinUI.Graphics3DGL/Uno.WinUI.Graphics3DGL.csproj" \
+    -restore -v:m -p:BuildGraphics3DGLForWindows=true \
+    -p:Platform=x64 -p:Configuration=Release
+
+# --- Phase 2: Build MSIX (timeout: 600000ms) ---
+# Default: pass -p:UnoFastDevBuild=true for fast local iteration.
+# Drop the flag if the user requested `strict` mode.
+"$MSBUILD" "src/SamplesApp/SamplesApp.Windows/SamplesApp.Windows.csproj" \
+    -restore -t:Publish -m -v:m \
+    -p:Configuration=Release -p:Platform=x64 -p:RuntimeIdentifier=win-x64 \
+    -p:GenerateAppxPackageOnBuild=true \
+    -p:UnoFastDevBuild=true \
+    -p:PackageCertificateThumbprint=$THUMBPRINT
+
+# --- Phase 3: Install MSIX ---
+$PS_CMD -NoProfile -ExecutionPolicy Bypass -File "$SKILL_DIR/install-msix.ps1" -RepoRoot "."
+
+# --- Phase 4+5: Run tests (timeout: 600000ms) ---
+# Without filter:
+$PS_CMD -NoProfile -ExecutionPolicy Bypass -File "$SKILL_DIR/run-tests.ps1" \
+    -ResultsFile "$(pwd)/winui-test-results.xml"
+# With filter:
+# FILTER=$(echo -n "Fully.Qualified.TestName" | base64 -w 0)
+# $PS_CMD ... -Filter "$FILTER"
+
+# --- Phase 6: Parse results (UTF-16 XML — use python, NOT Read tool) ---
+python3 -c "
+import re
+with open('winui-test-results.xml', 'r', encoding='utf-16') as f:
+    content = f.read()
+m = re.search(r'<test-run[^>]+total=\"(\d+)\"[^>]+passed=\"(\d+)\"[^>]+failed=\"(\d+)\"[^>]+skipped=\"(\d+)\"', content)
+if m:
+    total, passed, failed, skipped = m.groups()
+    print(f'TOTAL: {total}  PASSED: {passed}  FAILED: {failed}  SKIPPED: {skipped}')
+print()
+for m in re.finditer(r'<test-case\s+name=\"([^\"]+)\"[^>]*result=\"(\w+)\"', content):
+    name, result = m.groups()
+    status = '  PASS' if result == 'Passed' else '**FAIL' if result == 'Failed' else '  SKIP'
+    print(f'{status}  {name}')
+"
+
+# --- Cleanup ---
+# IMPORTANT: Restore crosstargeting_override.props to its previous value
+```
+
+---
+
+## Technical Reference
+
+### App Execution Alias
+- **Alias**: `unosamplesapp.exe`
+- **Registered by**: MSIX package via `Package.appxmanifest` (`uap5:AppExecutionAlias`)
+- **Requires**: MSIX package installed via `Add-AppxPackage`
+
+### Command-Line Arguments
+| Argument | Description |
+|----------|-------------|
+| `--runtime-tests=<path>` | Absolute path for NUnit XML results output |
+| `--runtime-test-filter=<base64>` | Base64-encoded, pipe-separated test filter |
+| `--runtime-tests-group=<n>` | CI shard index (not typically used locally) |
+| `--runtime-tests-group-count=<n>` | CI total shards (not typically used locally) |
+
+### Filter Encoding
+- **Format**: Base64-encoded UTF-8 string
+- **Separator**: `|` (pipe) between multiple fully qualified test names
+- **Delivery**: Via `--runtime-test-filter` CLI argument OR `UITEST_RUNTIME_TESTS_FILTER` env var
+
+### Key Files
+- **Project**: `src/SamplesApp/SamplesApp.Windows/SamplesApp.Windows.csproj`
+- **App manifest**: `src/SamplesApp/SamplesApp.Windows/Package.appxmanifest`
+- **CI YAML**: `build/ci/tests/.azure-devops-tests-winappsdk.yml`
+- **CI test script**: `build/test-scripts/run-winui-runtime-tests.ps1`
+- **Entry point**: `src/SamplesApp/SamplesApp.Shared/App.Tests.cs`
+- **Test location**: `src/Uno.UI.RuntimeTests/Tests/`
+- **Local thumbprint**: `~/.uno-dev-cert-thumbprint` (user home, shared across worktrees)
+
+### Build Details
+| Property | Value |
+|----------|-------|
+| **Build tool** | MSBuild via **dash syntax** (not `dotnet build`, not `/slash` switches) |
+| **Target framework** | `net9.0-windows10.0.19041.0` (`$(NetPreviousWinAppSDK)`) |
+| **Platform** | x64 |
+| **Output** | MSIX bundle in `AppPackages/` |
+| **WinAppSDK version** | 1.8 (check csproj for exact version) |
+| **Manifest publisher** | `CN=Uno Platform` (cert subject must match) |
+| **Cert generation** | `certreq` (per-machine, private key stays local) |
+| **Runtime installer** | `https://aka.ms/windowsappsdk/1.8/latest/windowsappruntimeinstall-x64.exe` |
+| **MAX_PATH budget** | Keep full repo path under ~200 chars |
+
+### Signing: What Works vs What Doesn't
+
+| Approach | Reliability | Notes |
+|----------|-------------|-------|
+| `PackageCertificateThumbprint` | **Best** | Cert must be in user store. Use this. |
+| `PackageCertificateKeyFile` + `Password` | Fragile | `APPX0105` errors in many environments |
+| Build unsigned + `signtool` post-sign | Works | More steps, but viable fallback |
+| `AppxPackageSigningEnabled=false` | **Broken** | Produces unsigned MSIX that can't install (publisher namespace mismatch) |
+
+### Certificate Management: What Works vs What Doesn't
+
+| Approach | Reliability | Notes |
+|----------|-------------|-------|
+| `certreq -new` (generate) | **Best** | Works everywhere, unique key per machine |
+| `certutil -user -importPFX` | **Best** | For importing existing PFX |
+| `certutil -addstore Root` (elevated) | **Best** | For trusting; needs admin once |
+| `Cert:\` PSDrive + PKI module | **Broken** | `Cert:` drive missing in some environments |
+| `New-SelfSignedCertificate` | **Broken** | Depends on `Cert:` drive |
+| `Import-PfxCertificate` | **Broken** | Depends on PKI module |
+| Committing PFX to repo | **Security risk** | Private key exposed to all repo users |

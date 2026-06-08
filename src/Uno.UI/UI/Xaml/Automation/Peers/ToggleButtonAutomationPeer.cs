@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ToggleButtonAutomationPeer_Partial.cpp, tag winui3/release/1.4.2
+// MUX Reference ToggleButtonAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
 using Microsoft.UI.Xaml.Controls.Primitives;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
@@ -19,6 +19,16 @@ public partial class ToggleButtonAutomationPeer : ButtonBaseAutomationPeer, Prov
 
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.Button;
+
+	protected override object GetPatternCore(PatternInterface patternInterface)
+	{
+		if (patternInterface == PatternInterface.Toggle)
+		{
+			return this;
+		}
+
+		return base.GetPatternCore(patternInterface);
+	}
 
 	/// <summary>
 	/// Gets the toggle state of the control.

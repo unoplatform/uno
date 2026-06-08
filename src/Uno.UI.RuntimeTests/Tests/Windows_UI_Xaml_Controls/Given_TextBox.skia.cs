@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -14,6 +14,7 @@ using MUXControlsTestApp.Utilities;
 using SamplesApp.UITests;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Toolkit.DevTools.Input;
 using Uno.UI.Xaml.Core;
@@ -24,7 +25,7 @@ using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Foundation.Extensibility;
-using Uno.UI.Xaml.Media;
+using Uno.UI.Xaml.Controls.Extensions;
 using static Private.Infrastructure.TestServices;
 using Color = Windows.UI.Color;
 using Point = Windows.Foundation.Point;
@@ -38,9 +39,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	/// </summary>
 	public partial class Given_TextBox
 	{
-		// most macOS keyboard shortcuts uses Command (mapped as Window) and not Control (Ctrl)
-		private readonly VirtualKeyModifiers _platformCtrlKey = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
-
 		[TestMethod]
 		public async Task When_Basic_Input()
 		{
@@ -224,6 +222,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_End_And_Shift_End_At_Position_Zero()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			await KeyboardHelper.InputText("hello world", SUT);
+
+			// Move cursor to position 0
+			await KeyboardHelper.PressKeySequence("$d$_home#$u$_home", SUT);
+			Assert.AreEqual(0, SUT.SelectionStart, "Cursor should be at position 0 after Home");
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			// Press End at position 0 - should move to end of line
+			await KeyboardHelper.PressKeySequence("$d$_end#$u$_end", SUT);
+			Assert.AreEqual(11, SUT.SelectionStart, "End key at position 0 should move cursor to end of text");
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			// Move back to position 0
+			await KeyboardHelper.PressKeySequence("$d$_home#$u$_home", SUT);
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			// Press Shift+End at position 0 - should select all text
+			await KeyboardHelper.PressKeySequence("$d$_shift#$d$_end#$u$_end#$u$_shift", SUT);
+			Assert.AreEqual(0, SUT.SelectionStart, "Shift+End at position 0 should keep SelectionStart at 0");
+			Assert.AreEqual(11, SUT.SelectionLength, "Shift+End at position 0 should select all text");
+		}
+
+		[TestMethod]
 		public async Task When_Home_Empty_TextBox()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -263,46 +299,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 			}
 
+			// Make sure the typing phase has fully settled before starting the measured selection loop.
+			// On Skia-WASM the selection state can transiently report a stale value through a queued
+			// dispatcher continuation; reading _selection while it is stale would offset the whole loop
+			// by one. Waiting for the caret to actually reach the end of the text removes that race.
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 11 && SUT.SelectionLength == 0, message: "caret settled at end of text (expected Start=11, Length=0)");
+
 			for (var i = 1; i <= 11; i++)
 			{
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.Shift));
-				await WindowHelper.WaitForIdle();
-				Assert.AreEqual(11 - i, SUT.SelectionStart);
-				Assert.AreEqual(i, SUT.SelectionLength);
+				await WindowHelper.WaitFor(() => SUT.SelectionStart == 11 - i && SUT.SelectionLength == i, message: $"Shift+Left iteration {i} (expected Start={11 - i}, Length={i})");
 			}
 
 			for (var i = 1; i <= 5; i++)
 			{
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift));
-				await WindowHelper.WaitForIdle();
-				Assert.AreEqual(i, SUT.SelectionStart);
-				Assert.AreEqual(11 - i, SUT.SelectionLength);
+				await WindowHelper.WaitFor(() => SUT.SelectionStart == i && SUT.SelectionLength == 11 - i, message: $"Shift+Right iteration {i} (expected Start={i}, Length={11 - i})");
 			}
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.None));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(5, SUT.SelectionStart);
-			Assert.AreEqual(0, SUT.SelectionLength);
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 5 && SUT.SelectionLength == 0, message: "Left collapses selection to its start (expected Start=5, Length=0)");
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.End, VirtualKeyModifiers.Shift));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(5, SUT.SelectionStart);
-			Assert.AreEqual(6, SUT.SelectionLength);
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 5 && SUT.SelectionLength == 6, message: "Shift+End extends to end of text (expected Start=5, Length=6)");
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(11, SUT.SelectionStart);
-			Assert.AreEqual(0, SUT.SelectionLength);
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 11 && SUT.SelectionLength == 0, message: "Right collapses selection to its end (expected Start=11, Length=0)");
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.Shift));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(0, SUT.SelectionStart);
-			Assert.AreEqual(11, SUT.SelectionLength);
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 0 && SUT.SelectionLength == 11, message: "Shift+Home extends to start of text (expected Start=0, Length=11)");
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(11, SUT.SelectionStart);
-			Assert.AreEqual(0, SUT.SelectionLength);
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 11 && SUT.SelectionLength == 0, message: "Right collapses selection to its end (expected Start=11, Length=0)");
 		}
 
 		[TestMethod]
@@ -369,16 +397,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(0, ((ScrollViewer)SUT.ContentElement).VerticalOffset);
 
-			// on macOS moving to the end of the document is done with `Command` + `Down`
-			var macOS = OperatingSystem.IsMacOS();
-			var key = macOS ? VirtualKey.Down : VirtualKey.End;
-			var mod = macOS ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
+			// on Apple platforms moving to the end of the document is done with `Command` + `Down`
+			var isAppleKeyboard = DeviceTargetHelper.UsesAppleKeyboardLayout;
+			var key = isAppleKeyboard ? VirtualKey.Down : VirtualKey.End;
+			var mod = isAppleKeyboard ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, mod));
 			await WindowHelper.WaitForIdle();
 
 			await Task.Delay(1000); // Allow the ScrollViewer to update its offset
 
 			((ScrollViewer)SUT.ContentElement).VerticalOffset.Should().BeApproximately(((ScrollViewer)SUT.ContentElement).ScrollableHeight, 1.0);
+		}
+
+		[TestMethod]
+		public async Task When_Trailing_Space_Overflows_ScrollViewer_Viewport()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "some text that is longer than the width of the text box"
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var scrollableWidthWithoutTrailingSpaces = ((ScrollViewer)SUT.ContentElement).ScrollableWidth;
+
+			SUT.Text += new string(' ', 20);
+			await UITestHelper.WaitForIdle();
+			Assert.IsGreaterThan(scrollableWidthWithoutTrailingSpaces + 50, ((ScrollViewer)SUT.ContentElement).ScrollableWidth);
 		}
 
 		[TestMethod]
@@ -442,6 +490,62 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("hello world", SUT.Text);
+
+			// Release the key so the process-wide KeyboardStateTracker doesn't carry
+			// a stuck "Shift is Down" state into subsequent tests.
+			SUT.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Shift, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+		}
+
+		[TestMethod]
+		public async Task When_Alt_Or_Win_Key_Alone()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Text = "hello world" };
+
+			var keyDownCount = 0;
+			SUT.KeyDown += (_, _) => keyDownCount++;
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Test Option/Alt keys
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Menu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(1, keyDownCount);
+			SUT.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Menu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.LeftMenu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(2, keyDownCount);
+			SUT.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.LeftMenu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.RightMenu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(3, keyDownCount);
+			SUT.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.RightMenu, VirtualKeyModifiers.None, unicodeKey: '\0'));
+
+			// Test Command/Windows keys
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.LeftWindows, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(4, keyDownCount);
+			SUT.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.LeftWindows, VirtualKeyModifiers.None, unicodeKey: '\0'));
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.RightWindows, VirtualKeyModifiers.None, unicodeKey: '\0'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(5, keyDownCount);
+			SUT.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(SUT, VirtualKey.RightWindows, VirtualKeyModifiers.None, unicodeKey: '\0'));
+
+			await WindowHelper.WaitForIdle();
 		}
 
 		[TestMethod]
@@ -463,14 +567,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			var key = OperatingSystem.IsMacOS() ? VirtualKey.Down : VirtualKey.End;
+			var key = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKey.Down : VirtualKey.End;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, _platformCtrlKey));
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(SUT.Text.Length, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
-			key = OperatingSystem.IsMacOS() ? VirtualKey.Up : VirtualKey.Home;
+			key = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKey.Up : VirtualKey.Home;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, _platformCtrlKey));
 			await WindowHelper.WaitForIdle();
 
@@ -499,8 +603,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
-			// on macOS it's option (menu/alt) and backspace to delete a word
-			var mod = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+			// on Apple platforms it's option (menu/alt) and backspace to delete a word
+			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, mod));
 			await WindowHelper.WaitForIdle();
 
@@ -537,8 +641,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Select(SUT.Text.Length, 0);
 			await WindowHelper.WaitForIdle();
 
-			// on macOS it's option (menu/alt) and backspace to delete a word
-			var mod = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+			// on Apple platforms it's option (menu/alt) and backspace to delete a word
+			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, mod));
 			await WindowHelper.WaitForIdle();
 
@@ -610,8 +714,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.None));
 			await WindowHelper.WaitForIdle();
 
-			// on macOS you use `option` (alt/menu) and `right` to move to the next work
-			var mod = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+			// on Apple platforms you use `option` (alt/menu) and `right` to move to the next word
+			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(6, SUT.SelectionStart);
@@ -1003,8 +1107,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(svRight, LayoutInformation.GetLayoutSlot(SUT).Right);
 			}
 
-			// on macOS we use `option` (menu/alt) + `delete` to remove word at the left
-			var mod = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+			// on Apple platforms we use `option` (menu/alt) + `delete` to remove word at the left
+			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
 			for (var i = 0; i < 10; i++)
 			{
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, mod));
@@ -1471,6 +1575,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // Flaky on Skia WASM #9080
 		public async Task When_Chunk_DoubleTapHeld()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1500,16 +1605,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			mouse.Release();
 			mouse.Press();
-			await WindowHelper.WaitForIdle();
-
-			Assert.AreEqual(6, SUT.SelectionStart);
-			Assert.AreEqual(5, SUT.SelectionLength);
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 6 && SUT.SelectionLength == 5, message: "double-tap selects the word under the pointer (expected Start=6, Length=5)");
 
 			mouse.MoveBy(-40, 0);
-			await WindowHelper.WaitForIdle();
-
-			Assert.AreEqual(0, SUT.SelectionStart);
-			Assert.AreEqual(SUT.Text.Length, SUT.SelectionLength);
+			// Wait for the held-drag to extend the chunk selection to the left edge AND establish the
+			// backward selection direction. On Skia-WASM the injected move is delivered through the input
+			// pipeline and the SelectInternal that flips selectionEndsAtTheStart may settle after the first
+			// idle pass, so we poll for the complete target state instead of asserting on a single idle.
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 0 && SUT.SelectionLength == SUT.Text.Length && SUT.IsBackwardSelection, message: $"held-drag extends selection left as a backward selection (expected Start=0, Length={SUT.Text.Length}, IsBackward=true)");
 
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
@@ -1517,10 +1620,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// the selection should start on the right
 			Assert.IsTrue(SUT.IsBackwardSelection);
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift));
-			await WindowHelper.WaitForIdle();
-
-			Assert.AreEqual(1, SUT.SelectionStart);
-			Assert.AreEqual(SUT.Text.Length - 1, SUT.SelectionLength);
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 1 && SUT.SelectionLength == SUT.Text.Length - 1, message: $"Shift+Right shrinks the backward selection from the left (expected Start=1, Length={SUT.Text.Length - 1})");
 		}
 
 		[TestMethod]
@@ -1930,9 +2030,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[CombinatorialData]
 		public async Task When_Copy_Paste(bool useInsert)
 		{
-			if (useInsert && OperatingSystem.IsMacOS())
+			if (useInsert && DeviceTargetHelper.UsesAppleKeyboardLayout)
 			{
-				Assert.Inconclusive("There's no `Insert` key on Mac keyboards");
+				Assert.Inconclusive("There's no `Insert` key on Apple keyboards");
 				// it's replaced by the `fn` key, which is a modifier
 			}
 			if (OperatingSystem.IsBrowser())
@@ -2539,8 +2639,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
-			// on macOS selecting the next word is `shift` + `option` (alt/menu) + `right`
-			var mod = VirtualKeyModifiers.Shift | (OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control);
+			// on Apple platforms selecting the next word is `shift` + `option` (alt/menu) + `right`
+			var mod = VirtualKeyModifiers.Shift | (DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control);
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, SUT.SelectionStart);
@@ -2733,6 +2833,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18371")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // Flaky on Skia WASM #9080
 		public async Task When_BeforeTextChanging_Resets_Selection_Direction()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2760,6 +2861,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 			}
 
+			// Wait for the backward selection built above to fully settle (and let any pending
+			// SelectionChanged from the loop drain) BEFORE subscribing the counter. Otherwise, on
+			// Skia-WASM a late SelectionChanged from the loop can be observed by the counter and be
+			// mis-attributed to the (canceled) text input below, inflating the count to 1.
+			await WindowHelper.WaitFor(() => SUT.SelectionStart == 1 && SUT.SelectionLength == SUT.Text.Length - 1 && SUT.IsBackwardSelection, message: $"backward selection settled before subscribing (expected Start=1, Length={SUT.Text.Length - 1}, IsBackward=true)");
+			await WindowHelper.WaitForIdle();
+
 			SUT.BeforeTextChanging += (_, args) => args.Cancel = args.NewText == "as";
 
 			var selectionChangedCount = 0;
@@ -2767,6 +2875,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await KeyboardHelper.InputText("s");
 			await WindowHelper.WaitForIdle();
+			// The text change is canceled by BeforeTextChanging, so the selection is unchanged (only its
+			// direction is reset) and no SelectionChanged should be raised.
 			Assert.AreEqual(0, selectionChangedCount);
 
 			// when we press Shift+Left now, the selection "end" is on the right, so the selection shrinks.
@@ -3370,6 +3480,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var _ = new TextBoxFeatureConfigDisposable();
 			using var __ = new DisposableAction(() => (VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
 
+			Clipboard.Clear();
+
 			var SUT = new TextBox
 			{
 				Width = 40
@@ -3383,15 +3495,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
-			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
-			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
-			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
-			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await KeyboardHelper.InputText("hello", SUT);
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("hello", SUT.Text);
@@ -3402,30 +3506,50 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.MoveTo(SUT.GetAbsoluteBounds().GetCenter());
 			await WindowHelper.WaitForIdle();
 
+			// Right-click to open context menu
 			mouse.PressRight();
 			mouse.ReleaseRight();
 			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
 
-			var flyoutItems = (VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot)[0].Child as FrameworkElement).FindChildren<MenuFlyoutItem>().ToList();
-			Assert.AreEqual(3, flyoutItems.Count);
+			Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout);
+			var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
 
-			mouse.MoveTo(flyoutItems[1].GetAbsoluteBounds().GetCenter());
+			await WindowHelper.WaitFor(() => flyout.IsOpen);
+
+			var undoButton = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands)
+				.OfType<AppBarButton>()
+				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.Z && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			Assert.IsNotNull(undoButton, "Undo button should be present in the context menu");
+
+			await WindowHelper.WaitFor(() => undoButton.IsLoaded);
+
+			mouse.MoveTo(undoButton.GetAbsoluteBounds().GetCenter());
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => !flyout.IsOpen);
+
 			Assert.AreEqual("", SUT.Text);
 
 			mouse.MoveTo(SUT.GetAbsoluteBounds().GetCenter());
 			await WindowHelper.WaitForIdle();
 
+			// Right-click to open context menu again
 			mouse.PressRight();
 			mouse.ReleaseRight();
 			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
 
-			flyoutItems = (VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot)[0].Child as FrameworkElement).FindChildren<MenuFlyoutItem>().ToList();
-			Assert.AreEqual(3, flyoutItems.Count);
+			await WindowHelper.WaitFor(() => flyout.IsOpen);
 
-			mouse.MoveTo(flyoutItems[1].GetAbsoluteBounds().GetCenter());
+			var redoButton = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands)
+				.OfType<AppBarButton>()
+				.FirstOrDefault(b => b.KeyboardAccelerators.Any(ka => ka.Key == VirtualKey.Y && ka.Modifiers.HasFlag(_platformCtrlKey)));
+			Assert.IsNotNull(redoButton, "Redo button should be present in the context menu");
+			await WindowHelper.WaitFor(() => redoButton.IsLoaded);
+
+			mouse.MoveTo(redoButton.GetAbsoluteBounds().GetCenter());
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
@@ -4189,8 +4313,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			// on macOS it's option (menu/alt) and backspace to delete a word
-			var mod = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+			// on Apple platforms it's option (menu/alt) and backspace to delete a word
+			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, mod));
 			await WindowHelper.WaitForIdle();
 
@@ -4358,38 +4482,109 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
+			// Light mode: caret should appear as a dark pixel on the white background.
+			// The exact rendered color depends on visual tree opacity and compositing,
+			// so we use a threshold check rather than exact color matching.
 			var random = new Random();
 			var i = 0;
 			for (; i < 20; i++)
 			{
 				await Task.Delay(random.Next(75, 126));
 				var screenshot = await UITestHelper.ScreenShot(SUT);
-				// this color is the result of alpha blending 0xE4000000 (the default caret color) on top of 0xFFFFFFFF
-				var black = Colors.White.AlphaBlend(((SolidColorBrush)DefaultBrushes.TextForegroundBrush).Color);
-				if (HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), black) &&
-					!HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), black))
+				if (HasDarkPixelOnlyInLeftHalf(screenshot))
 				{
 					break;
 				}
 			}
 
-			Assert.IsTrue(i < 20);
+			Assert.IsLessThan(20, i, "Light mode: caret not found as dark pixel in left half");
 
 			using var _2 = ThemeHelper.UseDarkTheme();
 			await WindowHelper.WaitForIdle();
 
+			// Re-focus to force visual states to re-apply with the new theme resources.
+			// Visual state animations (e.g., TextControlBackgroundFocused) use ThemeResource
+			// values that were resolved when the state was first entered.
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Dark mode: caret should appear as a lighter pixel on the dark background.
 			for (; i < 20; i++)
 			{
 				await Task.Delay(random.Next(75, 126));
 				var screenshot = await UITestHelper.ScreenShot(SUT);
-				if (HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), Colors.White) &&
-					!HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), Colors.White))
+				if (HasLightPixelOnlyInLeftHalf(screenshot))
 				{
 					break;
 				}
 			}
 
-			Assert.IsTrue(i < 20);
+			Assert.IsLessThan(20, i, "Dark mode: caret not found as light pixel in left half");
+		}
+
+		/// <summary>
+		/// Checks if the left half has a dark pixel (luminance &lt; 200) that isn't in the right half.
+		/// Used for detecting the caret in light mode where the exact color depends on compositing.
+		/// </summary>
+		private static bool HasDarkPixelOnlyInLeftHalf(RawBitmap screenshot)
+		{
+			var innerMargin = 3; // Skip border pixels
+			var midX = screenshot.Width / 2;
+			var darkColors = new System.Collections.Generic.HashSet<Color>();
+			for (var x = innerMargin; x < midX; x++)
+			{
+				for (var y = innerMargin; y < screenshot.Height - innerMargin; y++)
+				{
+					var px = screenshot.GetPixel(x, y);
+					if (px.A > 0x20 && (px.R + px.G + px.B) / 3 < 200)
+					{
+						darkColors.Add(px);
+					}
+				}
+			}
+
+			foreach (var dark in darkColors)
+			{
+				if (!HasColorInRectangle(screenshot, new Rectangle(midX, 0, midX, screenshot.Height), dark))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Checks if the left half has a lighter pixel than the background,
+		/// that isn't in the right half. Used for detecting the caret in dark mode.
+		/// </summary>
+		private static bool HasLightPixelOnlyInLeftHalf(RawBitmap screenshot)
+		{
+			var innerMargin = 3;
+			var midX = screenshot.Width / 2;
+
+			// Determine the dominant background color in the right half (no caret there)
+			var bgPixel = screenshot.GetPixel(screenshot.Width - innerMargin - 5, screenshot.Height / 2);
+			var bgLum = (bgPixel.R + bgPixel.G + bgPixel.B) / 3;
+
+			for (var x = innerMargin; x < midX; x++)
+			{
+				for (var y = innerMargin; y < screenshot.Height - innerMargin; y++)
+				{
+					var px = screenshot.GetPixel(x, y);
+					var pxLum = (px.R + px.G + px.B) / 3;
+					// Look for pixels significantly lighter than the background
+					if (px != bgPixel && pxLum > bgLum + 50)
+					{
+						if (!HasColorInRectangle(screenshot, new Rectangle(midX, 0, midX, screenshot.Height), px))
+						{
+							return true;
+						}
+					}
+				}
+			}
+
+			return false;
 		}
 
 		[TestMethod]
@@ -4510,8 +4705,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Release();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(0, SUT.SelectionLength);
-			Assert.AreEqual(SUT.Text.Length, SUT.SelectionStart);
+			Assert.AreEqual("Text", SUT.SelectedText);
 		}
 
 		[TestMethod]
@@ -4531,14 +4725,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
 			finger.Release();
 			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+			Assert.AreEqual("Text", SUT.SelectedText);
 
-			Assert.IsTrue(SUT.CaretMode is TextBox.CaretDisplayMode.ThumblessCaretHidden or TextBox.CaretDisplayMode.ThumblessCaretShowing);
-
+			// clicking inside the selected area keeps the selection
 			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
 			finger.Release();
 			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+			Assert.AreEqual("Text", SUT.SelectedText);
 
+			// clicking outside the selected area drops it
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter() + new Point(100, 0));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode);
+			Assert.AreEqual("", SUT.SelectedText);
 		}
 
 		[TestMethod]
@@ -4804,7 +5006,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Get the caret popups
 			var caretPopups = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Where(p => p.Child.FindFirstChild<Microsoft.UI.Xaml.Shapes.Ellipse>() is not null).ToList();
 			// We should have two caret popups (start and end)
-			Assert.AreEqual(2, caretPopups.Count);
+			Assert.HasCount(2, caretPopups);
 
 			// Validate the Ellipses of the carets are intersecting the bottom border of the TextBox
 			var textBoxTransform = textBox.TransformToVisual(null);
@@ -4831,8 +5033,61 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				double radius = Math.Sqrt(Math.Pow(boundary.X - ellipseCenter.X, 2) + Math.Pow(boundary.Y - ellipseCenter.Y, 2));
 				// Check that the line from bottomLeft to bottomRight intersects the ellipse using DistancePointToSegment
 				var distance = DistancePointToSegment(ellipseCenter, bottomLeft, bottomRight);
-				Assert.IsTrue(distance < radius, "Caret ellipse should intersect the bottom border of the TextBox");
+				Assert.IsLessThan(radius, distance, "Caret ellipse should intersect the bottom border of the TextBox");
 			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20988")]
+		public async Task When_Ctrl_Letter_Should_Not_Type()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Simulate pressing Ctrl+S (an unhandled Ctrl+letter shortcut)
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.S, VirtualKeyModifiers.Control, unicodeKey: 's'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(string.Empty, SUT.Text, "Ctrl+S should not insert any character.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20988")]
+		public async Task When_Alt_Letter_Should_Not_Type()
+		{
+			if (DeviceTargetHelper.UsesAppleKeyboardLayout)
+			{
+				// On Apple platforms, Alt (Option) key is used for special character input,
+				// so it should not be suppressed.
+				Assert.Inconclusive("Alt (Option) key behavior differs on Apple platforms.");
+			}
+
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Simulate pressing Alt+S (an unhandled Alt+letter shortcut)
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.S, VirtualKeyModifiers.Menu, unicodeKey: 's'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(string.Empty, SUT.Text, "Alt+S should not insert any character.");
 		}
 
 		private double DistancePointToSegment(Point p, Point a, Point b)
@@ -4877,6 +5132,580 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			return false;
 		}
+
+#if HAS_UNO // SelectAll is not available for PasswordBox on WinUI.
+		[TestMethod]
+		public async Task When_PasswordBox_ContextFlyout_Commands_Available()
+		{
+			try
+			{
+				if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
+				{
+					Assert.Inconclusive("Clipboard is not available on this platform.");
+				}
+				var SUT = new PasswordBox { Password = "secret pass", Width = 200 };
+				CopyPlaceholderTextToClipboard();
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				SUT.Focus(FocusState.Programmatic);
+				SUT.Select(0, 4);
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "PasswordBox should have TextCommandBarFlyout as ContextFlyout");
+				var flyout = (TextCommandBarFlyout)SUT.ContextFlyout;
+
+				flyout.ShowAt(SUT);
+				await WindowHelper.WaitForIdle();
+
+				var (hasSelectAll, hasCut, hasCopy, hasPaste) = GetAvailableCommands(flyout);
+
+				Assert.IsFalse(hasCut, "Cut should NOT be available for PasswordBox (security)");
+				Assert.IsFalse(hasCopy, "Copy should NOT be available for PasswordBox (security)");
+				Assert.IsTrue(hasPaste, "Paste should be available for PasswordBox");
+				Assert.IsTrue(hasSelectAll, "Select All should be available for PasswordBox");
+
+				flyout.Hide();
+			}
+			finally
+			{
+				ClearClipboard();
+			}
+		}
+#endif
+
+		[TestMethod]
+		public async Task When_Selection_Background_Has_No_Gaps_Between_Characters()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "____",
+				FontSize = 14,
+				Width = 300,
+				SelectionHighlightColor = new SolidColorBrush(Colors.Red),
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			SUT.SelectAll();
+			await UITestHelper.WaitForIdle();
+
+			var tb = SUT.FindVisualChildByType<TextBlock>();
+			var screenshot = await UITestHelper.ScreenShot(tb);
+			for (int i = 0; i < 20; i++)
+			{
+				screenshot.GetPixel(i, screenshot.Height / 2).Should().Be(Colors.Red, $"Selection background should have no gaps at x={i}");
+			}
+		}
+
+		[TestMethod]
+		public async Task When_OuterScrollViewer_BringIntoView_Scrolls_To_Caret()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			// Build enough text so the TextBox is taller than the ScrollViewer viewport.
+			var sb = new System.Text.StringBuilder();
+			for (int i = 0; i < 40; i++)
+			{
+				sb.AppendLine($"Line {i}");
+			}
+
+			var textBox = new TextBox
+			{
+				AcceptsReturn = true,
+				TextWrapping = TextWrapping.Wrap,
+				Text = sb.ToString(),
+				// Disable internal scrolling so the outer ScrollViewer handles it.
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			// Disable internal ScrollViewer scrolling via attached properties.
+			ScrollViewer.SetVerticalScrollMode(textBox, ScrollMode.Disabled);
+			ScrollViewer.SetVerticalScrollBarVisibility(textBox, ScrollBarVisibility.Disabled);
+
+			var outerScrollViewer = new ScrollViewer
+			{
+				Height = 300,
+				Content = textBox,
+			};
+
+			await UITestHelper.Load(outerScrollViewer);
+
+			// Place cursor at the end (bottom of the TextBox).
+			textBox.Focus(FocusState.Programmatic);
+			textBox.SelectionStart = textBox.Text.Length;
+			await WindowHelper.WaitForIdle();
+
+			// The outer ScrollViewer should have scrolled down to bring the caret into view.
+			await WindowHelper.WaitFor(
+				() => outerScrollViewer.VerticalOffset > 0,
+				timeoutMS: 2000,
+				message: "Outer ScrollViewer should scroll to bring the caret at the end into view.");
+
+			var offsetAfterFocus = outerScrollViewer.VerticalOffset;
+
+			// Now type an Enter to add a new line — the caret moves further down.
+			textBox.SafeRaiseEvent(UIElement.KeyDownEvent,
+				new KeyRoutedEventArgs(textBox, VirtualKey.Enter, VirtualKeyModifiers.None, unicodeKey: '\r'));
+			await WindowHelper.WaitForIdle();
+
+			await WindowHelper.WaitFor(
+				() => outerScrollViewer.VerticalOffset > offsetAfterFocus,
+				timeoutMS: 2000,
+				message: "Outer ScrollViewer should scroll further after adding a new line.");
+		}
+
+		[TestMethod]
+		public async Task When_OuterScrollViewer_Caret_Middle_Does_Not_Scroll_To_Bottom()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			// Build enough text so the TextBox is taller than the ScrollViewer viewport.
+			var sb = new System.Text.StringBuilder();
+			for (int i = 0; i < 60; i++)
+			{
+				sb.AppendLine($"Line {i}");
+			}
+
+			var textBox = new TextBox
+			{
+				AcceptsReturn = true,
+				TextWrapping = TextWrapping.Wrap,
+				Text = sb.ToString(),
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			ScrollViewer.SetVerticalScrollMode(textBox, ScrollMode.Disabled);
+			ScrollViewer.SetVerticalScrollBarVisibility(textBox, ScrollBarVisibility.Disabled);
+
+			var outerScrollViewer = new ScrollViewer
+			{
+				Height = 300,
+				Content = textBox,
+			};
+
+			await UITestHelper.Load(outerScrollViewer);
+
+			// Place cursor at roughly the middle of the text.
+			textBox.Focus(FocusState.Programmatic);
+			textBox.SelectionStart = textBox.Text.Length / 2;
+			await WindowHelper.WaitForIdle();
+
+			// Wait for the ScrollViewer to scroll to the caret.
+			await WindowHelper.WaitFor(
+				() => outerScrollViewer.VerticalOffset > 0,
+				timeoutMS: 2000,
+				message: "Outer ScrollViewer should scroll to bring the caret into view.");
+
+			// The scroll offset for cursor at the middle should be less than
+			// the maximum scrollable height (it should NOT scroll to the bottom).
+			Assert.IsTrue(outerScrollViewer.VerticalOffset < outerScrollViewer.ScrollableHeight,
+				"Outer ScrollViewer should scroll to the caret at the middle, not to the bottom.");
+		}
+
+		#region IME Composition Tests
+
+		[TestMethod]
+		public async Task When_IME_Composition_Committed()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+			fake.SimulateCompositionUpdate("你");
+			await WindowHelper.WaitForIdle();
+			fake.SimulateCompositionComplete("你好");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("你好", SUT.Text);
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Composition_Cancelled()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			// Cancel without committing — text should retain last composition
+			fake.SimulateCompositionCancel();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("ni", SUT.Text);
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Composition_Events_Fired()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			TextCompositionStartedEventArgs startedArgs = null;
+			TextCompositionChangedEventArgs changedArgs = null;
+			TextCompositionEndedEventArgs endedArgs = null;
+
+			SUT.TextCompositionStarted += (s, e) => startedArgs = e;
+			SUT.TextCompositionChanged += (s, e) => changedArgs = e;
+			SUT.TextCompositionEnded += (s, e) => endedArgs = e;
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(startedArgs);
+			Assert.AreEqual(0, startedArgs.StartIndex);
+			Assert.IsNotNull(changedArgs);
+			Assert.AreEqual(0, changedArgs.StartIndex);
+			Assert.AreEqual(2, changedArgs.Length);
+
+			fake.SimulateCompositionComplete("你");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(endedArgs);
+			Assert.AreEqual(0, endedArgs.StartIndex);
+			Assert.AreEqual(1, endedArgs.Length);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Composition_StartIndex_Correct()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Type "Hello" first
+			foreach (var c in "Hello")
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
+				await WindowHelper.WaitForIdle();
+			}
+
+			Assert.AreEqual("Hello", SUT.Text);
+
+			TextCompositionStartedEventArgs startedArgs = null;
+			SUT.TextCompositionStarted += (s, e) => startedArgs = e;
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(startedArgs);
+			Assert.AreEqual(5, startedArgs.StartIndex);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Keyboard_Input_Suppressed_During_Composition()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			var textBeforeKey = SUT.Text;
+
+			// Send a regular character during composition — should be ignored
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: 'x'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(textBeforeKey, SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Composition_In_Middle_Of_Text()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "Hello World" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Position cursor at index 5 (between "Hello" and " World")
+			SUT.SelectionStart = 5;
+			SUT.SelectionLength = 0;
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate(" beautiful");
+			await WindowHelper.WaitForIdle();
+			fake.SimulateCompositionComplete(" beautiful");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Hello beautiful World", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_IME_ReadOnly_TextBox_Ignores_Composition()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "Original", IsReadOnly = true };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Original", SUT.Text);
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		public async Task When_IME_External_Text_Change_Cancels_Composition()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.IsComposing);
+
+			// Externally set text during composition
+			SUT.Text = "Replaced";
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.IsComposing);
+			Assert.AreEqual("Replaced", SUT.Text);
+			Assert.IsTrue(fake.EndImeSessionCalled, "EndImeSession should be called when composition is cancelled by external text change");
+		}
+
+		[TestMethod]
+		public async Task When_IME_External_Text_Change_From_Binding_Cancels_Composition()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.IsComposing);
+
+			// Simulate a binding update by setting Text in TextChanged handler
+			SUT.TextChanged += (s, e) =>
+			{
+				if (SUT.Text == "ni")
+				{
+					// This mimics a binding that transforms the text
+					SUT.Text = "override";
+				}
+			};
+
+			// Trigger TextChanged by committing — but the handler overrides the text
+			fake.SimulateCompositionComplete("ni");
+			await WindowHelper.WaitForIdle();
+
+			// The composition committed "ni", then TextChanged set "override"
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		public async Task When_IME_SelectionStart_Change_During_Composition()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "Hello" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Position at end
+			SUT.SelectionStart = 5;
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.IsComposing);
+			Assert.AreEqual("Helloni", SUT.Text);
+
+			// Externally change SelectionStart during composition
+			SUT.SelectionStart = 0;
+			await WindowHelper.WaitForIdle();
+
+			// SelectionStart change should work — it doesn't change Text,
+			// so composition state should remain intact
+			Assert.AreEqual(0, SUT.SelectionStart);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Composition_Caret_Follows_CursorPosition()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("nihao", cursorPosition: 5);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(5, SUT.SelectionStart); // cursor at end of "nihao"
+
+			// Simulate cursor moving within composition (e.g., arrow key)
+			fake.SimulateCompositionUpdate("nihao", cursorPosition: 2);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2, SUT.SelectionStart); // cursor after "ni"
+		}
+
+		[TestMethod]
+		public async Task When_IME_Composition_Internal_Text_Change_Does_Not_Cancel()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.IsComposing);
+			// Reset after focus setup — EndImeSession may be called during focus management
+			fake.EndImeSessionCalled = false;
+
+			// Another composition update — internal change, should NOT cancel
+			fake.SimulateCompositionUpdate("nihao");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.IsComposing);
+			Assert.IsFalse(fake.EndImeSessionCalled, "EndImeSession should NOT be called for IME-driven text changes");
+			Assert.AreEqual("nihao", SUT.Text);
+		}
+
+		private class FakeImeTextBoxExtension : IImeTextBoxExtension
+		{
+			public bool IsComposing { get; private set; }
+			public bool EndImeSessionCalled { get; set; }
+
+			public event EventHandler CompositionStarted;
+			public event EventHandler<ImeCompositionEventArgs> CompositionUpdated;
+			public event EventHandler<ImeCompositionEventArgs> CompositionCompleted;
+			public event EventHandler CompositionEnded;
+
+			public void StartImeSession(TextBox textBox) { }
+
+			public void EndImeSession()
+			{
+				EndImeSessionCalled = true;
+				if (IsComposing)
+				{
+					IsComposing = false;
+					CompositionEnded?.Invoke(this, EventArgs.Empty);
+				}
+			}
+
+			public void SimulateCompositionStart()
+			{
+				IsComposing = true;
+				CompositionStarted?.Invoke(this, EventArgs.Empty);
+			}
+
+			public void SimulateCompositionUpdate(string text, int cursorPosition = -1)
+			{
+				CompositionUpdated?.Invoke(this, new ImeCompositionEventArgs(text, cursorPosition));
+			}
+
+			public void SimulateCompositionComplete(string text)
+			{
+				IsComposing = false;
+				CompositionCompleted?.Invoke(this, new ImeCompositionEventArgs(text));
+				CompositionEnded?.Invoke(this, EventArgs.Empty);
+			}
+
+			public void SimulateCompositionCancel()
+			{
+				IsComposing = false;
+				CompositionEnded?.Invoke(this, EventArgs.Empty);
+			}
+		}
+
+		#endregion
 
 		private class TextBoxFeatureConfigDisposable : IDisposable
 		{

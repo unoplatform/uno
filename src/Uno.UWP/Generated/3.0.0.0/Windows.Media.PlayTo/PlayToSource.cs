@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.PlayTo
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -16,25 +15,25 @@ namespace Windows.Media.PlayTo
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.PlayTo.PlayToSource Next
+		public global::Windows.Media.PlayTo.PlayToConnection Connection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlayToSource PlayToSource.Next is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlayToSource%20PlayToSource.Next");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToSource", "PlayToSource PlayToSource.Next");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToSource", "Connection");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.PlayTo.PlayToConnection Connection
+		public global::Windows.Media.PlayTo.PlayToSource Next
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlayToConnection PlayToSource.Connection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlayToConnection%20PlayToSource.Connection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToSource", "Next");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToSource", "Next");
 			}
 		}
 #endif
@@ -44,24 +43,24 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri PlayToSource.PreferredSourceUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20PlayToSource.PreferredSourceUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToSource", "PreferredSourceUri");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToSource", "Uri PlayToSource.PreferredSourceUri");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToSource", "PreferredSourceUri");
 			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void PlayNext()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToSource", "PlayNext()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSource.Connection.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSource.Next.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSource.Next.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void PlayNext()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToSource", "void PlayToSource.PlayNext()");
-		}
-#endif
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSource.PreferredSourceUri.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSource.PreferredSourceUri.set
 	}

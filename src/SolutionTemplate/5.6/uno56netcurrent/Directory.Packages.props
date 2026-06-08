@@ -6,5 +6,6 @@
     See https://aka.platform.uno/using-uno-sdk#implicit-packages for more information regarding the Implicit Packages.
   -->
   <ItemGroup>
+    <PackageVersion Include="Microsoft.Extensions.Diagnostics.Testing" Version="10.3.0" />
   </ItemGroup>
 </Project>

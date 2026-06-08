@@ -15,21 +15,21 @@ namespace Windows.Media.DialProtocol
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Id
+		public string FriendlyName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DialDevice.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DialDevice.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevice", "FriendlyName");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string FriendlyName
+		public string Id
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DialDevice.FriendlyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DialDevice.FriendlyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevice", "Id");
 			}
 		}
 #endif
@@ -39,40 +39,40 @@ namespace Windows.Media.DialProtocol
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference DialDevice.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20DialDevice.Thumbnail");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevice", "Thumbnail");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevice.Id.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.DialProtocol.DialApp GetDialApp(string appName)
-		{
-			throw new global::System.NotImplementedException("The member DialApp DialDevice.GetDialApp(string appName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DialApp%20DialDevice.GetDialApp%28string%20appName%29");
-		}
-#endif
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevice.FriendlyName.get
-		// Forced skipping of method Windows.Media.DialProtocol.DialDevice.Thumbnail.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetDeviceSelector(string appName)
 		{
-			throw new global::System.NotImplementedException("The member string DialDevice.GetDeviceSelector(string appName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DialDevice.GetDeviceSelector%28string%20appName%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevice", "GetDeviceSelector(string appName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.DialProtocol.DialDevice> FromIdAsync(string value)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DialDevice> DialDevice.FromIdAsync(string value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDialDevice%3E%20DialDevice.FromIdAsync%28string%20value%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevice", "FromIdAsync(string value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> DeviceInfoSupportsDialAsync(global::Windows.Devices.Enumeration.DeviceInformation device)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> DialDevice.DeviceInfoSupportsDialAsync(DeviceInformation device) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20DialDevice.DeviceInfoSupportsDialAsync%28DeviceInformation%20device%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevice", "DeviceInfoSupportsDialAsync(DeviceInformation device)");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.DialProtocol.DialApp GetDialApp(string appName)
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.DialProtocol.DialDevice", "GetDialApp(string appName)");
+		}
+#endif
+		// Forced skipping of method Windows.Media.DialProtocol.DialDevice.FriendlyName.get
+		// Forced skipping of method Windows.Media.DialProtocol.DialDevice.Id.get
+		// Forced skipping of method Windows.Media.DialProtocol.DialDevice.Thumbnail.get
 	}
 }

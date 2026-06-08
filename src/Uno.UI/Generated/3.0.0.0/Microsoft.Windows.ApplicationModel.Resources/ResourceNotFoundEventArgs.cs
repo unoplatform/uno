@@ -19,7 +19,7 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ResourceContext ResourceNotFoundEventArgs.Context is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceContext%20ResourceNotFoundEventArgs.Context");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs", "Context");
 			}
 		}
 #endif
@@ -29,18 +29,18 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ResourceNotFoundEventArgs.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ResourceNotFoundEventArgs.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs", "Name");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs.Context.get
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs.Name.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetResolvedCandidate(global::Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate candidate)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs", "void ResourceNotFoundEventArgs.SetResolvedCandidate(ResourceCandidate candidate)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs", "SetResolvedCandidate(ResourceCandidate candidate)");
 		}
 #endif
+		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs.Context.get
+		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs.Name.get
 	}
 }

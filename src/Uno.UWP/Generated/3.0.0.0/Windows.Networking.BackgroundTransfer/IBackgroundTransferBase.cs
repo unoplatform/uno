@@ -46,15 +46,15 @@ namespace Windows.Networking.BackgroundTransfer
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void SetRequestHeader(string headerName, string headerValue);
 #endif
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferBase.ServerCredential.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferBase.ServerCredential.set
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferBase.ProxyCredential.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferBase.ProxyCredential.set
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferBase.Method.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferBase.Method.set
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferBase.Group.get
-		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferBase.Group.set
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferBase.CostPolicy.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferBase.CostPolicy.set
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferBase.Group.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferBase.Group.set
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferBase.Method.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferBase.Method.set
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferBase.ProxyCredential.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferBase.ProxyCredential.set
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferBase.ServerCredential.get
+		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferBase.ServerCredential.set
 	}
 }

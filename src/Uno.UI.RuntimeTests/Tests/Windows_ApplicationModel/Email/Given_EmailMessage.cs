@@ -23,21 +23,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		public void When_Recipients_Default()
 		{
 			var emailMessage = new EmailMessage();
-			Assert.AreEqual(0, emailMessage.To.Count);
+			Assert.IsEmpty(emailMessage.To);
 		}
 
 		[TestMethod]
 		public void When_CC_Default()
 		{
 			var emailMessage = new EmailMessage();
-			Assert.AreEqual(0, emailMessage.CC.Count);
+			Assert.IsEmpty(emailMessage.CC);
 		}
 
 		[TestMethod]
 		public void When_Bcc_Default()
 		{
 			var emailMessage = new EmailMessage();
-			Assert.AreEqual(0, emailMessage.Bcc.Count);
+			Assert.IsEmpty(emailMessage.Bcc);
 		}
 
 		[TestMethod]
@@ -55,6 +55,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Body_Set_Null()
 		{
 			var emailMessage = new EmailMessage();
@@ -63,6 +64,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Subject_Set_Null()
 		{
 			var emailMessage = new EmailMessage();
@@ -80,6 +82,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Null_To_Recipient_Is_Added()
 		{
 			var emailMessage = new EmailMessage();
@@ -88,6 +91,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Null_CC_Recipient_Is_Added()
 		{
 			var emailMessage = new EmailMessage();
@@ -96,6 +100,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel.Email
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Null_Bcc_Recipient_Is_Added()
 		{
 			var emailMessage = new EmailMessage();

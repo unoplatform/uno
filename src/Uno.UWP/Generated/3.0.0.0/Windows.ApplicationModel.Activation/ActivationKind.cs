@@ -46,18 +46,6 @@ namespace Windows.ApplicationModel.Activation
 		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.StartupTask
 		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.CommandLineLaunch
 		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.BarcodeScannerProvider
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		PrintSupportJobUI = 1023,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		PrintSupportSettingsUI = 1024,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		PhoneCallActivation = 1025,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		VpnForeground = 1026,
-#endif
 	}
 #endif
 }

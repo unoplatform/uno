@@ -15,43 +15,15 @@ namespace Microsoft.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool ShowWindow
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool WindowRectChangingEventArgs.ShowWindow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WindowRectChangingEventArgs.ShowWindow");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.WindowRectChangingEventArgs", "bool WindowRectChangingEventArgs.ShowWindow");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Graphics.RectInt32 NewWindowRect
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member RectInt32 WindowRectChangingEventArgs.NewWindowRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RectInt32%20WindowRectChangingEventArgs.NewWindowRect");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.WindowRectChangingEventArgs", "RectInt32 WindowRectChangingEventArgs.NewWindowRect");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool AllowRectChange
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WindowRectChangingEventArgs.AllowRectChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WindowRectChangingEventArgs.AllowRectChange");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "AllowRectChange");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.WindowRectChangingEventArgs", "bool WindowRectChangingEventArgs.AllowRectChange");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.WindowRectChangingEventArgs", "AllowRectChange");
 			}
 		}
 #endif
@@ -61,7 +33,21 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MoveSizeOperation WindowRectChangingEventArgs.MoveSizeOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MoveSizeOperation%20WindowRectChangingEventArgs.MoveSizeOperation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "MoveSizeOperation");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Graphics.RectInt32 NewWindowRect
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "NewWindowRect");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.WindowRectChangingEventArgs", "NewWindowRect");
 			}
 		}
 #endif
@@ -71,7 +57,7 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RectInt32 WindowRectChangingEventArgs.OldWindowRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RectInt32%20WindowRectChangingEventArgs.OldWindowRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "OldWindowRect");
 			}
 		}
 #endif
@@ -81,17 +67,31 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PointInt32 WindowRectChangingEventArgs.PointerScreenPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointInt32%20WindowRectChangingEventArgs.PointerScreenPoint");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "PointerScreenPoint");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.MoveSizeOperation.get
-		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.PointerScreenPoint.get
-		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.OldWindowRect.get
-		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.NewWindowRect.get
-		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.NewWindowRect.set
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool ShowWindow
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.WindowRectChangingEventArgs", "ShowWindow");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.WindowRectChangingEventArgs", "ShowWindow");
+			}
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.AllowRectChange.get
 		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.AllowRectChange.set
+		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.MoveSizeOperation.get
+		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.NewWindowRect.get
+		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.NewWindowRect.set
+		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.OldWindowRect.get
+		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.PointerScreenPoint.get
 		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.ShowWindow.get
 		// Forced skipping of method Microsoft.UI.Input.WindowRectChangingEventArgs.ShowWindow.set
 	}

@@ -19,7 +19,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnCredential.AdditionalPin is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnCredential.AdditionalPin");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCredential", "AdditionalPin");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate VpnCredential.CertificateCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Certificate%20VpnCredential.CertificateCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCredential", "CertificateCredential");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential VpnCredential.OldPasswordCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PasswordCredential%20VpnCredential.OldPasswordCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCredential", "OldPasswordCredential");
 			}
 		}
 #endif
@@ -49,14 +49,14 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential VpnCredential.PasskeyCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PasswordCredential%20VpnCredential.PasskeyCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnCredential", "PasskeyCredential");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.PasskeyCredential.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.CertificateCredential.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.AdditionalPin.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.CertificateCredential.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.OldPasswordCredential.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnCredential.PasskeyCredential.get
 		// Processing: Windows.Networking.Vpn.IVpnCredential
 	}
 }

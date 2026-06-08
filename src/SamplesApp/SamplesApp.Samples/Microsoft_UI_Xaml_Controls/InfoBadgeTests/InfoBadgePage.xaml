@@ -1,0 +1,227 @@
+﻿<Page
+    x:Class="UITests.Microsoft_UI_Xaml_Controls.InfoBadgeTests.InfoBadgePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:contract5Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.InfoBadgeTests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Grid Margin="12" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.Resources>
+            <SolidColorBrush x:Key="BackgroundColorPickerResultBrush" Color="{Binding ElementName=BackgroundColorPicker, Path=Color}" />
+            <SolidColorBrush x:Key="ForegroundColorPickerResultBrush" Color="{Binding ElementName=ForegroundColorPicker, Path=Color}" />
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel contract5Present:Spacing="5">
+            <StackPanel
+                Height="100"
+                MinWidth="100"
+                Padding="10"
+                Background="LightGreen">
+                <controls:InfoBadge
+                    x:Name="DynamicInfoBadge"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Background="{StaticResource BackgroundColorPickerResultBrush}"
+                    Foreground="{StaticResource ForegroundColorPickerResultBrush}"
+                    Value="{Binding ElementName=ValueNumberBox, Path=Value, Mode=TwoWay}" />
+            </StackPanel>
+            <controls:InfoBadge x:Name="DefaultInfoBadge" HorizontalAlignment="Right" />
+            <controls:InfoBadge
+                x:Name="DefaultValueInfoBadge"
+                HorizontalAlignment="Right"
+                Value="5" />
+            <controls:InfoBadge x:Name="DefaultFontIconInfoBadge1" HorizontalAlignment="Right">
+                <controls:InfoBadge.IconSource>
+                    <controls:FontIconSource FontFamily="XamlAutoFontFamily" Glyph="9" />
+                </controls:InfoBadge.IconSource>
+            </controls:InfoBadge>
+            <controls:InfoBadge x:Name="DefaultFontIconInfoBadge2" HorizontalAlignment="Right">
+                <controls:InfoBadge.IconSource>
+                    <controls:FontIconSource FontFamily="XamlAutoFontFamily" Glyph="99+" />
+                </controls:InfoBadge.IconSource>
+            </controls:InfoBadge>
+            <controls:InfoBadge x:Name="DefaultFontIconInfoBadge3" HorizontalAlignment="Right">
+                <controls:InfoBadge.IconSource>
+                    <controls:FontIconSource Glyph="&#xEA38;" />
+                </controls:InfoBadge.IconSource>
+            </controls:InfoBadge>
+            <controls:InfoBadge x:Name="DefaultIconInfoBadge" HorizontalAlignment="Right">
+                <controls:InfoBadge.IconSource>
+                    <controls:SymbolIconSource Symbol="Setting" />
+                </controls:InfoBadge.IconSource>
+            </controls:InfoBadge>
+
+            <StackPanel contract5Present:Spacing="5" Orientation="Horizontal">
+                <StackPanel contract5Present:Spacing="2">
+                    <TextBlock Text="Attention styles:" />
+                    <controls:InfoBadge HorizontalAlignment="Right" Style="{StaticResource AttentionIconInfoBadgeStyle}" />
+                    <controls:InfoBadge
+                        HorizontalAlignment="Right"
+                        Style="{StaticResource AttentionValueInfoBadgeStyle}"
+                        Value="10" />
+                    <controls:InfoBadge HorizontalAlignment="Right" Style="{StaticResource AttentionDotInfoBadgeStyle}" />
+                </StackPanel>
+                <StackPanel contract5Present:Spacing="2">
+                    <TextBlock Text="Informational styles:" />
+                    <controls:InfoBadge HorizontalAlignment="Right" Style="{StaticResource InformationalIconInfoBadgeStyle}" />
+                    <controls:InfoBadge
+                        HorizontalAlignment="Right"
+                        Style="{StaticResource InformationalValueInfoBadgeStyle}"
+                        Value="10" />
+                    <controls:InfoBadge HorizontalAlignment="Right" Style="{StaticResource InformationalDotInfoBadgeStyle}" />
+                </StackPanel>
+                <StackPanel contract5Present:Spacing="2">
+                    <TextBlock Text="Success styles:" />
+                    <controls:InfoBadge HorizontalAlignment="Right" Style="{StaticResource SuccessIconInfoBadgeStyle}" />
+                    <controls:InfoBadge
+                        HorizontalAlignment="Right"
+                        Style="{StaticResource SuccessValueInfoBadgeStyle}"
+                        Value="10" />
+                    <controls:InfoBadge HorizontalAlignment="Right" Style="{StaticResource SuccessDotInfoBadgeStyle}" />
+                </StackPanel>
+                <StackPanel contract5Present:Spacing="2">
+                    <TextBlock Text="Caution styles:" />
+                    <controls:InfoBadge HorizontalAlignment="Right" Style="{StaticResource CautionIconInfoBadgeStyle}" />
+                    <controls:InfoBadge
+                        HorizontalAlignment="Right"
+                        Style="{StaticResource CautionValueInfoBadgeStyle}"
+                        Value="10" />
+                    <controls:InfoBadge HorizontalAlignment="Right" Style="{StaticResource CautionDotInfoBadgeStyle}" />
+                </StackPanel>
+                <StackPanel contract5Present:Spacing="2">
+                    <TextBlock Text="Critical styles:" />
+                    <controls:InfoBadge HorizontalAlignment="Right" Style="{StaticResource CriticalIconInfoBadgeStyle}" />
+                    <controls:InfoBadge
+                        HorizontalAlignment="Right"
+                        Style="{StaticResource CriticalValueInfoBadgeStyle}"
+                        Value="10" />
+                    <controls:InfoBadge HorizontalAlignment="Right" Style="{StaticResource CriticalDotInfoBadgeStyle}" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <!--  5  -->
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <TextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="Set Value: " />
+                <controls:NumberBox
+                    x:Name="ValueNumberBox"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Value="-1" />
+            </StackPanel>
+            <StackPanel
+                Grid.Column="1"
+                HorizontalAlignment="Left"
+                Orientation="Horizontal">
+                <TextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="value:" />
+                <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=DynamicInfoBadge, Path=Value}" />
+            </StackPanel>
+            <TextBlock
+                Grid.Row="1"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Text="Icon: " />
+            <ComboBox
+                x:Name="IconComboBox"
+                Grid.Row="1"
+                Grid.Column="1"
+                SelectedIndex="0"
+                SelectionChanged="IconComboBoxSelectionChanged">
+                <ComboBoxItem x:Name="NullIcon" Content="Null" />
+                <ComboBoxItem x:Name="FontIcon" Content="FontIcon" />
+                <ComboBoxItem x:Name="BitmapIcon" Content="BitmapIcon" />
+                <ComboBoxItem x:Name="ImageIcon" Content="ImageIcon" />
+                <ComboBoxItem x:Name="SymbolIcon" Content="SymbolIcon" />
+                <ComboBoxItem x:Name="PathIcon" Content="PathIcon" />
+                <ComboBoxItem x:Name="AnimatedIcon" Content="AnimatedIcon" />
+            </ComboBox>
+            <TextBlock
+                Grid.Row="2"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Text="Icon Foreground: " />
+            <StackPanel
+                Grid.Row="2"
+                Grid.Column="1"
+                Orientation="Horizontal">
+                <Button>
+                    <Button.Resources>
+                        <SolidColorBrush x:Key="IconForegroundColorPickerResultBrush" Color="{Binding ElementName=IconForegroundColorPicker, Path=Color}" />
+                    </Button.Resources>
+                    <Grid
+                        Width="20"
+                        Height="20"
+                        Background="{StaticResource IconForegroundColorPickerResultBrush}" />
+                    <Button.Flyout>
+                        <Flyout>
+                            <controls:ColorPicker
+                                x:Name="IconForegroundColorPicker"
+                                ColorChanged="OnIconForegroundColorPickerColorChanged"
+                                Color="White" />
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
+                <Button Click="OnForegroundToNullButtonClicked" Content="Foreground=Null" />
+                <Button Click="OnClearForegroundButtonClicked" Content="Clear Foreground" />
+            </StackPanel>
+            <TextBlock
+                Grid.Row="3"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Text="Background: " />
+            <Button Grid.Row="3" Grid.Column="1">
+                <Grid
+                    Width="20"
+                    Height="20"
+                    Background="{StaticResource BackgroundColorPickerResultBrush}" />
+                <Button.Flyout>
+                    <Flyout>
+                        <controls:ColorPicker x:Name="BackgroundColorPicker" Color="{ThemeResource SystemAccentColor}" />
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+            <TextBlock
+                Grid.Row="4"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Text="Foreground: " />
+            <Button Grid.Row="4" Grid.Column="1">
+                <Grid
+                    Width="20"
+                    Height="20"
+                    Background="{StaticResource ForegroundColorPickerResultBrush}" />
+                <Button.Flyout>
+                    <Flyout>
+                        <controls:ColorPicker x:Name="ForegroundColorPicker" Color="White" />
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+        </Grid>
+    </Grid>
+</Page>

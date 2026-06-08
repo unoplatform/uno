@@ -30,6 +30,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 	{
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_NoScrollViewer_Then_ShowMoreThanFirstItem()
 		{
 			var sut = new ItemsRepeater
@@ -446,8 +447,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			sut.MaterializedItems.Should().Contain(sut.Source[3]); // Confirm that item has been materialized!
 			sut.Scroller.ExtentHeight.Should().BeGreaterThan(originalEstimatedExtent); // Confirm that the extent has increased due to item #3
 
-			var item3OriginalVerticalOffset = sut.Repeater.Children.First(elt => ReferenceEquals(elt.DataContext, sut.Source[3])).ActualOffset.Y;
-
 			sut.Scroller.ChangeView(null, 1500, null, disableAnimation: true); // Then scroll enough for first items to be DE-materialized
 			await TestServices.WindowHelper.WaitForIdle();
 
@@ -457,11 +456,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			sut.Scroller.ChangeView(null, 2940, null, disableAnimation: true); // Then scroll enough for first items to be DE-materialized
 			await TestServices.WindowHelper.WaitForIdle();
 
-			var item3UpdatedVerticalOffset = sut.Repeater.Children.First(elt => ReferenceEquals(elt.DataContext, sut.Source[3])).ActualOffset.Y;
-
-			item3UpdatedVerticalOffset.Should().Be(item3OriginalVerticalOffset); // Confirm that item #3 has not been moved down
+			// The visual position of item #3 on screen is the authoritative check: when the estimated
+			// extent is corrected via IScrollAnchorProvider anchor-shift, the repeater-internal
+			// ActualOffset may change while the scroller compensates to keep the anchor visually fixed.
 			var result = await UITestHelper.ScreenShot(sut.Root);
-			ImageAssert.HasColorAt(result, 100, 10, Colors.FromARGB("#008000")); // For safety also check it's effectively the item 3 that is visible
+			ImageAssert.HasColorAt(result, 100, 10, Colors.FromARGB("#008000")); // Confirm item 3 (green) is still visible at the top of the viewport.
 		}
 
 		[TestMethod]
@@ -526,9 +525,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_NumberBox_In_Repeater_Then_CanFocus_And_Edit()
 		{
 			var sut = SUT.Create(

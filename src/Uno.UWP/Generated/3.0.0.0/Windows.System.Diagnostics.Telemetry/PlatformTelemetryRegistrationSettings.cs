@@ -10,29 +10,29 @@ namespace Windows.System.Diagnostics.Telemetry
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint UploadQuotaSize
+		public uint StorageSize
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PlatformTelemetryRegistrationSettings.UploadQuotaSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PlatformTelemetryRegistrationSettings.UploadQuotaSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings", "StorageSize");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings", "uint PlatformTelemetryRegistrationSettings.UploadQuotaSize");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings", "StorageSize");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint StorageSize
+		public uint UploadQuotaSize
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PlatformTelemetryRegistrationSettings.StorageSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PlatformTelemetryRegistrationSettings.StorageSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings", "UploadQuotaSize");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings", "uint PlatformTelemetryRegistrationSettings.StorageSize");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings", "UploadQuotaSize");
 			}
 		}
 #endif
@@ -40,7 +40,7 @@ namespace Windows.System.Diagnostics.Telemetry
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PlatformTelemetryRegistrationSettings()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings", "PlatformTelemetryRegistrationSettings.PlatformTelemetryRegistrationSettings()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings", "PlatformTelemetryRegistrationSettings()");
 		}
 #endif
 		// Forced skipping of method Windows.System.Diagnostics.Telemetry.PlatformTelemetryRegistrationSettings.PlatformTelemetryRegistrationSettings()

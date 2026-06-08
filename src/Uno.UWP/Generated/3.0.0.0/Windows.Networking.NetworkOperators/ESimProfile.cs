@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESimProfileClass ESimProfile.Class is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ESimProfileClass%20ESimProfile.Class");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimProfile", "Class");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ESimProfile.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ESimProfile.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimProfile", "Id");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ESimProfile.Nickname is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ESimProfile.Nickname");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimProfile", "Nickname");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESimProfilePolicy ESimProfile.Policy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ESimProfilePolicy%20ESimProfile.Policy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimProfile", "Policy");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference ESimProfile.ProviderIcon is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20ESimProfile.ProviderIcon");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimProfile", "ProviderIcon");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ESimProfile.ProviderId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ESimProfile.ProviderId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimProfile", "ProviderId");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ESimProfile.ProviderName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ESimProfile.ProviderName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimProfile", "ProviderName");
 			}
 		}
 #endif
@@ -89,38 +89,38 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESimProfileState ESimProfile.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ESimProfileState%20ESimProfile.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimProfile", "State");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.Class.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.Nickname.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.Policy.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.Id.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.ProviderIcon.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.ProviderId.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.ProviderName.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.State.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.ESimOperationResult> DisableAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ESimOperationResult> ESimProfile.DisableAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CESimOperationResult%3E%20ESimProfile.DisableAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimProfile", "DisableAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.ESimOperationResult> EnableAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ESimOperationResult> ESimProfile.EnableAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CESimOperationResult%3E%20ESimProfile.EnableAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimProfile", "EnableAsync()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.ESimOperationResult> SetNicknameAsync(string newNickname)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ESimOperationResult> ESimProfile.SetNicknameAsync(string newNickname) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CESimOperationResult%3E%20ESimProfile.SetNicknameAsync%28string%20newNickname%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimProfile", "SetNicknameAsync(string newNickname)");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.Class.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.Id.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.Nickname.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.Policy.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.ProviderIcon.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.ProviderId.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.ProviderName.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimProfile.State.get
 	}
 }

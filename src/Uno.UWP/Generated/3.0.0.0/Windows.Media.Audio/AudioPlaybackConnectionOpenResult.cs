@@ -19,7 +19,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception AudioPlaybackConnectionOpenResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20AudioPlaybackConnectionOpenResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioPlaybackConnectionOpenResult", "ExtendedError");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioPlaybackConnectionOpenResultStatus AudioPlaybackConnectionOpenResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioPlaybackConnectionOpenResultStatus%20AudioPlaybackConnectionOpenResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.AudioPlaybackConnectionOpenResult", "Status");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnectionOpenResult.Status.get
 		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnectionOpenResult.ExtendedError.get
+		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnectionOpenResult.Status.get
 	}
 }

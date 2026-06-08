@@ -16,7 +16,7 @@ namespace Windows.Devices.Lights
 		private readonly string _defaultCameraId;
 		private CameraManager _cameraManager;
 #pragma warning disable CS0618
-		// using deprecated API for older Android versions
+		// Using deprecated API for older Android versions
 		private Android.Hardware.Camera _camera;
 #pragma warning restore CS0618
 		private SurfaceTexture _surfaceTexture;
@@ -134,8 +134,8 @@ namespace Windows.Devices.Lights
 					// _brightness ranges from 0 to 1
 					var nativeLevel = minLevel + _brightness * ((int)maxLevel - minLevel);
 					_cameraManager.TurnOnTorchWithStrengthLevel(_defaultCameraId, (int)Math.Round(nativeLevel));
+					return;
 				}
-				else
 #endif
 				if ((int)Build.VERSION.SdkInt >= (int)BuildVersionCodes.M)
 				{

@@ -11,8 +11,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property ToggleState
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ToggleSwitchAutomationPeer.ToggleSwitchAutomationPeer(Microsoft.UI.Xaml.Controls.ToggleSwitch)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleSwitchAutomationPeer.ToggleSwitchAutomationPeer(Microsoft.UI.Xaml.Controls.ToggleSwitch)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleSwitchAutomationPeer.ToggleState.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.ToggleSwitchAutomationPeer.Toggle()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ToggleSwitchAutomationPeer.ToggleState.get
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IToggleProvider
 	}
 }

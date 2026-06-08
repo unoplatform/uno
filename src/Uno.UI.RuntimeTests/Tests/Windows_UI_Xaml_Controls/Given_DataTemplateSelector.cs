@@ -8,6 +8,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_DataTemplateSelector
 {
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Base_Container_Is_Null()
 	{
 		var sut = new DataTemplateSelector();
@@ -18,6 +19,7 @@ public class Given_DataTemplateSelector
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Custom_Container_Is_Null()
 	{
 		var sut = new CustomTemplateSelector();

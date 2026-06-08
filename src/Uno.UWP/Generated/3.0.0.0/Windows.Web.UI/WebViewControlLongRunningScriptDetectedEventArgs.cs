@@ -15,25 +15,25 @@ namespace Windows.Web.UI
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool StopPageScriptExecution
+		public global::System.TimeSpan ExecutionTime
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebViewControlLongRunningScriptDetectedEventArgs.StopPageScriptExecution is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20WebViewControlLongRunningScriptDetectedEventArgs.StopPageScriptExecution");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs", "bool WebViewControlLongRunningScriptDetectedEventArgs.StopPageScriptExecution");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs", "ExecutionTime");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan ExecutionTime
+		public bool StopPageScriptExecution
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan WebViewControlLongRunningScriptDetectedEventArgs.ExecutionTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20WebViewControlLongRunningScriptDetectedEventArgs.ExecutionTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs", "StopPageScriptExecution");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlLongRunningScriptDetectedEventArgs", "StopPageScriptExecution");
 			}
 		}
 #endif

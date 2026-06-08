@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaBreak MediaBreakSkippedEventArgs.MediaBreak is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaBreak%20MediaBreakSkippedEventArgs.MediaBreak");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakSkippedEventArgs", "MediaBreak");
 			}
 		}
 #endif

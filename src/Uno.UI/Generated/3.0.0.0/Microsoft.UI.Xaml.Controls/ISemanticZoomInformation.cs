@@ -29,12 +29,6 @@ namespace Microsoft.UI.Xaml.Controls
 			set;
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ISemanticZoomInformation.SemanticZoomOwner.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ISemanticZoomInformation.SemanticZoomOwner.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ISemanticZoomInformation.IsActiveView.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ISemanticZoomInformation.IsActiveView.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ISemanticZoomInformation.IsZoomedInView.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ISemanticZoomInformation.IsZoomedInView.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void InitializeViewChange();
 #endif
@@ -56,5 +50,11 @@ namespace Microsoft.UI.Xaml.Controls
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void CompleteViewChangeTo(global::Microsoft.UI.Xaml.Controls.SemanticZoomLocation source, global::Microsoft.UI.Xaml.Controls.SemanticZoomLocation destination);
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ISemanticZoomInformation.IsActiveView.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ISemanticZoomInformation.IsActiveView.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ISemanticZoomInformation.IsZoomedInView.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ISemanticZoomInformation.IsZoomedInView.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ISemanticZoomInformation.SemanticZoomOwner.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ISemanticZoomInformation.SemanticZoomOwner.set
 	}
 }

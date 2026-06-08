@@ -8,54 +8,54 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 	public partial class CoreWebView2NavigationStartingEventArgs
 	{
-		// Skipping already declared property Cancel
-		// Skipping already declared property IsRedirected
-		// Skipping already declared property IsUserInitiated
-		// Skipping already declared property NavigationId
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders RequestHeaders
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreWebView2HttpRequestHeaders CoreWebView2NavigationStartingEventArgs.RequestHeaders is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2HttpRequestHeaders%20CoreWebView2NavigationStartingEventArgs.RequestHeaders");
-			}
-		}
-#endif
-		// Skipping already declared property Uri
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string AdditionalAllowedFrameAncestors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2NavigationStartingEventArgs.AdditionalAllowedFrameAncestors is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2NavigationStartingEventArgs.AdditionalAllowedFrameAncestors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs", "AdditionalAllowedFrameAncestors");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs", "string CoreWebView2NavigationStartingEventArgs.AdditionalAllowedFrameAncestors");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs", "AdditionalAllowedFrameAncestors");
 			}
 		}
 #endif
+		// Skipping already declared property Cancel
+		// Skipping already declared property IsRedirected
+		// Skipping already declared property IsUserInitiated
+		// Skipping already declared property NavigationId
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2NavigationKind NavigationKind
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2NavigationKind CoreWebView2NavigationStartingEventArgs.NavigationKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2NavigationKind%20CoreWebView2NavigationStartingEventArgs.NavigationKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs", "NavigationKind");
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders RequestHeaders
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs", "RequestHeaders");
+			}
+		}
+#endif
+		// Skipping already declared property Uri
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.AdditionalAllowedFrameAncestors.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.AdditionalAllowedFrameAncestors.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.NavigationKind.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.Uri.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.IsUserInitiated.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.IsRedirected.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.RequestHeaders.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.Cancel.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.IsRedirected.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.IsUserInitiated.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.NavigationId.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.NavigationKind.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.RequestHeaders.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.Uri.get
 	}
 }

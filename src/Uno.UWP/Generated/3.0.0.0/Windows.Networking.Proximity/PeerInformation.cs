@@ -15,31 +15,21 @@ namespace Windows.Networking.Proximity
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string DisplayName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string PeerInformation.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PeerInformation.DisplayName");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IBuffer DiscoveryData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer PeerInformation.DiscoveryData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20PeerInformation.DiscoveryData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerInformation", "DiscoveryData");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Id
+		public string DisplayName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PeerInformation.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PeerInformation.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerInformation", "DisplayName");
 			}
 		}
 #endif
@@ -49,7 +39,17 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName PeerInformation.HostName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20PeerInformation.HostName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerInformation", "HostName");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Id
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerInformation", "Id");
 			}
 		}
 #endif
@@ -59,14 +59,14 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PeerInformation.ServiceName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PeerInformation.ServiceName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.PeerInformation", "ServiceName");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.DisplayName.get
-		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.Id.get
 		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.DiscoveryData.get
+		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.DisplayName.get
 		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.HostName.get
+		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.Id.get
 		// Forced skipping of method Windows.Networking.Proximity.PeerInformation.ServiceName.get
 	}
 }

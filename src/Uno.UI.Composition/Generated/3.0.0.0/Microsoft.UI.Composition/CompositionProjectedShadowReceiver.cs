@@ -19,15 +19,15 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Visual CompositionProjectedShadowReceiver.ReceivingVisual is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Visual%20CompositionProjectedShadowReceiver.ReceivingVisual");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionProjectedShadowReceiver", "ReceivingVisual");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadowReceiver", "Visual CompositionProjectedShadowReceiver.ReceivingVisual");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadowReceiver", "ReceivingVisual");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowReceiver.ReceivingVisual.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowReceiver.ReceivingVisual.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowReceiver.ReceivingVisual.set
 	}
 }

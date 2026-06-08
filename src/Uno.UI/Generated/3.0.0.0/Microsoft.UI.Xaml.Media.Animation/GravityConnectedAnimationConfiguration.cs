@@ -14,11 +14,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool GravityConnectedAnimationConfiguration.IsShadowEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GravityConnectedAnimationConfiguration.IsShadowEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration", "IsShadowEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration", "bool GravityConnectedAnimationConfiguration.IsShadowEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration", "IsShadowEnabled");
 			}
 		}
 #endif
@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public GravityConnectedAnimationConfiguration()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration", "GravityConnectedAnimationConfiguration.GravityConnectedAnimationConfiguration()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration", "GravityConnectedAnimationConfiguration()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.GravityConnectedAnimationConfiguration.GravityConnectedAnimationConfiguration()

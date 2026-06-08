@@ -19,7 +19,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SystemCpuUsageReport.IdleTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SystemCpuUsageReport.IdleTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemCpuUsageReport", "IdleTime");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SystemCpuUsageReport.KernelTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SystemCpuUsageReport.KernelTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemCpuUsageReport", "KernelTime");
 			}
 		}
 #endif
@@ -39,12 +39,12 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SystemCpuUsageReport.UserTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SystemCpuUsageReport.UserTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemCpuUsageReport", "UserTime");
 			}
 		}
 #endif
+		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsageReport.IdleTime.get
 		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsageReport.KernelTime.get
 		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsageReport.UserTime.get
-		// Forced skipping of method Windows.System.Diagnostics.SystemCpuUsageReport.IdleTime.get
 	}
 }

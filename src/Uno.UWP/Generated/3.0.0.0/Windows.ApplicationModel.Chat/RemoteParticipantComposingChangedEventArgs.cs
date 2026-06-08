@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RemoteParticipantComposingChangedEventArgs.IsComposing is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RemoteParticipantComposingChangedEventArgs.IsComposing");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs", "IsComposing");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteParticipantComposingChangedEventArgs.ParticipantAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RemoteParticipantComposingChangedEventArgs.ParticipantAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs", "ParticipantAddress");
 			}
 		}
 #endif
@@ -39,12 +39,12 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteParticipantComposingChangedEventArgs.TransportId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RemoteParticipantComposingChangedEventArgs.TransportId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs", "TransportId");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs.TransportId.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs.ParticipantAddress.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs.IsComposing.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs.ParticipantAddress.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.RemoteParticipantComposingChangedEventArgs.TransportId.get
 	}
 }

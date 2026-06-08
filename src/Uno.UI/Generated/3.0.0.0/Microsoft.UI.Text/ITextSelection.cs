@@ -21,9 +21,6 @@ namespace Microsoft.UI.Text
 			get;
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Text.ITextSelection.Options.get
-		// Forced skipping of method Microsoft.UI.Text.ITextSelection.Options.set
-		// Forced skipping of method Microsoft.UI.Text.ITextSelection.Type.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		int EndKey(global::Microsoft.UI.Text.TextRangeUnit unit, bool extend);
 #endif
@@ -45,5 +42,8 @@ namespace Microsoft.UI.Text
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void TypeText(string value);
 #endif
+		// Forced skipping of method Microsoft.UI.Text.ITextSelection.Options.get
+		// Forced skipping of method Microsoft.UI.Text.ITextSelection.Options.set
+		// Forced skipping of method Microsoft.UI.Text.ITextSelection.Type.get
 	}
 }

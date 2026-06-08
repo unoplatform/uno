@@ -481,4 +481,188 @@ public partial class Given_Parser
 
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	public async Task When_WMC0907_xNameless_xLoad()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml", MainPageXamlBoilerplate("""
+				<TextBlock x:Load="False" />
+			""")),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+			.AddSource(_emptyCodeBehind)
+			.AddGeneratedSources();
+
+		test.ExpectedDiagnostics.AddRange(
+		[
+			DiagnosticResult.CompilerError("UXAML0001")
+				.WithSpan("C:/Project/0/MainPage.xaml", 4, 3, 4, 3)
+				.WithArguments("Element must have x:Name attribute specified since it uses x:Load."),
+		]);
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_WMC0913_xLoad_Root_Element()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml", """
+				<Page
+					x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					
+					x:Load="False" />
+			"""),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+			.AddSource(_emptyCodeBehind)
+			.AddGeneratedSources();
+
+		test.ExpectedDiagnostics.AddRange(
+		[
+			DiagnosticResult.CompilerError("UXAML0001")
+				.WithSpan("C:/Project/0/MainPage.xaml", 1, 3, 1, 3)
+				.WithArguments("x:Load cannot be used on the root of a Page, User Control or DataTemplate, or direct children of a Resource Dictionary, and can only be used on elements of type UIElement or FlyoutBase"),
+		]);
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_WMC0913_xLoad_DataTemplate_Root()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml", MainPageXamlBoilerplate("""
+				<ContentControl>
+					<ContentControl.ContentTemplate>
+						<DataTemplate>
+							<Border x:Name="RootBorder" x:Load="False" />
+						</DataTemplate>
+					</ContentControl.ContentTemplate>
+				</ContentControl>
+			""")),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+			.AddSource(_emptyCodeBehind)
+			.AddGeneratedSources();
+
+		test.ExpectedDiagnostics.AddRange(
+		[
+			DiagnosticResult.CompilerError("UXAML0001")
+
+				.WithSpan("C:/Project/0/MainPage.xaml", 7, 6, 7, 6)
+				.WithArguments("x:Load cannot be used on the root of a Page, User Control or DataTemplate, or direct children of a Resource Dictionary, and can only be used on elements of type UIElement or FlyoutBase"),
+		]);
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_WMC0913_xLoad_ExplicitResDict_Root()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MyRD.xaml","""
+				<ResourceDictionary
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+					<Border x:Key="MyKey" x:Name="MyName" x:Load="False" />
+
+				</ResourceDictionary>
+			"""),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+			// no code-behind here for .AddSource()
+			.AddGeneratedSources();
+
+		test.ExpectedDiagnostics.AddRange(
+		[
+			DiagnosticResult.CompilerError("UXAML0001")
+				.WithSpan("C:/Project/0/MyRD.xaml", 5, 4, 5, 4)
+				.WithArguments("x:Load cannot be used on the root of a Page, User Control or DataTemplate, or direct children of a Resource Dictionary, and can only be used on elements of type UIElement or FlyoutBase"),
+		]);
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_WMC0913_xLoad_ImplicitResDict_Root()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml", MainPageXamlBoilerplate("""
+				<Page.Resources>
+					<Border x:Key="MyKey" x:Name="MyName" x:Load="False" />
+				</Page.Resources>
+			""")),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+			.AddSource(_emptyCodeBehind)
+			.AddGeneratedSources();
+
+		test.ExpectedDiagnostics.AddRange(
+		[
+			DiagnosticResult.CompilerError("UXAML0001")
+				.WithSpan("C:/Project/0/MainPage.xaml", 5, 4, 5, 4)
+				.WithArguments("x:Load cannot be used on the root of a Page, User Control or DataTemplate, or direct children of a Resource Dictionary, and can only be used on elements of type UIElement or FlyoutBase"),
+		]);
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_WMC0913_xLoad_DataTemplate_NestedMember_OK()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml", MainPageXamlBoilerplate("""
+				<Page.Resources>
+					<DataTemplate>
+						<Border>
+							<Border x:Name="RootBorder" x:Load="False" />
+						</Border>
+					</DataTemplate>
+				</Page.Resources>
+			""")),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+			.AddSource(_emptyCodeBehind)
+			.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_WMC0913_xLoad_ResDict_NestedMember_OK()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml", MainPageXamlBoilerplate("""
+				<Page.Resources>
+					<Button x:Key="TestButtonResource">
+						<Border x:Name="NestedMember" x:Load="False" />
+					</Button>
+				</Page.Resources>
+			""")),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+			.AddSource(_emptyCodeBehind)
+			.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
 }

@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MobileBroadbandNetwork.AccessPointName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MobileBroadbandNetwork.AccessPointName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandNetwork", "AccessPointName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MobileBroadbandNetwork.ActivationNetworkError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MobileBroadbandNetwork.ActivationNetworkError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandNetwork", "ActivationNetworkError");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NetworkAdapter MobileBroadbandNetwork.NetworkAdapter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NetworkAdapter%20MobileBroadbandNetwork.NetworkAdapter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandNetwork", "NetworkAdapter");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NetworkRegistrationState MobileBroadbandNetwork.NetworkRegistrationState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NetworkRegistrationState%20MobileBroadbandNetwork.NetworkRegistrationState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandNetwork", "NetworkRegistrationState");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MobileBroadbandNetwork.PacketAttachNetworkError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MobileBroadbandNetwork.PacketAttachNetworkError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandNetwork", "PacketAttachNetworkError");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DataClasses MobileBroadbandNetwork.RegisteredDataClass is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataClasses%20MobileBroadbandNetwork.RegisteredDataClass");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandNetwork", "RegisteredDataClass");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MobileBroadbandNetwork.RegisteredProviderId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MobileBroadbandNetwork.RegisteredProviderId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandNetwork", "RegisteredProviderId");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MobileBroadbandNetwork.RegisteredProviderName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MobileBroadbandNetwork.RegisteredProviderName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandNetwork", "RegisteredProviderName");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MobileBroadbandNetwork.RegistrationNetworkError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MobileBroadbandNetwork.RegistrationNetworkError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandNetwork", "RegistrationNetworkError");
 			}
 		}
 #endif
@@ -109,40 +109,40 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandUiccApp> MobileBroadbandNetwork.RegistrationUiccApps is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMobileBroadbandUiccApp%3E%20MobileBroadbandNetwork.RegistrationUiccApps");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandNetwork", "RegistrationUiccApps");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.NetworkAdapter.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.NetworkRegistrationState.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.RegistrationNetworkError.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.PacketAttachNetworkError.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.ActivationNetworkError.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.AccessPointName.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.RegisteredDataClass.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.RegisteredProviderId.get
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.RegisteredProviderName.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ShowConnectionUI()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.MobileBroadbandNetwork", "void MobileBroadbandNetwork.ShowConnectionUI()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.MobileBroadbandNetwork", "ShowConnectionUI()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<bool> GetVoiceCallSupportAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> MobileBroadbandNetwork.GetVoiceCallSupportAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20MobileBroadbandNetwork.GetVoiceCallSupportAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandNetwork", "GetVoiceCallSupportAsync()");
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.RegistrationUiccApps.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo> GetCellsInfoAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<MobileBroadbandCellsInfo> MobileBroadbandNetwork.GetCellsInfoAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMobileBroadbandCellsInfo%3E%20MobileBroadbandNetwork.GetCellsInfoAsync%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandNetwork", "GetCellsInfoAsync()");
 		}
 #endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.AccessPointName.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.ActivationNetworkError.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.NetworkAdapter.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.NetworkRegistrationState.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.PacketAttachNetworkError.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.RegisteredDataClass.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.RegisteredProviderId.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.RegisteredProviderName.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.RegistrationNetworkError.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandNetwork.RegistrationUiccApps.get
 	}
 }

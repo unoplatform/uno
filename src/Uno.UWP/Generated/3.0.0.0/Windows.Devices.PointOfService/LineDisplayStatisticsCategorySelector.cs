@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LineDisplayStatisticsCategorySelector.AllStatistics is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20LineDisplayStatisticsCategorySelector.AllStatistics");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector", "AllStatistics");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LineDisplayStatisticsCategorySelector.ManufacturerStatistics is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20LineDisplayStatisticsCategorySelector.ManufacturerStatistics");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector", "ManufacturerStatistics");
 			}
 		}
 #endif
@@ -39,12 +39,12 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LineDisplayStatisticsCategorySelector.UnifiedPosStatistics is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20LineDisplayStatisticsCategorySelector.UnifiedPosStatistics");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector", "UnifiedPosStatistics");
 			}
 		}
 #endif
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector.AllStatistics.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector.UnifiedPosStatistics.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector.ManufacturerStatistics.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStatisticsCategorySelector.UnifiedPosStatistics.get
 	}
 }

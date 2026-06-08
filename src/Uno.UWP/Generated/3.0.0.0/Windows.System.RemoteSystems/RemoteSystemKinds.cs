@@ -14,7 +14,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Desktop is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RemoteSystemKinds.Desktop");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemKinds", "Desktop");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Holographic is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RemoteSystemKinds.Holographic");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemKinds", "Holographic");
 			}
 		}
 #endif
@@ -34,27 +34,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Hub is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RemoteSystemKinds.Hub");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string Phone
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Phone is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RemoteSystemKinds.Phone");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string Xbox
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Xbox is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RemoteSystemKinds.Xbox");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemKinds", "Hub");
 			}
 		}
 #endif
@@ -64,7 +44,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Iot is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RemoteSystemKinds.Iot");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemKinds", "Iot");
 			}
 		}
 #endif
@@ -74,7 +54,17 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Laptop is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RemoteSystemKinds.Laptop");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemKinds", "Laptop");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string Phone
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemKinds", "Phone");
 			}
 		}
 #endif
@@ -84,17 +74,27 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemKinds.Tablet is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RemoteSystemKinds.Tablet");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemKinds", "Tablet");
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static string Xbox
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemKinds", "Xbox");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKinds.Desktop.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKinds.Holographic.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKinds.Hub.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKinds.Iot.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKinds.Tablet.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKinds.Laptop.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKinds.Phone.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKinds.Hub.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKinds.Holographic.get
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKinds.Desktop.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKinds.Tablet.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemKinds.Xbox.get
 	}
 }

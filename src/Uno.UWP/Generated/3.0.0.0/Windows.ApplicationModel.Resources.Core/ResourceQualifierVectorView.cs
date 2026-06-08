@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.Resources.Core
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ResourceQualifierVectorView : global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Resources.Core.ResourceQualifier>, global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Resources.Core.ResourceQualifier>
+	public partial class ResourceQualifierVectorView : global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Resources.Core.ResourceQualifier>, global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Resources.Core.ResourceQualifier>, global::System.Collections.IEnumerable, global::System.Collections.Generic.IReadOnlyCollection<global::Windows.ApplicationModel.Resources.Core.ResourceQualifier>
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal ResourceQualifierVectorView()
@@ -15,39 +15,37 @@ namespace Windows.ApplicationModel.Resources.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
+		public int Count
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ResourceQualifierVectorView.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ResourceQualifierVectorView.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView", "Count");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.GetAt(uint)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.Size.get
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.IndexOf(Windows.ApplicationModel.Resources.Core.ResourceQualifier, out uint)
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.GetMany(uint, Windows.ApplicationModel.Resources.Core.ResourceQualifier[])
-		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.First()
-		// Processing: System.Collections.Generic.IReadOnlyList<Windows.ApplicationModel.Resources.Core.ResourceQualifier>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Resources.Core.ResourceQualifier this[int index]
 		{
 			get
 			{
-				throw new global::System.NotSupportedException();
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView", "this[int index]");
 			}
 		}
 #endif
-		// Processing: System.Collections.Generic.IEnumerable<Windows.ApplicationModel.Resources.Core.ResourceQualifier>
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.Count.get
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.this[int].get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.ApplicationModel.Resources.Core.ResourceQualifier>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.ApplicationModel.Resources.Core.ResourceQualifier> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView", "GetEnumerator()");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceQualifierVectorView.System.Collections.Generic.IReadOnlyList<Windows.ApplicationModel.Resources.Core.ResourceQualifier>.get_Item(int)
+		// Processing: System.Collections.Generic.IReadOnlyList<Windows.ApplicationModel.Resources.Core.ResourceQualifier>
+		// Processing: System.Collections.Generic.IEnumerable<Windows.ApplicationModel.Resources.Core.ResourceQualifier>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable
@@ -58,15 +56,5 @@ namespace Windows.ApplicationModel.Resources.Core
 		}
 #endif
 		// Processing: System.Collections.Generic.IReadOnlyCollection<Windows.ApplicationModel.Resources.Core.ResourceQualifier>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 	}
 }

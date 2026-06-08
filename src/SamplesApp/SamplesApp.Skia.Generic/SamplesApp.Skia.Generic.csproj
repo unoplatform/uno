@@ -49,7 +49,7 @@
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
 		<PackageReference Include="Microsoft.Web.WebView2" Aliases="WpfWebView" />
-		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.21" />
+		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.23.1" />
 		<PackageReference Include="Uno.Resizetizer" />
 	</ItemGroup>
 
@@ -130,6 +130,30 @@
 		</ItemGroup>
 
 		<Error Condition="!exists('$(PublishDir)%(_validationPath.Identity)')" Text="Failed to find published filed: %(_validationPath.Identity)" />
+	</Target>
+
+	<!--
+	On macOS, create a minimal .app bundle alongside the regular build output so that
+	TCC-gated APIs (microphone, speech recognition) can present their authorization
+	prompt. The .app contains an Info.plist with NSMicrophoneUsageDescription and
+	NSSpeechRecognitionUsageDescription, plus the build output under Contents/MacOS.
+	Launch the bundle via `open bin/Debug/$(TargetFramework)/SamplesApp.Skia.Generic.app`.
+	Set SkipMacOSAppBundle=true to skip.
+	-->
+	<Target Name="_UnoBundleAppMacOS"
+	        Condition="$([MSBuild]::IsOsPlatform('OSX')) and '$(SkipMacOSAppBundle)' != 'true' and '$(OutputType)' == 'Exe' and '$(TargetFramework)' != ''"
+	        AfterTargets="Build">
+		<PropertyGroup>
+			<_AppBundleDir>$(OutputPath)$(AssemblyName).app</_AppBundleDir>
+			<_AppBundleContentsDir>$(_AppBundleDir)/Contents</_AppBundleContentsDir>
+			<_AppBundleMacOSDir>$(_AppBundleContentsDir)/MacOS</_AppBundleMacOSDir>
+		</PropertyGroup>
+		<RemoveDir Directories="$(_AppBundleDir)" />
+		<MakeDir Directories="$(_AppBundleMacOSDir)" />
+		<Copy SourceFiles="$(MSBuildThisFileDirectory)Resources/Info.plist"
+		      DestinationFolder="$(_AppBundleContentsDir)" />
+		<Exec Command="rsync -a --exclude='$(AssemblyName).app' '$(OutputPath)/' '$(_AppBundleMacOSDir)/'" />
+		<Message Importance="high" Text="Created macOS app bundle: $(_AppBundleDir)" />
 	</Target>
 
 	<Target Name="_UnoRemoveTransitiveWPFDependency" BeforeTargets="_CheckForTransitiveWindowsDesktopDependencies">

@@ -50,56 +50,60 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			base.IsParsing = true;
 			// Source 0\Binding_Xaml_Object_With_Xaml_Object_Properties.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.Grid
-			{
-				IsParsing = true,
-				// Source 0\Binding_Xaml_Object_With_Xaml_Object_Properties.xaml (Line 10:6)
-				Children = 
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.Grid
 				{
-					new global::Microsoft.UI.Xaml.Controls.TextBlock
+					IsParsing = true,
+					// Source 0\Binding_Xaml_Object_With_Xaml_Object_Properties.xaml (Line 10:6)
+					Children = 
 					{
-						IsParsing = true,
-						Name = "topLevel",
-						Tag = @"42",
-						// Source 0\Binding_Xaml_Object_With_Xaml_Object_Properties.xaml (Line 11:10)
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.TextBlock
+							{
+								IsParsing = true,
+								Name = "topLevel",
+								Tag = @"42",
+								// Source 0\Binding_Xaml_Object_With_Xaml_Object_Properties.xaml (Line 11:10)
+							}
+							.Binding_Xaml_Object_With_Xaml_Object_Properties_5147419e44d1bc3e3f86860ad528476f_XamlApply((Binding_Xaml_Object_With_Xaml_Object_Properties_5147419e44d1bc3e3f86860ad528476fXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+							{
+							/* _isTopLevelDictionary:False */
+							__that._component_0 = __p1;
+							__nameScope.RegisterName("topLevel", __p1);
+							__that.topLevel = __p1;
+							// FieldModifier public
+							__p1.SetBinding(
+								global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
+								new Microsoft.UI.Xaml.Data.Binding()
+								{
+									Path = @"Tag",
+									ElementName = _topLevelSubject,
+									Converter = new global::Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_Xaml_Object_With_Xaml_Object_Properties_Return_Value_Converter(),
+									ConverterParameter = "topLevel",
+									ConverterLanguage = "topLevel",
+									UpdateSourceTrigger = global::Microsoft.UI.Xaml.Data.UpdateSourceTrigger.Default,
+									TargetNullValue = "TargetNullValue",
+									FallbackValue = "FallbackValue",
+									Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
+									RelativeSource = new RelativeSource(RelativeSourceMode.None),
+									Source = "Source",
+								}
+							);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Binding_Xaml_Object_With_Xaml_Object_Properties_5147419e44d1bc3e3f86860ad528476f);
+							__p1.CreationComplete();
+							}
+							))
+						)
+						,
 					}
-					.Binding_Xaml_Object_With_Xaml_Object_Properties_5147419e44d1bc3e3f86860ad528476f_XamlApply((Binding_Xaml_Object_With_Xaml_Object_Properties_5147419e44d1bc3e3f86860ad528476fXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-					{
-					/* _isTopLevelDictionary:False */
-					__that._component_0 = __p1;
-					__nameScope.RegisterName("topLevel", __p1);
-					__that.topLevel = __p1;
-					// FieldModifier public
-					__p1.SetBinding(
-						global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
-						new Microsoft.UI.Xaml.Data.Binding()
-						{
-							Path = @"Tag",
-							ElementName = _topLevelSubject,
-							Converter = new global::Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_Xaml_Object_With_Xaml_Object_Properties_Return_Value_Converter(),
-							ConverterParameter = "topLevel",
-							ConverterLanguage = "topLevel",
-							UpdateSourceTrigger = global::Microsoft.UI.Xaml.Data.UpdateSourceTrigger.Default,
-							TargetNullValue = "TargetNullValue",
-							FallbackValue = "FallbackValue",
-							Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
-							RelativeSource = new RelativeSource(RelativeSourceMode.None),
-							Source = "Source",
-						}
-					);
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Binding_Xaml_Object_With_Xaml_Object_Properties_5147419e44d1bc3e3f86860ad528476f);
-					__p1.CreationComplete();
-					}
-					))
-					,
 				}
-			}
-			.Binding_Xaml_Object_With_Xaml_Object_Properties_5147419e44d1bc3e3f86860ad528476f_XamlApply((Binding_Xaml_Object_With_Xaml_Object_Properties_5147419e44d1bc3e3f86860ad528476fXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
-			{
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Binding_Xaml_Object_With_Xaml_Object_Properties_5147419e44d1bc3e3f86860ad528476f);
-			__p1.CreationComplete();
-			}
-			))
+				.Binding_Xaml_Object_With_Xaml_Object_Properties_5147419e44d1bc3e3f86860ad528476f_XamlApply((Binding_Xaml_Object_With_Xaml_Object_Properties_5147419e44d1bc3e3f86860ad528476fXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+				{
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Binding_Xaml_Object_With_Xaml_Object_Properties_5147419e44d1bc3e3f86860ad528476f);
+				__p1.CreationComplete();
+				}
+				))
+			)
 			;
 			
 			this

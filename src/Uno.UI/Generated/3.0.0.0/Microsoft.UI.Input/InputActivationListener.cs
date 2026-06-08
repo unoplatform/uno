@@ -19,27 +19,27 @@ namespace Microsoft.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InputActivationState InputActivationListener.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputActivationState%20InputActivationListener.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputActivationListener", "State");
 			}
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Input.InputActivationListener.InputActivationChanged.remove
-		// Forced skipping of method Microsoft.UI.Input.InputActivationListener.InputActivationChanged.add
-		// Forced skipping of method Microsoft.UI.Input.InputActivationListener.State.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Input.InputActivationListener GetForIsland(global::Microsoft.UI.Content.ContentIsland island)
-		{
-			throw new global::System.NotImplementedException("The member InputActivationListener InputActivationListener.GetForIsland(ContentIsland island) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputActivationListener%20InputActivationListener.GetForIsland%28ContentIsland%20island%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Input.InputActivationListener GetForWindowId(global::Microsoft.UI.WindowId windowId)
 		{
-			throw new global::System.NotImplementedException("The member InputActivationListener InputActivationListener.GetForWindowId(WindowId windowId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputActivationListener%20InputActivationListener.GetForWindowId%28WindowId%20windowId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputActivationListener", "GetForWindowId(WindowId windowId)");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Input.InputActivationListener GetForIsland(global::Microsoft.UI.Content.ContentIsland island)
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputActivationListener", "GetForIsland(ContentIsland island)");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Input.InputActivationListener.InputActivationChanged.add
+		// Forced skipping of method Microsoft.UI.Input.InputActivationListener.InputActivationChanged.remove
+		// Forced skipping of method Microsoft.UI.Input.InputActivationListener.State.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.InputActivationListener, global::Microsoft.UI.Input.InputActivationListenerActivationChangedEventArgs> InputActivationChanged
@@ -47,12 +47,12 @@ namespace Microsoft.UI.Input
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputActivationListener", "event TypedEventHandler<InputActivationListener, InputActivationListenerActivationChangedEventArgs> InputActivationListener.InputActivationChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputActivationListener", "event InputActivationChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputActivationListener", "event TypedEventHandler<InputActivationListener, InputActivationListenerActivationChangedEventArgs> InputActivationListener.InputActivationChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputActivationListener", "event InputActivationChanged");
 			}
 		}
 #endif

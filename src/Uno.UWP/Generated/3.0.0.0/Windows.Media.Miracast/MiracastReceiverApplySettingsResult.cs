@@ -19,7 +19,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception MiracastReceiverApplySettingsResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20MiracastReceiverApplySettingsResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverApplySettingsResult", "ExtendedError");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastReceiverApplySettingsStatus MiracastReceiverApplySettingsResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MiracastReceiverApplySettingsStatus%20MiracastReceiverApplySettingsResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Miracast.MiracastReceiverApplySettingsResult", "Status");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverApplySettingsResult.Status.get
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverApplySettingsResult.ExtendedError.get
+		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverApplySettingsResult.Status.get
 	}
 }

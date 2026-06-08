@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Security.Authentication.Identity.Provider
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -20,7 +19,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer SecondaryAuthenticationFactorInfo.DeviceConfigurationData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20SecondaryAuthenticationFactorInfo.DeviceConfigurationData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo", "DeviceConfigurationData");
 			}
 		}
 #endif
@@ -30,7 +29,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SecondaryAuthenticationFactorInfo.DeviceFriendlyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SecondaryAuthenticationFactorInfo.DeviceFriendlyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo", "DeviceFriendlyName");
 			}
 		}
 #endif
@@ -40,7 +39,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SecondaryAuthenticationFactorInfo.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SecondaryAuthenticationFactorInfo.DeviceId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo", "DeviceId");
 			}
 		}
 #endif
@@ -50,7 +49,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SecondaryAuthenticationFactorInfo.DeviceModelNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SecondaryAuthenticationFactorInfo.DeviceModelNumber");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo", "DeviceModelNumber");
 			}
 		}
 #endif
@@ -60,7 +59,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SecondaryAuthenticationFactorInfo.IsAuthenticationSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SecondaryAuthenticationFactorInfo.IsAuthenticationSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo", "IsAuthenticationSupported");
 			}
 		}
 #endif
@@ -70,22 +69,22 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SecondaryAuthenticationFactorDevicePresenceMonitoringMode SecondaryAuthenticationFactorInfo.PresenceMonitoringMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SecondaryAuthenticationFactorDevicePresenceMonitoringMode%20SecondaryAuthenticationFactorInfo.PresenceMonitoringMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo", "PresenceMonitoringMode");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo.DeviceId.get
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo.DeviceFriendlyName.get
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo.DeviceModelNumber.get
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo.DeviceConfigurationData.get
-		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo.PresenceMonitoringMode.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction UpdateDevicePresenceAsync(global::Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorDevicePresence presenceState)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction SecondaryAuthenticationFactorInfo.UpdateDevicePresenceAsync(SecondaryAuthenticationFactorDevicePresence presenceState) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SecondaryAuthenticationFactorInfo.UpdateDevicePresenceAsync%28SecondaryAuthenticationFactorDevicePresence%20presenceState%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo", "UpdateDevicePresenceAsync(SecondaryAuthenticationFactorDevicePresence presenceState)");
 		}
 #endif
+		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo.DeviceConfigurationData.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo.DeviceFriendlyName.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo.DeviceId.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo.DeviceModelNumber.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo.IsAuthenticationSupported.get
+		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo.PresenceMonitoringMode.get
 	}
 }

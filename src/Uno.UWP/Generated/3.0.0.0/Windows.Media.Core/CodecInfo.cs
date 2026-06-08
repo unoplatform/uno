@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CodecCategory CodecInfo.Category is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CodecCategory%20CodecInfo.Category");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecInfo", "Category");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CodecInfo.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CodecInfo.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecInfo", "DisplayName");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CodecInfo.IsTrusted is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CodecInfo.IsTrusted");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecInfo", "IsTrusted");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CodecKind CodecInfo.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CodecKind%20CodecInfo.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecInfo", "Kind");
 			}
 		}
 #endif
@@ -59,14 +59,14 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> CodecInfo.Subtypes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20CodecInfo.Subtypes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecInfo", "Subtypes");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.CodecInfo.Kind.get
 		// Forced skipping of method Windows.Media.Core.CodecInfo.Category.get
-		// Forced skipping of method Windows.Media.Core.CodecInfo.Subtypes.get
 		// Forced skipping of method Windows.Media.Core.CodecInfo.DisplayName.get
 		// Forced skipping of method Windows.Media.Core.CodecInfo.IsTrusted.get
+		// Forced skipping of method Windows.Media.Core.CodecInfo.Kind.get
+		// Forced skipping of method Windows.Media.Core.CodecInfo.Subtypes.get
 	}
 }

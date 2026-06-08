@@ -14,7 +14,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccountProviderCommandInvokedHandler WebAccountProviderCommand.Invoked is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccountProviderCommandInvokedHandler%20WebAccountProviderCommand.Invoked");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.WebAccountProviderCommand", "Invoked");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccountProvider WebAccountProviderCommand.WebAccountProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccountProvider%20WebAccountProviderCommand.WebAccountProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.WebAccountProviderCommand", "WebAccountProvider");
 			}
 		}
 #endif
@@ -32,11 +32,11 @@ namespace Windows.UI.ApplicationSettings
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WebAccountProviderCommand(global::Windows.Security.Credentials.WebAccountProvider webAccountProvider, global::Windows.UI.ApplicationSettings.WebAccountProviderCommandInvokedHandler invoked)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.WebAccountProviderCommand", "WebAccountProviderCommand.WebAccountProviderCommand(WebAccountProvider webAccountProvider, WebAccountProviderCommandInvokedHandler invoked)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.WebAccountProviderCommand", "WebAccountProviderCommand(WebAccountProvider webAccountProvider, WebAccountProviderCommandInvokedHandler invoked)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.WebAccountProviderCommand(Windows.Security.Credentials.WebAccountProvider, Windows.UI.ApplicationSettings.WebAccountProviderCommandInvokedHandler)
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.WebAccountProvider.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.Invoked.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountProviderCommand.WebAccountProvider.get
 	}
 }

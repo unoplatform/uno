@@ -19,7 +19,7 @@ namespace Windows.Media.Capture.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan VariablePhotoCapturedEventArgs.CaptureTimeOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20VariablePhotoCapturedEventArgs.CaptureTimeOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs", "CaptureTimeOffset");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CapturedFrameControlValues VariablePhotoCapturedEventArgs.CapturedFrameControlValues is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CapturedFrameControlValues%20VariablePhotoCapturedEventArgs.CapturedFrameControlValues");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs", "CapturedFrameControlValues");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CapturedFrame VariablePhotoCapturedEventArgs.Frame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CapturedFrame%20VariablePhotoCapturedEventArgs.Frame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs", "Frame");
 			}
 		}
 #endif
@@ -49,13 +49,13 @@ namespace Windows.Media.Capture.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? VariablePhotoCapturedEventArgs.UsedFrameControllerIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20VariablePhotoCapturedEventArgs.UsedFrameControllerIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs", "UsedFrameControllerIndex");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs.Frame.get
 		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs.CaptureTimeOffset.get
-		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs.UsedFrameControllerIndex.get
 		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs.CapturedFrameControlValues.get
+		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs.Frame.get
+		// Forced skipping of method Windows.Media.Capture.Core.VariablePhotoCapturedEventArgs.UsedFrameControllerIndex.get
 	}
 }

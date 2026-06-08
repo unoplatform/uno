@@ -15,35 +15,35 @@ namespace Microsoft.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan Period
+		public float DampingRatio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SpringVector3NaturalMotionAnimation.Period is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SpringVector3NaturalMotionAnimation.Period");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation", "DampingRatio");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation", "TimeSpan SpringVector3NaturalMotionAnimation.Period");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation", "DampingRatio");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float DampingRatio
+		public global::System.TimeSpan Period
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SpringVector3NaturalMotionAnimation.DampingRatio is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20SpringVector3NaturalMotionAnimation.DampingRatio");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation", "Period");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation", "float SpringVector3NaturalMotionAnimation.DampingRatio");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation", "Period");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.DampingRatio.set
 		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.DampingRatio.get
-		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.Period.set
+		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.DampingRatio.set
 		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.Period.get
+		// Forced skipping of method Microsoft.UI.Composition.SpringVector3NaturalMotionAnimation.Period.set
 	}
 }

@@ -23,7 +23,7 @@ public partial class ScrollPatternIdentifiers
 	/// <summary>
 	/// Specifies that scrolling should not be performed.
 	/// </summary>
-	public static double NoScroll { get; }
+	public static double NoScroll { get; } = -1.0;
 
 	/// <summary>
 	/// Identifies the VerticalScrollPercent automation property.

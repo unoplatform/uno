@@ -49,140 +49,150 @@ namespace TestRepro
 			var __that = this;
 			base.IsParsing = true;
 			Resources["NullableBoolConverter"] = 
-			new global::TestRepro.NullableBoolConverter
-			{
-				// Source 0\MainPage.xaml (Line 10:4)
-			}
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::TestRepro.NullableBoolConverter
+				{
+					// Source 0\MainPage.xaml (Line 10:4)
+				}
+			)
 			;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.StackPanel
-			{
-				IsParsing = true,
-				// Source 0\MainPage.xaml (Line 12:3)
-				Children = 
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.StackPanel
 				{
-					new Microsoft.UI.Xaml.ElementStub( () => 
-					new global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton
+					IsParsing = true,
+					// Source 0\MainPage.xaml (Line 12:3)
+					Children = 
 					{
-						IsParsing = true,
-						Name = "LoadElement",
-						// Source 0\MainPage.xaml (Line 13:4)
-						Content = "Loaded via x:Load and toggle enable for buttons"
-						,
-					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-					{
-					/* _isTopLevelDictionary:False */
-					__that._component_0 = __p1;
-					__nameScope.RegisterName("LoadElement", __p1);
-					__that.LoadElement = __p1;
-					// FieldModifier public
-					/* Skipping x:Load attribute already applied to ElementStub */
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-					__p1.CreationComplete();
-					}
-					))
-					)					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
-					{
-					__p1.Name = "LoadElement";
-					_LoadElementSubject.ElementInstance = __p1;
-					__p1.SetBinding(
-						global::Microsoft.UI.Xaml.ElementStub.LoadProperty,
-						new Microsoft.UI.Xaml.Data.Binding()
-						{
-							Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
-							Converter = (global::Microsoft.UI.Xaml.Data.IValueConverter)global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic("NullableBoolConverter", typeof(global::Microsoft.UI.Xaml.Data.IValueConverter), context: global::MyProject.GlobalStaticResources.__ParseContext_),
-						}
-							.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ToggleLoad.IsChecked*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.ToggleLoad.IsChecked)) : (false, default), null , new [] {"ToggleLoad.IsChecked"}))
-					);
-					__that._component_1 = __p1;
-					var _component_1_update_That = (this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
-					void _component_1_update(global::Microsoft.UI.Xaml.ElementStub sender)
-					{
-						if (_component_1_update_That.Target is global::TestRepro.MainPage that)
-						{
-							if (sender.IsMaterialized)
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new Microsoft.UI.Xaml.ElementStub( () => 
+							new global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton
 							{
-								that.Bindings.UpdateResources();
-								that.Bindings.NotifyXLoad("LoadElement");
+								IsParsing = true,
+								Name = "LoadElement",
+								// Source 0\MainPage.xaml (Line 13:4)
+								Content = "Loaded via x:Load and toggle enable for buttons"
+								,
 							}
-							else
+							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 							{
-								that._LoadElementSubject.ElementInstance = null;
+							/* _isTopLevelDictionary:False */
+							__that._component_0 = __p1;
+							__nameScope.RegisterName("LoadElement", __p1);
+							__that.LoadElement = __p1;
+							// FieldModifier public
+							/* Skipping x:Load attribute already applied to ElementStub */
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+							__p1.CreationComplete();
 							}
-						}
-					}
-					__p1.MaterializationChanged += _component_1_update;
-					var owner = this;
-					void _component_1_materializing(object sender)
-					{
-						if (_component_1_update_That.Target is global::TestRepro.MainPage that)
-						{
-							that._component_0.ApplyXBind();
-							that._component_0.UpdateResourceBindings();
-						}
-					}
-					__p1.Materializing += _component_1_materializing;
-					}
-					))
-					,
-					new global::Microsoft.UI.Xaml.Controls.Button
-					{
-						IsParsing = true,
-						Name = "button1",
-						// Source 0\MainPage.xaml (Line 14:4)
-						Content = "Button1"
+							))
+							)							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+							{
+							__p1.Name = "LoadElement";
+							_LoadElementSubject.ElementInstance = __p1;
+							__p1.SetBinding(
+								global::Microsoft.UI.Xaml.ElementStub.LoadProperty,
+								new Microsoft.UI.Xaml.Data.Binding()
+								{
+									Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
+									Converter = (global::Microsoft.UI.Xaml.Data.IValueConverter)global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic("NullableBoolConverter", typeof(global::Microsoft.UI.Xaml.Data.IValueConverter), context: global::MyProject.GlobalStaticResources.__ParseContext_),
+								}
+									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ToggleLoad.IsChecked*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.ToggleLoad.IsChecked)) : (false, default), null , new [] {"ToggleLoad.IsChecked"}))
+							);
+							__that._component_1 = __p1;
+							var _component_1_update_That = (this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
+							void _component_1_update(global::Microsoft.UI.Xaml.ElementStub sender)
+							{
+								if (_component_1_update_That.Target is global::TestRepro.MainPage that)
+								{
+									if (sender.IsMaterialized)
+									{
+										that.Bindings.UpdateResources();
+										that.Bindings.NotifyXLoad("LoadElement");
+									}
+									else
+									{
+										that._LoadElementSubject.ElementInstance = null;
+									}
+								}
+							}
+							__p1.MaterializationChanged += _component_1_update;
+							var owner = this;
+							void _component_1_materializing(object sender)
+							{
+								if (_component_1_update_That.Target is global::TestRepro.MainPage that)
+								{
+									that._component_0.ApplyXBind();
+									that._component_0.UpdateResourceBindings();
+								}
+							}
+							__p1.Materializing += _component_1_materializing;
+							}
+							))
+						)
+						,
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.Button
+							{
+								IsParsing = true,
+								Name = "button1",
+								// Source 0\MainPage.xaml (Line 14:4)
+								Content = "Button1"
+								,
+							}
+							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+							{
+							/* _isTopLevelDictionary:False */
+							__that._component_2 = __p1;
+							__nameScope.RegisterName("button1", __p1);
+							__that.button1 = __p1;
+							// FieldModifier public
+							__p1.SetBinding(
+								global::Microsoft.UI.Xaml.Controls.Button.IsEnabledProperty,
+								new Microsoft.UI.Xaml.Data.Binding()
+								{
+									Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
+									Converter = (global::Microsoft.UI.Xaml.Data.IValueConverter)global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic("NullableBoolConverter", typeof(global::Microsoft.UI.Xaml.Data.IValueConverter), context: global::MyProject.GlobalStaticResources.__ParseContext_),
+								}
+									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime LoadElement.IsChecked*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.LoadElement.IsChecked)) : (false, default), null , new [] {"LoadElement.IsChecked"}))
+							);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+							__p1.CreationComplete();
+							}
+							))
+						)
+						,
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton
+							{
+								IsParsing = true,
+								Name = "ToggleLoad",
+								IsChecked = false,
+								// Source 0\MainPage.xaml (Line 15:4)
+								Content = "Toggle Load"
+								,
+							}
+							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+							{
+							__nameScope.RegisterName("ToggleLoad", __p1);
+							__that.ToggleLoad = __p1;
+							// FieldModifier public
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+							__p1.CreationComplete();
+							}
+							))
+						)
 						,
 					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
-					{
-					/* _isTopLevelDictionary:False */
-					__that._component_2 = __p1;
-					__nameScope.RegisterName("button1", __p1);
-					__that.button1 = __p1;
-					// FieldModifier public
-					__p1.SetBinding(
-						global::Microsoft.UI.Xaml.Controls.Button.IsEnabledProperty,
-						new Microsoft.UI.Xaml.Data.Binding()
-						{
-							Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
-							Converter = (global::Microsoft.UI.Xaml.Data.IValueConverter)global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic("NullableBoolConverter", typeof(global::Microsoft.UI.Xaml.Data.IValueConverter), context: global::MyProject.GlobalStaticResources.__ParseContext_),
-						}
-							.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime LoadElement.IsChecked*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.LoadElement.IsChecked)) : (false, default), null , new [] {"LoadElement.IsChecked"}))
-					);
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-					__p1.CreationComplete();
-					}
-					))
-					,
-					new global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton
-					{
-						IsParsing = true,
-						Name = "ToggleLoad",
-						IsChecked = false,
-						// Source 0\MainPage.xaml (Line 15:4)
-						Content = "Toggle Load"
-						,
-					}
-					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-					{
-					__nameScope.RegisterName("ToggleLoad", __p1);
-					__that.ToggleLoad = __p1;
-					// FieldModifier public
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-					__p1.CreationComplete();
-					}
-					))
-					,
 				}
-			}
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
-			{
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-			__p1.CreationComplete();
-			}
-			))
+				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+				{
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+				__p1.CreationComplete();
+				}
+				))
+			)
 			;
 			
 			this

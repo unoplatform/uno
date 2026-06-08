@@ -10,29 +10,15 @@ namespace Windows.Devices.Bluetooth
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan? SamplingInterval
+		public short? InRangeThresholdInDBm
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? BluetoothSignalStrengthFilter.SamplingInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20BluetoothSignalStrengthFilter.SamplingInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter", "InRangeThresholdInDBm");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter", "TimeSpan? BluetoothSignalStrengthFilter.SamplingInterval");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.TimeSpan? OutOfRangeTimeout
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan? BluetoothSignalStrengthFilter.OutOfRangeTimeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20BluetoothSignalStrengthFilter.OutOfRangeTimeout");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter", "TimeSpan? BluetoothSignalStrengthFilter.OutOfRangeTimeout");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter", "InRangeThresholdInDBm");
 			}
 		}
 #endif
@@ -42,25 +28,39 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member short? BluetoothSignalStrengthFilter.OutOfRangeThresholdInDBm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=short%3F%20BluetoothSignalStrengthFilter.OutOfRangeThresholdInDBm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter", "OutOfRangeThresholdInDBm");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter", "short? BluetoothSignalStrengthFilter.OutOfRangeThresholdInDBm");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter", "OutOfRangeThresholdInDBm");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public short? InRangeThresholdInDBm
+		public global::System.TimeSpan? OutOfRangeTimeout
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member short? BluetoothSignalStrengthFilter.InRangeThresholdInDBm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=short%3F%20BluetoothSignalStrengthFilter.InRangeThresholdInDBm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter", "OutOfRangeTimeout");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter", "short? BluetoothSignalStrengthFilter.InRangeThresholdInDBm");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter", "OutOfRangeTimeout");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.TimeSpan? SamplingInterval
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter", "SamplingInterval");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter", "SamplingInterval");
 			}
 		}
 #endif
@@ -68,7 +68,7 @@ namespace Windows.Devices.Bluetooth
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public BluetoothSignalStrengthFilter()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter", "BluetoothSignalStrengthFilter.BluetoothSignalStrengthFilter()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter", "BluetoothSignalStrengthFilter()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothSignalStrengthFilter.BluetoothSignalStrengthFilter()

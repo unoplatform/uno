@@ -14,7 +14,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, string> WebTokenResponse.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IDictionary%3Cstring%2C%20string%3E%20WebTokenResponse.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenResponse", "Properties");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebProviderError WebTokenResponse.ProviderError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebProviderError%20WebTokenResponse.ProviderError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenResponse", "ProviderError");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebTokenResponse.Token is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebTokenResponse.Token");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenResponse", "Token");
 			}
 		}
 #endif
@@ -44,15 +44,23 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccount WebTokenResponse.WebAccount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccount%20WebTokenResponse.WebAccount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebTokenResponse", "WebAccount");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public WebTokenResponse()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenResponse", "WebTokenResponse()");
+		}
+#endif
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.WebTokenResponse()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WebTokenResponse(string token)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenResponse", "WebTokenResponse.WebTokenResponse(string token)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenResponse", "WebTokenResponse(string token)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.WebTokenResponse(string)
@@ -60,7 +68,7 @@ namespace Windows.Security.Authentication.Web.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WebTokenResponse(string token, global::Windows.Security.Credentials.WebAccount webAccount)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenResponse", "WebTokenResponse.WebTokenResponse(string token, WebAccount webAccount)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenResponse", "WebTokenResponse(string token, WebAccount webAccount)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.WebTokenResponse(string, Windows.Security.Credentials.WebAccount)
@@ -68,21 +76,13 @@ namespace Windows.Security.Authentication.Web.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WebTokenResponse(string token, global::Windows.Security.Credentials.WebAccount webAccount, global::Windows.Security.Authentication.Web.Core.WebProviderError error)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenResponse", "WebTokenResponse.WebTokenResponse(string token, WebAccount webAccount, WebProviderError error)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenResponse", "WebTokenResponse(string token, WebAccount webAccount, WebProviderError error)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.WebTokenResponse(string, Windows.Security.Credentials.WebAccount, Windows.Security.Authentication.Web.Core.WebProviderError)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public WebTokenResponse()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenResponse", "WebTokenResponse.WebTokenResponse()");
-		}
-#endif
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.WebTokenResponse()
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.Token.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.ProviderError.get
-		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.WebAccount.get
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.Properties.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.ProviderError.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.Token.get
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenResponse.WebAccount.get
 	}
 }

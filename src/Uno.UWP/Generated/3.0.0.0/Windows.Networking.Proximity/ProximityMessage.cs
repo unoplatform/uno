@@ -19,7 +19,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer ProximityMessage.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20ProximityMessage.Data");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.ProximityMessage", "Data");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProximityMessage.DataAsString is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProximityMessage.DataAsString");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.ProximityMessage", "DataAsString");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProximityMessage.MessageType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProximityMessage.MessageType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.ProximityMessage", "MessageType");
 			}
 		}
 #endif
@@ -49,13 +49,13 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long ProximityMessage.SubscriptionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=long%20ProximityMessage.SubscriptionId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Proximity.ProximityMessage", "SubscriptionId");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Proximity.ProximityMessage.MessageType.get
-		// Forced skipping of method Windows.Networking.Proximity.ProximityMessage.SubscriptionId.get
 		// Forced skipping of method Windows.Networking.Proximity.ProximityMessage.Data.get
 		// Forced skipping of method Windows.Networking.Proximity.ProximityMessage.DataAsString.get
+		// Forced skipping of method Windows.Networking.Proximity.ProximityMessage.MessageType.get
+		// Forced skipping of method Windows.Networking.Proximity.ProximityMessage.SubscriptionId.get
 	}
 }

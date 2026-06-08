@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml.Input
 #endif
 	public partial class CharacterReceivedRoutedEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
-		// Skipping already declared property Handled
 		// Skipping already declared property Character
+		// Skipping already declared property Handled
 		// Skipping already declared property KeyStatus
 		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.Character.get
-		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.KeyStatus.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.KeyStatus.get
 	}
 }

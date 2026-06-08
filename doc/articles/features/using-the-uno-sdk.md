@@ -59,6 +59,7 @@ Here are the supported features:
 | `Extensions`         | Adds the most commonly used Extensions Packages for Hosting, Configuration, and Logging.                                                                                                                                                   |
 | `Foldable`           | Adds a reference to [Uno.WinUI.Foldable](https://www.nuget.org/packages/Uno.WinUI.Foldable).                                                                                                                                               |
 | `GLCanvas`           | Adds support for the [OpenGL Canvas](xref:Uno.Controls.GLCanvasElement).                                                                                                                                                                   |
+| `SpellChecking`           | Adds support for [spell checking](xref:Uno.Features.SpellChecking).                                                                                                                                                                   |
 | `GooglePlay`         | Adds support for [In App Reviews](xref:Uno.Features.StoreContext). For more information, see the [Store Context documentation](xref:Uno.Features.StoreContext).                                                                            |
 | `Hosting`            | Adds support for [Dependency Injection](xref:Uno.Extensions.DependencyInjection.Overview) using [Uno.Extensions.Hosting packages](https://www.nuget.org/packages?q=Uno.Extensions.Hosting).                                                |
 | `Http`               | Adds support for custom [Http Clients](xref:Uno.Extensions.Http.Overview) with [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                |
@@ -76,8 +77,10 @@ Here are the supported features:
 | `Navigation`         | Adds support for [Navigation](xref:Uno.Extensions.Navigation.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                               |
 | `Prism`              | Adds [Prism](https://github.com/PrismLibrary/Prism) support for Uno Platform applications WinUI.                                                                                                                                           |
 | `Serialization`      | Adds support for [Serialization](xref:Uno.Extensions.Serialization.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                         |
+| `SimpleTheme`        | Adds support for the [Simple Design Theme](xref:Uno.Themes.Simple.GetStarted) library. If the `Toolkit` feature is also used, it will add support for the Simple Design Toolkit library.                                                    |
 | `Skia`               | Adds support for [SkiaSharp](https://github.com/mono/SkiaSharp).                                                                                                                                                                           |
 | `SkiaRenderer`       | Adds support for using Skia as the graphics rendering engine. For more details, see [Skia Rendering documentation](xref:uno.features.renderer.skia).                                                                                               |
+| `SpellChecking`      | Adds support for [spell-checking](xref:Uno.Features.SpellChecking) in TextBox controls on all Skia-based targets via [Uno.WinUI.SpellChecking](https://www.nuget.org/packages/Uno.WinUI.SpellChecking).                                    |
 | `Storage`            | Adds support for [Storage](xref:Uno.Extensions.Storage.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                     |
 | `Svg`                | [SVG](xref:Uno.Features.SVG) support for iOS, and Android. This option is not needed when only targeting WebAssembly and WinAppSDK.                                                                                          |
 | `ThemeService`       | Adds the [Uno.Extensions.Core.WinUI package](https://www.nuget.org/packages/Uno.Extensions.Core.WinUI).                                                                                                                                    |
@@ -124,6 +127,10 @@ Here are the supported properties:
 | `AndroidXNavigationVersion`         | [Xamarin.AndroidX.Navigation.UI](https://www.nuget.org/packages/Xamarin.AndroidX.Navigation.UI) and similar packages | Facilitates navigation within an Android app using AndroidX.                                                   |
 | `AndroidXRecyclerViewVersion`       | [Xamarin.AndroidX.RecyclerView](https://www.nuget.org/packages/Xamarin.AndroidX.RecyclerView)                        | Implements a flexible view for providing a limited window into large datasets with AndroidX.                   |
 | `AndroidXSwipeRefreshLayoutVersion` | [Xamarin.AndroidX.SwipeRefreshLayout](https://www.nuget.org/packages/Xamarin.AndroidX.SwipeRefreshLayout)            | Provides a swipe-to-refresh UI pattern with AndroidX.                                                          |
+| `AndroidXLeanbackVersion`           | [Xamarin.AndroidX.Leanback](https://www.nuget.org/packages/Xamarin.AndroidX.Leanback) and similar packages           | Provides UI components for Android TV applications.                                                            |
+| `AndroidXCarAppVersion`             | [Xamarin.AndroidX.Car.App.App](https://www.nuget.org/packages/Xamarin.AndroidX.Car.App.App) and similar packages     | Provides the Android for Cars App Library for building automotive apps.                                         |
+| `AndroidXWearVersion`               | [Xamarin.AndroidX.Wear](https://www.nuget.org/packages/Xamarin.AndroidX.Wear) and similar packages                   | Provides support for Wear OS watch applications.                                                               |
+| `AndroidXWearTilesVersion`          | [Xamarin.AndroidX.Wear.Tiles](https://www.nuget.org/packages/Xamarin.AndroidX.Wear.Tiles) and similar packages       | Provides Tiles API for Wear OS watch faces and complications.                                                  |
 | `CommunityToolkitMvvmVersion`       | [CommunityToolkit.Mvvm](https://www.nuget.org/packages/CommunityToolkit.Mvvm)                                        | Delivers a set of MVVM (Model-View-ViewModel) components for .NET applications.                                |
 | `MicrosoftIdentityClientVersion`    | [Microsoft.Identity.Client](https://www.nuget.org/packages/Microsoft.Identity.Client)                                | Provides an authentication library for Microsoft Identity Platform.                                            |
 | `MicrosoftLoggingVersion`           | [Microsoft.Extensions.Logging.Console](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Console)          | Enables logging to the console with Microsoft's extensions.                                                    |
@@ -183,6 +190,45 @@ to your `Directory.Build.props` file or `csproj` file. You will be then able to 
 
 > [!NOTE]
 > When disabling Implicit Uno Packages it is recommended that you use the `$(UnoVersion)` to set the version of the core Uno packages that are versioned with the SDK as the SDK requires `Uno.WinUI` to be the same version as the SDK to ensure proper compatibility.
+>
+> For the narrower scenario of a library that is essentially a *WinUI library* that also happens to support Uno cross-targets — and that should not leak `Uno.WinUI` to WinAppSDK-only consumers, or needs a strong-named output on Windows — see the [WinAppSDK-only libraries](#winappsdk-only-libraries) section below.
+
+## WinAppSDK-only libraries
+
+When you author a library that is *only* a WinUI library on the Windows App SDK target (and uses the rest of the `Uno.Sdk` solely for cross-platform target frameworks), you may want the Windows build to contain no implicit Uno dependencies. Two common motivations:
+
+- Avoid leaking `Uno.WinUI` as a transitive NuGet dependency to consumers that only target the Windows App SDK.
+- Compile to a strong-named assembly on Windows for scenarios that require a fully strong-named dependency chain (organizational policy, certain hosts, or downstream consumers that only accept strong-named references). `Uno.WinUI` is not strong-named, so leaving it as an implicit reference would block those scenarios.
+
+Enable this with:
+
+```xml
+<DisableImplicitUnoWinAppSdkPackages>true</DisableImplicitUnoWinAppSdkPackages>
+```
+
+When set, `Uno.Sdk` stops adding the following implicit package references on the `net*-windows10*` target framework:
+
+- `Uno.WinUI` (also removes the bundled `Uno.UI.Toolkit.dll` it ships under `lib/net*-windows10.0.19041.0/`)
+- `Uno.Resizetizer`
+- `Uno.Sdk.Extras`
+- `Uno.Settings.DevServer`
+
+The property is intentionally scoped:
+
+- It only takes effect on the Windows App SDK target framework. Other targets (Android, iOS, Skia Desktop, WebAssembly, …) are unaffected, so the cross-platform side of your library still uses `Uno.WinUI` and the rest of the Uno stack.
+- Packages added through `UnoFeatures` (Toolkit, Material, Cupertino, Simple, csharpmarkup, prism, maps, foldable, skia/Graphics2DSK, glcanvas, mvvm, dsp, Uno.Extensions.*, …) are *not* stripped. Opting into a `UnoFeatures` value is treated as an explicit request for that package, even when this property is set.
+- Non-Uno implicit packages (`Microsoft.WindowsAppSDK`, `Microsoft.Windows.SDK.BuildTools`, `CommunityToolkit.Mvvm`, `SkiaSharp.Views.WinUI`, …) keep flowing as usual.
+
+If you still need one of the stripped packages on Windows for a specific reason, add it back explicitly:
+
+```xml
+<ItemGroup Condition="$(TargetFramework.Contains('windows10'))">
+    <PackageReference Include="Uno.Resizetizer" Version="$(UnoResizetizerVersion)" PrivateAssets="all" />
+</ItemGroup>
+```
+
+> [!NOTE]
+> This property is aimed at libraries (`IsPackable=true`). Application heads typically need the implicit Uno packages on Windows to run, so setting this on a head project is not recommended.
 
 ## Supported OS Platform versions
 
@@ -301,7 +347,7 @@ As discussed above setting `EnableDefaultUnoItems` to false will disable these i
 >
 > ```xml
 > <Target Name="AdjustAppItemGroups" BeforeTargets="ResolveAssemblyReferences">
->     <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-browserwasm'">
+>     <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-browserwasm'">
 >         <None Remove="Page.xaml"/>
 >         <Page Remove="Page.xaml"/>
 >     </ItemGroup>
@@ -309,6 +355,23 @@ As discussed above setting `EnableDefaultUnoItems` to false will disable these i
 > ```
 >
 > This approach allows you to selectively remove pages from specific target frameworks while maintaining them in others.
+
+## Platform-Specific Folders
+
+In addition to the per-file suffixes described above, the Uno.Sdk recognizes a set of well-known sub-folders under `Platforms/` that scope their contents to a single target. Files in these folders are automatically included only when the matching TFM is being built and excluded from every other TFM (the SDK removes them from `Compile`, `Page`, `Content`, `EmbeddedResource`, and `Manifest` for inactive platforms).
+
+| Folder | TFM it applies to | Typical contents |
+|---|---|---|
+| `Platforms/Android/` | `*-android` | `Main.Android.cs`, `AndroidManifest.xml`, Android resources |
+| `Platforms/iOS/` | `*-ios` | `Main.iOS.cs`, `Info.plist`, `Entitlements.plist`, `PrivacyInfo.xcprivacy` |
+| `Platforms/tvOS/` | `*-tvos` | tvOS-specific entry point and resources |
+| `Platforms/MacCatalyst/` | `*-maccatalyst` | Mac Catalyst entry point, `Info.plist`, `Entitlements.plist` |
+| `Platforms/MacOS/` | `*-macos` | macOS entry point, `Info.plist`, `Entitlements.plist` |
+| `Platforms/Desktop/` | `*-desktop` | `Program.cs` with the `UnoPlatformHostBuilder` configuration |
+| `Platforms/Wasm/` (or `Platforms/WebAssembly/`) | `*-browserwasm` | `Program.cs`, `wwwroot/`, `manifest.webmanifest` |
+| `Platforms/Windows/` | `*-windows10.*` | `Package.appxmanifest`, `app.manifest`, splash screens, tile/app-icon PNGs referenced by the manifest |
+
+The location of each folder can be overridden via the matching MSBuild property if your project uses a different layout: `PlatformsProjectFolder`, `AndroidProjectFolder`, `iOSProjectFolder`, `tvOSProjectFolder`, `MacCatalystProjectFolder`, `MacOSProjectFolder`, `DesktopProjectFolder`, `WasmProjectFolder`, `WindowsProjectFolder`.
 
 ## Apple Privacy Manifest Support
 

@@ -19,17 +19,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaProtectionServiceCompletion ServiceRequestedEventArgs.Completion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaProtectionServiceCompletion%20ServiceRequestedEventArgs.Completion");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Protection.IMediaProtectionServiceRequest Request
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IMediaProtectionServiceRequest ServiceRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IMediaProtectionServiceRequest%20ServiceRequestedEventArgs.Request");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.ServiceRequestedEventArgs", "Completion");
 			}
 		}
 #endif
@@ -39,12 +29,22 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackItem ServiceRequestedEventArgs.MediaPlaybackItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackItem%20ServiceRequestedEventArgs.MediaPlaybackItem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.ServiceRequestedEventArgs", "MediaPlaybackItem");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.Request.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Protection.IMediaProtectionServiceRequest Request
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.ServiceRequestedEventArgs", "Request");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.Completion.get
 		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.MediaPlaybackItem.get
+		// Forced skipping of method Windows.Media.Protection.ServiceRequestedEventArgs.Request.get
 	}
 }

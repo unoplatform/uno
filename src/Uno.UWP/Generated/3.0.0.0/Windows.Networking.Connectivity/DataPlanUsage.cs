@@ -19,7 +19,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset DataPlanUsage.LastSyncTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20DataPlanUsage.LastSyncTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.DataPlanUsage", "LastSyncTime");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint DataPlanUsage.MegabytesUsed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20DataPlanUsage.MegabytesUsed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.DataPlanUsage", "MegabytesUsed");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.DataPlanUsage.MegabytesUsed.get
 		// Forced skipping of method Windows.Networking.Connectivity.DataPlanUsage.LastSyncTime.get
+		// Forced skipping of method Windows.Networking.Connectivity.DataPlanUsage.MegabytesUsed.get
 	}
 }

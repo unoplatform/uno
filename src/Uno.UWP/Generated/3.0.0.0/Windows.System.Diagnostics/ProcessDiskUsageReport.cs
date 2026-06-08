@@ -19,7 +19,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long ProcessDiskUsageReport.BytesReadCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=long%20ProcessDiskUsageReport.BytesReadCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiskUsageReport", "BytesReadCount");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long ProcessDiskUsageReport.BytesWrittenCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=long%20ProcessDiskUsageReport.BytesWrittenCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiskUsageReport", "BytesWrittenCount");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long ProcessDiskUsageReport.OtherBytesCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=long%20ProcessDiskUsageReport.OtherBytesCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiskUsageReport", "OtherBytesCount");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long ProcessDiskUsageReport.OtherOperationCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=long%20ProcessDiskUsageReport.OtherOperationCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiskUsageReport", "OtherOperationCount");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long ProcessDiskUsageReport.ReadOperationCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=long%20ProcessDiskUsageReport.ReadOperationCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiskUsageReport", "ReadOperationCount");
 			}
 		}
 #endif
@@ -69,15 +69,15 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long ProcessDiskUsageReport.WriteOperationCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=long%20ProcessDiskUsageReport.WriteOperationCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.ProcessDiskUsageReport", "WriteOperationCount");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.ReadOperationCount.get
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.WriteOperationCount.get
-		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.OtherOperationCount.get
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.BytesReadCount.get
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.BytesWrittenCount.get
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.OtherBytesCount.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.OtherOperationCount.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.ReadOperationCount.get
+		// Forced skipping of method Windows.System.Diagnostics.ProcessDiskUsageReport.WriteOperationCount.get
 	}
 }

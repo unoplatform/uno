@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaBreakSeekedOverEventArgs.NewPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaBreakSeekedOverEventArgs.NewPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakSeekedOverEventArgs", "NewPosition");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaBreakSeekedOverEventArgs.OldPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaBreakSeekedOverEventArgs.OldPosition");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakSeekedOverEventArgs", "OldPosition");
 			}
 		}
 #endif
@@ -39,12 +39,12 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MediaBreak> MediaBreakSeekedOverEventArgs.SeekedOverBreaks is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaBreak%3E%20MediaBreakSeekedOverEventArgs.SeekedOverBreaks");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaBreakSeekedOverEventArgs", "SeekedOverBreaks");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaBreakSeekedOverEventArgs.SeekedOverBreaks.get
-		// Forced skipping of method Windows.Media.Playback.MediaBreakSeekedOverEventArgs.OldPosition.get
 		// Forced skipping of method Windows.Media.Playback.MediaBreakSeekedOverEventArgs.NewPosition.get
+		// Forced skipping of method Windows.Media.Playback.MediaBreakSeekedOverEventArgs.OldPosition.get
+		// Forced skipping of method Windows.Media.Playback.MediaBreakSeekedOverEventArgs.SeekedOverBreaks.get
 	}
 }

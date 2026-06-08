@@ -8,45 +8,32 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 	public partial class FlyoutShowOptions
 	{
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowMode ShowMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FlyoutShowMode FlyoutShowOptions.ShowMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FlyoutShowMode%20FlyoutShowOptions.ShowMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions", "FlyoutShowMode FlyoutShowOptions.ShowMode");
-			}
-		}
-#endif
-		// Skipping already declared property Position
-		// Skipping already declared property Placement
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Rect? ExclusionRect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect? FlyoutShowOptions.ExclusionRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%3F%20FlyoutShowOptions.ExclusionRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions", "ExclusionRect");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions", "Rect? FlyoutShowOptions.ExclusionRect");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions", "ExclusionRect");
 			}
 		}
 #endif
+		// Skipping already declared property Placement
+		// Skipping already declared property Position
+		// Skipping already declared property ShowMode
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.FlyoutShowOptions()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.FlyoutShowOptions()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.Position.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.Position.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.ExclusionRect.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.ExclusionRect.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.ShowMode.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.ShowMode.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.Placement.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.Placement.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.Position.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.Position.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.ShowMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions.ShowMode.set
 	}
 }

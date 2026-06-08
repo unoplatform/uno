@@ -8,13 +8,13 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class CompositionTarget
 	{
-		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.Rendering.add
-		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.Rendering.remove
+		// Skipping already declared method Microsoft.UI.Xaml.Media.CompositionTarget.GetCompositorForCurrentThread()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.Rendered.add
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.Rendered.remove
+		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.Rendering.add
+		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.Rendering.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.SurfaceContentsLost.add
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.SurfaceContentsLost.remove
-		// Skipping already declared method Microsoft.UI.Xaml.Media.CompositionTarget.GetCompositorForCurrentThread()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static event global::System.EventHandler<global::Microsoft.UI.Xaml.Media.RenderedEventArgs> Rendered
@@ -22,12 +22,12 @@ namespace Microsoft.UI.Xaml.Media
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.CompositionTarget", "event EventHandler<RenderedEventArgs> CompositionTarget.Rendered");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.CompositionTarget", "event Rendered");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.CompositionTarget", "event EventHandler<RenderedEventArgs> CompositionTarget.Rendered");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.CompositionTarget", "event Rendered");
 			}
 		}
 #endif
@@ -38,12 +38,12 @@ namespace Microsoft.UI.Xaml.Media
 			[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.CompositionTarget", "event EventHandler<object> CompositionTarget.Rendering");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.CompositionTarget", "event Rendering");
 			}
 			[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.CompositionTarget", "event EventHandler<object> CompositionTarget.Rendering");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.CompositionTarget", "event Rendering");
 			}
 		}
 #endif
@@ -54,12 +54,12 @@ namespace Microsoft.UI.Xaml.Media
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.CompositionTarget", "event EventHandler<object> CompositionTarget.SurfaceContentsLost");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.CompositionTarget", "event SurfaceContentsLost");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.CompositionTarget", "event EventHandler<object> CompositionTarget.SurfaceContentsLost");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.CompositionTarget", "event SurfaceContentsLost");
 			}
 		}
 #endif

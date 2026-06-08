@@ -19,7 +19,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint WebViewControlDeferredPermissionRequest.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20WebViewControlDeferredPermissionRequest.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlDeferredPermissionRequest", "Id");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebViewControlPermissionType WebViewControlDeferredPermissionRequest.PermissionType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebViewControlPermissionType%20WebViewControlDeferredPermissionRequest.PermissionType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlDeferredPermissionRequest", "PermissionType");
 			}
 		}
 #endif
@@ -39,26 +39,26 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri WebViewControlDeferredPermissionRequest.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20WebViewControlDeferredPermissionRequest.Uri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.UI.WebViewControlDeferredPermissionRequest", "Uri");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.UI.WebViewControlDeferredPermissionRequest.Id.get
-		// Forced skipping of method Windows.Web.UI.WebViewControlDeferredPermissionRequest.Uri.get
-		// Forced skipping of method Windows.Web.UI.WebViewControlDeferredPermissionRequest.PermissionType.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Allow()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlDeferredPermissionRequest", "void WebViewControlDeferredPermissionRequest.Allow()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlDeferredPermissionRequest", "Allow()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Deny()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlDeferredPermissionRequest", "void WebViewControlDeferredPermissionRequest.Deny()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.WebViewControlDeferredPermissionRequest", "Deny()");
 		}
 #endif
+		// Forced skipping of method Windows.Web.UI.WebViewControlDeferredPermissionRequest.Id.get
+		// Forced skipping of method Windows.Web.UI.WebViewControlDeferredPermissionRequest.PermissionType.get
+		// Forced skipping of method Windows.Web.UI.WebViewControlDeferredPermissionRequest.Uri.get
 	}
 }

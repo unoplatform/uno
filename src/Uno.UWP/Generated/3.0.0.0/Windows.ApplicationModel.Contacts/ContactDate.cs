@@ -10,43 +10,15 @@ namespace Windows.ApplicationModel.Contacts
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int? Year
+		public uint? Day
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int? ContactDate.Year is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%3F%20ContactDate.Year");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactDate", "Day");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactDate", "int? ContactDate.Year");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint? Month
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint? ContactDate.Month is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20ContactDate.Month");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactDate", "uint? ContactDate.Month");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Contacts.ContactDateKind Kind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ContactDateKind ContactDate.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactDateKind%20ContactDate.Kind");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactDate", "ContactDateKind ContactDate.Kind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactDate", "Day");
 			}
 		}
 #endif
@@ -56,25 +28,53 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactDate.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ContactDate.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactDate", "Description");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactDate", "string ContactDate.Description");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactDate", "Description");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint? Day
+		public global::Windows.ApplicationModel.Contacts.ContactDateKind Kind
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? ContactDate.Day is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20ContactDate.Day");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactDate", "Kind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactDate", "uint? ContactDate.Day");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactDate", "Kind");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint? Month
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactDate", "Month");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactDate", "Month");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int? Year
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactDate", "Year");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactDate", "Year");
 			}
 		}
 #endif
@@ -82,19 +82,19 @@ namespace Windows.ApplicationModel.Contacts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ContactDate()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactDate", "ContactDate.ContactDate()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactDate", "ContactDate()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.ContactDate()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.Day.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.Day.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.Description.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.Description.set
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.Kind.get
+		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.Kind.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.Month.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.Month.set
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.Year.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.Year.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.Kind.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.Kind.set
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.Description.get
-		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactDate.Description.set
 	}
 }

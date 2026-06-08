@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception LicenseSatisfactionResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20LicenseSatisfactionResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionResult", "ExtendedError");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.ApplicationModel.Store.LicenseManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, LicenseSatisfactionInfo> LicenseSatisfactionResult.LicenseSatisfactionInfos is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3Cstring%2C%20LicenseSatisfactionInfo%3E%20LicenseSatisfactionResult.LicenseSatisfactionInfos");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionResult", "LicenseSatisfactionInfos");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionResult.LicenseSatisfactionInfos.get
 		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionResult.ExtendedError.get
+		// Forced skipping of method Windows.ApplicationModel.Store.LicenseManagement.LicenseSatisfactionResult.LicenseSatisfactionInfos.get
 	}
 }

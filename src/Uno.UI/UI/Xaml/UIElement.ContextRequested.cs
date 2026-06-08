@@ -8,6 +8,11 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+using System;
+#if __SKIA__
+using Microsoft.UI.Xaml.Internal;
+#endif
+using Uno.UI.Text;
 
 namespace Microsoft.UI.Xaml;
 
@@ -37,6 +42,13 @@ partial class UIElement
 		DependencyObject contextFlyoutObject,
 		ContextRequestedEventArgs args)
 	{
+#if __SKIA__
+		if (sender is TextBlock { OwningTextBox: { } ownerTextBox })
+		{
+			sender = ownerTextBox;
+			contextFlyoutObject = ownerTextBox;
+		}
+#endif
 		if (sender is not UIElement uiElement)
 		{
 			return;
@@ -67,7 +79,7 @@ partial class UIElement
 		var gotPoint = args.TryGetPosition(uiElement, out var point);
 
 		// Check for text controls
-		var isTextControl = IsTextControl(sender);
+		var isTextControl = TextCore.IsTextControl(sender);
 		var isTextEditControl =
 			sender is TextBox ||
 			sender is RichEditBox ||
@@ -100,7 +112,7 @@ partial class UIElement
 				// If we are using the default text control ContextFlyout and TextSelection is not enabled, don't show the flyout
 				if (IsUsingDefaultContextFlyout(sender))
 				{
-					if (!IsTextSelectionEnabled(sender))
+					if (!TextCore.IsTextSelectionEnabled(sender))
 					{
 						return;
 					}
@@ -109,16 +121,33 @@ partial class UIElement
 
 			if (gotPoint)
 			{
-				var showOptions = new FlyoutShowOptions
+#if __SKIA__
+				if (isTextControl || isTextEditControl)
 				{
-					Position = point,
-					ShowMode = FlyoutShowMode.Standard
-				};
-				flyout.ShowAt(frameworkElement, showOptions);
+					TextControlFlyoutHelper.ShowAt(flyout, frameworkElement, point, FlyoutShowMode.Standard);
+				}
+				else
+#endif
+				{
+					flyout.ShowAt(frameworkElement, new FlyoutShowOptions
+					{
+						Position = point,
+						ShowMode = FlyoutShowMode.Standard
+					});
+				}
 			}
 			else
 			{
-				flyout.ShowAt(frameworkElement);
+#if __SKIA__
+				if (isTextControl || isTextEditControl)
+				{
+					TextControlFlyoutHelper.ShowAt(flyout, frameworkElement, default, FlyoutShowMode.Standard);
+				}
+				else
+#endif
+				{
+					flyout.ShowAt(frameworkElement);
+				}
 			}
 		}
 		else
@@ -127,26 +156,26 @@ partial class UIElement
 			{
 				if (IsUsingDefaultContextFlyout(sender))
 				{
-					if (!IsTextSelectionEnabled(sender))
+					if (!TextCore.IsTextSelectionEnabled(sender))
 					{
 						return;
 					}
 				}
 			}
 
-			flyout.ShowAt(frameworkElement);
+#if __SKIA__
+			if (isTextControl || isTextEditControl)
+			{
+				TextControlFlyoutHelper.ShowAt(flyout, frameworkElement, default, FlyoutShowMode.Standard);
+			}
+			else
+#endif
+			{
+				flyout.ShowAt(frameworkElement);
+			}
 		}
 
 		args.Handled = true;
-	}
-
-	private static bool IsTextControl(DependencyObject element)
-	{
-		return element is TextBox ||
-			   element is RichEditBox ||
-			   element is PasswordBox ||
-			   element is TextBlock ||
-			   element is RichTextBlock;
 	}
 
 	private static bool IsUsingDefaultContextFlyout(DependencyObject element)
@@ -156,19 +185,5 @@ partial class UIElement
 			return uiElement.ReadLocalValue(ContextFlyoutProperty) == DependencyProperty.UnsetValue;
 		}
 		return true;
-	}
-
-	private static bool IsTextSelectionEnabled(DependencyObject element)
-	{
-		return element switch
-		{
-			// PasswordBox must be checked before TextBox in case of inheritance
-			PasswordBox => false, // PasswordBox doesn't support text selection
-			TextBox => true, // TextBox always has selection
-			RichEditBox => true, // RichEditBox always has selection
-			TextBlock tb => tb.IsTextSelectionEnabled,
-			RichTextBlock rtb => rtb.IsTextSelectionEnabled,
-			_ => false
-		};
 	}
 }

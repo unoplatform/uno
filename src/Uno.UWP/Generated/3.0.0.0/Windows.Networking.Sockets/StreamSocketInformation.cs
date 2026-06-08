@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BandwidthStatistics StreamSocketInformation.BandwidthStatistics is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BandwidthStatistics%20StreamSocketInformation.BandwidthStatistics");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "BandwidthStatistics");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName StreamSocketInformation.LocalAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20StreamSocketInformation.LocalAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "LocalAddress");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StreamSocketInformation.LocalPort is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StreamSocketInformation.LocalPort");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "LocalPort");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketProtectionLevel StreamSocketInformation.ProtectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SocketProtectionLevel%20StreamSocketInformation.ProtectionLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "ProtectionLevel");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName StreamSocketInformation.RemoteAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20StreamSocketInformation.RemoteAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "RemoteAddress");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName StreamSocketInformation.RemoteHostName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20StreamSocketInformation.RemoteHostName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "RemoteHostName");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StreamSocketInformation.RemotePort is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StreamSocketInformation.RemotePort");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "RemotePort");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StreamSocketInformation.RemoteServiceName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StreamSocketInformation.RemoteServiceName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "RemoteServiceName");
 			}
 		}
 #endif
@@ -99,17 +99,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RoundTripTimeStatistics StreamSocketInformation.RoundTripTimeStatistics is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RoundTripTimeStatistics%20StreamSocketInformation.RoundTripTimeStatistics");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.IBuffer SessionKey
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IBuffer StreamSocketInformation.SessionKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20StreamSocketInformation.SessionKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "RoundTripTimeStatistics");
 			}
 		}
 #endif
@@ -119,7 +109,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate StreamSocketInformation.ServerCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Certificate%20StreamSocketInformation.ServerCertificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "ServerCertificate");
 			}
 		}
 #endif
@@ -129,7 +119,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketSslErrorSeverity StreamSocketInformation.ServerCertificateErrorSeverity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SocketSslErrorSeverity%20StreamSocketInformation.ServerCertificateErrorSeverity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "ServerCertificateErrorSeverity");
 			}
 		}
 #endif
@@ -139,7 +129,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ChainValidationResult> StreamSocketInformation.ServerCertificateErrors is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CChainValidationResult%3E%20StreamSocketInformation.ServerCertificateErrors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "ServerCertificateErrors");
 			}
 		}
 #endif
@@ -149,23 +139,33 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Certificate> StreamSocketInformation.ServerIntermediateCertificates is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CCertificate%3E%20StreamSocketInformation.ServerIntermediateCertificates");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "ServerIntermediateCertificates");
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Streams.IBuffer SessionKey
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Sockets.StreamSocketInformation", "SessionKey");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.BandwidthStatistics.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.LocalAddress.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.LocalPort.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.RemoteHostName.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.RemoteAddress.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.RemoteServiceName.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.RemotePort.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.RoundTripTimeStatistics.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.BandwidthStatistics.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.ProtectionLevel.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.SessionKey.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.RemoteAddress.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.RemoteHostName.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.RemotePort.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.RemoteServiceName.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.RoundTripTimeStatistics.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.ServerCertificate.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.ServerCertificateErrorSeverity.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.ServerCertificateErrors.get
-		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.ServerCertificate.get
 		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.ServerIntermediateCertificates.get
+		// Forced skipping of method Windows.Networking.Sockets.StreamSocketInformation.SessionKey.get
 	}
 }

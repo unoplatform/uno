@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TextBlockAutomationPeer_Partial.cpp, tag winui3/release/1.5-stable
+// MUX Reference TextBlockAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.UI.Xaml.Controls;
@@ -22,7 +22,8 @@ public partial class TextBlockAutomationPeer : FrameworkElementAutomationPeer
 
 	protected override object GetPatternCore(PatternInterface patternInterface)
 	{
-		if (patternInterface == PatternInterface.Text)
+		if (patternInterface == PatternInterface.Text
+			|| patternInterface == PatternInterface.Text2)
 		{
 			if (m_textPattern == null)
 			{

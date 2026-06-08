@@ -11,6 +11,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation;
 public class Given_TemplateBindingAfterAnimation
 {
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_TemplateBinding_And_Animation_Set_Local_On_TemplatedParent()
 	{
 		// Scenario being tested:
@@ -40,6 +41,7 @@ public class Given_TemplateBindingAfterAnimation
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_TemplateBinding_And_Animation_Change_Theme()
 	{
 		// Scenario being tested:

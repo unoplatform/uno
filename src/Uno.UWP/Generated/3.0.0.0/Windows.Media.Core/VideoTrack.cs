@@ -15,25 +15,25 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Label
+		public string Id
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoTrack.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoTrack.Label");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.VideoTrack", "string VideoTrack.Label");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoTrack", "Id");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Id
+		public string Label
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoTrack.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoTrack.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoTrack", "Label");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.VideoTrack", "Label");
 			}
 		}
 #endif
@@ -43,17 +43,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoTrack.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoTrack.Language");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Core.MediaTrackKind TrackKind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaTrackKind VideoTrack.TrackKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaTrackKind%20VideoTrack.TrackKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoTrack", "Language");
 			}
 		}
 #endif
@@ -63,7 +53,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VideoTrack.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VideoTrack.Name");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoTrack", "Name");
 			}
 		}
 #endif
@@ -73,7 +63,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackItem VideoTrack.PlaybackItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackItem%20VideoTrack.PlaybackItem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoTrack", "PlaybackItem");
 			}
 		}
 #endif
@@ -83,27 +73,37 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoTrackSupportInfo VideoTrack.SupportInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoTrackSupportInfo%20VideoTrack.SupportInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoTrack", "SupportInfo");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.VideoTrack.Id.get
-		// Forced skipping of method Windows.Media.Core.VideoTrack.Language.get
-		// Forced skipping of method Windows.Media.Core.VideoTrack.TrackKind.get
-		// Forced skipping of method Windows.Media.Core.VideoTrack.Label.set
-		// Forced skipping of method Windows.Media.Core.VideoTrack.Label.get
-		// Forced skipping of method Windows.Media.Core.VideoTrack.OpenFailed.add
-		// Forced skipping of method Windows.Media.Core.VideoTrack.OpenFailed.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Core.MediaTrackKind TrackKind
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoTrack", "TrackKind");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.VideoEncodingProperties GetEncodingProperties()
 		{
-			throw new global::System.NotImplementedException("The member VideoEncodingProperties VideoTrack.GetEncodingProperties() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoEncodingProperties%20VideoTrack.GetEncodingProperties%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.VideoTrack", "GetEncodingProperties()");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.VideoTrack.PlaybackItem.get
+		// Forced skipping of method Windows.Media.Core.VideoTrack.OpenFailed.add
+		// Forced skipping of method Windows.Media.Core.VideoTrack.OpenFailed.remove
+		// Forced skipping of method Windows.Media.Core.VideoTrack.Id.get
+		// Forced skipping of method Windows.Media.Core.VideoTrack.Label.get
+		// Forced skipping of method Windows.Media.Core.VideoTrack.Label.set
+		// Forced skipping of method Windows.Media.Core.VideoTrack.Language.get
 		// Forced skipping of method Windows.Media.Core.VideoTrack.Name.get
+		// Forced skipping of method Windows.Media.Core.VideoTrack.PlaybackItem.get
 		// Forced skipping of method Windows.Media.Core.VideoTrack.SupportInfo.get
+		// Forced skipping of method Windows.Media.Core.VideoTrack.TrackKind.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.VideoTrack, global::Windows.Media.Core.VideoTrackOpenFailedEventArgs> OpenFailed
@@ -111,12 +111,12 @@ namespace Windows.Media.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.VideoTrack", "event TypedEventHandler<VideoTrack, VideoTrackOpenFailedEventArgs> VideoTrack.OpenFailed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.VideoTrack", "event OpenFailed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.VideoTrack", "event TypedEventHandler<VideoTrack, VideoTrackOpenFailedEventArgs> VideoTrack.OpenFailed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.VideoTrack", "event OpenFailed");
 			}
 		}
 #endif

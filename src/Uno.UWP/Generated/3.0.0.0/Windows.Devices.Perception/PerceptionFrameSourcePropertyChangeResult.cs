@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -20,7 +19,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object PerceptionFrameSourcePropertyChangeResult.NewValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20PerceptionFrameSourcePropertyChangeResult.NewValue");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult", "NewValue");
 			}
 		}
 #endif
@@ -30,11 +29,11 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PerceptionFrameSourcePropertyChangeStatus PerceptionFrameSourcePropertyChangeResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionFrameSourcePropertyChangeStatus%20PerceptionFrameSourcePropertyChangeResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult", "Status");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult.Status.get
 		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult.NewValue.get
+		// Forced skipping of method Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult.Status.get
 	}
 }

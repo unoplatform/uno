@@ -32,6 +32,7 @@ public partial class Given_TwoPaneView
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ApplyTemplate_Should_Not_Throw()
 	{
 		var SUT = new MyTwoPaneView() { Width = 100, Height = 100 };

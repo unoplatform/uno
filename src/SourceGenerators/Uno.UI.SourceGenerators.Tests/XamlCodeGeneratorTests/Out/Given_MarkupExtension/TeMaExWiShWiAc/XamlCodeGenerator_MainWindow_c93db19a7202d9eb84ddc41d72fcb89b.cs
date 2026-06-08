@@ -48,20 +48,22 @@ namespace TestRepro
 			var __that = this;
 			// Source 0\MainWindow.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.Page
-			{
-				IsParsing = true,
-				// Source 0\MainWindow.xaml (Line 10:3)
-			}
-			.MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_XamlApply((MainWindow_c93db19a7202d9eb84ddc41d72fcb89bXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-			{
-			/* _isTopLevelDictionary:False */
-			__that._component_0 = __p1;
-			global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Page.BackgroundProperty, "ApplicationPageBackgroundThemeBrush", isThemeResourceExtension: true, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainWindow_c93db19a7202d9eb84ddc41d72fcb89b);
-			__p1.CreationComplete();
-			}
-			))
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.Page
+				{
+					IsParsing = true,
+					// Source 0\MainWindow.xaml (Line 10:3)
+				}
+				.MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_XamlApply((MainWindow_c93db19a7202d9eb84ddc41d72fcb89bXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+				{
+				/* _isTopLevelDictionary:False */
+				__that._component_0 = __p1;
+				global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Page.BackgroundProperty, "ApplicationPageBackgroundThemeBrush", isThemeResourceExtension: true, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainWindow_c93db19a7202d9eb84ddc41d72fcb89b);
+				__p1.CreationComplete();
+				}
+				))
+			)
 			;
 			
 			this

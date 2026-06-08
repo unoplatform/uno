@@ -19,7 +19,7 @@ namespace Windows.Services.Maps.OfflineMaps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<OfflineMapPackage> OfflineMapPackageQueryResult.Packages is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3COfflineMapPackage%3E%20OfflineMapPackageQueryResult.Packages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult", "Packages");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Services.Maps.OfflineMaps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member OfflineMapPackageQueryStatus OfflineMapPackageQueryResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=OfflineMapPackageQueryStatus%20OfflineMapPackageQueryResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult", "Status");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult.Status.get
 		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult.Packages.get
+		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult.Status.get
 	}
 }

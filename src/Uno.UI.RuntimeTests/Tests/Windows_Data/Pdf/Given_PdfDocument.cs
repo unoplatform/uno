@@ -19,6 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Data.Pdf;
 #if HAS_UNO && !XAMARIN_ANDROID
 [Ignore("Not implemented yet.")]
 #endif
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 public class Given_PdfDocument
 {
 	private const string PdfDocument_Password_Valid = "uno";
@@ -62,7 +63,7 @@ public class Given_PdfDocument
 		// Render Page onto stream
 		var pageStream = new InMemoryRandomAccessStream();
 		await page.RenderToStreamAsync(pageStream, options);
-		Assert.IsTrue(pageStream.Size > 0, "Invalid size of page stream.");
+		Assert.IsGreaterThan((uint)0, (uint)pageStream.Size, "Invalid size of page stream.");
 
 		// Comparing rendered PdfPage with reference Page Image
 

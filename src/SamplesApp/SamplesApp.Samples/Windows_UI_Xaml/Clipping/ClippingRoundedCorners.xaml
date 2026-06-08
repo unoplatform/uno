@@ -1,0 +1,78 @@
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Xaml.Clipping.ClippingRoundedCorners"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Shared.Windows_UI_Xaml.Clipping"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <StackPanel>
+        <TextBlock FontSize="25">
+            Those 6 squares should be identical:
+        </TextBlock>
+
+        <StackPanel
+            Height="75"
+            Margin="10"
+            Orientation="Horizontal"
+            Spacing="10">
+
+            <Border Background="Tomato" CornerRadius="20,10,20,10">
+
+                <Rectangle
+                    Width="75"
+                    Height="75"
+                    Fill="Olive" />
+            </Border>
+
+            <Border Background="Olive" CornerRadius="20,10,20,10">
+
+                <Rectangle
+                    Width="75"
+                    Height="75"
+                    Fill="Olive"
+                    RenderTransformOrigin=".5,.5">
+                    <Rectangle.RenderTransform>
+                        <RotateTransform Angle="10" />
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+            </Border>
+
+            <ContentPresenter Background="Olive" CornerRadius="20,10,20,10">
+                <Rectangle
+                    Width="75"
+                    Height="75"
+                    Fill="Olive"
+                    RenderTransformOrigin=".5,.5">
+                    <Rectangle.RenderTransform>
+                        <RotateTransform Angle="45" />
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+            </ContentPresenter>
+
+            <Border
+                Width="75"
+                Height="75"
+                Background="Olive"
+                CornerRadius="20,10,20,10" />
+
+            <Grid CornerRadius="20,10,20,10">
+
+                <Rectangle
+                    Width="75"
+                    Height="75"
+                    Fill="Olive" />
+
+            </Grid>
+
+            <StackPanel Background="Olive" CornerRadius="20,10,20,10">
+
+                <Rectangle Width="75" Height="75" />
+
+            </StackPanel>
+
+        </StackPanel>
+    </StackPanel>
+</Page>

@@ -15,29 +15,15 @@ namespace Windows.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Power
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int InfraredTorchControl.Power is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InfraredTorchControl.Power");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.InfraredTorchControl", "int InfraredTorchControl.Power");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Devices.InfraredTorchMode CurrentMode
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InfraredTorchMode InfraredTorchControl.CurrentMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InfraredTorchMode%20InfraredTorchControl.CurrentMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.InfraredTorchControl", "CurrentMode");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.InfraredTorchControl", "InfraredTorchMode InfraredTorchControl.CurrentMode");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.InfraredTorchControl", "CurrentMode");
 			}
 		}
 #endif
@@ -47,7 +33,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InfraredTorchControl.IsSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InfraredTorchControl.IsSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.InfraredTorchControl", "IsSupported");
 			}
 		}
 #endif
@@ -57,7 +43,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int InfraredTorchControl.MaxPower is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InfraredTorchControl.MaxPower");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.InfraredTorchControl", "MaxPower");
 			}
 		}
 #endif
@@ -67,7 +53,21 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int InfraredTorchControl.MinPower is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InfraredTorchControl.MinPower");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.InfraredTorchControl", "MinPower");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int Power
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.InfraredTorchControl", "Power");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.InfraredTorchControl", "Power");
 			}
 		}
 #endif
@@ -77,7 +77,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int InfraredTorchControl.PowerStep is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InfraredTorchControl.PowerStep");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.InfraredTorchControl", "PowerStep");
 			}
 		}
 #endif
@@ -87,18 +87,18 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<InfraredTorchMode> InfraredTorchControl.SupportedModes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CInfraredTorchMode%3E%20InfraredTorchControl.SupportedModes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.InfraredTorchControl", "SupportedModes");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.IsSupported.get
-		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.SupportedModes.get
 		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.CurrentMode.get
 		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.CurrentMode.set
-		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.MinPower.get
+		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.IsSupported.get
 		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.MaxPower.get
-		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.PowerStep.get
+		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.MinPower.get
 		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.Power.get
 		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.Power.set
+		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.PowerStep.get
+		// Forced skipping of method Windows.Media.Devices.InfraredTorchControl.SupportedModes.get
 	}
 }

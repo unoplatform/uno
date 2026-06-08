@@ -11,8 +11,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared property ToggleState
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.SemanticZoomAutomationPeer(Microsoft.UI.Xaml.Controls.SemanticZoom)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.SemanticZoomAutomationPeer(Microsoft.UI.Xaml.Controls.SemanticZoom)
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.ToggleState.get
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.Toggle()
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer.ToggleState.get
 		// Processing: Microsoft.UI.Xaml.Automation.Provider.IToggleProvider
 	}
 }

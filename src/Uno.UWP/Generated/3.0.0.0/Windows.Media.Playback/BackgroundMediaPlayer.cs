@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Playback
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -15,43 +14,43 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlayer BackgroundMediaPlayer.Current is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlayer%20BackgroundMediaPlayer.Current");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.BackgroundMediaPlayer", "Current");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.BackgroundMediaPlayer.Current.get
-		// Forced skipping of method Windows.Media.Playback.BackgroundMediaPlayer.MessageReceivedFromBackground.add
-		// Forced skipping of method Windows.Media.Playback.BackgroundMediaPlayer.MessageReceivedFromBackground.remove
-		// Forced skipping of method Windows.Media.Playback.BackgroundMediaPlayer.MessageReceivedFromForeground.add
-		// Forced skipping of method Windows.Media.Playback.BackgroundMediaPlayer.MessageReceivedFromForeground.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void SendMessageToBackground(global::Windows.Foundation.Collections.ValueSet value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.BackgroundMediaPlayer", "void BackgroundMediaPlayer.SendMessageToBackground(ValueSet value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.BackgroundMediaPlayer", "SendMessageToBackground(ValueSet value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void SendMessageToForeground(global::Windows.Foundation.Collections.ValueSet value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.BackgroundMediaPlayer", "void BackgroundMediaPlayer.SendMessageToForeground(ValueSet value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.BackgroundMediaPlayer", "SendMessageToForeground(ValueSet value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static bool IsMediaPlaying()
 		{
-			throw new global::System.NotImplementedException("The member bool BackgroundMediaPlayer.IsMediaPlaying() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20BackgroundMediaPlayer.IsMediaPlaying%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.BackgroundMediaPlayer", "IsMediaPlaying()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void Shutdown()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.BackgroundMediaPlayer", "void BackgroundMediaPlayer.Shutdown()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.BackgroundMediaPlayer", "Shutdown()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Playback.BackgroundMediaPlayer.MessageReceivedFromBackground.add
+		// Forced skipping of method Windows.Media.Playback.BackgroundMediaPlayer.MessageReceivedFromBackground.remove
+		// Forced skipping of method Windows.Media.Playback.BackgroundMediaPlayer.MessageReceivedFromForeground.add
+		// Forced skipping of method Windows.Media.Playback.BackgroundMediaPlayer.MessageReceivedFromForeground.remove
+		// Forced skipping of method Windows.Media.Playback.BackgroundMediaPlayer.Current.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static event global::System.EventHandler<global::Windows.Media.Playback.MediaPlayerDataReceivedEventArgs> MessageReceivedFromBackground
@@ -59,12 +58,12 @@ namespace Windows.Media.Playback
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.BackgroundMediaPlayer", "event EventHandler<MediaPlayerDataReceivedEventArgs> BackgroundMediaPlayer.MessageReceivedFromBackground");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.BackgroundMediaPlayer", "event MessageReceivedFromBackground");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.BackgroundMediaPlayer", "event EventHandler<MediaPlayerDataReceivedEventArgs> BackgroundMediaPlayer.MessageReceivedFromBackground");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.BackgroundMediaPlayer", "event MessageReceivedFromBackground");
 			}
 		}
 #endif
@@ -75,12 +74,12 @@ namespace Windows.Media.Playback
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.BackgroundMediaPlayer", "event EventHandler<MediaPlayerDataReceivedEventArgs> BackgroundMediaPlayer.MessageReceivedFromForeground");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.BackgroundMediaPlayer", "event MessageReceivedFromForeground");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.BackgroundMediaPlayer", "event EventHandler<MediaPlayerDataReceivedEventArgs> BackgroundMediaPlayer.MessageReceivedFromForeground");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.BackgroundMediaPlayer", "event MessageReceivedFromForeground");
 			}
 		}
 #endif

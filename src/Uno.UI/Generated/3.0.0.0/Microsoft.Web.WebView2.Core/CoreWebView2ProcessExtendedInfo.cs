@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<CoreWebView2FrameInfo> CoreWebView2ProcessExtendedInfo.AssociatedFrameInfos is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CCoreWebView2FrameInfo%3E%20CoreWebView2ProcessExtendedInfo.AssociatedFrameInfos");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ProcessExtendedInfo", "AssociatedFrameInfos");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Microsoft.Web.WebView2.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2ProcessInfo CoreWebView2ProcessExtendedInfo.ProcessInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ProcessInfo%20CoreWebView2ProcessExtendedInfo.ProcessInfo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ProcessExtendedInfo", "ProcessInfo");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessExtendedInfo.ProcessInfo.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessExtendedInfo.AssociatedFrameInfos.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessExtendedInfo.ProcessInfo.get
 	}
 }

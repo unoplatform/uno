@@ -6,7 +6,7 @@ namespace Windows.Media.Playback
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PlaybackMediaMarkerSequence : global::System.Collections.Generic.IEnumerable<global::Windows.Media.Playback.PlaybackMediaMarker>
+	public partial class PlaybackMediaMarkerSequence : global::System.Collections.Generic.IEnumerable<global::Windows.Media.Playback.PlaybackMediaMarker>, global::System.Collections.IEnumerable
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal PlaybackMediaMarkerSequence()
@@ -19,35 +19,34 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PlaybackMediaMarkerSequence.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PlaybackMediaMarkerSequence.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.PlaybackMediaMarkerSequence", "Size");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.Size.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Insert(global::Windows.Media.Playback.PlaybackMediaMarker value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.PlaybackMediaMarkerSequence", "void PlaybackMediaMarkerSequence.Insert(PlaybackMediaMarker value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.PlaybackMediaMarkerSequence", "Insert(PlaybackMediaMarker value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Clear()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.PlaybackMediaMarkerSequence", "void PlaybackMediaMarkerSequence.Clear()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.PlaybackMediaMarkerSequence", "Clear()");
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.First()
-		// Processing: System.Collections.Generic.IEnumerable<Windows.Media.Playback.PlaybackMediaMarker>
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Media.Playback.PlaybackMediaMarker>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IEnumerator<global::Windows.Media.Playback.PlaybackMediaMarker> GetEnumerator()
 		{
-			throw new global::System.NotSupportedException();
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.PlaybackMediaMarkerSequence", "GetEnumerator()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.System.Collections.IEnumerable.GetEnumerator()
+		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.Size.get
+		// Processing: System.Collections.Generic.IEnumerable<Windows.Media.Playback.PlaybackMediaMarker>
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable

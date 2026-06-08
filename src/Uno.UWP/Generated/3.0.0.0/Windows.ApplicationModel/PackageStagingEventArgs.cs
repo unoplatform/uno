@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PackageStagingEventArgs.ActivityId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PackageStagingEventArgs.ActivityId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageStagingEventArgs", "ActivityId");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception PackageStagingEventArgs.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20PackageStagingEventArgs.ErrorCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageStagingEventArgs", "ErrorCode");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PackageStagingEventArgs.IsComplete is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PackageStagingEventArgs.IsComplete");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageStagingEventArgs", "IsComplete");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Package PackageStagingEventArgs.Package is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Package%20PackageStagingEventArgs.Package");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageStagingEventArgs", "Package");
 			}
 		}
 #endif
@@ -59,14 +59,14 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double PackageStagingEventArgs.Progress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20PackageStagingEventArgs.Progress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageStagingEventArgs", "Progress");
 			}
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.PackageStagingEventArgs.ActivityId.get
+		// Forced skipping of method Windows.ApplicationModel.PackageStagingEventArgs.ErrorCode.get
+		// Forced skipping of method Windows.ApplicationModel.PackageStagingEventArgs.IsComplete.get
 		// Forced skipping of method Windows.ApplicationModel.PackageStagingEventArgs.Package.get
 		// Forced skipping of method Windows.ApplicationModel.PackageStagingEventArgs.Progress.get
-		// Forced skipping of method Windows.ApplicationModel.PackageStagingEventArgs.IsComplete.get
-		// Forced skipping of method Windows.ApplicationModel.PackageStagingEventArgs.ErrorCode.get
 	}
 }

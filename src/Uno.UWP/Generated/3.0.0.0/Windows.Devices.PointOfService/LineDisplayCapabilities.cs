@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LineDisplayTextAttributeGranularity LineDisplayCapabilities.CanBlink is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LineDisplayTextAttributeGranularity%20LineDisplayCapabilities.CanBlink");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCapabilities", "CanBlink");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCapabilities.CanChangeBlinkRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LineDisplayCapabilities.CanChangeBlinkRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCapabilities", "CanChangeBlinkRate");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCapabilities.CanChangeScreenSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LineDisplayCapabilities.CanChangeScreenSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCapabilities", "CanChangeScreenSize");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCapabilities.CanDisplayBitmaps is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LineDisplayCapabilities.CanDisplayBitmaps");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCapabilities", "CanDisplayBitmaps");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCapabilities.CanDisplayCustomGlyphs is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LineDisplayCapabilities.CanDisplayCustomGlyphs");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCapabilities", "CanDisplayCustomGlyphs");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCapabilities.CanMapCharacterSets is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LineDisplayCapabilities.CanMapCharacterSets");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCapabilities", "CanMapCharacterSets");
 			}
 		}
 #endif
@@ -79,7 +79,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCapabilities.CanReadCharacterAtCursor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LineDisplayCapabilities.CanReadCharacterAtCursor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCapabilities", "CanReadCharacterAtCursor");
 			}
 		}
 #endif
@@ -89,7 +89,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LineDisplayTextAttributeGranularity LineDisplayCapabilities.CanReverse is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LineDisplayTextAttributeGranularity%20LineDisplayCapabilities.CanReverse");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCapabilities", "CanReverse");
 			}
 		}
 #endif
@@ -99,7 +99,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCapabilities.IsBrightnessSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LineDisplayCapabilities.IsBrightnessSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCapabilities", "IsBrightnessSupported");
 			}
 		}
 #endif
@@ -109,7 +109,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCapabilities.IsCursorSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LineDisplayCapabilities.IsCursorSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCapabilities", "IsCursorSupported");
 			}
 		}
 #endif
@@ -119,7 +119,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCapabilities.IsHorizontalMarqueeSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LineDisplayCapabilities.IsHorizontalMarqueeSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCapabilities", "IsHorizontalMarqueeSupported");
 			}
 		}
 #endif
@@ -129,7 +129,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCapabilities.IsInterCharacterWaitSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LineDisplayCapabilities.IsInterCharacterWaitSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCapabilities", "IsInterCharacterWaitSupported");
 			}
 		}
 #endif
@@ -139,7 +139,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCapabilities.IsStatisticsReportingSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LineDisplayCapabilities.IsStatisticsReportingSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCapabilities", "IsStatisticsReportingSupported");
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCapabilities.IsStatisticsUpdatingSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LineDisplayCapabilities.IsStatisticsUpdatingSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCapabilities", "IsStatisticsUpdatingSupported");
 			}
 		}
 #endif
@@ -159,7 +159,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LineDisplayCapabilities.IsVerticalMarqueeSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20LineDisplayCapabilities.IsVerticalMarqueeSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCapabilities", "IsVerticalMarqueeSupported");
 			}
 		}
 #endif
@@ -169,7 +169,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UnifiedPosPowerReportingType LineDisplayCapabilities.PowerReportingType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UnifiedPosPowerReportingType%20LineDisplayCapabilities.PowerReportingType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCapabilities", "PowerReportingType");
 			}
 		}
 #endif
@@ -179,7 +179,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint LineDisplayCapabilities.SupportedDescriptors is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20LineDisplayCapabilities.SupportedDescriptors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCapabilities", "SupportedDescriptors");
 			}
 		}
 #endif
@@ -189,26 +189,26 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint LineDisplayCapabilities.SupportedWindows is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20LineDisplayCapabilities.SupportedWindows");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.LineDisplayCapabilities", "SupportedWindows");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.IsStatisticsReportingSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.IsStatisticsUpdatingSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.PowerReportingType.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanChangeScreenSize.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanDisplayBitmaps.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanReadCharacterAtCursor.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanMapCharacterSets.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanDisplayCustomGlyphs.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanReverse.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanBlink.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanChangeBlinkRate.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanChangeScreenSize.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanDisplayBitmaps.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanDisplayCustomGlyphs.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanMapCharacterSets.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanReadCharacterAtCursor.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.CanReverse.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.IsBrightnessSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.IsCursorSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.IsHorizontalMarqueeSupported.get
-		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.IsVerticalMarqueeSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.IsInterCharacterWaitSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.IsStatisticsReportingSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.IsStatisticsUpdatingSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.IsVerticalMarqueeSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.PowerReportingType.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.SupportedDescriptors.get
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayCapabilities.SupportedWindows.get
 	}

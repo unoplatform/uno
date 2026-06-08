@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpatialInteractionControllerProperties.IsThumbstickPressed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialInteractionControllerProperties.IsThumbstickPressed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionControllerProperties", "IsThumbstickPressed");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpatialInteractionControllerProperties.IsTouchpadPressed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialInteractionControllerProperties.IsTouchpadPressed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionControllerProperties", "IsTouchpadPressed");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpatialInteractionControllerProperties.IsTouchpadTouched is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialInteractionControllerProperties.IsTouchpadTouched");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionControllerProperties", "IsTouchpadTouched");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double SpatialInteractionControllerProperties.ThumbstickX is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SpatialInteractionControllerProperties.ThumbstickX");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionControllerProperties", "ThumbstickX");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double SpatialInteractionControllerProperties.ThumbstickY is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SpatialInteractionControllerProperties.ThumbstickY");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionControllerProperties", "ThumbstickY");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double SpatialInteractionControllerProperties.TouchpadX is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SpatialInteractionControllerProperties.TouchpadX");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionControllerProperties", "TouchpadX");
 			}
 		}
 #endif
@@ -79,13 +79,13 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double SpatialInteractionControllerProperties.TouchpadY is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SpatialInteractionControllerProperties.TouchpadY");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionControllerProperties", "TouchpadY");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.IsTouchpadTouched.get
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.IsTouchpadPressed.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.IsThumbstickPressed.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.IsTouchpadPressed.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.IsTouchpadTouched.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.ThumbstickX.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.ThumbstickY.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionControllerProperties.TouchpadX.get

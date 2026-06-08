@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception.Provider
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -15,7 +14,7 @@ namespace Windows.Devices.Perception.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> PerceptionFaceAuthenticationGroup.FrameProviderIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20PerceptionFaceAuthenticationGroup.FrameProviderIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup", "FrameProviderIds");
 			}
 		}
 #endif
@@ -23,7 +22,7 @@ namespace Windows.Devices.Perception.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PerceptionFaceAuthenticationGroup(global::System.Collections.Generic.IEnumerable<string> ids, global::Windows.Devices.Perception.Provider.PerceptionStartFaceAuthenticationHandler startHandler, global::Windows.Devices.Perception.Provider.PerceptionStopFaceAuthenticationHandler stopHandler)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup", "PerceptionFaceAuthenticationGroup.PerceptionFaceAuthenticationGroup(IEnumerable<string> ids, PerceptionStartFaceAuthenticationHandler startHandler, PerceptionStopFaceAuthenticationHandler stopHandler)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup", "PerceptionFaceAuthenticationGroup(IEnumerable<string> ids, PerceptionStartFaceAuthenticationHandler startHandler, PerceptionStopFaceAuthenticationHandler stopHandler)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup.PerceptionFaceAuthenticationGroup(System.Collections.Generic.IEnumerable<string>, Windows.Devices.Perception.Provider.PerceptionStartFaceAuthenticationHandler, Windows.Devices.Perception.Provider.PerceptionStopFaceAuthenticationHandler)

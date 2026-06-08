@@ -19,7 +19,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RemoteSystemSessionParticipantWatcherStatus RemoteSystemSessionParticipantWatcher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemSessionParticipantWatcherStatus%20RemoteSystemSessionParticipantWatcher.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher", "Status");
 			}
 		}
 #endif
@@ -27,23 +27,23 @@ namespace Windows.System.RemoteSystems
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher", "void RemoteSystemSessionParticipantWatcher.Start()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher", "Start()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Stop()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher", "void RemoteSystemSessionParticipantWatcher.Stop()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher", "Stop()");
 		}
 #endif
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher.Status.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher.Added.add
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher.Added.remove
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher.Removed.add
-		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher.Removed.remove
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher.EnumerationCompleted.add
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher.EnumerationCompleted.remove
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher.Removed.add
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher.Removed.remove
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher.Status.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher, global::Windows.System.RemoteSystems.RemoteSystemSessionParticipantAddedEventArgs> Added
@@ -51,12 +51,12 @@ namespace Windows.System.RemoteSystems
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher", "event TypedEventHandler<RemoteSystemSessionParticipantWatcher, RemoteSystemSessionParticipantAddedEventArgs> RemoteSystemSessionParticipantWatcher.Added");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher", "event Added");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher", "event TypedEventHandler<RemoteSystemSessionParticipantWatcher, RemoteSystemSessionParticipantAddedEventArgs> RemoteSystemSessionParticipantWatcher.Added");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher", "event Added");
 			}
 		}
 #endif
@@ -67,12 +67,12 @@ namespace Windows.System.RemoteSystems
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher", "event TypedEventHandler<RemoteSystemSessionParticipantWatcher, object> RemoteSystemSessionParticipantWatcher.EnumerationCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher", "event EnumerationCompleted");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher", "event TypedEventHandler<RemoteSystemSessionParticipantWatcher, object> RemoteSystemSessionParticipantWatcher.EnumerationCompleted");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher", "event EnumerationCompleted");
 			}
 		}
 #endif
@@ -83,12 +83,12 @@ namespace Windows.System.RemoteSystems
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher", "event TypedEventHandler<RemoteSystemSessionParticipantWatcher, RemoteSystemSessionParticipantRemovedEventArgs> RemoteSystemSessionParticipantWatcher.Removed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher", "event Removed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher", "event TypedEventHandler<RemoteSystemSessionParticipantWatcher, RemoteSystemSessionParticipantRemovedEventArgs> RemoteSystemSessionParticipantWatcher.Removed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionParticipantWatcher", "event Removed");
 			}
 		}
 #endif

@@ -1,10 +1,25 @@
 ﻿using SkiaSharp;
 using Uno.UI.UI.Xaml.Media;
 
+using Rect = Windows.Foundation.Rect;
+
 namespace Microsoft.UI.Xaml.Media
 {
 	partial class PathGeometry
 	{
+		private protected override Rect ComputeBounds()
+		{
+			var path = GetSKPath();
+			if (path.IsEmpty)
+			{
+				return default;
+			}
+
+			var b = path.Bounds;
+			var rect = new Rect(b.Left, b.Top, b.Width, b.Height);
+			return Transform is { } transform ? transform.TransformBounds(rect) : rect;
+		}
+
 		internal override SKPath GetSKPath() => GetSKPath(false);
 
 		internal override SKPath GetFilledSKPath() => GetSKPath(true);
@@ -28,6 +43,13 @@ namespace Microsoft.UI.Xaml.Media
 					{
 						path.LineTo((float)lineSegment.Point.X, (float)lineSegment.Point.Y);
 					}
+					else if (segment is PolyLineSegment polyLineSegment)
+					{
+						foreach (var point in polyLineSegment.Points)
+						{
+							path.LineTo((float)point.X, (float)point.Y);
+						}
+					}
 					else if (segment is BezierSegment bezierSegment)
 					{
 						path.CubicTo(
@@ -35,11 +57,30 @@ namespace Microsoft.UI.Xaml.Media
 							 (float)bezierSegment.Point2.X, (float)bezierSegment.Point2.Y,
 							 (float)bezierSegment.Point3.X, (float)bezierSegment.Point3.Y);
 					}
+					else if (segment is PolyBezierSegment polyBezierSegment)
+					{
+						for (var i = 0; i < polyBezierSegment.Points.Count - 2; i += 3)
+						{
+							path.CubicTo(
+								 (float)polyBezierSegment.Points[i].X, (float)polyBezierSegment.Points[i].Y,
+								 (float)polyBezierSegment.Points[i + 1].X, (float)polyBezierSegment.Points[i + 1].Y,
+								 (float)polyBezierSegment.Points[i + 2].X, (float)polyBezierSegment.Points[i + 2].Y);
+						}
+					}
 					else if (segment is QuadraticBezierSegment quadraticBezierSegment)
 					{
 						path.QuadTo(
 							 (float)quadraticBezierSegment.Point1.X, (float)quadraticBezierSegment.Point1.Y,
 							 (float)quadraticBezierSegment.Point2.X, (float)quadraticBezierSegment.Point2.Y);
+					}
+					else if (segment is PolyQuadraticBezierSegment polyQuadraticBezierSegment)
+					{
+						for (var i = 0; i < polyQuadraticBezierSegment.Points.Count - 1; i += 2)
+						{
+							path.QuadTo(
+								 (float)polyQuadraticBezierSegment.Points[i].X, (float)polyQuadraticBezierSegment.Points[i].Y,
+								 (float)polyQuadraticBezierSegment.Points[i + 1].X, (float)polyQuadraticBezierSegment.Points[i + 1].Y);
+						}
 					}
 					else if (segment is ArcSegment arcSegment)
 					{

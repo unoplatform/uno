@@ -15,29 +15,29 @@ namespace Microsoft.UI.Content
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Handled
+		public object AutomationProvider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContentSiteAutomationProviderRequestedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSiteAutomationProviderRequestedEventArgs.Handled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs", "AutomationProvider");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs", "bool ContentSiteAutomationProviderRequestedEventArgs.Handled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs", "AutomationProvider");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object AutomationProvider
+		public bool Handled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object ContentSiteAutomationProviderRequestedEventArgs.AutomationProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20ContentSiteAutomationProviderRequestedEventArgs.AutomationProvider");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs", "Handled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs", "object ContentSiteAutomationProviderRequestedEventArgs.AutomationProvider");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentSiteAutomationProviderRequestedEventArgs", "Handled");
 			}
 		}
 #endif

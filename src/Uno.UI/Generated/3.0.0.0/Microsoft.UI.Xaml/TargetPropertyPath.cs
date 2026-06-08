@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class TargetPropertyPath
 	{
-		// Skipping already declared property Target
 		// Skipping already declared property Path
-		// Skipping already declared method Microsoft.UI.Xaml.TargetPropertyPath.TargetPropertyPath(Microsoft.UI.Xaml.DependencyProperty)
-		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.TargetPropertyPath(Microsoft.UI.Xaml.DependencyProperty)
+		// Skipping already declared property Target
 		// Skipping already declared method Microsoft.UI.Xaml.TargetPropertyPath.TargetPropertyPath()
 		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.TargetPropertyPath()
+		// Skipping already declared method Microsoft.UI.Xaml.TargetPropertyPath.TargetPropertyPath(Microsoft.UI.Xaml.DependencyProperty)
+		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.TargetPropertyPath(Microsoft.UI.Xaml.DependencyProperty)
 		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.Path.get
 		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.Path.set
 		// Forced skipping of method Microsoft.UI.Xaml.TargetPropertyPath.Target.get

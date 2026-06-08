@@ -14,7 +14,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DevicePickerAppearance CastingDevicePicker.Appearance is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DevicePickerAppearance%20CastingDevicePicker.Appearance");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevicePicker", "Appearance");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Media.Casting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CastingDevicePickerFilter CastingDevicePicker.Filter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CastingDevicePickerFilter%20CastingDevicePicker.Filter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Casting.CastingDevicePicker", "Filter");
 			}
 		}
 #endif
@@ -32,37 +32,37 @@ namespace Windows.Media.Casting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public CastingDevicePicker()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePicker", "CastingDevicePicker.CastingDevicePicker()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePicker", "CastingDevicePicker()");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Casting.CastingDevicePicker.CastingDevicePicker()
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePicker.Filter.get
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePicker.Appearance.get
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePicker.CastingDeviceSelected.add
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePicker.CastingDeviceSelected.remove
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePicker.CastingDevicePickerDismissed.add
-		// Forced skipping of method Windows.Media.Casting.CastingDevicePicker.CastingDevicePickerDismissed.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Show(global::Windows.Foundation.Rect selection)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePicker", "void CastingDevicePicker.Show(Rect selection)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePicker", "Show(Rect selection)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Show(global::Windows.Foundation.Rect selection, global::Windows.UI.Popups.Placement preferredPlacement)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePicker", "void CastingDevicePicker.Show(Rect selection, Placement preferredPlacement)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePicker", "Show(Rect selection, Placement preferredPlacement)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Hide()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePicker", "void CastingDevicePicker.Hide()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePicker", "Hide()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Casting.CastingDevicePicker.CastingDevicePickerDismissed.add
+		// Forced skipping of method Windows.Media.Casting.CastingDevicePicker.CastingDevicePickerDismissed.remove
+		// Forced skipping of method Windows.Media.Casting.CastingDevicePicker.CastingDeviceSelected.add
+		// Forced skipping of method Windows.Media.Casting.CastingDevicePicker.CastingDeviceSelected.remove
+		// Forced skipping of method Windows.Media.Casting.CastingDevicePicker.Appearance.get
+		// Forced skipping of method Windows.Media.Casting.CastingDevicePicker.Filter.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Casting.CastingDevicePicker, object> CastingDevicePickerDismissed
@@ -70,12 +70,12 @@ namespace Windows.Media.Casting
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePicker", "event TypedEventHandler<CastingDevicePicker, object> CastingDevicePicker.CastingDevicePickerDismissed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePicker", "event CastingDevicePickerDismissed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePicker", "event TypedEventHandler<CastingDevicePicker, object> CastingDevicePicker.CastingDevicePickerDismissed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePicker", "event CastingDevicePickerDismissed");
 			}
 		}
 #endif
@@ -86,12 +86,12 @@ namespace Windows.Media.Casting
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePicker", "event TypedEventHandler<CastingDevicePicker, CastingDeviceSelectedEventArgs> CastingDevicePicker.CastingDeviceSelected");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePicker", "event CastingDeviceSelected");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePicker", "event TypedEventHandler<CastingDevicePicker, CastingDeviceSelectedEventArgs> CastingDevicePicker.CastingDeviceSelected");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Casting.CastingDevicePicker", "event CastingDeviceSelected");
 			}
 		}
 #endif

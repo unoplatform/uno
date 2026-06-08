@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan PhotoCapturedEventArgs.CaptureTimeOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20PhotoCapturedEventArgs.CaptureTimeOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.PhotoCapturedEventArgs", "CaptureTimeOffset");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CapturedFrame PhotoCapturedEventArgs.Frame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CapturedFrame%20PhotoCapturedEventArgs.Frame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.PhotoCapturedEventArgs", "Frame");
 			}
 		}
 #endif
@@ -39,12 +39,12 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CapturedFrame PhotoCapturedEventArgs.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CapturedFrame%20PhotoCapturedEventArgs.Thumbnail");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.PhotoCapturedEventArgs", "Thumbnail");
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.PhotoCapturedEventArgs.CaptureTimeOffset.get
 		// Forced skipping of method Windows.Media.Capture.PhotoCapturedEventArgs.Frame.get
 		// Forced skipping of method Windows.Media.Capture.PhotoCapturedEventArgs.Thumbnail.get
-		// Forced skipping of method Windows.Media.Capture.PhotoCapturedEventArgs.CaptureTimeOffset.get
 	}
 }

@@ -14,7 +14,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.AesCbc is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SymmetricAlgorithmNames.AesCbc");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.SymmetricAlgorithmNames", "AesCbc");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.AesCbcPkcs7 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SymmetricAlgorithmNames.AesCbcPkcs7");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.SymmetricAlgorithmNames", "AesCbcPkcs7");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.AesCcm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SymmetricAlgorithmNames.AesCcm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.SymmetricAlgorithmNames", "AesCcm");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.AesEcb is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SymmetricAlgorithmNames.AesEcb");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.SymmetricAlgorithmNames", "AesEcb");
 			}
 		}
 #endif
@@ -54,7 +54,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.AesEcbPkcs7 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SymmetricAlgorithmNames.AesEcbPkcs7");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.SymmetricAlgorithmNames", "AesEcbPkcs7");
 			}
 		}
 #endif
@@ -64,7 +64,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.AesGcm is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SymmetricAlgorithmNames.AesGcm");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.SymmetricAlgorithmNames", "AesGcm");
 			}
 		}
 #endif
@@ -74,7 +74,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.DesCbc is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SymmetricAlgorithmNames.DesCbc");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.SymmetricAlgorithmNames", "DesCbc");
 			}
 		}
 #endif
@@ -84,7 +84,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.DesCbcPkcs7 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SymmetricAlgorithmNames.DesCbcPkcs7");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.SymmetricAlgorithmNames", "DesCbcPkcs7");
 			}
 		}
 #endif
@@ -94,7 +94,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.DesEcb is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SymmetricAlgorithmNames.DesEcb");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.SymmetricAlgorithmNames", "DesEcb");
 			}
 		}
 #endif
@@ -104,7 +104,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.DesEcbPkcs7 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SymmetricAlgorithmNames.DesEcbPkcs7");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.SymmetricAlgorithmNames", "DesEcbPkcs7");
 			}
 		}
 #endif
@@ -114,7 +114,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.Rc2Cbc is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SymmetricAlgorithmNames.Rc2Cbc");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.SymmetricAlgorithmNames", "Rc2Cbc");
 			}
 		}
 #endif
@@ -124,7 +124,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.Rc2CbcPkcs7 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SymmetricAlgorithmNames.Rc2CbcPkcs7");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.SymmetricAlgorithmNames", "Rc2CbcPkcs7");
 			}
 		}
 #endif
@@ -134,7 +134,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.Rc2Ecb is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SymmetricAlgorithmNames.Rc2Ecb");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.SymmetricAlgorithmNames", "Rc2Ecb");
 			}
 		}
 #endif
@@ -144,7 +144,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.Rc2EcbPkcs7 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SymmetricAlgorithmNames.Rc2EcbPkcs7");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.SymmetricAlgorithmNames", "Rc2EcbPkcs7");
 			}
 		}
 #endif
@@ -154,7 +154,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.Rc4 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SymmetricAlgorithmNames.Rc4");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.SymmetricAlgorithmNames", "Rc4");
 			}
 		}
 #endif
@@ -164,7 +164,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.TripleDesCbc is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SymmetricAlgorithmNames.TripleDesCbc");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.SymmetricAlgorithmNames", "TripleDesCbc");
 			}
 		}
 #endif
@@ -174,7 +174,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.TripleDesCbcPkcs7 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SymmetricAlgorithmNames.TripleDesCbcPkcs7");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.SymmetricAlgorithmNames", "TripleDesCbcPkcs7");
 			}
 		}
 #endif
@@ -184,7 +184,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.TripleDesEcb is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SymmetricAlgorithmNames.TripleDesEcb");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.SymmetricAlgorithmNames", "TripleDesEcb");
 			}
 		}
 #endif
@@ -194,28 +194,28 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.TripleDesEcbPkcs7 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SymmetricAlgorithmNames.TripleDesEcbPkcs7");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Core.SymmetricAlgorithmNames", "TripleDesEcbPkcs7");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.DesCbc.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.DesEcb.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.TripleDesCbc.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.TripleDesEcb.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.Rc2Cbc.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.Rc2Ecb.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.AesCbc.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.AesEcb.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.AesGcm.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.AesCcm.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.AesCbcPkcs7.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.AesCcm.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.AesEcb.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.AesEcbPkcs7.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.AesGcm.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.DesCbc.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.DesCbcPkcs7.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.DesEcb.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.DesEcbPkcs7.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.TripleDesCbcPkcs7.get
-		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.TripleDesEcbPkcs7.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.Rc2Cbc.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.Rc2CbcPkcs7.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.Rc2Ecb.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.Rc2EcbPkcs7.get
 		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.Rc4.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.TripleDesCbc.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.TripleDesCbcPkcs7.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.TripleDesEcb.get
+		// Forced skipping of method Windows.Security.Cryptography.Core.SymmetricAlgorithmNames.TripleDesEcbPkcs7.get
 	}
 }

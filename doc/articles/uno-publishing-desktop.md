@@ -13,7 +13,7 @@ uid: uno.publishing.desktop
 
 ## Publish Using Visual Studio
 
-- In the debugger toolbar drop-down, select the `net9.0-desktop` or `net10.0-desktop` target framework
+- In the debugger toolbar drop-down, select the `net10.0-desktop` target framework
 - Once the project has reloaded, right-click on the project and select **Publish**
 - Select the **Folder** target for your publication then click **Next**
 - Select the **Folder** target again then **Next**
@@ -21,7 +21,7 @@ uid: uno.publishing.desktop
 - The profile is created, you can now **Close** the dialog
 - In the opened editor, click `Show all settings`
 - Set **Configuration** to `Release`
-- Set **Target framework** to `net9.0-desktop` or `net10.0-desktop`
+- Set **Target framework** to `net10.0-desktop`
 - You can set **Deployment mode** to either `Framework-dependent` or `Self-contained`
   - If `Self-contained` is chosen and you're targeting Windows, **Target runtime** must match the installed .NET SDK runtime identifier
     as cross-publishing self-contained WPF apps (e.g. win-x64 to win-arm64) is not supported for now.
@@ -141,7 +141,7 @@ The `Properties\PublishProfiles\ClickOnceProfile.pubxml` file will be created.
 Once done, you can use the following command in your CI environment, or using a **Developer Command Prompt for Visual Studio**:
 
 ```shell
-msbuild /m /r /target:Publish /p:Configuration=Release /p:PublishProfile="Properties\PublishProfiles\ClickOnceProfile.pubxml" /p:TargetFramework=net9.0-desktop
+msbuild /m /r /target:Publish /p:Configuration=Release /p:PublishProfile="Properties\PublishProfiles\ClickOnceProfile.pubxml" /p:TargetFramework=net10.0-desktop
 ```
 
 The resulting package will be located in the `bin\publish` folder. You can change the output folder using `/p:UnoClickOncePublishDir=your\output\directory`.
@@ -151,3 +151,49 @@ Depending on your deployment settings, you can run the `Setup.exe` file to insta
 > [!IMPORTANT]
 > At this time, publishing with the [Visual Studio Publishing Wizard](https://learn.microsoft.com/visualstudio/deployment/quickstart-deploy-using-clickonce-folder?view=visualstudio)
 > is not supported for multi-targeted projects. Using the command line above is required.
+
+## Troubleshooting
+
+### NU1102: Unable to find package `Microsoft.NETCore.App.Runtime.Mono.win-x64`
+
+When publishing a self-contained desktop app for Windows, you may see an error similar to:
+
+```text
+error NU1102: Unable to find package Microsoft.NETCore.App.Runtime.Mono.win-x64 with version (= 10.0.x)
+  - Found N version(s) in nuget.org [ Nearest version: ... ]
+```
+
+This happens because, by default, the .NET SDK resolves the **Mono**-flavored runtime pack
+(`Microsoft.NETCore.App.Runtime.Mono.win-x64`) for the desktop target, and that pack is not
+always published on NuGet.org for every .NET servicing release. The **CoreCLR**-flavored
+runtime pack (`Microsoft.NETCore.App.Runtime.win-x64`) is published consistently and is
+generally a better fit for Windows desktop.
+
+To switch the desktop target to CoreCLR, set `UseMonoRuntime` to `false`. You can do this
+in two equivalent ways:
+
+# [**In the `.csproj`**](#tab/csproj)
+
+Scope the property to the desktop `TargetFramework` so that mobile and WebAssembly targets
+continue to use Mono:
+
+```xml
+<PropertyGroup Condition="'$(TargetFramework)' == 'net10.0-desktop'">
+  <UseMonoRuntime>false</UseMonoRuntime>
+</PropertyGroup>
+```
+
+# [**On the publish command line**](#tab/cli)
+
+```shell
+dotnet publish -f net10.0-desktop -r {{RID}} -p:SelfContained=true -p:TargetFrameworks=net10.0-desktop -p:UseMonoRuntime=false
+```
+
+***
+
+> [!NOTE]
+> Only apply `UseMonoRuntime=false` to the desktop target. WebAssembly and mobile
+> (`-android`, `-ios`, `-maccatalyst`) targets still require Mono.
+>
+> If restore still fails after the change (for example due to a previously cached
+> failed lookup), you can clear NuGet caches and retry: `dotnet nuget locals all --clear`.

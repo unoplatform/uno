@@ -46,7 +46,10 @@ partial class InputManager
 
 	void IInputInjectorTarget.InjectPointerRemoved(PointerEventArgs args) => InjectPointerRemoved(args);
 	partial void InjectPointerRemoved(PointerEventArgs args);
+
 	#endregion
+
+	internal bool GetWasUIAFocusSetSinceLastInput() => false; // TODO Uno: Not implemented yet.
 
 	internal partial class PointerManager
 	{

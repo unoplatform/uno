@@ -3,18 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	public enum AutomationCaretPosition
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Unknown = 0,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		EndOfLine = 1,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		BeginningOfLine = 2,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationCaretPosition.Unknown
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationCaretPosition.EndOfLine
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationCaretPosition.BeginningOfLine
 	}
 #endif
 }

@@ -19,7 +19,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppMemoryUsageLevel AppResourceGroupMemoryReport.CommitUsageLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppMemoryUsageLevel%20AppResourceGroupMemoryReport.CommitUsageLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupMemoryReport", "CommitUsageLevel");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AppResourceGroupMemoryReport.CommitUsageLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20AppResourceGroupMemoryReport.CommitUsageLimit");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupMemoryReport", "CommitUsageLimit");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AppResourceGroupMemoryReport.PrivateCommitUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20AppResourceGroupMemoryReport.PrivateCommitUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupMemoryReport", "PrivateCommitUsage");
 			}
 		}
 #endif
@@ -49,12 +49,12 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AppResourceGroupMemoryReport.TotalCommitUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20AppResourceGroupMemoryReport.TotalCommitUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppResourceGroupMemoryReport", "TotalCommitUsage");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.AppResourceGroupMemoryReport.CommitUsageLimit.get
 		// Forced skipping of method Windows.System.AppResourceGroupMemoryReport.CommitUsageLevel.get
+		// Forced skipping of method Windows.System.AppResourceGroupMemoryReport.CommitUsageLimit.get
 		// Forced skipping of method Windows.System.AppResourceGroupMemoryReport.PrivateCommitUsage.get
 		// Forced skipping of method Windows.System.AppResourceGroupMemoryReport.TotalCommitUsage.get
 	}

@@ -10,29 +10,11 @@ namespace Windows.UI.ApplicationSettings
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Label
+		public static global::Windows.UI.ApplicationSettings.SettingsCommand AccountsCommand
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SettingsCommand.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SettingsCommand.Label");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.SettingsCommand", "string SettingsCommand.Label");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Popups.UICommandInvokedHandler Invoked
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member UICommandInvokedHandler SettingsCommand.Invoked is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UICommandInvokedHandler%20SettingsCommand.Invoked");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.SettingsCommand", "UICommandInvokedHandler SettingsCommand.Invoked");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.SettingsCommand", "AccountsCommand");
 			}
 		}
 #endif
@@ -42,21 +24,39 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object SettingsCommand.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20SettingsCommand.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.SettingsCommand", "Id");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.SettingsCommand", "object SettingsCommand.Id");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.SettingsCommand", "Id");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.ApplicationSettings.SettingsCommand AccountsCommand
+		public global::Windows.UI.Popups.UICommandInvokedHandler Invoked
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SettingsCommand SettingsCommand.AccountsCommand is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SettingsCommand%20SettingsCommand.AccountsCommand");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.SettingsCommand", "Invoked");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.SettingsCommand", "Invoked");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Label
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.SettingsCommand", "Label");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.SettingsCommand", "Label");
 			}
 		}
 #endif
@@ -64,17 +64,17 @@ namespace Windows.UI.ApplicationSettings
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SettingsCommand(object settingsCommandId, string label, global::Windows.UI.Popups.UICommandInvokedHandler handler)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.SettingsCommand", "SettingsCommand.SettingsCommand(object settingsCommandId, string label, UICommandInvokedHandler handler)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.SettingsCommand", "SettingsCommand(object settingsCommandId, string label, UICommandInvokedHandler handler)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.SettingsCommand(object, string, Windows.UI.Popups.UICommandInvokedHandler)
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.Label.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.Label.set
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.Invoked.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.Invoked.set
+		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.AccountsCommand.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.Id.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.Id.set
-		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.AccountsCommand.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.Invoked.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.Invoked.set
+		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.Label.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.SettingsCommand.Label.set
 		// Processing: Windows.UI.Popups.IUICommand
 	}
 }

@@ -8,12 +8,12 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class RadioButton
 	{
-		// Skipping already declared property GroupName
 		// Skipping already declared property GroupNameProperty
+		// Skipping already declared property GroupName
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RadioButton.RadioButton()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButton.RadioButton()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButton.GroupNameProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButton.GroupName.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButton.GroupName.set
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.RadioButton.GroupNameProperty.get
 	}
 }

@@ -3,33 +3,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	public enum AutomationAnimationStyle
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		None = 0,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		LasVegasLights = 1,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		BlinkingBackground = 2,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		SparkleText = 3,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		MarchingBlackAnts = 4,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		MarchingRedAnts = 5,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Shimmer = 6,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Other = 7,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationAnimationStyle.None
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationAnimationStyle.LasVegasLights
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationAnimationStyle.BlinkingBackground
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationAnimationStyle.SparkleText
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationAnimationStyle.MarchingBlackAnts
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationAnimationStyle.MarchingRedAnts
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationAnimationStyle.Shimmer
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationAnimationStyle.Other
 	}
 #endif
 }

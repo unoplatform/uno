@@ -19,7 +19,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long PlatformDiagnosticTraceRuntimeInfo.EtwRuntimeFileTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=long%20PlatformDiagnosticTraceRuntimeInfo.EtwRuntimeFileTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceRuntimeInfo", "EtwRuntimeFileTime");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.System.Diagnostics.TraceReporting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long PlatformDiagnosticTraceRuntimeInfo.RuntimeFileTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=long%20PlatformDiagnosticTraceRuntimeInfo.RuntimeFileTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceRuntimeInfo", "RuntimeFileTime");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceRuntimeInfo.RuntimeFileTime.get
 		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceRuntimeInfo.EtwRuntimeFileTime.get
+		// Forced skipping of method Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTraceRuntimeInfo.RuntimeFileTime.get
 	}
 }

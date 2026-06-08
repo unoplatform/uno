@@ -33,7 +33,7 @@ sudo usermod --append --groups lxd $USER # In order for the current user to use 
 To generate a snap file, run the following:
 
 ```shell
-dotnet publish -f net9.0-desktop -p:SelfContained=true -p:PackageFormat=snap
+dotnet publish -f net10.0-desktop -p:SelfContained=true -p:PackageFormat=snap
 ```
 
 The generated snap file is located in the `bin/Release/netX.0-desktop/linux-[x64|arm64]/publish` folder.
@@ -50,9 +50,6 @@ You may use absolute or relative (to the `.csproj`) paths.
 The `.desktop` filename MUST conform to the [Desktop File](https://specifications.freedesktop.org/desktop-entry-spec/latest) spec.
 
 If you wish, you can generate a default snap manifest and desktop file by running the command above, then tweak them.
-
-> [!NOTE]
-> .NET 9 publishing and cross-publishing are not supported as of Uno 5.5, we will support .NET 9 publishing soon.
 
 #### CI Restrictions
 

@@ -10,29 +10,29 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object Item
+		public global::Windows.Foundation.Rect Bounds
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object SemanticZoomLocation.Item is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20SemanticZoomLocation.Item");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.SemanticZoomLocation", "Bounds");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.SemanticZoomLocation", "object SemanticZoomLocation.Item");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.SemanticZoomLocation", "Bounds");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Rect Bounds
+		public object Item
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect SemanticZoomLocation.Bounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20SemanticZoomLocation.Bounds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.SemanticZoomLocation", "Item");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.SemanticZoomLocation", "Rect SemanticZoomLocation.Bounds");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.SemanticZoomLocation", "Item");
 			}
 		}
 #endif
@@ -40,13 +40,13 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SemanticZoomLocation()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.SemanticZoomLocation", "SemanticZoomLocation.SemanticZoomLocation()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.SemanticZoomLocation", "SemanticZoomLocation()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.SemanticZoomLocation()
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.Item.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.Item.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.Bounds.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.Bounds.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.Item.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.SemanticZoomLocation.Item.set
 	}
 }

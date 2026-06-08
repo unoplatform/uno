@@ -1,0 +1,61 @@
+﻿<Page
+    x:Class="UITests.Microsoft_UI_Xaml_Controls.WebView2Tests.WebView2_PostMessage_RemoveAdd"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Grid Padding="16" RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="300" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel
+            Grid.Row="0"
+            Orientation="Horizontal"
+            Spacing="8">
+            <Button
+                x:Name="RemoveButton"
+                Click="OnRemoveClick"
+                Content="Remove WebView2" />
+            <Button
+                x:Name="AddButton"
+                Click="OnAddClick"
+                Content="Add WebView2"
+                IsEnabled="False" />
+            <Button
+                x:Name="SendMessageButton"
+                Click="OnSendMessageClick"
+                Content="Send PostMessage from JS" />
+        </StackPanel>
+
+        <Border
+            x:Name="WebViewContainer"
+            Grid.Row="1"
+            BorderBrush="Gray"
+            BorderThickness="1">
+            <controls:WebView2 x:Name="TestWebView" />
+        </Border>
+
+        <TextBlock
+            Grid.Row="2"
+            FontWeight="Bold"
+            Text="Messages received from WebView2:" />
+
+        <ScrollViewer
+            Grid.Row="3"
+            BorderBrush="Gray"
+            BorderThickness="1">
+            <TextBlock
+                x:Name="MessageLog"
+                Padding="4"
+                TextWrapping="Wrap" />
+        </ScrollViewer>
+    </Grid>
+</Page>

@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.PlayTo
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -20,7 +19,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlayToSource PlayToConnectionTransferredEventArgs.CurrentSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlayToSource%20PlayToConnectionTransferredEventArgs.CurrentSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs", "CurrentSource");
 			}
 		}
 #endif
@@ -30,11 +29,11 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlayToSource PlayToConnectionTransferredEventArgs.PreviousSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlayToSource%20PlayToConnectionTransferredEventArgs.PreviousSource");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs", "PreviousSource");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.PreviousSource.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.CurrentSource.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs.PreviousSource.get
 	}
 }

@@ -41,6 +41,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(-20, 20, 0, 60, 0, 0, 130, 20, 110, 0, 30, 20, 120, 0, 130, 20, 0, 40, 130, 260, 110, 40, 30, 120, 120, 40, 130, 120, 110, 180, 140, 120)]
 		[DataRow(20, -20, 70, 0, 0, 0, 90, 20, 110, 0, 30, 20, 160, 0, 90, 20, 0, 0, 90, 300, 110, 0, 30, 160, 160, 0, 90, 160, 110, 140, 140, 160)]
 		[DataRow(-20, -20, 0, 0, 0, 0, 130, 20, 110, 0, 30, 20, 120, 0, 130, 20, 0, 0, 130, 300, 110, 0, 30, 160, 120, 0, 130, 160, 110, 140, 140, 160)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Has_ColumnSpacing(double columnSpacing,
 			double rowSpacing,
 			double gridDesiredWidthExpected, double gridDesiredHeightExpected,
@@ -227,6 +228,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ColumnDefinition_Width_Changed()
 		{
 			var outerShell = new Grid { Width = 290, Height = 220 };
@@ -333,6 +335,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task Change_Grid_Row_After_Load()
 		{
 			Border firstBorder;
@@ -386,6 +389,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task Change_Grid_Column_After_Load()
 		{
 			Border firstBorder;
@@ -441,6 +445,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task Change_Grid_RowSpan_After_Load()
 		{
 			Border firstBorder;
@@ -481,6 +486,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task Change_Grid_ColumnSpan_After_Load()
 		{
 			Border firstBorder;
@@ -520,6 +526,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Child_Added_Measure_And_Visible_Arrange()
 		{
 			// This test emulates the layout sequence associated with DataGridColumnHeadersPresenter in the WCT
@@ -708,7 +715,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// On first cycle, everything will be normal.
 			togglableBorder.Visibility = Visibility.Collapsed; // C = 1
 			await TestServices.WindowHelper.WaitForIdle();
-			Assert.IsTrue(lv.ActualHeight > initial, $"C1: SutLV should've expanded with the border collapsed: Lv.ActualHeight>initial --> ({lv.ActualHeight}>{initial})");
+			Assert.IsGreaterThan(initial, lv.ActualHeight, $"C1: SutLV should've expanded with the border collapsed: Lv.ActualHeight>initial --> ({lv.ActualHeight}>{initial})");
 			togglableBorder.Visibility = Visibility.Visible; // C = 2
 			await TestServices.WindowHelper.WaitForIdle();
 			Assert.IsTrue(DoubleUtil.AreWithinTolerance(lv.ActualHeight, initial, 0.1), $"C2: SutLV should've returned to initial size with the border visible: Lv.ActualHeight==initial --> ({lv.ActualHeight}=={initial})");
@@ -718,7 +725,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// due to measure caching of Android.Views.View.Measure inside the measure pass of Grid.
 			togglableBorder.Visibility = Visibility.Collapsed; // C = 3
 			await TestServices.WindowHelper.WaitForIdle();
-			Assert.IsTrue(lv.ActualHeight > initial, $"C3: SutLV should've expanded with the border collapsed: Lv.ActualHeight>initial --> ({lv.ActualHeight}>{initial})");
+			Assert.IsGreaterThan(initial, lv.ActualHeight, $"C3: SutLV should've expanded with the border collapsed: Lv.ActualHeight>initial --> ({lv.ActualHeight}>{initial})");
 			togglableBorder.Visibility = Visibility.Visible; // C = 4
 			await TestServices.WindowHelper.WaitForIdle();
 			Assert.IsTrue(DoubleUtil.AreWithinTolerance(lv.ActualHeight, initial, 0.1), $"C4: SutLV should've returned to initial size with the border visible: Lv.ActualHeight==initial --> ({lv.ActualHeight}=={initial})");

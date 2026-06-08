@@ -15,25 +15,25 @@ namespace Windows.Devices.Enumeration
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Devices.Enumeration.DeviceAccessStatus Status
+		public string Id
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceAccessStatus DeviceAccessChangedEventArgs.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccessStatus%20DeviceAccessChangedEventArgs.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceAccessChangedEventArgs", "Id");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Id
+		public global::Windows.Devices.Enumeration.DeviceAccessStatus Status
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccessChangedEventArgs.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccessChangedEventArgs.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceAccessChangedEventArgs", "Status");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.Status.get
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.Id.get
+		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.Status.get
 	}
 }

@@ -10,99 +10,15 @@ namespace Windows.UI.Input.Inking
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double Width
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double InkPresenterRuler.Width is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InkPresenterRuler.Width");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterRuler", "double InkPresenterRuler.Width");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public double Length
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double InkPresenterRuler.Length is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20InkPresenterRuler.Length");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterRuler", "double InkPresenterRuler.Length");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsCompassVisible
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterRuler.IsCompassVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkPresenterRuler.IsCompassVisible");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterRuler", "bool InkPresenterRuler.IsCompassVisible");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool AreTickMarksVisible
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterRuler.AreTickMarksVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkPresenterRuler.AreTickMarksVisible");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterRuler", "AreTickMarksVisible");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterRuler", "bool InkPresenterRuler.AreTickMarksVisible");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Matrix3x2 Transform
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Matrix3x2 InkPresenterRuler.Transform is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix3x2%20InkPresenterRuler.Transform");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterRuler", "Matrix3x2 InkPresenterRuler.Transform");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsVisible
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool InkPresenterRuler.IsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InkPresenterRuler.IsVisible");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterRuler", "bool InkPresenterRuler.IsVisible");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color ForegroundColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color InkPresenterRuler.ForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20InkPresenterRuler.ForegroundColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterRuler", "Color InkPresenterRuler.ForegroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterRuler", "AreTickMarksVisible");
 			}
 		}
 #endif
@@ -112,11 +28,53 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color InkPresenterRuler.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20InkPresenterRuler.BackgroundColor");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterRuler", "BackgroundColor");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterRuler", "Color InkPresenterRuler.BackgroundColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterRuler", "BackgroundColor");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Color ForegroundColor
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterRuler", "ForegroundColor");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterRuler", "ForegroundColor");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsCompassVisible
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterRuler", "IsCompassVisible");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterRuler", "IsCompassVisible");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsVisible
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterRuler", "IsVisible");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterRuler", "IsVisible");
 			}
 		}
 #endif
@@ -126,7 +84,49 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkPresenterStencilKind InkPresenterRuler.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkPresenterStencilKind%20InkPresenterRuler.Kind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterRuler", "Kind");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double Length
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterRuler", "Length");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterRuler", "Length");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Matrix3x2 Transform
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterRuler", "Transform");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterRuler", "Transform");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public double Width
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkPresenterRuler", "Width");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterRuler", "Width");
 			}
 		}
 #endif
@@ -134,27 +134,27 @@ namespace Windows.UI.Input.Inking
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public InkPresenterRuler(global::Windows.UI.Input.Inking.InkPresenter inkPresenter)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterRuler", "InkPresenterRuler.InkPresenterRuler(InkPresenter inkPresenter)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterRuler", "InkPresenterRuler(InkPresenter inkPresenter)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.InkPresenterRuler(Windows.UI.Input.Inking.InkPresenter)
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.Length.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.Length.set
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.Width.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.Width.set
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.Kind.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.IsVisible.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.IsVisible.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.AreTickMarksVisible.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.AreTickMarksVisible.set
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.BackgroundColor.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.BackgroundColor.set
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.ForegroundColor.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.ForegroundColor.set
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.Transform.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.Transform.set
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.AreTickMarksVisible.get
-		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.AreTickMarksVisible.set
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.IsCompassVisible.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.IsCompassVisible.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.IsVisible.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.IsVisible.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.Kind.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.Length.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.Length.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.Transform.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.Transform.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.Width.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkPresenterRuler.Width.set
 		// Processing: Windows.UI.Input.Inking.IInkPresenterStencil
 	}
 }

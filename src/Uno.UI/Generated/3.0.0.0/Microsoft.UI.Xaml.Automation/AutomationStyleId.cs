@@ -3,54 +3,24 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false || false
 	public enum AutomationStyleId
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Heading1 = 70001,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Heading2 = 70002,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Heading3 = 70003,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Heading4 = 70004,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Heading5 = 70005,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Heading6 = 70006,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Heading7 = 70007,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Heading8 = 70008,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Heading9 = 70009,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Title = 70010,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Subtitle = 70011,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Normal = 70012,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Emphasis = 70013,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Quote = 70014,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		BulletedList = 70015,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Heading1
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Heading2
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Heading3
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Heading4
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Heading5
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Heading6
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Heading7
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Heading8
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Heading9
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Title
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Subtitle
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Normal
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Emphasis
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.Quote
+		// Skipping already declared field Microsoft.UI.Xaml.Automation.AutomationStyleId.BulletedList
 	}
 #endif
 }

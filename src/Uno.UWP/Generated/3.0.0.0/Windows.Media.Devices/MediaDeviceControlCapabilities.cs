@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaDeviceControlCapabilities.AutoModeSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaDeviceControlCapabilities.AutoModeSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.MediaDeviceControlCapabilities", "AutoModeSupported");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MediaDeviceControlCapabilities.Default is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20MediaDeviceControlCapabilities.Default");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.MediaDeviceControlCapabilities", "Default");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MediaDeviceControlCapabilities.Max is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20MediaDeviceControlCapabilities.Max");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.MediaDeviceControlCapabilities", "Max");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MediaDeviceControlCapabilities.Min is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20MediaDeviceControlCapabilities.Min");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.MediaDeviceControlCapabilities", "Min");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MediaDeviceControlCapabilities.Step is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20MediaDeviceControlCapabilities.Step");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.MediaDeviceControlCapabilities", "Step");
 			}
 		}
 #endif
@@ -69,15 +69,15 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaDeviceControlCapabilities.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaDeviceControlCapabilities.Supported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.MediaDeviceControlCapabilities", "Supported");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Supported.get
-		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Min.get
-		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Max.get
-		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Step.get
-		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Default.get
 		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.AutoModeSupported.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Default.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Max.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Min.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Step.get
+		// Forced skipping of method Windows.Media.Devices.MediaDeviceControlCapabilities.Supported.get
 	}
 }

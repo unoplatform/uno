@@ -14,7 +14,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SupportedWebAccountActions WebAccountCommand.Actions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SupportedWebAccountActions%20WebAccountCommand.Actions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.WebAccountCommand", "Actions");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccountCommandInvokedHandler WebAccountCommand.Invoked is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccountCommandInvokedHandler%20WebAccountCommand.Invoked");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.WebAccountCommand", "Invoked");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccount WebAccountCommand.WebAccount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebAccount%20WebAccountCommand.WebAccount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ApplicationSettings.WebAccountCommand", "WebAccount");
 			}
 		}
 #endif
@@ -42,12 +42,12 @@ namespace Windows.UI.ApplicationSettings
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public WebAccountCommand(global::Windows.Security.Credentials.WebAccount webAccount, global::Windows.UI.ApplicationSettings.WebAccountCommandInvokedHandler invoked, global::Windows.UI.ApplicationSettings.SupportedWebAccountActions actions)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.WebAccountCommand", "WebAccountCommand.WebAccountCommand(WebAccount webAccount, WebAccountCommandInvokedHandler invoked, SupportedWebAccountActions actions)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.WebAccountCommand", "WebAccountCommand(WebAccount webAccount, WebAccountCommandInvokedHandler invoked, SupportedWebAccountActions actions)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.WebAccountCommand(Windows.Security.Credentials.WebAccount, Windows.UI.ApplicationSettings.WebAccountCommandInvokedHandler, Windows.UI.ApplicationSettings.SupportedWebAccountActions)
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.WebAccount.get
-		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.Invoked.get
 		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.Actions.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.Invoked.get
+		// Forced skipping of method Windows.UI.ApplicationSettings.WebAccountCommand.WebAccount.get
 	}
 }

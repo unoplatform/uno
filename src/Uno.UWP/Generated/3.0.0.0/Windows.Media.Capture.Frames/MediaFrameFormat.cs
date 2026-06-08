@@ -15,11 +15,21 @@ namespace Windows.Media.Capture.Frames
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.MediaProperties.AudioEncodingProperties AudioEncodingProperties
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameFormat", "AudioEncodingProperties");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaProperties.MediaRatio FrameRate
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaRatio MediaFrameFormat.FrameRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaRatio%20MediaFrameFormat.FrameRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameFormat", "FrameRate");
 			}
 		}
 #endif
@@ -29,7 +39,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaFrameFormat.MajorType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaFrameFormat.MajorType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameFormat", "MajorType");
 			}
 		}
 #endif
@@ -39,7 +49,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<Guid, object> MediaFrameFormat.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3CGuid%2C%20object%3E%20MediaFrameFormat.Properties");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameFormat", "Properties");
 			}
 		}
 #endif
@@ -49,7 +59,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaFrameFormat.Subtype is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaFrameFormat.Subtype");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameFormat", "Subtype");
 			}
 		}
 #endif
@@ -59,25 +69,15 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoMediaFrameFormat MediaFrameFormat.VideoFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoMediaFrameFormat%20MediaFrameFormat.VideoFormat");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameFormat", "VideoFormat");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.MediaProperties.AudioEncodingProperties AudioEncodingProperties
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AudioEncodingProperties MediaFrameFormat.AudioEncodingProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioEncodingProperties%20MediaFrameFormat.AudioEncodingProperties");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.MajorType.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.Subtype.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.FrameRate.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.Properties.get
-		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.VideoFormat.get
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.AudioEncodingProperties.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.FrameRate.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.MajorType.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.Properties.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.Subtype.get
+		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameFormat.VideoFormat.get
 	}
 }

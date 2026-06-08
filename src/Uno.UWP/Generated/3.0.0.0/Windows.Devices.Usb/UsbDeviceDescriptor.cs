@@ -19,7 +19,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint UsbDeviceDescriptor.BcdDeviceRevision is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20UsbDeviceDescriptor.BcdDeviceRevision");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceDescriptor", "BcdDeviceRevision");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint UsbDeviceDescriptor.BcdUsb is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20UsbDeviceDescriptor.BcdUsb");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceDescriptor", "BcdUsb");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbDeviceDescriptor.MaxPacketSize0 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20UsbDeviceDescriptor.MaxPacketSize0");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceDescriptor", "MaxPacketSize0");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbDeviceDescriptor.NumberOfConfigurations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%20UsbDeviceDescriptor.NumberOfConfigurations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceDescriptor", "NumberOfConfigurations");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint UsbDeviceDescriptor.ProductId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20UsbDeviceDescriptor.ProductId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceDescriptor", "ProductId");
 			}
 		}
 #endif
@@ -69,15 +69,15 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint UsbDeviceDescriptor.VendorId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20UsbDeviceDescriptor.VendorId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Usb.UsbDeviceDescriptor", "VendorId");
 			}
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.BcdDeviceRevision.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.BcdUsb.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.MaxPacketSize0.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.VendorId.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.ProductId.get
-		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.BcdDeviceRevision.get
 		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.NumberOfConfigurations.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.ProductId.get
+		// Forced skipping of method Windows.Devices.Usb.UsbDeviceDescriptor.VendorId.get
 	}
 }

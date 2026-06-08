@@ -15,11 +15,21 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint ContactCount
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.CrossSlidingEventArgs", "ContactCount");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.UI.Input.CrossSlidingState CrossSlidingState
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CrossSlidingState CrossSlidingEventArgs.CrossSlidingState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CrossSlidingState%20CrossSlidingEventArgs.CrossSlidingState");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.CrossSlidingEventArgs", "CrossSlidingState");
 			}
 		}
 #endif
@@ -29,7 +39,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PointerDeviceType CrossSlidingEventArgs.PointerDeviceType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointerDeviceType%20CrossSlidingEventArgs.PointerDeviceType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.CrossSlidingEventArgs", "PointerDeviceType");
 			}
 		}
 #endif
@@ -39,23 +49,13 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point CrossSlidingEventArgs.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20CrossSlidingEventArgs.Position");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.CrossSlidingEventArgs", "Position");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint ContactCount
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint CrossSlidingEventArgs.ContactCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CrossSlidingEventArgs.ContactCount");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.UI.Input.CrossSlidingEventArgs.ContactCount.get
+		// Forced skipping of method Windows.UI.Input.CrossSlidingEventArgs.CrossSlidingState.get
 		// Forced skipping of method Windows.UI.Input.CrossSlidingEventArgs.PointerDeviceType.get
 		// Forced skipping of method Windows.UI.Input.CrossSlidingEventArgs.Position.get
-		// Forced skipping of method Windows.UI.Input.CrossSlidingEventArgs.CrossSlidingState.get
-		// Forced skipping of method Windows.UI.Input.CrossSlidingEventArgs.ContactCount.get
 	}
 }

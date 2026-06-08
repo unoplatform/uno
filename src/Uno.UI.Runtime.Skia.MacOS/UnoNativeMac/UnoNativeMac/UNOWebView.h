@@ -49,6 +49,8 @@ void uno_set_webview_new_window_requested_callback(uno_webview_new_window_reques
 
 const char* uno_webview_get_title(WKWebView *webview);
 
+void uno_webview_register_message_handler(WKWebView *webview);
+
 bool uno_webview_can_go_back(WKWebView *webview);
 bool uno_webview_can_go_forward(WKWebView *webview);
 
@@ -63,6 +65,8 @@ void uno_webview_stop(WKWebView *webview);
 
 void uno_webview_execute_script(WKWebView *webview, NSInteger handle, const char *javascript);
 void uno_webview_invoke_script(WKWebView *webview, NSInteger handle, const char *javascript);
+
+void uno_webview_set_inspectable(WKWebView *webview, bool inspectable);
 
 // https://learn.microsoft.com/en-us/dotnet/api/microsoft.web.webview2.core.corewebview2weberrorstatus
 typedef NS_ENUM(uint32, CoreWebView2WebErrorStatus) {

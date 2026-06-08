@@ -8,13 +8,13 @@ using Verify = XamlSourceGeneratorVerifier;
 [TestClass]
 public partial class Given_Parser
 {
-	private static string EmptyCodeBehind(string className) =>
+	private static string EmptyCodeBehind(string className, string baseType = "Page") =>
 		$$"""
 		using Microsoft.UI.Xaml.Controls;
 
 		namespace TestRepro
 		{
-			public sealed partial class {{className}} : Page
+			public sealed partial class {{className}} : {{baseType}}
 			{
 				public {{className}}()
 				{
@@ -24,7 +24,15 @@ public partial class Given_Parser
 		}
 		""";
 
-	private static readonly string _emptyCodeBehind = EmptyCodeBehind("MainPage");
+	private static string MainPageXamlBoilerplate(string innerXaml) => $$"""
+		<Page x:Class="TestRepro.MainPage"
+			  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+		{{innerXaml}}
+		</Page>
+		""";
+
+	private static readonly string _emptyCodeBehind = EmptyCodeBehind("MainPage", "Page");
 
 	[TestMethod]
 	public async Task When_Event_Handler()
@@ -241,7 +249,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("CS0117").WithSpan(@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\MainPage_d6cd66944958ced0c513e0a04797b51d.cs", 56, 5, 56, 18).WithArguments("Microsoft.UI.Xaml.Controls.Grid", "InvalidMember")
+			DiagnosticResult.CompilerError("CS0117").WithSpan(Path.Combine("Uno.UI.SourceGenerators", "Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator", "MainPage_d6cd66944958ced0c513e0a04797b51d.cs"), 57, 6, 57, 19).WithArguments("Microsoft.UI.Xaml.Controls.Grid", "InvalidMember")
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 
@@ -271,7 +279,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("CS0246").WithSpan(@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\MainPage_d6cd66944958ced0c513e0a04797b51d.cs", 59, 10, 59, 30).WithArguments("TypeThatDoesNotExist"),
+			DiagnosticResult.CompilerError("CS0246").WithSpan(Path.Combine("Uno.UI.SourceGenerators", "Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator", "MainPage_d6cd66944958ced0c513e0a04797b51d.cs"), 61, 12, 61, 32).WithArguments("TypeThatDoesNotExist"),
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 

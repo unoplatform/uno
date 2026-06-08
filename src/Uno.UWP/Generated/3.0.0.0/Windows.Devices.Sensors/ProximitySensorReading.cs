@@ -11,8 +11,8 @@ namespace Windows.Devices.Sensors
 		// Skipping already declared property DistanceInMillimeters
 		// Skipping already declared property IsDetected
 		// Skipping already declared property Timestamp
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReading.Timestamp.get
-		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReading.IsDetected.get
 		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReading.DistanceInMillimeters.get
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReading.IsDetected.get
+		// Forced skipping of method Windows.Devices.Sensors.ProximitySensorReading.Timestamp.get
 	}
 }

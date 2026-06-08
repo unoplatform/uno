@@ -15,43 +15,15 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int StepCount
+		public int FinalStep
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int StepEasingFunction.StepCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20StepEasingFunction.StepCount");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.StepEasingFunction", "FinalStep");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.StepEasingFunction", "int StepEasingFunction.StepCount");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsInitialStepSingleFrame
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool StepEasingFunction.IsInitialStepSingleFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StepEasingFunction.IsInitialStepSingleFrame");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.StepEasingFunction", "bool StepEasingFunction.IsInitialStepSingleFrame");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsFinalStepSingleFrame
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool StepEasingFunction.IsFinalStepSingleFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StepEasingFunction.IsFinalStepSingleFrame");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.StepEasingFunction", "bool StepEasingFunction.IsFinalStepSingleFrame");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.StepEasingFunction", "FinalStep");
 			}
 		}
 #endif
@@ -61,25 +33,53 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int StepEasingFunction.InitialStep is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20StepEasingFunction.InitialStep");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.StepEasingFunction", "InitialStep");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.StepEasingFunction", "int StepEasingFunction.InitialStep");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.StepEasingFunction", "InitialStep");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int FinalStep
+		public bool IsFinalStepSingleFrame
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int StepEasingFunction.FinalStep is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20StepEasingFunction.FinalStep");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.StepEasingFunction", "IsFinalStepSingleFrame");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.StepEasingFunction", "int StepEasingFunction.FinalStep");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.StepEasingFunction", "IsFinalStepSingleFrame");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsInitialStepSingleFrame
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.StepEasingFunction", "IsInitialStepSingleFrame");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.StepEasingFunction", "IsInitialStepSingleFrame");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int StepCount
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.StepEasingFunction", "StepCount");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.StepEasingFunction", "StepCount");
 			}
 		}
 #endif

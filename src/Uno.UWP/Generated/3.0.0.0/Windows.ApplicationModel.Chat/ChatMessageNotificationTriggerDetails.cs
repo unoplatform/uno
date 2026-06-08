@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ChatMessage ChatMessageNotificationTriggerDetails.ChatMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChatMessage%20ChatMessageNotificationTriggerDetails.ChatMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails", "ChatMessage");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChatMessageNotificationTriggerDetails.ShouldDisplayToast is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChatMessageNotificationTriggerDetails.ShouldDisplayToast");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails", "ShouldDisplayToast");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChatMessageNotificationTriggerDetails.ShouldUpdateActionCenter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChatMessageNotificationTriggerDetails.ShouldUpdateActionCenter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails", "ShouldUpdateActionCenter");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChatMessageNotificationTriggerDetails.ShouldUpdateBadge is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChatMessageNotificationTriggerDetails.ShouldUpdateBadge");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails", "ShouldUpdateBadge");
 			}
 		}
 #endif
@@ -59,14 +59,14 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ChatMessageNotificationTriggerDetails.ShouldUpdateDetailText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ChatMessageNotificationTriggerDetails.ShouldUpdateDetailText");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails", "ShouldUpdateDetailText");
 			}
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails.ChatMessage.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails.ShouldDisplayToast.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails.ShouldUpdateDetailText.get
-		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails.ShouldUpdateBadge.get
 		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails.ShouldUpdateActionCenter.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails.ShouldUpdateBadge.get
+		// Forced skipping of method Windows.ApplicationModel.Chat.ChatMessageNotificationTriggerDetails.ShouldUpdateDetailText.get
 	}
 }

@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception.Provider
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -13,7 +12,7 @@ namespace Windows.Devices.Perception.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PerceptionVideoFrameAllocator(uint maxOutstandingFrameCountForWrite, global::Windows.Graphics.Imaging.BitmapPixelFormat format, global::Windows.Foundation.Size resolution, global::Windows.Graphics.Imaging.BitmapAlphaMode alpha)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator", "PerceptionVideoFrameAllocator.PerceptionVideoFrameAllocator(uint maxOutstandingFrameCountForWrite, BitmapPixelFormat format, Size resolution, BitmapAlphaMode alpha)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator", "PerceptionVideoFrameAllocator(uint maxOutstandingFrameCountForWrite, BitmapPixelFormat format, Size resolution, BitmapAlphaMode alpha)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator.PerceptionVideoFrameAllocator(uint, Windows.Graphics.Imaging.BitmapPixelFormat, Windows.Foundation.Size, Windows.Graphics.Imaging.BitmapAlphaMode)
@@ -21,21 +20,21 @@ namespace Windows.Devices.Perception.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Perception.Provider.PerceptionFrame AllocateFrame()
 		{
-			throw new global::System.NotImplementedException("The member PerceptionFrame PerceptionVideoFrameAllocator.AllocateFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionFrame%20PerceptionVideoFrameAllocator.AllocateFrame%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator", "AllocateFrame()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.Perception.Provider.PerceptionFrame CopyFromVideoFrame(global::Windows.Media.VideoFrame frame)
 		{
-			throw new global::System.NotImplementedException("The member PerceptionFrame PerceptionVideoFrameAllocator.CopyFromVideoFrame(VideoFrame frame) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionFrame%20PerceptionVideoFrameAllocator.CopyFromVideoFrame%28VideoFrame%20frame%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator", "CopyFromVideoFrame(VideoFrame frame)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator", "void PerceptionVideoFrameAllocator.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator", "Dispose()");
 		}
 #endif
 		// Processing: System.IDisposable

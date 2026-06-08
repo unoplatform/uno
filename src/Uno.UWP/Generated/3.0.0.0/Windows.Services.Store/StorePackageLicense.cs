@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StorePackageLicense.IsValid is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StorePackageLicense.IsValid");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePackageLicense", "IsValid");
 			}
 		}
 #endif
@@ -29,28 +29,28 @@ namespace Windows.Services.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Package StorePackageLicense.Package is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Package%20StorePackageLicense.Package");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePackageLicense", "Package");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Services.Store.StorePackageLicense.LicenseLost.add
-		// Forced skipping of method Windows.Services.Store.StorePackageLicense.LicenseLost.remove
-		// Forced skipping of method Windows.Services.Store.StorePackageLicense.Package.get
-		// Forced skipping of method Windows.Services.Store.StorePackageLicense.IsValid.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void ReleaseLicense()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StorePackageLicense", "void StorePackageLicense.ReleaseLicense()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StorePackageLicense", "ReleaseLicense()");
 		}
 #endif
+		// Forced skipping of method Windows.Services.Store.StorePackageLicense.LicenseLost.add
+		// Forced skipping of method Windows.Services.Store.StorePackageLicense.LicenseLost.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StorePackageLicense", "void StorePackageLicense.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StorePackageLicense", "Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Services.Store.StorePackageLicense.IsValid.get
+		// Forced skipping of method Windows.Services.Store.StorePackageLicense.Package.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Services.Store.StorePackageLicense, object> LicenseLost
@@ -58,12 +58,12 @@ namespace Windows.Services.Store
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StorePackageLicense", "event TypedEventHandler<StorePackageLicense, object> StorePackageLicense.LicenseLost");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StorePackageLicense", "event LicenseLost");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StorePackageLicense", "event TypedEventHandler<StorePackageLicense, object> StorePackageLicense.LicenseLost");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Store.StorePackageLicense", "event LicenseLost");
 			}
 		}
 #endif

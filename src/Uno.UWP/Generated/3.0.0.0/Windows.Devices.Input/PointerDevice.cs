@@ -14,7 +14,7 @@ namespace Windows.Devices.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PointerDevice.IsIntegrated is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PointerDevice.IsIntegrated");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "IsIntegrated");
 			}
 		}
 #endif
@@ -24,7 +24,17 @@ namespace Windows.Devices.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PointerDevice.MaxContacts is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PointerDevice.MaxContacts");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "MaxContacts");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint MaxPointersWithZDistance
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "MaxPointersWithZDistance");
 			}
 		}
 #endif
@@ -34,7 +44,7 @@ namespace Windows.Devices.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect PointerDevice.PhysicalDeviceRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20PointerDevice.PhysicalDeviceRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "PhysicalDeviceRect");
 			}
 		}
 #endif
@@ -45,7 +55,7 @@ namespace Windows.Devices.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect PointerDevice.ScreenRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20PointerDevice.ScreenRect");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "ScreenRect");
 			}
 		}
 #endif
@@ -55,40 +65,30 @@ namespace Windows.Devices.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PointerDeviceUsage> PointerDevice.SupportedUsages is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPointerDeviceUsage%3E%20PointerDevice.SupportedUsages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "SupportedUsages");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint MaxPointersWithZDistance
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint PointerDevice.MaxPointersWithZDistance is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PointerDevice.MaxPointersWithZDistance");
-			}
-		}
-#endif
-		// Forced skipping of method Windows.Devices.Input.PointerDevice.PointerDeviceType.get
-		// Forced skipping of method Windows.Devices.Input.PointerDevice.IsIntegrated.get
-		// Forced skipping of method Windows.Devices.Input.PointerDevice.MaxContacts.get
-		// Forced skipping of method Windows.Devices.Input.PointerDevice.PhysicalDeviceRect.get
-		// Forced skipping of method Windows.Devices.Input.PointerDevice.ScreenRect.get
-		// Forced skipping of method Windows.Devices.Input.PointerDevice.SupportedUsages.get
-		// Forced skipping of method Windows.Devices.Input.PointerDevice.MaxPointersWithZDistance.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Input.PointerDevice GetPointerDevice(uint pointerId)
 		{
-			throw new global::System.NotImplementedException("The member PointerDevice PointerDevice.GetPointerDevice(uint pointerId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointerDevice%20PointerDevice.GetPointerDevice%28uint%20pointerId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "GetPointerDevice(uint pointerId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Input.PointerDevice> GetPointerDevices()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<PointerDevice> PointerDevice.GetPointerDevices() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPointerDevice%3E%20PointerDevice.GetPointerDevices%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PointerDevice", "GetPointerDevices()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.Input.PointerDevice.IsIntegrated.get
+		// Forced skipping of method Windows.Devices.Input.PointerDevice.MaxContacts.get
+		// Forced skipping of method Windows.Devices.Input.PointerDevice.MaxPointersWithZDistance.get
+		// Forced skipping of method Windows.Devices.Input.PointerDevice.PhysicalDeviceRect.get
+		// Forced skipping of method Windows.Devices.Input.PointerDevice.PointerDeviceType.get
+		// Forced skipping of method Windows.Devices.Input.PointerDevice.ScreenRect.get
+		// Forced skipping of method Windows.Devices.Input.PointerDevice.SupportedUsages.get
 	}
 }

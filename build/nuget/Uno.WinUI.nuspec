@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata minClientVersion="5.0">
-		<id>Uno.UI</id>
+		<id>Uno.WinUI</id>
 		<version>2.7.1000</version>
-		<title>Uno.UI</title>
+		<title>Uno.WinUI</title>
 		<authors>Uno Platform</authors>
 		<owners>unoplatform</owners>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -574,5 +574,9 @@
 		<file src="uno.winui.runtime-replace.targets" target="buildTransitive\uap10.0.19041" />
 
 		<file src="..\..\src\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" target="buildTransitive" />
+
+		<!-- WinAppSDK code-behind generator (loaded conditionally by uno.winui.winappsdk.targets) -->
+		<file src="..\..\src\SourceGenerators\Uno.UI.SourceGenerators.WinAppSDK\Bin\Release\netstandard2.0\Uno.UI.SourceGenerators.WinAppSDK.dll" target="buildTransitive\Uno.UI.SourceGenerators.WinAppSDK" />
+		<file src="..\..\src\SourceGenerators\Uno.UI.SourceGenerators.WinAppSDK\Bin\Release\netstandard2.0\Uno.UI.SourceGenerators.WinAppSDK.pdb" target="buildTransitive\Uno.UI.SourceGenerators.WinAppSDK" />
 	</files>
 </package>

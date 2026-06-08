@@ -10,29 +10,29 @@ namespace Windows.ApplicationModel.Contacts
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Contacts.ContactCardTabKind InitialTabKind
+		public global::Windows.ApplicationModel.Contacts.ContactCardHeaderKind HeaderKind
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactCardTabKind ContactCardOptions.InitialTabKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactCardTabKind%20ContactCardOptions.InitialTabKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactCardOptions", "HeaderKind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactCardOptions", "ContactCardTabKind ContactCardOptions.InitialTabKind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactCardOptions", "HeaderKind");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.ApplicationModel.Contacts.ContactCardHeaderKind HeaderKind
+		public global::Windows.ApplicationModel.Contacts.ContactCardTabKind InitialTabKind
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactCardHeaderKind ContactCardOptions.HeaderKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactCardHeaderKind%20ContactCardOptions.HeaderKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactCardOptions", "InitialTabKind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactCardOptions", "ContactCardHeaderKind ContactCardOptions.HeaderKind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactCardOptions", "InitialTabKind");
 			}
 		}
 #endif
@@ -42,7 +42,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> ContactCardOptions.ServerSearchContactListIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20ContactCardOptions.ServerSearchContactListIds");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Contacts.ContactCardOptions", "ServerSearchContactListIds");
 			}
 		}
 #endif
@@ -50,7 +50,7 @@ namespace Windows.ApplicationModel.Contacts
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ContactCardOptions()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactCardOptions", "ContactCardOptions.ContactCardOptions()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactCardOptions", "ContactCardOptions()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactCardOptions.ContactCardOptions()

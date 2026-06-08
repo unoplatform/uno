@@ -15,25 +15,11 @@ namespace Windows.ApplicationModel.Activation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int ExitCode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int CommandLineActivationOperation.ExitCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CommandLineActivationOperation.ExitCode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Activation.CommandLineActivationOperation", "int CommandLineActivationOperation.ExitCode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Arguments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CommandLineActivationOperation.Arguments is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CommandLineActivationOperation.Arguments");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.CommandLineActivationOperation", "Arguments");
 			}
 		}
 #endif
@@ -43,20 +29,34 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CommandLineActivationOperation.CurrentDirectoryPath is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CommandLineActivationOperation.CurrentDirectoryPath");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.CommandLineActivationOperation", "CurrentDirectoryPath");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.Arguments.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.CurrentDirectoryPath.get
-		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.ExitCode.set
-		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.ExitCode.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public int ExitCode
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.CommandLineActivationOperation", "ExitCode");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Activation.CommandLineActivationOperation", "ExitCode");
+			}
+		}
+#endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral CommandLineActivationOperation.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CommandLineActivationOperation.GetDeferral%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Activation.CommandLineActivationOperation", "GetDeferral()");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.Arguments.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.CurrentDirectoryPath.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.ExitCode.get
+		// Forced skipping of method Windows.ApplicationModel.Activation.CommandLineActivationOperation.ExitCode.set
 	}
 }

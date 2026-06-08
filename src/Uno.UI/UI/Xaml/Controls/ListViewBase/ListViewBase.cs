@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Windows.Foundation;
 using Uno.UI;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Input;
 using Windows.System;
 using Uno.UI.Xaml.Input;
@@ -52,6 +53,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _isIncrementalLoadingInFlight;
 
 		private readonly Dictionary<DependencyObject, object> _containersForIndexRepair = new Dictionary<DependencyObject, object>();
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+			=> new ListViewBaseAutomationPeer(this);
 
 		protected internal ListViewBase()
 		{

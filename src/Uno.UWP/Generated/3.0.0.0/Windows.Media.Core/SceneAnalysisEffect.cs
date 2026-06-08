@@ -19,11 +19,11 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SceneAnalysisEffect.DesiredAnalysisInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20SceneAnalysisEffect.DesiredAnalysisInterval");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffect", "DesiredAnalysisInterval");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffect", "TimeSpan SceneAnalysisEffect.DesiredAnalysisInterval");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffect", "DesiredAnalysisInterval");
 			}
 		}
 #endif
@@ -33,22 +33,22 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HighDynamicRangeControl SceneAnalysisEffect.HighDynamicRangeAnalyzer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HighDynamicRangeControl%20SceneAnalysisEffect.HighDynamicRangeAnalyzer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.SceneAnalysisEffect", "HighDynamicRangeAnalyzer");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffect.HighDynamicRangeAnalyzer.get
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffect.DesiredAnalysisInterval.set
-		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffect.DesiredAnalysisInterval.get
 		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffect.SceneAnalyzed.add
 		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffect.SceneAnalyzed.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetProperties(global::Windows.Foundation.Collections.IPropertySet configuration)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffect", "void SceneAnalysisEffect.SetProperties(IPropertySet configuration)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffect", "SetProperties(IPropertySet configuration)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffect.DesiredAnalysisInterval.get
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffect.DesiredAnalysisInterval.set
+		// Forced skipping of method Windows.Media.Core.SceneAnalysisEffect.HighDynamicRangeAnalyzer.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.SceneAnalysisEffect, global::Windows.Media.Core.SceneAnalyzedEventArgs> SceneAnalyzed
@@ -56,12 +56,12 @@ namespace Windows.Media.Core
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffect", "event TypedEventHandler<SceneAnalysisEffect, SceneAnalyzedEventArgs> SceneAnalysisEffect.SceneAnalyzed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffect", "event SceneAnalyzed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffect", "event TypedEventHandler<SceneAnalysisEffect, SceneAnalyzedEventArgs> SceneAnalysisEffect.SceneAnalyzed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.SceneAnalysisEffect", "event SceneAnalyzed");
 			}
 		}
 #endif

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppDisplayInfo.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppDisplayInfo.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppDisplayInfo", "Description");
 			}
 		}
 #endif
@@ -29,18 +29,18 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppDisplayInfo.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppDisplayInfo.DisplayName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppDisplayInfo", "DisplayName");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.AppDisplayInfo.DisplayName.get
-		// Forced skipping of method Windows.ApplicationModel.AppDisplayInfo.Description.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.RandomAccessStreamReference GetLogo(global::Windows.Foundation.Size size)
 		{
-			throw new global::System.NotImplementedException("The member RandomAccessStreamReference AppDisplayInfo.GetLogo(Size size) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RandomAccessStreamReference%20AppDisplayInfo.GetLogo%28Size%20size%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppDisplayInfo", "GetLogo(Size size)");
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.AppDisplayInfo.Description.get
+		// Forced skipping of method Windows.ApplicationModel.AppDisplayInfo.DisplayName.get
 	}
 }

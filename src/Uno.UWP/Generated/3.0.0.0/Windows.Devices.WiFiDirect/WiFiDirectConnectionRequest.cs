@@ -19,18 +19,18 @@ namespace Windows.Devices.WiFiDirect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceInformation WiFiDirectConnectionRequest.DeviceInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceInformation%20WiFiDirectConnectionRequest.DeviceInformation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest", "DeviceInformation");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest.DeviceInformation.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest", "void WiFiDirectConnectionRequest.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest", "Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionRequest.DeviceInformation.get
 		// Processing: System.IDisposable
 	}
 }

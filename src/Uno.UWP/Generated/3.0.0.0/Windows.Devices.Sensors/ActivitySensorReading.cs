@@ -19,7 +19,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivityType ActivitySensorReading.Activity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivityType%20ActivitySensorReading.Activity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensorReading", "Activity");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivitySensorReadingConfidence ActivitySensorReading.Confidence is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivitySensorReadingConfidence%20ActivitySensorReading.Confidence");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensorReading", "Confidence");
 			}
 		}
 #endif
@@ -39,12 +39,12 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset ActivitySensorReading.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20ActivitySensorReading.Timestamp");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.ActivitySensorReading", "Timestamp");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReading.Timestamp.get
 		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReading.Activity.get
 		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReading.Confidence.get
+		// Forced skipping of method Windows.Devices.Sensors.ActivitySensorReading.Timestamp.get
 	}
 }

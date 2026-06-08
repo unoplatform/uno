@@ -1,4 +1,4 @@
-﻿// #define REPORT_FPS
+// #define REPORT_FPS
 
 #nullable enable
 
@@ -54,6 +54,13 @@ namespace Microsoft.UI.Xaml
 			{
 				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
 			}
+
+			// WinUI sets DispatcherShutdownMode to OnLastWindowClose when Start is called (see
+			// FrameworkApplication::StartDesktop, which sets it *before* invoking the init callback).
+			// We mirror that here, in the base ctor that runs during `new App()`, so the default is
+			// established before the derived App constructor body runs and can override it.
+			// For XAML Islands (no Start call), the field default of OnExplicitShutdown remains.
+			_dispatcherShutdownMode = DispatcherShutdownMode.OnLastWindowClose;
 		}
 
 #if REPORT_FPS
@@ -119,6 +126,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		internal Task FontPreloadTask { get; private set; }
+
 		private void InvokeOnLaunched()
 		{
 			InitializeSystemTheme();
@@ -126,7 +135,7 @@ namespace Microsoft.UI.Xaml
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{
 				InitializationCompleted();
-				PreloadFonts();
+				FontPreloadTask = PreloadFonts();
 
 				// OnLaunched should execute only for full apps, not for individual islands.
 				if (CoreApplication.IsFullFledgedApp)
@@ -142,29 +151,73 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private static void PreloadFonts()
+		private static async Task PreloadFonts()
 		{
-			if (OperatingSystem.IsBrowser())
+			try
 			{
-				// WASM does the font preloading before removing the splash via PrefetchFonts.
-				return;
-			}
+				var symbolsFontTask = FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.SymbolsFont), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
 
-			_ = FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.SymbolsFont), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
-			if (Uri.TryCreate(FeatureConfiguration.Font.DefaultTextFontFamily, UriKind.RelativeOrAbsolute, out var uri))
-			{
-				_ = FontFamilyHelper.PreloadAllFontsInManifest(uri).ContinueWith(t =>
+				var textFontManifestSuccess = false;
+				if (Uri.TryCreate(FeatureConfiguration.Font.DefaultTextFontFamily, UriKind.RelativeOrAbsolute, out var uri))
 				{
-					if (!t.IsCompletedSuccessfully)
+					try
 					{
-						_ = FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.DefaultTextFontFamily), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
+						textFontManifestSuccess = await FontFamilyHelper.PreloadAllFontsInManifest(uri);
+						if (!textFontManifestSuccess)
+						{
+							typeof(Application).LogDebug()?.Debug($"Failed to load {nameof(FeatureConfiguration.Font.DefaultTextFontFamily)}=[{FeatureConfiguration.Font.DefaultTextFontFamily}] as a font manifest");
+						}
 					}
-				});
+					catch (Exception e)
+					{
+						typeof(Application).LogError()?.Error($"Failed to load {nameof(FeatureConfiguration.Font.DefaultTextFontFamily)}=[{FeatureConfiguration.Font.DefaultTextFontFamily}] as a font manifest", e);
+					}
+				}
+				if (!textFontManifestSuccess)
+				{
+					try
+					{
+						textFontManifestSuccess = await FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.DefaultTextFontFamily), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
+						if (!textFontManifestSuccess)
+						{
+							typeof(Application).LogDebug()?.Debug($"Failed to load {nameof(FeatureConfiguration.Font.DefaultTextFontFamily)}=[{FeatureConfiguration.Font.DefaultTextFontFamily}] as a non-manifest font");
+						}
+					}
+					catch (Exception e)
+					{
+						typeof(Application).LogError()?.Error($"Failed to load {nameof(FeatureConfiguration.Font.DefaultTextFontFamily)}=[{FeatureConfiguration.Font.DefaultTextFontFamily}] as a non-manifest font", e);
+					}
+				}
+
+				try
+				{
+					var symbolsFontSuccess = await symbolsFontTask;
+					if (symbolsFontSuccess)
+					{
+						typeof(Application).LogInfo()?.Info($"Loaded ${nameof(FeatureConfiguration.Font.SymbolsFont)}=[{FeatureConfiguration.Font.SymbolsFont}] successfully");
+					}
+					else
+					{
+						typeof(Application).LogError()?.Error($"Failed to load {nameof(FeatureConfiguration.Font.SymbolsFont)}=[{FeatureConfiguration.Font.SymbolsFont}]");
+					}
+				}
+				catch (Exception e)
+				{
+					typeof(Application).LogError()?.Error($"Failed to load {nameof(FeatureConfiguration.Font.SymbolsFont)}=[{FeatureConfiguration.Font.SymbolsFont}]", e);
+				}
 			}
-			else
+			catch (Exception e)
 			{
-				_ = FontFamilyHelper.PreloadAsync(new FontFamily(FeatureConfiguration.Font.DefaultTextFontFamily), FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
+				typeof(Application).LogError()?.Error($"Unexpected error during font preloading", e);
 			}
+		}
+		partial void InitializeTextScalingPlatform()
+		{
+			global::Windows.UI.ViewManagement.UISettings.ObserveTextScaleFactorChanges();
+			global::Windows.UI.ViewManagement.UISettings.TextScaleFactorChangedInternal += (_, _) =>
+			{
+				CoreServices.Instance.UpdateFontScale(global::Windows.UI.ViewManagement.UISettings.GetTextScaleFactorValue());
+			};
 		}
 	}
 

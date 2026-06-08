@@ -19,7 +19,7 @@ partial class ContentPresenter
 	private static readonly HashSet<ContentPresenter> _nativeHosts = new();
 
 	private bool _nativeElementAttached;
-	private IDisposable _frameRenderedDisposable;
+	private SerialDisposable _frameRenderedDisposable = new();
 	private Rect? _lastArrangeRect;
 
 	internal static bool HasNativeElements() => _nativeHosts.Count > 0;
@@ -69,6 +69,7 @@ partial class ContentPresenter
 			{
 				//If in visual tree, attach immediately. If not, don't attach since Enter will attach later.
 				AttachNativeElement();
+				ArrangeNativeElement();
 			}
 		}
 		else
@@ -87,8 +88,16 @@ partial class ContentPresenter
 		_nativeElementHostingExtension.Value!.AttachNativeElement(Content);
 		_nativeHosts.Add(this);
 		var ct = ((CompositionTarget)Visual.CompositionTarget)!;
-		ct.FrameRendered += ArrangeNativeElement;
-		_frameRenderedDisposable = Disposable.Create(() => ct.FrameRendered -= ArrangeNativeElement);
+		ct.FrameRendered += OnFrameRendered;
+		_frameRenderedDisposable.Disposable = Disposable.Create(() => ct.FrameRendered -= OnFrameRendered);
+	}
+
+	private void OnFrameRendered()
+	{
+		if (_nativeElementAttached)
+		{
+			ArrangeNativeElement();
+		}
 	}
 
 	partial void DetachNativeElement(object content)
@@ -98,10 +107,9 @@ partial class ContentPresenter
 #endif
 		_nativeHosts.Remove(this);
 		_lastArrangeRect = null;
+		_frameRenderedDisposable.Disposable = null;
 		if (_nativeElementAttached)
 		{
-			_frameRenderedDisposable.Dispose();
-			_frameRenderedDisposable = null;
 			_nativeElementAttached = false;
 			_nativeElementHostingExtension.Value!.DetachNativeElement(content);
 		}
@@ -158,20 +166,22 @@ partial class ContentPresenter
 			var host = rentedArray[index].Item2;
 			var order = rentedArray[index].Item1;
 
-			if (host._nativeElementHostingExtension.Value.SupportsZIndex())
+			if (host._nativeElementAttached)
 			{
-				host._nativeElementHostingExtension.Value.SetZIndex(host.Content, index);
-			}
-			else
-			{
-				if (host._nativeElementAttached)
+				if (order == -1)
 				{
-					if (order == -1)
+					// We're detaching the native element as it's no longer in view, but conceptually, it's still in the tree, so IsNativeHost is still true
+					Debug.Assert(host.IsNativeHost);
+					host._nativeElementAttached = false;
+					host._lastArrangeRect = null;
+					host._frameRenderedDisposable.Disposable = null;
+					host._nativeElementHostingExtension.Value!.DetachNativeElement(host.Content);
+				}
+				else
+				{
+					if (host._nativeElementHostingExtension.Value.SupportsZIndex())
 					{
-						// We're detaching the native element as it's no longer in view, but conceptually, it's still in the tree, so IsNativeHost is still true
-						Debug.Assert(host.IsNativeHost);
-						host._nativeElementAttached = false;
-						host._nativeElementHostingExtension.Value!.DetachNativeElement(host.Content);
+						host._nativeElementHostingExtension.Value.SetZIndex(host.Content, index);
 					}
 					else
 					{
@@ -180,10 +190,14 @@ partial class ContentPresenter
 						host.ArrangeNativeElement();
 					}
 				}
-				else if (order != -1)
+			}
+			else if (order != -1)
+			{
+				host.AttachNativeElement();
+				host.ArrangeNativeElement();
+				if (host._nativeElementHostingExtension.Value.SupportsZIndex())
 				{
-					host.AttachNativeElement();
-					host.ArrangeNativeElement();
+					host._nativeElementHostingExtension.Value.SetZIndex(host.Content, index);
 				}
 			}
 		}

@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Preview
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -20,7 +19,7 @@ namespace Windows.System.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TwoPanelHingedDevicePosturePreviewReading TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs.Reading is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TwoPanelHingedDevicePosturePreviewReading%20TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs.Reading");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs", "Reading");
 			}
 		}
 #endif

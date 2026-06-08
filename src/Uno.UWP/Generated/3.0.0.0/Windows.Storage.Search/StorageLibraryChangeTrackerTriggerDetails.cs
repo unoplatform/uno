@@ -19,7 +19,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageLibraryChangeTracker StorageLibraryChangeTrackerTriggerDetails.ChangeTracker is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageLibraryChangeTracker%20StorageLibraryChangeTrackerTriggerDetails.ChangeTracker");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails", "ChangeTracker");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFolder StorageLibraryChangeTrackerTriggerDetails.Folder is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFolder%20StorageLibraryChangeTrackerTriggerDetails.Folder");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails", "Folder");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails.Folder.get
 		// Forced skipping of method Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails.ChangeTracker.get
+		// Forced skipping of method Windows.Storage.Search.StorageLibraryChangeTrackerTriggerDetails.Folder.get
 	}
 }

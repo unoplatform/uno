@@ -8,70 +8,70 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class DebugSettings
 	{
-		// Skipping already declared property IsTextPerformanceVisualizationEnabled
-		// Skipping already declared property IsBindingTracingEnabled
+		// Skipping already declared property EnableFrameRateCounter
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool FailFastOnErrors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DebugSettings.FailFastOnErrors is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DebugSettings.FailFastOnErrors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.DebugSettings", "FailFastOnErrors");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DebugSettings", "bool DebugSettings.FailFastOnErrors");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DebugSettings", "FailFastOnErrors");
 			}
 		}
 #endif
-		// Skipping already declared property EnableFrameRateCounter
+		// Skipping already declared property IsBindingTracingEnabled
+		// Skipping already declared property IsTextPerformanceVisualizationEnabled
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsXamlResourceReferenceTracingEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DebugSettings.IsXamlResourceReferenceTracingEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DebugSettings.IsXamlResourceReferenceTracingEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.DebugSettings", "IsXamlResourceReferenceTracingEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DebugSettings", "bool DebugSettings.IsXamlResourceReferenceTracingEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DebugSettings", "IsXamlResourceReferenceTracingEnabled");
 			}
 		}
 #endif
-		// Skipping already declared property LayoutCycleTracingLevel
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.LayoutCycleDebugBreakLevel LayoutCycleDebugBreakLevel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LayoutCycleDebugBreakLevel DebugSettings.LayoutCycleDebugBreakLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LayoutCycleDebugBreakLevel%20DebugSettings.LayoutCycleDebugBreakLevel");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.DebugSettings", "LayoutCycleDebugBreakLevel");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DebugSettings", "LayoutCycleDebugBreakLevel DebugSettings.LayoutCycleDebugBreakLevel");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DebugSettings", "LayoutCycleDebugBreakLevel");
 			}
 		}
 #endif
+		// Skipping already declared property LayoutCycleTracingLevel
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.BindingFailed.add
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.BindingFailed.remove
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.XamlResourceReferenceFailed.add
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.XamlResourceReferenceFailed.remove
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.EnableFrameRateCounter.get
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.EnableFrameRateCounter.set
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.FailFastOnErrors.get
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.FailFastOnErrors.set
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.IsBindingTracingEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.IsBindingTracingEnabled.set
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.IsTextPerformanceVisualizationEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.IsTextPerformanceVisualizationEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.FailFastOnErrors.get
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.FailFastOnErrors.set
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.BindingFailed.add
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.BindingFailed.remove
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.IsXamlResourceReferenceTracingEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.IsXamlResourceReferenceTracingEnabled.set
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.XamlResourceReferenceFailed.add
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.XamlResourceReferenceFailed.remove
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.LayoutCycleTracingLevel.get
-		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.LayoutCycleTracingLevel.set
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.LayoutCycleDebugBreakLevel.get
 		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.LayoutCycleDebugBreakLevel.set
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.LayoutCycleTracingLevel.get
+		// Forced skipping of method Microsoft.UI.Xaml.DebugSettings.LayoutCycleTracingLevel.set
 		// Skipping already declared event Microsoft.UI.Xaml.DebugSettings.BindingFailed
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -80,12 +80,12 @@ namespace Microsoft.UI.Xaml
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DebugSettings", "event TypedEventHandler<DebugSettings, XamlResourceReferenceFailedEventArgs> DebugSettings.XamlResourceReferenceFailed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DebugSettings", "event XamlResourceReferenceFailed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DebugSettings", "event TypedEventHandler<DebugSettings, XamlResourceReferenceFailedEventArgs> DebugSettings.XamlResourceReferenceFailed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.DebugSettings", "event XamlResourceReferenceFailed");
 			}
 		}
 #endif

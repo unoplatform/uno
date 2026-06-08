@@ -19,7 +19,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> GlobalizationPreferencesForUser.Calendars is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20GlobalizationPreferencesForUser.Calendars");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferencesForUser", "Calendars");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> GlobalizationPreferencesForUser.Clocks is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20GlobalizationPreferencesForUser.Clocks");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferencesForUser", "Clocks");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> GlobalizationPreferencesForUser.Currencies is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20GlobalizationPreferencesForUser.Currencies");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferencesForUser", "Currencies");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GlobalizationPreferencesForUser.HomeGeographicRegion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20GlobalizationPreferencesForUser.HomeGeographicRegion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferencesForUser", "HomeGeographicRegion");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> GlobalizationPreferencesForUser.Languages is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20GlobalizationPreferencesForUser.Languages");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferencesForUser", "Languages");
 			}
 		}
 #endif
@@ -69,7 +69,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User GlobalizationPreferencesForUser.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20GlobalizationPreferencesForUser.User");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferencesForUser", "User");
 			}
 		}
 #endif
@@ -79,16 +79,16 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DayOfWeek GlobalizationPreferencesForUser.WeekStartsOn is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DayOfWeek%20GlobalizationPreferencesForUser.WeekStartsOn");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferencesForUser", "WeekStartsOn");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.User.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.Calendars.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.Clocks.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.Currencies.get
-		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.Languages.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.HomeGeographicRegion.get
+		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.Languages.get
+		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.User.get
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferencesForUser.WeekStartsOn.get
 	}
 }

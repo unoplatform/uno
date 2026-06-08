@@ -10,15 +10,15 @@ namespace Windows.Networking.Vpn
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Networking.HostName> WebProxyServers
+		public global::System.Collections.Generic.IList<global::Windows.Networking.HostName> DnsServers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<HostName> VpnNamespaceInfo.WebProxyServers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CHostName%3E%20VpnNamespaceInfo.WebProxyServers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnNamespaceInfo", "DnsServers");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnNamespaceInfo", "IList<HostName> VpnNamespaceInfo.WebProxyServers");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnNamespaceInfo", "DnsServers");
 			}
 		}
 #endif
@@ -28,25 +28,25 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnNamespaceInfo.Namespace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20VpnNamespaceInfo.Namespace");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnNamespaceInfo", "Namespace");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnNamespaceInfo", "string VpnNamespaceInfo.Namespace");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnNamespaceInfo", "Namespace");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<global::Windows.Networking.HostName> DnsServers
+		public global::System.Collections.Generic.IList<global::Windows.Networking.HostName> WebProxyServers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<HostName> VpnNamespaceInfo.DnsServers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CHostName%3E%20VpnNamespaceInfo.DnsServers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnNamespaceInfo", "WebProxyServers");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnNamespaceInfo", "IList<HostName> VpnNamespaceInfo.DnsServers");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnNamespaceInfo", "WebProxyServers");
 			}
 		}
 #endif
@@ -54,15 +54,15 @@ namespace Windows.Networking.Vpn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VpnNamespaceInfo(string name, global::System.Collections.Generic.IList<global::Windows.Networking.HostName> dnsServerList, global::System.Collections.Generic.IList<global::Windows.Networking.HostName> proxyServerList)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnNamespaceInfo", "VpnNamespaceInfo.VpnNamespaceInfo(string name, IList<HostName> dnsServerList, IList<HostName> proxyServerList)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnNamespaceInfo", "VpnNamespaceInfo(string name, IList<HostName> dnsServerList, IList<HostName> proxyServerList)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceInfo.VpnNamespaceInfo(string, System.Collections.Generic.IList<Windows.Networking.HostName>, System.Collections.Generic.IList<Windows.Networking.HostName>)
-		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceInfo.Namespace.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceInfo.Namespace.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceInfo.DnsServers.set
 		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceInfo.DnsServers.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceInfo.WebProxyServers.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceInfo.DnsServers.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceInfo.Namespace.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceInfo.Namespace.set
 		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceInfo.WebProxyServers.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnNamespaceInfo.WebProxyServers.set
 	}
 }

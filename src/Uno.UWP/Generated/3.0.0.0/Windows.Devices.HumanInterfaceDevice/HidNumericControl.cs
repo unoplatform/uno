@@ -15,39 +15,11 @@ namespace Windows.Devices.HumanInterfaceDevice
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public long Value
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member long HidNumericControl.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=long%20HidNumericControl.Value");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.HumanInterfaceDevice.HidNumericControl", "long HidNumericControl.Value");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public long ScaledValue
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member long HidNumericControl.ScaledValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=long%20HidNumericControl.ScaledValue");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.HumanInterfaceDevice.HidNumericControl", "long HidNumericControl.ScaledValue");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription ControlDescription
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HidNumericControlDescription HidNumericControl.ControlDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HidNumericControlDescription%20HidNumericControl.ControlDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControl", "ControlDescription");
 			}
 		}
 #endif
@@ -57,7 +29,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HidNumericControl.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20HidNumericControl.Id");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControl", "Id");
 			}
 		}
 #endif
@@ -67,7 +39,21 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HidNumericControl.IsGrouped is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HidNumericControl.IsGrouped");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControl", "IsGrouped");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public long ScaledValue
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControl", "ScaledValue");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.HumanInterfaceDevice.HidNumericControl", "ScaledValue");
 			}
 		}
 #endif
@@ -77,7 +63,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort HidNumericControl.UsageId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20HidNumericControl.UsageId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControl", "UsageId");
 			}
 		}
 #endif
@@ -87,18 +73,32 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort HidNumericControl.UsagePage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ushort%20HidNumericControl.UsagePage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControl", "UsagePage");
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public long Value
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.HumanInterfaceDevice.HidNumericControl", "Value");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.HumanInterfaceDevice.HidNumericControl", "Value");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControl.ControlDescription.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControl.Id.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControl.IsGrouped.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControl.UsagePage.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControl.UsageId.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControl.Value.get
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControl.Value.set
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControl.ScaledValue.get
 		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControl.ScaledValue.set
-		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControl.ControlDescription.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControl.UsageId.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControl.UsagePage.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControl.Value.get
+		// Forced skipping of method Windows.Devices.HumanInterfaceDevice.HidNumericControl.Value.set
 	}
 }

@@ -49,42 +49,42 @@ namespace Microsoft.UI.Xaml.Automation
 		// Skipping already declared property SizeOfSetProperty
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.AcceleratorKeyProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.AccessKeyProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.AnnotationsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.AutomationIdProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.BoundingRectangleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.ClassNameProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.ClickablePointProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.ControlTypeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.ControlledPeersProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.CultureProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.DescribedByProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.FlowsFromProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.FlowsToProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.FullDescriptionProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.HasKeyboardFocusProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.HeadingLevelProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.HelpTextProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.IsContentElementProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.IsControlElementProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.IsDataValidForFormProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.IsDialogProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.IsEnabledProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.IsKeyboardFocusableProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.IsOffscreenProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.IsPasswordProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.IsPeripheralProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.IsRequiredForFormProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.ItemStatusProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.ItemTypeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.LabeledByProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.LandmarkTypeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.LevelProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.LiveSettingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.LocalizedControlTypeProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.LocalizedLandmarkTypeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.NameProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.OrientationProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.LiveSettingProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.ControlledPeersProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.PositionInSetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.SizeOfSetProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.LevelProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.AnnotationsProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.LandmarkTypeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.LocalizedLandmarkTypeProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.IsPeripheralProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.IsDataValidForFormProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.FullDescriptionProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.DescribedByProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.FlowsToProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.FlowsFromProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.CultureProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.HeadingLevelProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Automation.AutomationElementIdentifiers.IsDialogProperty.get
 	}
 }

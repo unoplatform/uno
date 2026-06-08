@@ -1,0 +1,25 @@
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_Disabled"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.TextBox"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    mc:Ignorable="d">
+
+    <StackPanel Margin="50">
+        <TextBox
+            x:Name="DisableOnf"
+            BeforeTextChanging="DisableOnf_BeforeTextChanging"
+            PlaceholderText="disables on letter f..." />
+        <TextBox />
+        <TextBox IsEnabled="False" />
+        <TextBox IsEnabled="{Binding ElementName=EnabledCheckBox, Path=IsChecked}" />
+        <CheckBox
+            x:Name="EnabledCheckBox"
+            Content="Is last TextBox enabled?"
+            IsChecked="True" />
+    </StackPanel>
+</UserControl>

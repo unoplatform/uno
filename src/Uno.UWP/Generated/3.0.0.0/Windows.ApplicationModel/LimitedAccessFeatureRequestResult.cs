@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? LimitedAccessFeatureRequestResult.EstimatedRemovalDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20LimitedAccessFeatureRequestResult.EstimatedRemovalDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.LimitedAccessFeatureRequestResult", "EstimatedRemovalDate");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LimitedAccessFeatureRequestResult.FeatureId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20LimitedAccessFeatureRequestResult.FeatureId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.LimitedAccessFeatureRequestResult", "FeatureId");
 			}
 		}
 #endif
@@ -39,12 +39,12 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LimitedAccessFeatureStatus LimitedAccessFeatureRequestResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LimitedAccessFeatureStatus%20LimitedAccessFeatureRequestResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.LimitedAccessFeatureRequestResult", "Status");
 			}
 		}
 #endif
+		// Forced skipping of method Windows.ApplicationModel.LimitedAccessFeatureRequestResult.EstimatedRemovalDate.get
 		// Forced skipping of method Windows.ApplicationModel.LimitedAccessFeatureRequestResult.FeatureId.get
 		// Forced skipping of method Windows.ApplicationModel.LimitedAccessFeatureRequestResult.Status.get
-		// Forced skipping of method Windows.ApplicationModel.LimitedAccessFeatureRequestResult.EstimatedRemovalDate.get
 	}
 }

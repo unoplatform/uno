@@ -6,7 +6,7 @@ namespace Windows.Media.Playback
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class MediaPlaybackTimedMetadataTrackList : global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Core.TimedMetadataTrack>, global::System.Collections.Generic.IEnumerable<global::Windows.Media.Core.TimedMetadataTrack>
+	public partial class MediaPlaybackTimedMetadataTrackList : global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Core.TimedMetadataTrack>, global::System.Collections.Generic.IEnumerable<global::Windows.Media.Core.TimedMetadataTrack>, global::System.Collections.IEnumerable, global::System.Collections.Generic.IReadOnlyCollection<global::Windows.Media.Core.TimedMetadataTrack>
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal MediaPlaybackTimedMetadataTrackList()
@@ -15,35 +15,51 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint Size
+		public int Count
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MediaPlaybackTimedMetadataTrackList.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MediaPlaybackTimedMetadataTrackList.Size");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList", "Count");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.GetAt(uint)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.Size.get
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.IndexOf(Windows.Media.Core.TimedMetadataTrack, out uint)
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.GetMany(uint, Windows.Media.Core.TimedMetadataTrack[])
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.First()
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.PresentationModeChanged.add
-		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.PresentationModeChanged.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Core.TimedMetadataTrack this[int index]
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList", "this[int index]");
+			}
+		}
+#endif
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.Count.get
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.this[int].get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IEnumerator<global::Windows.Media.Core.TimedMetadataTrack> GetEnumerator()
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList", "GetEnumerator()");
+		}
+#endif
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.System.Collections.IEnumerable.GetEnumerator()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Playback.TimedMetadataTrackPresentationMode GetPresentationMode(uint index)
 		{
-			throw new global::System.NotImplementedException("The member TimedMetadataTrackPresentationMode MediaPlaybackTimedMetadataTrackList.GetPresentationMode(uint index) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedMetadataTrackPresentationMode%20MediaPlaybackTimedMetadataTrackList.GetPresentationMode%28uint%20index%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList", "GetPresentationMode(uint index)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetPresentationMode(uint index, global::Windows.Media.Playback.TimedMetadataTrackPresentationMode value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList", "void MediaPlaybackTimedMetadataTrackList.SetPresentationMode(uint index, TimedMetadataTrackPresentationMode value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList", "SetPresentationMode(uint index, TimedMetadataTrackPresentationMode value)");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.PresentationModeChanged.add
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.PresentationModeChanged.remove
+		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.System.Collections.Generic.IReadOnlyList<Windows.Media.Core.TimedMetadataTrack>.get_Item(int)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList, global::Windows.Media.Playback.TimedMetadataPresentationModeChangedEventArgs> PresentationModeChanged
@@ -51,35 +67,17 @@ namespace Windows.Media.Playback
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList", "event TypedEventHandler<MediaPlaybackTimedMetadataTrackList, TimedMetadataPresentationModeChangedEventArgs> MediaPlaybackTimedMetadataTrackList.PresentationModeChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList", "event PresentationModeChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList", "event TypedEventHandler<MediaPlaybackTimedMetadataTrackList, TimedMetadataPresentationModeChangedEventArgs> MediaPlaybackTimedMetadataTrackList.PresentationModeChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList", "event PresentationModeChanged");
 			}
 		}
 #endif
 		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Media.Core.TimedMetadataTrack>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Core.TimedMetadataTrack this[int index]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Media.Core.TimedMetadataTrack>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Media.Core.TimedMetadataTrack>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IEnumerator<global::Windows.Media.Core.TimedMetadataTrack> GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-#endif
 		// Processing: System.Collections.IEnumerable
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		// DeclaringType: System.Collections.IEnumerable
@@ -90,15 +88,5 @@ namespace Windows.Media.Playback
 		}
 #endif
 		// Processing: System.Collections.Generic.IReadOnlyCollection<Windows.Media.Core.TimedMetadataTrack>
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-#endif
 	}
 }

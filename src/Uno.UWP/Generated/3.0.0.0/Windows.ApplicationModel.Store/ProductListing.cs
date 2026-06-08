@@ -15,71 +15,11 @@ namespace Windows.ApplicationModel.Store
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string FormattedPrice
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ProductListing.FormattedPrice is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProductListing.FormattedPrice");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Name
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ProductListing.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProductListing.Name");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ProductId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ProductListing.ProductId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProductListing.ProductId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string FormattedBasePrice
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ProductListing.FormattedBasePrice is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProductListing.FormattedBasePrice");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsOnSale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ProductListing.IsOnSale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ProductListing.IsOnSale");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.DateTimeOffset SaleEndDate
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset ProductListing.SaleEndDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20ProductListing.SaleEndDate");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string CurrencyCode
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProductListing.CurrencyCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProductListing.CurrencyCode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.ProductListing", "CurrencyCode");
 			}
 		}
 #endif
@@ -89,7 +29,27 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProductListing.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProductListing.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.ProductListing", "Description");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string FormattedBasePrice
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.ProductListing", "FormattedBasePrice");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string FormattedPrice
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.ProductListing", "FormattedPrice");
 			}
 		}
 #endif
@@ -99,7 +59,17 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri ProductListing.ImageUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20ProductListing.ImageUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.ProductListing", "ImageUri");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsOnSale
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.ProductListing", "IsOnSale");
 			}
 		}
 #endif
@@ -109,17 +79,27 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IEnumerable<string> ProductListing.Keywords is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerable%3Cstring%3E%20ProductListing.Keywords");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.ProductListing", "Keywords");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Tag
+		public string Name
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProductListing.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProductListing.Tag");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.ProductListing", "Name");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ProductId
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.ProductListing", "ProductId");
 			}
 		}
 #endif
@@ -129,21 +109,41 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ProductType ProductListing.ProductType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProductType%20ProductListing.ProductType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.ProductListing", "ProductType");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductListing.ProductId.get
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductListing.FormattedPrice.get
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductListing.Name.get
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductListing.Description.get
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductListing.Keywords.get
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductListing.ProductType.get
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductListing.Tag.get
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductListing.ImageUri.get
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductListing.FormattedBasePrice.get
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductListing.SaleEndDate.get
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductListing.IsOnSale.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.DateTimeOffset SaleEndDate
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.ProductListing", "SaleEndDate");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string Tag
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.ProductListing", "Tag");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductListing.CurrencyCode.get
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductListing.Description.get
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductListing.FormattedBasePrice.get
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductListing.FormattedPrice.get
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductListing.ImageUri.get
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductListing.IsOnSale.get
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductListing.Keywords.get
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductListing.Name.get
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductListing.ProductId.get
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductListing.ProductType.get
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductListing.SaleEndDate.get
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductListing.Tag.get
 	}
 }

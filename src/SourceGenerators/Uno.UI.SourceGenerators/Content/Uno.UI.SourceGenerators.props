@@ -111,13 +111,17 @@
 		<CompilerVisibleProperty Include="IncludeXamlNamespacesProperty" />
 		<CompilerVisibleProperty Include="XamlGeneratorAnalyzerSuppressionsProperty" />
 		<CompilerVisibleProperty Include="UnoEnableXamlFuzzyMatching" />
+		<CompilerVisibleProperty Include="UnoEnableImplicitXamlNamespaces" />
+		<CompilerVisibleProperty Include="UnoGlobalXamlNamespaceUri" />
 		<CompilerVisibleProperty Include="UnoXamlResourcesTrimming"/>
 		<CompilerVisibleProperty Include="BaseIntermediateOutputPath"/>
 		<CompilerVisibleProperty Include="AssemblyName"/>
 
 		<CompilerVisibleProperty Include="UnoDefaultFont" />
+		<CompilerVisibleProperty Include="UnoGenerateCodeBehind" />
 
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="UnoGenerateCodeBehind" />
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Link" />
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="TargetPath" />
 		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="FullPath" />
@@ -194,7 +198,10 @@
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'!='IS_UNIT_TESTS'" Include="unittests" />
 
 		<ExcludeXamlNamespaces Include="win" />
-		<ExcludeXamlNamespaces Include="not_mux" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+		<!-- NOTE: not_mux is historical, for when Uno used to support both UWP and WinUI. -->
+		<!-- After UWP was dropped, not_mux namespace would be always excluded. -->
+		<!-- This could be cleaned up. -->
+		<ExcludeXamlNamespaces Include="not_mux" />
 
 		<!--
 			Those namespaces are to be *included* from the code generation,

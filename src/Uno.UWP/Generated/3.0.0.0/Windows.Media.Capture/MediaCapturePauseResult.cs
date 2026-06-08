@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoFrame MediaCapturePauseResult.LastFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoFrame%20MediaCapturePauseResult.LastFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCapturePauseResult", "LastFrame");
 			}
 		}
 #endif
@@ -29,19 +29,20 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaCapturePauseResult.RecordDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MediaCapturePauseResult.RecordDuration");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.MediaCapturePauseResult", "RecordDuration");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Capture.MediaCapturePauseResult.LastFrame.get
-		// Forced skipping of method Windows.Media.Capture.MediaCapturePauseResult.RecordDuration.get
+		// Forced skipping of method Windows.Media.Capture.MediaCapturePauseResult.~MediaCapturePauseResult()
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCapturePauseResult", "void MediaCapturePauseResult.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCapturePauseResult", "Dispose()");
 		}
 #endif
+		// Forced skipping of method Windows.Media.Capture.MediaCapturePauseResult.LastFrame.get
+		// Forced skipping of method Windows.Media.Capture.MediaCapturePauseResult.RecordDuration.get
 		// Processing: System.IDisposable
 	}
 }

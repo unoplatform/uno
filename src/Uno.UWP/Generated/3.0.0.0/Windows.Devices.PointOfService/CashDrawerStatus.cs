@@ -19,7 +19,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CashDrawerStatus.ExtendedStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CashDrawerStatus.ExtendedStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.CashDrawerStatus", "ExtendedStatus");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CashDrawerStatusKind CashDrawerStatus.StatusKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CashDrawerStatusKind%20CashDrawerStatus.StatusKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.PointOfService.CashDrawerStatus", "StatusKind");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerStatus.StatusKind.get
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerStatus.ExtendedStatus.get
+		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerStatus.StatusKind.get
 	}
 }

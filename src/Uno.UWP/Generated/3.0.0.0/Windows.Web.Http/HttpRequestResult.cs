@@ -19,7 +19,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception HttpRequestResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20HttpRequestResult.ExtendedError");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpRequestResult", "ExtendedError");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpRequestMessage HttpRequestResult.RequestMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpRequestMessage%20HttpRequestResult.RequestMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpRequestResult", "RequestMessage");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpResponseMessage HttpRequestResult.ResponseMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpResponseMessage%20HttpRequestResult.ResponseMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpRequestResult", "ResponseMessage");
 			}
 		}
 #endif
@@ -49,28 +49,28 @@ namespace Windows.Web.Http
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HttpRequestResult.Succeeded is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpRequestResult.Succeeded");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpRequestResult", "Succeeded");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Web.Http.HttpRequestResult.ExtendedError.get
-		// Forced skipping of method Windows.Web.Http.HttpRequestResult.RequestMessage.get
-		// Forced skipping of method Windows.Web.Http.HttpRequestResult.ResponseMessage.get
-		// Forced skipping of method Windows.Web.Http.HttpRequestResult.Succeeded.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpRequestResult", "void HttpRequestResult.Dispose()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpRequestResult", "Dispose()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpRequestResult.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HttpRequestResult.ToString%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpRequestResult", "ToString()");
 		}
 #endif
+		// Forced skipping of method Windows.Web.Http.HttpRequestResult.ExtendedError.get
+		// Forced skipping of method Windows.Web.Http.HttpRequestResult.RequestMessage.get
+		// Forced skipping of method Windows.Web.Http.HttpRequestResult.ResponseMessage.get
+		// Forced skipping of method Windows.Web.Http.HttpRequestResult.Succeeded.get
 		// Processing: System.IDisposable
 	}
 }

@@ -146,11 +146,11 @@
     <comment>Automation name used to announce the severity success icon.</comment>
   </data>
   <data name="InfoBarIconSeverityWarningName" xml:space="preserve">
-    <value>ସତର୍କବାଣୀ ଆଇକନ୍</value>
+    <value>ଚେତାବନୀ ଆଇକନ୍‌</value>
     <comment>Automation name used to announce the severity warning icon.</comment>
   </data>
   <data name="InfoBarOpenedNotification" xml:space="preserve">
-    <value>%1!s!, %2!s!, %3!s!</value>
+    <value>%1!s! %2!s! %3!s!</value>
     <comment>The formatted string read by narrator when the InfoBar opens: "{Severity level}, {Title} {Message}"</comment>
   </data>
   <data name="InfoBarSeverityErrorName" xml:space="preserve">

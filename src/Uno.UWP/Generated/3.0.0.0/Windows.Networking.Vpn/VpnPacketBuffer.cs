@@ -10,29 +10,11 @@ namespace Windows.Networking.Vpn
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint TransportAffinity
+		public global::Windows.Networking.Vpn.VpnAppId AppId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint VpnPacketBuffer.TransportAffinity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20VpnPacketBuffer.TransportAffinity");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBuffer", "uint VpnPacketBuffer.TransportAffinity");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.Vpn.VpnPacketBufferStatus Status
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member VpnPacketBufferStatus VpnPacketBuffer.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnPacketBufferStatus%20VpnPacketBuffer.Status");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBuffer", "VpnPacketBufferStatus VpnPacketBuffer.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPacketBuffer", "AppId");
 			}
 		}
 #endif
@@ -42,17 +24,35 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Buffer VpnPacketBuffer.Buffer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Buffer%20VpnPacketBuffer.Buffer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPacketBuffer", "Buffer");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.Vpn.VpnAppId AppId
+		public global::Windows.Networking.Vpn.VpnPacketBufferStatus Status
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnAppId VpnPacketBuffer.AppId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnAppId%20VpnPacketBuffer.AppId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPacketBuffer", "Status");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBuffer", "Status");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint TransportAffinity
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPacketBuffer", "TransportAffinity");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBuffer", "TransportAffinity");
 			}
 		}
 #endif
@@ -62,11 +62,11 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object VpnPacketBuffer.TransportContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20VpnPacketBuffer.TransportContext");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnPacketBuffer", "TransportContext");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBuffer", "object VpnPacketBuffer.TransportContext");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBuffer", "TransportContext");
 			}
 		}
 #endif
@@ -74,17 +74,17 @@ namespace Windows.Networking.Vpn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public VpnPacketBuffer(global::Windows.Networking.Vpn.VpnPacketBuffer parentBuffer, uint offset, uint length)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBuffer", "VpnPacketBuffer.VpnPacketBuffer(VpnPacketBuffer parentBuffer, uint offset, uint length)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBuffer", "VpnPacketBuffer(VpnPacketBuffer parentBuffer, uint offset, uint length)");
 		}
 #endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.VpnPacketBuffer(Windows.Networking.Vpn.VpnPacketBuffer, uint, uint)
-		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.Buffer.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.Status.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.Status.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.TransportAffinity.set
-		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.TransportAffinity.get
 		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.AppId.get
-		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.TransportContext.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.Buffer.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.Status.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.Status.set
+		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.TransportAffinity.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.TransportAffinity.set
 		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.TransportContext.get
+		// Forced skipping of method Windows.Networking.Vpn.VpnPacketBuffer.TransportContext.set
 	}
 }

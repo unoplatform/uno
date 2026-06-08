@@ -15,43 +15,15 @@ namespace Microsoft.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float Opacity
+		public float BlurRadius
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float DropShadow.Opacity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20DropShadow.Opacity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.DropShadow", "BlurRadius");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.DropShadow", "float DropShadow.Opacity");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 Offset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 DropShadow.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20DropShadow.Offset");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.DropShadow", "Vector3 DropShadow.Offset");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.CompositionBrush Mask
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CompositionBrush DropShadow.Mask is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBrush%20DropShadow.Mask");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.DropShadow", "CompositionBrush DropShadow.Mask");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.DropShadow", "BlurRadius");
 			}
 		}
 #endif
@@ -61,25 +33,53 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color DropShadow.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20DropShadow.Color");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.DropShadow", "Color");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.DropShadow", "Color DropShadow.Color");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.DropShadow", "Color");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float BlurRadius
+		public global::Microsoft.UI.Composition.CompositionBrush Mask
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float DropShadow.BlurRadius is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20DropShadow.BlurRadius");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.DropShadow", "Mask");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.DropShadow", "float DropShadow.BlurRadius");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.DropShadow", "Mask");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector3 Offset
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.DropShadow", "Offset");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.DropShadow", "Offset");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float Opacity
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.DropShadow", "Opacity");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.DropShadow", "Opacity");
 			}
 		}
 #endif
@@ -89,25 +89,25 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionDropShadowSourcePolicy DropShadow.SourcePolicy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionDropShadowSourcePolicy%20DropShadow.SourcePolicy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.DropShadow", "SourcePolicy");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.DropShadow", "CompositionDropShadowSourcePolicy DropShadow.SourcePolicy");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.DropShadow", "SourcePolicy");
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Composition.DropShadow.BlurRadius.get
 		// Forced skipping of method Microsoft.UI.Composition.DropShadow.BlurRadius.set
-		// Forced skipping of method Microsoft.UI.Composition.DropShadow.Offset.get
-		// Forced skipping of method Microsoft.UI.Composition.DropShadow.SourcePolicy.set
 		// Forced skipping of method Microsoft.UI.Composition.DropShadow.Color.get
 		// Forced skipping of method Microsoft.UI.Composition.DropShadow.Color.set
 		// Forced skipping of method Microsoft.UI.Composition.DropShadow.Mask.get
 		// Forced skipping of method Microsoft.UI.Composition.DropShadow.Mask.set
-		// Forced skipping of method Microsoft.UI.Composition.DropShadow.BlurRadius.get
+		// Forced skipping of method Microsoft.UI.Composition.DropShadow.Offset.get
 		// Forced skipping of method Microsoft.UI.Composition.DropShadow.Offset.set
 		// Forced skipping of method Microsoft.UI.Composition.DropShadow.Opacity.get
 		// Forced skipping of method Microsoft.UI.Composition.DropShadow.Opacity.set
 		// Forced skipping of method Microsoft.UI.Composition.DropShadow.SourcePolicy.get
+		// Forced skipping of method Microsoft.UI.Composition.DropShadow.SourcePolicy.set
 	}
 }

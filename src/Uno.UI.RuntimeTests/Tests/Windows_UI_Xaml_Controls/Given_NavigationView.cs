@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
+using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.ListViewPages;
 using Uno.UI.Toolkit.DevTools.Input;
 #if __APPLE_UIKIT__
@@ -45,6 +46,64 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public partial class Given_NavigationView
 	{
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/14059")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_NavigationViewItem_Tapped_Multiple_Times_Event_Fires_Each_Time()
+		{
+			var tappedItems = new List<string>();
+
+			var item1 = new Microsoft.UI.Xaml.Controls.NavigationViewItem { Content = "Settings", Tag = "settings" };
+			var item2 = new Microsoft.UI.Xaml.Controls.NavigationViewItem { Content = "Profile", Tag = "profile" };
+			var item3 = new Microsoft.UI.Xaml.Controls.NavigationViewItem { Content = "Manage Account", Tag = "manageAccount" };
+
+			foreach (var item in new[] { item1, item2, item3 })
+			{
+				var tag = item.Tag?.ToString();
+				item.Tapped += (s, e) => tappedItems.Add(tag);
+			}
+
+			var navView = new Microsoft.UI.Xaml.Controls.NavigationView
+			{
+				PaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Left,
+				IsPaneOpen = true,
+				IsBackButtonVisible = Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible.Collapsed,
+				IsPaneToggleButtonVisible = false,
+				Height = 500,
+				Width = 400,
+				MenuItems = { item1, item2, item3 },
+			};
+
+			await UITestHelper.Load(navView);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Tap item1, then item2, then item1 again — each tap should fire Tapped
+			finger.Press(item1.GetAbsoluteBounds().GetCenter());
+			await WindowHelper.WaitForIdle();
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			finger.Press(item2.GetAbsoluteBounds().GetCenter());
+			await WindowHelper.WaitForIdle();
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			finger.Press(item1.GetAbsoluteBounds().GetCenter());
+			await WindowHelper.WaitForIdle();
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(3, tappedItems.Count,
+				$"Expected 3 Tapped events but got {tappedItems.Count}: [{string.Join(", ", tappedItems)}]. " +
+				$"On iOS, Tapped may only fire once after the first NavigationViewItem is selected.");
+			Assert.AreEqual("settings", tappedItems[0]);
+			Assert.AreEqual("profile", tappedItems[1]);
+			Assert.AreEqual("settings", tappedItems[2]);
+		}
 #if HAS_UNO && !HAS_UNO_WINUI
 		[TestMethod]
 		public async Task When_NavView()
@@ -153,6 +212,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO_WINUI || WINAPPSDK
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_NavigationViewItem_MenuSource_VectorChanged()
 		{
 			var nvi1 = new NavigationViewItem
@@ -213,12 +273,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			for (int i = 0; i < 5; i++)
 			{
 				AddItems(nv, 10);
-				Assert.AreEqual(10, nv.MenuItems.Count, "Initial count of MenuItems should be 10.");
+				Assert.HasCount(10, nv.MenuItems, "Initial count of MenuItems should be 10.");
 				nv.SelectedItem = nv.MenuItems[0];
 				await WindowHelper.WaitForIdle();
 				Action act = () => nv.MenuItems.Clear();
 				act.Should().NotThrow("Clearing MenuItems should not throw an exception.");
-				Assert.AreEqual(0, nv.MenuItems.Count, "MenuItems should be empty after clearing.");
+				Assert.IsEmpty(nv.MenuItems, "MenuItems should be empty after clearing.");
 			}
 		}
 	}

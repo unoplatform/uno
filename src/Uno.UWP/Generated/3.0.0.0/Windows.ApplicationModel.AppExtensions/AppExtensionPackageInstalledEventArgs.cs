@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.AppExtensions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppExtensionPackageInstalledEventArgs.AppExtensionName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppExtensionPackageInstalledEventArgs.AppExtensionName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppExtensions.AppExtensionPackageInstalledEventArgs", "AppExtensionName");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.AppExtensions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<AppExtension> AppExtensionPackageInstalledEventArgs.Extensions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CAppExtension%3E%20AppExtensionPackageInstalledEventArgs.Extensions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppExtensions.AppExtensionPackageInstalledEventArgs", "Extensions");
 			}
 		}
 #endif
@@ -39,12 +39,12 @@ namespace Windows.ApplicationModel.AppExtensions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Package AppExtensionPackageInstalledEventArgs.Package is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Package%20AppExtensionPackageInstalledEventArgs.Package");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppExtensions.AppExtensionPackageInstalledEventArgs", "Package");
 			}
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageInstalledEventArgs.AppExtensionName.get
-		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageInstalledEventArgs.Package.get
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageInstalledEventArgs.Extensions.get
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionPackageInstalledEventArgs.Package.get
 	}
 }

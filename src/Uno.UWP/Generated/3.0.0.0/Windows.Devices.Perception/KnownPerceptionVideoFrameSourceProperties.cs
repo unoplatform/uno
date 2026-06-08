@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Perception
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -15,7 +14,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoFrameSourceProperties.AvailableVideoProfiles is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionVideoFrameSourceProperties.AvailableVideoProfiles");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties", "AvailableVideoProfiles");
 			}
 		}
 #endif
@@ -25,7 +24,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoFrameSourceProperties.CameraIntrinsics is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionVideoFrameSourceProperties.CameraIntrinsics");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties", "CameraIntrinsics");
 			}
 		}
 #endif
@@ -35,7 +34,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoFrameSourceProperties.IsMirrored is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionVideoFrameSourceProperties.IsMirrored");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties", "IsMirrored");
 			}
 		}
 #endif
@@ -45,7 +44,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoFrameSourceProperties.SupportedVideoProfiles is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionVideoFrameSourceProperties.SupportedVideoProfiles");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties", "SupportedVideoProfiles");
 			}
 		}
 #endif
@@ -55,14 +54,14 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionVideoFrameSourceProperties.VideoProfile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionVideoFrameSourceProperties.VideoProfile");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties", "VideoProfile");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties.VideoProfile.get
-		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties.SupportedVideoProfiles.get
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties.AvailableVideoProfiles.get
-		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties.IsMirrored.get
 		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties.CameraIntrinsics.get
+		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties.IsMirrored.get
+		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties.SupportedVideoProfiles.get
+		// Forced skipping of method Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties.VideoProfile.get
 	}
 }

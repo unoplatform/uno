@@ -19,7 +19,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ErrorDetails.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ErrorDetails.Description");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.ErrorDetails", "Description");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri ErrorDetails.HelpUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20ErrorDetails.HelpUri");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.ErrorDetails", "HelpUri");
 			}
 		}
 #endif
@@ -39,19 +39,19 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ErrorDetails.LongDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ErrorDetails.LongDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.ErrorDetails", "LongDescription");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.Description.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.LongDescription.get
-		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.HelpUri.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Foundation.Diagnostics.ErrorDetails> CreateFromHResultAsync(int errorCode)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ErrorDetails> ErrorDetails.CreateFromHResultAsync(int errorCode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CErrorDetails%3E%20ErrorDetails.CreateFromHResultAsync%28int%20errorCode%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Diagnostics.ErrorDetails", "CreateFromHResultAsync(int errorCode)");
 		}
 #endif
+		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.Description.get
+		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.HelpUri.get
+		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.LongDescription.get
 	}
 }

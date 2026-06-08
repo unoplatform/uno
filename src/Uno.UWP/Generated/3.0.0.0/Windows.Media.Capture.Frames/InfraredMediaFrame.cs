@@ -19,7 +19,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaFrameReference InfraredMediaFrame.FrameReference is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaFrameReference%20InfraredMediaFrame.FrameReference");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.InfraredMediaFrame", "FrameReference");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InfraredMediaFrame.IsIlluminated is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InfraredMediaFrame.IsIlluminated");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.InfraredMediaFrame", "IsIlluminated");
 			}
 		}
 #endif
@@ -39,12 +39,12 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoMediaFrame InfraredMediaFrame.VideoMediaFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoMediaFrame%20InfraredMediaFrame.VideoMediaFrame");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.InfraredMediaFrame", "VideoMediaFrame");
 			}
 		}
 #endif
 		// Forced skipping of method Windows.Media.Capture.Frames.InfraredMediaFrame.FrameReference.get
-		// Forced skipping of method Windows.Media.Capture.Frames.InfraredMediaFrame.VideoMediaFrame.get
 		// Forced skipping of method Windows.Media.Capture.Frames.InfraredMediaFrame.IsIlluminated.get
+		// Forced skipping of method Windows.Media.Capture.Frames.InfraredMediaFrame.VideoMediaFrame.get
 	}
 }

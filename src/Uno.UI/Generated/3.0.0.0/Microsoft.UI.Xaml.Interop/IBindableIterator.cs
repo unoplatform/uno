@@ -20,10 +20,10 @@ namespace Microsoft.UI.Xaml.Interop
 			get;
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Xaml.Interop.IBindableIterator.Current.get
-		// Forced skipping of method Microsoft.UI.Xaml.Interop.IBindableIterator.HasCurrent.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		bool MoveNext();
 #endif
+		// Forced skipping of method Microsoft.UI.Xaml.Interop.IBindableIterator.Current.get
+		// Forced skipping of method Microsoft.UI.Xaml.Interop.IBindableIterator.HasCurrent.get
 	}
 }

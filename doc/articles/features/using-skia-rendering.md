@@ -6,7 +6,7 @@ uid: uno.features.renderer.skia
 
 Available on iOS, Android, macOS, Windows, Linux and WebAssembly, based on the [Skia](https://skia.org) drawing library, the Skia Renderer is a cross-platform unified rendering component of Uno Platform which provides a single UI experience across all supported platforms.
 
-The whole UI Visual Tree is drawn on an hardware accelerated canvas, using Metal, OpenGL, and WebGL where applicable. Unlike Native rendering, Skia doesn’t rely on platform UI components.
+The whole UI Visual Tree is drawn on an hardware accelerated canvas, using Metal, OpenGL, [Vulkan](xref:Uno.Skia.Vulkan), and WebGL where applicable. Unlike Native rendering, Skia doesn’t rely on platform UI components.
 
 The Skia Rendering backend has a very cheap cost for creating UI elements, which makes it very efficient for large user interfaces.
 
@@ -96,11 +96,11 @@ The reason for this limitation is caused by the fact that Native renderers expos
 
 Here are the different scenarios:
 
-- Given a library that uses `net9.0-ios` or `net9.0-android`, which does not have the `SkiaRenderer` set as an `UnoFeature`, but uses platform conditional code with `#if` blocks:
+- Given a library that uses `net10.0-ios` or `net10.0-android`, which does not have the `SkiaRenderer` set as an `UnoFeature`, but uses platform conditional code with `#if` blocks:
 
-  - This package is only usable by both native and Skia apps if it also provides a `net9.0` TFM. In this case, for a native app, nothing changes.
-  - For a `SkiaRenderer` enabled app, the `net9.0` variant of the library will be used and will not offer iOS/Android specific conditional code, but any code that uses Uno Platform provided APIs will work properly.
+  - This package is only usable by both native and Skia apps if it also provides a `net10.0` TFM. In this case, for a native app, nothing changes.
+  - For a `SkiaRenderer` enabled app, the `net10.0` variant of the library will be used and will not offer iOS/Android specific conditional code, but any code that uses Uno Platform provided APIs will work properly.
 
-- Given a library that uses `net9.0-ios` or `net9.0-android`, which does have the `SkiaRenderer` set as an `UnoFeature`, but uses platform conditional code with `#if` blocks:
+- Given a library that uses `net10.0-ios` or `net10.0-android`, which does have the `SkiaRenderer` set as an `UnoFeature`, but uses platform conditional code with `#if` blocks:
 
   - This package is only usable by Skia-enabled apps.

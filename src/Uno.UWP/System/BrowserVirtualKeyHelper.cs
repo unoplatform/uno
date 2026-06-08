@@ -313,25 +313,54 @@ namespace Windows.System
 				case "NumpadDecimal":
 					return VirtualKey.Decimal;
 				case "Numpad0":
-					return VirtualKey.Number0;
+					return VirtualKey.NumberPad0;
 				case "Numpad1":
-					return VirtualKey.Number1;
+					return VirtualKey.NumberPad1;
 				case "Numpad2":
-					return VirtualKey.Number2;
+					return VirtualKey.NumberPad2;
 				case "Numpad3":
-					return VirtualKey.Number3;
+					return VirtualKey.NumberPad3;
 				case "Numpad4":
-					return VirtualKey.Number4;
+					return VirtualKey.NumberPad4;
 				case "Numpad5":
-					return VirtualKey.Number5;
+					return VirtualKey.NumberPad5;
 				case "Numpad6":
-					return VirtualKey.Number6;
+					return VirtualKey.NumberPad6;
 				case "Numpad7":
-					return VirtualKey.Number7;
+					return VirtualKey.NumberPad7;
 				case "Numpad8":
-					return VirtualKey.Number8;
+					return VirtualKey.NumberPad8;
 				case "Numpad9":
-					return VirtualKey.Number9;
+					return VirtualKey.NumberPad9;
+				case "NumpadEnter":
+					return VirtualKey.Enter;
+
+				// OEM-row keys. event.code is the physical-location identifier per W3C UI Events,
+				// so the mapping is shift-independent — matches Win32 raw VK_OEM_* semantics.
+				case "Semicolon":
+					return VirtualKeyHelper.Oem1;
+				case "Equal":
+					return VirtualKeyHelper.OemPlus;
+				case "Comma":
+					return VirtualKeyHelper.OemComma;
+				case "Minus":
+					return VirtualKeyHelper.OemMinus;
+				case "Period":
+					return VirtualKeyHelper.OemPeriod;
+				case "Slash":
+					return VirtualKeyHelper.Oem2;
+				case "Backquote":
+					return VirtualKeyHelper.Oem3;
+				case "BracketLeft":
+					return VirtualKeyHelper.Oem4;
+				case "Backslash":
+					return VirtualKeyHelper.Oem5;
+				case "BracketRight":
+					return VirtualKeyHelper.Oem6;
+				case "Quote":
+					return VirtualKeyHelper.Oem7;
+				case "IntlBackslash":
+					return VirtualKeyHelper.Oem102;
 			}
 
 			// A lot of keys and codes are similar.
@@ -353,8 +382,8 @@ namespace Windows.System
 				return VirtualKey.Number0 + code[5] - '0';
 			}
 
-			// WinUI sometimes gives unnamed int values to keys like Comma (188) and Period (190).
-			// Since these don't result in a valid enum value, we ignore these.
+			// Unmapped codes (uncommon layouts, media keys without an enum entry, etc.)
+			// intentionally fall through to None.
 			return VirtualKey.None;
 		}
 	}

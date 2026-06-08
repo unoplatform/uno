@@ -19,7 +19,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? DataPlanStatus.DataLimitInMegabytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20DataPlanStatus.DataLimitInMegabytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.DataPlanStatus", "DataLimitInMegabytes");
 			}
 		}
 #endif
@@ -29,7 +29,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DataPlanUsage DataPlanStatus.DataPlanUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataPlanUsage%20DataPlanStatus.DataPlanUsage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.DataPlanStatus", "DataPlanUsage");
 			}
 		}
 #endif
@@ -39,7 +39,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong? DataPlanStatus.InboundBitsPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%3F%20DataPlanStatus.InboundBitsPerSecond");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.DataPlanStatus", "InboundBitsPerSecond");
 			}
 		}
 #endif
@@ -49,7 +49,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? DataPlanStatus.MaxTransferSizeInMegabytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%3F%20DataPlanStatus.MaxTransferSizeInMegabytes");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.DataPlanStatus", "MaxTransferSizeInMegabytes");
 			}
 		}
 #endif
@@ -59,7 +59,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? DataPlanStatus.NextBillingCycle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20DataPlanStatus.NextBillingCycle");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.DataPlanStatus", "NextBillingCycle");
 			}
 		}
 #endif
@@ -69,15 +69,15 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong? DataPlanStatus.OutboundBitsPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%3F%20DataPlanStatus.OutboundBitsPerSecond");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.DataPlanStatus", "OutboundBitsPerSecond");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.DataPlanUsage.get
 		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.DataLimitInMegabytes.get
+		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.DataPlanUsage.get
 		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.InboundBitsPerSecond.get
-		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.OutboundBitsPerSecond.get
-		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.NextBillingCycle.get
 		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.MaxTransferSizeInMegabytes.get
+		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.NextBillingCycle.get
+		// Forced skipping of method Windows.Networking.Connectivity.DataPlanStatus.OutboundBitsPerSecond.get
 	}
 }

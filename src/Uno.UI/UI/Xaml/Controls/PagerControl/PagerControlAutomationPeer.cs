@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference PagerControlAutomationPeer.cpp, tag winui3/release/1.7.3, commit 65718e2813a9
+// MUX reference PagerControlAutomationPeer.cpp, tag winui3/release/1.8.4
 
 using System;
 using Microsoft.UI.Xaml.Controls;
@@ -59,8 +59,10 @@ public partial class PagerControlAutomationPeer : FrameworkElementAutomationPeer
 
 	IRawElementProviderSimple[] ISelectionProvider.GetSelection()
 	{
-		// TODO: Uno specific - does not match the WinUI version,
-		// which returns plain object
+		// WinUI3 C++ boxes the SelectedPageIndex (int) into IInspectable. That signature does
+		// not project to C#'s IRawElementProviderSimple[]. PagerControl does not expose per-page
+		// AutomationPeers, so no provider can be returned here. Selection changes are still
+		// surfaced via RaiseSelectionChanged which fires SelectionPatternIdentifiers.SelectionProperty.
 		return Array.Empty<IRawElementProviderSimple>();
 	}
 

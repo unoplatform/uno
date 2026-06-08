@@ -1,10 +1,12 @@
 ﻿using System;
 using Foundation;
-using Microsoft.UI.Xaml.Controls;
 using ObjCRuntime;
 using UIKit;
 using Uno.Extensions;
 using Uno.UI.Extensions;
+using Uno.UI.Xaml.Controls.Extensions;
+using Microsoft.UI.Xaml.Controls;
+
 
 namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 
@@ -63,6 +65,8 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 		}
 	}
 
+	public bool IsComposing => AppleUIKitImeTextBoxExtension.Instance.IsComposing;
+
 	internal InvisibleTextBoxViewExtension TextBoxViewExtension => _textBoxViewExtension.GetTarget();
 
 	public override string? Text
@@ -118,7 +122,7 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 		}
 		finally
 		{
-			_settingTextFromManaged = false;
+			_settingSelectionFromManaged = false;
 		}
 	}
 
@@ -138,9 +142,51 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 				NativeTextSelection.SetSelectedTextRange(SuperHandle, value);
 				if (!_settingSelectionFromManaged)
 				{
-					textBoxView.Owner.TextBox?.OnSelectionChanged();
+					textBoxView.SyncSelectionToTextBox();
 				}
 			}
 		}
 	}
+
+	#region IME Composition (UITextInput overrides)
+
+	public override void SetMarkedText(string markedText, NSRange selectedRange)
+	{
+		markedText ??= string.Empty;
+		AppleUIKitImeTextBoxExtension.Instance.OnSetMarkedText(markedText);
+		base.SetMarkedText(markedText, selectedRange);
+	}
+
+	public new void InsertText(string text)
+	{
+		var wasComposing = AppleUIKitImeTextBoxExtension.Instance.IsComposing;
+		base.InsertText(text);
+
+		// Only fire composition events when completing an active IME composition
+		// (SetMarkedText was called first). Regular native keystrokes and
+		// BecomeFirstResponder's silent text restore should not trigger composition.
+		if (wasComposing)
+		{
+			AppleUIKitImeTextBoxExtension.Instance.OnInsertText(text);
+		}
+	}
+
+	public override void UnmarkText()
+	{
+		AppleUIKitImeTextBoxExtension.Instance.OnUnmarkText();
+		base.UnmarkText();
+	}
+
+	public override CoreGraphics.CGRect GetFirstRectForRange(UITextRange range)
+	{
+		var caretRect = AppleUIKitImeTextBoxExtension.Instance.GetCaretRect();
+		if (caretRect != Windows.Foundation.Rect.Empty && Superview is not null)
+		{
+			var windowRect = new CoreGraphics.CGRect(caretRect.X, caretRect.Y, caretRect.Width, caretRect.Height);
+			return ConvertRectFromView(windowRect, Superview);
+		}
+		return base.GetFirstRectForRange(range);
+	}
+
+	#endregion
 }

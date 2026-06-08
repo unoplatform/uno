@@ -15,11 +15,21 @@ namespace Windows.Services.Maps
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Services.Maps.MapRoute> AlternateRoutes
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinderResult", "AlternateRoutes");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Services.Maps.MapRoute Route
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MapRoute MapRouteFinderResult.Route is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MapRoute%20MapRouteFinderResult.Route");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinderResult", "Route");
 			}
 		}
 #endif
@@ -29,22 +39,12 @@ namespace Windows.Services.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MapRouteFinderStatus MapRouteFinderResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MapRouteFinderStatus%20MapRouteFinderResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Maps.MapRouteFinderResult", "Status");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Services.Maps.MapRoute> AlternateRoutes
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MapRoute> MapRouteFinderResult.AlternateRoutes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMapRoute%3E%20MapRouteFinderResult.AlternateRoutes");
-			}
-		}
-#endif
+		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.AlternateRoutes.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.Route.get
 		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.Status.get
-		// Forced skipping of method Windows.Services.Maps.MapRouteFinderResult.AlternateRoutes.get
 	}
 }

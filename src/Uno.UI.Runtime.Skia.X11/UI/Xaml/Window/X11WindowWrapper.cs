@@ -79,10 +79,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		{
 			this.Log().Info($"Forcibly closing X11 window {x11Window.Display.ToString("X", CultureInfo.InvariantCulture)}, {x11Window.Window.ToString("X", CultureInfo.InvariantCulture)}");
 		}
-		using (X11Helper.XLock(x11Window.Display))
-		{
-			X11XamlRootHost.Close(x11Window);
-		}
+		X11XamlRootHost.Close(x11Window);
 	}
 
 	public override void ExtendContentIntoTitleBar(bool extend)

@@ -1,4 +1,5 @@
 ﻿using Windows.System;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Input;
@@ -13,6 +14,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			DefaultStyleKey = typeof(ComboBoxItem);
 		}
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+			=> new ComboBoxItemAutomationPeer(this);
 
 		internal void ChangeVisualStateInternal(bool useTransitions) => ChangeVisualState(useTransitions);
 

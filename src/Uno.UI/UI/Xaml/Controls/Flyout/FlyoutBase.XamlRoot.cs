@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using Uno.UI.DataBinding;
@@ -9,8 +9,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 public partial class FlyoutBase
 {
-	private ManagedWeakReference? _visualTreeCacheWeakReference;
-
 	/// <summary>
 	/// Gets or sets the XamlRoot in which this flyout is being viewed.
 	/// </summary>
@@ -18,12 +16,5 @@ public partial class FlyoutBase
 	{
 		get => XamlRoot.GetForElement(this);
 		set => XamlRoot.SetForElement(this, XamlRoot, value);
-	}
-
-	internal VisualTree? VisualTreeCache
-	{
-		get => _visualTreeCacheWeakReference?.IsDisposed == false ?
-			_visualTreeCacheWeakReference.Target as VisualTree : null;
-		set => _visualTreeCacheWeakReference = WeakReferencePool.RentWeakReference(this, value);
 	}
 }

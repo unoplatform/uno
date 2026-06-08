@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.PlayTo
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -20,7 +19,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PlayToSourceSelectedEventArgs.FriendlyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PlayToSourceSelectedEventArgs.FriendlyName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToSourceSelectedEventArgs", "FriendlyName");
 			}
 		}
 #endif
@@ -30,7 +29,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamWithContentType PlayToSourceSelectedEventArgs.Icon is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamWithContentType%20PlayToSourceSelectedEventArgs.Icon");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToSourceSelectedEventArgs", "Icon");
 			}
 		}
 #endif
@@ -40,7 +39,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PlayToSourceSelectedEventArgs.SupportsAudio is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PlayToSourceSelectedEventArgs.SupportsAudio");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToSourceSelectedEventArgs", "SupportsAudio");
 			}
 		}
 #endif
@@ -50,7 +49,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PlayToSourceSelectedEventArgs.SupportsImage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PlayToSourceSelectedEventArgs.SupportsImage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToSourceSelectedEventArgs", "SupportsImage");
 			}
 		}
 #endif
@@ -60,14 +59,14 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PlayToSourceSelectedEventArgs.SupportsVideo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PlayToSourceSelectedEventArgs.SupportsVideo");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToSourceSelectedEventArgs", "SupportsVideo");
 			}
 		}
 #endif
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.FriendlyName.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.Icon.get
-		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.SupportsImage.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.SupportsAudio.get
+		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.SupportsImage.get
 		// Forced skipping of method Windows.Media.PlayTo.PlayToSourceSelectedEventArgs.SupportsVideo.get
 	}
 }

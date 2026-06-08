@@ -4,11 +4,15 @@ uid: Uno.UI.CommonIssues.AIAgents
 
 # Issues related to AI Agents
 
-## dnx is not a valid command
+## `dotnet dnx` is not a valid command
 
-The getting started for Claude, Codex, and Copilot CLI use the `dnx` command, which is only available on .NET 10.
+The getting started for Claude, Codex, and Copilot CLI uses `dotnet dnx`, which requires the **.NET 10 SDK or newer**. On older SDKs, `dotnet dnx` reports a "command not found" error.
 
-If you want to use the App MCP with .NET 9 projects, you'll need to change `dnx` to `uno-devserver` and install it using `dotnet tool install -g uno.devserver`.
+If you want to use the App MCP with an older SDK, install the Dev Server as a global tool and replace `dotnet dnx -y uno.devserver` with `uno-devserver` in the commands and config files:
+
+```bash
+dotnet tool install -g uno.devserver
+```
 
 ## The App MCP does not appear in Visual Studio
 
@@ -37,3 +41,10 @@ In Visual Studio, the App MCP might turn red on some occasions. To fix this issu
 The Uno Platform App MCP may fail to start in Claude/Codex/Copilot CLI when it is started in a folder that does not contain an Uno Platform project.
 
 To fix this issue, change directories to a folder that contains the `.sln` or `.slnx` file of your project.
+
+## Diagnosing Dev Server issues
+
+> [!TIP]
+> When the App MCP fails to start, run `uno-devserver disco` from your solution directory.
+> Check that **hostPath** is resolved and that there are no **errors**. Pass `--json` for machine-readable output.
+> See [Diagnostics (disco)](xref:Uno.Features.DevServerDisco) for a full guide.

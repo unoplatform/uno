@@ -3,7 +3,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.PlayTo
 {
-	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
@@ -20,7 +19,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlayToConnectionError PlayToConnectionErrorEventArgs.Code is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlayToConnectionError%20PlayToConnectionErrorEventArgs.Code");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToConnectionErrorEventArgs", "Code");
 			}
 		}
 #endif
@@ -30,7 +29,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PlayToConnectionErrorEventArgs.Message is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PlayToConnectionErrorEventArgs.Message");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.PlayTo.PlayToConnectionErrorEventArgs", "Message");
 			}
 		}
 #endif

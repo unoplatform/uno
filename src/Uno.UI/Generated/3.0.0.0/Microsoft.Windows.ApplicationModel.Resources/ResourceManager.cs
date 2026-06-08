@@ -14,36 +14,36 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ResourceMap ResourceManager.MainResourceMap is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceMap%20ResourceManager.MainResourceMap");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceManager", "MainResourceMap");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ResourceManager()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.ApplicationModel.Resources.ResourceManager", "ResourceManager()");
+		}
+#endif
+		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceManager.ResourceManager()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ResourceManager(string fileName)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.ApplicationModel.Resources.ResourceManager", "ResourceManager.ResourceManager(string fileName)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.ApplicationModel.Resources.ResourceManager", "ResourceManager(string fileName)");
 		}
 #endif
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceManager.ResourceManager(string)
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ResourceManager()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.ApplicationModel.Resources.ResourceManager", "ResourceManager.ResourceManager()");
-		}
-#endif
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceManager.ResourceManager()
-		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceManager.MainResourceMap.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Windows.ApplicationModel.Resources.ResourceContext CreateResourceContext()
 		{
-			throw new global::System.NotImplementedException("The member ResourceContext ResourceManager.CreateResourceContext() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceContext%20ResourceManager.CreateResourceContext%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Windows.ApplicationModel.Resources.ResourceManager", "CreateResourceContext()");
 		}
 #endif
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceManager.ResourceNotFound.add
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceManager.ResourceNotFound.remove
+		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.ResourceManager.MainResourceMap.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Windows.ApplicationModel.Resources.ResourceManager, global::Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs> ResourceNotFound
@@ -51,12 +51,12 @@ namespace Microsoft.Windows.ApplicationModel.Resources
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.ApplicationModel.Resources.ResourceManager", "event TypedEventHandler<ResourceManager, ResourceNotFoundEventArgs> ResourceManager.ResourceNotFound");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.ApplicationModel.Resources.ResourceManager", "event ResourceNotFound");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.ApplicationModel.Resources.ResourceManager", "event TypedEventHandler<ResourceManager, ResourceNotFoundEventArgs> ResourceManager.ResourceNotFound");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Windows.ApplicationModel.Resources.ResourceManager", "event ResourceNotFound");
 			}
 		}
 #endif

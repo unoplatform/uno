@@ -14,7 +14,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BatteryStatus PowerManager.BatteryStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BatteryStatus%20PowerManager.BatteryStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.PowerManager", "BatteryStatus");
 			}
 		}
 #endif
@@ -24,7 +24,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EnergySaverStatus PowerManager.EnergySaverStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EnergySaverStatus%20PowerManager.EnergySaverStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.PowerManager", "EnergySaverStatus");
 			}
 		}
 #endif
@@ -34,7 +34,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PowerSupplyStatus PowerManager.PowerSupplyStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PowerSupplyStatus%20PowerManager.PowerSupplyStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.PowerManager", "PowerSupplyStatus");
 			}
 		}
 #endif
@@ -44,7 +44,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int PowerManager.RemainingChargePercent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20PowerManager.RemainingChargePercent");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.PowerManager", "RemainingChargePercent");
 			}
 		}
 #endif
@@ -54,25 +54,25 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan PowerManager.RemainingDischargeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20PowerManager.RemainingDischargeTime");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.PowerManager", "RemainingDischargeTime");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.System.Power.PowerManager.EnergySaverStatus.get
-		// Forced skipping of method Windows.System.Power.PowerManager.EnergySaverStatusChanged.add
-		// Forced skipping of method Windows.System.Power.PowerManager.EnergySaverStatusChanged.remove
-		// Forced skipping of method Windows.System.Power.PowerManager.BatteryStatus.get
 		// Forced skipping of method Windows.System.Power.PowerManager.BatteryStatusChanged.add
 		// Forced skipping of method Windows.System.Power.PowerManager.BatteryStatusChanged.remove
-		// Forced skipping of method Windows.System.Power.PowerManager.PowerSupplyStatus.get
+		// Forced skipping of method Windows.System.Power.PowerManager.EnergySaverStatusChanged.add
+		// Forced skipping of method Windows.System.Power.PowerManager.EnergySaverStatusChanged.remove
 		// Forced skipping of method Windows.System.Power.PowerManager.PowerSupplyStatusChanged.add
 		// Forced skipping of method Windows.System.Power.PowerManager.PowerSupplyStatusChanged.remove
-		// Forced skipping of method Windows.System.Power.PowerManager.RemainingChargePercent.get
 		// Forced skipping of method Windows.System.Power.PowerManager.RemainingChargePercentChanged.add
 		// Forced skipping of method Windows.System.Power.PowerManager.RemainingChargePercentChanged.remove
-		// Forced skipping of method Windows.System.Power.PowerManager.RemainingDischargeTime.get
 		// Forced skipping of method Windows.System.Power.PowerManager.RemainingDischargeTimeChanged.add
 		// Forced skipping of method Windows.System.Power.PowerManager.RemainingDischargeTimeChanged.remove
+		// Forced skipping of method Windows.System.Power.PowerManager.BatteryStatus.get
+		// Forced skipping of method Windows.System.Power.PowerManager.EnergySaverStatus.get
+		// Forced skipping of method Windows.System.Power.PowerManager.PowerSupplyStatus.get
+		// Forced skipping of method Windows.System.Power.PowerManager.RemainingChargePercent.get
+		// Forced skipping of method Windows.System.Power.PowerManager.RemainingDischargeTime.get
 #if false || false || __TVOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static event global::System.EventHandler<object> BatteryStatusChanged
@@ -80,12 +80,12 @@ namespace Windows.System.Power
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EventHandler<object> PowerManager.BatteryStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event BatteryStatusChanged");
 			}
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EventHandler<object> PowerManager.BatteryStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event BatteryStatusChanged");
 			}
 		}
 #endif
@@ -96,12 +96,12 @@ namespace Windows.System.Power
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EventHandler<object> PowerManager.EnergySaverStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EnergySaverStatusChanged");
 			}
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EventHandler<object> PowerManager.EnergySaverStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EnergySaverStatusChanged");
 			}
 		}
 #endif
@@ -112,12 +112,12 @@ namespace Windows.System.Power
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EventHandler<object> PowerManager.PowerSupplyStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event PowerSupplyStatusChanged");
 			}
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EventHandler<object> PowerManager.PowerSupplyStatusChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event PowerSupplyStatusChanged");
 			}
 		}
 #endif
@@ -128,12 +128,12 @@ namespace Windows.System.Power
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EventHandler<object> PowerManager.RemainingChargePercentChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event RemainingChargePercentChanged");
 			}
 			[global::Uno.NotImplemented("__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EventHandler<object> PowerManager.RemainingChargePercentChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event RemainingChargePercentChanged");
 			}
 		}
 #endif
@@ -144,12 +144,12 @@ namespace Windows.System.Power
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EventHandler<object> PowerManager.RemainingDischargeTimeChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event RemainingDischargeTimeChanged");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EventHandler<object> PowerManager.RemainingDischargeTimeChanged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event RemainingDischargeTimeChanged");
 			}
 		}
 #endif

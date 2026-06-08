@@ -15,25 +15,11 @@ namespace Windows.Media.Import
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsSelected
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool PhotoImportItem.IsSelected is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PhotoImportItem.IsSelected");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportItem", "bool PhotoImportItem.IsSelected");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Import.PhotoImportContentType ContentType
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhotoImportContentType PhotoImportItem.ContentType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhotoImportContentType%20PhotoImportItem.ContentType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportItem", "ContentType");
 			}
 		}
 #endif
@@ -43,7 +29,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset PhotoImportItem.Date is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20PhotoImportItem.Date");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportItem", "Date");
 			}
 		}
 #endif
@@ -53,7 +39,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> PhotoImportItem.DeletedFileNames is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20PhotoImportItem.DeletedFileNames");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportItem", "DeletedFileNames");
 			}
 		}
 #endif
@@ -63,7 +49,21 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> PhotoImportItem.ImportedFileNames is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20PhotoImportItem.ImportedFileNames");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportItem", "ImportedFileNames");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool IsSelected
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportItem", "IsSelected");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportItem", "IsSelected");
 			}
 		}
 #endif
@@ -73,7 +73,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong PhotoImportItem.ItemKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20PhotoImportItem.ItemKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportItem", "ItemKey");
 			}
 		}
 #endif
@@ -83,57 +83,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhotoImportItem.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhotoImportItem.Name");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Media.Import.PhotoImportSidecar Sibling
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PhotoImportSidecar PhotoImportItem.Sibling is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhotoImportSidecar%20PhotoImportItem.Sibling");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Import.PhotoImportSidecar> Sidecars
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PhotoImportSidecar> PhotoImportItem.Sidecars is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPhotoImportSidecar%3E%20PhotoImportItem.Sidecars");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ulong SizeInBytes
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ulong PhotoImportItem.SizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20PhotoImportItem.SizeInBytes");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Storage.Streams.IRandomAccessStreamReference Thumbnail
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference PhotoImportItem.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20PhotoImportItem.Thumbnail");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Import.PhotoImportVideoSegment> VideoSegments
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PhotoImportVideoSegment> PhotoImportItem.VideoSegments is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CPhotoImportVideoSegment%3E%20PhotoImportItem.VideoSegments");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportItem", "Name");
 			}
 		}
 #endif
@@ -143,23 +93,73 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhotoImportItem.Path is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhotoImportItem.Path");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportItem", "Path");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Name.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportItem.ItemKey.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Media.Import.PhotoImportSidecar Sibling
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportItem", "Sibling");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Import.PhotoImportSidecar> Sidecars
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportItem", "Sidecars");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public ulong SizeInBytes
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportItem", "SizeInBytes");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Storage.Streams.IRandomAccessStreamReference Thumbnail
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportItem", "Thumbnail");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Import.PhotoImportVideoSegment> VideoSegments
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Import.PhotoImportItem", "VideoSegments");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.Media.Import.PhotoImportItem.ContentType.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportItem.SizeInBytes.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Date.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Sibling.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Sidecars.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportItem.VideoSegments.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.DeletedFileNames.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.ImportedFileNames.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportItem.IsSelected.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportItem.IsSelected.set
-		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Thumbnail.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportItem.ImportedFileNames.get
-		// Forced skipping of method Windows.Media.Import.PhotoImportItem.DeletedFileNames.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.ItemKey.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Name.get
 		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Path.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Sibling.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Sidecars.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.SizeInBytes.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.Thumbnail.get
+		// Forced skipping of method Windows.Media.Import.PhotoImportItem.VideoSegments.get
 	}
 }

@@ -58,16 +58,6 @@ namespace Windows.Web.UI
 			set;
 		}
 #endif
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.Source.get
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.Source.set
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.DocumentTitle.get
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.CanGoBack.get
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.CanGoForward.get
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.DefaultBackgroundColor.set
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.DefaultBackgroundColor.get
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.ContainsFullScreenElement.get
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.Settings.get
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.DeferredPermissionRequests.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void GoForward();
 #endif
@@ -107,38 +97,48 @@ namespace Windows.Web.UI
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		void GetDeferredPermissionRequestById(uint id, out global::Windows.Web.UI.WebViewControlDeferredPermissionRequest result);
 #endif
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.NavigationStarting.add
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.NavigationStarting.remove
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.CanGoBack.get
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.CanGoForward.get
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.ContainsFullScreenElement.get
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.DefaultBackgroundColor.get
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.DefaultBackgroundColor.set
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.DeferredPermissionRequests.get
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.DocumentTitle.get
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.Settings.get
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.Source.get
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.Source.set
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.ContainsFullScreenElementChanged.add
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.ContainsFullScreenElementChanged.remove
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.ContentLoading.add
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.ContentLoading.remove
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.DOMContentLoaded.add
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.DOMContentLoaded.remove
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.NavigationCompleted.add
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.NavigationCompleted.remove
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.FrameNavigationStarting.add
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.FrameNavigationStarting.remove
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.FrameContentLoading.add
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.FrameContentLoading.remove
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.FrameDOMContentLoaded.add
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.FrameDOMContentLoaded.remove
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.FrameNavigationCompleted.add
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.FrameNavigationCompleted.remove
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.ScriptNotify.add
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.ScriptNotify.remove
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.FrameNavigationStarting.add
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.FrameNavigationStarting.remove
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.LongRunningScriptDetected.add
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.LongRunningScriptDetected.remove
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.UnsafeContentWarningDisplaying.add
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.UnsafeContentWarningDisplaying.remove
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.UnviewableContentIdentified.add
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.UnviewableContentIdentified.remove
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.PermissionRequested.add
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.PermissionRequested.remove
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.UnsupportedUriSchemeIdentified.add
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.UnsupportedUriSchemeIdentified.remove
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.NavigationCompleted.add
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.NavigationCompleted.remove
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.NavigationStarting.add
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.NavigationStarting.remove
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.NewWindowRequested.add
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.NewWindowRequested.remove
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.ContainsFullScreenElementChanged.add
-		// Forced skipping of method Windows.Web.UI.IWebViewControl.ContainsFullScreenElementChanged.remove
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.PermissionRequested.add
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.PermissionRequested.remove
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.ScriptNotify.add
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.ScriptNotify.remove
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.UnsafeContentWarningDisplaying.add
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.UnsafeContentWarningDisplaying.remove
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.UnsupportedUriSchemeIdentified.add
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.UnsupportedUriSchemeIdentified.remove
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.UnviewableContentIdentified.add
+		// Forced skipping of method Windows.Web.UI.IWebViewControl.UnviewableContentIdentified.remove
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.WebResourceRequested.add
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.WebResourceRequested.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

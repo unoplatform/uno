@@ -10,29 +10,29 @@ namespace Windows.Security.Cryptography.Certificates
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Networking.HostName ServerDnsName
+		public global::Windows.Security.Cryptography.Certificates.CertificateChainPolicy CertificateChainPolicy
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HostName ChainValidationParameters.ServerDnsName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HostName%20ChainValidationParameters.ServerDnsName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.ChainValidationParameters", "CertificateChainPolicy");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainValidationParameters", "HostName ChainValidationParameters.ServerDnsName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainValidationParameters", "CertificateChainPolicy");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Security.Cryptography.Certificates.CertificateChainPolicy CertificateChainPolicy
+		public global::Windows.Networking.HostName ServerDnsName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CertificateChainPolicy ChainValidationParameters.CertificateChainPolicy is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CertificateChainPolicy%20ChainValidationParameters.CertificateChainPolicy");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Cryptography.Certificates.ChainValidationParameters", "ServerDnsName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainValidationParameters", "CertificateChainPolicy ChainValidationParameters.CertificateChainPolicy");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainValidationParameters", "ServerDnsName");
 			}
 		}
 #endif
@@ -40,7 +40,7 @@ namespace Windows.Security.Cryptography.Certificates
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ChainValidationParameters()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainValidationParameters", "ChainValidationParameters.ChainValidationParameters()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.ChainValidationParameters", "ChainValidationParameters()");
 		}
 #endif
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.ChainValidationParameters.ChainValidationParameters()

@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESimProfileMetadata ESimDownloadProfileMetadataResult.ProfileMetadata is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ESimProfileMetadata%20ESimDownloadProfileMetadataResult.ProfileMetadata");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult", "ProfileMetadata");
 			}
 		}
 #endif
@@ -29,11 +29,11 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESimOperationResult ESimDownloadProfileMetadataResult.Result is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ESimOperationResult%20ESimDownloadProfileMetadataResult.Result");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult", "Result");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult.Result.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult.ProfileMetadata.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult.Result.get
 	}
 }

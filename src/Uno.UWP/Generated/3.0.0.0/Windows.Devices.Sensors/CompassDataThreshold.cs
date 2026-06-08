@@ -19,11 +19,11 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CompassDataThreshold.Degrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CompassDataThreshold.Degrees");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.CompassDataThreshold", "Degrees");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.CompassDataThreshold", "double CompassDataThreshold.Degrees");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.CompassDataThreshold", "Degrees");
 			}
 		}
 #endif

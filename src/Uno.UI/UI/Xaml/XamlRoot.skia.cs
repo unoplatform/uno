@@ -13,7 +13,6 @@ partial class XamlRoot
 	internal void InvalidateOverlays()
 	{
 		_focusManager ??= VisualTree.GetFocusManagerForElement(Content);
-		_focusManager?.FocusRectManager?.RedrawFocusVisual();
 		if (_focusManager?.FocusedElement is TextBox textBox)
 		{
 			textBox.TextBoxView?.Extension?.InvalidateLayout();

@@ -45,7 +45,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region Orientation - DP with common callback
 		public static DependencyProperty OrientationProperty { get; } = DependencyProperty.Register(
-			"Orientation", typeof(Orientation), typeof(FlowLayout), new FrameworkPropertyMetadata(default(Orientation), OnDependencyPropertyChanged));
+			"Orientation", typeof(Orientation), typeof(FlowLayout), new FrameworkPropertyMetadata(Orientation.Horizontal, OnDependencyPropertyChanged));
 
 		public Orientation Orientation
 		{

@@ -15,25 +15,25 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Input.Spatial.SpatialInteractionSourceState State
+		public global::Windows.UI.Input.Spatial.SpatialInteractionPressKind PressKind
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialInteractionSourceState SpatialInteractionSourceEventArgs.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialInteractionSourceState%20SpatialInteractionSourceEventArgs.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs", "PressKind");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Input.Spatial.SpatialInteractionPressKind PressKind
+		public global::Windows.UI.Input.Spatial.SpatialInteractionSourceState State
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialInteractionPressKind SpatialInteractionSourceEventArgs.PressKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialInteractionPressKind%20SpatialInteractionSourceEventArgs.PressKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs", "State");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs.State.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs.PressKind.get
+		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceEventArgs.State.get
 	}
 }

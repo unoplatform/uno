@@ -15,57 +15,15 @@ namespace Microsoft.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float QuadraticAttenuation
+		public global::Windows.UI.Color Color
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float PointLight.QuadraticAttenuation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20PointLight.QuadraticAttenuation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.PointLight", "Color");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "float PointLight.QuadraticAttenuation");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector3 Offset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 PointLight.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20PointLight.Offset");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "Vector3 PointLight.Offset");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float LinearAttenuation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float PointLight.LinearAttenuation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20PointLight.LinearAttenuation");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "float PointLight.LinearAttenuation");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.Visual CoordinateSpace
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Visual PointLight.CoordinateSpace is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Visual%20PointLight.CoordinateSpace");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "Visual PointLight.CoordinateSpace");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "Color");
 			}
 		}
 #endif
@@ -75,25 +33,25 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float PointLight.ConstantAttenuation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20PointLight.ConstantAttenuation");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.PointLight", "ConstantAttenuation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "float PointLight.ConstantAttenuation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "ConstantAttenuation");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color Color
+		public global::Microsoft.UI.Composition.Visual CoordinateSpace
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color PointLight.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20PointLight.Color");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.PointLight", "CoordinateSpace");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "Color PointLight.Color");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "CoordinateSpace");
 			}
 		}
 #endif
@@ -103,25 +61,25 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float PointLight.Intensity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20PointLight.Intensity");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.PointLight", "Intensity");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "float PointLight.Intensity");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "Intensity");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float MinAttenuationCutoff
+		public float LinearAttenuation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float PointLight.MinAttenuationCutoff is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20PointLight.MinAttenuationCutoff");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.PointLight", "LinearAttenuation");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "float PointLight.MinAttenuationCutoff");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "LinearAttenuation");
 			}
 		}
 #endif
@@ -131,31 +89,73 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float PointLight.MaxAttenuationCutoff is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20PointLight.MaxAttenuationCutoff");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.PointLight", "MaxAttenuationCutoff");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "float PointLight.MaxAttenuationCutoff");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "MaxAttenuationCutoff");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.PointLight.QuadraticAttenuation.set
-		// Forced skipping of method Microsoft.UI.Composition.PointLight.LinearAttenuation.get
-		// Forced skipping of method Microsoft.UI.Composition.PointLight.LinearAttenuation.set
-		// Forced skipping of method Microsoft.UI.Composition.PointLight.Offset.get
-		// Forced skipping of method Microsoft.UI.Composition.PointLight.Offset.set
-		// Forced skipping of method Microsoft.UI.Composition.PointLight.QuadraticAttenuation.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float MinAttenuationCutoff
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.PointLight", "MinAttenuationCutoff");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "MinAttenuationCutoff");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::System.Numerics.Vector3 Offset
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.PointLight", "Offset");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "Offset");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public float QuadraticAttenuation
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.PointLight", "QuadraticAttenuation");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PointLight", "QuadraticAttenuation");
+			}
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Composition.PointLight.Color.get
-		// Forced skipping of method Microsoft.UI.Composition.PointLight.CoordinateSpace.set
-		// Forced skipping of method Microsoft.UI.Composition.PointLight.Intensity.set
-		// Forced skipping of method Microsoft.UI.Composition.PointLight.MinAttenuationCutoff.get
-		// Forced skipping of method Microsoft.UI.Composition.PointLight.MinAttenuationCutoff.set
-		// Forced skipping of method Microsoft.UI.Composition.PointLight.MaxAttenuationCutoff.get
-		// Forced skipping of method Microsoft.UI.Composition.PointLight.MaxAttenuationCutoff.set
-		// Forced skipping of method Microsoft.UI.Composition.PointLight.Intensity.get
 		// Forced skipping of method Microsoft.UI.Composition.PointLight.Color.set
 		// Forced skipping of method Microsoft.UI.Composition.PointLight.ConstantAttenuation.get
 		// Forced skipping of method Microsoft.UI.Composition.PointLight.ConstantAttenuation.set
 		// Forced skipping of method Microsoft.UI.Composition.PointLight.CoordinateSpace.get
+		// Forced skipping of method Microsoft.UI.Composition.PointLight.CoordinateSpace.set
+		// Forced skipping of method Microsoft.UI.Composition.PointLight.Intensity.get
+		// Forced skipping of method Microsoft.UI.Composition.PointLight.Intensity.set
+		// Forced skipping of method Microsoft.UI.Composition.PointLight.LinearAttenuation.get
+		// Forced skipping of method Microsoft.UI.Composition.PointLight.LinearAttenuation.set
+		// Forced skipping of method Microsoft.UI.Composition.PointLight.MaxAttenuationCutoff.get
+		// Forced skipping of method Microsoft.UI.Composition.PointLight.MaxAttenuationCutoff.set
+		// Forced skipping of method Microsoft.UI.Composition.PointLight.MinAttenuationCutoff.get
+		// Forced skipping of method Microsoft.UI.Composition.PointLight.MinAttenuationCutoff.set
+		// Forced skipping of method Microsoft.UI.Composition.PointLight.Offset.get
+		// Forced skipping of method Microsoft.UI.Composition.PointLight.Offset.set
+		// Forced skipping of method Microsoft.UI.Composition.PointLight.QuadraticAttenuation.get
+		// Forced skipping of method Microsoft.UI.Composition.PointLight.QuadraticAttenuation.set
 	}
 }

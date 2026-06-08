@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset ProductLicense.ExpirationDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%20ProductLicense.ExpirationDate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.ProductLicense", "ExpirationDate");
 			}
 		}
 #endif
@@ -29,17 +29,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ProductLicense.IsActive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ProductLicense.IsActive");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string ProductId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string ProductLicense.ProductId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProductLicense.ProductId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.ProductLicense", "IsActive");
 			}
 		}
 #endif
@@ -49,13 +39,23 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ProductLicense.IsConsumable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ProductLicense.IsConsumable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.ProductLicense", "IsConsumable");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductLicense.ProductId.get
-		// Forced skipping of method Windows.ApplicationModel.Store.ProductLicense.IsActive.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public string ProductId
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.ProductLicense", "ProductId");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductLicense.ExpirationDate.get
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductLicense.IsActive.get
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductLicense.IsConsumable.get
+		// Forced skipping of method Windows.ApplicationModel.Store.ProductLicense.ProductId.get
 	}
 }

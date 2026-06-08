@@ -19,7 +19,7 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CompositionCommitBatch.IsActive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionCommitBatch.IsActive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionCommitBatch", "IsActive");
 			}
 		}
 #endif
@@ -29,13 +29,13 @@ namespace Microsoft.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CompositionCommitBatch.IsEnded is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionCommitBatch.IsEnded");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionCommitBatch", "IsEnded");
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionCommitBatch.IsActive.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionCommitBatch.Completed.add
 		// Forced skipping of method Microsoft.UI.Composition.CompositionCommitBatch.Completed.remove
+		// Forced skipping of method Microsoft.UI.Composition.CompositionCommitBatch.IsActive.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionCommitBatch.IsEnded.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -44,12 +44,12 @@ namespace Microsoft.UI.Composition
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionCommitBatch", "event TypedEventHandler<object, CompositionBatchCompletedEventArgs> CompositionCommitBatch.Completed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionCommitBatch", "event Completed");
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionCommitBatch", "event TypedEventHandler<object, CompositionBatchCompletedEventArgs> CompositionCommitBatch.Completed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionCommitBatch", "event Completed");
 			}
 		}
 #endif

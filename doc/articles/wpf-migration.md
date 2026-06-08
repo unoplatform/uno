@@ -68,4 +68,8 @@ Full support for WCF and WCF Data Services are not included in modern .NET versi
 
 ### Platform-Specific Integration
 
-If your app relies on heavy access to Windows-specific constructs such as the registry or file system access, you should rethink your approach to fit a cross-platform app model. Uno Platform provides [platform-specific code capabilities](xref:Uno.Development.PlatformSpecificCSharp) that allow you to handle platform differences when necessary, while keeping most of your codebase shared.
+If your app relies on heavy access to Windows-specific constructs such as the registry, you should rethink your approach to fit the Web's platform agnostic app model.
+
+## XAML and API Equivalents
+
+For a comprehensive reference of WPF-to-WinUI namespace, control, event, and syntax mappings, see the [WPF to WinUI XAML Equivalents Reference](wpf-winui-equivalents.md).

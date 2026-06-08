@@ -14,11 +14,11 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ConstantForceEffect.Gain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ConstantForceEffect.Gain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.ForceFeedback.ConstantForceEffect", "Gain");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConstantForceEffect", "double ConstantForceEffect.Gain");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConstantForceEffect", "Gain");
 			}
 		}
 #endif
@@ -28,7 +28,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ForceFeedbackEffectState ConstantForceEffect.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ForceFeedbackEffectState%20ConstantForceEffect.State");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Gaming.Input.ForceFeedback.ConstantForceEffect", "State");
 			}
 		}
 #endif
@@ -36,41 +36,41 @@ namespace Windows.Gaming.Input.ForceFeedback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ConstantForceEffect()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConstantForceEffect", "ConstantForceEffect.ConstantForceEffect()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConstantForceEffect", "ConstantForceEffect()");
 		}
 #endif
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConstantForceEffect.ConstantForceEffect()
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConstantForceEffect.Gain.get
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConstantForceEffect.Gain.set
-		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConstantForceEffect.State.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Start()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConstantForceEffect", "void ConstantForceEffect.Start()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConstantForceEffect", "Start()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Stop()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConstantForceEffect", "void ConstantForceEffect.Stop()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConstantForceEffect", "Stop()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetParameters(global::System.Numerics.Vector3 vector, global::System.TimeSpan duration)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConstantForceEffect", "void ConstantForceEffect.SetParameters(Vector3 vector, TimeSpan duration)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConstantForceEffect", "SetParameters(Vector3 vector, TimeSpan duration)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void SetParametersWithEnvelope(global::System.Numerics.Vector3 vector, float attackGain, float sustainGain, float releaseGain, global::System.TimeSpan startDelay, global::System.TimeSpan attackDuration, global::System.TimeSpan sustainDuration, global::System.TimeSpan releaseDuration, uint repeatCount)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConstantForceEffect", "void ConstantForceEffect.SetParametersWithEnvelope(Vector3 vector, float attackGain, float sustainGain, float releaseGain, TimeSpan startDelay, TimeSpan attackDuration, TimeSpan sustainDuration, TimeSpan releaseDuration, uint repeatCount)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConstantForceEffect", "SetParametersWithEnvelope(Vector3 vector, float attackGain, float sustainGain, float releaseGain, TimeSpan startDelay, TimeSpan attackDuration, TimeSpan sustainDuration, TimeSpan releaseDuration, uint repeatCount)");
 		}
 #endif
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConstantForceEffect.Gain.get
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConstantForceEffect.Gain.set
+		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConstantForceEffect.State.get
 		// Processing: Windows.Gaming.Input.ForceFeedback.IForceFeedbackEffect
 	}
 }

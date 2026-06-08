@@ -15,15 +15,15 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Composition.Visual SourceVisual
+		public global::System.Numerics.Vector2 SourceOffset
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Visual CompositionVisualSurface.SourceVisual is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Visual%20CompositionVisualSurface.SourceVisual");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionVisualSurface", "SourceOffset");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionVisualSurface", "Visual CompositionVisualSurface.SourceVisual");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionVisualSurface", "SourceOffset");
 			}
 		}
 #endif
@@ -33,34 +33,34 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionVisualSurface.SourceSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionVisualSurface.SourceSize");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionVisualSurface", "SourceSize");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionVisualSurface", "Vector2 CompositionVisualSurface.SourceSize");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionVisualSurface", "SourceSize");
 			}
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Numerics.Vector2 SourceOffset
+		public global::Windows.UI.Composition.Visual SourceVisual
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CompositionVisualSurface.SourceOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CompositionVisualSurface.SourceOffset");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionVisualSurface", "SourceVisual");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionVisualSurface", "Vector2 CompositionVisualSurface.SourceOffset");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionVisualSurface", "SourceVisual");
 			}
 		}
 #endif
-		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.SourceVisual.get
-		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.SourceVisual.set
 		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.SourceOffset.get
 		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.SourceOffset.set
 		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.SourceSize.get
 		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.SourceSize.set
+		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.SourceVisual.get
+		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.SourceVisual.set
 		// Processing: Windows.UI.Composition.ICompositionSurface
 	}
 }

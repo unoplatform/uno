@@ -6,7 +6,7 @@ using Uno.Foundation.Logging;
 
 namespace Microsoft.UI.Xaml
 {
-	public abstract partial class SetterBase
+	public abstract partial class SetterBase : DependencyObject, IMultiParentShareableDependencyObject
 	{
 		internal SetterBase()
 		{
