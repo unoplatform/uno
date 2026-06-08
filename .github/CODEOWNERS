@@ -2,10 +2,61 @@
 # The pattern is followed by one or more GitHub usernames or team names using the
 # standard @username or @org/team-name format. You can also refer to a user by an
 # email address that has been added to their GitHub account, for example user@example.com
+#
+# Area owners below were derived from git history (recency-weighted commit activity on
+# 'master' over the last ~3 years, generated 2026-06-08). Listed owners are the most active,
+# currently-active unoplatform org members for each area, and are auto-requested as PR
+# reviewers. This is advisory — anyone may still review. Update by re-running the analysis.
 
-*                                          @unoplatform/maintainers
+*                                           @unoplatform/maintainers
+
+# Foundation & core libraries
+/src/Uno.Foundation/                        @MartinZikmund @Youssef1313 @ramezgerges
+/src/Uno.Foundation.Logging/                @ramezgerges @Youssef1313 @jeromelaban
+/src/Uno.UWP/                               @MartinZikmund @Youssef1313 @ramezgerges
+/src/Uno.UI.Dispatching/                    @ramezgerges @MartinZikmund @jeromelaban
+/src/Uno.UI.Composition/                    @ramezgerges @Youssef1313 @MartinZikmund
+# Core UI
+/src/Uno.UI/                                @MartinZikmund @ramezgerges @Youssef1313
+/src/Uno.UI.Toolkit/                        @dr1rrb @MartinZikmund @Youssef1313
+/src/Uno.UI.FluentTheme*/                   @MartinZikmund @morning4coffe-dev @Youssef1313
+# Source generation, analyzers & SDK
+/src/SourceGenerators/                      @dr1rrb @Youssef1313 @MartinZikmund
+/src/Uno.Analyzers/                         @Youssef1313 @MartinZikmund @jeromelaban
+/src/Uno.Sdk/                               @jeromelaban @dansiegel @MartinZikmund
+/src/Uno.WinAppSDKSyncGenerator*/           @MartinZikmund
+# Platform runtimes — Skia
+/src/Uno.UI.Runtime.Skia/                   @morning4coffe-dev @jeromelaban @MartinZikmund
+/src/Uno.UI.Runtime.Skia.Win32*/            @ramezgerges @MartinZikmund @morning4coffe-dev
+/src/Uno.UI.Runtime.Skia.Wpf/               @ramezgerges @MartinZikmund @Youssef1313
+/src/Uno.UI.XamlHost.Skia.Wpf/              @ramezgerges @MartinZikmund @Youssef1313
+/src/Uno.UI.Runtime.Skia.MacOS/             @MartinZikmund @ramezgerges @morning4coffe-dev
+/src/Uno.UI.Runtime.Skia.X11/               @ramezgerges @MartinZikmund @jeromelaban
+/src/Uno.UI.Runtime.Skia.AppleUIKit/        @MartinZikmund @ajpinedam @ramezgerges
+/src/Uno.UI.Runtime.Skia.Android/           @ramezgerges @MartinZikmund @Youssef1313
+/src/Uno.UI.Runtime.Skia.Linux.FrameBuffer/ @ramezgerges @MartinZikmund @jeromelaban
+/src/Uno.UI.Runtime.Skia.WebAssembly.Browser/ @ramezgerges @MartinZikmund @Youssef1313
+# WebAssembly & native bindings
+/src/Uno.UI.Runtime.WebAssembly/            @Youssef1313 @jeromelaban @MartinZikmund
+/src/Uno.Foundation.Runtime.WebAssembly/    @Youssef1313 @jeromelaban @MartinZikmund
+/src/Uno.UI.BindingHelper.Android/          @jonpryor @Youssef1313 @MartinZikmund
+# XAML hosting
+/src/Uno.UI.XamlHost/                       @MartinZikmund @Youssef1313 @jonpryor
+# DevServer & Hot Reload tooling
+/src/Uno.UI.DevServer.Cli*/                 @carldebilly @jeromelaban
+/src/Uno.UI.RemoteControl*/                 @dr1rrb @carldebilly @jeromelaban
+# Tests & samples
+/src/Uno.UI.Tests*/                         @MartinZikmund @Youssef1313 @jeromelaban
+/src/Uno.UI.RuntimeTests/                   @MartinZikmund @ramezgerges @Youssef1313
+/src/Uno.UI.Wasm.Tests/                     @Youssef1313 @MartinZikmund @jeromelaban
+/src/SamplesApp/                            @MartinZikmund @ramezgerges @jeromelaban
+/src/SolutionTemplate/                      @jeromelaban @Youssef1313 @MartinZikmund
+# Build, docs & repo infrastructure
+/build/                                     @jeromelaban @Youssef1313 @MartinZikmund
+/doc/                                       @jeromelaban @Jen-Uno @agneszitte
+/.github/                                   @MartinZikmund @jeromelaban @kazo0
 
 # AI agent configuration — explicit ownership for change visibility
-/CLAUDE.md                                 @unoplatform/maintainers
-/AGENTS.md                                 @unoplatform/maintainers
-/.claude/                                  @unoplatform/maintainers
+/CLAUDE.md                                  @unoplatform/maintainers
+/AGENTS.md                                  @unoplatform/maintainers
+/.claude/                                   @unoplatform/maintainers
