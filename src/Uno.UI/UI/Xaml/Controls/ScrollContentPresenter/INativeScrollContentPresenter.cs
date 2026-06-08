@@ -22,13 +22,5 @@ namespace Microsoft.UI.Xaml.Controls
 			float? zoomFactor = null,
 			bool disableAnimation = true,
 			bool isIntermediate = false);
-
-#if __ANDROID__
-		// Padding used by the SIP
-		Thickness Padding { get; set; }
-
-		// To avoid massive refactor DO NOT USE, use 'Set' instead
-		void SmoothScrollBy(int physicalDeltaX, int physicalDeltaY);
-#endif
 	}
 }

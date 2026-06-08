@@ -31,10 +31,6 @@ using Uno.UI.Helpers;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-
 namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Inlines))]
@@ -142,9 +138,6 @@ namespace Microsoft.UI.Xaml.Controls
 				if (_inlines == null)
 				{
 					_inlines = new InlineCollection(this);
-#if __WASM__
-					SetText(string.Empty); // To clean up the text that is set directly on the TextBlock's <p>
-#endif
 					UpdateInlines(Text);
 
 					SetupInlines();
@@ -300,9 +293,6 @@ namespace Microsoft.UI.Xaml.Controls
 		#region Text Dependency Property
 
 		public
-#if __APPLE_UIKIT__
-			new
-#endif
 			string Text
 		{
 			get { return (string)GetValue(TextProperty); }
@@ -359,11 +349,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region FontFamily Dependency Property
 
-#if __APPLE_UIKIT__
-		/// <summary>
-		/// Supported font families: http://iosfonts.com/
-		/// </summary>
-#endif
 		public FontFamily FontFamily
 		{
 			get => (FontFamily)GetValue(FontFamilyProperty);
@@ -506,9 +491,6 @@ namespace Microsoft.UI.Xaml.Controls
 		#region Foreground Dependency Property
 
 		public
-#if __ANDROID__
-		new
-#endif
 			Brush Foreground
 		{
 			get => (Brush)GetValue(ForegroundProperty);
@@ -833,15 +815,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			add
 			{
-#if __WASM__
-				if (!_shouldUpdateIsTextTrimmed)
-				{
-					UpdateIsTextTrimmed();
-
-					_shouldUpdateIsTextTrimmed = true;
-				}
-#endif
-
 				_isTextTrimmedChanged += value;
 			}
 			remove
@@ -866,15 +839,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-#if __WASM__
-				if (!_shouldUpdateIsTextTrimmed)
-				{
-					UpdateIsTextTrimmed();
-
-					_shouldUpdateIsTextTrimmed = true;
-				}
-#endif
-
 				return (bool)GetValue(IsTextTrimmedProperty);
 			}
 
@@ -901,39 +865,6 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		private bool UseInlinesFastPath => _inlines == null;
 
-#if __ANDROID__ || __WASM__
-		/// <summary>
-		/// Returns if the TextBlock is constrained by a maximum number of lines.
-		/// </summary>
-		private bool IsLayoutConstrainedByMaxLines => MaxLines > 0;
-#endif
-
-#if __ANDROID__ || __APPLE_UIKIT__
-		/// <summary>
-		/// Gets the inlines which affect the typography of the TextBlock.
-		/// </summary>
-		private IEnumerable<(Inline inline, int start, int end)> GetEffectiveInlines()
-		{
-			if (UseInlinesFastPath)
-			{
-				yield break;
-			}
-
-			var start = 0;
-			foreach (var inline in Inlines.SelectMany(InlineExtensions.Enumerate))
-			{
-				if (inline.HasTypographicalEffectWithin(this))
-				{
-					yield return (inline, start, start + inline.GetText().Length);
-				}
-
-				if (inline is Run || inline is LineBreak)
-				{
-					start += inline.GetText().Length;
-				}
-			}
-		}
-#endif
 		private void UpdateInlines(string text)
 		{
 			if (UseInlinesFastPath)
@@ -1317,32 +1248,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private Hyperlink FindHyperlinkAt(PointerRoutedEventArgs e)
 		{
-#if __WASM__
-			var point = e.GetCurrentPoint(null).Position;
-			var elementInCoordinate = WindowManagerInterop.TryGetElementInCoordinate(point) as TextElement;
-			while (elementInCoordinate is not null)
-			{
-				if (elementInCoordinate is Hyperlink)
-				{
-					break;
-				}
-
-				elementInCoordinate = elementInCoordinate.GetParent() as TextElement;
-			}
-
-			if (elementInCoordinate is Hyperlink hyperlink)
-			{
-				foreach (var candidate in _hyperlinks)
-				{
-					if (hyperlink == candidate)
-					{
-						return hyperlink;
-					}
-				}
-			}
-
-			return null;
-#elif __SKIA__
+#if __SKIA__
 			return ParsedText.GetHyperlinkAt(e.GetCurrentPoint(this).Position);
 #else
 			return null;

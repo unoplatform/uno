@@ -5,13 +5,7 @@ using System.Text;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 
-#if __ANDROID__
-using _NativeObject = Android.Views.View;
-#elif __APPLE_UIKIT__
-using _NativeObject = Foundation.NSObject;
-#else
 using _NativeObject = System.Object;
-#endif
 
 namespace Microsoft.UI.Xaml.Data
 {
@@ -153,14 +147,6 @@ namespace Microsoft.UI.Xaml.Data
 					// collected properly.
 					// In the other case, we keep a hard reference to the source.
 
-#if __ANDROID__ || __APPLE_UIKIT__
-					if (value is _NativeObject no)
-					{
-						_weakSource = new WeakReference(no);
-						_source = null;
-					}
-					else
-#endif
 					{
 						_weakSource = null;
 						_source = value;

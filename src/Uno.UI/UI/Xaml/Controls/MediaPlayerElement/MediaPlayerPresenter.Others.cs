@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-#if !__ANDROID__ && !__APPLE_UIKIT__
 using System;
 using Windows.Foundation;
 using Windows.Media.Playback;
@@ -55,4 +54,3 @@ namespace Microsoft.UI.Xaml.Controls
 			=> _extension?.ExitCompactOverlay();
 	}
 }
-#endif

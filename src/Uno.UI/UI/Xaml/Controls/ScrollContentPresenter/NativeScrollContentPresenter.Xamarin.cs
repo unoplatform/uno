@@ -11,16 +11,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Foundation;
 
-#if __ANDROID__
-using View = Android.Views.View;
-#elif __APPLE_UIKIT__
-using UIKit;
-using View = UIKit.UIView;
-using ObjCRuntime;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
 using ObjCRuntime;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
