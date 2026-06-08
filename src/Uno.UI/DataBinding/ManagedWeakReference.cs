@@ -5,11 +5,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-#if __ANDROID__
-using INativeObject = Android.Runtime.IJavaObject;
-#elif __APPLE_UIKIT__
-using INativeObject = ObjCRuntime.INativeObject;
-#endif
 
 namespace Uno.UI.DataBinding
 {
@@ -188,11 +183,10 @@ namespace Uno.UI.DataBinding
 
 	}
 
-#if !__ANDROID__ && !__APPLE_UIKIT__
-	// Dummy interface to compile on WASM. (On WASM isn't implemented by anything, so IsNativeAlive will always return true)
+	
+	// Dummy interface to compile on WASM and unit tests. (On WASM isn't implemented by anything, so IsNativeAlive will always return true)
 	internal interface INativeObject
 	{
 		IntPtr Handle { get; }
 	}
-#endif
 }

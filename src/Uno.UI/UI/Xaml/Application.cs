@@ -30,22 +30,9 @@ using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 
-#if __ANDROID__
-using View = Android.Views.View;
-using ViewGroup = Android.Views.ViewGroup;
-using Font = Android.Graphics.Typeface;
-using Android.Graphics;
-using DependencyObject = System.Object;
-using Microsoft.UI.Xaml.Controls;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-using ViewGroup = UIKit.UIView;
-using UIKit;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
 using Uno.Foundation;
-#endif
 
 namespace Microsoft.UI.Xaml
 {
@@ -115,8 +102,8 @@ namespace Microsoft.UI.Xaml
 			{
 				CoreApplication.StaticInitialize();
 
-#if __SKIA__ || __WASM__
-				Package.SetEntryAssembly(this.GetType().Assembly);
+#if __SKIA__
+			Package.SetEntryAssembly(this.GetType().Assembly);
 #endif
 				Current = this;
 				ApplicationLanguages.ApplyCulture();
@@ -352,7 +339,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public event UnhandledExceptionEventHandler UnhandledException;
 
-#if !__ANDROID__ && !__SKIA__
+#if !__SKIA__
 		[NotImplemented("__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public void Exit()
 		{
@@ -458,7 +445,7 @@ namespace Microsoft.UI.Xaml
 			UISettings.OnColorValuesChanged();
 		}
 
-#if __WASM__ || __SKIA__
+#if __SKIA__
 		private IDisposable WritePhaseEventTrace(int startEventId, int stopEventId)
 		{
 			if (_trace.IsEnabled)
@@ -550,7 +537,6 @@ namespace Microsoft.UI.Xaml
 			CoreApplication.RaiseSuspending(suspendingEventArgs);
 			var completedSynchronously = suspendingOperation.DeferralManager.EventRaiseCompleted();
 
-#if !__APPLE_UIKIT__ && !__ANDROID__
 			// Asynchronous suspension is not supported on all targets, warn the user
 			if (!completedSynchronously && this.Log().IsEnabled(LogLevel.Warning))
 			{
@@ -558,16 +544,13 @@ namespace Microsoft.UI.Xaml
 					"This platform does not support asynchronous Suspending deferral. " +
 					"Code executed after the of the method called by Suspending may not get executed.");
 			}
-#endif
 		}
 
-#if !__APPLE_UIKIT__ && !__ANDROID__
 		/// <summary>
 		/// On platforms which don't support asynchronous suspension we indicate that with immediate
 		/// deadline and warning in logs.
 		/// </summary>
 		private DateTimeOffset GetSuspendingOffset() => DateTimeOffset.Now;
-#endif
 
 		private void SetRequestedTheme(ApplicationTheme requestedTheme)
 		{
@@ -691,17 +674,6 @@ namespace Microsoft.UI.Xaml
 			}
 			else if (instance is ViewGroup g)
 			{
-#if __ANDROID__
-				// We need to propagate for list view items that were materialized but not visible.
-				// Without this, theme changes will not propagate properly to all list view items.
-				if (instance is NativeListViewBase nativeListViewBase)
-				{
-					foreach (var selectorItem in nativeListViewBase.CachedItemViews)
-					{
-						PropagateResourcesChanged(selectorItem, updateReason);
-					}
-				}
-#endif
 				foreach (object o in g.GetChildren())
 				{
 					PropagateResourcesChanged(o, updateReason);

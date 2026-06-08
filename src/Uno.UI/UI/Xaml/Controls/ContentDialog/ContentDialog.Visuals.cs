@@ -284,13 +284,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void AdjustVisualStateForInputPane()
 		{
-#if __ANDROID__
-			if (_popup.UseNativePopup)
-			{
-				// Skip managed adjustment since the popup itself will adjust to the soft keyboard.
-				return;
-			}
-#endif
 			Rect inputPaneRect = InputPane.GetForCurrentView().OccludedRect;
 
 			if (m_isShowing && inputPaneRect.Height > 0)

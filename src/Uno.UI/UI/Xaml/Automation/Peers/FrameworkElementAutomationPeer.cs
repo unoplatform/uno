@@ -15,14 +15,7 @@ using Uno.UI.Xaml.Core.Scaling;
 
 
 
-#if __ANDROID__
-using View = Android.Views.ViewGroup;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-using UIKit;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
@@ -39,9 +32,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 	[ThreadStatic]
 	private static HashSet<AutomationPeer> t_peersResolvingName;
 
-#if !__ANDROID__ && !__APPLE_UIKIT__
 	private const int MaxAutomationTreeDepth = 512;
-#endif
 
 	public UIElement Owner { get; }
 
@@ -149,7 +140,6 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 		//UNO TODO: Properly implement GetAutomationPeerChildren on FrameworkElementAutomationPeer
 		//Temporarily disabled as android, ios, macos doesn't use UIElement
 
-#if !__ANDROID__ && !__APPLE_UIKIT__
 		if (depth > MaxAutomationTreeDepth)
 		{
 			return;
@@ -178,7 +168,6 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 				}
 			}
 		}
-#endif
 	}
 
 	internal IList<AutomationPeer> GetAutomationPeersForChildrenOfElement(UIElement element)

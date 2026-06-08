@@ -336,15 +336,6 @@ namespace Windows.UI.Input
 							isLongPress = true;
 							return true;
 						}
-#if __APPLE_UIKIT__
-						if (Uno.WinRTFeatureConfiguration.GestureRecognizer.InterpretForceTouchAsRightTap
-							&& isLeftTap
-							&& points.HasExceedMinHoldPressure)
-						{
-							isLongPress = true; // We handle the pressure exactly like a long press
-							return true;
-						}
-#endif
 						isLongPress = false;
 						return false;
 
@@ -371,17 +362,6 @@ namespace Windows.UI.Input
 							isLongPress = false;
 							return true;
 						}
-#if __ANDROID__
-						// On Android, usually the right button is mapped to back navigation. So, unlike UWP,
-						// we also allow a long press with the left button to be more user friendly.
-						if (Uno.WinRTFeatureConfiguration.GestureRecognizer.InterpretMouseLeftLongPressAsRightTap
-							&& IsTapGesture(LeftButton, points)
-							&& IsLongPress(points.Down, points.Up!))
-						{
-							isLongPress = true;
-							return true;
-						}
-#endif
 						isLongPress = false;
 						return false;
 

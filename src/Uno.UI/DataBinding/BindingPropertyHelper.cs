@@ -1451,13 +1451,6 @@ namespace Uno.UI.DataBinding
 		{
 			return value.GetType().IsPrimitive
 				|| value is string
-#if __APPLE_UIKIT__
-				// Those are platform primitives provided for 64 bits compatibility
-				// with iOS 8.0 and later
-				|| value is nfloat
-				|| value is nint
-				|| value is nuint
-#endif
 									;
 		}
 

@@ -11,33 +11,6 @@ public sealed partial class AutomationProperties
 {
 	private static void OnAutomationIdChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 	{
-#if __APPLE_UIKIT__
-		if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is UIKit.UIView view)
-		{
-			view.AccessibilityIdentifier = (string)args.NewValue;
-		}
-#elif __ANDROID__
-		if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is AView view)
-		{
-			view.ContentDescription = (string)args.NewValue;
-		}
-#elif __WASM__
-		if (dependencyObject is UIElement uiElement)
-		{
-			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
-			{
-				uiElement.SetAttribute("xamlautomationid", (string)args.NewValue);
-			}
-
-			var role = FindHtmlRole(uiElement);
-			if (role != null)
-			{
-				uiElement.SetAttribute(
-					("aria-label", (string)args.NewValue),
-					("role", role));
-			}
-		}
-#endif
 	}
 
 	private static void OnNamePropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -52,7 +25,7 @@ public sealed partial class AutomationProperties
 #endif
 	}
 
-#if __WASM__ || __SKIA__
+#if __SKIA__
 	internal static string FindHtmlRole(UIElement uIElement)
 	{
 		// Uno-specific: allow explicit role override via AutomationPropertiesExtensions.Role

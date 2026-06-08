@@ -4,10 +4,6 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using static System.Double;
 
-#if __APPLE_UIKIT__
-using ObjCRuntime;
-#endif
-
 namespace Uno.UI
 {
 	internal static partial class LayoutHelper
@@ -278,15 +274,9 @@ namespace Uno.UI
 
 		internal static double FiniteOrDefault(this double value, double defaultValue)
 		{
-#if XAMARIN
-			return IsFinite(value)
-				? value
-				: defaultValue;
-#else
 			return IsInfinity(value) || IsNaN(value)
 				? defaultValue
 				: value;
-#endif
 		}
 
 		internal static Point FiniteOrDefault(this Point value, Point defaultValue)

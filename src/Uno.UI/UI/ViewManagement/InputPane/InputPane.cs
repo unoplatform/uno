@@ -53,9 +53,6 @@ public partial class InputPane
 
 	public static InputPane GetForCurrentView() => _instance;
 
-#if __APPLE_UIKIT__
-	[NotImplemented]
-#endif
 	public bool TryShow()
 	{
 		if (Visible)

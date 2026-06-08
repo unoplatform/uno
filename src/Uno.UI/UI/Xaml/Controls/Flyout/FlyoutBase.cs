@@ -23,13 +23,7 @@ using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Dispatching;
 using Windows.System;
-#if __APPLE_UIKIT__
-using View = UIKit.UIView;
-#elif __ANDROID__
-using View = Android.Views.View;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
@@ -571,12 +565,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 						// Uno TODO: Calling TransformToVisual(null) on an element within the main visual tree will include the status bar height, which we don't
 						// want because the status bar is otherwise excluded from layout calculations. We get the transform relative to the managed root view instead.
 						UIElement reference =
-#if __ANDROID__
-							// TODO: Adjust for multiwindow #13827
-							Window.CurrentSafe?.Content;
-#else
 							null;
-#endif
 
 						var transformToRoot = placementTarget.TransformToVisual(reference);
 						positionValue = transformToRoot.TransformPoint(positionValue);
