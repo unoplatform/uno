@@ -1,4 +1,4 @@
-﻿#if IS_UNIT_TESTS || __WASM__
+﻿#if IS_UNIT_TESTS
 #pragma warning disable CS0067
 #endif
 
@@ -38,10 +38,6 @@ using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Core.Scaling;
 using System.Diagnostics.CodeAnalysis;
 
-
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
 
 namespace Microsoft.UI.Xaml
 {
@@ -286,18 +282,6 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-#if __ANDROID__
-				var parent = this.GetVisualTreeParent();
-
-				if (parent is NativeListViewBase lv)
-				{
-					// TODO Uno: Issue with LayoutSlot for list items
-					// https://github.com/unoplatform/uno/issues/2754
-					var sv = lv.FindFirstParent<ScrollViewer>();
-					var offset = GetPosition(this, relativeTo: sv);
-					return new Vector3((float)offset.X, (float)offset.Y, 0f);
-				}
-#endif
 				return new Vector3((float)LayoutSlotWithMarginsAndAlignments.X, (float)LayoutSlotWithMarginsAndAlignments.Y, 0f);
 			}
 		}
@@ -962,24 +946,7 @@ namespace Microsoft.UI.Xaml
 
 			var bounds = root.XamlRoot.Bounds;
 
-#if __APPLE_UIKIT__ // IsMeasureDirty and IsArrangeDirty are not available on iOS / macOS
-			root.Measure(bounds.Size);
-			root.Arrange(bounds);
-#elif __ANDROID__
-			for (var i = 0; i < MaxLayoutIterations; i++)
-			{
-				// On Android, Measure and arrange are the same
-				if (root.IsMeasureDirtyOrMeasureDirtyPath)
-				{
-					root.Measure(bounds.Size);
-					root.Arrange(bounds);
-				}
-				else
-				{
-					return;
-				}
-			}
-#elif !__NETSTD_REFERENCE__
+#if !__NETSTD_REFERENCE__
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
 			var eventManager = root.GetContext().EventManager;
@@ -1090,8 +1057,6 @@ namespace Microsoft.UI.Xaml
 
 			OnViewportUpdated();
 
-#elif __WASM__
-			InvalidateArrange();
 #else
 			var rect = GetNativeClippedViewport();
 
@@ -1315,15 +1280,6 @@ namespace Microsoft.UI.Xaml
 
 		public void InvalidateMeasure()
 		{
-#if __ANDROID__
-			// Use a non-virtual version of the RequestLayout method, for performance.
-			base.RequestLayout();
-			SetLayoutFlags(LayoutFlag.MeasureDirty);
-#elif __APPLE_UIKIT__
-			SetNeedsLayout();
-			SetLayoutFlags(LayoutFlag.MeasureDirty);
-#endif
-
 			OnInvalidateMeasure();
 		}
 
@@ -1335,9 +1291,6 @@ namespace Microsoft.UI.Xaml
 		public void InvalidateArrange()
 		{
 			InvalidateMeasure();
-#if __APPLE_UIKIT__
-			SetLayoutFlags(LayoutFlag.ArrangeDirty);
-#endif
 		}
 #endif
 

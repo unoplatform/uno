@@ -27,17 +27,7 @@ using Uno.UI.Extensions;
 using Windows.Foundation.Metadata;
 using Uno.UI.Xaml.Core;
 
-#if __ANDROID__
-using View = Android.Views.View;
-using Font = Android.Graphics.Typeface;
-#elif __APPLE_UIKIT__
-using UIKit;
-using View = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 #if UNO_HAS_MANAGED_SCROLL_PRESENTER
 using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresenter;
@@ -269,21 +259,12 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 
 		#region BringIntoViewOnFocusChange (Attached DP)
-#if __APPLE_UIKIT__
-		[global::Uno.NotImplemented]
-#endif
 		public static bool GetBringIntoViewOnFocusChange(global::Microsoft.UI.Xaml.DependencyObject element)
 			=> (bool)element.GetValue(BringIntoViewOnFocusChangeProperty);
 
-#if __APPLE_UIKIT__
-		[global::Uno.NotImplemented]
-#endif
 		public static void SetBringIntoViewOnFocusChange(global::Microsoft.UI.Xaml.DependencyObject element, bool bringIntoViewOnFocusChange)
 			=> element.SetValue(BringIntoViewOnFocusChangeProperty, bringIntoViewOnFocusChange);
 
-#if __APPLE_UIKIT__
-		[global::Uno.NotImplemented]
-#endif
 		public bool BringIntoViewOnFocusChange
 		{
 			get => (bool)GetValue(BringIntoViewOnFocusChangeProperty);
@@ -712,11 +693,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return this.GetUseLayoutRounding() ? fe.LayoutRound(value) : value;
 		}
 
-#if __APPLE_UIKIT__
-		internal
-#else
 		private
-#endif
 			void UpdateDimensionProperties()
 		{
 			// The dimensions of the presenter (which are often but not always the same as the ScrollViewer) determine the viewport size
@@ -985,7 +962,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_isTemplateApplied = _presenter != null;
 
-#if __WASM__ || __SKIA__
+#if __SKIA__
 			if (_presenter != null && ForceChangeToCurrentView)
 			{
 				_presenter.ForceChangeToCurrentView = ForceChangeToCurrentView;
@@ -996,17 +973,6 @@ namespace Microsoft.UI.Xaml.Controls
 			_isVerticalScrollBarMaterialized = false;
 			_horizontalScrollbar = null;
 			_isHorizontalScrollBarMaterialized = false;
-
-#if __APPLE_UIKIT__ || __ANDROID__
-			if (scpTemplatePart is ScrollContentPresenter scp && scp.Native is null)
-			{
-				// For Android and iOS, ensure that the ScrollContentPresenter contains a native SCP,
-				// which will handle the actual scrolling.
-				var nativeSCP = new NativeScrollContentPresenter(this);
-				scp.Content = scp.Native = nativeSCP;
-				_presenter = nativeSCP;
-			}
-#endif
 
 			if (scpTemplatePart is ScrollContentPresenter presenter)
 			{
@@ -1280,9 +1246,6 @@ namespace Microsoft.UI.Xaml.Controls
 					_snapPointsTimer?.Stop();
 				}
 				if (!isIntermediate
-#if __APPLE_UIKIT__ || __ANDROID__
-					&& (_presenter as ListViewBaseScrollContentPresenter)?.NativePanel?.UseNativeSnapping != true
-#endif
 					)
 				{
 					if (HorizontalSnapPointsType != SnapPointsType.None
@@ -1308,15 +1271,6 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-#if __WASM__
-			// On WASM, a large wheel scroll can be a large number of OnScroll events in sequence.
-			// In that case, the queue will be drowning with scroll events before any chance of layout
-			// updates. The ScrollContentPresenter will scroll smoothly since the native scrolling/rendering
-			// is on a separate thread, but the ScrollBars will be frozen until the end of the (long) scrolling
-			// duration.
-			_horizontalScrollbar?.Arrange(LayoutInformation.GetLayoutSlot(_horizontalScrollbar));
-			_verticalScrollbar?.Arrange(LayoutInformation.GetLayoutSlot(_verticalScrollbar));
-#endif
 		}
 
 		// Presenter to Control, i.e. OnPresenterZoomed

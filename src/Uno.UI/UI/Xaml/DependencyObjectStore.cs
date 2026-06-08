@@ -22,12 +22,6 @@ using Uno.UI.Xaml.Core;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Media;
 
-#if __ANDROID__
-using View = Android.Views.View;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-#endif
-
 namespace Microsoft.UI.Xaml
 {
 	/// <summary>
@@ -1451,15 +1445,6 @@ namespace Microsoft.UI.Xaml
 				}
 				else if (property.IsAttached
 					&& property.IsInherited
-
-#if __ANDROID__
-					// This is a workaround related to property inheritance and
-					// https://github.com/unoplatform/uno/pull/18261.
-					// Removing this line can randomly produce elements not rendering 
-					// properly, such as TextBlock not measure/arrange properly 
-					// even when invalidated.
-					&& _properties.FindPropertyDetails(property) is { }
-#endif
 				)
 				{
 					return (property, _properties.GetPropertyDetails(property));

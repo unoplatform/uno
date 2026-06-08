@@ -1658,9 +1658,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		#region Helpers
 
-#if __ANDROID__
-		new
-#endif
 		void HasFocus(out bool pHasFocus)
 		{
 			DependencyObject spFocusedElt;
@@ -1938,14 +1935,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				//IFCEXPECT(enqueued);
 				enqueued = spDispatcherQueue.TryEnqueue(() =>
 				{
-#if __ANDROID__
-					// UNO-TODO: Animations are disabled because of https://github.com/unoplatform/uno/issues/5845
-					_tpScrollViewer.ChangeViewWithOptionalAnimation(null, spVerticalOffset, null,
-						true /* disableAnimation */);
-#else
 					_tpScrollViewer.ChangeViewWithOptionalAnimation(null, spVerticalOffset, null,
 						false /* disableAnimation */);
-#endif
 				});
 			}
 		}

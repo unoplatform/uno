@@ -21,11 +21,7 @@ using System.Threading;
 
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
-#if __APPLE_UIKIT__
-using UIKit;
-#else
 using Uno.UI;
-#endif
 
 using _MediaPlayer = Windows.Media.Playback.MediaPlayer; // alias to avoid same name root namespace from ios/macos
 
@@ -817,7 +813,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return;
 			}
-#if !(__ANDROID__ || __APPLE_UIKIT__)
 			if (_mpe.MediaPlayer.IsLoopingEnabled
 				&& !_mpe.MediaPlayer.IsLoopingAllEnabled
 				&& _mpe.MediaPlayer.Source is MediaPlaybackList)
@@ -829,15 +824,10 @@ namespace Microsoft.UI.Xaml.Controls
 				_mpe.MediaPlayer.IsLoopingEnabled = !_mpe.MediaPlayer.IsLoopingEnabled;
 				_mpe.MediaPlayer.IsLoopingAllEnabled = false;
 			}
-#else
-			_mpe.MediaPlayer.IsLoopingEnabled = !_mpe.MediaPlayer.IsLoopingEnabled;
-#endif
 			UpdateRepeatStates();
 		}
 		private void PreviousTrackButtonTapped(object sender, RoutedEventArgs e)
 		{
-#if !(__ANDROID__ || __APPLE_UIKIT__)
-
 			if (_mpe is not null
 				&& _mpe.MediaPlayer.Source is MediaPlaybackList)
 			{
@@ -851,17 +841,9 @@ namespace Microsoft.UI.Xaml.Controls
 					_mediaPlayer.PlaybackSession.Position = TimeSpan.Zero;
 				}
 			}
-#else
-			if (_mediaPlayer is not null)
-			{
-				_mediaPlayer.PlaybackSession.Position = TimeSpan.Zero;
-				_mediaPlayer.PlaybackSession.Position = TimeSpan.Zero;
-			}
-#endif
 		}
 		private void NextTrackButtonTapped(object sender, RoutedEventArgs e)
 		{
-#if !(__ANDROID__ || __APPLE_UIKIT__)
 			if (_mpe is not null
 				&& _mpe.MediaPlayer.Source is MediaPlaybackList)
 			{
@@ -875,13 +857,6 @@ namespace Microsoft.UI.Xaml.Controls
 					_mediaPlayer.PlaybackSession.Position = _mediaPlayer.PlaybackSession.NaturalDuration;
 				}
 			}
-#else
-			if (_mediaPlayer is not null)
-			{
-				_mediaPlayer.PlaybackSession.Position = _mediaPlayer.PlaybackSession.NaturalDuration;
-				_mediaPlayer.PlaybackSession.Position = _mediaPlayer.PlaybackSession.NaturalDuration;
-			}
-#endif
 		}
 		private void ZoomButtonTapped(object sender, RoutedEventArgs e)
 		{
@@ -1248,7 +1223,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return;
 			}
-#if !(__ANDROID__ || __APPLE_UIKIT__)
 			var state = _mpe.MediaPlayer.IsLoopingAllEnabled
 				? VisualState.RepeatStates.RepeatAllState
 				: _mpe.MediaPlayer.IsLoopingEnabled
@@ -1262,17 +1236,6 @@ namespace Microsoft.UI.Xaml.Controls
 					? UIAKeys.UIA_MEDIA_REPEAT_ONE
 					: UIAKeys.UIA_MEDIA_REPEAT_NONE;
 			SetAutomationNameAndTooltip(m_tpRepeatButton, uiaKey);
-#else
-			var state = _mpe.MediaPlayer.IsLoopingEnabled
-					? VisualState.RepeatStates.RepeatAllState
-					: VisualState.RepeatStates.RepeatNoneState;
-			VisualStateManager.GoToState(this, state, useTransitions);
-
-			var uiaKey = _mpe.MediaPlayer.IsLoopingEnabled
-					? UIAKeys.UIA_MEDIA_REPEAT_ALL
-					: UIAKeys.UIA_MEDIA_REPEAT_NONE;
-			SetAutomationNameAndTooltip(m_tpRepeatButton, uiaKey);
-#endif
 		}
 	}
 
