@@ -45,13 +45,13 @@ explicitly linked. Over-keeping is the safe error direction.
 | W7 | Composition native backing | ✅ done (12 native files deleted; `CompositionConfiguration.UseCompositorThread` removed; Skia+Ref+Tests green) |
 | W3 | Native Apple (UIKit) rendering | ✅ done (210 Uno.UI `.UIKit/.iOS/.Apple.cs` deleted; 14 host-linked kept; AppleUIKit host + Skia + Ref + Tests compile clean) |
 | W9 | Media native backends | 🟡 partial: Uno.UI presenter `.Apple.cs` already removed via W3; `.Android.cs` to remove in W2; **Uno.UWP `MediaPlayer.Android/.Apple.cs` engine consumed by Skia-on-mobile** (no MediaPlayerExtension in Android/AppleUIKit hosts, unlike macOS/Browser) → migrate engine to hosts first (device-validated). DEFER engine. |
-| W6 | Mixin generators (3 of 4; defer `DependencyPropertyMixinGenerator`) | ⬜ |
+| W6 | Mixin generators | ✅ done (deleted FrameworkElementAndroid/UIKitMixinGenerator + BaseActivityCallbacksGenerator + their tests; Internal+Tests+Skia clean). KEPT `DependencyPropertyMixinGenerator` + `MixinGeneration.targets`/`UNO_MIXIN_GENERATION` (still emit cross-platform DPs for Skia). |
 | W2 | Native Android rendering | ✅ done (204 `.Android.cs` deleted; 21 host-linked + ViewHelper/InsetsExtensions over-keep; Android host + Skia + Ref + Tests clean. Resolved W7 `ApplicationActivity.Android.cs` dangling ref). `.java` (17) + BindingHelper project → W1. |
 | W4 | Native WASM DOM rendering | 🟡 next: `.wasm.cs` (110 to remove, 4 host-linked kept) validatable (WebAssembly.Browser host lib is net9.0). `.ts` DOM-vs-bootstrap split + `Uno.UI.Runtime.WebAssembly` project → W4-proper/W1. |
 | W5 | Core shared abstractions (`#if` cleanup) | ⬜ |
 | W8 | Controls with native impls | ⬜ |
 | W10 | Window/safe-area/insets/keyboard | ⬜ (highest risk; service-before-deletion) |
-| W1 | Build/TFMs/packaging/deps | ⬜ (structural anchor; affects Skia build) |
+| W1 | Build/TFMs/packaging/deps | ⬜ (structural anchor; affects Skia build). **Entanglement found — spec's removable list is imprecise:** `Uno.UI.Dispatching.netcoremobile` is consumed by Skia.Android host (dispatcher is platform-layered like Uno.UWP) → KEEP, not remove. `MediaPlayer.WebAssembly`, `SamplesApp.Skia.WebAssembly.Browser`, `Uno.UI.Wasm.Tests` reference Wasm UI variant(s) → untangle per-project before deleting. Needs careful per-project dep analysis + rewiring, not blind deletion. |
 | W11 | Tests/samples/templates/CI | ⬜ |
 | W12 | Documentation | ⬜ |
 
