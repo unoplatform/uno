@@ -82,15 +82,21 @@ namespace Uno.WinAppSDKSyncGenerator
 			// Determine which platforms are missing each attribute so we can
 			// wrap with #if guards and avoid duplicate attribute errors (CS0579)
 			// when a hand-written partial already provides the attribute on some platforms.
-			var platformMissingSets = new (string define, INamedTypeSymbol symbol)[]
-			{
-				(AndroidDefine, allSymbols.AndroidSymbol),
-				(iOSDefine, allSymbols.IOSSymbol),
-				(tvOSDefine, allSymbols.TvOSSymbol),
-				(WasmDefine, allSymbols.WasmSymbol),
-				(SkiaDefine, allSymbols.SkiaSymbol),
-				(NetStdReferenceDefine, allSymbols.NetStdReferenceSymbol),
-			};
+			var platformMissingSets = CurrentTypeEmitsNativeDefines
+				? new (string define, INamedTypeSymbol symbol)[]
+				{
+					(AndroidDefine, allSymbols.AndroidSymbol),
+					(iOSDefine, allSymbols.IOSSymbol),
+					(tvOSDefine, allSymbols.TvOSSymbol),
+					(WasmDefine, allSymbols.WasmSymbol),
+					(SkiaDefine, allSymbols.SkiaSymbol),
+					(NetStdReferenceDefine, allSymbols.NetStdReferenceSymbol),
+				}
+				: new (string define, INamedTypeSymbol symbol)[]
+				{
+					(SkiaDefine, allSymbols.SkiaSymbol),
+					(NetStdReferenceDefine, allSymbols.NetStdReferenceSymbol),
+				};
 
 			var perPlatformMissing = platformMissingSets
 				.Select(p => (p.define, missing: GetMissingAttributes(winAppSDKAttributes, p.symbol).ToHashSet(AttributeDataClassComparer.Instance)))

@@ -131,6 +131,15 @@ namespace Uno.WinAppSDKSyncGenerator
 		protected ISymbol UIElementSymbol { get; private set; }
 		private static string MSBuildBasePath;
 
+		/// <summary>
+		/// Whether the type currently being generated targets a library that still ships
+		/// per-platform (native) binaries (Uno.UWP / Uno.Foundation). For every other library
+		/// (Uno.UI, Uno.UI.Composition, Uno.UI.Dispatching) rendering is Skia-only after 7.0, so
+		/// the native (__ANDROID__/__IOS__/__TVOS__/__WASM__) symbols are not emitted in the
+		/// generated stubs. Set from <see cref="ShouldEmitNativeDefines"/> in <see cref="GetAllSymbols"/>.
+		/// </summary>
+		protected bool CurrentTypeEmitsNativeDefines { get; private set; } = true;
+
 		private static readonly string[] _unoUINamespaces = new[]
 		{
 			"Windows.UI.Xaml",
@@ -496,6 +505,19 @@ namespace Uno.WinAppSDKSyncGenerator
 			}
 		}
 
+		/// <summary>
+		/// Native (per-platform) symbols are only generated for the libraries that still ship
+		/// per-platform binaries — Uno.UWP and Uno.Foundation. Every other library (Uno.UI,
+		/// Uno.UI.Composition, Uno.UI.Dispatching) renders through Skia on all targets after 7.0,
+		/// so their generated stubs must not reference __ANDROID__/__IOS__/__TVOS__/__WASM__.
+		/// </summary>
+		private bool ShouldEmitNativeDefines(INamedTypeSymbol type)
+		{
+			var basePath = GetNamespaceBasePath(type);
+			return basePath.Contains(@"\Uno.UWP\", StringComparison.Ordinal)
+				|| basePath.Contains(@"\Uno.Foundation\", StringComparison.Ordinal);
+		}
+
 		protected class PlatformSymbols<T> where T : ISymbol
 		{
 			public T AndroidSymbol;
@@ -505,6 +527,8 @@ namespace Uno.WinAppSDKSyncGenerator
 			public T NetStdReferenceSymbol;
 			public T WasmSymbol;
 			public T SkiaSymbol;
+
+			private readonly bool _emitNativeDefines;
 
 			private ImplementedFor _implementedFor;
 			public ImplementedFor ImplementedFor => _implementedFor;
@@ -517,9 +541,11 @@ namespace Uno.WinAppSDKSyncGenerator
 				T netStdRerefenceType,
 				T wasmType,
 				T skiaType,
-				T uapType
+				T uapType,
+				bool emitNativeDefines = true
 			)
 			{
+				_emitNativeDefines = emitNativeDefines;
 				this.AndroidSymbol = androidType;
 				this.IOSSymbol = iOSType;
 				this.TvOSSymbol = tvOSType;
@@ -554,25 +580,36 @@ namespace Uno.WinAppSDKSyncGenerator
 				}
 			}
 
-			public bool HasUndefined =>
-				AndroidSymbol == null
-				|| IOSSymbol == null
-				|| TvOSSymbol == null
-				|| NetStdReferenceSymbol == null
-				|| WasmSymbol == null
-				|| SkiaSymbol == null
-				;
+			public bool HasUndefined => GetRelevantPlatforms().Any(p => p.symbol is null);
+
+			/// <summary>
+			/// The (preprocessor define, platform symbol) pairs that participate in the generated
+			/// stub for the current library. Native (per-platform) targets are excluded for
+			/// Skia-only libraries — see <see cref="Generator.ShouldEmitNativeDefines"/>.
+			/// The native ordering is preserved to minimize diffs for Uno.UWP/Uno.Foundation.
+			/// </summary>
+			private (string define, T symbol)[] GetRelevantPlatforms()
+				=> _emitNativeDefines
+					? new (string define, T symbol)[]
+					{
+						(AndroidDefine, AndroidSymbol),
+						(iOSDefine, IOSSymbol),
+						(tvOSDefine, TvOSSymbol),
+						(WasmDefine, WasmSymbol),
+						(SkiaDefine, SkiaSymbol),
+						(NetStdReferenceDefine, NetStdReferenceSymbol),
+					}
+					: new (string define, T symbol)[]
+					{
+						(SkiaDefine, SkiaSymbol),
+						(NetStdReferenceDefine, NetStdReferenceSymbol),
+					};
 
 			public void AppendIf(IndentedStringBuilder b)
 			{
-				var defines = new[] {
-					IsNotDefinedByUno(AndroidSymbol) ? AndroidDefine : "false",
-					IsNotDefinedByUno(IOSSymbol) ? iOSDefine : "false",
-					IsNotDefinedByUno(TvOSSymbol) ? tvOSDefine : "false",
-					IsNotDefinedByUno(WasmSymbol) ? WasmDefine : "false",
-					IsNotDefinedByUno(SkiaSymbol) ? SkiaDefine : "false",
-					IsNotDefinedByUno(NetStdReferenceSymbol) ? NetStdReferenceDefine : "false",
-				};
+				var defines = GetRelevantPlatforms()
+					.Select(p => IsNotDefinedByUno(p.symbol) ? p.define : "false")
+					.ToArray();
 
 				using (b.Indent(-b.CurrentLevel))
 				{
@@ -581,26 +618,13 @@ namespace Uno.WinAppSDKSyncGenerator
 			}
 
 			public string GenerateNotImplementedList()
-			{
-				var defines = new[] {
-					IsNotDefinedByUno(AndroidSymbol) ? $"\"{AndroidDefine}\"" : "",
-					IsNotDefinedByUno(IOSSymbol) ? $"\"{iOSDefine}\"" : "",
-					IsNotDefinedByUno(TvOSSymbol) ? $"\"{tvOSDefine}\"" : "",
-					IsNotDefinedByUno(WasmSymbol) ? $"\"{WasmDefine}\"" : "",
-					IsNotDefinedByUno(SkiaSymbol) ? $"\"{SkiaDefine}\"": "",
-					IsNotDefinedByUno(NetStdReferenceSymbol) ? $"\"{NetStdReferenceDefine}\"" : "",
-				};
-
-				return defines.Where(d => d.Length > 0).JoinBy(", ");
-			}
+				=> GetRelevantPlatforms()
+					.Where(p => IsNotDefinedByUno(p.symbol))
+					.Select(p => $"\"{p.define}\"")
+					.JoinBy(", ");
 
 			public bool IsNotImplementedInAllPlatforms()
-				=> IsNotDefinedByUno(AndroidSymbol) &&
-					IsNotDefinedByUno(IOSSymbol) &&
-					IsNotDefinedByUno(TvOSSymbol) &&
-					IsNotDefinedByUno(WasmSymbol) &&
-					IsNotDefinedByUno(SkiaSymbol) &&
-					IsNotDefinedByUno(NetStdReferenceSymbol);
+				=> GetRelevantPlatforms().All(p => IsNotDefinedByUno(p.symbol));
 
 			private static bool IsNotDefinedByUno(ISymbol symbol)
 			{
@@ -641,6 +665,7 @@ namespace Uno.WinAppSDKSyncGenerator
 
 		protected PlatformSymbols<INamedTypeSymbol> GetAllSymbols(INamedTypeSymbol uapType)
 		{
+			CurrentTypeEmitsNativeDefines = ShouldEmitNativeDefines(uapType);
 			var name = uapType.ContainingNamespace + "." + uapType.MetadataName;
 			return new PlatformSymbols<INamedTypeSymbol>(
 				  androidType: _androidCompilation.GetTypeByMetadataName(name),
@@ -649,7 +674,8 @@ namespace Uno.WinAppSDKSyncGenerator
 				  netStdRerefenceType: _netstdReferenceCompilation.GetTypeByMetadataName(name),
 				  wasmType: _wasmCompilation.GetTypeByMetadataName(name),
 				  skiaType: _skiaCompilation.GetTypeByMetadataName(name),
-				  uapType: uapType
+				  uapType: uapType,
+				  emitNativeDefines: CurrentTypeEmitsNativeDefines
 			  );
 		}
 
@@ -676,7 +702,8 @@ namespace Uno.WinAppSDKSyncGenerator
 				netStdRerefenceType: filter(netStdReference),
 				wasmType: filter(wasm),
 				skiaType: filter(skia),
-				uapType: uapSymbol
+				uapType: uapSymbol,
+				emitNativeDefines: CurrentTypeEmitsNativeDefines
 			);
 		}
 
@@ -688,7 +715,8 @@ namespace Uno.WinAppSDKSyncGenerator
 				netStdRerefenceType: FindMatchingMethod(types.NetStdReferenceSymbol, method),
 				wasmType: FindMatchingMethod(types.WasmSymbol, method),
 				skiaType: FindMatchingMethod(types.SkiaSymbol, method),
-				uapType: method
+				uapType: method,
+				emitNativeDefines: CurrentTypeEmitsNativeDefines
 			);
 
 		protected PlatformSymbols<IPropertySymbol> GetAllMatchingPropertyMember(PlatformSymbols<INamedTypeSymbol> types, IPropertySymbol property)
@@ -699,7 +727,8 @@ namespace Uno.WinAppSDKSyncGenerator
 				netStdRerefenceType: GetMatchingPropertyMember(types.NetStdReferenceSymbol, property),
 				wasmType: GetMatchingPropertyMember(types.WasmSymbol, property),
 				skiaType: GetMatchingPropertyMember(types.SkiaSymbol, property),
-				uapType: property
+				uapType: property,
+				emitNativeDefines: CurrentTypeEmitsNativeDefines
 			);
 
 		protected PlatformSymbols<ISymbol> GetAllMatchingEvents(PlatformSymbols<INamedTypeSymbol> types, IEventSymbol eventMember)
