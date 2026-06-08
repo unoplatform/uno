@@ -80,11 +80,11 @@ namespace Uno.Samples.UITest.Generator
 			{
 				using (builder.BlockInvariant("partial class SampleChooserViewModel"))
 				{
-					using (builder.BlockInvariant("internal Type[] _allSamples = new Type[]"))
+					using (builder.BlockInvariant("internal SampleChooserType[] _allSamples = new SampleChooserType[]"))
 					{
 						foreach (var entry in attributedTypes)
 						{
-							builder.AppendLineIndented($"typeof({entry.TypeName}),");
+							builder.AppendLineIndented($"new(typeof({entry.TypeName})),");
 						}
 					}
 

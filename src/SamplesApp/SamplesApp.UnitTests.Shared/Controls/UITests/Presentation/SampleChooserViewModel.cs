@@ -54,6 +54,8 @@ namespace SampleControl.Presentation
 
 	public partial class SampleChooserViewModel
 	{
+		internal const DynamicallyAccessedMemberTypes SampleRequirements = DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields;
+
 		private const string TestGroupVariable = "UITEST_RUNTIME_TEST_GROUP";
 		private const string TestGroupCountVariable = "UITEST_RUNTIME_TEST_GROUP_COUNT";
 		private const string TestsFilterRawVariable = "UITEST_RUNTIME_TESTS_FILTER";
@@ -482,7 +484,7 @@ namespace SampleControl.Presentation
 		{
 			IsSplitVisible = false;
 
-			var runtimeTests = GetContent(typeof(SamplesApp.Samples.UnitTests.UnitTestsPage).GetTypeInfo());
+			var runtimeTests = GetContent(typeof(SamplesApp.Samples.UnitTests.UnitTestsPage));
 
 			if (runtimeTests == null)
 			{
@@ -785,11 +787,10 @@ namespace SampleControl.Presentation
 		{
 			foreach (var sample in _allSamples)
 			{
-				var typeInfo = sample.GetTypeInfo();
-				var sampleAttribute = FindSampleAttribute(typeInfo);
+				var sampleAttribute = FindSampleAttribute(sample.Type);
 				if (sampleAttribute is { IgnoreInSnapshotTests: false })
 				{
-					yield return GetContent(typeInfo, sampleAttribute);
+					yield return GetContent(sample.Type, sampleAttribute);
 				}
 			}
 		}
@@ -801,14 +802,14 @@ namespace SampleControl.Presentation
 		{
 			// Get all samples and their SampleAttribute.
 			var samples =
-				from type in _allSamples
-				let sampleAttribute = FindSampleAttribute(type.GetTypeInfo())
-				select (type, sampleAttribute);
+				from sample in _allSamples
+				let sampleAttribute = FindSampleAttribute(sample.Type)
+				select (type: sample.Type, sampleAttribute);
 
 			// Group samples into categories.
 			var categories =
 				from sample in samples
-				let content = GetContent(sample.type.GetTypeInfo(), sample.sampleAttribute)
+				let content = GetContent(sample.type, sample.sampleAttribute)
 				from category in content.Categories
 				group content by category into contentByCategory
 				orderby contentByCategory.Key.ToLower(CultureInfo.CurrentUICulture)
@@ -824,11 +825,10 @@ namespace SampleControl.Presentation
 			UpdateCategoryList();
 		}
 
-		private static SampleChooserContent GetContent(TypeInfo type)
+		private static SampleChooserContent GetContent(Type type)
 			=> GetContent(type, FindSampleAttribute(type));
 
-		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "TODO (ControlType = type.AsType()); need to remove TypeInfo, use Type instead, update SamplesListGenerator to preserve info…")]
-		private static SampleChooserContent GetContent(TypeInfo type, SampleAttribute attribute)
+		private static SampleChooserContent GetContent([DynamicallyAccessedMembers(SampleRequirements)] Type type, SampleAttribute attribute)
 			=> new SampleChooserContent
 			{
 				ControlName = attribute.Name ?? type.Name,
@@ -837,15 +837,15 @@ namespace SampleControl.Presentation
 					: new[] { type.Namespace.Split('.').Last().TrimStart("Windows_UI_Xaml").TrimStart("Windows_UI") },
 				ViewModelType = attribute.ViewModelType,
 				Description = attribute.Description,
-				ControlType = type.AsType(),
+				ControlType = type,
 				IgnoreInSnapshotTests = attribute.IgnoreInSnapshotTests,
 				IsManualTest = attribute.IsManualTest,
 				UsesFrame = attribute.UsesFrame,
 				DisableKeyboardShortcuts = attribute.DisableKeyboardShortcuts,
-				SourceFilePath = _allSamplePaths.GetValueOrDefault(type.AsType())
+				SourceFilePath = _allSamplePaths.GetValueOrDefault(type) ?? "",
 			};
 
-		private static SampleAttribute FindSampleAttribute(TypeInfo type)
+		private static SampleAttribute FindSampleAttribute(Type type)
 		{
 			try
 			{
@@ -1360,6 +1360,17 @@ namespace SampleControl.Presentation
 			await _dispatcher.RunAsync(
 					UnitTestDispatcherCompat.Priority.Normal,
 					() => action());
+		}
+	}
+
+	struct SampleChooserType
+	{
+		[DynamicallyAccessedMembers(SampleChooserViewModel.SampleRequirements)]
+		public Type Type { get; }
+
+		public SampleChooserType([DynamicallyAccessedMembers(SampleChooserViewModel.SampleRequirements)] Type type)
+		{
+			this.Type = type;
 		}
 	}
 }

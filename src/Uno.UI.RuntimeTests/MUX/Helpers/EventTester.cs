@@ -124,8 +124,8 @@ namespace Microsoft.UI.Xaml.Tests.Common
 			// thus adding `Example.E` to reflection metadata -- then `MyDelegateType.Invoke` is *also* present in reflection metadata.
 			//
 			// So ignoring this appears to be "fine", SO LONG AS `senderType` is properly recorded.
-			[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "TODO")]
-			[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "TODO")]
+			[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Works in local testing.")]
+			[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Works in local testing.")]
 			static Type GetEventArgType(Type delegateType) =>
 				delegateType.GetTypeInfo().GetDeclaredMethod("Invoke").GetParameters()[1].ParameterType;
 		}
@@ -167,7 +167,7 @@ namespace Microsoft.UI.Xaml.Tests.Common
 			}
 			return GetType(sender);
 
-			[UnconditionalSuppressMessage("Trimming", "IL2073", Justification = "TODO; type is *probably* `[Bindable]`, which will preserve all needed members.")]
+			[UnconditionalSuppressMessage("Trimming", "IL2073", Justification = "Type is *probably* `[Bindable]`, which will preserve all needed members.")]
 			[return: DynamicallyAccessedMembers(SenderTypeRequirements)]
 			static Type GetType(object value) => value.GetType();
 		}

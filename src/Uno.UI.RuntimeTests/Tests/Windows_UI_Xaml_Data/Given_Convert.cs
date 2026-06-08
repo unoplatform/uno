@@ -18,11 +18,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data
 			string Expected = "http://platform.uno";
 
 			var converter = GetConverter(typeof(Uri));
+			Assert.AreEqual(typeof(UriTypeConverter), converter.GetType());
 			Assert.AreEqual(Expected, converter.ConvertTo(new Uri("http://platform.uno"), typeof(string)));
 
 			// TODO? TypeDescriptor.GetConverter(Type) has 'RequiresUnreferencedCodeAttribute' can break functionality when trimming application code.
-			[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "TODO")]
-			[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "TODO")]
+			[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "`UriTypeConverter` assertion ensures that `UriTypeConverter` is preserved.")]
+			[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "`UriTypeConverter` assertion ensures that `UriTypeConverter` is preserved.")]
 			static TypeConverter GetConverter(Type type) => TypeDescriptor.GetConverter(type);
 		}
 	}

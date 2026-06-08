@@ -42,23 +42,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[RunsOnUIThread]
 	public class Given_FrameworkElement_And_Leak
 	{
+		private const DynamicallyAccessedMemberTypes TypeRequirements = ActivatableDataRowAttribute.TypeRequirements;
+
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.NativeWinUI)] // These test are failing in CI on native iOS https://github.com/unoplatform/uno/issues/21528
-		[DataRow(typeof(XamlEvent_Leak_UserControl), 15)]
-		[DataRow(typeof(XamlEvent_Leak_UserControl_xBind), 15)]
-		[DataRow(typeof(XamlEvent_Leak_UserControl_xBind_Event), 15)]
-		[DataRow(typeof(XamlEvent_Leak_TextBox), 15)]
-		[DataRow(typeof(Animation_Leak), 15)]
-		[DataRow(typeof(TextBox), 15)]
-		[DataRow(typeof(Button), 15)]
-		[DataRow(typeof(RadioButton), 15)]
-		[DataRow(typeof(ToggleButton), 15)]
-		[DataRow(typeof(RepeatButton), 15)]
-		[DataRow(typeof(TextBlock), 15)]
-		[DataRow(typeof(ScrollViewer), 15)]
-		[DataRow(typeof(CheckBox), 15)]
-		[DataRow(typeof(ListView), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressBar), 15,
+		[ActivatableDataRow(typeof(XamlEvent_Leak_UserControl), 15)]
+		[ActivatableDataRow(typeof(XamlEvent_Leak_UserControl_xBind), 15)]
+		[ActivatableDataRow(typeof(XamlEvent_Leak_UserControl_xBind_Event), 15)]
+		[ActivatableDataRow(typeof(XamlEvent_Leak_TextBox), 15)]
+		[ActivatableDataRow(typeof(Animation_Leak), 15)]
+		[ActivatableDataRow(typeof(TextBox), 15)]
+		[ActivatableDataRow(typeof(Button), 15)]
+		[ActivatableDataRow(typeof(RadioButton), 15)]
+		[ActivatableDataRow(typeof(ToggleButton), 15)]
+		[ActivatableDataRow(typeof(RepeatButton), 15)]
+		[ActivatableDataRow(typeof(TextBlock), 15)]
+		[ActivatableDataRow(typeof(ScrollViewer), 15)]
+		[ActivatableDataRow(typeof(CheckBox), 15)]
+		[ActivatableDataRow(typeof(ListView), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressBar), 15,
 #if __APPLE_UIKIT__
 			LeakTestStyles.Uwp // Fluent styles disabled - #18105
 #else
@@ -66,48 +68,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 			)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressRing), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressRing), 15)]
 #endif
 		//[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressRing), 15)] This leaks, issue #9078
-		[DataRow(typeof(Pivot), 15)]
-		[DataRow(typeof(ScrollBar), 15)]
+		[ActivatableDataRow(typeof(Pivot), 15)]
+		[ActivatableDataRow(typeof(ScrollBar), 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(Slider), 15)]
+		[ActivatableDataRow(typeof(Slider), 15)]
 #endif
-		[DataRow(typeof(SymbolIcon), 15)]
-		[DataRow(typeof(Viewbox), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.MenuBar), 15)]
-		[DataRow(typeof(ComboBox), 15)]
-		[DataRow(typeof(Canvas), 15)]
-		[DataRow(typeof(AutoSuggestBox), 15)]
-		[DataRow(typeof(AppBar), 15)]
-		[DataRow(typeof(CommandBar), 15)]
-		[DataRow(typeof(Border), 15)]
-		[DataRow(typeof(ContentControl), 15)]
-		[DataRow(typeof(ContentDialog), 15)]
-		[DataRow(typeof(RelativePanel), 15)]
-		[DataRow(typeof(FlipView), 15)]
+		[ActivatableDataRow(typeof(SymbolIcon), 15)]
+		[ActivatableDataRow(typeof(Viewbox), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.MenuBar), 15)]
+		[ActivatableDataRow(typeof(ComboBox), 15)]
+		[ActivatableDataRow(typeof(Canvas), 15)]
+		[ActivatableDataRow(typeof(AutoSuggestBox), 15)]
+		[ActivatableDataRow(typeof(AppBar), 15)]
+		[ActivatableDataRow(typeof(CommandBar), 15)]
+		[ActivatableDataRow(typeof(Border), 15)]
+		[ActivatableDataRow(typeof(ContentControl), 15)]
+		[ActivatableDataRow(typeof(ContentDialog), 15)]
+		[ActivatableDataRow(typeof(RelativePanel), 15)]
+		[ActivatableDataRow(typeof(FlipView), 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(DatePicker), 15)]
-		[DataRow(typeof(TimePicker), 15)]
+		[ActivatableDataRow(typeof(DatePicker), 15)]
+		[ActivatableDataRow(typeof(TimePicker), 15)]
 #endif
 #if !__APPLE_UIKIT__ && !__ANDROID__ // Disabled https://github.com/unoplatform/uno/issues/9080
-		[DataRow(typeof(CalendarView), 15)]
+		[ActivatableDataRow(typeof(CalendarView), 15)]
 #endif
-		[DataRow(typeof(Page), 15)]
-		[DataRow(typeof(Image), 15)]
+		[ActivatableDataRow(typeof(Page), 15)]
+		[ActivatableDataRow(typeof(Image), 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(ToggleSwitch), 15)]
+		[ActivatableDataRow(typeof(ToggleSwitch), 15)]
 #endif
 #if __SKIA__ && HAS_UNO_WINUI // Control is currently supported on Skia targets only.
-		[DataRow(typeof(SelectorBar), 15)]
-		[DataRow(typeof(SelectorBarItem), 15)]
-		[DataRow(typeof(ItemsView), 15)]
-		[DataRow(typeof(ScrollView), 15)]
+		[ActivatableDataRow(typeof(SelectorBar), 15)]
+		[ActivatableDataRow(typeof(SelectorBarItem), 15)]
+		[ActivatableDataRow(typeof(ItemsView), 15)]
+		[ActivatableDataRow(typeof(ScrollView), 15)]
 #endif
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.SwipeControl), 15)]
-		[DataRow(typeof(SplitView), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.AnimatedIcon), 15,
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.SwipeControl), 15)]
+		[ActivatableDataRow(typeof(SplitView), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.AnimatedIcon), 15,
 #if __ANDROID__
 			LeakTestStyles.Uwp // Fluent styles disabled - #14341
 #else
@@ -115,78 +117,78 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 			)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/issues/9080
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.BreadcrumbBar), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.BreadcrumbBar), 15)]
 #endif
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.BreadcrumbBarItem), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.BreadcrumbBarItem), 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/issues/9080
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ColorPicker), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.ColorPicker), 15)]
 #endif
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum), 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Expander), 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaWasm)] // Fails on net11.0-wasm, see https://github.com/unoplatform/uno/issues/9080
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.Expander), 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaWasm)] // Fails on net11.0-wasm, see https://github.com/unoplatform/uno/issues/9080
 #endif
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ImageIcon), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.ImageIcon), 15)]
 #if !WINAPPSDK
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.InfoBadge), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.InfoBadge), 15)]
 #endif
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.InfoBar), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.InfoBar), 15)]
 #endif
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.NavigationViewItem), 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaWasm)] // Fails on net11.0-wasm, see https://github.com/unoplatform/uno/issues/9080
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.NavigationViewItem), 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaWasm)] // Fails on net11.0-wasm, see https://github.com/unoplatform/uno/issues/9080
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter), 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.NavigationView), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.NavigationView), 15)]
 #endif
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.NumberBox), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.NumberBox), 15)]
 #if !WINAPPSDK
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.PagerControl), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.PagerControl), 15)]
 #endif
 #endif
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.PipsPager), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.PipsPager), 15)]
 #endif
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.RefreshContainer), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.RadioButtons), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.RefreshContainer), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.RadioButtons), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem), 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.RatingControl), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.RatingControl), 15)]
 #endif
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ItemsRepeater), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.SplitButton), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.ItemsRepeater), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.SplitButton), 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.TabView), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.TabViewListView), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.TabView), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.TabViewListView), 15)]
 #endif
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.TreeView), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.TreeView), 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.TwoPaneView), 15)]
-		[DataRow("SamplesApp.Windows_UI_Xaml.Clipping.XamlButtonWithClipping_Scrollable", 15)]
-		[DataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.AppBar_KeyBoard", 15)]
-		[DataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.Buttons", 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.TwoPaneView), 15)]
+		[ActivatableDataRow("SamplesApp.Windows_UI_Xaml.Clipping.XamlButtonWithClipping_Scrollable, SamplesApp.Samples", 15)]
+		[ActivatableDataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.AppBar_KeyBoard, SamplesApp.Samples", 15)]
+		[ActivatableDataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.Buttons, SamplesApp.Samples", 15)]
 #endif
-		[DataRow("UITests.Windows_UI_Xaml.xLoadTests.xLoad_Test_For_Leak", 15)]
+		[ActivatableDataRow("UITests.Windows_UI_Xaml.xLoadTests.xLoad_Test_For_Leak, SamplesApp.Samples", 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow("UITests.Windows_UI_Xaml_Controls.ToolTip.ToolTip_LeakTest", 15)]
+		[ActivatableDataRow("UITests.Windows_UI_Xaml_Controls.ToolTip.ToolTip_LeakTest, SamplesApp.Samples", 15)]
 #endif
-		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.Button_Command_Leak", 15)]
-		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ItemsControl_ItemsSource_Leak", 15)]
+		[ActivatableDataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.Button_Command_Leak, Uno.UI.RuntimeTests", 15)]
+		[ActivatableDataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ItemsControl_ItemsSource_Leak, Uno.UI.RuntimeTests", 15)]
 #if !__WASM__ && !__APPLE_UIKIT__ && !WINAPPSDK // Disabled - https://github.com/unoplatform/uno/issues/7860
-		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ContentDialog_Leak", 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit)]
+		[ActivatableDataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ContentDialog_Leak, Uno.UI.RuntimeTests", 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit)]
 #endif
-		[DataRow(typeof(TextBox_Focus_Leak), 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit)] // UIKit Disabled - #10344
-		[DataRow(typeof(PasswordBox_Focus_Leak), 15,
+		[ActivatableDataRow(typeof(TextBox_Focus_Leak), 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit)] // UIKit Disabled - #10344
+		[ActivatableDataRow(typeof(PasswordBox_Focus_Leak), 15,
 #if __ANDROID__
 			LeakTestStyles.Uwp // Fluent styles disabled - #14340
 #else
 			LeakTestStyles.All
 #endif
 			, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit)] // UIKit Disabled - #10344
-		[DataRow(typeof(MediaPlayerElement), 15, LeakTestStyles.All, RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.NativeAndroid)]
-		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.CommandBarFlyout_Leak", 15, LeakTestStyles.All, RuntimeTestPlatforms.NativeUIKit)] // flaky on native iOS
+		[ActivatableDataRow(typeof(MediaPlayerElement), 15, LeakTestStyles.All, RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.NativeAndroid)]
+		[ActivatableDataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.CommandBarFlyout_Leak, Uno.UI.RuntimeTests", 15, LeakTestStyles.All, RuntimeTestPlatforms.NativeUIKit)] // flaky on native iOS
 #if RUNTIME_NATIVE_AOT
 		[Ignore("Fails under NativeAOT for known and unknown reasons; known reasons include:\n" +
 			"  * lack of a GC bridge, causing the RemoveDeadRefsAndGetAliveRefs() assert to fail.")]
@@ -210,18 +212,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 
-		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "TODO; probably need to emit + use a Linker XML file in Uno.UI.RuntimeTests to ensure that types in [DataRow] (above) are actually preserved.")]
 		private async Task When_Add_Remove_Inner(object controlTypeRaw, int count)
 		{
-			Type GetType(string s)
-				=> AppDomain.CurrentDomain.GetAssemblies().Select(a => a.GetType(s)).Where(t => t != null).First()!;
-
-			var controlType = controlTypeRaw switch
-			{
-				Type ct => ct,
-				string s => GetType(s),
-				_ => throw new InvalidOperationException()
-			};
+			var controlType = GetControlType(controlTypeRaw);
 
 			var weakRefs = new HashSet<WeakReference<DependencyObject>>();
 			var totalRefCount = 0;
@@ -354,6 +347,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			refcount.Should().BeLessThanOrEqualTo(expected, retainedMessage);
 
+			[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Use of [ActivatableDataRow] ensures that string fulfill TypeRequirements.")]
+			[UnconditionalSuppressMessage("Trimming", "IL2068", Justification = "Use of [ActivatableDataRow] ensures that types fulfill TypeRequirements.")]
+			[return: DynamicallyAccessedMembers(TypeRequirements)]
+			static Type GetControlType(object controlTypeRaw)
+			{
+				return controlTypeRaw switch
+				{
+					Type ct => ct,
+					string s => Type.GetType(s, throwOnError: false) ?? throw new InvalidOperationException($"Could not find type {s}"),
+					_ => throw new InvalidOperationException()
+				};
+			}
+
 			static string ExtractTargetName(DependencyObject p)
 			{
 				if (p is FrameworkElement { Name: { Length: > 0 } name } fe)
@@ -366,8 +372,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				}
 			}
 
-			[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "TODO; probably need to emit + use a Linker XML file in Uno.UI.RuntimeTests to ensure that types in [DataRow] (above) are actually preserved.")]
-			async Task MaterializeControl(Type controlType, ContentControl rootContainer)
+			[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Use of `[ActivatableDataRow]` ensures Activator.CreateInstance() works.")]
+			async Task MaterializeControl([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] Type controlType, ContentControl rootContainer)
 			{
 				rootContainer.Content = (FrameworkElement)Activator.CreateInstance(controlType)!;
 				TrackDependencyObject((rootContainer.Content as DependencyObject)!);

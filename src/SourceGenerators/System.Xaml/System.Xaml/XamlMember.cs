@@ -23,7 +23,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using System.Windows.Markup;
@@ -418,7 +417,6 @@ namespace Uno.Xaml
 			return typeof (object);
 		}
 
-		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "TODO")]
 		protected virtual XamlValueConverter<TypeConverter> LookupTypeConverter ()
 		{
 			var t = Type.UnderlyingType;

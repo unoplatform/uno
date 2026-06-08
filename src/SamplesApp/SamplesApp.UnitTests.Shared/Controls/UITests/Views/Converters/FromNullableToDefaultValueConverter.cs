@@ -23,8 +23,7 @@ namespace Uno.UI.Samples.Converters
 
 		public object ValueIfNotNull { get; set; }
 
-		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "TODO(GetDefaultValue() > Activator.CreateInstance())")]
-		public object Convert(object value, Type targetType, object parameter, string language)
+		public object Convert(object value, [DynamicallyAccessedMembers(ActivatorRequirements)] Type targetType, object parameter, string language)
 		{
 			if (parameter != null)
 			{

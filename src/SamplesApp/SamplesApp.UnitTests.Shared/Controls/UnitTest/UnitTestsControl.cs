@@ -1340,7 +1340,7 @@ namespace Uno.UI.Samples.Tests
 					? TimeSpan.FromMilliseconds(methodAttribute.Timeout)
 					: null;
 
-		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "TODO")]
+		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Appears to work on CI!")]
 		private IEnumerable<UnitTestClassInfo> InitializeTests()
 		{
 			var testAssembliesTypes =
@@ -1399,8 +1399,8 @@ namespace Uno.UI.Samples.Tests
 			return groupedList.ToArray();
 		}
 
-		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "TODO")]
-		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "TODO")]
+		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Appears to work on CI!")]
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Appears to work on CI!")]
 		private IEnumerable<UnitTestClassInfo> GetFilteredTests(IEnumerable<Type> types, int groupCount, int activeGroup)
 		{
 			var testClasses =

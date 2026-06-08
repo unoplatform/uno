@@ -24,7 +24,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -47,7 +46,6 @@ namespace System.Windows.Markup
 		}
 
 		// untested
-		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "TODO")]
 		public static ValueSerializer GetSerializerFor (PropertyDescriptor descriptor, IValueSerializerContext context)
 		{
 			if (descriptor == null)
