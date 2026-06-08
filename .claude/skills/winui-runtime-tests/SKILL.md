@@ -419,10 +419,10 @@ for m in re.finditer(r'<test-case\s+name=\"([^\"]+)\"[^>]*result=\"(\w+)\"', con
 | **Target framework** | `net9.0-windows10.0.19041.0` (`$(NetPreviousWinAppSDK)`) |
 | **Platform** | x64 |
 | **Output** | MSIX bundle in `AppPackages/` |
-| **WinAppSDK version** | 2.1 (check csproj for exact version) |
+| **WinAppSDK version** | 2.1.3 (keep in sync with csproj; pin the exact stable version) |
 | **Manifest publisher** | `CN=Uno Platform` (cert subject must match) |
 | **Cert generation** | `certreq` (per-machine, private key stays local) |
-| **Runtime installer** | `https://aka.ms/windowsappsdk/2.1/latest/windowsappruntimeinstall-x64.exe` |
+| **Runtime installer** | `https://aka.ms/windowsappsdk/2.1/2.1.3/windowsappruntimeinstall-x64.exe` (pinned stable; `2.1/latest` resolves to experimental 2.1.4) |
 | **MAX_PATH budget** | Keep full repo path under ~200 chars |
 
 ### Signing: What Works vs What Doesn't
