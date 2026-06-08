@@ -271,6 +271,22 @@ namespace Microsoft.UI.Xaml
 		public bool IsAutoPropertyInheritanceEnabled { get; set; } = true;
 
 		/// <summary>
+		/// Set when this object is stored as a value in a <see cref="ResourceDictionary"/>. Such resources must not
+		/// inherit/cache the <see cref="DataContextProperty"/> from the subtree they are applied into (this matches
+		/// WinUI, where resources have no DataContext).
+		/// </summary>
+		/// <remarks>
+		/// A shared resource (e.g. a brush or shape in a <c>GlobalStaticResources</c> singleton) is rooted by a
+		/// long-lived dictionary, yet it is pulled into many short-lived subtrees via <c>{StaticResource}</c>/
+		/// <c>{ThemeResource}</c>. If it cached the inherited DataContext of one such subtree, the resource would
+		/// keep that DataContext (and everything it transitively references) alive forever. When the subtree lives
+		/// in a collectible <see cref="System.Runtime.Loader.AssemblyLoadContext"/> (e.g. a previewed app), that
+		/// retention pins the whole context and prevents it from unloading. Only DataContext is blocked; other
+		/// inherited properties (FlowDirection, theme, …) still propagate so resource visuals render correctly.
+		/// </remarks>
+		internal bool IsResourceDictionaryItem { get; set; }
+
+		/// <summary>
 		/// Returns the current effective value of a dependency property from a DependencyObject.
 		/// </summary>
 		/// <param name="property">The <see cref="DependencyProperty" /> identifier of the property for which to retrieve the value. </param>
@@ -1279,6 +1295,17 @@ namespace Microsoft.UI.Xaml
 
 		private void OnParentPropertyChangedCallback(ManagedWeakReference sourceInstance, DependencyProperty parentProperty, object? newValue)
 		{
+			// A ResourceDictionary item must not inherit/cache DataContext (WinUI behaviour — resources
+			// have no DataContext). Blocking it here also blocks propagation to this resource's own inherited-property
+			// children (e.g. a shape resource's gradient brush), since DataContext is applied via the SetValue below.
+			// Without this, a shared resource pulled into a subtree via {StaticResource}/{ThemeResource} permanently
+			// caches that subtree's DataContext; when the subtree lives in a collectible AssemblyLoadContext it pins
+			// the whole ALC. Other inherited properties are unaffected.
+			if (IsResourceDictionaryItem && parentProperty.UniqueId == _parentDataContextProperty.UniqueId)
+			{
+				return;
+			}
+
 			// WinUI: Foreground propagates through TextFormatting, NOT through DP inheritance.
 			// In Uno, Foreground has FrameworkPropertyMetadataOptions.Inherits which auto-cascades
 			// to ALL descendants. This breaks element-level theming because a parent's theme change

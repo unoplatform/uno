@@ -490,6 +490,11 @@ namespace Microsoft.UI.Xaml
 					newDictionary._parent = this;
 					ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
 				}
+				else if (value is IDependencyObjectStoreProvider provider)
+				{
+					// Resources do not inherit DataContext (see DependencyObjectStore.IsResourceDictionaryItem).
+					provider.Store.IsResourceDictionaryItem = true;
+				}
 			}
 
 			InvalidateNotFoundCache(true, resourceKey);
@@ -530,6 +535,11 @@ namespace Microsoft.UI.Xaml
 					if (newValue is ResourceDictionary)
 					{
 						ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
+					}
+					else if (newValue is IDependencyObjectStoreProvider materializedProvider)
+					{
+						// Resources do not inherit DataContext (see DependencyObjectStore.IsResourceDictionaryItem).
+						materializedProvider.Store.IsResourceDictionaryItem = true;
 					}
 
 					if (!FeatureConfiguration.ResourceDictionary.IncludeUnreferencedDictionaries)
