@@ -231,7 +231,7 @@ namespace Uno.UI.Xaml.Core
 			{
 				element.InvalidateMeasure();
 			}
-#if __SKIA__ || __WASM__
+#if __SKIA__
 			// ContentPresenter only needs Uno-level measure invalidation on Skia/WASM where
 			// GetScaledFontSize() is called during the Uno measure pass. On iOS/Android, native
 			// font APIs already handle text scaling, and invalidating ContentPresenter there
@@ -253,11 +253,6 @@ namespace Uno.UI.Xaml.Core
 						descendant.InvalidateTextScaleFontInfo();
 					}
 				}
-			}
-#elif __WASM__
-			if (element is TextBlock wasmTextBlock)
-			{
-				wasmTextBlock.InvalidateForTextScaleChange();
 			}
 #endif
 

@@ -35,16 +35,6 @@ namespace Microsoft.UI.Xaml.Input
 			UniqueId = uniqueId;
 		}
 
-#if __WASM__
-		internal Pointer(uint id, PointerDeviceType type)
-		{
-			PointerId = id;
-			PointerDeviceType = type;
-
-			UniqueId = new PointerIdentifier((global::Windows.Devices.Input.PointerDeviceType)type, id);
-		}
-#endif
-
 		/// <summary>
 		/// A unique identifier which contains <see cref="PointerDeviceType"/> and <see cref="PointerId"/>.
 		/// </summary>

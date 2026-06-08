@@ -44,17 +44,7 @@ public partial class ElementCompositionPreview
 	/// <param name="visual">The Visual to add to the element's visual tree.</param>
 	public static void SetElementChildVisual(UIElement element, Visual visual)
 	{
-#if __APPLE_UIKIT__
-		element.Layer.AddSublayer(visual.NativeLayer);
-		visual.NativeOwner = element;
-		element.ClipsToBounds = false;
-
-		if (element is FrameworkElement fe)
-		{
-			fe.SizeChanged +=
-				(s, e) => visual.NativeLayer.Frame = new CoreGraphics.CGRect(0, 0, element.Frame.Width, element.Frame.Height);
-		}
-#elif __SKIA__
+#if __SKIA__
 
 		var container = new Composition.ContainerVisual(element.Visual.Compositor) { Comment = ChildVisualName };
 		container.Children.InsertAtTop(visual);

@@ -21,18 +21,13 @@ namespace Microsoft.UI.Xaml.Documents
 {
 	public sealed partial class Hyperlink : Span
 	{
-#if !__WASM__
 		private readonly IFocusable _focusableHelper;
-#endif
 
 		private const string HyperlinkForegroundPressedKey = "HyperlinkForegroundPressed";
 		private const string HyperlinkForegroundPointerOverKey = "HyperlinkForegroundPointerOver";
 		private const string HyperlinkForeground = nameof(HyperlinkForeground);
 
 		public
-#if __WASM__
-			new
-#endif
 			bool Focus(FocusState value)
 		{
 			//If the App tries to call Focus with an Unfocused state, throw:
@@ -76,28 +71,20 @@ namespace Microsoft.UI.Xaml.Documents
 		public event TypedEventHandler<Hyperlink, HyperlinkClickEventArgs> Click;
 
 		public
-#if __WASM__
-			new
-#endif
 			event RoutedEventHandler GotFocus;
 
 		internal void OnGotFocus(RoutedEventArgs args) => GotFocus?.Invoke(this, args);
 
 		public
-#if __WASM__
-			new
-#endif
 			event RoutedEventHandler LostFocus;
 
 		internal void OnLostFocus(RoutedEventArgs args) => LostFocus?.Invoke(this, args);
 
-#if !__WASM__
 		public Hyperlink()
 		{
 			OnUnderlineStyleChanged();
 			_focusableHelper = new FocusableHelper(this);
 		}
-#endif
 
 		#region NavigateUri
 
@@ -292,7 +279,6 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 		}
 
-#if !__WASM__
 		public FocusState FocusState
 		{
 			get => GetFocusStateValue();
@@ -396,97 +382,5 @@ namespace Microsoft.UI.Xaml.Documents
 
 		[GeneratedDependencyProperty(DefaultValue = default(XYFocusNavigationStrategy))]
 		public static DependencyProperty XYFocusUpNavigationStrategyProperty { get; } = CreateXYFocusUpNavigationStrategyProperty();
-#else
-		// The properties below have moved to UIElement in WinUI, but Hyperlink does not inherit from UIElement and does in Wasm.
-		// This makes the properties move down incorrectly.
-		// This section places those properties at the same location as the reference implementation.
-		public new FocusState FocusState
-		{
-			get => base.FocusState;
-			set => base.FocusState = value;
-		}
-
-		public static new DependencyProperty FocusStateProperty { get; } = UIElement.FocusStateProperty;
-
-		public new bool IsTabStop
-		{
-			get => base.IsTabStop;
-			set => base.IsTabStop = value;
-		}
-
-		public static new DependencyProperty IsTabStopProperty { get; } = UIElement.IsTabStopProperty;
-
-		public new int TabIndex
-		{
-			get => base.TabIndex;
-			set => base.TabIndex = value;
-		}
-
-		public new static DependencyProperty TabIndexProperty { get; } = UIElement.TabIndexProperty;
-
-		public new DependencyObject XYFocusUp
-		{
-			get => base.XYFocusUp;
-			set => base.XYFocusUp = value;
-		}
-
-		public new static DependencyProperty XYFocusUpProperty { get; } = UIElement.XYFocusUpProperty;
-
-		public new DependencyObject XYFocusDown
-		{
-			get => base.XYFocusDown;
-			set => base.XYFocusDown = value;
-		}
-
-		public new static DependencyProperty XYFocusDownProperty { get; } = UIElement.XYFocusDownProperty;
-
-		public new DependencyObject XYFocusLeft
-		{
-			get => base.XYFocusLeft;
-			set => base.XYFocusLeft = value;
-		}
-
-		public new static DependencyProperty XYFocusLeftProperty { get; } = UIElement.XYFocusLeftProperty;
-
-		public new DependencyObject XYFocusRight
-		{
-			get => base.XYFocusRight;
-			set => base.XYFocusRight = value;
-		}
-
-		public new static DependencyProperty XYFocusRightProperty { get; } = UIElement.XYFocusRightProperty;
-
-		public new XYFocusNavigationStrategy XYFocusDownNavigationStrategy
-		{
-			get => base.XYFocusDownNavigationStrategy;
-			set => base.XYFocusDownNavigationStrategy = value;
-		}
-
-		public new static DependencyProperty XYFocusDownNavigationStrategyProperty { get; } = UIElement.XYFocusDownNavigationStrategyProperty;
-
-		public new XYFocusNavigationStrategy XYFocusLeftNavigationStrategy
-		{
-			get => base.XYFocusLeftNavigationStrategy;
-			set => base.XYFocusLeftNavigationStrategy = value;
-		}
-
-		public new static DependencyProperty XYFocusLeftNavigationStrategyProperty { get; } = UIElement.XYFocusLeftNavigationStrategyProperty;
-
-		public new XYFocusNavigationStrategy XYFocusRightNavigationStrategy
-		{
-			get => base.XYFocusRightNavigationStrategy;
-			set => base.XYFocusRightNavigationStrategy = value;
-		}
-
-		public new static DependencyProperty XYFocusRightNavigationStrategyProperty { get; } = UIElement.XYFocusRightNavigationStrategyProperty;
-
-		public new XYFocusNavigationStrategy XYFocusUpNavigationStrategy
-		{
-			get => base.XYFocusUpNavigationStrategy;
-			set => base.XYFocusUpNavigationStrategy = value;
-		}
-
-		public new static DependencyProperty XYFocusUpNavigationStrategyProperty { get; } = UIElement.XYFocusUpNavigationStrategyProperty;
-#endif
 	}
 }

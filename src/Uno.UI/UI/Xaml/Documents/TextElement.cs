@@ -20,23 +20,9 @@ using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Automation.Peers;
 
-#if __ANDROID__
-using View = Android.Views.View;
-using Font = Android.Graphics.Typeface;
-using Android.Graphics;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-#else
 using Color = System.Drawing.Color;
-#endif
 
-#if __WASM__
-using BaseClass = Microsoft.UI.Xaml.UIElement;
-#else
 using BaseClass = Microsoft.UI.Xaml.DependencyObject;
-#endif
 
 namespace Microsoft.UI.Xaml.Documents
 {
@@ -45,9 +31,7 @@ namespace Microsoft.UI.Xaml.Documents
 		public TextElement()
 		{
 			SetDefaultForeground(ForegroundProperty);
-#if !__WASM__
 			InitializeBinder();
-#endif
 		}
 
 		#region FontFamily Dependency Property
@@ -362,7 +346,6 @@ namespace Microsoft.UI.Xaml.Documents
 
 		// WASM specific as on WASM BaseClass is UIElement
 
-#if !__WASM__
 		//UNO TODO: Implement GetOrCreateAutomationPeer on TextElement
 		internal Automation.Peers.AutomationPeer GetOrCreateAutomationPeer()
 		{
@@ -373,7 +356,6 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			return (DependencyObject)GetValue(AccessKeyScopeOwnerProperty);
 		}
-#endif
 
 		partial void OnNameChangedPartial(string newValue);
 

@@ -12,9 +12,6 @@ namespace Microsoft.UI.Xaml.Documents
 	public partial class Hyperlink
 	{
 		internal
-#if __WASM__
-			new
-#endif
 			bool IsFocusable()
 		{
 			var element = GetContainingFrameworkElement();
@@ -29,10 +26,6 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 
 		internal IFocusable? GetIFocusable() =>
-#if __WASM__
-			null;
-#else
 			_focusableHelper;
-#endif
 	}
 }
