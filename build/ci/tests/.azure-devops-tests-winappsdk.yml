@@ -141,17 +141,17 @@ jobs:
   - template: ../templates/dotnet-install.yml
 
   - pwsh: |
-      # Install Windows App Runtime 1.8
-      Write-Host "Installing Windows App Runtime 1.8..."
-      $runtimeUrl = "https://aka.ms/windowsappsdk/1.8/latest/windowsappruntimeinstall-x64.exe"
+      # Install Windows App Runtime 2.1
+      Write-Host "Installing Windows App Runtime 2.1..."
+      $runtimeUrl = "https://aka.ms/windowsappsdk/2.1/latest/windowsappruntimeinstall-x64.exe"
       $runtimeInstaller = "$(Build.SourcesDirectory)/build/windowsappruntimeinstall-x64.exe"
-      
+
       Write-Host "Downloading from: $runtimeUrl"
       Invoke-WebRequest -Uri $runtimeUrl -OutFile $runtimeInstaller
-      
+
       Write-Host "Running installer: $runtimeInstaller"
       Start-Process -FilePath $runtimeInstaller -ArgumentList "--quiet" -Wait -NoNewWindow
-      Write-Host "Windows App Runtime 1.8 installed successfully"
+      Write-Host "Windows App Runtime 2.1 installed successfully"
     displayName: Install Windows App Runtime
   
   - pwsh: |
