@@ -155,7 +155,8 @@ stages:
 
 - stage: ios_tests
   displayName: Tests - iOS Native
-  condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeIos'], 'true')))
+  # Disabled: native targets are maintenance-only. Always-false condition skips the stage.
+  condition: false
   dependsOn:
     - Setup
 
