@@ -4,7 +4,7 @@ uid: Uno.Platform.Studio.Overview
 
 # Uno Platform Studio Overview
 
-**Uno Platform Studio** is an AI-native productivity platform for building enterprise-grade, cross-platform .NET applications. It brings together purpose-built tools, from prompt-to-app generation and an AI development agent, to design handoff and the industry-first, cross-platform runtime visual designer for .NET, Hot Design<sup>®</sup>, so developers can design, build, and iterate on apps for every platform .NET runs on, all while staying in their flow.
+**Uno Platform Studio** is an AI-native productivity platform for building enterprise-grade, cross-platform .NET applications. It brings together purpose-built tools — prompt-to-app generation, an AI development agent, design handoff, and the industry-first, cross-platform runtime visual designer for .NET, Hot Design<sup>®</sup> — so developers can design, build, and iterate on apps for every platform .NET runs on, all while staying in their flow.
 
 ![Introducing Uno Platform Studio](Assets/Introducing-Uno-Platform-Studio.png)
 
@@ -32,7 +32,7 @@ AI coding tools can generate code quickly, but for enterprises, generating code 
   Describe what you want and generate a working, well-structured Uno Platform app in the browser, then continue building in your IDE.
 
 - **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)**
-  The industry-first, patented, runtime visual designer, for cross-platform .NET applications. Hot Design<sup>®</sup> transforms your running app into a Designer, from any IDE, on any OS, to create polished interfaces with ease. Pair it with the **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)** for AI-powered UX/UI creation that leverages your data contexts and live previews. [Get started](xref:Uno.HotDesign.GetStarted.Guide)
+  The industry-first, patented runtime visual designer for cross-platform .NET applications. Hot Design<sup>®</sup> transforms your running app into a Designer, from any IDE, on any OS, to create polished interfaces with ease. Pair it with the **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)** for AI-powered UX/UI creation that leverages your data contexts and live previews. [Get started](xref:Uno.HotDesign.GetStarted.Guide)
 
 - **[Hot Reload](xref:Uno.Features.HotReload)**
   Reliably update any code in your app and get instant confirmation your changes were applied, with a Hot Reload Indicator to monitor changes while you develop.
