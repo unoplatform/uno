@@ -16,7 +16,7 @@ namespace Uno.UI.Tests.ResourceLoaderTests
 	public class Given_ResourceLoader
 	{
 		private const string DefaultLanguage = "en-US";
-		private const string UITestResources = "Uno.UI.Tests/Resources";
+		private const string UITestResources = "Uno.UI.UnitTests/Resources";
 
 		[TestInitialize]
 		public void Init()

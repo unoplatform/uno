@@ -2,9 +2,9 @@
 uid: Uno.Contributing.CreateMockedTests
 ---
 
-# Creating unit tests in Uno.UI.Tests
+# Creating unit tests in Uno.UI.UnitTests
 
-Unit tests in `Uno.UI.Tests` (the test runner project at `src/Uno.UI.Tests/Uno.UI.Unit.Tests.csproj`) run against the **Skia** build of Uno.UI. They exercise the real cross-platform code path -- the same dependency-property system, layouter, and dispatcher used by Skia at runtime -- not a mock. Any platform-specific behavior (rendering surfaces, native windowing, OS APIs) is provided by the Skia runtime stack itself.
+Unit tests in `Uno.UI.UnitTests` (the test runner project at `src/Uno.UI.UnitTests/Uno.UI.UnitTests.csproj`) run against the **Skia** build of Uno.UI. They exercise the real cross-platform code path -- the same dependency-property system, layouter, and dispatcher used by Skia at runtime -- not a mock. Any platform-specific behavior (rendering surfaces, native windowing, OS APIs) is provided by the Skia runtime stack itself.
 
 Adding tests here is closest to the 'traditional' unit test experience: you can run tests from the Visual Studio test window pane, easily debug the code you're modifying, etc. This is the ideal place to test platform-independent parts of the API, like dependency property behaviors and XAML-generated code.
 

@@ -7,7 +7,7 @@
 		<UseUnoXamlParser>true</UseUnoXamlParser>
 		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
 		<UnoForceHotReloadCodeGen>true</UnoForceHotReloadCodeGen>
-		<AssemblyName>Uno.UI.Tests</AssemblyName>
+		<AssemblyName>Uno.UI.UnitTests</AssemblyName>
 		<RootNamespace>Uno.UI.Tests</RootNamespace>
 		<!--
 			This define lets the test runner alone signal it is the unit-test host

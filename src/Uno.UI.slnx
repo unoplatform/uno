@@ -486,7 +486,7 @@
     <Project Path="Uno.UI.BindingHelper.Android/Uno.UI.BindingHelper.Android.netcoremobile.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.Tests/Uno.UI.Unit.Tests.csproj">
+    <Project Path="Uno.UI.UnitTests/Uno.UI.UnitTests.csproj">
       <BuildDependency Project="SourceGenerators/Uno.UI.SourceGenerators/Uno.UI.SourceGenerators.csproj" />
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Build Solution="*|ARM" Project="false" />

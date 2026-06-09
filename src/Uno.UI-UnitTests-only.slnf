@@ -30,7 +30,7 @@
       "Uno.UI.RemoteControl.DevServer.Tests\\Fixtures\\AddInWithSharedContractConsumer\\AddInWithSharedContractConsumer.csproj",
       "Uno.UI.Tests.ViewLibraryProps\\Uno.UI.Tests.ViewLibraryProps.csproj",
       "Uno.UI.Tests.ViewLibrary\\Uno.UI.Tests.ViewLibrary.csproj",
-      "Uno.UI.Tests\\Uno.UI.Unit.Tests.csproj",
+      "Uno.UI.UnitTests\\Uno.UI.UnitTests.csproj",
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.Skia.csproj",
       "Uno.UI\\Uno.UI.Skia.csproj",
       "Uno.UWP\\Uno.Reference.csproj"
