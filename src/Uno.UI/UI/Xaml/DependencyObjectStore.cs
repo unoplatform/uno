@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using Uno.UI.DataBinding;
@@ -284,7 +284,25 @@ namespace Microsoft.UI.Xaml
 		/// retention pins the whole context and prevents it from unloading. Only DataContext is blocked; other
 		/// inherited properties (FlowDirection, theme, …) still propagate so resource visuals render correctly.
 		/// </remarks>
-		internal bool IsResourceDictionaryItem { get; set; }
+		internal bool IsResourceDictionaryItem
+		{
+			get => (_storeFlags & StoreFlags.IsResourceDictionaryItem) != 0;
+			set => _storeFlags = value
+				? _storeFlags | StoreFlags.IsResourceDictionaryItem
+				: _storeFlags & ~StoreFlags.IsResourceDictionaryItem;
+		}
+
+		// Single-byte bitfield for boolean per-store flags. A DependencyObjectStore is allocated once per
+		// DependencyObject, so per-instance size matters; folding flags here keeps that footprint flat as
+		// more are added. Prefer extending StoreFlags over introducing new standalone bool fields.
+		[Flags]
+		private enum StoreFlags : byte
+		{
+			None = 0,
+			IsResourceDictionaryItem = 1 << 0,
+		}
+
+		private StoreFlags _storeFlags;
 
 		/// <summary>
 		/// Returns the current effective value of a dependency property from a DependencyObject.

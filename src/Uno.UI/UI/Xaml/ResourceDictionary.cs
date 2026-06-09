@@ -1,4 +1,4 @@
-﻿//#define DEBUG_SET_RESOURCE_SOURCE
+//#define DEBUG_SET_RESOURCE_SOURCE
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -171,6 +171,19 @@ namespace Microsoft.UI.Xaml
 		private static bool CanCacheKeyNotFound(in ResourceKey resourceKey)
 			=> resourceKey.TypeKey is not { IsCollectible: true };
 
+		/// <summary>
+		/// Records <paramref name="resourceKey"/> in the key-not-found cache when caching is enabled and the
+		/// key is safe to cache (see <see cref="CanCacheKeyNotFound"/>). Centralised so the collectible-key
+		/// guard is applied identically at every not-found site, rather than repeated inline.
+		/// </summary>
+		private void TryCacheKeyNotFound(in ResourceKey resourceKey, bool useKeysNotFoundCache, bool shouldCheckSystem)
+		{
+			if (useKeysNotFoundCache && !shouldCheckSystem && CanCacheKeyNotFound(resourceKey))
+			{
+				KeyNotFoundCache.Add(resourceKey);
+			}
+		}
+
 		internal object Lookup(object key)
 		{
 			if (!TryGetValue(key, out var value))
@@ -332,10 +345,7 @@ namespace Microsoft.UI.Xaml
 				return ResourceResolver.TrySystemResourceRetrieval(modifiedKey, out value);
 			}
 
-			if (useKeysNotFoundCache && !shouldCheckSystem && CanCacheKeyNotFound(resourceKey))
-			{
-				KeyNotFoundCache.Add(resourceKey);
-			}
+			TryCacheKeyNotFound(resourceKey, useKeysNotFoundCache, shouldCheckSystem);
 
 			return false;
 		}
@@ -410,10 +420,7 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			if (useKeysNotFoundCache && !shouldCheckSystem && CanCacheKeyNotFound(resourceKey))
-			{
-				KeyNotFoundCache.Add(resourceKey);
-			}
+			TryCacheKeyNotFound(resourceKey, useKeysNotFoundCache, shouldCheckSystem);
 
 			providingDictionary = null;
 			return false;

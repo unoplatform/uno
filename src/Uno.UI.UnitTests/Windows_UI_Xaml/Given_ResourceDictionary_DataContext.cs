@@ -3,6 +3,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
@@ -62,6 +63,35 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 				dataContext,
 				child.DataContext,
 				"A normal logical child must continue to inherit DataContext; only ResourceDictionary items are exempt.");
+		}
+
+		[TestMethod]
+		public void When_Element_Binding_Uses_Inherited_DataContext_Then_It_Still_Resolves()
+		{
+			// Guards the reviewer concern that blocking DataContext on resources could break binding in styles.
+			// A Style's setter {Binding} resolves against the *styled element's* DataContext, and the block is
+			// scoped to ResourceDictionary items — never the elements a resource/style is applied to. So a
+			// {Binding} on a normal element must still resolve via inherited DataContext, even while resources
+			// in the same tree carry none.
+			var vm = new BindingProbe { Value = "bound!" };
+
+			var host = new Grid();
+			var child = new Border();
+			host.Children.Add(child);
+			child.SetBinding(FrameworkElement.TagProperty, new Binding { Path = new PropertyPath(nameof(BindingProbe.Value)) });
+
+			host.DataContext = vm; // propagates to the child, where the binding evaluates
+
+			Assert.AreEqual(
+				"bound!",
+				child.Tag,
+				"a {Binding} on a normal element must still resolve via inherited DataContext; the DataContext " +
+				"block is scoped to ResourceDictionary items, not the elements styles/resources are applied to.");
+		}
+
+		private sealed class BindingProbe
+		{
+			public string? Value { get; set; }
 		}
 	}
 }
