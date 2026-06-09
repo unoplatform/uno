@@ -163,14 +163,51 @@ namespace Microsoft.UI.Xaml
 #if !SUPPORTS_RTL
 		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__WASM__")]
 #endif
-		[GeneratedDependencyProperty(DefaultValue = FlowDirection.LeftToRight, Options =
+		[GeneratedDependencyProperty(DefaultValue = FlowDirection.LeftToRight
 #if SUPPORTS_RTL
-			FrameworkPropertyMetadataOptions.AffectsMeasure |
+			, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.Inherits
+#else
+			, Options = FrameworkPropertyMetadataOptions.Inherits
 #endif
-			FrameworkPropertyMetadataOptions.Inherits)]
+			)]
 		public static DependencyProperty FlowDirectionProperty { get; } = CreateFlowDirectionProperty();
 
 		#endregion
+
+		#region Language Dependency Property
+
+		public string Language
+		{
+			get => (string)GetValue(LanguageProperty);
+			set => SetValue(LanguageProperty, value);
+		}
+
+		// MUX ref: FrameworkElement_Language has IsInheritedProperty + IsStorageGroup flags.
+		// Hand-written to add Inherits flag and OnTextFormattingPropertyChanged callback
+		// (the auto-generated version had neither).
+		public static DependencyProperty LanguageProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Language),
+				typeof(string),
+				typeof(FrameworkElement),
+				new FrameworkPropertyMetadata(
+					default(string),
+					FrameworkPropertyMetadataOptions.Inherits,
+					propertyChangedCallback: (s, e) =>
+					{
+						if (s is FrameworkElement fe && !TextFormattingHelper.IsProcessingInheritedNotification)
+						{
+							var tf = fe._textFormatting ??= TextFormatting.CreateDefault();
+							tf.SetFieldValue("Language", e.NewValue);
+							GlobalTextFormattingCounter.Invalidate();
+							fe.MarkInheritedPropertyDirty("Language", e.NewValue);
+						}
+					}
+				)
+			);
+
+		#endregion
+
 		internal void RaiseSizeChanged(SizeChangedEventArgs args)
 		{
 #if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
@@ -467,18 +504,10 @@ namespace Microsoft.UI.Xaml
 				UpdateThemeBindings(ResourceUpdateReason.ResolvedOnLoading);
 
 				// MUX Reference: CUIElement::Enter / EnsureTextFormatting
-				// Pull inherited theme foreground from parent when entering the visual tree.
-				// Only apply when there IS a parent with a frozen theme foreground, meaning
-				// we're inside a theme boundary (RequestedTheme != Default ancestor).
-				// Without a theme boundary, foreground inheritance works normally via the DP system.
-				if (RequestedTheme == ElementTheme.Default && effectiveTheme != Theme.None)
-				{
-					var parent = this.GetParent() as FrameworkElement;
-					if (parent?._themeForeground is { } parentFg)
-					{
-						EnsureThemeForeground(parentFg);
-					}
-				}
+				// TextFormatting inheritance is handled by the TextFormatting system.
+				// On tree entry, DependencyObjectStore.RegisterInheritedPropertyChangedCallback
+				// calls PullInheritedTextFormatting which pulls all text properties
+				// (including frozen foreground) from the parent's TextFormatting.
 			}
 			finally
 			{
