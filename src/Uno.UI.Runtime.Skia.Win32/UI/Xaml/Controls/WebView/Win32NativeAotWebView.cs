@@ -760,7 +760,7 @@ internal static class AotStreamHelpers
 			while (true)
 			{
 				uint bytesRead = 0;
-				stream.Read((nint)pBuffer, (uint)buffer.Length, (nint)(&bytesRead));
+				stream.Read((nint)pBuffer, (uint)buffer.Length, (nint)(&bytesRead)).ThrowOnError();
 				if (bytesRead == 0) break;
 				ms.Write(buffer, 0, (int)bytesRead);
 			}

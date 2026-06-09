@@ -127,7 +127,12 @@ internal abstract class Win32NativeWebViewBase : INativeWebView
 			}
 			else if (!_hwndToWebView.TryGetValue(hwnd, out webView))
 			{
-				throw new Exception($"{nameof(WndProc)} was fired on a {nameof(HWND)} before it was added to, or after it was removed from, {nameof(_hwndToWebView)}.");
+				var logger = typeof(Win32NativeWebViewBase).Log();
+				if (logger.IsEnabled(LogLevel.Error))
+				{
+					logger.Error($"{nameof(Win32NativeWebViewBase)}.{nameof(WndProc)} received message {msg} for unknown {nameof(HWND)}={hwnd}.");
+				}
+				return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
 			}
 
 			if (webView.TryGetTarget(out var target))
