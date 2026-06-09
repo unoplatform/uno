@@ -6,9 +6,10 @@ paths:
 
 # Unit tests (Uno.UI.Tests)
 
-Pure-logic tests with **no visual tree** — the opposite of runtime tests. Run: `dotnet test src/Uno.UI/Uno.UI.Tests.csproj`.
+Pure-logic tests with **no visual tree** — the opposite of runtime tests. Run: `dotnet test src/Uno.UI.Tests/Uno.UI.Unit.Tests.csproj` (the MSTest runner; `src/Uno.UI/Uno.UI.Tests.csproj` is just the Uno.UI library compiled for the test TFM, so `dotnet test` on it finds no tests).
 
 - **MSTest** (`[TestClass]`/`[TestMethod]`), not NUnit/xUnit. Class `Given_<Feature>`, method `When_<Scenario>`.
+- **Link issue-covering tests to their issue** with `[GitHubWorkItem("https://github.com/unoplatform/uno/issues/<n>")]` (method- or class-level) when a test reproduces or guards a specific GitHub issue — MSTest metadata for traceability, not a skip.
 - **Do not load XAML or build a visual tree** here. Test `DependencyObject`/binder/converter/foundation logic directly. (Visual/layout behavior belongs in `Uno.UI.RuntimeTests`.)
 - **Test doubles are inline** in the test file as nested or same-file `partial` classes (e.g. `SimpleDependencyObject1`, `MyBindingSource : INotifyPropertyChanged`, inline `IValueConverter`s). Don't add them to production folders.
 - **No Moq on UI types.** `Moq` exists but is used only for non-UI abstractions (e.g. service locators). Never mock `FrameworkElement`/`DependencyObject`.
