@@ -429,7 +429,6 @@
 			<!-- BEGIN WebView -->
 			<Member fullName="Microsoft.UI.Xaml.Controls.INativeWebView" reason="Should not be public" />
 			<Member fullName="Uno.UI.Runtime.Skia.GtkApplicationExtension" reason="Not needed anymore" />
-			<Member fullName="Uno.UI.Runtime.Skia.Wpf.WpfApplicationExtension" reason="Not needed anymore" />
 			<!-- END WebView -->
 			
 			<Member fullName="Windows.UI.Core.ICoreWindowEvents" reason="Should not be public" />
@@ -641,10 +640,8 @@
 			<Member fullName="Uno.UI.Runtime.Skia.GTK.UI.Text.FontWeightExtensions" reason="Made internal with renamed namespace to Gtk instead of GTK" />
 			<Member fullName="Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.CssProviderExtensions" reason="Made internal with renamed namespace to Gtk instead of GTK" />
 			<Member fullName="Uno.UI.Runtime.Skia.GtkHost" reason="Renamed to Uno.UI.Runtime.Skia.Gtk.GtkHost" />
-			<Member fullName="Uno.UI.Skia.Platform.WpfHost" reason="Renamed to Uno.UI.Runtime.Skia.Wpf.WpfHost" />
 			<Member fullName="Uno.UI.Runtime.Skia.FrameBufferHost" reason="Renamed to Uno.UI.Runtime.Skia.Linux.FrameBuffer.FrameBufferHost" />
 			<Member fullName="Uno.UI.Runtime.Skia.RenderSurfaceType" reason="Renamed to Uno.UI.Runtime.Skia.Gtk.RenderSurfaceType" />
-			<Member fullName="Uno.UI.Skia.RenderSurfaceType" reason="Renamed to Uno.UI.Runtime.Skia.Wpf.RenderSurfaceType" />
 
 			<Member fullName="Uno.UI.Extensions.KeycodeExtensions" reason="Does not exist in WinAppSDK" />
 			<Member fullName="Uno.UI.Controls.ImageEx" reason="Empty class not present in WinAppSdk" />
@@ -882,20 +879,6 @@
 			<Member fullName="Uno.UI.Web.WebErrorStatus Microsoft.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs::WebErrorStatus()" reason="Incorrect type" />
 			<Member fullName="Uno.UI.Web.WebErrorStatus Microsoft.UI.Xaml.Controls.WebViewNavigationFailedEventArgs::WebErrorStatus()" reason="Incorrect type" />
 			<!-- END WebView -->
-
-			<!-- BEGIN Skia Adjustments -->
-			<Member fullName="SkiaSharp.SKSize Uno.UI.Skia.Platform.WpfHost::CanvasSize()" reason="Incorrect type" />
-			<!-- END Skia Adjustments -->
-			
-			<!-- BEGIN Skia lifecycle -->
-			<Member fullName="System.Boolean Uno.UI.Skia.Platform.WpfHost::IsIsland()" reason="Not needed" />
-			<Member fullName="Microsoft.UI.Xaml.UIElement Uno.UI.Skia.Platform.WpfHost::RootElement()" reason="Not needed" />
-			<Member fullName="Uno.UI.Skia.Platform.WpfHost Uno.UI.Skia.Platform.WpfHost::Current()" reason="Not needed" />
-			<Member fullName="System.Boolean Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase::IsIsland()" reason="Not needed" />
-			<Member fullName="Microsoft.UI.Xaml.UIElement Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase::RootElement()" reason="Not needed" />			
-			<!-- End Skia lifecycle -->
-
-			<Member fullName="System.Nullable`1&lt;Uno.UI.Skia.RenderSurfaceType&gt; Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase::RenderSurfaceType()" reason="Changed RenderSurfaceType namespace to Uno.UI.Runtime.Skia.Wpf" />
 
 			<!-- BEGIN PopupRoot alignment -->
 			<Member fullName="UIKit.UIView Microsoft.UI.Xaml.Controls.Primitives.Popup::MainWindow()" reason="Not available in WinUI" />
@@ -1588,8 +1571,6 @@
 			<!-- BEGIN Skia Adjustments -->
 			<Member fullName="System.Void Uno.UI.Runtime.Skia.GtkHost..ctor(System.Func`1&lt;Microsoft.UI.Xaml.Application&gt; appBuilder, System.String[] args)" reason="API Alignment" />
 			<Member fullName="System.Void Uno.UI.Runtime.Skia.FrameBufferHost..ctor(System.Func`1&lt;Microsoft.UI.Xaml.Application&gt; appBuilder, System.String[] args)" reason="API Alignment" />
-			<Member fullName="System.Void Uno.UI.Skia.Platform.WpfHost..ctor(System.Windows.Threading.Dispatcher dispatcher, System.Func`1&lt;Microsoft.UI.Xaml.Application&gt; appBuilder, System.String[] args)" reason="API Alignment" />
-			<Member fullName="SkiaSharp.SKSize Uno.UI.Skia.Platform.WpfHost.get_CanvasSize()" reason="API Alignment" />
 			<!-- End Skia Adjustments -->
 
 			<!-- BEGIN Pointers update -->
@@ -1610,14 +1591,6 @@
 			<Member fullName="System.Void Microsoft.UI.Xaml.Application.OnWindowCreated(Microsoft.UI.Xaml.WindowCreatedEventArgs args)" reason="Does not exist in WinAppSDK" />
 			<!-- END OnWindowCreated -->
 
-			<!-- BEGIN Skia lifecycle -->
-			<Member fullName="System.Boolean Uno.UI.Skia.Platform.WpfHost.get_IsIsland()" reason="Not needed" />
-			<Member fullName="Microsoft.UI.Xaml.UIElement Uno.UI.Skia.Platform.WpfHost.get_RootElement()" reason="Not needed" />
-			<Member fullName="Uno.UI.Skia.Platform.WpfHost Uno.UI.Skia.Platform.WpfHost.get_Current()" reason="Not needed" />
-			<Member fullName="System.Boolean Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase.get_IsIsland()" reason="Not needed" />
-			<Member fullName="Microsoft.UI.Xaml.UIElement Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase.get_RootElement()" reason="Not needed" />
-			<Member fullName="Uno.UI.Skia.Platform.WpfHost Uno.UI.Skia.Platform.WpfHost.get_Current()" reason="Not needed" />	
-			<!-- End Skia lifecycle -->
 			
 			<!-- BEGIN Align ref members -->
 			<Member fullName="System.Threading.Tasks.Task`1&lt;Windows.Security.Authentication.Web.WebAuthenticationResult&gt; Uno.AuthenticationBroker.WebAuthenticationBrokerProvider::AuthenticateAsyncCore(Windows.Security.Authentication.Web.WebAuthenticationOptions,System.Uri,System.Uri,System.Threading.CancellationToken)" reason="Does not exist in WinAppSDK" />
@@ -1646,9 +1619,6 @@
 			<Member fullName=".*\.add_KeyDown\(.*" isRegex="true" reason="KeyDown should be defined on UIElement only" />
 			<Member fullName=".*\.remove_KeyDown\(.*" isRegex="true" reason="KeyDown should be defined on UIElement only" />
 			<!-- END Android TV -->
-
-			<Member fullName="System.Nullable`1&lt;Uno.UI.Skia.RenderSurfaceType&gt; Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase.get_RenderSurfaceType()" reason="Changed RenderSurfaceType namespace to Uno.UI.Runtime.Skia.Wpf" />
-			<Member fullName="System.Void Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase.set_RenderSurfaceType(System.Nullable`1&lt;Uno.UI.Skia.RenderSurfaceType&gt; value)" reason="Changed RenderSurfaceType namespace to Uno.UI.Runtime.Skia.Wpf" />
 
 			<Member fullName=".+?\.\.ctor\(\)" isRegex="true" reason="Matching constructors visibility with Windows" />
 			

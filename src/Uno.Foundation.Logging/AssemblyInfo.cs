@@ -22,7 +22,6 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Svg")]
 [assembly: InternalsVisibleTo("Uno.UI.Svg.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.MacOS")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Wpf")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Win32")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Win32.Support")]
 [assembly: InternalsVisibleTo("Uno.UI.Maps")]

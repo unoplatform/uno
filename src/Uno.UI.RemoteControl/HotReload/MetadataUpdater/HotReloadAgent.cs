@@ -109,9 +109,8 @@ internal sealed class HotReloadAgent : IDisposable
 			}
 			catch (Exception e)
 			{
-				// The handlers enumeration may fail for WPF assemblies that are part of the modified assemblies
-				// when building under linux, but which are loaded in that context. We can ignore those assemblies
-				// and continue the processing.
+				// The handlers enumeration may fail for some assemblies that are part of the modified set
+				// but are loaded in incompatible contexts. We can ignore those assemblies and continue.
 				_log($"Unable to process assembly {assembly}, ({e.Message})");
 			}
 		}

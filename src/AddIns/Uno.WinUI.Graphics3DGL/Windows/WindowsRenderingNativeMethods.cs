@@ -1,13 +1,9 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Runtime.InteropServices;
 
-#if WINDOWS_UWP || WINAPPSDK
 namespace Uno.WinUI.Graphics3DGL;
-#else
-namespace Uno.UI.Runtime.Skia.Wpf.Rendering;
-#endif
 
 internal static class WindowsRenderingNativeMethods
 {
