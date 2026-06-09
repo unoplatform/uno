@@ -1682,6 +1682,26 @@
       <Thickness x:Key="TimePickerFirstHostThemeMargin">0,0,20,0</Thickness>
       <Thickness x:Key="TimePickerThirdHostThemeMargin">20,0,0,0</Thickness>
       <FontWeight x:Key="TimePickerHeaderThemeFontWeight">Normal</FontWeight>
+      <StaticResource x:Key="TitleBarForegroundBrush" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TitleBarDeactivatedForegroundBrush" ResourceKey="TextFillColorTertiaryBrush" />
+      <StaticResource x:Key="TitleBarSubtitleForegroundBrush" ResourceKey="TextFillColorSecondaryBrush" />
+      <StaticResource x:Key="TitleBarSubtitleDeactivatedForegroundBrush" ResourceKey="TextFillColorTertiaryBrush" />
+      <StaticResource x:Key="TitleBarBackButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TitleBarBackButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+      <StaticResource x:Key="TitleBarBackButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
+      <StaticResource x:Key="TitleBarBackButtonBackgroundDisabled" ResourceKey="ControlFillColorDisabledBrush" />
+      <StaticResource x:Key="TitleBarBackButtonForeground" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TitleBarBackButtonForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TitleBarBackButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
+      <StaticResource x:Key="TitleBarBackButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonBackgroundDisabled" ResourceKey="ControlFillColorDisabledBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonForeground" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
       <Thickness x:Key="ToggleButtonBorderThemeThickness">1</Thickness>
       <BackgroundSizing x:Key="ToggleButtonCheckedStateBackgroundSizing">OuterBorderEdge</BackgroundSizing>
       <StaticResource x:Key="ToggleButtonBackground" ResourceKey="ControlFillColorDefaultBrush" />
@@ -3529,6 +3549,26 @@
       <Thickness x:Key="TimePickerFirstHostThemeMargin">0,0,20,0</Thickness>
       <Thickness x:Key="TimePickerThirdHostThemeMargin">20,0,0,0</Thickness>
       <FontWeight x:Key="TimePickerHeaderThemeFontWeight">Normal</FontWeight>
+      <StaticResource x:Key="TitleBarForegroundBrush" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TitleBarDeactivatedForegroundBrush" ResourceKey="TextFillColorTertiaryBrush" />
+      <StaticResource x:Key="TitleBarSubtitleForegroundBrush" ResourceKey="TextFillColorSecondaryBrush" />
+      <StaticResource x:Key="TitleBarSubtitleDeactivatedForegroundBrush" ResourceKey="TextFillColorTertiaryBrush" />
+      <StaticResource x:Key="TitleBarBackButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TitleBarBackButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+      <StaticResource x:Key="TitleBarBackButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
+      <StaticResource x:Key="TitleBarBackButtonBackgroundDisabled" ResourceKey="ControlFillColorDisabledBrush" />
+      <StaticResource x:Key="TitleBarBackButtonForeground" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TitleBarBackButtonForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TitleBarBackButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
+      <StaticResource x:Key="TitleBarBackButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonBackgroundDisabled" ResourceKey="ControlFillColorDisabledBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonForeground" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
       <Thickness x:Key="ToggleButtonBorderThemeThickness">1</Thickness>
       <BackgroundSizing x:Key="ToggleButtonCheckedStateBackgroundSizing">OuterBorderEdge</BackgroundSizing>
       <StaticResource x:Key="ToggleButtonBackground" ResourceKey="ControlFillColorDefaultBrush" />
@@ -5363,6 +5403,26 @@
       <Thickness x:Key="TimePickerFirstHostThemeMargin">0,0,20,0</Thickness>
       <Thickness x:Key="TimePickerThirdHostThemeMargin">20,0,0,0</Thickness>
       <FontWeight x:Key="TimePickerHeaderThemeFontWeight">Normal</FontWeight>
+      <StaticResource x:Key="TitleBarForegroundBrush" ResourceKey="SystemControlForegroundBaseHighBrush" />
+      <StaticResource x:Key="TitleBarDeactivatedForegroundBrush" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+      <StaticResource x:Key="TitleBarSubtitleForegroundBrush" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+      <StaticResource x:Key="TitleBarSubtitleDeactivatedForegroundBrush" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+      <StaticResource x:Key="TitleBarBackButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+      <StaticResource x:Key="TitleBarBackButtonBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
+      <StaticResource x:Key="TitleBarBackButtonBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
+      <StaticResource x:Key="TitleBarBackButtonBackgroundDisabled" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+      <StaticResource x:Key="TitleBarBackButtonForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+      <StaticResource x:Key="TitleBarBackButtonForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+      <StaticResource x:Key="TitleBarBackButtonForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+      <StaticResource x:Key="TitleBarBackButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonBackgroundDisabled" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+      <StaticResource x:Key="TitleBarPaneToggleButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
       <Thickness x:Key="ToggleButtonBorderThemeThickness">1</Thickness>
       <BackgroundSizing x:Key="ToggleButtonCheckedStateBackgroundSizing">OuterBorderEdge</BackgroundSizing>
       <StaticResource x:Key="ToggleButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
@@ -23879,6 +23939,359 @@
               </Grid>
             </Grid>
           </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <Style TargetType="controls:TitleBar" BasedOn="{StaticResource DefaultTitleBarStyle}" />
+  <Style x:Key="DefaultTitleBarStyle" TargetType="controls:TitleBar">
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="Foreground" Value="{ThemeResource TitleBarForegroundBrush}" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="controls:TitleBar">
+          <Grid x:Name="PART_LayoutRoot" Height="{ThemeResource TitleBarCompactHeight}" Background="{TemplateBinding Background}">
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="BackButtonGroup">
+                <VisualState x:Name="BackButtonCollapsed" />
+                <VisualState x:Name="BackButtonVisible">
+                  <VisualState.Setters>
+                    <Setter Target="PART_BackButton.Visibility" Value="Visible" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="BackButtonDeactivated">
+                  <VisualState.Setters>
+                    <Setter Target="PART_BackButton.Visibility" Value="Visible" />
+                    <Setter Target="PART_BackButton.Foreground" Value="{ThemeResource TitleBarDeactivatedForegroundBrush}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="PaneToggleButtonGroup">
+                <VisualState x:Name="PaneToggleButtonCollapsed" />
+                <VisualState x:Name="PaneToggleButtonVisible">
+                  <VisualState.Setters>
+                    <Setter Target="PART_PaneToggleButton.Visibility" Value="Visible" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="PaneToggleButtonDeactivated">
+                  <VisualState.Setters>
+                    <Setter Target="PART_PaneToggleButton.Visibility" Value="Visible" />
+                    <Setter Target="PART_PaneToggleButton.Foreground" Value="{ThemeResource TitleBarDeactivatedForegroundBrush}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="LeftHeaderGroup">
+                <VisualState x:Name="LeftHeaderCollapsed" />
+                <VisualState x:Name="LeftHeaderVisible">
+                  <VisualState.Setters>
+                    <Setter Target="PART_LeftHeaderPresenter.Visibility" Value="Visible" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="LeftHeaderDeactivated">
+                  <VisualState.Setters>
+                    <Setter Target="PART_LeftHeaderPresenter.Visibility" Value="Visible" />
+                    <Setter Target="PART_LeftHeaderPresenter.Opacity" Value="{ThemeResource TitleBarDeactivatedOpacity}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="IconGroup">
+                <VisualState x:Name="IconCollapsed" />
+                <VisualState x:Name="IconVisible">
+                  <VisualState.Setters>
+                    <Setter Target="PART_Icon.Visibility" Value="Visible" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="IconDeactivated">
+                  <VisualState.Setters>
+                    <Setter Target="PART_Icon.Visibility" Value="Visible" />
+                    <Setter Target="PART_Icon.Opacity" Value="{ThemeResource TitleBarDeactivatedOpacity}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="TitleTextGroup">
+                <VisualState x:Name="TitleTextCollapsed" />
+                <VisualState x:Name="TitleTextVisible">
+                  <VisualState.Setters>
+                    <Setter Target="PART_TitleText.Visibility" Value="Visible" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="TitleTextDeactivated">
+                  <VisualState.Setters>
+                    <Setter Target="PART_TitleText.Visibility" Value="Visible" />
+                    <Setter Target="PART_TitleText.Foreground" Value="{ThemeResource TitleBarDeactivatedForegroundBrush}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="SubtitleTextGroup">
+                <VisualState x:Name="SubtitleTextCollapsed" />
+                <VisualState x:Name="SubtitleTextVisible">
+                  <VisualState.Setters>
+                    <Setter Target="PART_SubtitleText.Visibility" Value="Visible" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="SubtitleTextDeactivated">
+                  <VisualState.Setters>
+                    <Setter Target="PART_SubtitleText.Visibility" Value="Visible" />
+                    <Setter Target="PART_SubtitleText.Foreground" Value="{ThemeResource TitleBarSubtitleDeactivatedForegroundBrush}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="ContentGroup">
+                <VisualState x:Name="ContentCollapsed" />
+                <VisualState x:Name="ContentVisible">
+                  <VisualState.Setters>
+                    <Setter Target="PART_ContentPresenterGrid.Visibility" Value="Visible" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="ContentDeactivated">
+                  <VisualState.Setters>
+                    <Setter Target="PART_ContentPresenterGrid.Visibility" Value="Visible" />
+                    <Setter Target="PART_ContentPresenterGrid.Opacity" Value="{ThemeResource TitleBarDeactivatedOpacity}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="RightHeaderGroup">
+                <VisualState x:Name="RightHeaderCollapsed" />
+                <VisualState x:Name="RightHeaderVisible">
+                  <VisualState.Setters>
+                    <Setter Target="PART_RightHeaderPresenter.Visibility" Value="Visible" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="RightHeaderDeactivated">
+                  <VisualState.Setters>
+                    <Setter Target="PART_RightHeaderPresenter.Visibility" Value="Visible" />
+                    <Setter Target="PART_RightHeaderPresenter.Opacity" Value="{ThemeResource TitleBarDeactivatedOpacity}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="HeightGroup">
+                <VisualState x:Name="CompactHeight" />
+                <VisualState x:Name="ExpandedHeight">
+                  <VisualState.Setters>
+                    <Setter Target="PART_LayoutRoot.Height" Value="{ThemeResource TitleBarExpandedHeight}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="DisplayModeGroup">
+                <VisualState x:Name="Expanded" />
+                <VisualState x:Name="Compact">
+                  <VisualState.Setters>
+                    <Setter Target="PART_TitleText.Visibility" Value="Collapsed" />
+                    <Setter Target="PART_SubtitleText.Visibility" Value="Collapsed" />
+                    <Setter Target="PART_ContentPresenter.HorizontalAlignment" Value="Left" />
+                    <Setter Target="PART_ContentPresenter.Margin" Value="{ThemeResource TitleBarCompactContentMargin}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="LeftHeaderSpacingGroup">
+                <VisualState x:Name="DefaultSpacing" />
+                <VisualState x:Name="NegativeInsetSpacing">
+                  <VisualState.Setters>
+                    <Setter Target="LeftHeaderPaddingColumn.Width" Value="{ThemeResource TitleBarHeaderNegativeInsetPaddingWidth}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <Grid.ColumnDefinitions>
+              <!-- 0: Left Padding Column-->
+              <ColumnDefinition x:Name="LeftPaddingColumn" Width="{ThemeResource TitleBarLeftPaddingWidth}" />
+              <!-- 1: Back Button -->
+              <ColumnDefinition Width="Auto" />
+              <!-- 2: Pane Toggle Button -->
+              <ColumnDefinition Width="Auto" />
+              <!-- 3: Left Header Presenter -->
+              <ColumnDefinition Width="Auto" />
+              <!-- 4: Left Header Padding Column -->
+              <ColumnDefinition x:Name="LeftHeaderPaddingColumn" Width="{ThemeResource TitleBarLeftHeaderPaddingWidth}" />
+              <!-- 5: Icon -->
+              <ColumnDefinition Width="Auto" />
+              <!-- 6: Title -->
+              <ColumnDefinition Width="Auto" />
+              <!-- 7: Subtitle -->
+              <ColumnDefinition Width="Auto" />
+              <!-- 8: Content Presenter -->
+              <ColumnDefinition Width="*" />
+              <!-- 9: Right Header Presenter -->
+              <ColumnDefinition Width="Auto" />
+              <!-- 10: Min Drag Region -->
+              <ColumnDefinition Width="{ThemeResource TitleBarMinDragRegionWidth}" />
+              <!-- 11: Right Padding Column -->
+              <ColumnDefinition x:Name="RightPaddingColumn" Width="{ThemeResource TitleBarRightPaddingWidth}" />
+            </Grid.ColumnDefinitions>
+            <Button x:Name="PART_BackButton" x:DeferLoadStrategy="Lazy" Visibility="Collapsed" Grid.Column="1" Style="{ThemeResource TitleBarBackButtonStyle}" IsEnabled="{TemplateBinding IsBackButtonEnabled}" ToolTipService.ToolTip="Back" />
+            <Button x:Name="PART_PaneToggleButton" x:DeferLoadStrategy="Lazy" Visibility="Collapsed" Grid.Column="2" Style="{ThemeResource TitleBarPaneToggleButtonStyle}" ToolTipService.ToolTip="Navigation" />
+            <ContentPresenter x:Name="PART_LeftHeaderPresenter" x:DeferLoadStrategy="Lazy" Visibility="Collapsed" Grid.Column="3" Content="{TemplateBinding LeftHeader}" HorizontalAlignment="{ThemeResource TitleBarLeftHeaderHorizontalAlignment}" VerticalAlignment="{ThemeResource TitleBarLeftHeaderVerticalAlignment}" />
+            <Viewbox x:Name="PART_Icon" x:DeferLoadStrategy="Lazy" Visibility="Collapsed" Grid.Column="5" VerticalAlignment="Center" MaxWidth="{ThemeResource TitleBarIconMaxWidth}" MaxHeight="{ThemeResource TitleBarIconMaxHeight}" Margin="{ThemeResource TitleBarIconMargin}" Child="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.IconElement}" />
+            <TextBlock x:Name="PART_TitleText" x:DeferLoadStrategy="Lazy" Visibility="Collapsed" Grid.Column="6" Text="{TemplateBinding Title}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{TemplateBinding Foreground}" Margin="{ThemeResource TitleBarTitleMargin}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" HorizontalAlignment="Left" VerticalAlignment="Center" MinWidth="{ThemeResource TitleBarTitleMinWidth}" />
+            <TextBlock x:Name="PART_SubtitleText" x:DeferLoadStrategy="Lazy" Visibility="Collapsed" Grid.Column="7" Text="{TemplateBinding Subtitle}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TitleBarSubtitleForegroundBrush}" Margin="{ThemeResource TitleBarSubtitleMargin}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" HorizontalAlignment="Left" VerticalAlignment="Center" MinWidth="{ThemeResource TitleBarSubtitleMinWidth}" />
+            <Grid x:Name="PART_ContentPresenterGrid" x:DeferLoadStrategy="Lazy" Visibility="Collapsed" Grid.Column="8">
+              <ContentPresenter x:Name="PART_ContentPresenter" Content="{TemplateBinding Content}" HorizontalAlignment="{ThemeResource TitleBarContentHorizontalAlignment}" VerticalAlignment="{ThemeResource TitleBarContentVerticalAlignment}" />
+            </Grid>
+            <ContentPresenter x:Name="PART_RightHeaderPresenter" x:DeferLoadStrategy="Lazy" Visibility="Collapsed" Grid.Column="9" Content="{TemplateBinding RightHeader}" HorizontalAlignment="{ThemeResource TitleBarRightHeaderHorizontalAlignment}" VerticalAlignment="{ThemeResource TitleBarRightHeaderVerticalAlignment}" />
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <x:Double x:Key="TitleBarCompactHeight">32</x:Double>
+  <x:Double x:Key="TitleBarExpandedHeight">48</x:Double>
+  <x:Double x:Key="TitleBarBackButtonWidth">40</x:Double>
+  <x:Double x:Key="TitleBarPaneToggleButtonWidth">40</x:Double>
+  <x:Double x:Key="TitleBarLeftPaddingWidth">2</x:Double>
+  <x:Double x:Key="TitleBarRightPaddingWidth">0</x:Double>
+  <x:Double x:Key="TitleBarLeftHeaderPaddingWidth">14</x:Double>
+  <x:Double x:Key="TitleBarHeaderNegativeInsetPaddingWidth">2</x:Double>
+  <x:Double x:Key="TitleBarMinDragRegionWidth">48</x:Double>
+  <x:Double x:Key="TitleBarDeactivatedOpacity">0.5</x:Double>
+  <Thickness x:Key="TitleBarCompactContentMargin">0,0,16,0</Thickness>
+  <x:Double x:Key="TitleBarIconMaxWidth">16</x:Double>
+  <x:Double x:Key="TitleBarIconMaxHeight">16</x:Double>
+  <x:Double x:Key="TitleBarTitleMinWidth">0</x:Double>
+  <x:Double x:Key="TitleBarSubtitleMinWidth">0</x:Double>
+  <Thickness x:Key="TitleBarIconMargin">0,0,16,0</Thickness>
+  <Thickness x:Key="TitleBarTitleMargin">0,0,8,0</Thickness>
+  <Thickness x:Key="TitleBarSubtitleMargin">0,0,16,0</Thickness>
+  <HorizontalAlignment x:Key="TitleBarLeftHeaderHorizontalAlignment">Left</HorizontalAlignment>
+  <VerticalAlignment x:Key="TitleBarLeftHeaderVerticalAlignment">Center</VerticalAlignment>
+  <HorizontalAlignment x:Key="TitleBarContentHorizontalAlignment">Center</HorizontalAlignment>
+  <VerticalAlignment x:Key="TitleBarContentVerticalAlignment">Center</VerticalAlignment>
+  <HorizontalAlignment x:Key="TitleBarRightHeaderHorizontalAlignment">Right</HorizontalAlignment>
+  <VerticalAlignment x:Key="TitleBarRightHeaderVerticalAlignment">Center</VerticalAlignment>
+  <Style x:Key="TitleBarBackButtonStyle" TargetType="Button">
+    <Setter Property="Background" Value="{ThemeResource TitleBarBackButtonBackground}" />
+    <Setter Property="Foreground" Value="{ThemeResource TitleBarBackButtonForeground}" />
+    <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
+    <Setter Property="FontSize" Value="16" />
+    <Setter Property="Width" Value="{ThemeResource TitleBarBackButtonWidth}" />
+    <Setter Property="VerticalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+    <Setter Property="Content" Value="&#xE72B;" />
+    <Setter Property="Margin" Value="2" />
+    <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="Button">
+          <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}">
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal" />
+                <VisualState x:Name="PointerOver">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarBackButtonBackgroundPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarBackButtonForegroundPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                  <VisualState.Setters>
+                    <Setter Target="Content.(AnimatedIcon.State)" Value="PointerOver" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Pressed">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarBackButtonBackgroundPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarBackButtonForegroundPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                  <VisualState.Setters>
+                    <Setter Target="Content.(AnimatedIcon.State)" Value="Pressed" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Disabled">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarBackButtonBackgroundDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarBackButtonForegroundDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <controls:AnimatedIcon x:Name="Content" Height="16" Width="16" controls:AnimatedIcon.State="Normal" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw">
+              <animatedvisuals:AnimatedBackVisualSource />
+              <controls:AnimatedIcon.FallbackIconSource>
+                <controls:FontIconSource FontSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontSize}" FontFamily="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontFamily}" Glyph="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" MirroredWhenRightToLeft="True" />
+              </controls:AnimatedIcon.FallbackIconSource>
+            </controls:AnimatedIcon>
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <Style x:Key="TitleBarPaneToggleButtonStyle" TargetType="Button">
+    <Setter Property="Background" Value="{ThemeResource TitleBarPaneToggleButtonBackground}" />
+    <Setter Property="Foreground" Value="{ThemeResource TitleBarPaneToggleButtonForeground}" />
+    <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
+    <Setter Property="FontSize" Value="16" />
+    <Setter Property="Width" Value="{ThemeResource TitleBarPaneToggleButtonWidth}" />
+    <Setter Property="VerticalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+    <Setter Property="Content" Value="&#xE700;" />
+    <Setter Property="Margin" Value="2" />
+    <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="Button">
+          <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}">
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal" />
+                <VisualState x:Name="PointerOver">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarPaneToggleButtonBackgroundPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarPaneToggleButtonForegroundPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                  <VisualState.Setters>
+                    <Setter Target="Content.(AnimatedIcon.State)" Value="PointerOver" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Pressed">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarPaneToggleButtonBackgroundPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarPaneToggleButtonForegroundPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                  <VisualState.Setters>
+                    <Setter Target="Content.(AnimatedIcon.State)" Value="Pressed" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Disabled">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarPaneToggleButtonBackgroundDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarPaneToggleButtonForegroundDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <controls:AnimatedIcon x:Name="Content" Height="16" Width="16" controls:AnimatedIcon.State="Normal" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw">
+              <animatedvisuals:AnimatedGlobalNavigationButtonVisualSource />
+              <controls:AnimatedIcon.FallbackIconSource>
+                <controls:FontIconSource FontSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontSize}" FontFamily="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontFamily}" Glyph="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" MirroredWhenRightToLeft="True" />
+              </controls:AnimatedIcon.FallbackIconSource>
+            </controls:AnimatedIcon>
+          </Grid>
         </ControlTemplate>
       </Setter.Value>
     </Setter>
