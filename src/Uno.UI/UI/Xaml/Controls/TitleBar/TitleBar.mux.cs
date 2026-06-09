@@ -77,9 +77,10 @@ partial class TitleBar
 
 		if (appWindowId.Value != 0)
 		{
-			m_inputActivationListener = InputActivationListener.GetForWindowId(appWindowId);
-			m_inputActivationListener.InputActivationChanged += OnInputActivationChanged;
-			m_inputActivationChangedToken.Disposable = Disposable.Create(() => m_inputActivationListener.InputActivationChanged -= OnInputActivationChanged);
+			var inputActivationListener = InputActivationListener.GetForWindowId(appWindowId);
+			m_inputActivationListener = inputActivationListener;
+			inputActivationListener.InputActivationChanged += OnInputActivationChanged;
+			m_inputActivationChangedToken.Disposable = Disposable.Create(() => inputActivationListener.InputActivationChanged -= OnInputActivationChanged);
 		}
 
 		UpdateHeight();
