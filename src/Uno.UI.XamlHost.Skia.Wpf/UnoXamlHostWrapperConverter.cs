@@ -17,17 +17,17 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 	/// </summary>
 	public class UnoXamlHostWrapperConverter : IValueConverter, Microsoft.UI.Xaml.Data.IValueConverter
 	{
-		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, CultureInfo culture)
 		{
 			return (value as Microsoft.UI.Xaml.UIElement)?.GetWrapper();
 		}
 
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, CultureInfo culture)
 		{
 			throw new NotImplementedException();
 		}
 
-		public object Convert(object value, Type targetType, object parameter, string language)
+		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			return (value as UnoXamlHostBase)?.GetUwpInternalObject();
 		}

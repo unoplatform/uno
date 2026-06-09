@@ -9,7 +9,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 {
 	public class InverseBoolConverter : IValueConverter
 	{
-		public object Convert(object value, System.Type targetType, object parameter, string language)
+		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] System.Type targetType, object parameter, string language)
 		{
 			if (value is bool)
 			{
@@ -19,7 +19,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 			return null;
 		}
 
-		public object ConvertBack(object value, System.Type targetType, object parameter, string language)
+		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] System.Type targetType, object parameter, string language)
 		{
 			if (value is bool)
 			{

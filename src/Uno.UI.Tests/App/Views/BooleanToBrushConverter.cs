@@ -13,7 +13,7 @@ namespace Uno.UI.Tests.App.Views
 		public Brush TrueValue { get; set; }
 		public Brush FalseValue { get; set; }
 
-		public object Convert(object value, Type targetType, object parameter, string language)
+		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			if (value is bool b)
 			{
@@ -24,7 +24,7 @@ namespace Uno.UI.Tests.App.Views
 			return null;
 		}
 
-		public object ConvertBack(object value, Type targetType, object parameter, string language)
+		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			throw new NotSupportedException();
 		}

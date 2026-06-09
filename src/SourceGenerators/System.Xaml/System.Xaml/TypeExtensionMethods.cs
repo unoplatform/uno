@@ -33,7 +33,10 @@ using Uno.Xaml.Schema;
 
 namespace Uno.Xaml
 {
+	[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Types manipulated here have been marked earlier")]
 	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Types manipulated here have been marked earlier")]
+	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Types manipulated here have been marked earlier")]
 	static class TypeExtensionMethods
 	{
 		#region inheritance search and custom attribute provision

@@ -11,8 +11,6 @@ namespace Uno.UI.Samples.Converters
 {
 	public class FromNullableToDefaultValueConverter : IValueConverter
 	{
-		private const DynamicallyAccessedMemberTypes ActivatorRequirements = DynamicallyAccessedMemberTypes.PublicParameterlessConstructor;
-
 		public FromNullableToDefaultValueConverter()
 		{
 			ValueIfNull = null;
@@ -23,7 +21,7 @@ namespace Uno.UI.Samples.Converters
 
 		public object ValueIfNotNull { get; set; }
 
-		public object Convert(object value, [DynamicallyAccessedMembers(ActivatorRequirements)] Type targetType, object parameter, string language)
+		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			if (parameter != null)
 			{
@@ -40,7 +38,7 @@ namespace Uno.UI.Samples.Converters
 			}
 		}
 
-		private static object GetDefaultValue([DynamicallyAccessedMembers(ActivatorRequirements)] Type targetType)
+		private static object GetDefaultValue([DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType)
 		{
 #if SILVERLIGHT
 			return targetType.IsValueType ?
@@ -51,6 +49,6 @@ namespace Uno.UI.Samples.Converters
 				null;
 		}
 
-		public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
+		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language) => throw new NotImplementedException();
 	}
 }

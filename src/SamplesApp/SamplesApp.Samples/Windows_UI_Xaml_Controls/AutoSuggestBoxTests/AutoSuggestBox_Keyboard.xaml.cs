@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -72,7 +73,7 @@ public class AutoSuggestConverter : IValueConverter
 {
 	public AutoSuggestBox AutoSuggestBox { get; set; }
 
-	public object Convert(object value, Type targetType, object parameter, string language)
+	public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 	{
 		if (value == null)
 			return null;
@@ -80,7 +81,7 @@ public class AutoSuggestConverter : IValueConverter
 		return value.ToString();
 	}
 
-	public object ConvertBack(object value, Type targetType, object parameter, string language)
+	public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 	{
 		var result = (AutoSuggestBox?.ItemsSource as IList)?.Cast<object>().FirstOrDefault(i => i.ToString() == (value as string));
 		return result;

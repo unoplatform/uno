@@ -2,6 +2,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 
@@ -11,13 +12,13 @@ public class BindingShouldBeAppliedOnPropertyChangedEventConverter : IValueConve
 {
 	public int ConvertCount { get; private set; }
 
-	public object? Convert(object? value, Type targetType, object parameter, string language)
+	public object? Convert(object? value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 	{
 		ConvertCount++;
 		return value is BindingShouldBeAppliedOnPropertyChangedEventValueHolder holder ? holder.Value : null;
 	}
 
-	public object ConvertBack(object value, Type targetType, object parameter, string language)
+	public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 		=> throw new NotSupportedException();
 }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -33,12 +34,12 @@ namespace UITests.Shared.Resources.StaticResource
 
 		private class HelloConverter : IValueConverter
 		{
-			public object Convert(object value, Type targetType, object parameter, string language)
+			public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 			{
 				return "Hello Converter!";
 			}
 
-			public object ConvertBack(object value, Type targetType, object parameter, string language)
+			public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 			{
 				return "Hello Converter!";
 			}

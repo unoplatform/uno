@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Microsoft.UI.Xaml.Data;
 
@@ -14,19 +15,19 @@ namespace Uno.UI.Converters
 
 	public abstract class ConverterBase : IValueConverter
 	{
-		object IValueConverter.Convert(object value, Type targetType, object parameter, GenericCulture culture)
+		object IValueConverter.Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, GenericCulture culture)
 		{
 			return Convert(value, targetType, parameter);
 		}
 
-		protected abstract object Convert(object value, Type targetType, object parameter);
+		protected abstract object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter);
 
-		object IValueConverter.ConvertBack(object value, Type targetType, object parameter, GenericCulture culture)
+		object IValueConverter.ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, GenericCulture culture)
 		{
 			return ConvertBack(value, targetType, parameter);
 		}
 
-		protected virtual object ConvertBack(object value, Type targetType, object parameter)
+		protected virtual object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter)
 		{
 			throw new NotSupportedException();
 		}

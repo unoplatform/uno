@@ -71,7 +71,7 @@ namespace Uno.UI.Tests.BinderTests.Inversion
 		public int ConvertBackCallCount { get; private set; }
 		public int ConvertCallCount { get; private set; }
 
-		public object Convert(object value, Type targetType, object parameter, string language)
+		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			ConvertCallCount++;
 
@@ -87,7 +87,7 @@ namespace Uno.UI.Tests.BinderTests.Inversion
 			}
 		}
 
-		public object ConvertBack(object value, Type targetType, object parameter, string language)
+		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			ConvertBackCallCount++;
 

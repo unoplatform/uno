@@ -15,6 +15,7 @@ namespace Microsoft.UI.Xaml.Data
 {
 	public partial class BindingExpression : IDisposable
 	{
+		[DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)]
 		private readonly Type _boundPropertyType;
 		private readonly ManagedWeakReference _view;
 		private readonly Type _targetOwnerType;
@@ -210,7 +211,10 @@ namespace Microsoft.UI.Xaml.Data
 				// Convert if necessary
 				if (ParentBinding.Converter != null)
 				{
-					value = ParentBinding.Converter.ConvertBack(
+					value = ConvertBack();
+
+					[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "")]
+					object ConvertBack() => ParentBinding.Converter.ConvertBack(
 						value,
 						_bindingPath.ValueType,
 						ParentBinding.ConverterParameter,

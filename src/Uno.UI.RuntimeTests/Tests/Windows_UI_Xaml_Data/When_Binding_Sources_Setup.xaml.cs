@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 
@@ -14,6 +15,6 @@ public sealed partial class When_Binding_Sources_Setup : Button
 
 public partial class When_Binding_Sources_Setup_DebugConverter : IValueConverter
 {
-	public object Convert(object value, Type targetType, object parameter, string language) => value;
-	public object ConvertBack(object value, Type targetType, object parameter, string language) => value;
+	public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language) => value;
+	public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language) => value;
 }

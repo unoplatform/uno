@@ -166,12 +166,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 	{
 		protected override object ProvideValue() => this;
 
-		public object Convert(object value, Type targetType, object parameter, string language)
+		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			return !(bool)(value ?? false);
 		}
 
-		public object ConvertBack(object value, Type targetType, object parameter, string language)
+		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			return !(bool)(value ?? false);
 		}

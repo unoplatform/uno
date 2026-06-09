@@ -37,8 +37,8 @@ namespace Uno.UI.Tests.App.Xaml
 		public List<MyConverterItem> Values { get; } = new List<MyConverterItem>();
 		public object Value { get; set; }
 
-		public object Convert(object value, Type targetType, object parameter, string language) => Values[0].Value;
-		public object ConvertBack(object value, Type targetType, object parameter, string language) => Values[0].Value;
+		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language) => Values[0].Value;
+		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language) => Values[0].Value;
 	}
 
 	public class MyConverterItem

@@ -25,6 +25,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Windows.Markup;
@@ -36,6 +37,7 @@ using System.Globalization;
 
 namespace Uno.Xaml
 {
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Types manipulated here have been marked earlier")]
 	internal class XamlObjectNodeIterator
 	{
 		static readonly XamlObject null_object = new XamlObject (XamlLanguage.Null, null);

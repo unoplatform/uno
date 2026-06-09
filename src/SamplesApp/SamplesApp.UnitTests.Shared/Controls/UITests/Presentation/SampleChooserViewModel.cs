@@ -804,12 +804,12 @@ namespace SampleControl.Presentation
 			var samples =
 				from sample in _allSamples
 				let sampleAttribute = FindSampleAttribute(sample.Type)
-				select (type: sample.Type, sampleAttribute);
+				select (sample, sampleAttribute);
 
 			// Group samples into categories.
 			var categories =
 				from sample in samples
-				let content = GetContent(sample.type, sample.sampleAttribute)
+				let content = GetContent(sample.sample.Type, sample.sampleAttribute)
 				from category in content.Categories
 				group content by category into contentByCategory
 				orderby contentByCategory.Key.ToLower(CultureInfo.CurrentUICulture)
@@ -825,7 +825,7 @@ namespace SampleControl.Presentation
 			UpdateCategoryList();
 		}
 
-		private static SampleChooserContent GetContent(Type type)
+		private static SampleChooserContent GetContent([DynamicallyAccessedMembers(SampleRequirements)] Type type)
 			=> GetContent(type, FindSampleAttribute(type));
 
 		private static SampleChooserContent GetContent([DynamicallyAccessedMembers(SampleRequirements)] Type type, SampleAttribute attribute)

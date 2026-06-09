@@ -427,7 +427,7 @@ public class Given_Binding
 					{
 						internal class NullableBoolConverter : IValueConverter
 						{
-							public object Convert(object value, Type targetType, object parameter, string language)
+							public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 							{
 								if (value == null || value is bool b && b == false)
 								{
@@ -437,7 +437,7 @@ public class Given_Binding
 								return true;
 							}
 
-							public object ConvertBack(object value, Type targetType, object parameter, string language)
+							public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 							{
 								if (value == null || value is bool b && b == false)
 								{
@@ -503,7 +503,7 @@ public class Given_Binding
 					{
 						internal class NullableBoolConverter : IValueConverter
 						{
-							public object Convert(object value, Type targetType, object parameter, string language)
+							public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 							{
 								if (value == null || value is bool b && b == false)
 								{
@@ -513,7 +513,7 @@ public class Given_Binding
 								return true;
 							}
 
-							public object ConvertBack(object value, Type targetType, object parameter, string language)
+							public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 							{
 								if (value == null || value is bool b && b == false)
 								{

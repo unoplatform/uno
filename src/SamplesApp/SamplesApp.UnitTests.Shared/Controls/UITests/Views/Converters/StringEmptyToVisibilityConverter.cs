@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text;
 using Microsoft.UI.Xaml;
@@ -18,7 +19,7 @@ namespace Uno.UI.Samples.Converters
 
 		public Visibility ValueIfNotEmpty { get; set; } = Visibility.Visible;
 
-		public object Convert(object value, Type targetType, object parameter, string language)
+		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			if (parameter != null)
 			{
@@ -35,6 +36,6 @@ namespace Uno.UI.Samples.Converters
 			}
 		}
 
-		public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
+		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language) => throw new NotImplementedException();
 	}
 }

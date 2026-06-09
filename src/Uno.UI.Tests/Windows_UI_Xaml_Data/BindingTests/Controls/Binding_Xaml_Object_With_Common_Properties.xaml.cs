@@ -31,12 +31,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 
 	public sealed class Binding_Xaml_Object_With_Common_Properties_Return_Value_Converter : IValueConverter
 	{
-		public object Convert(object value, Type targetType, object parameter, string language)
+		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			return value;
 		}
 
-		public object ConvertBack(object value, Type targetType, object parameter, string language)
+		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			return value;
 		}

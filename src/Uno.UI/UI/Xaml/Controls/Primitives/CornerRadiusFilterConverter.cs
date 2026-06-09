@@ -5,6 +5,7 @@
 #nullable enable
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 
@@ -98,7 +99,7 @@ public partial class CornerRadiusFilterConverter : DependencyObject, IValueConve
 	/// <param name="parameter">An optional parameter to be used in the converter logic. Part of the IValueConverter.Convert interface method, but not used.</param>
 	/// <param name="language">The language of the conversion. Part of the IValueConverter.Convert interface method, but not used.</param>
 	/// <returns>The converted CornerRadius/double value to be passed to the target dependency property.</returns>
-	public object? Convert(object? value, Type targetType, object? parameter, string language)
+	public object? Convert(object? value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object? parameter, string language)
 	{
 		if (value is CornerRadius cornerRadius)
 		{
@@ -128,6 +129,6 @@ public partial class CornerRadiusFilterConverter : DependencyObject, IValueConve
 	/// Not implemented.
 	/// </summary>
 	/// <exception cref="NotImplementedException">Always thrown when called.</exception>
-	public object? ConvertBack(object? value, Type targetType, object? parameter, string language) =>
+	public object? ConvertBack(object? value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object? parameter, string language) =>
 		throw new NotImplementedException();
 }

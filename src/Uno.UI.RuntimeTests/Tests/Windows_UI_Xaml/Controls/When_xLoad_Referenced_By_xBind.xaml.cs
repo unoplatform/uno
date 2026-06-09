@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 
@@ -14,7 +15,7 @@ public sealed partial class When_xLoad_Referenced_By_xBind : Page
 
 internal class NullableBoolConverter : IValueConverter
 {
-	public object Convert(object value, Type targetType, object parameter, string language)
+	public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 	{
 		if (value == null || value is bool b && b == false)
 		{
@@ -24,7 +25,7 @@ internal class NullableBoolConverter : IValueConverter
 		return true;
 	}
 
-	public object ConvertBack(object value, Type targetType, object parameter, string language)
+	public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 	{
 		if (value == null || value is bool b && b == false)
 		{

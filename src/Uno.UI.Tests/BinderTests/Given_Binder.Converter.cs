@@ -80,7 +80,7 @@ namespace Uno.UI.Tests.BinderTests
 
 		internal class EnumStringConverter : IValueConverter
 		{
-			public object? Convert(object value, Type targetType, object parameter, string language)
+			public object? Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 			{
 				if (value is Enum e)
 				{
@@ -88,7 +88,7 @@ namespace Uno.UI.Tests.BinderTests
 				}
 				return null;
 			}
-			public object ConvertBack(object value, Type targetType, object parameter, string language)
+			public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 			{
 				if (value is string s && targetType.IsEnum)
 				{
@@ -102,9 +102,9 @@ namespace Uno.UI.Tests.BinderTests
 		{
 			public Func<object, object?> OutputValue { get; set; } = o => null;
 
-			public object? Convert(object value, Type targetType, object parameter, string language) => OutputValue(value);
+			public object? Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language) => OutputValue(value);
 
-			public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
+			public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language) => throw new NotImplementedException();
 		}
 
 		public partial class MyControl : DependencyObject

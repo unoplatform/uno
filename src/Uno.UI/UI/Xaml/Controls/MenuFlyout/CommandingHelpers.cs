@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
@@ -15,7 +16,7 @@ public class CommandingHelpers
 {
 	class IconSourceToIconSourceElementConverter : IValueConverter
 	{
-		public object Convert(object value, Type targetType, object parameter, string language)
+		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			if (value != null)
 			{
@@ -36,7 +37,7 @@ public class CommandingHelpers
 			}
 		}
 
-		public object ConvertBack(object value, Type targetType, object parameter, string language)
+		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			throw new NotImplementedException();
 		}
@@ -52,7 +53,7 @@ public class CommandingHelpers
 			_targetWeakRef = targetWeakRef;
 		}
 
-		public object Convert(object value, Type targetType, object parameter, string language)
+		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			if (value != null && _targetWeakRef is not null && _targetWeakRef.IsAlive && _targetWeakRef.Target is DependencyObject element)
 			{
@@ -99,7 +100,7 @@ public class CommandingHelpers
 			}
 		}
 
-		public object ConvertBack(object value, Type targetType, object parameter, string language)
+		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			throw new NotImplementedException();
 		}
