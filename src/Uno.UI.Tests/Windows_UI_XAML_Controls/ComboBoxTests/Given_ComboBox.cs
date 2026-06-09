@@ -67,8 +67,14 @@ namespace Uno.UI.Tests.ComboBoxTests
 			};
 
 			comboBox.ApplyTemplate();
+			comboBox.ForceLoaded();
 
 			comboBox.IsDropDownOpen = true;
+
+			// The popup-hosted ItemsPresenter enters the tree on open; the unit-test host has
+			// no render loop to drive its enhanced-lifecycle Loaded, so raise it explicitly.
+			// ItemsPresenter.OnLoaded then walks up to the ComboBox and calls SetItemsPresenter.
+			itemsPresenter.ForceLoaded();
 
 			Assert.IsNotNull(comboBox.InternalItemsPanelRoot);
 			Assert.IsNotNull(comboBox.ItemsPanelRoot);
