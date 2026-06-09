@@ -56,6 +56,15 @@ internal static class TestExtensions
 			s_onFwEltLoading?.Invoke(fe, null);
 		}
 
+		// Under the enhanced Skia lifecycle a Control's template is applied during the measure
+		// pass, which ForceLoaded intentionally does not run. Apply it explicitly so templated
+		// content (ContentPresenter children, x:Bind targets, named elements) materializes and
+		// can be loaded, without populating layout-derived values. EnsureTemplate is idempotent.
+		if (element is Microsoft.UI.Xaml.Controls.Control control)
+		{
+			control.EnsureTemplate();
+		}
+
 		element.RaiseLoaded();
 
 		var count = VisualTreeHelper.GetChildrenCount(element);

@@ -418,8 +418,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			control.Measure(new Size(1000, 2000));
 
-			Assert.AreEqual(System_AppBarThemeCompactHeight, control.TestCommandBar.TemplateSettings.CompactVerticalDelta);
-			Assert.AreEqual(System_AppBarThemeCompactHeight, control.TestCommandBar2.TemplateSettings.CompactVerticalDelta);
+			// CompactVerticalDelta = m_compactHeight - contentHeight and HiddenVerticalDelta =
+			// -contentHeight, so their difference recovers the resolved AppBarThemeCompactHeight
+			// independently of the now laid-out content height (it was 0 under the old mock).
+			Assert.AreEqual(System_AppBarThemeCompactHeight, control.TestCommandBar.TemplateSettings.CompactVerticalDelta - control.TestCommandBar.TemplateSettings.HiddenVerticalDelta);
+			Assert.AreEqual(System_AppBarThemeCompactHeight, control.TestCommandBar2.TemplateSettings.CompactVerticalDelta - control.TestCommandBar2.TemplateSettings.HiddenVerticalDelta);
 		}
 
 		[TestMethod]
@@ -437,8 +440,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 				control.Measure(new Size(1000, 2000));
 
-				Assert.AreEqual(17, control.TestCommandBar.TemplateSettings.CompactVerticalDelta);
-				Assert.AreEqual(17, control.TestCommandBar2.TemplateSettings.CompactVerticalDelta);
+				// See When_System_Resource_From_Template: subtract HiddenVerticalDelta to recover
+				// the overridden AppBarThemeCompactHeight independently of laid-out content height.
+				Assert.AreEqual(17, control.TestCommandBar.TemplateSettings.CompactVerticalDelta - control.TestCommandBar.TemplateSettings.HiddenVerticalDelta);
+				Assert.AreEqual(17, control.TestCommandBar2.TemplateSettings.CompactVerticalDelta - control.TestCommandBar2.TemplateSettings.HiddenVerticalDelta);
 			}
 			finally
 			{
