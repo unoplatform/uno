@@ -2231,7 +2231,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		/// </summary>
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
 		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/475")]
 		public async Task When_Flyout_Opened_From_Inner_Light_Boundary_Resolves_Light_ThemeResource()
 		{
