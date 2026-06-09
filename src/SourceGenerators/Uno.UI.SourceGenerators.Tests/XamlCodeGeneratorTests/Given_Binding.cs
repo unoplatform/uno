@@ -420,6 +420,7 @@ public class Given_Binding
 				{
 					"""
 					﻿using System;
+					using System.Diagnostics.CodeAnalysis;
 					using Microsoft.UI.Xaml.Controls;
 					using Microsoft.UI.Xaml.Data;
 
@@ -496,6 +497,7 @@ public class Given_Binding
 				{
 					"""
 					﻿using System;
+					using System.Diagnostics.CodeAnalysis;
 					using Microsoft.UI.Xaml.Controls;
 					using Microsoft.UI.Xaml.Data;
 
