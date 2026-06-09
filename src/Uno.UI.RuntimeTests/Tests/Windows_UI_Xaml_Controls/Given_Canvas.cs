@@ -6,7 +6,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [RunsOnUIThread]
 public class Given_Canvas
 {
+	// Uno applies FrameworkPropertyMetadataOptions.AutoConvert, coercing string/int/float to the double
+	// property type in SetValue; native WinUI throws when the value type doesn't match, so this is Uno-only.
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_CanvasPropertyConvert()
 	{
 		var SUT = new Canvas();

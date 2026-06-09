@@ -9,7 +9,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [RunsOnUIThread]
 public class Given_Flyout_PropertyPropagation
 {
+	// Uno live-propagates the Flyout's AllowFocusOnInteraction/AllowFocusWhenDisabled to its content
+	// (Inherits metadata + FlyoutPresenter), re-applying them whenever the Flyout's values change. Native
+	// WinUI forwards these to the presenter only once during the open sequence (FlyoutBase.PrepareState) and
+	// not on later changes, so this propagation test is Uno-only.
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Focus_Properties_Set_On_Flyout_Propagate_To_Content()
 	{
 		var SUT = new Button();
