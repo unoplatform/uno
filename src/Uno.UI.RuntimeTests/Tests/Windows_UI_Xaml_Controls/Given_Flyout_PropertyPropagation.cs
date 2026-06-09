@@ -15,6 +15,7 @@ public class Given_Flyout_PropertyPropagation
 	// not on later changes, so this propagation test is Uno-only.
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23409")]
 	public async Task When_Focus_Properties_Set_On_Flyout_Propagate_To_Content()
 	{
 		var SUT = new Button();

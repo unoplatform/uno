@@ -10,6 +10,7 @@ public class Given_Canvas
 	// property type in SetValue; native WinUI throws when the value type doesn't match, so this is Uno-only.
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23409")]
 	public void When_CanvasPropertyConvert()
 	{
 		var SUT = new Canvas();

@@ -22,6 +22,7 @@ public class Given_Storyboard
 	// FillBehavior.HoldEnd leaves the clock in ClockState.Filling, so the final-state assertion is Uno-only.
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23409")]
 	public async Task When_UsingCompletedCallback()
 	{
 		var completedCount = 0;
