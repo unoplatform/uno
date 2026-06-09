@@ -92,25 +92,23 @@ If you’ve already set up **JetBrains Rider** by following the [Get Started on 
 
 ### Uno Platform Studio Pro 15-Day Trial
 
-The Community edition of **Uno Platform Studio** includes a 15-day trial of **Uno Platform Studio Pro**, which includes **Hot Design<sup>®</sup>**, **Hot Design<sup>®</sup> Agent**, and **Uno MCPs**. If your **Uno Platform Studio Pro** trial has expired, you’ll have the option to extend it directly from the Uno Studio Platform window—or, if you’re ready to upgrade, simply click **Purchase Now**. This will take you to the Uno Platform website, where you can choose your subscription plan and the number of licenses you need.
+When you create a free **Community** account, **Uno Platform Studio** includes a 15-day trial of **Uno Platform Studio Pro**. The trial unlocks the full Pro toolset, including the **[Uno Platform Studio App](xref:Uno.PlatformStudio.GetStarted)**, **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)**, and the **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)**. If your **Uno Platform Studio Pro** trial has expired, you’ll have the option to extend it directly from the Uno Platform Studio window, or, if you’re ready to upgrade, simply click **Purchase Now**. This will take you to the Uno Platform website, where you can choose your subscription plan and the number of licenses you need.
 
 ## Getting a Uno Platform Studio Pro License
 
-**Uno Platform Studio** revolutionizes how developers design, build, and iterate on their applications. When you purchase a **Uno Platform Studio Pro** license, you get full access to purpose-built tools that streamline your workflow:
+**Uno Platform Studio** revolutionizes how developers design, build, and iterate on their applications. A **Uno Platform Studio Pro** license unlocks the full suite of purpose-built tools that streamline your workflow:
 
-- **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)**: The industry-first, runtime visual designer, for cross-platform .NET Applications. Hot Design<sup>®</sup> transforms your running app into a Designer, from any IDE, on any OS, to create polished interfaces with ease. [Get started](xref:Uno.HotDesign.GetStarted.Guide)
-  
-- **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)**: An AI-powered assistant designed for rapid UX/UI creation and enhancement within your application. It leverages data contexts and live previews to help developers design, refine, and interact with user interfaces in real time. Built on deep knowledge of Uno Platform and your running app, it simplifies cross-platform .NET design, enabling intuitive and efficient workflows.[Learn more](xref:Uno.HotDesign.Agent)
+- **[Uno Platform Studio App](xref:Uno.PlatformStudio.GetStarted)**: Go from a prompt to a working, cross-platform Uno Platform app in minutes. Start from a description (or one of the curated samples in the Gallery), watch the app build live thanks to Hot Reload, refine it through the conversation panel, then export to your preferred IDE or CLI to keep building. App generation is powered by the **[Uno Platform Studio Agent](xref:Uno.PlatformStudio.Agent)**. [Get started](xref:Uno.PlatformStudio.GetStarted)
 
-- **[Uno MCPs](xref:Uno.Features.Uno.MCPs)**: Uno MCP connects AI agents and developers directly to Uno Platform’s complete knowledge base - documentation, APIs, and best practices with structured, semantic access. The App MCP is a local runtime service that allows AI agents and automation tools to intelligently interact with a live Uno Platform application. [Get started](xref:Uno.GetStarted)
+- **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)**: The industry-first, patented, runtime visual designer for cross-platform .NET applications. Hot Design<sup>®</sup> transforms your running app into a Designer, from any IDE, on any OS, to create polished interfaces with ease. [Get started](xref:Uno.HotDesign.GetStarted.Guide)
 
-- **[Hot Reload](xref:Uno.Features.HotReload)**  
-  Reliably update any code in your app and get instant confirmation your changes were applied, with a new Hot Reload Indicator to monitor changes while you develop. [Get started](xref:Uno.HotReload.GetStarted.Guide)
+- **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)**: An AI-powered assistant designed for rapid UX/UI creation and enhancement within your running app. It leverages your data contexts and live previews to help you design, refine, and interact with user interfaces in real time. [Learn more](xref:Uno.HotDesign.Agent)
 
-- **[Design-to-Code](xref:Uno.Figma.GetStarted)**
-  Generate ready-to-use, well-structured XAML or C# Markup directly from your Figma designs with one click, completely eliminating manual design handoff. [Get started](xref:Uno.Figma.GetStarted)
+- **[Design-to-Code](xref:Uno.Figma.GetStarted)**: Generate ready-to-use, well-structured XAML or C# Markup directly from your Figma designs with one click, completely eliminating manual design handoff. [Get started](xref:Uno.Figma.GetStarted)
 
-Check out [Compare Uno Platform Studio Community vs Pro plan](https://platform.uno/select-subscription/) to see what you gain by upgrading.
+The free **Community** plan already includes core productivity tools, such as **[Hot Reload](xref:Uno.Platform.Studio.HotReload.Overview)**, the Uno Toolkit, and unlimited access to the **[Uno Platform MCPs](xref:Uno.Features.Uno.MCPs)**, so you can be productive before you upgrade.
+
+Check out [Compare Uno Platform Studio Community vs Pro plan](https://platform.uno/select-subscription/) to see exactly what is included in each plan and what you gain by upgrading.
 
 > [!IMPORTANT]
 > Uno Platform itself remains open-source and free under Apache 2.0. The Pro subscription is specifically for Uno Platform Studio features.
@@ -128,13 +126,14 @@ Check out [Compare Uno Platform Studio Community vs Pro plan](https://platform.u
 
 ### Special Pricing
 
-- **Students and Open Source Maintainers**: Contact [info@platform.uno](mailto:info@platform.uno) for special pricing
-- **Enterprise/Custom Quotes**: Contact [info@platform.uno](mailto:info@platform.uno) for customized licensing
+- **Students, educators, and open-source maintainers**: Qualify for complimentary Pro licenses upon verification. Contact [info@platform.uno](mailto:info@platform.uno) to get started.
+- **Enterprise/Custom Quotes**: Enterprise customers can arrange purchase orders and invoicing. Contact [info@platform.uno](mailto:info@platform.uno) for customized licensing.
 
 ### Subscription Management
 
 - **Cancellation**: You can cancel your subscription anytime from your [account dashboard](https://platform.uno/my-account)
-- **Billing**: Invoices are sent to your registered email address
+- **Billing**: Invoices are sent to your registered email address. You can switch between monthly and yearly billing at any time, with no immediate charge.
+- **License management**: Add or remove seats at any time, and transfer seats between team members from the License Manager in your account dashboard. Licenses added mid-cycle are prorated, and removed licenses take effect immediately with charges adjusted at your next renewal.
 
 ## Assigning a Uno Platform Studio Pro License
 
