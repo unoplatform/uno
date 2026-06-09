@@ -8,7 +8,7 @@ paths:
 
 Build & run with the **`/runtime-tests`** skill. WinUI parity: `/winui-runtime-tests`.
 
-- Test class needs `[TestClass]`; add `[RunsOnUIThread]` to run on the UI thread — at the **class level** (applies to every method) or on individual **`[TestMethod]`s** (the more common pattern). Test methods are **`async Task`** (never `void`/sync) — `WaitForLoaded`/`WaitForIdle`/`ScreenShot` return `Task` and must be awaited, or the test races to a false pass.
+- Test class needs `[TestClass]`; add `[RunsOnUIThread]` to run on the UI thread — at the **class level** (applies to every method) or on individual **`[TestMethod]`s** (the more common pattern). A test that `await`s anything — `WaitForLoaded`/`WaitForIdle`/`ScreenShot`/`UITestHelper.Load` all return `Task` — **must** be `async Task` so the awaits are observed; otherwise it races to a false pass. A purely synchronous test (no `await` in its body — e.g. it only constructs objects and `Assert`s) should stay plain **`void`**; don't add `async Task` you never await.
 - **Folder mirrors the namespace with underscores**: a `Button` test goes in `Tests/Windows_UI_Xaml_Controls/Given_Button.cs`, namespace `Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls`. Class `Given_<Control>`, method `When_<Scenario>`.
 - **Add to the tree** with `await UITestHelper.Load(element)` (sets content, waits for load, returns bounds). Plain `WindowHelper.WindowContent = el` does **not** wait — follow with `await WindowHelper.WaitForLoaded(el)`.
 - **Always reset shared state in `finally`**: `WindowHelper.WindowContent = null`, `popup.IsOpen = false`, or `VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot)`. `[TestCleanup]` may be skipped on exceptions — use try-finally for anything critical.
