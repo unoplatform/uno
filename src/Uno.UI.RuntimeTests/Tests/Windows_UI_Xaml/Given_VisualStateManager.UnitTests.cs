@@ -1,3 +1,7 @@
+// These migrated tests exercise Uno-internal VisualStateManager behavior (a custom StateTrigger
+// subclass — StateTrigger is sealed in WinUI — plus FeatureConfiguration flags and Storyboard.State),
+// so the whole partial is Uno-only and excluded from the native WinAppSDK build.
+#if HAS_UNO
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -314,3 +318,4 @@ public partial class Given_VisualStateManager
 		}
 	}
 }
+#endif

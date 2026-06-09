@@ -4,6 +4,10 @@
 
 #nullable enable
 
+// These tests exercise the Uno-internal XYFocusTreeWalker helper, which has no public WinUI
+// equivalent, so the whole fixture is Uno-only and excluded from the native WinAppSDK build.
+#if HAS_UNO
+
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.UI.Xaml;
@@ -204,3 +208,4 @@ public class Given_XYFocusTreeWalker
 	{
 	}
 }
+#endif

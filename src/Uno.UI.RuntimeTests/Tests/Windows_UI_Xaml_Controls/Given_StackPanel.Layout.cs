@@ -1,3 +1,6 @@
+// LayoutSlotWithMarginsAndAlignments is an Uno-internal FrameworkElement property with no public
+// WinUI equivalent, so this migrated layout fixture is Uno-only and excluded from the native WinAppSDK build.
+#if HAS_UNO
 using System;
 using System.Linq;
 using AwesomeAssertions.Execution;
@@ -413,3 +416,4 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 	}
 }
+#endif

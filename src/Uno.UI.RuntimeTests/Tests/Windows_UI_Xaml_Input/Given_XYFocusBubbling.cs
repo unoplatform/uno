@@ -4,6 +4,10 @@
 
 #nullable enable
 
+// These tests exercise the Uno-internal XYFocusBubbling helper, which has no public WinUI
+// equivalent, so the whole fixture is Uno-only and excluded from the native WinAppSDK build.
+#if HAS_UNO
+
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -131,3 +135,4 @@ public class Given_XYFocusBubbling
 		Assert.AreEqual(elementLeft, retrieved);
 	}
 }
+#endif

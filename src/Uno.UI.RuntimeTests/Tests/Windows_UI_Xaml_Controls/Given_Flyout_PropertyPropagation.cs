@@ -51,6 +51,8 @@ public class Given_Flyout_PropertyPropagation
 		}
 	}
 
+	// flyout._popup is Uno-internal; WinUI exposes no public API for a Flyout's popup, so this test is Uno-only.
+#if HAS_UNO
 	[TestMethod]
 	public async Task When_Focus_Properties_Set_On_Flyout_Propagate_To_Popup()
 	{
@@ -93,4 +95,5 @@ public class Given_Flyout_PropertyPropagation
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 	}
+#endif
 }
