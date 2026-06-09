@@ -452,6 +452,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 
 			var border1 = r.FindName("border1") as Border;
 			r.ForceLoaded();
+
+			// The simulated test window is 1024 wide, so the MinWindowWidth=720 trigger is
+			// active at load. Start below the threshold to observe the inactive state (row 0).
+			Window.Current.SetWindowSize(new Windows.Foundation.Size(719, 100));
 			Assert.AreEqual(0, Grid.GetRow(border1));
 
 			Window.Current.SetWindowSize(new Windows.Foundation.Size(721, 100));

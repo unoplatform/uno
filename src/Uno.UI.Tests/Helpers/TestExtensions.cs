@@ -40,10 +40,23 @@ internal static class TestExtensions
 		}
 
 		ForceLoadedRecursive(element);
+
+		// Entering the live tree queues a loaded event "on the next tick" (normally pumped by
+		// the render loop, which the unit-test host doesn't have). Flush it synchronously so the
+		// pending tick does not leak into a later test and fire while that test's tree is active,
+		// which otherwise makes loaded/binding/materialization behavior order-dependent.
+		var eventManager = global::Uno.UI.Xaml.Core.CoreServices.Instance.EventManager;
+		if (eventManager.ShouldRaiseLoadedEvent)
+		{
+			eventManager.RaiseLoadedEvent();
+		}
 	}
 
 	private static readonly MethodInfo s_onFwEltLoading = typeof(FrameworkElement)
 		.GetMethod("OnFwEltLoading", BindingFlags.Instance | BindingFlags.NonPublic);
+
+	private static readonly FieldInfo s_firedLoadingEvent = typeof(FrameworkElement)
+		.GetField("m_firedLoadingEvent", BindingFlags.Instance | BindingFlags.NonPublic);
 
 	private static void ForceLoadedRecursive(UIElement element)
 	{
@@ -54,6 +67,13 @@ internal static class TestExtensions
 		if (element is FrameworkElement fe)
 		{
 			s_onFwEltLoading?.Invoke(fe, null);
+
+			// WinUI raises Loading exactly once (RaiseLoadingEventIfNeeded sets m_firedLoadingEvent).
+			// We raise it directly here, bypassing the measure pass, so set the guard too --
+			// otherwise a later real measure pass (e.g. a layout manager leaked from another test in
+			// the full suite) re-raises Loading and re-runs Bindings.Update(), double-evaluating
+			// x:Bind functions.
+			s_firedLoadingEvent?.SetValue(fe, true);
 		}
 
 		// Under the enhanced Skia lifecycle a Control's template is applied during the measure

@@ -31,7 +31,10 @@ namespace Uno.UI.Tests.PivotTests
 			SUT.Measure(default(Size));
 			SUT.Arrange(default(Rect));
 
-			Assert.AreEqual(default(Size), SUT.DesiredSize);
+			// A templated Pivot lays out its header/title chrome even with no items, so an
+			// empty Pivot has a non-zero DesiredSize on real Skia (0,0 was the mock-era value
+			// when no template was applied).
+			Assert.AreNotEqual(default(Size), SUT.DesiredSize);
 		}
 	}
 }
