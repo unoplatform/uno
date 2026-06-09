@@ -470,7 +470,7 @@ internal sealed class AotWebResourceRequestedEventArgsWrapper : INativeWebResour
 			}
 			else
 			{
-				_args.put_Response(null!);
+				_args.put_Response(null!).ThrowOnError();
 			}
 		}
 	}
@@ -480,7 +480,7 @@ internal sealed class AotWebResourceRequestedEventArgsWrapper : INativeWebResour
 		get
 		{
 			WebView2.COREWEBVIEW2_WEB_RESOURCE_CONTEXT context = default;
-			_args.get_ResourceContext(ref context);
+			_args.get_ResourceContext(ref context).ThrowOnError();
 			return (CoreWebView2WebResourceContext)(int)context;
 		}
 	}
@@ -491,7 +491,7 @@ internal sealed class AotWebResourceRequestedEventArgsWrapper : INativeWebResour
 		{
 			if (_args2 is null) return default;
 			WebView2.COREWEBVIEW2_WEB_RESOURCE_REQUEST_SOURCE_KINDS kinds = default;
-			_args2.get_RequestedSourceKind(ref kinds);
+			_args2.get_RequestedSourceKind(ref kinds).ThrowOnError();
 			return (CoreWebView2WebResourceRequestSourceKinds)(int)kinds;
 		}
 	}
@@ -564,7 +564,7 @@ internal sealed class AotHttpRequestHeaders : INativeHttpRequestHeaders
 	public bool Contains(string name)
 	{
 		BOOL result = default;
-		_headers.Contains(PWSTR.From(name), ref result);
+		_headers.Contains(PWSTR.From(name), ref result).ThrowOnError();
 		return result.Value != 0;
 	}
 
@@ -591,7 +591,7 @@ internal sealed class AotHttpHeadersCollectionIterator : INativeHttpHeadersColle
 	{
 		_iterator = iterator;
 		BOOL hasCurrent = default;
-		_iterator.get_HasCurrentHeader(ref hasCurrent);
+		_iterator.get_HasCurrentHeader(ref hasCurrent).ThrowOnError();
 		_hasCurrent = hasCurrent.Value != 0;
 		if (_hasCurrent) LoadCurrent();
 	}
@@ -609,7 +609,7 @@ internal sealed class AotHttpHeadersCollectionIterator : INativeHttpHeadersColle
 	{
 		if (!_hasCurrent) return false;
 		BOOL hasNext = default;
-		_iterator.MoveNext(ref hasNext);
+		_iterator.MoveNext(ref hasNext).ThrowOnError();
 		_hasCurrent = hasNext.Value != 0;
 		if (_hasCurrent) LoadCurrent();
 		return _hasCurrent;
@@ -639,7 +639,7 @@ internal sealed class AotHeadersEnumerator : IEnumerator<KeyValuePair<string, st
 	{
 		_iterator = iterator;
 		BOOL hasCurrent = default;
-		_iterator.get_HasCurrentHeader(ref hasCurrent);
+		_iterator.get_HasCurrentHeader(ref hasCurrent).ThrowOnError();
 		_hasCurrent = hasCurrent.Value != 0;
 	}
 
@@ -655,7 +655,7 @@ internal sealed class AotHeadersEnumerator : IEnumerator<KeyValuePair<string, st
 			_iterator.GetCurrentHeader(out var name, out var value).ThrowOnError();
 			_current = new(name.ToString()!, value.ToString()!);
 			BOOL hasNext = default;
-			_iterator.MoveNext(ref hasNext);
+			_iterator.MoveNext(ref hasNext).ThrowOnError();
 			_hasCurrent = hasNext.Value != 0;
 			return true;
 		}
@@ -664,7 +664,7 @@ internal sealed class AotHeadersEnumerator : IEnumerator<KeyValuePair<string, st
 		_iterator.GetCurrentHeader(out var n, out var v).ThrowOnError();
 		_current = new(n.ToString()!, v.ToString()!);
 		BOOL hn = default;
-		_iterator.MoveNext(ref hn);
+		_iterator.MoveNext(ref hn).ThrowOnError();
 		_hasCurrent = hn.Value != 0;
 		return true;
 	}
@@ -702,7 +702,7 @@ internal sealed class AotWebResourceResponse : INativeWebResourceResponse
 
 	public int StatusCode
 	{
-		get { int v = default; NativeResponse.get_StatusCode(ref v); return v; }
+		get { int v = default; NativeResponse.get_StatusCode(ref v).ThrowOnError(); return v; }
 		set => NativeResponse.put_StatusCode(value).ThrowOnError();
 	}
 
@@ -724,7 +724,7 @@ internal sealed class AotHttpResponseHeaders : INativeHttpResponseHeaders
 	public bool Contains(string name)
 	{
 		BOOL result = default;
-		_headers.Contains(PWSTR.From(name), ref result);
+		_headers.Contains(PWSTR.From(name), ref result).ThrowOnError();
 		return result.Value != 0;
 	}
 
