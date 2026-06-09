@@ -258,6 +258,14 @@
 			"description": "Provides an explicit override for the version of the Microsoft.Windows.SDK.BuildTools to use.",
 			"type": "nuget-version"
 		},
+		"WinAppSdkBuildToolsWinAppVersion": {
+			"description": "Provides an explicit override for the version of the Microsoft.Windows.SDK.BuildTools.WinApp package. This package enables `dotnet run` to launch the packaged WinAppSDK app with package identity.",
+			"type": "nuget-version"
+		},
+		"UnoDisableWinAppRunSupport": {
+			"description": "When set to true, the Uno.Sdk will not implicitly reference Microsoft.Windows.SDK.BuildTools.WinApp for WinAppSDK executables. Set EnableWinAppRunSupport=false instead to keep the reference but disable the `dotnet run` interception.",
+			"type": "bool"
+		},
 		"UnoCoreLoggingSingletonVersion": {
 			"description": "Provides an explicit override for the version of Uno.Core.Logging.Singleton to use.",
 			"type": "nuget-version"

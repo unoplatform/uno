@@ -11,6 +11,14 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty AutoRefreshDragRegionsProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(AutoRefreshDragRegions), typeof(bool),
+			typeof(global::Microsoft.UI.Xaml.Controls.TitleBar),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ContentProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(Content), typeof(global::Microsoft.UI.Xaml.UIElement),
@@ -40,6 +48,14 @@ namespace Microsoft.UI.Xaml.Controls
 			nameof(IsBackButtonVisible), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.TitleBar),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty IsDragRegionProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
+			"IsDragRegion", typeof(bool?),
+			typeof(global::Microsoft.UI.Xaml.Controls.TitleBar),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool?)));
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -88,6 +104,20 @@ namespace Microsoft.UI.Xaml.Controls
 			nameof(Title), typeof(string),
 			typeof(global::Microsoft.UI.Xaml.Controls.TitleBar),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public bool AutoRefreshDragRegions
+		{
+			get
+			{
+				return (bool)this.GetValue(AutoRefreshDragRegionsProperty);
+			}
+			set
+			{
+				this.SetValue(AutoRefreshDragRegionsProperty, value);
+			}
+		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -233,10 +263,26 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.TitleBar()
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static bool? GetIsDragRegion(global::Microsoft.UI.Xaml.UIElement element)
+		{
+			return (bool?)element.GetValue(IsDragRegionProperty);
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static void SetIsDragRegion(global::Microsoft.UI.Xaml.UIElement element, bool? value)
+		{
+			element.SetValue(IsDragRegionProperty, value);
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.AutoRefreshDragRegionsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.ContentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IconSourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsBackButtonEnabledProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsBackButtonVisibleProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsDragRegionProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IsPaneToggleButtonVisibleProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.LeftHeaderProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.RightHeaderProperty.get
@@ -247,6 +293,15 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.BackRequested.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.PaneToggleRequested.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.PaneToggleRequested.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public void RecomputeDragRegions()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TitleBar", "RecomputeDragRegions()");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.AutoRefreshDragRegions.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.AutoRefreshDragRegions.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Content.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.Content.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TitleBar.IconSource.get

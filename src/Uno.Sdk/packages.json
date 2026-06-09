@@ -135,6 +135,13 @@
 		]
 	},
 	{
+		"group": "WinAppSdkBuildToolsWinApp",
+		"version": "0.3.1",
+		"packages": [
+			"Microsoft.Windows.SDK.BuildTools.WinApp"
+		]
+	},
+	{
 		"group": "MicrosoftLoggingConsole",
 		"version": "9.0.14",
 		"packages": [

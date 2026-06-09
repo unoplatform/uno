@@ -451,33 +451,54 @@ namespace Uno.UI
 		/// </returns>
 		internal static bool ApplyVisualStateSetter(SpecializedResourceDictionary.ResourceKey resourceKey, object context, BindingPath bindingPath, DependencyPropertyValuePrecedences precedence, ResourceUpdateReason updateReason)
 		{
-			if (TryVisualTreeRetrieval(resourceKey, context, out var value, out var providingDictionary)
-				&& bindingPath.DataContext != null)
+			var isThemeResource = (updateReason & ResourceUpdateReason.ThemeResource) != 0;
+
+			// Push the owner element's inherited theme so the dictionary lookup below selects the owner's
+			// Light/Dark sub-dictionary instead of falling back to the ambient active theme (Themes.Active).
+			// Without this, a VisualState.Setter whose value is a {ThemeResource} resolves against the application
+			// theme when it is applied outside a theme walk (e.g. a control re-applying a visual state on a
+			// recycled container), painting the wrong theme's brush on an element that lives in a subtree pinned to
+			// a different RequestedTheme. This mirrors the push already done by ApplyResource for direct bindings.
+			var owner = bindingPath.DataContext as DependencyObject;
+			var pushedOwnerTheme = isThemeResource && ThemeResourceReference.PushOwnerThemeIfDifferent(owner);
+
+			try
 			{
-				var property = DependencyProperty.GetProperty(bindingPath.DataContext.GetType(), bindingPath.LeafPropertyName);
-				if (property != null && bindingPath.DataContext is IDependencyObjectStoreProvider provider)
+				if (TryVisualTreeRetrieval(resourceKey, context, out var value, out var providingDictionary)
+					&& bindingPath.DataContext != null)
 				{
-					// Set current resource value
-					bindingPath.Value = value;
-
-					if ((updateReason & ResourceUpdateReason.ThemeResource) != 0)
+					var property = DependencyProperty.GetProperty(bindingPath.DataContext.GetType(), bindingPath.LeafPropertyName);
+					if (property != null && bindingPath.DataContext is IDependencyObjectStoreProvider provider)
 					{
-						// Use pinned-dictionary path for theme resources
-						var themeRef = new ThemeResourceReference(
-							resourceKey, providingDictionary, value, isResolved: true, context,
-							updateReason, precedence, bindingPath);
-						provider.Store.SetThemeResourceBinding(property, themeRef);
+						// Set current resource value
+						bindingPath.Value = value;
+
+						if (isThemeResource)
+						{
+							// Use pinned-dictionary path for theme resources
+							var themeRef = new ThemeResourceReference(
+								resourceKey, providingDictionary, value, isResolved: true, context,
+								updateReason, precedence, bindingPath);
+							provider.Store.SetThemeResourceBinding(property, themeRef);
+						}
+
+						// Always register ResourceBinding for re-pin at load time and
+						// HotReload support, matching the dual-registration in ApplyResource.
+						provider.Store.SetResourceBinding(property, resourceKey, updateReason, context, precedence, bindingPath);
+
+						return true;
 					}
+				}
 
-					// Always register ResourceBinding for re-pin at load time and
-					// HotReload support, matching the dual-registration in ApplyResource.
-					provider.Store.SetResourceBinding(property, resourceKey, updateReason, context, precedence, bindingPath);
-
-					return true;
+				return false;
+			}
+			finally
+			{
+				if (pushedOwnerTheme)
+				{
+					ResourceDictionary.PopRequestedThemeForSubTree();
 				}
 			}
-
-			return false;
 		}
 
 		/// <summary>

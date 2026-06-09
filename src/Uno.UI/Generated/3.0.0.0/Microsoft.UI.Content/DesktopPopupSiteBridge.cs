@@ -15,6 +15,34 @@ namespace Microsoft.UI.Content
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Content.PopupAnchor AnchoringBehavior
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopPopupSiteBridge", "AnchoringBehavior");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopPopupSiteBridge", "AnchoringBehavior");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Microsoft.UI.Content.ContentCoordinateRoundingMode AnchoringPixelAlignment
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Content.DesktopPopupSiteBridge", "AnchoringPixelAlignment");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopPopupSiteBridge", "AnchoringPixelAlignment");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Content.ContentAutomationOptions AutomationOption
 		{
 			get
@@ -224,6 +252,10 @@ namespace Microsoft.UI.Content
 		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.ParentAutomationProviderRequested.remove
 		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.PreviousSiblingAutomationProviderRequested.add
 		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.PreviousSiblingAutomationProviderRequested.remove
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.AnchoringBehavior.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.AnchoringBehavior.set
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.AnchoringPixelAlignment.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.AnchoringPixelAlignment.set
 		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.AutomationOption.get
 		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.AutomationOption.set
 		// Forced skipping of method Microsoft.UI.Content.DesktopPopupSiteBridge.AutomationProvider.get
