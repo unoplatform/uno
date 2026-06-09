@@ -109,6 +109,11 @@ namespace Microsoft.UI.Xaml
 #if __SKIA__
 			ApiExtensibility.Register(typeof(Uno.UI.Graphics.SKCanvasVisualBaseFactory), _ => new Uno.UI.Graphics.SKCanvasVisualFactory());
 #endif
+#if __ANDROID__
+			ApiExtensibility.Register(
+				typeof(Microsoft.UI.Input.IGestureRecognizerExtension),
+				_ => Uno.UI.Input.AndroidGestureRecognizerExtension.Instance);
+#endif
 		}
 
 		static partial void InitializePartialStatic();
