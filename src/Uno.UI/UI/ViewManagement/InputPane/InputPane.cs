@@ -1,15 +1,21 @@
+#nullable enable
+
 using System;
+using System.Collections.Generic;
 using Windows.Foundation;
 using Uno.UI;
 using Uno;
 using Uno.UI.Controls;
+using Microsoft.UI.Xaml;
 
 namespace Windows.UI.ViewManagement;
 
 public partial class InputPane
 {
-	private static InputPane _instance = new();
+	private static readonly Dictionary<XamlRoot, InputPane> _instances = new();
+	private static InputPane? _fallbackInstance;
 	private Rect _occludedRect = new Rect(0, 0, 0, 0);
+	private XamlRoot? _xamlRoot;
 
 	private InputPane()
 	{
@@ -18,9 +24,14 @@ public partial class InputPane
 
 	partial void InitializePlatform();
 
-	public event TypedEventHandler<InputPane, InputPaneVisibilityEventArgs> Hiding;
+	public event TypedEventHandler<InputPane, InputPaneVisibilityEventArgs>? Hiding;
 
-	public event TypedEventHandler<InputPane, InputPaneVisibilityEventArgs> Showing;
+	public event TypedEventHandler<InputPane, InputPaneVisibilityEventArgs>? Showing;
+
+	/// <summary>
+	/// The XamlRoot associated with this InputPane instance (null for the fallback instance).
+	/// </summary>
+	internal XamlRoot? AssociatedXamlRoot => _xamlRoot;
 
 	public Rect OccludedRect
 	{
@@ -51,7 +62,36 @@ public partial class InputPane
 		}
 	}
 
-	public static InputPane GetForCurrentView() => _instance;
+	/// <summary>
+	/// Returns the InputPane for the initial window. Backward-compatible with existing callers.
+	/// </summary>
+	public static InputPane GetForCurrentView()
+	{
+		var xamlRoot = Microsoft.UI.Xaml.Window.InitialWindow?.Content?.XamlRoot;
+		if (xamlRoot != null)
+		{
+			return GetForXamlRoot(xamlRoot);
+		}
+
+		// Fallback for early calls before window is set up
+		_fallbackInstance ??= new InputPane();
+		return _fallbackInstance;
+	}
+
+	/// <summary>
+	/// Returns the InputPane for a specific XamlRoot. Used internally for multi-window support.
+	/// </summary>
+	internal static InputPane GetForXamlRoot(XamlRoot xamlRoot)
+	{
+		if (!_instances.TryGetValue(xamlRoot, out var inputPane))
+		{
+			inputPane = new InputPane();
+			inputPane._xamlRoot = xamlRoot;
+			_instances[xamlRoot] = inputPane;
+		}
+
+		return inputPane;
+	}
 
 #if __APPLE_UIKIT__
 	[NotImplemented]

@@ -1,16 +1,10 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using Uno.Extensions;
 using Uno.Foundation.Extensibility;
-using Uno.UI.Extensions;
 using Windows.Foundation;
 
 namespace Windows.UI.ViewManagement;
@@ -18,7 +12,7 @@ namespace Windows.UI.ViewManagement;
 partial class InputPane
 {
 	private Lazy<IInputPaneExtension?>? _inputPaneExtension;
-	private IDisposable _padScrollContentPresenter;
+	private bool _subscribedToFocusChanges;
 
 	partial void InitializePlatform()
 	{
@@ -35,45 +29,86 @@ partial class InputPane
 
 	partial void EnsureFocusedElementInViewPartial()
 	{
-		_padScrollContentPresenter?.Dispose(); // Restore padding
-
-		var initialWindow = Window.InitialWindow;
-		if (initialWindow is null)
+		// Use the per-XamlRoot association instead of Window.InitialWindow
+		var xamlRoot = _xamlRoot;
+		if (xamlRoot is null)
 		{
 			return;
 		}
 
-		var xamlRoot = initialWindow.Content?.XamlRoot;
+		var rsv = xamlRoot.VisualTree?.RootScrollViewer;
 
-		if (xamlRoot is not null && Visible && FocusManager.GetFocusedElement(xamlRoot) is UIElement focusedElement)
+		if (Visible)
 		{
-			if (focusedElement.FindFirstParent<ScrollContentPresenter>() is { } scp)
+			// Keyboard is showing - shrink RSV and enable scrolling
+			if (rsv is not null)
 			{
-				// ScrollViewer can be nested, but the outer-most SV isn't necessarily the one to handle this "padded" scroll.
-				// Only the first SV that is constrained would be the one, as unconstrained SV can just expand freely.
-				while (double.IsPositiveInfinity(scp.m_previousAvailableSize.Height)
-					&& scp.FindFirstParent<ScrollContentPresenter>(includeCurrent: false) is { } outerScv)
-				{
-					scp = outerScv;
-				}
-
-				var focusedElementPoint = focusedElement.TransformToVisual(scp).TransformPoint(new Point());
-				Size focusedElementSize = focusedElement.ActualSize.ToSize();
-				Rect focusedElementRect = new(
-					focusedElementPoint.X,
-					focusedElementPoint.Y,
-					focusedElementSize.Width,
-					focusedElementSize.Height
-				);
-
-				_padScrollContentPresenter = scp.Pad(OccludedRect, focusedElementRect);
+				// Shrink RSV to visible area above keyboard
+				rsv.Height = OccludedRect.Y;
+				rsv.NotifyInputPaneStateChange(true, OccludedRect);
 			}
 
-			// As we changed the layout properties of the ScrollContentPresenter, we need to wait for the next layout pass for
-			// the scrollable height to be updated.
+			// Subscribe to focus changes to re-BringIntoView when user taps a different text field
+			SubscribeToFocusChanges();
+
+			if (FocusManager.GetFocusedElement(xamlRoot) is UIElement focusedElement)
+			{
+				// TODO: WinUI's CBringIntoViewHandler adjusts for caret position (75% CaretAlignmentThreshold),
+				// adds 20px padding (ExtraPixelsForBringIntoView), and accounts for AppBar height.
+				// See: BringIntoViewHandler.cpp
+
+				// Dispatch BringIntoView after the next layout pass so the RootScrollViewer's
+				// height change has taken effect.
+				_ = UI.Core.CoreDispatcher.Main.RunAsync(
+					UI.Core.CoreDispatcherPriority.Normal, () => focusedElement.StartBringIntoView()
+				);
+			}
+		}
+		else
+		{
+			// Keyboard is hiding - restore RSV
+			UnsubscribeFromFocusChanges();
+
+			if (rsv is not null)
+			{
+				rsv.Height = double.NaN; // Stretch to fill
+				rsv.NotifyInputPaneStateChange(false, Rect.Empty);
+			}
+		}
+	}
+
+	private void SubscribeToFocusChanges()
+	{
+		if (_subscribedToFocusChanges)
+		{
+			return;
+		}
+
+		// TODO: WinUI uses InputPaneProcessor::NotifyFocusChanged() which checks
+		// SIP showing + text-editable focused = forces bringIntoView=true.
+		// Our GotFocus approach is simpler but may behave differently for
+		// non-keyboard focus changes. See InputPaneProcessor.cpp lines 222-234.
+		FocusManager.GotFocus += OnFocusManagerGotFocus;
+		_subscribedToFocusChanges = true;
+	}
+
+	private void UnsubscribeFromFocusChanges()
+	{
+		if (_subscribedToFocusChanges)
+		{
+			FocusManager.GotFocus -= OnFocusManagerGotFocus;
+			_subscribedToFocusChanges = false;
+		}
+	}
+
+	private void OnFocusManagerGotFocus(object? sender, FocusManagerGotFocusEventArgs e)
+	{
+		if (Visible && e.NewFocusedElement is UIElement newFocused)
+		{
+			// RSV height is already shrunk - just BringIntoView for the new element
 			_ = UI.Core.CoreDispatcher.Main.RunAsync(
-				UI.Core.CoreDispatcherPriority.Normal, () => focusedElement.StartBringIntoView()
-			);
+				UI.Core.CoreDispatcherPriority.Normal,
+				() => newFocused.StartBringIntoView());
 		}
 	}
 }
