@@ -39,6 +39,6 @@ partial class TitleBarAutomationPeer
 			}
 		}
 
-		return name;
+		return name ?? string.Empty;
 	}
 }

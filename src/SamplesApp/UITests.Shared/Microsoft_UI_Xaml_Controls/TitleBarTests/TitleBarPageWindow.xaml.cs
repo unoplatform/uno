@@ -1,10 +1,8 @@
-﻿using Microsoft.UI.Private.Controls;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 using System.Runtime.InteropServices;
 using System;
-using System.Diagnostics;
 
 namespace MUXControlsTestApp;
 
@@ -13,7 +11,9 @@ public sealed partial class TitleBarPageWindow : Window
 	private int backRequestedCount = 0;
 	private int paneToggleRequestedCount = 0;
 
+	// Win32 GetWindowLongPtr/SetWindowLongPtr index for the extended window styles.
 	private const int GWL_EXSTYLE = -20;
+	// Extended window style that lays the window out right-to-left.
 	private const int WS_EX_LAYOUTRTL = 0x00400000;
 
 	public TitleBarPageWindow()
