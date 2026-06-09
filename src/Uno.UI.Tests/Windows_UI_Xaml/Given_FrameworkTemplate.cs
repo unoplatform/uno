@@ -150,15 +150,23 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual(1, TemplateCreated);
 			Assert.HasCount(1, _created);
 			Assert.AreEqual(1, _created[0].TemplateRecycled);
-			Assert.IsNull(SUT.ContentTemplateRoot);
+			Assert.IsNull(MaterializedRoot(SUT));
 
 			SUT.ContentTemplate = dataTemplate;
 
 			Assert.AreEqual(1, TemplateCreated);
 			Assert.HasCount(1, _created);
 			Assert.AreEqual(1, _created[0].TemplateRecycled);
-			Assert.IsNotNull(SUT.ContentTemplateRoot);
+			Assert.IsNotNull(MaterializedRoot(SUT));
 		}
+
+		// Real Skia applies the default ContentControl ControlTemplate (a ContentPresenter),
+		// so the materialized ContentTemplate root lives on the inner ContentPresenter, not on
+		// ContentControl.ContentTemplateRoot (which stays null when a template is present).
+		private static object MaterializedRoot(ContentControl control) =>
+			(VisualTreeHelper.GetChildrenCount(control) > 0
+				? VisualTreeHelper.GetChild(control, 0) as ContentPresenter
+				: null)?.ContentTemplateRoot;
 
 		[TestMethod]
 		public void When_RemoveTemplate_And_Timeout()
@@ -188,7 +196,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.HasCount(1, _created);
 			Assert.AreEqual(1, _created[0].TemplateRecycled);
-			Assert.IsNull(SUT.ContentTemplateRoot);
+			Assert.IsNull(MaterializedRoot(SUT));
 
 			_mockProvider.Now = TimeSpan.FromMinutes(2);
 			FrameworkTemplatePool.Instance.Scavenge(false);
@@ -197,7 +205,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.HasCount(2, _created);
 			Assert.AreEqual(1, _created[0].TemplateRecycled);
-			Assert.IsNotNull(SUT.ContentTemplateRoot);
+			Assert.IsNotNull(MaterializedRoot(SUT));
 		}
 
 		[TestMethod]
@@ -231,7 +239,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.HasCount(1, _created);
 			Assert.AreEqual(0, _created[0].TemplateRecycled);
-			Assert.IsNull(SUT.ContentTemplateRoot);
+			Assert.IsNull(MaterializedRoot(SUT));
 
 			_mockProvider.Now = TimeSpan.FromMinutes(2);
 			FrameworkTemplatePool.Instance.Scavenge(false);
@@ -240,7 +248,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.HasCount(2, _created);
 			Assert.AreEqual(0, _created[0].TemplateRecycled);
-			Assert.IsNotNull(SUT.ContentTemplateRoot);
+			Assert.IsNotNull(MaterializedRoot(SUT));
 
 			_mockProvider.AppMemoryUsage = 79;
 
@@ -249,7 +257,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.HasCount(2, _created);
 			Assert.AreEqual(0, _created[0].TemplateRecycled);
 			Assert.AreEqual(1, _created[1].TemplateRecycled);
-			Assert.IsNull(SUT.ContentTemplateRoot);
+			Assert.IsNull(MaterializedRoot(SUT));
 		}
 
 		private class FrameworkTemplatePoolMockPlatformProvider : IFrameworkTemplatePoolPlatformProvider

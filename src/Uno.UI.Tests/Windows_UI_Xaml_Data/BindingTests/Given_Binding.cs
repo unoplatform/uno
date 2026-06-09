@@ -106,11 +106,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 		{
 			var SUT = new Binding_ElementName_NonUINested_GlobalResources();
 
+			// Under the enhanced lifecycle the ContentControl's DataTemplate (which hosts
+			// PrimaryActionsList) materializes on tree-enter, so load before FindName.
+			SUT.ForceLoaded();
+
 			var primaryActionsList = SUT.FindName("PrimaryActionsList") as Microsoft.UI.Xaml.Controls.ItemsControl;
 
 			primaryActionsList.ItemsSource = new[] { "test" };
-
-			SUT.ForceLoaded();
 
 			var button = SUT.FindName("button") as Microsoft.UI.Xaml.Controls.Button;
 
