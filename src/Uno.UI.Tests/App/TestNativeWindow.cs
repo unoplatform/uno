@@ -22,8 +22,8 @@ internal sealed class TestNativeWindowWrapper : NativeWindowWrapperBase
 	public TestNativeWindowWrapper(Window window, XamlRoot xamlRoot)
 		: base(window, xamlRoot)
 	{
-		var bounds = new Rect(0, 0, InitialWidth, InitialHeight);
 		RasterizationScale = 1.0f;
+		var bounds = new Rect(0, 0, InitialWidth, InitialHeight);
 		SetBoundsAndVisibleBounds(bounds, bounds);
 	}
 

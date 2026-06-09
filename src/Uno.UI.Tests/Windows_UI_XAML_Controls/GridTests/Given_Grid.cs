@@ -25,21 +25,25 @@ namespace Uno.UI.Tests.GridTests
 			SUT.ForceLoaded();
 
 			SUT.grid.Should().NotBeNull();
-			SUT.grid.RowDefinitions.Should().BeEquivalentTo(new[]
+			// Compare the parsed Height/Width GridLengths (what these parsing tests verify).
+			// Comparing whole RowDefinition/ColumnDefinition objects would also pull in the
+			// computed ActualHeight/ActualWidth, which are now populated once the grid is laid
+			// out in the live test window (they were only 0 under the old non-laying-out mock).
+			SUT.grid.RowDefinitions.Select(rd => rd.Height).Should().BeEquivalentTo(new[]
 			{
-				new RowDefinition { Height = new GridLength(1, GridUnitType.Star) },
-				new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) },
-				new RowDefinition { Height = new GridLength(25, GridUnitType.Pixel) },
-				new RowDefinition { Height = new GridLength(14, GridUnitType.Pixel) },
-				new RowDefinition { Height = new GridLength(20, GridUnitType.Pixel) },
+				new GridLength(1, GridUnitType.Star),
+				new GridLength(1, GridUnitType.Auto),
+				new GridLength(25, GridUnitType.Pixel),
+				new GridLength(14, GridUnitType.Pixel),
+				new GridLength(20, GridUnitType.Pixel),
 			});
-			SUT.grid.ColumnDefinitions.Should().BeEquivalentTo(new[]
+			SUT.grid.ColumnDefinitions.Select(cd => cd.Width).Should().BeEquivalentTo(new[]
 			{
-				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-				new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },
-				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) },
-				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-				new ColumnDefinition { Width = new GridLength(300, GridUnitType.Pixel) },
+				new GridLength(1, GridUnitType.Star),
+				new GridLength(2, GridUnitType.Star),
+				new GridLength(1, GridUnitType.Auto),
+				new GridLength(1, GridUnitType.Star),
+				new GridLength(300, GridUnitType.Pixel),
 			});
 		}
 
@@ -55,21 +59,25 @@ namespace Uno.UI.Tests.GridTests
 			SUT.ForceLoaded();
 
 			SUT.grid.Should().NotBeNull();
-			SUT.grid.RowDefinitions.Should().BeEquivalentTo(new[]
+			// Compare the parsed Height/Width GridLengths (what these parsing tests verify).
+			// Comparing whole RowDefinition/ColumnDefinition objects would also pull in the
+			// computed ActualHeight/ActualWidth, which are now populated once the grid is laid
+			// out in the live test window (they were only 0 under the old non-laying-out mock).
+			SUT.grid.RowDefinitions.Select(rd => rd.Height).Should().BeEquivalentTo(new[]
 			{
-				new RowDefinition { Height = new GridLength(1, GridUnitType.Star) },
-				new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) },
-				new RowDefinition { Height = new GridLength(25, GridUnitType.Pixel) },
-				new RowDefinition { Height = new GridLength(14, GridUnitType.Pixel) },
-				new RowDefinition { Height = new GridLength(20, GridUnitType.Pixel) },
+				new GridLength(1, GridUnitType.Star),
+				new GridLength(1, GridUnitType.Auto),
+				new GridLength(25, GridUnitType.Pixel),
+				new GridLength(14, GridUnitType.Pixel),
+				new GridLength(20, GridUnitType.Pixel),
 			});
-			SUT.grid.ColumnDefinitions.Should().BeEquivalentTo(new[]
+			SUT.grid.ColumnDefinitions.Select(cd => cd.Width).Should().BeEquivalentTo(new[]
 			{
-				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-				new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },
-				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) },
-				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-				new ColumnDefinition { Width = new GridLength(300, GridUnitType.Pixel) },
+				new GridLength(1, GridUnitType.Star),
+				new GridLength(2, GridUnitType.Star),
+				new GridLength(1, GridUnitType.Auto),
+				new GridLength(1, GridUnitType.Star),
+				new GridLength(300, GridUnitType.Pixel),
 			});
 		}
 
@@ -85,21 +93,25 @@ namespace Uno.UI.Tests.GridTests
 			SUT.ForceLoaded();
 
 			SUT.grid.Should().NotBeNull();
-			SUT.grid.RowDefinitions.Should().BeEquivalentTo(new[]
+			// Compare the parsed Height/Width GridLengths (what these parsing tests verify).
+			// Comparing whole RowDefinition/ColumnDefinition objects would also pull in the
+			// computed ActualHeight/ActualWidth, which are now populated once the grid is laid
+			// out in the live test window (they were only 0 under the old non-laying-out mock).
+			SUT.grid.RowDefinitions.Select(rd => rd.Height).Should().BeEquivalentTo(new[]
 			{
-				new RowDefinition { Height = new GridLength(1, GridUnitType.Star) },
-				new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) },
-				new RowDefinition { Height = new GridLength(25, GridUnitType.Pixel) },
-				new RowDefinition { Height = new GridLength(14, GridUnitType.Pixel) },
-				new RowDefinition { Height = new GridLength(20, GridUnitType.Pixel) },
+				new GridLength(1, GridUnitType.Star),
+				new GridLength(1, GridUnitType.Auto),
+				new GridLength(25, GridUnitType.Pixel),
+				new GridLength(14, GridUnitType.Pixel),
+				new GridLength(20, GridUnitType.Pixel),
 			});
-			SUT.grid.ColumnDefinitions.Should().BeEquivalentTo(new[]
+			SUT.grid.ColumnDefinitions.Select(cd => cd.Width).Should().BeEquivalentTo(new[]
 			{
-				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-				new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },
-				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) },
-				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-				new ColumnDefinition { Width = new GridLength(300, GridUnitType.Pixel) },
+				new GridLength(1, GridUnitType.Star),
+				new GridLength(2, GridUnitType.Star),
+				new GridLength(1, GridUnitType.Auto),
+				new GridLength(1, GridUnitType.Star),
+				new GridLength(300, GridUnitType.Pixel),
 			});
 		}
 	}

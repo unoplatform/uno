@@ -75,10 +75,20 @@ internal static class TestExtensions
 	/// </summary>
 	internal static void SetWindowSize(this Window window, Size size)
 	{
+		// Drive the simulated window's actual size: XamlRoot.Bounds (read by AdaptiveTrigger
+		// and others) is backed by the window/XamlIsland size, not by VisibleBoundsOverride.
+		// Updating the wrapper bounds raises SizeChanged -> XamlRoot.Changed so size-dependent
+		// triggers re-evaluate (matches the legacy mock's RaiseNativeSizeChanged path).
+		var bounds = new Rect(0, 0, size.Width, size.Height);
+		if (window.NativeWrapper is Uno.UI.Xaml.Controls.NativeWindowWrapperBase nativeWrapper)
+		{
+			nativeWrapper.SetBoundsAndVisibleBounds(bounds, bounds);
+		}
+
 		var xamlRoot = window.Content?.XamlRoot ?? Window.InitialWindow?.RootElement?.XamlRoot;
 		if (xamlRoot?.VisualTree is { } visualTree)
 		{
-			visualTree.VisibleBoundsOverride = new Rect(0, 0, size.Width, size.Height);
+			visualTree.VisibleBoundsOverride = bounds;
 		}
 
 		if (window.Content is FrameworkElement root)
