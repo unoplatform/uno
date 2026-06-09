@@ -79,7 +79,7 @@ internal partial class WatchHotReloadService
 				}
 				else
 				{
-					throw new InvalidOperationException($"Cannot find {nameof(EmitSolutionUpdateAsync)}");
+					throw new InvalidOperationException($"Cannot find {nameof(EndSession)}");
 				}
 			}
 		}

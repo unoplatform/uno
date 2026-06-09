@@ -79,11 +79,32 @@ public class HotReloadOperation
 		_consideredFilePaths = filePaths ?? _empty;
 
 		_timeout = new Timer(
-			static that => _ = ((HotReloadOperation)that!).Complete(HotReloadOperationResult.Aborted).AsTask(),
+			static that => _ = ((HotReloadOperation)that!).OnTimeoutAsync(),
 			this,
 			_timeoutDelay,
 			Timeout.InfiniteTimeSpan);
 	}
+
+	// Timer callbacks run on the thread-pool; an exception escaping here would otherwise become an
+	// unobserved task exception. Observe it and route to the owner's reporter.
+	private async Task OnTimeoutAsync()
+	{
+		try
+		{
+			await Complete(HotReloadOperationResult.Aborted).ConfigureAwait(false);
+		}
+		catch (Exception ex)
+		{
+			_owner.ReportError($"Hot-reload operation {Id} failed to abort on timeout: {ex}");
+		}
+	}
+
+	/// <summary>
+	/// Releases the timeout timer for an operation that was created speculatively but lost the
+	/// <see cref="Interlocked.CompareExchange{T}(ref T, T, T)"/> race in
+	/// <see cref="HotReloadTracker.StartHotReload"/> and will never be published as the current operation.
+	/// </summary>
+	internal void AbandonUnpublished() => _timeout.Dispose();
 
 	/// <summary>
 	/// Attempts to update the <see cref="ConsideredFilePaths"/> if we determine that the provided paths are corresponding to this operation.
@@ -160,14 +181,32 @@ public class HotReloadOperation
 	{
 		Debug.Assert(result != HotReloadOperationResult.InternalError || exception is not null); // For internal error we should always provide an exception!
 
-		if (Interlocked.CompareExchange(ref _deferredCompletion, new CancellationTokenSource(), null) is null)
+		var deferral = new CancellationTokenSource();
+		if (Interlocked.CompareExchange(ref _deferredCompletion, deferral, null) is not null)
+		{
+			// A deferral is already in flight; dispose the CTS we speculatively allocated.
+			deferral.Dispose();
+			return;
+		}
+
+		try
 		{
 			_timeout.Change(_timeoutDelay, Timeout.InfiniteTimeSpan);
-			await Task.Delay(TimeSpan.FromSeconds(1), _deferredCompletion.Token).ConfigureAwait(false);
-			if (!_deferredCompletion.IsCancellationRequested)
+			await Task.Delay(TimeSpan.FromSeconds(1), deferral.Token).ConfigureAwait(false);
+			if (!deferral.IsCancellationRequested)
 			{
 				await Complete(result, exception).ConfigureAwait(false);
 			}
+		}
+		catch (OperationCanceledException)
+		{
+			// Completion was cancelled by Complete(); nothing left to defer.
+		}
+		finally
+		{
+			// Detach before disposing so a concurrent Complete() never cancels a disposed CTS.
+			Interlocked.CompareExchange(ref _deferredCompletion, null, deferral);
+			deferral.Dispose();
 		}
 	}
 
@@ -195,7 +234,14 @@ public class HotReloadOperation
 
 		// Remove this from current
 		_owner.ResignCurrent(this);
-		_deferredCompletion?.Cancel(false); // No matter if already completed
+		try
+		{
+			_deferredCompletion?.Cancel(false); // No matter if already completed
+		}
+		catch (ObjectDisposedException)
+		{
+			// The deferral completed and disposed itself concurrently; nothing left to cancel.
+		}
 
 		// Check if not already disposed
 		if (Interlocked.CompareExchange(ref _result, (int)result, -1) is not -1)

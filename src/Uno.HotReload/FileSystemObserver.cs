@@ -44,6 +44,24 @@ public sealed partial class FileSystemObserver : IDisposable
 		_subscription = Enable();
 	}
 
+	// Wraps the fire-and-forget ProcessFileChanges call so a faulted task is reported instead of being
+	// silently swallowed (an unobserved task exception). Cancellation on shutdown is expected and ignored.
+	private async Task ProcessFileChangesSafe(Task<ImmutableHashSet<string>> filesAsync, CancellationToken ct)
+	{
+		try
+		{
+			await _manager.ProcessFileChanges(filesAsync, ct);
+		}
+		catch (OperationCanceledException)
+		{
+			// Expected when the processing token is cancelled during shutdown.
+		}
+		catch (Exception ex)
+		{
+			_reporter.Error($"Failed to process file changes: {ex}");
+		}
+	}
+
 	private IDisposable Enable()
 	{
 		var solution = _manager.CurrentSolution;
@@ -83,8 +101,8 @@ public sealed partial class FileSystemObserver : IDisposable
 		var processing = new CancellationTokenSource(); // Updates are cumulative, we cannot abort updates, so we have a SINGLE token for all operations.
 		var watchersSubscription = To2StepsObservable(watchers, HasInterest, _solutionWatchersGate)
 			.Subscribe(
-				filePaths => _ = _manager.ProcessFileChanges(filePaths, processing.Token),
-				e => Console.WriteLine($"Error {e}"));
+				filePaths => _ = ProcessFileChangesSafe(filePaths, processing.Token),
+				e => _reporter.Error($"Error while observing file changes: {e}"));
 
 		return new CompositeDisposable([watchersSubscription, Disposable.Create(processing.Cancel), processing, .. watchers]);
 
@@ -249,6 +267,7 @@ public sealed partial class FileSystemObserver : IDisposable
 				{
 					watcher.Changed -= changed;
 					watcher.Created -= changed;
+					watcher.Deleted -= changed;
 					watcher.Renamed -= renamed;
 				}
 

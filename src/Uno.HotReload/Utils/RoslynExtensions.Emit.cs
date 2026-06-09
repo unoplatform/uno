@@ -69,7 +69,7 @@ public static partial class RoslynExtensions
 	{
 		var failures = emitResult
 			.Where(p => p.Value.Success is false)
-			.Select(p => new CompilationErrorException($"Compilation of {p.Key.FilePath} filed.", p.Value.Diagnostics) as Exception)
+			.Select(p => new CompilationErrorException($"Compilation of {p.Key.FilePath} failed.", p.Value.Diagnostics) as Exception)
 			.ToArray();
 
 		switch (failures.Length)

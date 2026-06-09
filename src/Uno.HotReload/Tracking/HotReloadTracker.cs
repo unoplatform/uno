@@ -79,6 +79,8 @@ public sealed class HotReloadTracker(
 	internal ValueTask<bool> TryRequestHotReload(CancellationToken ct)
 		=> _tryRequestHotReload(ct);
 
+	internal void ReportError(string message) => _reporter.Error(message);
+
 	public async ValueTask<HotReloadOperation> StartHotReload(ImmutableHashSet<string>? files)
 	{
 		var previous = Current;
@@ -93,6 +95,9 @@ public sealed class HotReloadTracker(
 			}
 			else
 			{
+				// Lost the race: the speculatively-created operation already armed a timeout timer in
+				// its constructor. Release it before retrying so we don't leak a Timer per failed attempt.
+				@new.AbandonUnpublished();
 				previous = current;
 			}
 		}
