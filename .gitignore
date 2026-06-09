@@ -266,6 +266,9 @@ src/AddIns/Uno.UI.MSAL/WasmScripts/*.d.ts
 # external docs
 doc/articles/external
 
+# imported at build time from unoplatform/hd-docs (see doc/import_external_docs.ps1)
+doc/articles/studio/Hot Design/
+
 mergedstyles.xaml
 
 !build/ci/publish
