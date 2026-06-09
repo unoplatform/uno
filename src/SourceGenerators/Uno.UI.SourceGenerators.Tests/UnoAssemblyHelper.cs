@@ -48,6 +48,15 @@ internal static partial class UnoAssemblyHelper
 				],
 				[TFMPrevious, TFMCurrent]
 			)),
+			.. LoadAssemblies(GetBinDirectory(
+				"Uno.UI.Dispatching",
+				"Uno.UI.Dispatching.dll",
+				[
+					"Uno.UI.Dispatching.Skia",
+					"Uno.UI.Dispatching.Reference",
+				],
+				[TFMPrevious, TFMCurrent]
+			)),
 		];
 
 	public static PortableExecutableReference[] LoadAndroidAssemblies() =>
