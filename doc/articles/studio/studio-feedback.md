@@ -24,7 +24,7 @@ Navigate to the [Uno Platform Studio GitHub repository](https://github.com/unopl
 - **Propose enhancements**: Suggest features or improvements to enhance Uno Platform Studio, its tools, and its documentation.
 - **Start discussions**: Engage in conversations about Uno Platform Studio and its tools.
 
-This is also the repository that publishes the [`uno-platform-studio` plugin and skills](xref:Uno.PlatformStudio.Skills), so it is where to report issues with the **Uno Platform Studio Agent** when you use it in an external agent such as Claude Code, GitHub Copilot, or OpenAI Codex.
+This is also the repository that publishes the [`uno-platform-studio` plugin and skills](xref:Uno.PlatformStudio.Skills), so it is the place to report issues with the **Uno Platform Studio Agent** when you use it in an external agent such as Claude Code, GitHub Copilot, or OpenAI Codex.
 
 For more details, refer to the [feedback guidelines](https://github.com/unoplatform/studio/blob/main/README.md).
 
@@ -55,8 +55,6 @@ Follow these steps to access the feedback menu:
    - **Report an issue/bug**
    - **Suggest a feature**
    - **Ask a question**
-
-
 
 ## Additional Support
 
