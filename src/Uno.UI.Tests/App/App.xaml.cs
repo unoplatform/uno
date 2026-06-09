@@ -86,6 +86,13 @@ namespace UnitTestsApp
 			var app = Current as App;
 			app.HostView.Children.Clear();
 
+			// Reset the simulated window to its default size each test. SetWindowSize is a
+			// sticky override on the shared window, so without this a prior test's resize would
+			// leak into the next test and make size-dependent behaviour order-dependent.
+			app.MainWindow?.SetWindowSize(new Windows.Foundation.Size(
+				Uno.UI.Xaml.Controls.NativeWindowWrapperBase.InitialWidth,
+				Uno.UI.Xaml.Controls.NativeWindowWrapperBase.InitialHeight));
+
 #if !NETFX_CORE
 			//Clear custom theme
 			Uno.UI.ApplicationHelper.RequestedCustomTheme = null;

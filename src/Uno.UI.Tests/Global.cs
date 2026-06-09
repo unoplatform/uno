@@ -37,11 +37,6 @@ namespace Uno.UI.Tests
 			Uno.UI.Dispatching.NativeDispatcher.HasThreadAccessOverride = () => true;
 			Uno.UI.Dispatching.NativeDispatcher.DispatchOverride = (action, _) => action();
 
-			// Belt-and-suspenders: the unit-test thread is not the Skia main thread, so
-			// also relax the DP threading enforcement (the in-memory mock used to make
-			// HasThreadAccess return true unconditionally).
-			global::Uno.UI.FeatureConfiguration.DependencyProperty.DisableThreadingCheck = true;
-
 			// A real Skia host initializes the package manifest on startup (Application's
 			// ctor does it too, but reflection-based tests such as the DependencyProperty
 			// owner/type checks touch control static ctors -- e.g. CalendarView -> Calendar

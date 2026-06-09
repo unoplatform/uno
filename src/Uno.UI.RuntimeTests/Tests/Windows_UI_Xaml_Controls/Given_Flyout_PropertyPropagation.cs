@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -57,11 +59,15 @@ public class Given_Flyout_PropertyPropagation
 		}
 	}
 
-	// flyout._popup is Uno-internal; WinUI exposes no public API for a Flyout's popup, so this test is Uno-only.
-#if HAS_UNO
+	// flyout._popup is Uno-internal; WinUI exposes no public API for a Flyout's popup, so this test
+	// is Uno-only. Keep the method visible for test discovery and skip it at runtime on native WinUI
+	// via [PlatformCondition]; only the body is gated with #if so it still compiles on the WinUI build.
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23409")]
 	public async Task When_Focus_Properties_Set_On_Flyout_Propagate_To_Popup()
 	{
+#if HAS_UNO
 		var flyoutContent = new Grid
 		{
 			Children = { new Button() }
@@ -100,6 +106,6 @@ public class Given_Flyout_PropertyPropagation
 			flyout.Hide();
 			await TestServices.WindowHelper.WaitForIdle();
 		}
-	}
 #endif
+	}
 }

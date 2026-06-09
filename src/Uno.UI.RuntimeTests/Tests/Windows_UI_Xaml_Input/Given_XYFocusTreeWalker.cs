@@ -177,6 +177,7 @@ public class Given_XYFocusTreeWalker
 	}
 
 	[TestMethod]
+	[Ignore("https://github.com/unoplatform/uno/issues/17399 — flaky: the candidate-list count is non-deterministic without a real render loop, so the result is discarded and the only assertion is commented out. Re-enable once root-caused.")]
 	public void VerifyOccludedElementInNonActiveScrollviewerNotAddedToList()
 	{
 		var root = new XYFocusCUIElement();

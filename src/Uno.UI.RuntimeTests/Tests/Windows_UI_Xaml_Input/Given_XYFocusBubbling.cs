@@ -8,6 +8,7 @@
 // equivalent, so the whole fixture is Uno-only and excluded from the native WinAppSDK build.
 #if HAS_UNO
 
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -20,7 +21,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Input;
 public class Given_XYFocusBubbling
 {
 	[TestMethod]
-	public void VerifyXYFocusPropertyRetrieval()
+	public async Task VerifyXYFocusPropertyRetrieval()
 	{
 		var element = new Control();
 
@@ -41,14 +42,14 @@ public class Given_XYFocusBubbling
 	}
 
 	[TestMethod]
-	public void VerifyNullWhenXYFocusPropertyRetrievalFailed()
+	public async Task VerifyNullWhenXYFocusPropertyRetrievalFailed()
 	{
 		var element = new Control();
 		Assert.IsNull(GetDirectionOverride(element, null, FocusNavigationDirection.Left));
 	}
 
 	[TestMethod]
-	public void VerifyCorrectOverrideChosenWhenTargetElementHasOverride()
+	public async Task VerifyCorrectOverrideChosenWhenTargetElementHasOverride()
 	{
 		var element = new Control();
 		var candidate = new Control();
@@ -66,7 +67,7 @@ public class Given_XYFocusBubbling
 	}
 
 	[TestMethod]
-	public void VerifyCorrectOverrideChosenWhenBubbling()
+	public async Task VerifyCorrectOverrideChosenWhenBubbling()
 	{
 		var element = new Control();
 		var candidate = new Control();
@@ -82,7 +83,7 @@ public class Given_XYFocusBubbling
 	}
 
 	[TestMethod]
-	public void VerifyCandidateChosenWhenDescendant()
+	public async Task VerifyCandidateChosenWhenDescendant()
 	{
 		var element = new Control();
 		var candidate = new Control();
@@ -99,14 +100,14 @@ public class Given_XYFocusBubbling
 	}
 
 	[TestMethod]
-	public void VerifyNullWhenCandidateNull()
+	public async Task VerifyNullWhenCandidateNull()
 	{
 		var element = new Control();
 		Assert.IsNull(TryXYFocusBubble(element, null, null, FocusNavigationDirection.Right));
 	}
 
 	[TestMethod]
-	public void VerifyOverrideAncestorOfSearchRoot()
+	public async Task VerifyOverrideAncestorOfSearchRoot()
 	{
 		var element = new ContentControl();
 		var candidate = new ContentControl();
@@ -125,7 +126,7 @@ public class Given_XYFocusBubbling
 	}
 
 	[TestMethod]
-	public void VerifyNonFocusableDirectionOverrideChosen()
+	public async Task VerifyNonFocusableDirectionOverrideChosen()
 	{
 		var element = new ContentControl();
 		var elementLeft = new ContentControl();

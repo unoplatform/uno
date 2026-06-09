@@ -1,3 +1,6 @@
+#nullable enable
+
+using System;
 using System.Linq;
 using System.Reflection;
 using Microsoft.UI.Xaml;
@@ -20,7 +23,7 @@ internal static class TestExtensions
 	/// each, since the unit-test process has no real window or render loop to
 	/// drive that lifecycle.
 	/// </summary>
-	internal static void ForceLoaded(this FrameworkElement element)
+	internal static void ForceLoaded(this FrameworkElement? element)
 	{
 		if (element is null)
 		{
@@ -52,11 +55,16 @@ internal static class TestExtensions
 		}
 	}
 
+	// Fail fast if these private members are renamed/removed: a silent null would skip the
+	// loading phase (and the m_firedLoadingEvent guard) while still marking elements loaded,
+	// producing misleading passes instead of a loud breakage.
 	private static readonly MethodInfo s_onFwEltLoading = typeof(FrameworkElement)
-		.GetMethod("OnFwEltLoading", BindingFlags.Instance | BindingFlags.NonPublic);
+		.GetMethod("OnFwEltLoading", BindingFlags.Instance | BindingFlags.NonPublic)
+		?? throw new MissingMethodException(nameof(FrameworkElement), "OnFwEltLoading");
 
 	private static readonly FieldInfo s_firedLoadingEvent = typeof(FrameworkElement)
-		.GetField("m_firedLoadingEvent", BindingFlags.Instance | BindingFlags.NonPublic);
+		.GetField("m_firedLoadingEvent", BindingFlags.Instance | BindingFlags.NonPublic)
+		?? throw new MissingFieldException(nameof(FrameworkElement), "m_firedLoadingEvent");
 
 	private static void ForceLoadedRecursive(UIElement element)
 	{
@@ -66,14 +74,14 @@ internal static class TestExtensions
 		// ad-hoc EnterTree() helper.
 		if (element is FrameworkElement fe)
 		{
-			s_onFwEltLoading?.Invoke(fe, null);
+			s_onFwEltLoading.Invoke(fe, null);
 
 			// WinUI raises Loading exactly once (RaiseLoadingEventIfNeeded sets m_firedLoadingEvent).
 			// We raise it directly here, bypassing the measure pass, so set the guard too --
 			// otherwise a later real measure pass (e.g. a layout manager leaked from another test in
 			// the full suite) re-raises Loading and re-runs Bindings.Update(), double-evaluating
 			// x:Bind functions.
-			s_firedLoadingEvent?.SetValue(fe, true);
+			s_firedLoadingEvent.SetValue(fe, true);
 		}
 
 		// Under the enhanced Skia lifecycle a Control's template is applied during the measure
