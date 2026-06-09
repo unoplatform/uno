@@ -39,6 +39,21 @@
 		<PackageReference Include="AwesomeAssertions" />
 		<PackageReference Include="Moq" Version="4.17.2" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" PrivateAssets="all" />
+		<!--
+			Text measurement on Skia uses ICU. A real Skia host pulls the native ICU
+			binaries and embeds icudt.dat; replicate that here so TextBlock/TextBox
+			measurement does not throw "Value cannot be null. (Parameter 'handle')".
+		-->
+		<PackageReference Include="Uno.icu-win" GeneratePathProperty="true" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!--
+			The package only embeds icudt.dat for Uno heads (IsUnoHead). The unit-test
+			runner is its own host, so embed it explicitly; UnicodeText.ICU resolves the
+			icudt.dat resource from the entry (test) assembly at startup.
+		-->
+		<EmbeddedResource Include="$(PkgUno_icu-win)\buildTransitive\icudt.dat" />
 	</ItemGroup>
 
 	<ItemGroup>

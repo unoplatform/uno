@@ -56,6 +56,16 @@ namespace Uno.UI.Tests
 			global::Uno.Foundation.Extensibility.ApiExtensibility.Register(
 				typeof(global::Uno.UI.Xaml.Controls.INativeWindowFactoryExtension),
 				_ => new global::UnitTestsApp.TestNativeWindowFactoryExtension());
+
+			// Skia text measurement loads ICU lazily and reads icudt.dat from the entry
+			// assembly. A real Uno head wires this via the IcuDataInitializerGenerator
+			// (gated on IsUnoHead); the unit-test runner is not a head, so initialize ICU
+			// here, mirroring what the generated module initializer does. UnicodeText+ICU
+			// is a private nested type, so this is done by reflection like SamplesApp.
+			var icuType = System.Type.GetType("Microsoft.UI.Xaml.Documents.UnicodeText+ICU, Uno.UI");
+			icuType?
+				.GetMethod("SetDataAssembly", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
+				?.Invoke(null, new object[] { typeof(Global).Assembly });
 		}
 	}
 }
