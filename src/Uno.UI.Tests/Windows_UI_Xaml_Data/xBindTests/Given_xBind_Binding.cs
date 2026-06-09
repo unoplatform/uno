@@ -583,10 +583,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			var SUT = new Binding_DefaultBindMode_DataTemplate();
 			var model = new Binding_DefaultBindMode_DataTemplate_Model();
 
-			var default_undefined = (TextBlock)SUT.FindName("Default_undefined");
-			var default_undefined_OneWay = (TextBlock)SUT.FindName("Default_undefined_OneWay");
-			var default_undefined_TwoWay = (TextBlock)SUT.FindName("Default_undefined_TwoWay");
-
 			Assert.IsNull(model.Default_undefined_Property);
 			Assert.IsNull(model.Default_undefined_OneWay_Property);
 			Assert.IsNull(model.Default_undefined_TwoWay_Property);
@@ -598,6 +594,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			SUT.DataContext = model;
 
 			SUT.ForceLoaded();
+
+			// FindName after load: the DataTemplate content (and its named TextBlocks) is
+			// materialized on tree-enter, so a pre-load lookup would capture stale instances.
+			var default_undefined = (TextBlock)SUT.FindName("Default_undefined");
+			var default_undefined_OneWay = (TextBlock)SUT.FindName("Default_undefined_OneWay");
+			var default_undefined_TwoWay = (TextBlock)SUT.FindName("Default_undefined_TwoWay");
 
 			Assert.AreEqual("undefined updated 1", default_undefined.Text);
 			Assert.AreEqual("undefined updated 2", default_undefined_OneWay.Text);
