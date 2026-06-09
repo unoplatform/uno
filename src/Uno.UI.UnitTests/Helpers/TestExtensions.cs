@@ -30,6 +30,20 @@ internal static class TestExtensions
 			return;
 		}
 
+		// Rooting the element below requires the test App (its HostView is the live tree).
+		// The App is a process-wide singleton created lazily by EnsureApplication(); many
+		// test classes call it in setup, but some (e.g. Given_Grid, Given_Binding) rely on it
+		// already existing. Test execution order is not stable across runners (dotnet test vs
+		// Visual Studio), so a class that runs before any EnsureApplication caller would
+		// otherwise find no App, skip the rooting below, and silently fail to materialize its
+		// templated/bound content -- making those tests order-dependent. Create it here when
+		// absent. Guarded on null so repeated ForceLoaded calls within a single test don't
+		// trip EnsureApplication's HostView reset and unload already-loaded siblings.
+		if (Application.Current is not UnitTestsApp.App)
+		{
+			UnitTestsApp.App.EnsureApplication();
+		}
+
 		// On real Skia (UNO_HAS_ENHANCED_LIFECYCLE), entering the live visual tree is what
 		// materializes ContentPresenter/Control template content and applies x:Bind once.
 		// The test host runs a simulated visible window (see TestNativeWindowWrapper), so

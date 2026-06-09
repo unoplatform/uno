@@ -772,21 +772,25 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var grid = userControl.FindName("grid") as Grid;
 
 			grid.Should().NotBeNull();
-			grid.RowDefinitions.Should().BeEquivalentTo(new[]
+			// These are XAML-parsing tests: assert on the parsed Height/Width GridLengths.
+			// Comparing whole RowDefinition/ColumnDefinition objects would also pull in
+			// layout-derived members (ActualHeight/ActualWidth), which are not what the
+			// parser produces and can diverge from the freshly-constructed expectations.
+			grid.RowDefinitions.Select(rd => rd.Height).Should().BeEquivalentTo(new[]
 			{
-				new RowDefinition { Height = new GridLength(1, GridUnitType.Star) },
-				new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) },
-				new RowDefinition { Height = new GridLength(25, GridUnitType.Pixel) },
-				new RowDefinition { Height = new GridLength(14, GridUnitType.Pixel) },
-				new RowDefinition { Height = new GridLength(20, GridUnitType.Pixel) },
+				new GridLength(1, GridUnitType.Star),
+				new GridLength(1, GridUnitType.Auto),
+				new GridLength(25, GridUnitType.Pixel),
+				new GridLength(14, GridUnitType.Pixel),
+				new GridLength(20, GridUnitType.Pixel),
 			});
-			grid.ColumnDefinitions.Should().BeEquivalentTo(new[]
+			grid.ColumnDefinitions.Select(cd => cd.Width).Should().BeEquivalentTo(new[]
 			{
-				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-				new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },
-				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) },
-				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-				new ColumnDefinition { Width = new GridLength(300, GridUnitType.Pixel) },
+				new GridLength(1, GridUnitType.Star),
+				new GridLength(2, GridUnitType.Star),
+				new GridLength(1, GridUnitType.Auto),
+				new GridLength(1, GridUnitType.Star),
+				new GridLength(300, GridUnitType.Pixel),
 			});
 		}
 
@@ -802,21 +806,25 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var grid = userControl.FindName("grid") as Grid;
 
 			grid.Should().NotBeNull();
-			grid.RowDefinitions.Should().BeEquivalentTo(new[]
+			// These are XAML-parsing tests: assert on the parsed Height/Width GridLengths.
+			// Comparing whole RowDefinition/ColumnDefinition objects would also pull in
+			// layout-derived members (ActualHeight/ActualWidth), which are not what the
+			// parser produces and can diverge from the freshly-constructed expectations.
+			grid.RowDefinitions.Select(rd => rd.Height).Should().BeEquivalentTo(new[]
 			{
-				new RowDefinition { Height = new GridLength(1, GridUnitType.Star) },
-				new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) },
-				new RowDefinition { Height = new GridLength(25, GridUnitType.Pixel) },
-				new RowDefinition { Height = new GridLength(14, GridUnitType.Pixel) },
-				new RowDefinition { Height = new GridLength(20, GridUnitType.Pixel) },
+				new GridLength(1, GridUnitType.Star),
+				new GridLength(1, GridUnitType.Auto),
+				new GridLength(25, GridUnitType.Pixel),
+				new GridLength(14, GridUnitType.Pixel),
+				new GridLength(20, GridUnitType.Pixel),
 			});
-			grid.ColumnDefinitions.Should().BeEquivalentTo(new[]
+			grid.ColumnDefinitions.Select(cd => cd.Width).Should().BeEquivalentTo(new[]
 			{
-				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-				new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },
-				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) },
-				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-				new ColumnDefinition { Width = new GridLength(300, GridUnitType.Pixel) },
+				new GridLength(1, GridUnitType.Star),
+				new GridLength(2, GridUnitType.Star),
+				new GridLength(1, GridUnitType.Auto),
+				new GridLength(1, GridUnitType.Star),
+				new GridLength(300, GridUnitType.Pixel),
 			});
 		}
 
@@ -832,21 +840,25 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var grid = userControl.FindName("grid") as Grid;
 
 			grid.Should().NotBeNull();
-			grid.RowDefinitions.Should().BeEquivalentTo(new[]
+			// These are XAML-parsing tests: assert on the parsed Height/Width GridLengths.
+			// Comparing whole RowDefinition/ColumnDefinition objects would also pull in
+			// layout-derived members (ActualHeight/ActualWidth), which are not what the
+			// parser produces and can diverge from the freshly-constructed expectations.
+			grid.RowDefinitions.Select(rd => rd.Height).Should().BeEquivalentTo(new[]
 			{
-				new RowDefinition { Height = new GridLength(1, GridUnitType.Star) },
-				new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) },
-				new RowDefinition { Height = new GridLength(25, GridUnitType.Pixel) },
-				new RowDefinition { Height = new GridLength(14, GridUnitType.Pixel) },
-				new RowDefinition { Height = new GridLength(20, GridUnitType.Pixel) },
+				new GridLength(1, GridUnitType.Star),
+				new GridLength(1, GridUnitType.Auto),
+				new GridLength(25, GridUnitType.Pixel),
+				new GridLength(14, GridUnitType.Pixel),
+				new GridLength(20, GridUnitType.Pixel),
 			});
-			grid.ColumnDefinitions.Should().BeEquivalentTo(new[]
+			grid.ColumnDefinitions.Select(cd => cd.Width).Should().BeEquivalentTo(new[]
 			{
-				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-				new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },
-				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) },
-				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-				new ColumnDefinition { Width = new GridLength(300, GridUnitType.Pixel) },
+				new GridLength(1, GridUnitType.Star),
+				new GridLength(2, GridUnitType.Star),
+				new GridLength(1, GridUnitType.Auto),
+				new GridLength(1, GridUnitType.Star),
+				new GridLength(300, GridUnitType.Pixel),
 			});
 		}
 
