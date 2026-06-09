@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace System
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public static partial class WindowsRuntimeSystemExtensions
@@ -11,8 +11,8 @@ namespace System
 		// Skipping already declared method System.WindowsRuntimeSystemExtensions.AsTask(Windows.Foundation.IAsyncAction, System.Threading.CancellationToken)
 		// Skipping already declared method System.WindowsRuntimeSystemExtensions.AsTask(Windows.Foundation.IAsyncAction)
 		// Skipping already declared method System.WindowsRuntimeSystemExtensions.GetAwaiter(Windows.Foundation.IAsyncAction)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void Wait(global::Windows.Foundation.IAsyncAction source)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("System.WindowsRuntimeSystemExtensions", "Wait(IAsyncAction source)");
@@ -21,15 +21,15 @@ namespace System
 		// Skipping already declared method System.WindowsRuntimeSystemExtensions.AsTask<TResult>(Windows.Foundation.IAsyncOperation<TResult>, System.Threading.CancellationToken)
 		// Skipping already declared method System.WindowsRuntimeSystemExtensions.AsTask<TResult>(Windows.Foundation.IAsyncOperation<TResult>)
 		// Skipping already declared method System.WindowsRuntimeSystemExtensions.GetAwaiter<TResult>(Windows.Foundation.IAsyncOperation<TResult>)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void Wait<TResult>(global::Windows.Foundation.IAsyncOperation<TResult> source)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("System.WindowsRuntimeSystemExtensions", "Wait<TResult>(IAsyncOperation<TResult> source)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static TResult Get<TResult>(global::Windows.Foundation.IAsyncOperation<TResult> source)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.WindowsRuntimeSystemExtensions", "Get<TResult>(IAsyncOperation<TResult> source)");
@@ -40,8 +40,8 @@ namespace System
 		// Skipping already declared method System.WindowsRuntimeSystemExtensions.AsTask<TProgress>(Windows.Foundation.IAsyncActionWithProgress<TProgress>, System.Threading.CancellationToken)
 		// Skipping already declared method System.WindowsRuntimeSystemExtensions.AsTask<TProgress>(Windows.Foundation.IAsyncActionWithProgress<TProgress>, System.IProgress<TProgress>)
 		// Skipping already declared method System.WindowsRuntimeSystemExtensions.GetAwaiter<TProgress>(Windows.Foundation.IAsyncActionWithProgress<TProgress>)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void Wait<TProgress>(global::Windows.Foundation.IAsyncActionWithProgress<TProgress> source)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("System.WindowsRuntimeSystemExtensions", "Wait<TProgress>(IAsyncActionWithProgress<TProgress> source)");
@@ -52,15 +52,15 @@ namespace System
 		// Skipping already declared method System.WindowsRuntimeSystemExtensions.AsTask<TResult, TProgress>(Windows.Foundation.IAsyncOperationWithProgress<TResult, TProgress>, System.Threading.CancellationToken)
 		// Skipping already declared method System.WindowsRuntimeSystemExtensions.AsTask<TResult, TProgress>(Windows.Foundation.IAsyncOperationWithProgress<TResult, TProgress>, System.IProgress<TProgress>)
 		// Skipping already declared method System.WindowsRuntimeSystemExtensions.GetAwaiter<TResult, TProgress>(Windows.Foundation.IAsyncOperationWithProgress<TResult, TProgress>)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static void Wait<TResult, TProgress>(global::Windows.Foundation.IAsyncOperationWithProgress<TResult, TProgress> source)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("System.WindowsRuntimeSystemExtensions", "Wait<TResult, TProgress>(IAsyncOperationWithProgress<TResult, TProgress> source)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static TResult Get<TResult, TProgress>(global::Windows.Foundation.IAsyncOperationWithProgress<TResult, TProgress> source)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.WindowsRuntimeSystemExtensions", "Get<TResult, TProgress>(IAsyncOperationWithProgress<TResult, TProgress> source)");

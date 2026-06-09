@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Resources
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ResourceLoader
@@ -17,8 +17,8 @@ namespace Windows.ApplicationModel.Resources
 		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView(string)
 		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse()
 		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse(string)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.ApplicationModel.Resources.ResourceLoader GetForUIContext(global::Windows.UI.UIContext context)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.ResourceLoader", "GetForUIContext(UIContext context)");
