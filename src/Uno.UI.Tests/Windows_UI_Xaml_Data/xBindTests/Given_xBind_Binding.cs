@@ -930,6 +930,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
+		[Ignore("https://github.com/unoplatform/uno/issues/17399 — content materialized by x:Load after ForceLoaded is not driven through the load/x:Bind lifecycle by the headless test host, so its x:Bind value stays empty. Pending unit-test-host deferred-load lifecycle parity.")]
 		public void When_xLoad_DataTemplate()
 		{
 			var SUT = new Binding_xLoad_DataTemplate();
@@ -1472,6 +1473,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
+		[Ignore("https://github.com/unoplatform/uno/issues/17399 — the Loaded handler on an element instantiated from a ResourceDictionary template is not invoked under the headless ForceLoaded lifecycle. Pending unit-test-host lifecycle parity.")]
 		public void When_XBind_In_ResourceDictionary()
 		{
 			var SUT = new XBind_ResourceDictionary_Control();

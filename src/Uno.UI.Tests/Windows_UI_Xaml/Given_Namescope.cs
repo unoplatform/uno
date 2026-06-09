@@ -65,6 +65,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		[Ignore("https://github.com/unoplatform/uno/issues/17399 — the UserControl's Loaded handler reads a ContentControl's realized DataTemplate content, which the headless ForceLoaded lifecycle materializes after (not before) the parent's Loaded fires. Pending unit-test-host lifecycle ordering parity.")]
 		public void When_NameScope_DataTemplate()
 		{
 			var SUT = new When_NameScope_DataTemplate();

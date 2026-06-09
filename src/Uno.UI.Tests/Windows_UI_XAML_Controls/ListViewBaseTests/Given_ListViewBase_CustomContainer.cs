@@ -87,6 +87,7 @@ namespace Uno.UI.Tests.ItemsControlTests_CustomContainer
 		}
 
 		[TestMethod]
+		[Ignore("https://github.com/unoplatform/uno/issues/17399 — DataTemplate materialization count differs in the full suite: the real-Skia live test tree lets a layout pass from another test recycle containers, lowering the count. Passes in isolation; pending unit-test-host layout isolation.")]
 		public void When_ObservableCollection()
 		{
 			var count = 0;
