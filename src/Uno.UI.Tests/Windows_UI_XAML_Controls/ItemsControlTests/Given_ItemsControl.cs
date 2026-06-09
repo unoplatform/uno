@@ -110,7 +110,11 @@ namespace Uno.UI.Tests.ItemsControlTests
 
 			//Assert.IsNull(SUT.ItemsPresenter);
 
-			itemsPresenter.ForceLoaded();
+			// Materialize the SUT template so the ItemsPresenter becomes a descendant of the
+			// ItemsControl, then load it: ItemsPresenter.OnLoaded finds its templated-parent
+			// ItemsControl and wires up SUT.ItemsPresenter.
+			SUT.ApplyTemplate();
+			SUT.FindFirstDescendantOrThrow<ItemsPresenter>().ForceLoaded();
 
 			Assert.IsNotNull(SUT.ItemsPresenter);
 		}

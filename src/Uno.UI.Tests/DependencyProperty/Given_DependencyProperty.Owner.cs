@@ -24,6 +24,10 @@ namespace Uno.UI.Tests
 			("Control", "XYFocusRight"),
 			("Control", "UseSystemFocusVisuals"),
 			("PasswordBox", "SelectionHighlightColor"),
+			// PasswordBox re-exposes these TextBox DPs (it inherits from TextBox in Uno),
+			// so they are genuinely TextBox-owned.
+			("PasswordBox", "SelectionFlyout"),
+			("PasswordBox", "CanPasteClipboardContent"),
 			("ItemsView", "ItemsViewItemContainerRevokers")
 		};
 

@@ -50,9 +50,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.EventsTests
 
 			SUT.ForceLoaded();
 
-			// Count should theoratically be one, but we're testing event
-			// invocation here, so change to one if needed.
-			Assert.AreEqual(2, SUT.StackPanel_Loaded_Count);
+			// The panel materialized from the ItemsPanelTemplate enters the live tree once,
+			// so its Loaded handler fires exactly once (WinUI-correct).
+			Assert.AreEqual(1, SUT.StackPanel_Loaded_Count);
 		}
 
 		[TestMethod]

@@ -76,7 +76,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests
 				)
 			};
 
+			// Apply both template levels: SUT's template creates myPresenter, and myPresenter's
+			// own template creates the Grid + myBorder. A single ApplyTemplate only builds the
+			// outer template, leaving the inner presenter's template (and myBorder) unmaterialized.
 			SUT.ApplyTemplate();
+			myPresenter.ApplyTemplate();
 
 			Assert.IsNotNull(myBorder);
 			Assert.IsNull(myBorder.Tag);

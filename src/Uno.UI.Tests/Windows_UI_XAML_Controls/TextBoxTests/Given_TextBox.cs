@@ -143,7 +143,8 @@ namespace Uno.UI.Tests.TextBoxTests
 
 			textBox.AcceptsReturn = true;
 			textBox.Text = "Hello\nWorld";
-			Assert.AreEqual("Hello\nWorld", textBox.Text);
+			// A multi-line TextBox normalizes \n (and \r\n) to \r internally, matching WinUI.
+			Assert.AreEqual("Hello\rWorld", textBox.Text);
 
 			textBox.AcceptsReturn = false;
 			Assert.AreEqual("Hello", textBox.Text);
