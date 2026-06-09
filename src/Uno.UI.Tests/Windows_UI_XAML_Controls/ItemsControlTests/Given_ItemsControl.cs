@@ -17,6 +17,9 @@ using Uno.UI.Extensions;
 
 namespace Uno.UI.Tests.ItemsControlTests
 {
+#if !IS_UNIT_TESTS
+	[RuntimeTests.RunsOnUIThread]
+#endif
 	[TestClass]
 	public class Given_ItemsControl
 	{

@@ -17,6 +17,9 @@ using AwesomeAssertions.Execution;
 namespace Uno.UI.Tests.BorderTests
 {
 	[TestClass]
+#if !IS_UNIT_TESTS
+	[RuntimeTests.RunsOnUIThread]
+#endif
 	public partial class Given_Border : Context
 	{
 		private partial class View : FrameworkElement
