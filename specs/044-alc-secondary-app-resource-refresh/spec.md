@@ -51,3 +51,17 @@ Build the **Reference** variant (this is what the host and inner ALC load from `
 ```
 cd src && dotnet build Uno.UI.RemoteControl/Uno.UI.RemoteControl.Reference.csproj -c Debug
 ```
+
+## Follow-up: secondary-app binding refresh must use the owning app's theme
+
+The per-secondary-app `UpdateResourceBindingsForHotReload()` added here surfaced a latent defect in `Application.OnResourcesChanged` (`src/Uno.UI/UI/Xaml/Application.cs`). It is an instance method that walks the **process-global** content-root list (`WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots`) and applied `this.InternalRequestedTheme` to *every* root via `NotifyThemeChanged`. When a host (default ALC) renders a consumer app in a secondary ALC and the two have different themes, the consumer app's refresh re-themed the host's content root (and the host's refresh would re-theme the consumer's). After a hot reload the host's visual tree adopted the consumer app's theme.
+
+**Fix:** derive each content root's theme from the application that **owns** it rather than from `this`. `Application.GetOwningApplication(ContentRoot)` (in `Application.Alc.cs`, guarded by `#if UNO_HAS_ENHANCED_LIFECYCLE` to match its only call site) resolves the owner from `XamlRoot.Content`'s `AssemblyLoadContext` via `GetForAssemblyLoadContext` (default-ALC content → `Current`; secondary-ALC content → its registered app). The lookup is gated on `HasSecondaryApps`, so the single-app (and single-app multi-window) path is byte-for-byte unchanged. The global calls (`DefaultBrushes.ResetDefaultThemeBrushes`, `ResourceResolver.UpdateSystemThemeBindings`) stay global and `PropagateResourcesChanged` is unchanged, so a consumer app's content nested in the host's tree still re-binds.
+
+**Regression test:** `Given_AlcContentHost.When_SecondaryAlcApp_HotReloadsResources_Then_HostThemeUnchanged` — host = Dark, secondary ALC app = Light; after the secondary app's `UpdateResourceBindingsForHotReload()`, a non-themed host probe's `ActualTheme` must stay Dark. RED before the fix, GREEN after.
+
+### Files changed (follow-up)
+
+- `src/Uno.UI/UI/Xaml/Application.cs` — `OnResourcesChanged` derives the per-root theme from the owning app.
+- `src/Uno.UI/UI/Xaml/Application.Alc.cs` — new `GetOwningApplication(ContentRoot)` helper.
+- `src/Uno.UI.RuntimeTests/Tests/AssemblyLoadContext/Given_AlcContentHost.cs` — regression test.
