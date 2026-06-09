@@ -12,6 +12,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.DataBinding;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
@@ -27,6 +28,16 @@ public class Given_AlcContentHost
 	private TestAssemblyLoadContext? _testAlc;
 	private TestAssemblyLoadContext? _testAlcSecondary;
 	private AlcContentHost? _contentHost;
+
+	// The host's bindable-metadata provider, captured before a secondary ALC app overwrites the
+	// process-wide BindableMetadata.Provider with its own (ALC-scoped) provider.
+	private IBindableMetadataProvider? _originalBindableMetadataProvider;
+
+	[TestInitialize]
+	public void Setup()
+	{
+		_originalBindableMetadataProvider = BindableMetadata.Provider;
+	}
 
 	[TestCleanup]
 	public void Cleanup()
@@ -47,6 +58,20 @@ public class Given_AlcContentHost
 			_testAlcSecondary.Unload();
 			_testAlcSecondary = null;
 		}
+
+		// A secondary ALC app overwrites the process-wide BindableMetadata.Provider with its own
+		// (ALC-scoped) provider, and ALC teardown then nulls it because it belongs to a non-default ALC.
+		// Nothing restores the host's provider, so every later test's binding/metadata resolution NREs
+		// (or silently falls back to reflection). Put the host's provider back.
+		BindableMetadata.Provider = _originalBindableMetadataProvider;
+
+		// Stop later (non-ALC) tests from consulting this run's now-stale secondary apps: the flag is a
+		// one-way latch that gates all secondary-app resource fallback. An ALC test that needs it simply
+		// re-sets it via StartSecondaryAlcAppAsync. We deliberately do NOT clear _applicationsByAlc here:
+		// it is a ConditionalWeakTable that self-heals on GC, and sibling ALC tests resolve against those
+		// still-registered apps through the non-deterministic AssemblyName->ALC lookup — dropping them
+		// eagerly makes those lookups miss and fall back to the host.
+		Application.HasSecondaryApps = false;
 	}
 
 	[TestMethod]
@@ -321,12 +346,14 @@ public class Given_AlcContentHost
 		Application.Current.Resources[sharedKey] = hostColor;
 		try
 		{
-			// Parse context emitted by XAML in the secondary ALC's assembly. The lazy
-			// resolver on XamlParseContext.AssemblyLoadContext will pick the AlcApp's
-			// AssemblyLoadContext from AssemblyName.
+			// Parse context owned by this test's secondary ALC. Bind the ALC explicitly rather than
+			// by AssemblyName: the lazy AssemblyName->ALC resolver picks the first loaded assembly with
+			// a matching name, which is non-deterministic once earlier tests have loaded AlcApp into
+			// other (not-yet-collected) ALCs — it can resolve to a stale ALC whose app is gone and fall
+			// back to the host. (Same explicit-binding fix the sibling-iteration test already uses.)
 			var parseContext = new XamlParseContext
 			{
-				AssemblyName = "Uno.UI.RuntimeTests.AlcApp"
+				AssemblyLoadContext = _testAlc
 			};
 
 			var key = new SpecializedResourceDictionary.ResourceKey(sharedKey);
