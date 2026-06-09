@@ -24,7 +24,7 @@ uid: uno.publishing.desktop
 - Set **Target framework** to `net10.0-desktop`
 - You can set **Deployment mode** to either `Framework-dependent` or `Self-contained`
   - If `Self-contained` is chosen and you're targeting Windows, **Target runtime** must match the installed .NET SDK runtime identifier
-    as cross-publishing self-contained WPF apps (e.g. win-x64 to win-arm64) is not supported for now.
+    as cross-publishing self-contained Windows apps (e.g. win-x64 to win-arm64) is not supported for now.
 - You can set **Target runtime**, make sure it honors the above limitation, if it applies.
 - Click **Save**
 - Click **Publish**

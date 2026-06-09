@@ -23,15 +23,11 @@
 		<NetPreviousNetCoreApple>$(NetPrevious)-ios18.0;$(NetPrevious)-maccatalyst18.0;$(NetPrevious)-tvos18.0</NetPreviousNetCoreApple>
 		<NetPreviousNetCoreMobile>$(NetPrevious)-android;$(NetPreviousNetCoreApple)</NetPreviousNetCoreMobile>
 
-		<NetPreviousWpf>$(NetPrevious)-windows</NetPreviousWpf>
-		<NetCurrentWpf>$(NetCurrent)-windows</NetCurrentWpf>
-
 		<NetPreviousWinAppSDK>$(NetPrevious)-windows10.0.19041.0</NetPreviousWinAppSDK>
 		<NetCurrentWinAppSDK>$(NetCurrent)-windows10.0.19041.0</NetCurrentWinAppSDK>
 
 		<NetMobilePreviousAndCurrent>$(NetPreviousNetCoreMobile);$(NetCurrentNetCoreMobile)</NetMobilePreviousAndCurrent>
 		<NetAndroidPreviousAndCurrent>$(NetPrevious)-android;$(NetCurrent)-android</NetAndroidPreviousAndCurrent>
-		<NetWpfPreviousAndCurrent>$(NetPreviousWpf);$(NetCurrentWpf)</NetWpfPreviousAndCurrent>
 		<NetWasmPreviousAndCurrent>$(NetPrevious);$(NetCurrent)</NetWasmPreviousAndCurrent>
 		<NetSkiaPreviousAndCurrent>$(NetPrevious);$(NetCurrent)</NetSkiaPreviousAndCurrent>
 		<NetReferencePreviousAndCurrent>$(NetPrevious);$(NetCurrent)</NetReferencePreviousAndCurrent>

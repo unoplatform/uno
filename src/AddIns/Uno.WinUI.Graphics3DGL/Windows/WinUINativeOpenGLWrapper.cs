@@ -1,45 +1,19 @@
 #nullable enable
 
-
 using System;
 using System.Runtime.InteropServices;
-
-#if WINDOWS_UWP || WINAPPSDK
 using Microsoft.UI.Xaml;
 using Microsoft.Extensions.Logging;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
-#else
-using System.Windows.Interop;
-using Microsoft.UI.Xaml;
-using Uno.Disposables;
-using Uno.Foundation.Logging;
-using Uno.Graphics;
-using Uno.UI.Hosting;
-using Uno.UI.Runtime.Skia.Wpf.Rendering;
-using WpfWindow = System.Windows.Window;
-using WpfControl = System.Windows.Controls.Control;
-#endif
 
-#if WINDOWS_UWP || WINAPPSDK
 namespace Uno.WinUI.Graphics3DGL;
-#else
-namespace Uno.UI.Runtime.Skia.Wpf.Extensions;
-#endif
 
-#if WINDOWS_UWP || WINAPPSDK
-internal class WinUINativeOpenGLWrapper
-#else
-internal class WpfNativeOpenGLWrapper
-#endif
-	: INativeOpenGLWrapper
+internal class WinUINativeOpenGLWrapper : INativeOpenGLWrapper
 {
-#if WINDOWS_UWP || WINAPPSDK
 	private static readonly Type _type = typeof(WinUINativeOpenGLWrapper);
-#else
-	private static readonly Type _type = typeof(WpfNativeOpenGLWrapper);
-#endif
+
 	private static readonly Lazy<IntPtr> _opengl32 = new Lazy<IntPtr>(() =>
 	{
 		if (!NativeLibrary.TryLoad("opengl32.dll", _type.Assembly, DllImportSearchPath.UserDirectories, out var _handle))
@@ -52,30 +26,15 @@ internal class WpfNativeOpenGLWrapper
 		return _handle;
 	});
 
-#if WINDOWS_UWP || WINAPPSDK
 	private readonly Func<Window> _getWindowFunc;
-#endif
 	private nint _hdc;
 	private nint _glContext;
 
-#if WINDOWS_UWP || WINAPPSDK
 	public WinUINativeOpenGLWrapper(XamlRoot xamlRoot, Func<Window> getWindowFunc)
 	{
 		_getWindowFunc = getWindowFunc;
-#else
-	public WpfNativeOpenGLWrapper(XamlRoot xamlRoot)
-	{
-#endif
 
-#if WINDOWS_UWP || WINAPPSDK
 		var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(_getWindowFunc());
-#else
-		if (XamlRootMap.GetHostForRoot(xamlRoot) is not WpfControl wpfControl || WpfWindow.GetWindow(wpfControl) is not { } wpfWindow)
-		{
-			throw new InvalidOperationException($"The XamlRoot and the XamlRootMap must be initialized before constructing a {_type.Name}.");
-		}
-		var hwnd = new WindowInteropHelper(wpfWindow).Handle;
-#endif
 
 		_hdc = WindowsRenderingNativeMethods.GetDC(hwnd);
 

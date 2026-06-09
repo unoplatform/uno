@@ -29,7 +29,7 @@ var host = UnoPlatformHostBuilder.Create()
     .UseX11()
     .UseLinuxFrameBuffer()
     .UseMacOS()
-    .UseWindows()
+    .UseWin32()
     .Build();
 ```
 
