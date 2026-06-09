@@ -41,6 +41,21 @@ namespace Uno.UI.Tests
 			// also relax the DP threading enforcement (the in-memory mock used to make
 			// HasThreadAccess return true unconditionally).
 			global::Uno.UI.FeatureConfiguration.DependencyProperty.DisableThreadingCheck = true;
+
+			// A real Skia host initializes the package manifest on startup (Application's
+			// ctor does it too, but reflection-based tests such as the DependencyProperty
+			// owner/type checks touch control static ctors -- e.g. CalendarView -> Calendar
+			// -> ApplicationLanguages -> ApplicationData -- before any Application exists).
+			// Initialize it here so those paths resolve the app data folder instead of
+			// throwing "The Package.Id is not initialized yet".
+			global::Windows.ApplicationModel.Package.SetEntryAssembly(typeof(Global).Assembly);
+
+			// The real Skia hosts register a native window factory on startup. The unit-test
+			// process has none, so register a headless one; without it, creating the host
+			// Window throws "Window factory was not registered".
+			global::Uno.Foundation.Extensibility.ApiExtensibility.Register(
+				typeof(global::Uno.UI.Xaml.Controls.INativeWindowFactoryExtension),
+				_ => new global::UnitTestsApp.TestNativeWindowFactoryExtension());
 		}
 	}
 }

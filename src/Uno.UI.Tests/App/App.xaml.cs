@@ -77,11 +77,10 @@ namespace UnitTestsApp
 				// hot reload by default. Certain tests explicitly re-enable it.
 				FeatureConfiguration.Xaml.ForceHotReloadDisabled = true;
 
-				var application = new App();
-#if !NETFX_CORE
-				application.InitializationCompleted();
-#endif
-				application.OnLaunched(null);
+				// The Skia Application enforces being started via Application.Start (it sets
+				// the start-invoked flag and drives InitializationCompleted + OnLaunched).
+				// Constructing the App directly would throw, so go through the real entry point.
+				Application.Start(_ => new App());
 			}
 
 			var app = Current as App;
