@@ -32,6 +32,15 @@
 		<Using Include="Uno.UI.Tests.Helpers" />
 	</ItemGroup>
 
+	<!--
+		Force-include the `unittests` (http://uno.ui/net461) conditional XAML namespace so
+		`unittests:`-prefixed members in test XAML are applied. The global _IsUnitTests plumbing
+		that used to add this was dropped, but the unit-test runner still relies on it.
+	-->
+	<ItemGroup>
+		<IncludeXamlNamespaces Include="unittests" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
