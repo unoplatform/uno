@@ -27,6 +27,18 @@ internal static class TestExtensions
 			return;
 		}
 
+		// On real Skia (UNO_HAS_ENHANCED_LIFECYCLE), entering the live visual tree is what
+		// materializes ContentPresenter/Control template content and applies x:Bind once.
+		// The test host runs a simulated visible window (see TestNativeWindowWrapper), so
+		// rooting the element in HostView makes it Enter the live tree -- materializing
+		// templated content and its named elements -- without a measure pass that would
+		// re-apply bindings or populate layout state.
+		var hostView = (Application.Current as UnitTestsApp.App)?.HostView;
+		if (hostView is not null && element.Parent is null && element != hostView)
+		{
+			hostView.Children.Add(element);
+		}
+
 		ForceLoadedRecursive(element);
 	}
 
