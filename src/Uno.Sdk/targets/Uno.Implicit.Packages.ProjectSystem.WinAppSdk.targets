@@ -8,6 +8,16 @@
 		<_UnoProjectSystemPackageReference Include="Microsoft.WindowsAppSDK" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Microsoft.Windows.SDK.BuildTools" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Core.Extensions.Logging.Singleton" ProjectSystem="true" Condition="$(_IsExecutable) == 'true'"/>
+		<!--
+			Enables `dotnet run` to launch the packaged WinAppSDK app with package identity
+			(see https://devblogs.microsoft.com/ifdef-windows/introducing-dotnet-new-templates-for-winui/).
+			Restricted to executables — the package only contributes a Run-target override; libraries should not pull it in.
+			Set EnableWinAppRunSupport=false in the project to opt out, or UnoDisableWinAppRunSupport=true to suppress this implicit reference entirely.
+		-->
+		<_UnoProjectSystemPackageReference Include="Microsoft.Windows.SDK.BuildTools.WinApp"
+		                                   ProjectSystem="true"
+		                                   PrivateAssets="all"
+		                                   Condition="$(_IsExecutable) == 'true' AND '$(UnoDisableWinAppRunSupport)' != 'true'" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;')) OR $(UnoFeatures.Contains(';lottie;')) OR $(UnoFeatures.Contains(';svg;'))">

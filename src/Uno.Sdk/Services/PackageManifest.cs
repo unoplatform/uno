@@ -147,6 +147,7 @@ internal class PackageManifest
 		public const string SvgSkia = nameof(SvgSkia);
 		public const string WinAppSdk = nameof(WinAppSdk);
 		public const string WinAppSdkBuildTools = nameof(WinAppSdkBuildTools);
+		public const string WinAppSdkBuildToolsWinApp = nameof(WinAppSdkBuildToolsWinApp);
 		public const string MicrosoftLoggingConsole = nameof(MicrosoftLoggingConsole);
 		public const string WindowsCompatibility = nameof(WindowsCompatibility);
 		public const string MsalClient = nameof(MsalClient);

@@ -101,6 +101,8 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	public string? WinAppSdkBuildToolsVersion { get; set; }
 
+	public string? WinAppSdkBuildToolsWinAppVersion { get; set; }
+
 	public string? UnoCoreLoggingSingletonVersion { get; set; }
 
 	public string? UnoDspTasksVersion { get; set; }
@@ -268,6 +270,7 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.SvgSkia, SvgSkiaVersion)
 			.UpdateManifest(PackageManifest.Group.WinAppSdk, WinAppSdkVersion)
 			.UpdateManifest(PackageManifest.Group.WinAppSdkBuildTools, WinAppSdkBuildToolsVersion)
+			.UpdateManifest(PackageManifest.Group.WinAppSdkBuildToolsWinApp, WinAppSdkBuildToolsWinAppVersion)
 			.UpdateManifest(PackageManifest.Group.MicrosoftLoggingConsole, MicrosoftLoggingVersion)
 			.UpdateManifest(PackageManifest.Group.WindowsCompatibility, WindowsCompatibilityVersion)
 			.UpdateManifest(PackageManifest.Group.MsalClient, MicrosoftIdentityClientVersion)
