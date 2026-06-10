@@ -18,8 +18,14 @@ using Windows.UI.ViewManagement;
 
 namespace Uno.UI.Xaml.Core
 {
-	internal class CoreServices
+	internal partial class CoreServices
 	{
+		/// <summary>
+		/// Whether the singleton has been created — guards ambient-theme reads from
+		/// contexts where core UI services may not exist yet (early resource loads, unit tests).
+		/// </summary>
+		internal static bool HasInstance => _instance.IsValueCreated;
+
 		private static Lazy<CoreServices> _instance = new Lazy<CoreServices>(() => new CoreServices());
 
 		private VisualTree? _mainVisualTree;

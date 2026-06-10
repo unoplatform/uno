@@ -205,6 +205,20 @@ public partial class DependencyObjectStore
 		Theme? ownerThemeOverride = null,
 		bool preferAppResourceOverride = false)
 	{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		// MUX Reference: Theming.cpp:364-379 — SetThemeResourceBinding pushes the owner's theme onto
+		// the core requested-theme-for-subtree slot ("Push theme that resource lookup should use to
+		// get the property value") so the lookup — including any lazy materialization it triggers —
+		// resolves in the owner's theme; scope-restored below. During a walk the slot already carries
+		// the per-element walk theme (Theming.cpp:137-149), so the set is a no-op then.
+		// Transitional: the owner theme is still ALSO threaded as a parameter into the leaf; the
+		// parameter is retired once the slot is proven equivalent (see AssertAmbientThemeMatches).
+		// Element-level theming is enhanced-lifecycle only — on native the slot stays None.
+		var core = Uno.UI.Xaml.Core.CoreServices.Instance;
+		var prevSlotTheme = Theme.None;
+		var popSlotTheme = false;
+#endif
+
 		try
 		{
 			// MUX: Theming.cpp:297-298 — clear the theme ref first.
@@ -233,6 +247,16 @@ public partial class DependencyObjectStore
 			// owner's own inheritance chain.
 			var ownerTheme = ownerThemeOverride ?? ThemeResolution.ResolveOwnerTheme(owner);
 			var ownerThemeKey = ResourceDictionary.GetThemeKey(ownerTheme);
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			// MUX: Theming.cpp:368-376 — set the slot when the owner's base theme differs from it.
+			prevSlotTheme = core.GetRequestedThemeForSubTree();
+			if (prevSlotTheme != Theming.GetBaseValue(ownerTheme))
+			{
+				core.SetRequestedThemeForSubTree(ownerTheme);
+				popSlotTheme = true;
+			}
+#endif
 
 			// Phase A: Ancestor walk (WinUI: FindNextResolvedValueNoRef → ScopedResources::TraverseVisualTreeResources)
 			// If element is active, walk ancestor ResourceDictionaries to find the resource. This handles
@@ -309,6 +333,16 @@ public partial class DependencyObjectStore
 
 			// Restore the ref even on failure to avoid losing it
 			_themeResources!.Set(property, precedence, themeRef);
+		}
+		finally
+		{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			// MUX: Theming.cpp:377-379 — scope-restore the slot.
+			if (popSlotTheme)
+			{
+				core.SetRequestedThemeForSubTree(prevSlotTheme);
+			}
+#endif
 		}
 	}
 

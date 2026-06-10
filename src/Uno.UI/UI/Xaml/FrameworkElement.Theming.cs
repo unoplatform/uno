@@ -190,10 +190,24 @@ public partial class FrameworkElement
 		}
 
 		SetIsProcessingThemeWalk(true);
+
+		// MUX Reference: Theming.cpp:139-149 — scope the core requested-theme-for-subtree slot to this
+		// walk's theme so every resource lookup below resolves in this subtree's theme. The recursion
+		// into children re-scopes per element (each child's NotifyThemeChanged runs this block), which
+		// is how per-element RequestedTheme overrides take effect mid-walk.
+		var core = Uno.UI.Xaml.Core.CoreServices.Instance;
+		bool removeRequestedTheme = false;
+		var oldRequestedThemeForSubTree = core.GetRequestedThemeForSubTree();
+		if (Theming.GetBaseValue(theme) != oldRequestedThemeForSubTree)
+		{
+			core.SetRequestedThemeForSubTree(theme);
+			removeRequestedTheme = true;
+		}
+
 		// MUX Reference: CCoreServices::NotifyThemeChange() calls
 		// BeginCachingThemeResources() before the theme walk.
 		// Reentrant-safe: nested calls (recursive child walks) get no-op guards.
-		using var cacheGuard = Uno.UI.Xaml.Core.CoreServices.Instance.ThemeWalkResourceCache.BeginCachingThemeResources();
+		using var cacheGuard = core.ThemeWalkResourceCache.BeginCachingThemeResources();
 		try
 		{
 			NotifyThemeChangedCore(theme, forceRefresh);
@@ -201,6 +215,10 @@ public partial class FrameworkElement
 		finally
 		{
 			SetIsProcessingThemeWalk(false);
+			if (removeRequestedTheme)
+			{
+				core.SetRequestedThemeForSubTree(oldRequestedThemeForSubTree);
+			}
 		}
 #endif
 	}
@@ -451,6 +469,23 @@ public partial class FrameworkElement
 			// CFrameworkElement::NotifyThemeChangedForInheritedProperties resolves the default text
 			// foreground from the element's theme (framework.cpp:3401-3492).
 			var themeKey = ResourceDictionary.GetThemeKey(theme);
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			// MUX Reference: framework.cpp:3441-3487 — the inherited-property foreground lookup runs
+			// with the element's theme scoped onto the core requested-theme-for-subtree slot (the same
+			// save/set/restore pattern as CCoreServices::LookupThemeResource, xcpcore.cpp:2371-2394).
+			// Transitional: the theme key is still ALSO passed explicitly below; retired in Phase 5.
+			var core = Uno.UI.Xaml.Core.CoreServices.Instance;
+			var prevSlotTheme = core.GetRequestedThemeForSubTree();
+			var popSlotTheme = false;
+			if (prevSlotTheme != Theming.GetBaseValue(theme))
+			{
+				core.SetRequestedThemeForSubTree(theme);
+				popSlotTheme = true;
+			}
+			try
+			{
+#endif
 			var brush = (Brush)ResourceResolver.ResolveTopLevelResource(
 				"DefaultTextForegroundThemeBrush", themeKey, null);
 			if (brush is not null)
@@ -469,6 +504,17 @@ public partial class FrameworkElement
 						DependencyPropertyValuePrecedences.Inheritance);
 				}
 			}
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			}
+			finally
+			{
+				// Scope-restore the slot (framework.cpp:3487).
+				if (popSlotTheme)
+				{
+					core.SetRequestedThemeForSubTree(prevSlotTheme);
+				}
+			}
+#endif
 		}
 		else
 		{
