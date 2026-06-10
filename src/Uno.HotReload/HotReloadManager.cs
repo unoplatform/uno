@@ -113,15 +113,22 @@ public sealed class HotReloadManager : IDisposable
 		// Notify the start of the hot-reload processing as soon as possible, even before the buffering of file change is completed
 		var hotReload = await _tracker.StartOrContinueHotReload().ConfigureAwait(false);
 		var files = await filesAsync.ConfigureAwait(false);
-		if (!hotReload.TryMerge(files))
-		{
-			hotReload = await _tracker.StartHotReload(files).ConfigureAwait(false);
-		}
 
 		// Process the batch of files (sequentially!)
 		try
 		{
 			using var _ = await _solutionUpdateGate.LockAsync(ct).ConfigureAwait(false);
+
+			// The merge decision must be made under the gate: operations are completed by the
+			// pass that processes them, which runs while holding this gate. Deciding earlier
+			// allows a batch to merge into an operation that completes before the batch's own
+			// pass runs — that pass's outcome (e.g. Failed + diagnostics) would then be dropped
+			// by the already-completed operation, reporting broken content as a clean reload.
+			if (!hotReload.TryMerge(files))
+			{
+				hotReload = await _tracker.StartHotReload(files).ConfigureAwait(false);
+			}
+
 			await ProcessSolutionChanged(hotReload, files, ct).ConfigureAwait(false);
 		}
 		catch (Exception e)
