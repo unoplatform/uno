@@ -143,11 +143,13 @@ namespace Microsoft.UI.Xaml
 				_themeDictionaries = new ResourceDictionary() { _parent = this };
 				_themeDictionaries.ResourceDictionaryValueChange += (sender, e) =>
 				{
-					// Invalidate the cache whenever a theme dictionary is added/removed.
-					// This is safest and avoids handling edge cases.
-					// Note that adding or removing theme dictionary isn't very common,
-					// so invalidating the cache shouldn't be a performance issue.
+					// MUX Reference: CResourceDictionary::OnThemeDictionariesChanged (Resources.cpp:1392-1405), commit fc2f82117.
+					// Remove active theme dictionary, because the theme dictionaries collection
+					// has changed, and a better candidate for the active theme dictionary
+					// may be available.
+					_activeThemeDictionary = null;
 					_activeTheme = ResourceKey.Empty;
+					_activeThemeValue = Theme.None;
 				};
 			}
 
@@ -657,56 +659,162 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private ResourceDictionary _activeThemeDictionary;
-		private ResourceKey _activeTheme;
-		private bool _activeThemeHighContrast;
 
+		// Uno: the active sub-dictionary's theme is cached on two axes — the ResourceKey carries the
+		// base ("Light"/"Dark", or pre-app-theme-init "Default") dimension for the hot-path comparison
+		// against GetActiveTheme(), and the packed Theme below carries WinUI's full m_activeTheme
+		// shape including the high-contrast bits.
+		private ResourceKey _activeTheme;
+
+		// m_pActiveThemeDictionary's theme
+		// MUX Reference: CResourceDictionary::m_activeTheme (Resources.h:511-512), commit fc2f82117.
+		private Theme _activeThemeValue;
+
+		// MUX Reference: CResourceDictionary::m_isHighContrast / MarkIsHighContrast
+		// (Resources.h:350-353,507), commit fc2f82117. Set on the active theme sub-dictionary when it
+		// was selected through the high-contrast keys (EnsureActiveThemeDictionary, Resources.cpp:800-803).
+		internal bool IsHighContrast { get; private set; }
+
+		internal void MarkIsHighContrast() => IsHighContrast = true;
+
+		// MUX Reference: CResourceDictionary::GetKeyFromThemeDictionariesNoRef (Resources.cpp:644-685), commit fc2f82117 —
+		// ensures the active theme dictionary, then looks the key up in it.
 		private ResourceDictionary GetActiveThemeDictionary()
 		{
-			// High contrast is an OS/app-global dimension: WinUI reads it from FrameworkTheming, not from
-			// the per-object theme (Resources.cpp:718,740), while the base Light/Dark comes from the ambient
-			// active theme (GetActiveTheme — the core requested-theme-for-subtree slot when one is scoped,
-			// else the app/OS base theme), like EnsureActiveThemeDictionary's theme selection
-			// (Resources.cpp:764-768). Cache invalidates when either the base theme key or the high-contrast
-			// state changes (MUX: EnsureActiveThemeDictionary's baseThemeChanged | highContrastChanged guard,
-			// Resources.cpp:699-704).
-			var activeTheme = GetActiveTheme();
-			var highContrast = Themes.IsHighContrast;
-			if (!activeTheme.Equals(_activeTheme) || highContrast != _activeThemeHighContrast)
-			{
-				InvalidateNotFoundCache(false);
-				_activeTheme = activeTheme;
-				_activeThemeHighContrast = highContrast;
-				_activeThemeDictionary = ResolveActiveThemeDictionary(activeTheme, highContrast);
-			}
-
+			EnsureActiveThemeDictionary();
 			return _activeThemeDictionary;
 		}
 
-		// MUX: CResourceDictionary::EnsureActiveThemeDictionary (Resources.cpp:687-819). When high contrast
-		// is active, the high-contrast sub-dictionary wins: map the base theme to its high-contrast variant
-		// (Light → HighContrastWhite, Dark → HighContrastBlack), else the generic "HighContrast" key; if
-		// none is defined, fall through to the base Light/Dark theme, then "Default". Full high-contrast
-		// brush parity (OS-wide variants and runtime change propagation) is a follow-up.
-		private ResourceDictionary ResolveActiveThemeDictionary(in ResourceKey baseTheme, bool highContrast)
+		// MUX Reference: CResourceDictionary::EnsureActiveThemeDictionary (Resources.cpp:687-819), commit fc2f82117.
+		private void EnsureActiveThemeDictionary()
 		{
-			if (highContrast)
+			if (_themeDictionaries is null)
 			{
-				var highContrastDictionary =
-					GetThemeDictionary(GetHighContrastKeyForBaseTheme(baseTheme))
-					?? GetThemeDictionary(Themes.HighContrast);
-
-				if (highContrastDictionary is not null)
-				{
-					return highContrastDictionary;
-				}
+				return;
 			}
 
-			return GetThemeDictionary(baseTheme) ?? GetThemeDictionary(Themes.Default);
+			// Update active theme dictionary if theme has changed.
+			// Don't update for old apps, for which theme change was not supported.
+
+			// MUX (Resources.cpp:699-700) splits the base comparison per source:
+			//   baseThemeChanged = !core->IsThemeRequestedForSubTree() && (Theming::GetBaseValue(m_activeTheme) != core->GetFrameworkTheming()->GetBaseTheme())
+			//   requestedThemeChanged = core->IsThemeRequestedForSubTree() && (Theming::GetBaseValue(m_activeTheme) != core->GetRequestedThemeForSubTree())
+			// Uno: GetActiveTheme() composes those same two sources (the core requested-theme-for-subtree
+			// slot when one is scoped, else the app/OS base theme), so both collapse into one key comparison.
+			var activeThemeKey = GetActiveTheme();
+			var baseOrRequestedThemeChanged = !activeThemeKey.Equals(_activeTheme);
+
+			// MUX (Resources.cpp:701): highContrastChanged = (m_activeTheme & Theme::HighContrastMask) != core->GetFrameworkTheming()->GetHighContrastTheme()
+			// Uno: high contrast is a single app-global bool — the FrameworkTheming::GetHighContrastTheme()
+			// analog collapsed to HighContrast/HighContrastNone.
+			var highContrastTheme = Themes.IsHighContrast ? Theme.HighContrast : Theme.HighContrastNone;
+			var highContrastChanged = Theming.GetHighContrastValue(_activeThemeValue) != highContrastTheme;
+
+			if (_activeThemeDictionary is null ||                                       // No active theme dictionary
+				(baseOrRequestedThemeChanged || highContrastChanged))                   // and theme changed
+			{
+				ResourceDictionary resources = null;
+				bool isHighContrast = false;
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				// If we already have an active theme dictionary, that means we're trying to
+				// resolve a different one because of a theme switch.
+				var themeSwitchOccurred = _activeThemeDictionary is not null;
+#endif
+
+				// Find theme dictionary corresponding to current theme
+
+				// A high contrast theme was requested:
+				// - If a subtree requested a theme, we will use the high contrast version of that theme.
+				// - Otherwise, we will pick the high contrast for the app-wide theme.
+				if (highContrastTheme != Theme.HighContrastNone)
+				{
+					// MUX (Resources.cpp:720-754): when a subtree requested a theme, switch on
+					// core->GetRequestedThemeForSubTree() — Light → "HighContrastWhite", Dark →
+					// "HighContrastBlack" ("We should never get here because IsThemeRequestedForSubTree()
+					// returned true." otherwise); else switch on the OS high-contrast variant
+					// (core->GetFrameworkTheming()->GetHighContrastTheme()) — HighContrastBlack /
+					// HighContrastWhite / HighContrastCustom → the same-named key.
+					// Uno: GetActiveTheme() already composes requested-or-base, so the subtree branch is
+					// the base-derived variant key below, and the app-wide branch collapses onto it
+					// because high contrast is a single bool.
+					// TODO Uno: detect the OS high-contrast variant (White/Black/Custom —
+					// SystemThemingInterop.GetSystemHighContrastTheme) and port the app-wide variant
+					// switch 1:1.
+					resources = GetThemeDictionary(GetHighContrastKeyForBaseTheme(activeThemeKey));
+
+					if (resources is null)
+					{
+						resources = GetThemeDictionary(Themes.HighContrast);
+					}
+
+					isHighContrast = resources is not null;
+				}
+
+				if (resources is null)
+				{
+					// If a subtree requested a theme, get it. Otherwise get the app-wide theme.
+					// Uno: GetActiveTheme() composes exactly that (activeThemeKey). MUX gates the keyed
+					// lookup on requestedTheme != Theme::None (Resources.cpp:769); the pre-app-theme-init
+					// "Default" key is Uno's None analog.
+					if (!activeThemeKey.Equals(Themes.Default))
+					{
+						resources = GetThemeDictionary(activeThemeKey);
+					}
+
+					if (resources is null)
+					{
+						resources = GetThemeDictionary(Themes.Default);
+					}
+				}
+
+				if (resources is not null)
+				{
+					// Remember active theme dictionary, to avoid finding it next
+					// time if theme hasn't changed.
+					var previousActiveThemeDictionary = _activeThemeDictionary;
+					_activeThemeDictionary = resources;
+
+					if (isHighContrast)
+					{
+						_activeThemeDictionary.MarkIsHighContrast();
+					}
+
+					// Remember active theme dictionary's theme
+					_activeTheme = activeThemeKey;
+					_activeThemeValue = GetActiveBaseTheme() | highContrastTheme;
+
+					// Uno: keys cached as not-found may resolve in the newly-active sub-dictionary.
+					// WinUI invalidates through the theme walk (CResourceDictionary::NotifyThemeChangedCore,
+					// Resources.cpp:2206), which only covers walked dictionaries; invalidating at the switch
+					// point covers dictionaries outside the walk (e.g. system dictionaries) too.
+					if (!ReferenceEquals(previousActiveThemeDictionary, _activeThemeDictionary))
+					{
+						InvalidateNotFoundCache(false);
+					}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+					// Make sure we re-evaluate all ThemeResource expressions inside this
+					// theme dictionary first if a theme switch occurred.
+					if (themeSwitchOccurred)
+					{
+						// MUX: m_pActiveThemeDictionary->NotifyThemeChanged(m_activeTheme, highContrastChanged)
+						// (Resources.cpp:809-814); the theme walk lives on the store.
+						((IDependencyObjectStoreProvider)_activeThemeDictionary).Store.NotifyThemeChanged(_activeThemeValue, highContrastChanged);
+					}
+#endif
+				}
+			}
 		}
 
 		private static ResourceKey GetHighContrastKeyForBaseTheme(in ResourceKey baseTheme)
 			=> baseTheme.Equals(Themes.Dark) ? Themes.HighContrastBlack : Themes.HighContrastWhite;
 
+		// MUX: theme sub-dictionaries resolve with LookupScope::LocalOnly (self + merged + local theme,
+		// Resources.cpp:725-784); the "HighContrast" and "Default" fallbacks additionally search the
+		// global theme resources (LookupScope::GlobalTheme, Resources.cpp:758,789). Uno has no
+		// global-theme key space for sub-dictionary names, so all lookups stay local
+		// (shouldCheckSystem: false).
 		private ResourceDictionary GetThemeDictionary(in ResourceKey theme)
 		{
 			object dict = null;
