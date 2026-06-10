@@ -44,6 +44,16 @@ public partial class DependencyObjectStore
 	/// </remarks>
 	private void EnterProperties(DependencyObject? namescopeOwner, EnterParams @params)
 	{
+		// For SparseProperties we don't propogate down the visualTree pointer.  These elements seem to be
+		// able to have parents in different trees.  TODO: Investigate this more.
+		// Bug 19548424: Investigate places where an element entering the tree doesn't have a unique VisualTree ptr
+		// (MUX: EnterSparseProperties, PropertySystem.cpp:1171-1175. Uno's store enumeration carries the
+		// non-visual values WinUI walks as sparse properties — e.g. an attached flyout must not gain a
+		// visual-tree association, and thereby a XamlRoot, just because its anchor entered the tree.)
+		EnterParams newParams = @params;
+		newParams.VisualTree = null;
+		@params = newParams;
+
 		foreach (var propertyDetail in _properties.GetAllDetails())
 		{
 			if (!ShouldEnterLeaveProperty(propertyDetail))
