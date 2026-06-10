@@ -78,16 +78,13 @@ public partial class DependencyObjectStore
 #if UNO_HAS_ENHANCED_LIFECYCLE
 	#region Theme walk — WinUI: CDependencyObject::NotifyThemeChanged / NotifyThemeChangedCore (Theming.cpp lines 110-255)
 
-	/// <summary>
-	/// Uno-specific: the per-object theme as it was before the current walk persisted the new one.
-	/// WinUI persists m_theme AFTER NotifyThemeChangedCore (Theming.cpp:155) because its
-	/// ActualThemeChanged delivery is posted asynchronously — handlers observe the new theme either
-	/// way. Uno raises the event synchronously, so the new theme is persisted BEFORE the core walk
-	/// (handlers reading ActualTheme must see the new value) and the old theme is stashed here for
-	/// CFrameworkElement::RaiseActiveThemeChangedEventIfChanging's old-vs-new comparison
-	/// (framework.cpp:3379-3382, which reads the not-yet-persisted GetTheme()).
-	/// </summary>
-	internal Theme PreviousThemeForWalk { get; private set; }
+	// Uno-specific: transient context of the walk this object is currently processing. WinUI threads
+	// (theme, forceRefresh) through its recursive per-child NotifyThemeChanged calls
+	// (Theming.cpp:220/:244); Uno's engine reaches non-UIElement property values through
+	// UpdateChildResourceBindings, which has no walk parameters, so the walking store carries them
+	// here while IsProcessingThemeWalk is set.
+	private Theme _walkTheme;
+	private bool _walkForceRefresh;
 
 	/// <remarks>
 	/// MUX Reference: CDependencyObject::NotifyThemeChanged — Theming.cpp:110-157.
@@ -134,15 +131,16 @@ public partial class DependencyObjectStore
 		// walks) get no-op guards.
 		using var cacheGuard = core.ThemeWalkResourceCache.BeginCachingThemeResources();
 
-		// Persist the theme. WinUI does this AFTER NotifyThemeChangedCore (Theming.cpp:155) — see
-		// PreviousThemeForWalk for why Uno persists before.
-		PreviousThemeForWalk = _theme;
-		_theme = theme;
+		_walkTheme = theme;
+		_walkForceRefresh = forceRefresh;
 
 		try
 		{
 			// Notify children and properties of theme change
 			NotifyThemeChangedCore(theme, forceRefresh);
+
+			// Persist the theme on success
+			_theme = theme;
 		}
 		finally
 		{
@@ -379,12 +377,19 @@ public partial class DependencyObjectStore
 			// owner's own inheritance chain.
 			var ownerTheme = ownerThemeOverride ?? ThemeResolution.ResolveOwnerTheme(owner);
 
-			// MUX: Theming.cpp:368-376 — set the slot when the owner's base theme differs from it.
-			prevSlotTheme = core.GetRequestedThemeForSubTree();
-			if (prevSlotTheme != Theming.GetBaseValue(ownerTheme))
+			// MUX: Theming.cpp:368-376 — "Push theme that resource lookup should use to get the
+			// property value": only OUTSIDE a theme walk (`!IsProcessingThemeWalk()`) and when the
+			// owner's base theme differs from the slot. During a walk the slot already carries the
+			// walk's theme (set in NotifyThemeChanged, Theming.cpp:137-149) while the owner's
+			// per-object theme is not yet persisted — pushing here would re-scope to the stale theme.
+			if (!IsProcessingThemeWalk)
 			{
-				core.SetRequestedThemeForSubTree(ownerTheme);
-				popSlotTheme = true;
+				prevSlotTheme = core.GetRequestedThemeForSubTree();
+				if (prevSlotTheme != Theming.GetBaseValue(ownerTheme))
+				{
+					core.SetRequestedThemeForSubTree(ownerTheme);
+					popSlotTheme = true;
+				}
 			}
 #endif
 
@@ -627,6 +632,27 @@ public partial class DependencyObjectStore
 	/// </remarks>
 	private void UpdateResourceBindingsIfNeeded(DependencyObject dependencyObject, ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null)
 	{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		// MUX: Theming.cpp:218-221 / :242-244 — during a theme walk, property values are notified
+		// through the recursive per-child NotifyThemeChanged, which persists the child's own
+		// per-object theme, re-scopes the requested-theme-for-subtree slot, and early-outs when the
+		// child already carries the walk theme. "Any DependencyObject property that happens to be a
+		// UIElement in the visual tree is skipped ... covered anyways via a full traversal of the
+		// live visual tree ... in CUIElement::NotifyThemeChangedCore" — detached UIElements (e.g.
+		// flyout items not yet opened) ARE notified. The engine propagation below remains for the
+		// non-walk reasons (loading, hot reload).
+		if (IsProcessingThemeWalk)
+		{
+			if (dependencyObject is not UIElement { IsActiveInVisualTree: true }
+				&& dependencyObject is IDependencyObjectStoreProvider walkProvider)
+			{
+				walkProvider.Store.NotifyThemeChanged(_walkTheme, _walkForceRefresh);
+			}
+
+			return;
+		}
+#endif
+
 		// propagate to non-FE DO
 		if (dependencyObject is not IFrameworkElement && dependencyObject is IDependencyObjectStoreProvider storeProvider)
 		{
@@ -702,8 +728,11 @@ public partial class DependencyObjectStore
 				// requested-theme-for-subtree slot (the LookupThemeResource pattern,
 				// xcpcore.cpp:2371-2394), which the resolution leaf reads
 				// (EnsureActiveThemeDictionary, Resources.cpp:764-768).
-				var bindingOwnerTheme = GetOwnerTheme();
-				using var bindingThemeScope = Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(bindingOwnerTheme);
+				// During a theme walk the slot already carries the walk's theme while this object's
+				// per-object theme is not yet persisted (Theming.cpp:155) — only scope outside walks.
+				using var bindingThemeScope = IsProcessingThemeWalk
+					? default
+					: Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(GetOwnerTheme());
 				_properties.UpdateBindingExpressions();
 			}
 			finally
@@ -726,8 +755,11 @@ public partial class DependencyObjectStore
 			// pattern, xcpcore.cpp:2371-2394), which the resolution leaf reads (EnsureActiveThemeDictionary,
 			// Resources.cpp:764-768). For a non-FrameworkElement owner, the injected FE resource context
 			// supplies the theme.
-			var ownerTheme = GetOwnerTheme();
-			using var resourceBindingsThemeScope = Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(ownerTheme);
+			// During a theme walk the slot already carries the walk's theme while this object's
+			// per-object theme is not yet persisted (Theming.cpp:155) — only scope outside walks.
+			using var resourceBindingsThemeScope = IsProcessingThemeWalk
+				? default
+				: Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(GetOwnerTheme());
 
 			var bindings = _resourceBindings.GetAllBindings();
 			foreach (var binding in bindings)

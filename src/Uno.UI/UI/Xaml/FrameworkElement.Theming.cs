@@ -236,28 +236,33 @@ public partial class FrameworkElement
 	}
 
 	// Transitional shape of CFrameworkElement::RaiseActiveThemeChangedEventIfChanging
-	// (framework.cpp:3346-3386): the base-theme comparison ports 1:1 using the stashed pre-walk
-	// theme (see DependencyObjectStore.PreviousThemeForWalk); the HighContrastChanged event and the
-	// HC suppression rules land with the Phase 4 framework.cpp port.
+	// (framework.cpp:3346-3386): the base-theme comparison ports 1:1 (GetTheme() is the pre-walk
+	// theme — WinUI persists m_theme after NotifyThemeChangedCore, Theming.cpp:155, and so does
+	// Uno); the HighContrastChanged event and the HC suppression rules land with the Phase 4
+	// framework.cpp port.
 	private void RaiseActiveThemeChangedEventIfChanging(Theme theme, bool forceRefresh)
 	{
 		if (IsEffectiveThemeChanging(theme, forceRefresh))
 		{
-			RaiseActualThemeChanged();
+			// MUX: the EventManager delivers FrameworkElement_ActualThemeChanged asynchronously
+			// (posted raise, framework.cpp:3384; confirmed by native ResourceDictionaryBasicTests.cpp:
+			// 4209-4234 — handlers observe the already-persisted NEW theme). Post the invocation so
+			// handlers run after the walk has persisted the per-object theme.
+			Uno.UI.Dispatching.NativeDispatcher.Main.Enqueue(RaiseActualThemeChanged);
 		}
 	}
 
 	// MUX: framework.cpp:3378-3382 — "Raise ActualThemeChanged event if effective base
 	// (non-HighContrast) theme value is changing": oldTheme == None ? GetBaseTheme() :
-	// GetBaseValue(oldTheme), compared to the incoming base. The pre-walk theme comes from
-	// DependencyObjectStore.PreviousThemeForWalk (Uno persists before the core walk — sync event
-	// delivery); Application.IsBaseThemeChanging mirrors WinUI's IsBaseThemeChanging() so a
-	// never-walked element still raises on an app/system switch.
+	// GetBaseValue(oldTheme), compared to the incoming base. GetTheme() still holds the pre-walk
+	// theme here (persisted after the core walk, Theming.cpp:155);
+	// Application.IsBaseThemeChanging mirrors WinUI's IsBaseThemeChanging() so a never-walked
+	// element still raises on an app/system switch.
 	// Uno-specific: forceRefresh also counts as changing (pre-existing behavior, re-validated in
 	// Phase 4 of the theming alignment).
 	private bool IsEffectiveThemeChanging(Theme theme, bool forceRefresh)
 	{
-		var oldTheme = ((IDependencyObjectStoreProvider)this).Store.PreviousThemeForWalk;
+		var oldTheme = GetTheme();
 		var appBaseTheme = Theming.FromElementTheme(Application.Current?.ActualElementTheme ?? ElementTheme.Light);
 		var oldBaseForEvent = oldTheme == Theme.None ? appBaseTheme : Theming.GetBaseValue(oldTheme);
 		return oldBaseForEvent != Theming.GetBaseValue(theme)

@@ -183,26 +183,6 @@ public partial class DependencyObjectStore
 			return;
 		}
 
-		// Uno-specific ordering: WinUI runs the enter-property walk (depends.cpp:1013-1032) and
-		// EnterSparseProperties before the theme block, because CDependencyObject::NotifyThemeChanged
-		// recursively re-themes property values afterwards (Theming.cpp:175-248). The walk now lives
-		// on the store, but its property-value propagation still flows through the child store's
-		// UpdateResourceBindings (which does not persist a per-object theme — see
-		// NotifyThemeChangedCoreImpl). Until that recursion is per-child NotifyThemeChanged, the
-		// theme block must run first so the property walk's ThemeInheritanceCaller fallback reads
-		// this object's already-established theme. EnterSparseProperties keeps its pre-theme
-		// position from WinUI.
-		EnterSparseProperties(pAdjustedNamescopeOwner: namescopeOwner, @params);
-
-		// MUX Reference: depends.cpp:1044-1069 — establish this object's theme from its (logical)
-		// inheritance parent now that it is live, before any {ThemeResource} resolves. Element-level
-		// theming is a Skia/WASM (UNO_HAS_ENHANCED_LIFECYCLE) feature; native targets support OS +
-		// application theme only and intentionally skip this Enter establishment.
-		if (IsActive)
-		{
-			EstablishThemeOnEnterCore(@params);
-		}
-
 		// Enumerate all the field-backed properties and enter/invoke as needed.
 		// (depends.cpp:1013-1032 — in Uno the store's property enumeration covers WinUI's field-backed
 		// CEnterDependencyProperty table; see EnterProperties in DependencyObjectStore.PropertySystem.mux.cs.)
@@ -213,6 +193,19 @@ public partial class DependencyObjectStore
 		if (@params.IsLive)
 		{
 			EnterProperties(namescopeOwner, @params);
+		}
+
+		EnterSparseProperties(pAdjustedNamescopeOwner: namescopeOwner, @params);
+
+		// MUX Reference: depends.cpp:1044-1069 — establish this object's theme from its (logical)
+		// inheritance parent now that it is live, before any {ThemeResource} resolves. Runs after the
+		// property walks like WinUI: NotifyThemeChanged recursively re-themes the just-entered
+		// property values (Theming.cpp:175-248). Element-level theming is a Skia/WASM
+		// (UNO_HAS_ENHANCED_LIFECYCLE) feature; native targets support OS + application theme only
+		// and intentionally skip this Enter establishment.
+		if (IsActive)
+		{
+			EstablishThemeOnEnterCore(@params);
 		}
 
 		//if (params.fIsLive && m_bitFields.fWantsInheritanceContextChanged)
