@@ -54,8 +54,6 @@ namespace SampleControl.Presentation
 
 	public partial class SampleChooserViewModel
 	{
-		internal const DynamicallyAccessedMemberTypes SampleRequirements = DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields;
-
 		private const string TestGroupVariable = "UITEST_RUNTIME_TEST_GROUP";
 		private const string TestGroupCountVariable = "UITEST_RUNTIME_TEST_GROUP_COUNT";
 		private const string TestsFilterRawVariable = "UITEST_RUNTIME_TESTS_FILTER";
@@ -1360,17 +1358,6 @@ namespace SampleControl.Presentation
 			await _dispatcher.RunAsync(
 					UnitTestDispatcherCompat.Priority.Normal,
 					() => action());
-		}
-	}
-
-	struct SampleChooserType
-	{
-		[DynamicallyAccessedMembers(SampleChooserViewModel.SampleRequirements)]
-		public Type Type { get; }
-
-		public SampleChooserType([DynamicallyAccessedMembers(SampleChooserViewModel.SampleRequirements)] Type type)
-		{
-			this.Type = type;
 		}
 	}
 }
