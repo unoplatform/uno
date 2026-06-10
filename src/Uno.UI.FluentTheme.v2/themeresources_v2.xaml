@@ -16738,11 +16738,7 @@
               </VisualStateGroup>
               <VisualStateGroup x:Name="DisabledStates">
                 <VisualState x:Name="Enabled" />
-                <VisualState x:Name="Disabled">
-                  <Storyboard>
-                    <DoubleAnimation Storyboard.TargetName="ContentBorder" Storyboard.TargetProperty="Opacity" Duration="0" To="{ThemeResource ListViewItemDisabledThemeOpacity}" />
-                  </Storyboard>
-                </VisualState>
+                <VisualState x:Name="Disabled" />
               </VisualStateGroup>
               <VisualStateGroup x:Name="MultiSelectStates">
                 <VisualState x:Name="MultiSelectDisabled" />
@@ -17186,11 +17182,7 @@
               </VisualStateGroup>
               <VisualStateGroup x:Name="DisabledStates">
                 <VisualState x:Name="Enabled" />
-                <VisualState x:Name="Disabled">
-                  <Storyboard>
-                    <DoubleAnimation Storyboard.TargetName="ContentBorder" Storyboard.TargetProperty="Opacity" Duration="0" To="{ThemeResource ListViewItemDisabledThemeOpacity}" />
-                  </Storyboard>
-                </VisualState>
+                <VisualState x:Name="Disabled" />
               </VisualStateGroup>
               <VisualStateGroup x:Name="MultiSelectStates">
                 <VisualState x:Name="MultiSelectDisabled">
