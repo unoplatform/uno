@@ -1,265 +1,242 @@
-# Theming WinUI Alignment — Architecture & Discrepancy Analysis
+# Architecture — WinUI Theming & Enter/Leave, and the 1:1 Port Mapping
+
+> WinUI sources: `D:\Work\microsoft-ui-xaml2\src`, commit `fc2f82117`. All `file:line` refs below are against that commit. Uno refs are against this branch's base, `origin/dev/mazi/theming-winui` (`ffd6ee2631`).
+
+## 0. Fidelity rules (binding for every phase)
+
+These are the `/winui-port` rules as they apply to this subsystem; they are what the prior effort relaxed.
+
+- **One C++ translation unit → one C# file**, with a `MUX Reference <file>, commit fc2f82117` header. Member order matches the C++ source. C++ comments are preserved verbatim (adapted syntax only).
+- **Natural WinUI names.** No `_Mux`/`Internal` suffixes for their own sake. Where a new method must coexist with an old Uno path during migration, prefer an internal overload; gate superseded code with `#if` rather than renaming.
+- **Never simplify away behavior.** Anything not portable is preserved as a comment with `TODO Uno:` and a reason. Behavior that *looks* redundant (the `Default` fallback order, the `None`-theme gates, async event posting) is ported as-is.
+- **Code goes where WinUI has it.** `CDependencyObject` logic goes to the DependencyObject level (in Uno: `DependencyObjectStore`, see §5.1) — not to `UIElement`/`FrameworkElement`. `CFrameworkElement` overrides stay on `FrameworkElement`. Core-services state goes to `Uno.UI.Xaml.Core.CoreServices`.
+- **New machinery is enhanced-lifecycle only** (`UNO_HAS_ENHANCED_LIFECYCLE`: Skia + WASM). Native heads keep their current behavior compiled and unchanged.
+
+## 1. The WinUI lifecycle model (what we port)
+
+### 1.1 EnterParams / LeaveParams
+
+`xcp/core/inc/EnterParams.h:13-53` and `LeaveParams.h:12-50`:
+
+| EnterParams | LeaveParams | Meaning |
+|---|---|---|
+| `fIsLive` | `fIsLive` | entering/leaving the *live* tree (vs dead enter for namescope only) |
+| `fSkipNameRegistration` | `fSkipNameRegistration` | skip namescope (un)registration |
+| `fCoercedIsEnabled` | `fCoercedIsEnabled` | inherited IsEnabled coercion |
+| `fUseLayoutRounding` | `fUseLayoutRounding` | inherited layout rounding |
+| `fIsForKeyboardAccelerator` | `fIsForKeyboardAccelerator` | dead enter to register accelerators |
+| `fCheckForResourceOverrides` | `fCheckForResourceOverrides` | resource-override scope flag |
+| `pParentResourceDictionary` | `pParentResourceDictionary` | parent RD pointer (reset for descendants) |
+| `visualTree` | — | VisualTree being entered |
+| — | `fVisualTreeBeingReset` | tree teardown: suppress events |
+
+The base has only `IsLive`, `IsForKeyboardAccelerator`, `VisualTree` in both structs (`src/Uno.UI/UI/Xaml/EnterParams.cs`, `LeaveParams.cs`). Port the full structs.
+
+### 1.2 CDependencyObject::Enter / Leave (`core/core/elements/depends.cpp`)
+
+- **`Enter` (depends.cpp:778-969):** cycle guard via `fIsProcessingEnterLeave`; XamlIslandRoot visual-tree override; `SetVisualTree` when live; inherited-properties invalidation; namescope-owner adjustment (standard namescope owners, popup dual-namescope case); then `EnterImpl(pAdjustedNamescopeOwner, enterParams)` with `pParentResourceDictionary` reset for descendants.
+- **`EnterImpl` (depends.cpp:971-1072):** the base layer every DO runs:
+  1. live: `ActivateImpl()` (sets `fLive`), `m_checkForResourceOverrides` (:976-984)
+  2. name registration (:986-1001), deferred-mapping notify
+  3. skip value types / templates (:1004-1011)
+  4. **enter-property walk** (:1013-1032): for each `CEnterDependencyProperty` of the class (metadata-flagged; `DoNotEnterLeave`, `IsObjectProperty`, `NeedsInvoke`), get the DO-valued property and `EnterObjectProperty(pDO, pNamescopeOwner, params)` — this is how brushes, transforms, setters, keyframes, text elements, resources etc. enter the tree
+  5. `EnterSparseProperties` (:1034)
+  6. `NotifyInheritanceContextChanged` when live (:1036-1042)
+  7. **the theme block** (:1044-1069) — quoted because it is the heart of this whole effort:
+     ```cpp
+     if (m_bitFields.fLive)
+     {
+         // If our theme is different from the parent, make sure we walk the subtree.
+         CDependencyObject* pParent = nullptr;
+         auto thisAsFe = do_pointer_cast<CFrameworkElement>(this);
+         if (thisAsFe)
+         {
+             // Get logical parent so popups and flyouts inherit theme changes
+             pParent = GetInheritanceParentInternal(TRUE /* fLogicalParent */);
+         }
+         else
+         {
+             pParent = GetParentInternal(false /* public */);
+         }
+         if (pParent && pParent->GetTheme() != Theming::Theme::None && pParent->GetTheme() != m_theme)
+         {
+             IFC_RETURN(NotifyThemeChanged(pParent->GetTheme()));
+         }
+         else
+         {
+             IFC_RETURN(UpdateAllThemeReferences());
+         }
+     }
+     ```
+- **`Leave` (depends.cpp:1079-1237)** mirrors Enter (cycle guard, `bAdjustedLive = fIsLive && IsActive()`, namescope, popup cached-namescope case, `LeaveImpl`).
+- **`LeaveImpl` (depends.cpp:1256-1342):** InheritanceContextChanged; `DeactivateImpl()`; name unregistration; leave-property walk (`LeaveObjectProperty`); `LeaveSparseProperties`; focus/input cleanup. **`m_theme` is NOT cleared on Leave** — theme persists; re-`Enter` re-establishes it from the new parent.
+- **`m_theme`** is `Theming::Theme m_theme : 5` on `CDependencyObject` (`CDependencyObject.h:1759-1764`), getter at `:1648`; `fIsProcessingThemeWalk : 1` at `:302`. Every DO, not just UIElements.
+- **Overrides:** `CUIElement::EnterImpl` (`uielement.cpp:1252-1400`; calls base at `:1356`, enters children `m_pChildren->Enter` at `:1373`, ContextFlyout at `:1367`), `CFrameworkElement::EnterImpl` (`framework.cpp:2337-2406`; resource-override check, base, style application when live), `CControl::EnterImpl` (`Control.cpp:321-362`; built-in styles + StateTriggers when live), `CPopup::EnterImpl` (`popup.cpp:2846-2880`; base, composition, then **dead enter of the child** `:2876` with `fIsLive=FALSE` for name registration only — the child *live*-enters when the popup opens and parents it to PopupRoot), and matching `LeaveImpl`s.
+- **`GetInheritanceParentInternal(fLogicalParent)`** (`framework.cpp:3113-3146`): visual parent by default; the logical parent (`m_pLogicalParent` when the `FrameworkElement_Parent` slot is set) when `fLogicalParent` is requested **or** the visual parent is `PopupRoot` **or** `this` is a parentless `Popup`; falls back to the visual parent. Base `CDependencyObject` version (`CDependencyObject.h:586-592`) returns `m_pParent` unless parent-is-inheritance-context-only.
+
+### 1.3 Who triggers Enter
+
+Children collections (`m_pChildren->Enter`), DO-valued property sets on live objects (the enter-property walk + `SetValue` entering new values), popup open, root content set by `CCoreServices`. In Uno these correspond to: `UIElement.ChildEnter` (`UIElement.crossruntime.cs`), `DependencyObjectStore.SetValue` parenting, popup open, and `VisualTree` root attach.
+
+## 2. The WinUI theming model (what we port)
+
+### 2.1 Theme enum — `components/theming/inc/Theme.h:10-65`
+
+5-bit packed: `BaseMask=0x03` (None/Light/Dark), `HighContrastMask=0x1C` (HC/White/Black/Custom), helpers `GetBaseValue`/`GetHighContrastValue`. **Uno's `src/Uno.UI/UI/Xaml/Theming.cs` already matches** (verify against fc2f82117 and re-cite).
+
+### 2.2 FrameworkTheming — `components/theming/FrameworkTheming.{h,cpp}`
+
+The app/system theme state machine, owned by `CCoreServices` (`m_spTheming`):
+- State: `m_requestedTheme` (app override; `None` = follow system), `m_systemTheme`, `m_highContrastTheme`, change-in-progress flags `m_isAppThemeChanging` / `m_isSystemThemeChanging` / `m_isHighContrastChanging`.
+- `GetTheme()` (FrameworkTheming.cpp:119-124): `(m_requestedTheme != None ? m_requestedTheme : m_systemTheme) | m_highContrastTheme`. `GetBaseTheme()`/`GetHighContrastTheme()` mask accordingly.
+- `OnThemeChanged(forceUpdate)` (:31-67): re-reads system + HC from `IThemingInterop`, computes which axes changed, sets the changing flags, invokes the notify callback (→ `CCoreServices::NotifyThemeChange`), clears flags.
+- `SetRequestedTheme` (:75-105): app override; triggers `OnThemeChanged`.
+- Uno today scatters this across `Application.cs` (`InternalRequestedTheme`, `InitializeSystemTheme`, `UpdateRequestedThemesForResources`, `IsThemeSetExplicitly`, `OnSystemThemeChanged`) plus the `Themes.Active` global. Port `FrameworkTheming` as a real class; `Application` delegates (per `FrameworkApplication_Partial.cpp:987-1061` — settable only pre-load, getter reads `FrameworkTheming.GetBaseTheme()`).
+
+### 2.3 SystemThemingInterop — `components/theminginterop/SystemThemingInterop.cpp`
+
+`GetSystemTheme` (:33-119, OS light/dark), `GetSystemHighContrastTheme` (:121-177, maps OS HC scheme → White/Black/Custom). Uno equivalent: `Uno.UWP/Helpers/Theming/SystemThemeHelper.*` (per-platform) + `WinRTFeatureConfiguration.Accessibility.HighContrast` flag. Port an `IThemingInterop`-shaped bridge so `FrameworkTheming` consumes the same contract; real OS HC detection on Skia stays a documented follow-up (variant classification ports now, sourced from the flag).
+
+### 2.4 CDependencyObject theming — `components/DependencyObject/Theming.cpp` (345 lines)
+
+Methods in file order (all on CDependencyObject):
+- `NotifyThemeChanged(theme, forceRefresh)` (:110-157): assert; skip if `IsProcessingThemeWalk`; **FE requested-theme override read here via `do_pointer_cast<CFrameworkElement>`** (:125-129); no-change early-out (:132-135); set walk flag + **scoped save/set of core `RequestedThemeForSubTree` from the incoming theme** (:137-149); `NotifyThemeChangedCore`; persist `m_theme` (:155).
+- `NotifyThemeChangedCore` (:159-162) → `NotifyThemeChangedCoreImpl` (:166-255): `UpdateAllThemeReferences()`; walk class properties + sparse properties calling `NotifyThemeChanged` on DO values; notify framework peer (expressions/bindings) via `FxCallbacks`.
+- `UpdateAllThemeReferences` (:260-286): snapshot the theme-resource map's property indices (stack_vector, 50), `UpdateThemeReference(propertyIndex)` each.
+- `UpdateThemeReference(KnownPropertyIndex)` (:288-311): `ClearThemeResource` → re-`SetThemeResourceBinding`.
+- `UpdateThemeReference(CThemeResource*)` (:315-346): if `IsActive()`, ancestor walk via `ResourceResolver::FindNextResolvedValueNoRef` → `SetLastResolvedValue`; else/fallback `RefreshValue()` gated by `IsProcessingThemeWalk() || m_theme != None || !IsValueFromInitialTheme()`.
+- `SetThemeResourceBinding(pDP, pModifiedValue, pThemeResource, baseValueSource)` (:349-400): **the owner-theme push** —
+  ```cpp
+  // Push theme that resource lookup should use to get the property value
+  if (!IsProcessingThemeWalk() && m_theme != Theme::None)
+  {
+      prevTheme = GetRequestedThemeForSubTreeFromCore();
+      if (prevTheme != Theming::GetBaseValue(m_theme))
+      {
+          SetRequestedThemeForSubTreeOnCore(m_theme);
+          popTheme = true;
+      }
+  }
+  // … UpdateThemeReference(pThemeResource); GetLastResolvedThemeValue; SetValue; SetThemeResource(pDP, pThemeResource);
+  ```
+  then scope-restores the previous value.
+
+The base's `DependencyObjectStore.Theming.cs` ports parts of this but (a) splits `SetThemeResourceBinding` responsibilities with `ResourceResolver.ApplyResource`, (b) leaves `NotifyThemeChanged`/`Core` on **FrameworkElement** (`FrameworkElement.Theming.cs:164/214`), and (c) threads `ThemeResolution.ResolveOwnerTheme(owner)` as a parameter instead of the core slot.
+
+### 2.5 The ambient slot — the key structural insight
+
+WinUI **has** a process(core)-global ambient: `CCoreServices::SetRequestedThemeForSubTree` / `GetRequestedThemeForSubTree` / `IsThemeRequestedForSubTree`. It is a **single value with scoped save/restore** (recursion forms the implicit stack), and it is written from **exactly three places**, always derived from a DO's `m_theme` or the walk theme:
+
+1. `CDependencyObject::NotifyThemeChanged` (Theming.cpp:137-149) — during the walk.
+2. `CDependencyObject::SetThemeResourceBinding` (Theming.cpp:368-375) — when (re)binding one theme resource outside a walk.
+3. `CFrameworkElement::NotifyThemeChangedForInheritedProperties` (framework.cpp:3441-3487) — inherited-property (foreground) resolution.
 
-> Companion documents: [`README.md`](./README.md) (index + conventions), [`plan.md`](./plan.md) (phased implementation), [`tests.md`](./tests.md) (regression suite).
->
-> This document is the **authoritative reference** for *why* the refactor is needed and *what the target design is*. Every implementation phase in `plan.md` cites back to sections here. All WinUI C++ citations are rooted at `D:\Work\microsoft-ui-xaml2\src\`. All Uno citations are rooted at the repo root (worktree `D:\Work\uno-worktrees\theming-revamp`).
+The reader is `CResourceDictionary::EnsureActiveThemeDictionary` (Resources.cpp:699-791). Because `m_theme` is established for *every* DO at `Enter`, every materialization path (template expansion, VSM, animations, bindings, styles, popups) hits one of the three writers with the right theme — **that** is why WinUI needs no per-site band-aids and no resolution-time ancestor walk. The base's `ThemeResolution.ResolveOwnerTheme` ancestor walk and the theme-parameter threading through `TryGetValue` are reconstructions of this invariant from the wrong end; they are replaced by the real mechanism (theme at Enter + the three writers + the slot reader).
 
----
+### 2.6 CThemeResource — `components/theming/ThemeResource.{h,cpp}`
 
-## 1. Problem statement
+Members: `m_strResourceKey`, `m_isValueFromInitialTheme`, `m_lastResolvedThemeValue`, `m_pTargetDictionaryWeakRef`, `m_themeWalkResourceCache`. `RefreshValue()` (:63-129): cache probe → pinned-dictionary `GetKeyNoRef` → cache add → `SetLastResolvedValue` (:138-169, unwraps wrappers, maintains `m_isValueFromInitialTheme`). Uno counterpart: `src/Uno.UI/UI/Xaml/Data/ThemeResourceReference.cs` — already close (prior effort); align members/order/semantics fully.
 
-Element-level theming (`FrameworkElement.RequestedTheme`, PR #22803) and lazy theme-resource evaluation (PR #22887) landed, followed by a steady stream of corrective PRs (#23127, #23178, #23197, #23243) and still-open production bugs. The reported bugs are tracked internally; they are described here only by their generic, reproducible symptom (the public spec must stand on its own without private trackers):
+### 2.7 CThemeResourceExtension — `core/core/elements/ThemeResourceExtension.cpp`
 
-| Scenario | Symptom | Platform |
-|----------|---------|----------|
-| **S1** virtualized item, opposite-theme app | Realized list/grid item text renders with the app/OS theme instead of the element's theme (e.g. dark labels in a light-themed control). | Skia desktop, WASM |
-| **S2** recycle on tab navigation | Container content recycled when switching tabs re-renders with the wrong theme while the app is light. | Skia desktop, WASM |
-| **S3** scrolled-into-view cell | A cell/column materialized on scroll uses the wrong (dark) styling; toggling the app theme dark→light "fixes" it. | WASM, Skia desktop |
-| **S4** popup/flyout first open | A popup/flyout (incl. the mobile text-selection context menu, `TextCommandBarFlyout`) shows the wrong style on **first** open, correct on second open. | iOS, Android |
-| **S5** runtime-added control | A control created and added to the tree at runtime resolves the wrong theme. | Skia desktop, WASM |
-| **uno #23177** (public) | `ThemeResource` returns light values after switching the app to dark (regression from #22803/#22887). | WASM |
+Parse-time `{ThemeResource}`: `ProvideValue` (:44-132) / `LookupResource` (:144-209) → `ResolveInitialValueAndTargetDictionary` (:222-247) → `ResourceResolver::ResolveThemeResource` (`components/resources/ResourceResolver.cpp:83-109`), pinning the providing dictionary. Uno counterpart: `ResourceResolver.ApplyResource`/`TryStaticRetrieval` (`src/Uno.UI/UI/Xaml/ResourceResolver.cs`) — align the pinning + registration flow.
 
-These are not separate bugs. They are surfacings of **one architectural defect**.
+### 2.8 CResourceDictionary theme selection — `core/core/elements/Resources.cpp`
 
----
+`EnsureActiveThemeDictionary` (:687-819): recompute when base/requested/HC changed; **HC branch first** (:718-762: requested-subtree Light→`HighContrastWhite` / Dark→`HighContrastBlack`; app-wide → OS variant key; generic `"HighContrast"` fallback; `MarkIsHighContrast`), then base (requested-subtree theme if set, else `FrameworkTheming.GetBaseTheme()`; `"Light"`/`"Dark"` key; `"Default"` fallback), cache as `m_pActiveThemeDictionary` + `m_activeTheme`, and **`NotifyThemeChanged(m_activeTheme, highContrastChanged)` on the newly-active sub-dictionary when switching** (:793-815). The base has a partial port (`ResourceDictionary.ResolveActiveThemeDictionary`, `ResourceDictionary.cs:644-686`) **parameterized by theme key** — finish it 1:1 and source the theme from the core slot.
 
-## 2. The one defect, stated precisely
+### 2.9 ThemeWalkResourceCache — `components/theming/ThemeWalkResourceCache.{h,cpp}`
 
-Uno's theme **propagation** machinery is already a faithful WinUI port:
+Key = `(CResourceDictionary*, Theming::Theme /*subtree theme*/, key)` (`ThemeWalkResourceCache.h:55`); `m_subTreeTheme` set by `CCoreServices::SetRequestedThemeForSubTree` (xcpcore.cpp:7903-7905); active only during walks (`BeginCachingThemeResources` scope, invoked from `CCoreServices::NotifyThemeChange` xcpcore.cpp:8015). Owned by `CCoreServices`. The base has `src/Uno.UI/UI/Xaml/ThemeWalkResourceCache.cs` — align ownership (CoreServices) and the `SetSubTreeTheme` coupling to the slot writers.
 
-- Per-element theme field `UIElement._theme` (`Theme.None` default) — `src/Uno.UI/UI/Xaml/UIElement.cs:70`, getter/setter `:86`/`:91`.
-- The notify walk `FrameworkElement.NotifyThemeChanged` / `NotifyThemeChangedCore` — `src/Uno.UI/UI/Xaml/FrameworkElement.Theming.cs:164` / `:214`.
-- The per-reference pinned dictionary `ThemeResourceReference` (Uno's `CThemeResource`) — `src/Uno.UI/UI/Xaml/Data/ThemeResourceReference.cs`.
-- The per-walk dedup cache `ThemeWalkResourceCache` — `src/Uno.UI/UI/Xaml/ThemeWalkResourceCache.cs`.
+### 2.10 CFrameworkElement theming — `core/core/elements/framework.cpp`
 
-The defect is in the **resolution leaf**. When any `{ThemeResource}` resolves a value, the Light/Dark sub-dictionary is chosen by `ResourceDictionary.GetActiveTheme()`:
+- `OnRequestedThemeChanged` (:3501-3559): map `ElementTheme`; `Default` → parent theme else app base, plus *un*freeze inherited properties; set core `IsSwitchingTheme`; OR in HC; `NotifyThemeChanged(theme)`.
+- `NotifyThemeChangedCore` override (:~3327): base, then `RaiseActiveThemeChangedEventIfChanging(theme)`.
+- `RaiseActiveThemeChangedEventIfChanging` (:3346-3386): raise `HighContrastChanged` when HC changing; suppress `ActualThemeChanged` while entering/staying HC; raise `ActualThemeChanged` when base changes (or first-walk `None`→ with base changing). **Events are raised via the EventManager = posted async** (handlers observe the NEW theme; confirmed by native `ResourceDictionaryBasicTests.cpp:4209-4234`).
+- `NotifyThemeChangedForInheritedProperties` (:3402-3489): foreground freeze/unfreeze with the third ambient set-point.
+- `ActualTheme` (:3969-3994): `GetBaseValue(GetTheme())`, falling back to `FrameworkTheming.GetBaseTheme()` when `None`.
+- Uno counterpart: `FrameworkElement.Theming.cs` (hosts the whole walk today; no `HighContrastChanged` event).
 
-```
-src/Uno.UI/UI/Xaml/ResourceDictionary.cs:914
-    internal static ResourceKey GetActiveTheme() => Themes.RequestedThemeForSubTree;
+### 2.11 CCoreServices::NotifyThemeChange — `core/dll/xcpcore.cpp:8006-8118`
 
-src/Uno.UI/UI/Xaml/ResourceDictionary.cs:982-998   (private static class Themes)
-    public static ResourceKey Active { get; set; } = Default;                 // app/OS theme
-    private static readonly Stack<ResourceKey> _requestedThemeForSubTree = new();  // PROCESS-GLOBAL
-    public static ResourceKey RequestedThemeForSubTree =>
-        _requestedThemeForSubTree.Count > 0 ? _requestedThemeForSubTree.Peek() : Active;
-```
-
-`GetActiveTheme()` reads a **process-global** value: the top of a static stack, or the global `Themes.Active`. It **never consults the resolving element's own `_theme`**. Confirm in the leaf lookups:
+Orchestrates a full theme change: begin walk-cache scope; update color/brush resources; reset themed brushes/text formatting; set `m_fIsSwitchingTheme`; `NotifyThemeChanged(theme, fForceRefresh=true)` on: global theme resources, app resources, **main popup root**, the visual root (plus `NotifyThemeChangedForInheritedProperties` with `freeze…=true`), XAML island roots; reload theme-variant images; notify out-of-tree listeners. Uno counterpart: scattered in `Application.cs` — port to `Uno.UI.Xaml.Core.CoreServices`.
 
-```
-src/Uno.UI/UI/Xaml/ResourceDictionary.cs:294   GetActiveThemeDictionary(GetActiveTheme()) ...   // value lookup
-src/Uno.UI/UI/Xaml/ResourceDictionary.cs:364   GetActiveThemeDictionary(GetActiveTheme()) ...   // value + providing-dict lookup
-```
+## 3. Base-branch inventory (`ffd6ee2631`): kept vs replaced
 
-And `ThemeResourceReference.RefreshValue(owner, …)` **accepts `owner` but never uses it to choose the theme** — it just calls `dict.TryGetValue(ResourceKey, …)` which internally reads `GetActiveTheme()`:
+| Area | File(s) | Status |
+|---|---|---|
+| Theme enum | `UI/Xaml/Theming.cs` | **Keep** (verify vs fc2f82117, re-cite) |
+| Per-DO theme on the store | `DependencyObjectStore` `_theme` + `GetTheme/SetTheme` | **Keep** (foundation for Phase 1) |
+| Regression tests + helpers | `Uno.UI.RuntimeTests/.../Given_Theme_Materialization.cs`, `Helpers/ThemeHelper.cs` (incl. `UseSystemThemeOverride`), OS-independent suite fixes | **Keep** — the safety net; must stay green through every phase |
+| Band-aid deletion | no `PushRequestedThemeForSubTree`, no stack (incl. reverts of merged band-aids) | **Keep** |
+| `ThemeResourceReference`, `ThemeWalkResourceCache` | `UI/Xaml/Data/ThemeResourceReference.cs`, `UI/Xaml/ThemeWalkResourceCache.cs` | **Keep as starting point**; finish 1:1 alignment (Phases 2–3) |
+| Partial `EnsureActiveThemeDictionary` | `ResourceDictionary.ResolveActiveThemeDictionary` (`ResourceDictionary.cs:644-686`) | **Keep as starting point**; finish 1:1, re-source theme from the core slot (Phase 5) |
+| `ThemeResolution.ResolveOwnerTheme` | `UI/Xaml/ThemeResolution.cs` | **Replace** — resolution-time ancestor walk has no WinUI analog; deleted in Phase 3 after the choke-point assert proves slot equivalence |
+| Theme-parameter-threaded leaf | `ResourceDictionary.TryGetValue(key, themeKey, …)` overloads + callers | **Replace** — leaf reads the core slot like `EnsureActiveThemeDictionary` (Phases 3+5) |
+| `EstablishThemeAtEnter` + property-value theme walk | `DependencyObjectStore.Theming.cs:95-330` | **Replace** — subsumed by the real `EnterImpl` enter-property walk + theme block (Phase 1) |
+| FE-level theme walk | `FrameworkElement.Theming.cs:164-341` (`NotifyThemeChanged`/`Core`, push-free but FE-hosted) | **Replace** — moves to the store per Theming.cpp (Phase 3); FE keeps only its overrides (Phase 4) |
+| `Themes.Active` global (+ `GetActiveBaseTheme`, test-only `SetActiveTheme`) | `ResourceDictionary.cs:1078-1111` | **Replace** — `FrameworkTheming.GetBaseTheme()` (Phases 2+6) |
+| App/OS theming in `Application.cs`; `ApplicationHelper.RequestedCustomTheme` | `UI/Xaml/Application.cs`, `ApplicationHelper.cs` | **Replace** — `FrameworkTheming` + `FrameworkApplication` parity (Phases 2+6) |
+| UIElement-level Enter/Leave | `UI/Xaml/UIElement.mux.cs` (`Enter:855`, `EnterImpl`, `DependencyObject_EnterImpl:1028` with property walk + theme block as comments), `EnterParams.cs`/`LeaveParams.cs` (3 fields each) | **Replace/extend** — the CDependencyObject layer moves to the store with full params (Phase 1) |
+| Popup/Flyout theming | `Controls/Popup/*`, `Controls/Flyout/FlyoutBase.cs` (`Enter/Leave:82-95`, `ForwardThemeToPresenter`) | **Align** (Phase 7) |
 
-```
-src/Uno.UI/UI/Xaml/Data/ThemeResourceReference.cs:105-122
-    public object? RefreshValue(DependencyObject? owner, ThemeWalkResourceCache? cache = null)
-    {
-        if (_targetDictionary is not null && _targetDictionary.TryGetTarget(out var dict))
-        {
-            ...
-            if (dict.TryGetValue(ResourceKey, out var value, shouldCheckSystem: false))  // ← theme is ambient/global
-            { ... }
-        }
-    }
-```
-
-**Consequence — the whack-a-mole.** Because the leaf ignores the element's theme, any code that resolves a `{ThemeResource}` *outside* the main `NotifyThemeChanged` walk must first **manually push** the element's theme onto the global stack so the leaf picks the right sub-dictionary. There are **11 such band-aid push sites across 8 files today** (§5). Every *new* materialization path that someone forgets to instrument leaks the ambient theme — which is exactly what each reported bug is: a materialization path (virtualized rows, recycled tab content, runtime-created controls, first popup open) with no push.
-
----
+## 4. C++ → C# port mapping table
 
-## 3. How WinUI actually does it (and the subtle truth)
+| WinUI C++ (commit fc2f82117) | C# output (location) | Phase |
+|---|---|---|
+| `core/inc/EnterParams.h` | `src/Uno.UI/UI/Xaml/EnterParams.cs` (extend, 1:1 fields) | 1 |
+| `core/inc/LeaveParams.h` | `src/Uno.UI/UI/Xaml/LeaveParams.cs` (extend, 1:1 fields) | 1 |
+| `core/core/elements/depends.cpp` (Enter/Leave/EnterImpl/LeaveImpl/EnterObjectProperty/LeaveObjectProperty/Enter-LeaveSparseProperties only) | `src/Uno.UI/UI/Xaml/DependencyObjectStore.mux.cs` (new partial; rest of depends.cpp explicitly `NOT PORTED` noted) | 1 |
+| `CDependencyObject.h` lifecycle bits (`fIsProcessingEnterLeave`, `fIsProcessingThemeWalk`, `m_theme:5` — theme already on store) | `DependencyObjectStore` fields/accessors | 1 |
+| `core/core/elements/uielement.cpp` EnterImpl/LeaveImpl | `src/Uno.UI/UI/Xaml/UIElement.mux.cs` (existing; rewire `DependencyObject_EnterImpl` → store) | 1 |
+| `framework.cpp:3113-3146` `GetInheritanceParentInternal` | `FrameworkElement` partial (logical-parent-aware; replaces `ThemeResolution.GetInheritanceParent` flat walk) | 1 |
+| `components/theming/inc/Theme.h` | `src/Uno.UI/UI/Xaml/Theming/Theme.cs` (move/verify existing `Theming.cs`) | 2 |
+| `components/theming/FrameworkTheming.{h,cpp}` | `src/Uno.UI/UI/Xaml/Theming/FrameworkTheming.cs` | 2 |
+| `components/theminginterop/SystemThemingInterop.cpp` | `src/Uno.UI/UI/Xaml/Theming/SystemThemingInterop.cs` (bridge over `SystemThemeHelper` + HC flag) | 2 |
+| `components/theming/ThemeResource.{h,cpp}` (CThemeResource) | `src/Uno.UI/UI/Xaml/Data/ThemeResourceReference.cs` aligned 1:1 (rename decision in-phase) | 2 |
+| `components/theming/ThemeWalkResourceCache.{h,cpp}` | `src/Uno.UI/UI/Xaml/Theming/ThemeWalkResourceCache.cs` (CoreServices-owned) | 2 |
+| `components/DependencyObject/Theming.cpp` | `src/Uno.UI/UI/Xaml/DependencyObjectStore.Theming.cs` (full 1:1: NotifyThemeChanged/Core/CoreImpl, UpdateAllThemeReferences, UpdateThemeReference ×2, SetThemeResourceBinding) | 3 |
+| `CCoreServices` requested-theme slot | `src/Uno.UI/UI/Xaml/Core/CoreServices` (`RequestedThemeForSubTree`, `IsThemeRequestedForSubTree`, `IsSwitchingTheme`) | 3 |
+| `framework.cpp` FE theming (:3327, :3346-3386, :3402-3489, :3501-3559, :3969-3994) | `src/Uno.UI/UI/Xaml/FrameworkElement.Theming.cs` rebuilt 1:1 (+ `HighContrastChanged` event) | 4 |
+| `core/core/elements/Resources.cpp` `EnsureActiveThemeDictionary` + theme-dict plumbing | `src/Uno.UI/UI/Xaml/ResourceDictionary.cs` (finish the partial port; slot-sourced) | 5 |
+| `core/core/elements/ThemeResourceExtension.cpp` + `components/resources/ResourceResolver.cpp` (theme paths) | `src/Uno.UI/UI/Xaml/ResourceResolver.cs` aligned | 5 |
+| `xcpcore.cpp:8006-8118` `NotifyThemeChange` | `src/Uno.UI/UI/Xaml/Core/CoreServices.Theming.cs` (new) | 6 |
+| `dxaml/lib/FrameworkApplication_Partial.cpp:987-1061` RequestedTheme | `src/Uno.UI/UI/Xaml/Application.cs` delegating to `FrameworkTheming` | 6 |
+| `popup.cpp:2846-2936` EnterImpl/LeaveImpl; popup theme at open | `src/Uno.UI/UI/Xaml/Controls/Popup/Popup*.cs` | 7 |
+| `dxaml/lib/FlyoutBase_Partial.cpp` theme forwarding | `src/Uno.UI/UI/Xaml/Controls/Flyout/FlyoutBase.cs` | 7 |
 
-It is tempting to say "WinUI has no global theme stack." **That is wrong** and the plan must not be built on that false premise. WinUI *also* uses an ambient slot: `CCoreServices::m_requestedThemeForSubTree`. The dictionary's theme selection reads it:
+## 5. Resolved design decisions
 
-```
-ThemeResourceExtension/CThemeResource ─ GetKeyNoRef(key)
-  → CResourceDictionary::GetKeyFromThemeDictionariesNoRef            Resources.cpp:644-685
-  → CResourceDictionary::EnsureActiveThemeDictionary                 Resources.cpp:687-819
-        auto requestedTheme = core->IsThemeRequestedForSubTree()
-            ? core->GetRequestedThemeForSubTree()                    // ← ambient slot
-            : core->GetFrameworkTheming()->GetBaseTheme();           // ← app/OS base theme
-```
+### 5.1 Where CDependencyObject lands (the interface problem)
 
-The **two real differences** that make WinUI correct where Uno is not:
+Uno's `DependencyObject` is an **interface** on every target (generated implementation; UIElement must inherit native views on Android/iOS). The per-object engine every DO owns is `DependencyObjectStore`. Therefore:
 
-### Difference A — every `CDependencyObject` carries a resolved theme, established at `Enter`
+- **State** (`_theme` — already there, `fIsProcessingEnterLeave`, `fIsProcessingThemeWalk`, theme-resource map) lives on `DependencyObjectStore`.
+- **Base behavior** (`Enter`, `EnterImpl`, `Leave`, `LeaveImpl`, `NotifyThemeChanged`, `UpdateAllThemeReferences`, …) lives on `DependencyObjectStore`, operating on `ActualInstance`.
+- **Virtual dispatch** (WinUI's `EnterImpl`/`LeaveImpl`/`NotifyThemeChangedCore` overrides): `UIElement` keeps its existing `internal virtual` chain (UIElement → FrameworkElement → Control → Popup …) which calls the store base exactly where C++ calls `CDependencyObject::EnterImpl`. Non-UIElement DOs that override in WinUI (e.g. `CResourceDictionary`, `FlyoutBase` which already has `Enter/Leave`) implement an internal interface (`IEnterLeaveAware` — name fixed in Phase 1) that the store dispatches to instead of its base; implementations call the store base first/last exactly as the C++ override calls its base.
+- Do **not** attempt to convert `DependencyObject` to a class — out of scope, breaking.
 
-`m_theme` is a 5-bit field on **`CDependencyObject`** (not just elements): `CDependencyObject.h:1761`. It is set during the tree-attach walk `CDependencyObject::EnterImpl` for **every** DO that goes live:
+### 5.2 The enter-property walk without CEnterDependencyProperty metadata
 
-```
-depends.cpp:1023-1048   (EnterImpl, only when m_bitFields.fLive)
-    if (thisAsFe)  pParent = GetInheritanceParentInternal(TRUE /* fLogicalParent */);
-    else           pParent = GetParentInternal(false);
-    if (pParent && pParent->GetTheme() != Theme::None && pParent->GetTheme() != m_theme)
-        IFC_RETURN(NotifyThemeChanged(pParent->GetTheme()));     // inherit + walk subtree
-    else
-        IFC_RETURN(UpdateAllThemeReferences());                  // re-resolve refs vs new ancestors
-```
-
-So a freshly materialized element (virtualized row, template output, popup child, runtime-created widget) gets its theme from its **(logical) inheritance parent** *before any property/resource is resolved*. A light subtree under a dark OS can never resolve dark on materialization, because the new element inherits `Light` at `Enter`.
+WinUI walks a generated per-class table of enter-flagged properties. Uno enumerates the store's set DP values whose value is a `DependencyObject` (or a DO collection), honoring an exclusion set equivalent to `DoNotEnterLeave` — derived in Phase 1 from WinUI's metadata (XamlOM / generated `MetadataAPI` tables) for the hot types, starting conservative: visual children (handled by the `CUIElement` children walk), logical-parent backlinks, `DataContext`, and template properties are excluded exactly as WinUI's flags exclude them. Collections recurse into DO items the way `CDOCollection::Enter` does. Any intentional divergence from the table is a `TODO Uno:` with reason. The base's `EstablishThemeAtEnter` property-value walk (`DependencyObjectStore.Theming.cs:160-330`) already encodes several of these exclusions empirically (ItemsSource, UIElement-valued props handled by the visual walk) — fold those learnings into the metadata-derived table, then delete the bolt-on.
 
-### Difference B — resolving a theme ref *outside a walk* always pushes the **owner's own** `m_theme`
+### 5.3 The ambient slot
 
-WinUI never relies on "whatever happens to be on the slot". The per-property apply primitive pushes the owner's resolved theme every time:
+Port `CCoreServices`' slot to `Uno.UI.Xaml.Core.CoreServices`: a single `Theme RequestedThemeForSubTree` field + `IsThemeRequestedForSubTree`, with scoped save/restore structs (no `Stack<T>`). Writers: the three WinUI sites only (§2.5), coupled to `ThemeWalkResourceCache.SetSubTreeTheme` as in xcpcore.cpp:7903-7905. Reader: the `EnsureActiveThemeDictionary` port. The base's theme-parameter threading (leaf `TryGetValue(key, themeKey, …)`) is retired in favor of slot reads once the Phase 3 choke-point assert proves equivalence; `Themes.Active` reads become `FrameworkTheming.GetBaseTheme()`.
 
-```
-Theming.cpp:368-397   (CDependencyObject::SetThemeResourceBinding)
-    if (!IsProcessingThemeWalk() && m_theme != Theme::None) {
-        prevTheme = GetRequestedThemeForSubTreeFromCore();
-        if (prevTheme != Theming::GetBaseValue(m_theme)) {
-            SetRequestedThemeForSubTreeOnCore(m_theme);   // ← push THIS object's own theme
-            popTheme = true;
-        }
-    }
-    ... UpdateThemeReference(pThemeResource);              // resolves against the just-pushed theme
-    pThemeResource->GetLastResolvedThemeValue(&value);
-    SetValue(SetValueParams(pDP, value, baseValueSource));
-```
+### 5.4 Theme keys stay `ResourceKey`-based at the dictionary leaf
 
-In other words, WinUI has exactly **one** "push the owner's theme" site, and it is *inside the resolution primitive*, keyed off `this->m_theme`. Uno scattered the equivalent push across 11 *call sites* (and keyed them off the element discovered at each site) — and missed the materialization paths that the reported bugs exercise.
+WinUI selects sub-dictionaries by literal string keys (`"Light"`, `"Dark"`, `"HighContrastWhite"`, …, `"Default"`). Uno's `SpecializedResourceDictionary.ResourceKey` lookups map 1:1; a single `Theme → key` helper (mirroring the C++ switch blocks) lives with the `EnsureActiveThemeDictionary` port.
 
-### The precedence rules WinUI uses (to be matched exactly)
+### 5.5 Native + reference targets
 
-- **Effective theme during the walk** (`CDependencyObject::NotifyThemeChanged`, Theming.cpp:119-156): the incoming inherited theme, then `CFrameworkElement::GetRequestedThemeOverride(theme)` (framework.cpp:3268-3288) replaces the **base** bits with Light/Dark if `RequestedTheme != Default`, **preserving** high-contrast bits.
-- **`ActualTheme`** (framework.cpp:3953-3978): `GetBaseValue(m_theme)`, falling back to `FrameworkTheming::GetBaseTheme()` when `m_theme == None`. Always Light or Dark, HC stripped.
-- **App vs OS** (`FrameworkTheming::GetTheme()`, FrameworkTheming.cpp:119): `(m_requestedTheme != None ? m_requestedTheme : m_systemTheme) | m_highContrastTheme`. **If the app set `RequestedTheme`, the OS light/dark setting is ignored.** OS theme only applies when the app left `RequestedTheme` unset. High contrast is orthogonal and always OR-ed in.
-- **`Theme` enum is bit-composed** (Theme.h:10-65): `BaseMask=0x03` (None/Light/Dark), `HighContrastMask=0x1C`. Effective theme = `base | highContrast`. `None` (0x00) is the "no theme established yet / use default" sentinel.
-- **Enter inheritance parent** is the **logical** parent for FrameworkElements (`GetInheritanceParentInternal(fLogicalParent=TRUE)`, framework.cpp:3097-3130) so popups/flyouts follow the theme of the control that opened them, not the `PopupRoot`.
-- **`ActualThemeChanged` ordering** (framework.cpp:3297-3370): fired *after* the subtree is updated (inside `NotifyThemeChangedCore`) but *before* `m_theme` is assigned (Theming.cpp:155), gated on `GetBaseValue(old) != GetBaseValue(new)` (or `old == None && base theme is changing`). HighContrastChanged fires separately and suppresses ActualThemeChanged unless transitioning out of HC.
+All new lifecycle/theming machinery compiles under `#if UNO_HAS_ENHANCED_LIFECYCLE` (Skia + WASM). Native Android/iOS keep their current behavior (OS + application theme only) — *unchanged*; any shared file edits preserve the native path under `#if !UNO_HAS_ENHANCED_LIFECYCLE`.
 
----
+### 5.6 Validation doctrine
 
-## 4. Discrepancy table (Uno today vs WinUI)
+WinUI-green first (`/winui-runtime-tests`), then Uno match (`/runtime-tests` Skia + WASM); Uno-only surfaces confirmed in a WinUI probe app; "if Uno disagrees with a WinUI-green test, fix Uno". Full protocol in `plan.md` Global conventions and `tests.md`.
 
-| # | Concern | WinUI | Uno today | Impact |
-|---|---------|-------|-----------|--------|
-| D1 | Where per-object theme lives | `m_theme` on **every** `CDependencyObject` (`CDependencyObject.h:1761`) | `_theme` on **`UIElement` only** (`UIElement.cs:70`) | Non-UIElement owners (brushes, setters, storyboards) have no theme; their `{ThemeResource}` resolves against the global ambient. (`When_ThemeResource_On_NonFE_DependencyObject_*` test) |
-| D2 | Theme established at tree attach | `EnterImpl` theme block runs for every DO going live, inheriting from logical parent (`depends.cpp:1023-1048`) | Only `FrameworkElement.OnLoadingPartial` inherits, and only if `parent.GetTheme() != None` (`FrameworkElement.cs:434-436`); enhanced-lifecycle (`__SKIA__`/`__WASM__`) only | Materialized/virtualized/recycled elements often have `_theme == None` at first resolution → fall back to `Themes.Active`. Root of S1/S2/S3/S5. |
-| D3 | What the resolution leaf keys on | Ambient slot, but the slot is **always pushed from the owner's own `m_theme`** inside `SetThemeResourceBinding` (`Theming.cpp:368`) | Ambient global stack/`Themes.Active`; leaf ignores `owner.GetTheme()` (`ResourceDictionary.cs:294,364`; `ThemeResourceReference.cs:117`) | The central defect. Requires 11 band-aid pushes (§5). |
-| D4 | Theme persistence across unload/recycle | `m_theme` persists; re-`Enter` re-themes from parent | `ClearThemeStateOnUnloaded` resets `_theme = None` (`FrameworkElement.Theming.cs:540-561`) | Recycled rows lose theme → resolve ambient on reload. Root of S2 (recycle). |
-| D5 | Popup/flyout theme at first open | Logical-parent inheritance at `Enter`, on all platforms | Popup theme propagation is `#if UNO_HAS_ENHANCED_LIFECYCLE` (Skia/WASM only); native uses legacy path with no push (`Popup.WithPopupRoot.cs:109-119`, `Popup.cs:159-180`) | First-open wrong style on iOS/Android. Root of S4 (popup first open). |
-| D6 | Flyout theme source | Placement target's effective theme (`ActualTheme`) | `FlyoutBase.ForwardThemeToPresenter` only forwards the nearest **non-Default `RequestedTheme`** (`FlyoutBase.cs:755-794`); misses app-level/inherited theme | Flyouts opened over app-themed (not element-themed) content aren't themed → ambient leak. Contributes to S4. |
-| D7 | Custom theme names vs standard themes | Only Light/Dark/HC + "Default" fallback in dictionaries | App-level `RequestedCustomTheme` produces an arbitrary `Themes.Active` key (`Application.cs:205-214`); element-level `ElementTheme` only yields Light/Dark/Default | A custom theme name that does not match a system `ThemeDictionaries` key falls back to the **`Default`** sub-dictionary (`GetActiveThemeDictionary` → `Themes.Default`, `ResourceDictionary.cs:590-600`), which in Fluent generic resources is the **dark** theme. Plausible contributor to "dark leak" with custom themes. |
-| D8 | High-contrast composition | `base | highContrast` bitfield, HC always wins, separate dictionaries | Uno `Theme` enum / resolution does not compose HC with base in the same bit-packed way | HC correctness gaps (out of direct scope of the reported bugs but part of faithful alignment). |
+### 5.7 Behavior-preservation discipline for the replacement
 
----
-
-## 5. Inventory of the 11 band-aid push sites (to be removed in Phase 4)
-
-All gated by `UNO_HAS_ENHANCED_LIFECYCLE` (Skia/WASM). Each pushes the element's `_theme`-derived key onto the global stack so the leaf `TryGetValue` selects the right sub-dictionary.
-
-| # | File:line (push / pop) | Trigger | Why it exists |
-|---|---|---|---|
-| 1 | `FrameworkElement.Theming.cs:255` / `:318` | Theme-change walk `NotifyThemeChangedCore` | Canonical walk push (self-documented `:235-238`). |
-| 2 | `FrameworkElement.Theming.cs:461` / `:485` | Foreground freeze `NotifyThemeChangedForInheritedProperties` | Resolve `DefaultTextForegroundThemeBrush` under element theme. |
-| 3 | `FrameworkElement.cs:454` / `:487` | `OnLoadingPartial` | Styles + `UpdateThemeBindings(ResolvedOnLoading)` at element entry. |
-| 4 | `FrameworkElement.cs:734` / `:745` | `OnStyleChanged` → `ApplyStyleWithThemeContext` | Style ThemeResource setters from code-behind (PR #23127). |
-| 5 | `FrameworkTemplate.cs:202` / `:246` | `LoadContent` template materialization | `{ThemeResource}` in templates (DataGrid rows, ContentPresenter). |
-| 6 | `VisualStateGroup.cs:259` / `:279` | `GoToState` visual state materialization | VisualState Storyboard/Setters. |
-| 7 | `VisualStateGroup.cs:393` / `:420` | `GoToState` → `ApplyTargetStateSetters` | State setter `ApplyValue`. |
-| 8 | `Data/BindingHelper.cs:82` / `:95` | `UpdateResourceBindings` initial resolution | Deferred (unpinned) refs tree-walk. |
-| 9 | `Documents/Hyperlink.cs:251` / `:289` | `SetCurrentForeground` (pointer states) | Brushes resolved during pointer events outside any walk. |
-| 10 | `Media/Animation/ObjectAnimationUsingKeyFrames.cs:352` / `:365` | `EnsureKeyFrameThemeResources` | Keyframe ThemeResources at `Begin`. |
-| 11 | `DependencyProperty.cs:636` / `:650` | `ResolveFocusVisualBrushDefault` | Focus visual default brushes (PR #23243). |
-
-Plus control-level `UpdateThemeBindings` overrides that reach DOs outside the visual-tree walk (Popup, PopupRoot, CommandBar, ContentPresenter, IconElement, TextBlock, TextBox) — these stay (they are propagation hooks, not theme-selection band-aids) but must be re-pointed to the new resolution primitive.
-
----
-
-## 6. Target design
-
-**Invariant (the whole point):**
-
-> The value of any `{ThemeResource}` is a pure function of **(resource key, the resolving owner's effective theme)**. The owner's effective theme is established the moment it enters the live tree, inherited from its (logical) inheritance parent, and is *never* derived from a process-global ambient that a caller forgot to set.
-
-Two equivalent mechanisms achieve the invariant. The plan **recommends Mechanism 1**; Mechanism 2 is documented for completeness and as a fallback if a parameter cannot be threaded everywhere cheaply.
-
-### Mechanism 1 (recommended) — thread the owner's effective theme as a parameter
-
-- Add an explicit `Theme theme` argument to the resolution leaf:
-  - `ResourceDictionary.TryGetValue(in ResourceKey key, Theme theme, out object value, …)` and the providing-dictionary overload — replacing the `GetActiveTheme()` reads at `:294`/`:364` with the passed `theme` (note `GetActiveThemeDictionary(in ResourceKey)` *already* takes a theme key, so the change is plumbing, not new lookup logic).
-  - `ThemeResourceReference.RefreshValue(Theme ownerTheme, …)` and `RefreshValueWithTreeWalk(Theme ownerTheme, …)` pass `ownerTheme` down.
-  - `ThemeWalkResourceCache` keys on the passed `theme` rather than `GetActiveTheme()` (`ThemeWalkResourceCache.cs:104,133`).
-- The theme is computed once, centrally, in `DependencyObjectStore.UpdateThemeReference` (the analog of WinUI's `SetThemeResourceBinding`) as `ResolveOwnerTheme(owner)`:
-  - `owner.GetTheme()` if non-`None`;
-  - else nearest themed inheritance ancestor's theme (for non-UIElement owners — see Phase 1/D1);
-  - else `Application.Current.ActualElementTheme` (the app/OS base theme).
-- Why recommended: thread-safe (no process-global mutable state), makes the 11 band-aids deletable, and the resolution result is provably identical to "push then resolve". This matches WinUI **behavior** exactly (resolution uses the owner's own theme); it differs only in that the owner's theme travels as an argument instead of via a mutable core slot — an implementation detail with no observable behavior difference.
-
-### Mechanism 2 (WinUI-literal) — keep an ambient slot, push it centrally from `owner.GetTheme()`
-
-- Keep `Themes._requestedThemeForSubTree` but make it an instance-of-walk concept, and push `owner.GetTheme()` **inside** `UpdateThemeReference`/`RefreshValue` (mirroring `Theming.cpp:368`) rather than at 11 call sites.
-- Closest to the C++ line-for-line, but retains process-global mutable state and its re-entrancy/threading hazards. Only choose this if Mechanism 1's parameter threading proves impractical in a hot path.
-
-> **Decision (resolved): Mechanism 1, under a hard zero-behavior-difference constraint.** The parameter approach is approved **only if it cannot produce any observable behavior difference** versus today's resolution. This is not a hope — it must be *proven* during migration:
-> - While both the legacy global stack and the new `theme` parameter coexist (Phase 3), the centralized `ResolveOwnerTheme(owner)` must, at every in-tree resolution, equal what `GetActiveTheme()` would have returned. Add a transitional `Debug.Assert(ResolveOwnerTheme(owner).Key == GetActiveTheme().Key)` (or a logged divergence counter) at the single resolution choke point, and run the **entire** theming suite + `Given_Theme_Materialization` on Skia and WASM with **zero** assertion hits before the stack is deleted in Phase 4.
-> - Any divergence the assert catches is either (a) a real pre-existing bug the parameter fixes — in which case capture it as an intended, test-backed change and document it — or (b) a plumbing mistake to fix. The stack is removed only after the assert is silent across the full suite.
-> - The parameter is behavior-identical to WinUI's ambient slot by construction (the slot is itself a dynamically-scoped "theme parameter" pushed/popped via `scope_exit`); the equivalence proof guarantees it is also behavior-identical to *Uno's current* resolution where that is already correct.
-
-### Per-object theme on every DependencyObject (D1)
-
-Move `_theme` + `GetTheme`/`SetTheme` + `IsProcessingThemeWalk` from `UIElement` to **`DependencyObjectStore`** (every `DependencyObject` owns a store), so non-UIElement DOs carry a theme exactly like `CDependencyObject::m_theme`. `Theme` is a small enum (one byte); the per-object cost is negligible. `FrameworkElement`/`UIElement` keep their existing accessors as thin forwarders to the store, so existing call sites compile unchanged.
-
-### Establish theme at `Enter` for every DO (D2)
-
-Port the `EnterImpl` theme block (`depends.cpp:1023-1048`) into Uno's enter/load path so that **every** DO entering the live tree inherits its theme from its logical inheritance parent and resolves its refs — not just `FrameworkElement` on `OnLoadingPartial`, and on **all platforms**, not only enhanced-lifecycle. This is what makes `owner.GetTheme()` reliably non-`None` at first resolution, which makes Mechanism 1 correct without any band-aids.
-
-### `Themes.Active` is retained, but demoted
-
-`Themes.Active` (the app/OS base theme) stays as the **fallback** for `ResolveOwnerTheme` when an owner genuinely has no theme (e.g. resolving a value directly off `Application.Resources` with no element context). It is no longer the *primary* input for in-tree resolution. The static `_requestedThemeForSubTree` **stack is deleted** (Mechanism 1) along with the 11 push sites.
-
----
-
-## 7. How the target design fixes each issue
-
-- **S1 / S2 / S3 / S5 (materialization leak):** with D1+D2, a virtualized row / recycled tab content / scrolled-in cell / runtime-created control inherits its theme from its (light) parent at `Enter`, and the leaf resolves against that theme — never `Themes.Active`. D4 (stop clearing `_theme` on unload, or re-establish at re-`Enter`) removes the recycle staleness specifically behind S2.
-- **S4 (popup first open) — Skia/WASM:** D2 establishes theme for popup/flyout content from its logical parent at `Enter`; D6 makes `FlyoutBase` forward the placement target's `ActualTheme` (effective theme incl. app/inherited) so a flyout over app-themed content is themed on the **first** open. **Scope:** this is an enhanced-lifecycle (Skia/WASM) fix. **Native (Android/iOS) targets support OS + application theme only — element-level theming is intentionally out of scope on native** (see §8 and `plan.md` Phase 7). On native a popup/flyout follows the application/OS theme; the element-`RequestedTheme`-on-root variant of S4 is a known native limitation, not a regression.
-- **uno #23177 (app dark switch):** already largely fixed (#23178/#23197); the refactor preserves the fix and removes the special-casing that made it fragile, since resolution now follows `owner.GetTheme()` which the app-theme walk sets correctly.
-- **OS/theme leak narrative (S1/S3):** D7 ensures explicit app theme suppresses OS following everywhere and that the active theme does not silently fall back to the dark `Default` sub-dictionary; combined with D2 the only way OS theme reaches an element is if that element actually inherits it.
-
----
-
-## 8. Scope, platforms, and risk notes
-
-- **Enhanced lifecycle gating (element-level theming is Skia/WASM only).** The per-object theme + `Enter` inheritance theme walk is `__SKIA__`/`__WASM__` (`UNO_HAS_ENHANCED_LIFECYCLE`) only, and **stays that way by design**. Element-level theming (`FrameworkElement.RequestedTheme` inheritance, the per-DO theme established at `Enter`, popup/flyout logical-parent inheritance) is an enhanced-lifecycle feature. **Native (Android/iOS) targets support OS theme + application theme only and are intentionally NOT extended with the per-DO theme / `Enter` inheritance machinery** — native tree mechanics differ (native view hierarchy) and the cost/risk of porting element-level theming there is not justified. Phase 7 therefore **confirms and documents the native scope (OS + app theme) and verifies native theming is unchanged by this refactor**, rather than bringing element-level theming to native. The reported bugs S1/S2/S3/S5 and uno #23177 are Skia/WASM; the element-`RequestedTheme`-on-root variant of S4 is a native limitation, accepted as out of scope.
-- **`Foreground` is an inherited DP in Uno but not in WinUL.** Uno emulates WinUI's foreground freeze with `_themeForeground`/`_isForegroundFrozen` (`FrameworkElement.Theming.cs:28-29`, `NotifyThemeChangedForInheritedProperties`). The refactor must preserve this emulation; the freeze path's push (band-aid #2) is replaced by passing the element's theme to the `DefaultTextForegroundThemeBrush` lookup.
-- **Compiled-XAML template materialization.** `{ThemeResource}` on a DP emits `ResourceResolverSingleton.Instance.ApplyResource(target, DP, key, isThemeResourceExtension: true, …)` (`XamlFileGenerator.cs:4259-4268`). With D2, the target element's theme is established at `Enter`, so `ApplyResource`/first resolution must defer to (or re-resolve at) `Enter` time — verify the ordering of `ApplyResource` vs `Enter` for both compiled XAML and `XamlReader.Load`.
-- **Performance.** The pinned-dictionary mechanism (#22887) and `ThemeWalkResourceCache` are retained; they already solve the "which dictionary" and "dedup lookups" problems. The change is only the *theme input*, so no new tree walks are introduced; if anything, removing band-aid pushes reduces work.
-
----
-
-## 9. Key WinUI source map (for implementing agents)
-
-| Concern | File:line |
-|---------|-----------|
-| `Theme` enum + masks | `dxaml\xcp\components\theming\inc\Theme.h:10-65` |
-| `m_theme` on every DO | `dxaml\xcp\core\inc\CDependencyObject.h:1761`; getter `:1648` |
-| `NotifyThemeChanged` walk | `dxaml\xcp\components\DependencyObject\Theming.cpp:110-157` |
-| `NotifyThemeChangedCoreImpl` | `Theming.cpp:166-255` |
-| `UpdateAllThemeReferences` / `UpdateThemeReference` | `Theming.cpp:260-346` |
-| `SetThemeResourceBinding` (central owner-theme push) | `Theming.cpp:349-400` |
-| Visual-tree recursion | `dxaml\xcp\core\core\elements\uielement.cpp:14469-14495` |
-| `GetRequestedThemeOverride` | `dxaml\xcp\core\core\elements\framework.cpp:3268-3288` |
-| FE `NotifyThemeChangedCore` + freeze + event | `framework.cpp:3297-3317` |
-| `NotifyThemeChangedForInheritedProperties` (foreground freeze) | `framework.cpp:3385-3476` |
-| `OnRequestedThemeChanged` | `framework.cpp:3485-3543` |
-| `ActualTheme` getter | `framework.cpp:3953-3978` |
-| `RaiseActiveThemeChangedEventIfChanging` | `framework.cpp:3330-3370` |
-| `GetInheritanceParentInternal` (logical parent) | `framework.cpp:3097-3130` |
-| `EnterImpl` theme block | `dxaml\xcp\core\core\elements\depends.cpp:1023-1048` |
-| `CThemeResource` / `RefreshValue` | `dxaml\xcp\components\theming\ThemeResource.cpp:63-169` |
-| `CThemeResourceExtension` | `dxaml\xcp\core\core\elements\ThemeResourceExtension.cpp` |
-| `ThemeResourceExpression` | `dxaml\xcp\dxaml\lib\ThemeResourceExpression.cpp:153-201` |
-| Theme-aware dictionary lookup | `dxaml\xcp\core\core\elements\Resources.cpp:386-512, 644-685` |
-| `EnsureActiveThemeDictionary` (theme→sub-dict) | `Resources.cpp:687-819` |
-| `ThemeWalkResourceCache` | `dxaml\xcp\components\theming\ThemeWalkResourceCache.{h,cpp}` |
-| `FrameworkTheming::GetTheme` (app/OS precedence) | `dxaml\xcp\components\theming\FrameworkTheming.cpp:119-136` |
-| `SetRequestedTheme` / `OnThemeChanged` | `FrameworkTheming.cpp:31-105` |
-| OS/system theme + HC detection | `dxaml\xcp\components\theminginterop\SystemThemingInterop.cpp:33-303` |
-| `FrameworkApplication.put_RequestedTheme` | `dxaml\xcp\dxaml\lib\FrameworkApplication_Partial.cpp:981-1055` |
-| Top-level `NotifyThemeChange` orchestration | `dxaml\xcp\core\dll\xcpcore.cpp:7771-7898` |
-| OS-change observation | `JupiterWindow.cpp:1543-1559`, `JupiterControl.cpp:674-1093`, `DXamlCore.cpp:1284-1295` |
+The base is *behaviorally* close to WinUI (its test suite is green). Every replacement phase must therefore prove **no behavioral regression** (suite == baseline) *and* **structural fidelity** (the port matches the C++). Where the base's approximation and the exact port disagree behaviorally, WinUI decides (per §5.6) — such differences are surfaced as explicit, test-backed changes, never silent.

@@ -1,350 +1,188 @@
-# Theming WinUI Alignment — Phased Implementation Plan
+# Theming WinUI Alignment — Exact-Port Implementation Plan
 
-> Read [`architecture.md`](./architecture.md) first. Tests live in [`tests.md`](./tests.md). This file is the sequence of work; each phase is self-contained enough to hand to a single implementation agent.
-
-## How to use this plan to launch implementation agents
-
-Each phase below is a unit of work for one agent. When dispatching a phase, give the agent:
-
-1. This `plan.md` (it should read **only its phase** plus "Global conventions" below), `architecture.md`, and `tests.md`.
-2. The instruction to follow the repo's **Root-Cause First** and **Validation Evidence** protocols (see `AGENTS.md`).
-3. The constraint: **work only on the current branch; do not consult other branches or prior theming plans.**
-
-Phases are **strictly ordered** by dependency. Do not start phase N+1 until phase N's acceptance criteria pass. Phases 0–4 fix the bugs; 5–8 complete the alignment and extend to native.
+> Read [`architecture.md`](./architecture.md) first (the WinUI model + port-mapping table + design decisions). Tests live in [`tests.md`](./tests.md). Phases are **strictly ordered**; do not start phase N+1 until phase N's acceptance criteria pass.
 
 ## Global conventions
 
-- **Branch:** one feature branch off `master` for the whole effort (e.g. `dev/mazi/theming-winui-alignment`). Commit continuously — a logical-group commit each time a chunk builds clean (per user preference), Conventional Commits, end messages with the Co-Authored-By trailer.
-- **No `_Mux`/`Internal` suffixes for the sake of it.** Use natural WinUI method names. Gate superseded code paths with `#if` rather than renaming where practical. When a new public-ish API must coexist with the old during migration, prefer an internal overload over a renamed method.
-- **Port fidelity:** match WinUI **behavior** exactly. Cite the C++ `file:line` you ported from in code comments (the repo already does this throughout the theming files — keep the style). Do not simplify away behavior; the one sanctioned mechanism change (parameter vs ambient slot, Mechanism 1 in `architecture.md` §6) is behavior-preserving and must be justified in the commit body.
+- **Branch:** `dev/mazi/align-theming`, based on `origin/dev/mazi/theming-winui` (`ffd6ee2631`). All commits land here, on top of that base. Commit continuously — one focused Conventional-Commit per chunk that builds clean, Co-Authored-By trailer. The base's own code is the *starting point being replaced* — consult it freely; but port from the **C++ sources**, not from the base's approximation.
+- **Port fidelity:** the `/winui-port` skill rules + `architecture.md` §0 are binding. Every ported file: MUX/MIT header + `MUX Reference <file>, commit fc2f82117`; member order matches C++; C++ comments preserved; nothing silently dropped (`TODO Uno:` + reason); natural WinUI names; Allman + tabs; `#nullable enable` in new files.
+- **WinUI sources:** `D:\Work\microsoft-ui-xaml2\src` @ `fc2f82117`. Always re-read the actual C++ before porting a method — do not port from this spec's summaries.
 - **Build (Skia, fast iteration):**
   ```
   cd src
   dotnet build SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net10.0 -p:UnoFastDevBuild=true
   ```
-- **Runtime tests:** prefer the `/runtime-tests` skill (handles base64 filter + run + parse). Manual fallback:
-  ```
-  cd src
-  $env:UITEST_RUNTIME_TESTS_FILTER = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes("<filter>"))
-  cd SamplesApp/SamplesApp.Skia.Generic/bin/Release/net10.0
-  dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
-  ```
-- **Unit tests:** `dotnet test Uno.UI/Uno.UI.Tests.csproj`.
-- **WinUI-first validation (MANDATORY for every phase).** These tests encode *WinUI behavior*, so they must be correct against native WinUI **before** they are used to judge Uno:
-  1. Every theming test — **old and new** — that can run on native WinUI (i.e. not gated to Uno-only APIs) **must pass on `/winui-runtime-tests`** (WinAppSDK SamplesApp on Windows). A test that fails on WinUI is a *wrong test* — fix the test/assertion until it is green on WinUI. Do this **when the test is authored** (Phase 0 for the new T1–T10) and re-confirm in Phase 8.
-  2. Only after a test is green on WinUI, use **`/runtime-tests`** (Skia Desktop default; also WASM, and native heads where applicable) to run it on Uno and confirm Uno matches.
-  - Tests that depend on Uno-only surface (e.g. `ThemeHelper.UseApplicationDarkTheme`, `IsThemeSetExplicitly`, `ResourceDictionary.GetActiveTheme`) cannot run through the `/winui-runtime-tests` harness. **Do not fall back to reasoning** — instead **confirm the behavior empirically in a throwaway WinUI Blank App** (see "WinUI probe app" below), reproducing the same scenario with real WinUI APIs (`Application.RequestedTheme`, `FrameworkElement.RequestedTheme`/`ActualTheme`, `ActualThemeChanged`, etc.) and observing the actual values. Record the observed WinUI values in the test as the expected values, citing "confirmed in WinUI probe app". Still keep WinUI-runnable assertions WinUI-portable wherever possible (prefer element-level `RequestedTheme` + sentinel `ThemeDictionaries` over Uno-only helpers).
-  - **Rule of thumb:** if Uno disagrees with a WinUI-green test (or a probe-app-confirmed behavior), Uno is wrong — fix Uno, not the expected value.
-- **WinUI probe app (for Uno-only-API behaviors).** When a behavior can't be expressed in the `/winui-runtime-tests` harness, build a minimal native WinUI app from the `dotnet new` WinUI templates and confirm the behavior by hand, then encode the observed result as the test's expected value. Setup (see the official blog: <https://devblogs.microsoft.com/ifdef-windows/introducing-dotnet-new-templates-for-winui/>):
-  ```
-  dotnet new install Microsoft.WindowsAppSDK.ProjectTemplates   # WinUI dotnet new templates
-  dotnet new list winui                                         # confirm the exact short name
-  dotnet new winui3 -o ThemingProbe                             # Blank App, Packaged (WinUI 3 in Desktop)
-  ```
-  Reproduce the scenario in `MainWindow.xaml`/`App.xaml(.cs)` (e.g. set `Application` `RequestedTheme`, toggle OS theme, set element `RequestedTheme`, read `ActualTheme` in an `ActualThemeChanged` handler) and observe the rendered/inspected values on Windows. Keep these probe apps out of the repo (throwaway, under a scratch dir); their *purpose* is to produce trustworthy expected values. Note in the test comment which probe scenario confirmed each expected value.
+  NEVER cancel builds; 15+ minute timeouts.
+- **Runtime tests:** the `/runtime-tests` skill (Skia Desktop default, WASM second). **WinUI parity:** the `/winui-runtime-tests` skill.
+- **WinUI-first validation (MANDATORY every phase).** Tests encode WinUI behavior, so: (1) every WinUI-runnable theming test — old and new — must be green on `/winui-runtime-tests` before it judges Uno; (2) Uno-only-API behaviors (e.g. `ThemeHelper` app-theme helpers, `SystemThemeOverride`) are confirmed empirically in a throwaway WinUI probe app (`dotnet new install Microsoft.WindowsAppSDK.ProjectTemplates; dotnet new winui3 -o ThemingProbe`, kept out of the repo), and the observed values are encoded with a "confirmed in WinUI probe app" comment; (3) if Uno disagrees with a WinUI-green test, **Uno is wrong — fix Uno, not the test**.
 - **Theming test filter (baseline suite):**
   ```
   Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Given_ElementTheme|Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Given_ThemeResource|Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Given_FrameworkElement_ThemeResources|Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Given_MergedAppResources_ThemeResource|Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Given_FrameworkElement_FocusVisuals|Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Given_Theme_Materialization
   ```
-- **Decision gate (before Phase 3):** confirm Mechanism 1 vs Mechanism 2 (`architecture.md` §6). The plan assumes **Mechanism 1**.
+- **Debugging discipline:** `.claude/rules/debugging-discipline.md` applies — root cause before guards; label evidence Code review / Compile / Runtime; never present compile-only as runtime validation.
+- **No private tracker IDs** in committed code, tests, or commit messages (S1–S5 stay generic; uno #23177 is public).
 
 ---
 
-## Phase 0 — Baseline + regression test scaffold
+## Phase 0 — Spec + baseline on the new base
 
-**Goal.** Reproduce all reported scenarios (S1–S5 + uno #23177) as runtime tests that **fail today**, and capture a green/red baseline of the existing theming suite, before touching production code. Satisfies the mandatory "reproduce first" protocol and provides the safety net.
-
-**Depends on.** Nothing.
+**Goal.** This spec committed; the existing scaffold verified; a green/red baseline of the full theming suite recorded on this base.
 
 **Steps.**
-1. Run the full existing theming suite (filter above, minus `Given_Theme_Materialization` which does not exist yet) on Skia Desktop and WASM. Record pass/fail counts into `D:\Work\uno\specs\theming-winui-alignment\baseline-results.md` (test name → result). This is the regression guard for Phases 1–8.
-2. Add a new test class `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml/Given_Theme_Materialization.cs`. **Do not** inherit `Given_ElementTheme`'s `[PlatformCondition(~(NativeAndroid|NativeIOS))]` exclusion — the popup tests must run on native. Implement the scenarios in [`tests.md`](./tests.md) §A (T1–T9). They should compile and **fail** (or be `[Ignore]`-free and red) on current code, proving the repros.
-3. Where a scenario needs deterministic colors, add sentinel `ThemeDictionaries["Light"]/["Dark"]` brushes (follow the pattern in existing `BasicThemeResources_Test.xaml`).
-4. For the popup first-open scenario (S4) specifically, add the native-capable popup/flyout first-open tests (T4, T5 in `tests.md`).
-5. Format any new XAML: `dotnet xstyler -d src/SamplesApp -r` if SamplesApp XAML was touched (these tests are in RuntimeTests, usually no SamplesApp XAML).
+1. Commit this spec (replacing the prior-effort spec; parity reports moved to `prior-effort/`).
+2. Verify the scaffold exists and compiles: `Given_Theme_Materialization` (T1–T10), `ThemeHelper` helpers (`UseSystemThemeOverride`, app-theme helpers). No re-authoring expected — they ship with the base.
+3. Run the baseline suite on Skia (and WASM if practical); record results in a gitignored/out-of-repo `baseline-results.md`. The base is expected green — this baseline is the regression contract for every later phase.
 
-**Acceptance criteria.**
-- New tests compile on Skia, WASM, and native heads.
-- **Each new test (T1–T10) is green on `/winui-runtime-tests` (native WinUI)** — proving it encodes correct WinUI behavior. If a new test fails on WinUI, the test is wrong: fix its setup/assertion (or, if it depends on Uno-only API, restructure it to be WinUI-portable, or mark it Uno-only with the emulated WinUI behavior documented). This is the gate that makes the repros trustworthy.
-- After WinUI-green, the same tests **fail on current `master` Uno** via `/runtime-tests` (red), demonstrating the repros. Document the failing assertion + observed vs expected value for each in `baseline-results.md`.
-- Existing theming suite baseline recorded (and, for WinUI-runnable existing tests, confirmed green on `/winui-runtime-tests` so they are a valid oracle for later phases).
+**Acceptance.** Spec committed; suite results recorded; any pre-existing red is documented (not fixed here).
 
-**Validation.** Runtime tests (Skia + WASM) for `Given_Theme_Materialization`; confirm red. Existing suite still green at baseline.
-
-**Commit.** `test(theming): add failing regression repros for theme materialization (S1–S5)`. Keep test names and commit messages free of private tracker IDs (map S1–S5 to internal trackers only in local, uncommitted notes — e.g. `baseline-results.md`, which must be `.gitignore`d or kept outside the repo). See `tests.md` "Naming".
+**Commits.** `docs(theming): respec WinUI alignment as exact 1:1 port`.
 
 ---
 
-## Phase 1 — Per-object theme on every `DependencyObject` (D1)
+## Phase 1 — DependencyObject-level Enter/Leave (depends.cpp)
 
-**Goal.** Move the per-object theme field off `UIElement` and onto `DependencyObjectStore`, so that **every** `DependencyObject` carries a resolved theme exactly like `CDependencyObject::m_theme`. Behavior-preserving (resolution still uses the global stack at this point).
+**Goal.** The Enter/Leave lifecycle becomes a real `DependencyObject`-level mechanism on enhanced-lifecycle targets: full `EnterParams`/`LeaveParams`; `CDependencyObject::Enter/Leave/EnterImpl/LeaveImpl` ported to `DependencyObjectStore`; the enter-property walk live; the `depends.cpp` theme block live inside it; the base's `EstablishThemeAtEnter` bolt-on subsumed and deleted. This phase is the foundation everything else stands on.
 
-**Depends on.** Phase 0.
+**WinUI refs.** `EnterParams.h:13-53`, `LeaveParams.h:12-50`, `depends.cpp:778-969` (Enter), `:971-1072` (EnterImpl incl. property walk `:1013-1032` and theme block `:1044-1069`), `:1079-1237` (Leave), `:1256-1342` (LeaveImpl), `CDependencyObject.h:1759-1764`/`:302`/`:586-592`, `framework.cpp:3113-3146` (`GetInheritanceParentInternal`), `uielement.cpp:1252-1400`/`1626-1772` (CUIElement Enter/LeaveImpl as the override pattern).
 
-**WinUI references.** `CDependencyObject.h:1761` (`m_theme : 5`), getter `:1648`; `fIsProcessingThemeWalk` bit `CDependencyObject.h:302`.
-
-**Files.**
-- `src/Uno.UI/UI/Xaml/UIElement.cs:67-110` (current `_theme`, `GetTheme`, `SetTheme`, `IsProcessingThemeWalk`).
-- `src/Uno.UI/UI/Xaml/DependencyObjectStore.cs` / `DependencyObjectStore.Theming.cs` (destination).
-- `src/Uno.UI/UI/Xaml/FrameworkElement.Theming.cs` (consumers).
+**Files.** `EnterParams.cs`/`LeaveParams.cs` (extend), `DependencyObjectStore.mux.cs` (new ← depends.cpp lifecycle subset), `DependencyObjectStore.cs` (flag bits), `UIElement.mux.cs` (rewire `DependencyObject_EnterImpl`/`DependencyObject_LeaveImpl` → store; the commented property walk + theme block become the store's live code), `DependencyObjectStore.Theming.cs:95-330` (`EstablishThemeAtEnter` + property-value walk — subsume/delete), `FrameworkElement` logical-parent (`GetInheritanceParentInternal` port; replaces `ThemeResolution.GetInheritanceParent`'s flat store-parent walk **at Enter** — resolution-time use is removed in Phase 3).
 
 **Steps.**
-1. Add to `DependencyObjectStore` (the object every DO owns): `private Theme _theme = Theme.None;`, `internal Theme GetTheme()`, `internal void SetTheme(Theme)`, and the `IsProcessingThemeWalk`/`SetIsProcessingThemeWalk` bit (port the `UIElementFlag` bits comment, citing `CDependencyObject.h:302`). Default `Theme.None`.
-2. Expose convenience accessors so existing callers keep compiling:
-   - `DependencyObject`-level: an internal `GetTheme()`/`SetTheme()` on `IDependencyObjectStoreProvider` or via `((IDependencyObjectStoreProvider)do).Store.GetTheme()`.
-   - Keep `UIElement.GetTheme()/SetTheme()` as **thin forwarders** to `Store` (so the ~50 existing call sites are unchanged).
-3. Add `ResolveOwnerTheme(DependencyObject owner)` helper (new, in `DependencyObjectStore.Theming.cs` or a static `ThemeResolution` helper). Logic (mirrors `architecture.md` §6 + WinUI `ActualTheme` fallback `framework.cpp:3970`):
-   - if `owner.Store.GetTheme()` is non-`None` → return it;
-   - else walk `GetInheritanceParent`/logical parent chain to the nearest DO whose `_theme != None` → return that;
-   - else `Application.Current?.ActualElementTheme` mapped to `Theme.Light/Dark` (with HC OR-ed from app — Phase 6 refines HC).
-   - **Do not wire it into resolution yet** (that is Phase 3). It is added here so Phase 3 is a small, focused diff.
-4. Verify nothing reads `UIElement._theme` directly anymore (only via `GetTheme`).
+1. Port `EnterParams`/`LeaveParams` 1:1 (all fields, constructor defaults, comments). Keep existing usage compiling.
+2. Create `DependencyObjectStore.mux.cs` hosting `Enter(DependencyObject? namescopeOwner, EnterParams)`, `EnterImpl`, `EnterObjectProperty`, `EnterSparseProperties`, `Leave(...)`, `LeaveImpl`, `LeaveObjectProperty`, `LeaveSparseProperties` per `architecture.md` §5.1–§5.2. Namescope blocks not yet portable stay as preserved comments with `TODO Uno:` (exactly like the current `UIElement.mux.cs` does, but at the right level). The theme block is **live code**; until Phase 3 lands, its `NotifyThemeChanged`/`UpdateAllThemeReferences` calls bridge to the existing implementations (FE-level walk / store update methods) via a clearly-marked transitional shim.
+3. Add `fIsProcessingEnterLeave`/`fIsProcessingThemeWalk` bits to the store (UIElement's `_uiElementFlags` copies become forwarders or move).
+4. Rewire `UIElement.mux.cs`: `DependencyObject_EnterImpl/LeaveImpl` bodies move to the store; UIElement's `EnterImpl(params, depth)` calls `Store.EnterImpl` exactly where `CUIElement::EnterImpl` calls the base (`uielement.cpp:1356`). The ContextFlyout / KeyboardAccelerators / FE-Resources explicit blocks are re-expressed through `EnterSparseProperties`/the property walk where the metadata supports it, or kept with their existing `TODO Uno` notes if not yet.
+5. Define the `IEnterLeaveAware` internal interface (store dispatch for non-UIElement overrides); convert `FlyoutBase.Enter/Leave` to it.
+6. Property-walk exclusion set per §5.2 (metadata-derived; fold in the empirical exclusions encoded by `EstablishThemeAtEnter`'s walk, then delete the bolt-on — `EstablishThemeAtEnter`, `PropagateThemeEnterToDPPropertyValues`-style helpers, and their call sites in `UIElement.mux.cs`).
+7. Wire DO-valued property sets on live owners to Enter/Leave the value (WinUI `SetValue`→enter semantics; locate Uno's `DependencyObjectStore.SetValue` parenting hook and add the live enter/leave call there, citing the C++ source).
 
-**Acceptance criteria.**
-- Builds on Skia/WASM/native heads.
-- Existing theming suite still matches Phase 0 baseline (no regressions — behavior unchanged).
-- `ResolveOwnerTheme` unit-covered (a `Uno.UI.Tests` unit test for the fallback chain on a small DO graph).
+**Acceptance.**
+- Builds on Skia + WASM (+ native heads unchanged/compiling).
+- Full theming suite == Phase 0 baseline (the real Enter walk must reproduce what `EstablishThemeAtEnter` covered — divergences are root-caused, and resolved in WinUI's favor with test evidence).
+- New runtime test: a non-UIElement DO (e.g. a `Brush` set as a property value, a `Setter` in VSM) reaches `Enter` and carries the right theme when its owner is live.
 
-**Validation.** Build all heads; full theming suite (Skia + WASM) == baseline; new unit test green.
-
-**Commit.** `refactor(theming): move per-object theme to DependencyObjectStore (D1)`.
+**Commits (suggested split).** `feat(lifecycle): port full EnterParams/LeaveParams`; `feat(lifecycle): port CDependencyObject Enter/Leave to DependencyObjectStore`; `refactor(lifecycle): rewire UIElement enter walk through the store`; `refactor(theming): subsume EstablishThemeAtEnter into the real EnterImpl theme block`.
 
 ---
 
-## Phase 2 — Establish theme at tree `Enter` for every DO (D2) + stop clearing on unload (D4)
+## Phase 2 — components/theming 1:1 (FrameworkTheming, interop, CThemeResource, cache)
 
-**Goal.** Every DO entering the live tree inherits its theme from its **logical inheritance parent** before any resource resolves, on **all platforms**. Make `owner.GetTheme()` reliably non-`None` at first resolution. Stop the unload-time `_theme = None` reset that causes recycle staleness.
+**Goal.** The theming *component* exists as WinUI has it: `FrameworkTheming` state machine owned by core, an `IThemingInterop`-shaped OS bridge, `CThemeResource` semantics on the reference type, walk cache owned/keyed correctly.
 
-**Depends on.** Phase 1.
-
-**WinUI references.** `EnterImpl` theme block `depends.cpp:1023-1048`; `GetInheritanceParentInternal(fLogicalParent)` `framework.cpp:3097-3130`; `NotifyThemeChanged` `Theming.cpp:110-157`; `UpdateAllThemeReferences` `Theming.cpp:260-286`; FE `OnRequestedThemeChanged` `framework.cpp:3485-3543`.
-
-**Files.**
-- Uno's enter/load path: `src/Uno.UI/UI/Xaml/UIElement.*` enter/leave, `src/Uno.UI/UI/Xaml/FrameworkElement.cs:419-498` (`OnLoadingPartial`), `DependencyObjectStore` enter hooks.
-- `src/Uno.UI/UI/Xaml/FrameworkElement.Theming.cs:540-561` (`ClearThemeStateOnUnloaded`).
-- Logical-parent accessor (popups): `src/Uno.UI/UI/Xaml/Controls/Popup/Popup*.cs`, `FrameworkElement` logical-parent plumbing.
+**WinUI refs.** `FrameworkTheming.{h,cpp}` (whole files), `SystemThemingInterop.cpp:33-177`, `ThemeResource.{h,cpp}` (whole), `ThemeWalkResourceCache.{h,cpp}` (whole), `Theme.h`.
 
 **Steps.**
-1. Implement an `EnterImpl`-equivalent theme step that runs when a DO goes live (port `depends.cpp:1023-1048`):
-   - Resolve the inheritance parent: for `FrameworkElement`, the **logical** inheritance parent (so popups/flyouts inherit from the opener); otherwise the visual/inheritance parent.
-   - If `parent.GetTheme() != None && parent.GetTheme() != this.GetTheme()` → `NotifyThemeChanged(parent.GetTheme())` (re-themes this subtree, re-applies this element's own `RequestedTheme` override via the existing override logic at `FrameworkElement.Theming.cs:180-183`).
-   - Else → `UpdateAllThemeReferences()` (re-resolve refs against now-available ancestor dictionaries, without changing `_theme`).
-   - This must run for **every DO** on enter, not just FE on `OnLoadingPartial`, and **not** be gated by `UNO_HAS_ENHANCED_LIFECYCLE` (native participates — but see Phase 7 for native tree-attach specifics; for this phase, wire it into the cross-platform enter where one exists, and leave a clearly-marked TODO + `#if` for native if the native attach hook is not yet uniform).
-2. Reconcile with the existing `OnLoadingPartial` inheritance (`FrameworkElement.cs:425-442`): the new `Enter` step subsumes it. Remove the duplicate inheritance logic from `OnLoadingPartial`, keeping only what is not theme-establishment. Keep the band-aid push for now (removed in Phase 4).
-3. **D4:** change `ClearThemeStateOnUnloaded` (`FrameworkElement.Theming.cs:540-561`) to match WinUI — WinUI does **not** clear `m_theme` on leave; theme persists and re-`Enter` re-themes from the parent. Either delete the reset or convert it to a no-op with a comment citing that `EnterImpl` re-establishes theme on re-attach. Verify no test relied on the clear behavior; if one did, it was asserting the buggy behavior — update it.
-4. Ensure ordering: the `Enter` theme step (esp. `UpdateAllThemeReferences`) must run **before or as part of** the first theme-ref resolution at load, and before `ApplyResource`-created refs are first resolved. Trace `ApplyResource` (`ResourceResolver.cs:251-362`) → first `UpdateResourceBindings`/`UpdateAllThemeReferences` ordering vs the enter hook. Document the ordering in a comment.
+1. `UI/Xaml/Theming/` folder: move/align `Theme.cs` (verify against fc2f82117; re-cite); port `FrameworkTheming.cs` (state + `GetTheme/GetBaseTheme/GetHighContrastTheme/HasHighContrastTheme/HasRequestedTheme/SetRequestedTheme/UnsetRequestedTheme/OnThemeChanged` + changing flags, member order per .cpp); port `SystemThemingInterop.cs` bridging `SystemThemeHelper` (base theme) + `WinRTFeatureConfiguration.Accessibility.HighContrast` (HC variant classification; OS HC detection on Skia = documented follow-up `TODO Uno:`).
+2. Own it: `Uno.UI.Xaml.Core.CoreServices` gets the `FrameworkTheming` instance (`m_spTheming` analog) + the notify callback plumbed (target of Phase 6's `NotifyThemeChange`; until then the callback bridges to the existing `Application` flow with a transitional shim).
+3. Align `ThemeResourceReference` to `CThemeResource` member-for-member (`m_strResourceKey`, `m_isValueFromInitialTheme`, `m_lastResolvedThemeValue`, target-dictionary weak ref, cache ref; `RefreshValue` `:63-129`; `SetLastResolvedValue` `:138-169`). Decide rename (`ThemeResource` vs keep) in-phase; file maps 1:1 either way.
+4. `ThemeWalkResourceCache`: CoreServices-owned instance (not a static singleton), key `(dictionary, subtree theme, key)` incl. `SetSubTreeTheme`, scope guard semantics per `.cpp`.
 
-**Acceptance criteria.**
-- Builds on all heads.
-- After this phase (leaf still uses the global stack), `owner.GetTheme()` is non-`None` for in-tree elements at first resolution — add a temporary debug assert or a runtime test that reads `GetTheme()` on a freshly-loaded child under a themed parent and confirms it equals the parent theme (already covered by `Given_ElementTheme` "Visual Tree Entry/Exit" tests — they must stay green).
-- Existing theming suite == baseline (still no behavior change in resolution, since the leaf hasn't changed). The recycle test (T2) may *partially* improve; record.
+**Acceptance.** Builds all heads; suite == baseline (component is wired but `Application` still drives via shims); unit tests for `FrameworkTheming.GetTheme` composition (`requested ?: system | HC`) and HC variant classification.
 
-**Validation.** Build all heads; full theming suite (Skia + WASM) == baseline; `Given_ElementTheme` entry/exit + dynamic-child tests green.
-
-**Commit(s).** `feat(theming): establish element theme at tree Enter for every DO (D2)`; `fix(theming): stop clearing element theme on unload to fix recycle staleness (D4)`.
+**Commits.** `feat(theming): port FrameworkTheming and SystemThemingInterop`; `refactor(theming): align ThemeResourceReference with CThemeResource`; `refactor(theming): move theme walk cache to CoreServices ownership`.
 
 ---
 
-## Phase 3 — Resolve `{ThemeResource}` against the owner's effective theme (D3, Mechanism 1)
+## Phase 3 — components/DependencyObject/Theming.cpp exact port + the ambient slot
 
-**Goal.** The resolution leaf becomes a pure function of (key, owner's effective theme). This is the phase that fixes the bugs. After it, the global push stack is dead code (still present, removed in Phase 4).
+**Goal.** All CDependencyObject theming methods live on `DependencyObjectStore`, 1:1, in file order; the core ambient slot exists with its three WinUI writers; the resolution leaf reads it. `ThemeResolution.cs` and the theme-parameter threading are retired. This is the phase that replaces Mechanism 1 with WinUI's real mechanism.
 
-**Depends on.** Phases 1–2. **Mechanism 1 confirmed**, under the **zero-behavior-difference constraint** (`architecture.md` §6): the parameter is approved only if it provably cannot change resolution behavior. This phase must *prove* equivalence before Phase 4 deletes the stack:
-- Add a transitional choke-point assert while the legacy stack and the new parameter coexist: `Debug.Assert(ResolveOwnerTheme(owner).Key == GetActiveTheme().Key)` (or a logged divergence counter) at the single resolution choke point.
-- Run the **entire** theming suite + `Given_Theme_Materialization` on Skia and WASM with **zero** assertion hits. Any divergence is either a genuine pre-existing bug the parameter fixes — capture it as an intended, test-backed change with a note — or a plumbing error to correct. Do not proceed to Phase 4 until the assert is silent across the full suite.
-
-**WinUI references.** `SetThemeResourceBinding` (central owner-theme push) `Theming.cpp:349-400`; `UpdateThemeReference` `Theming.cpp:288-346`; `CThemeResource::RefreshValue` `ThemeResource.cpp:63-129`; `EnsureActiveThemeDictionary` (theme→sub-dict) `Resources.cpp:687-819`; `ThemeWalkResourceCache` key incl. subtree theme `ThemeWalkResourceCache.h:55`.
-
-**Files.**
-- `src/Uno.UI/UI/Xaml/ResourceDictionary.cs:259-390` (`TryGetValue` overloads), `:590-616` (`GetActiveThemeDictionary`, `GetThemeDictionary`).
-- `src/Uno.UI/UI/Xaml/Data/ThemeResourceReference.cs:105-197` (`RefreshValue`, `RefreshValueWithTreeWalk`).
-- `src/Uno.UI/UI/Xaml/DependencyObjectStore.Theming.cs:125-223` (`UpdateThemeReference`), `:79-107` (`UpdateAllThemeReferences`).
-- `src/Uno.UI/UI/Xaml/ThemeWalkResourceCache.cs:38, 104, 133`.
-- `src/Uno.UI/UI/Xaml/ResourceResolver.cs` (`ResolveResourceStatic`/`TryStaticRetrieval` — add theme-aware overloads used by Phase 6; for now thread theme where an owner is available).
+**WinUI refs.** `Theming.cpp` whole file (`:110-157`, `:159-255`, `:260-286`, `:288-346`, `:349-400`); `framework.cpp:3327` (FE `NotifyThemeChangedCore` override shape); `xcpcore.cpp:7903-7905` (slot ↔ walk-cache coupling).
 
 **Steps.**
-1. Add a `Theme theme` parameter to the leaf lookups (keep the existing parameterless overloads as thin wrappers that pass `GetActiveTheme()` during migration so unrelated callers compile):
-   - `ResourceDictionary.TryGetValue(in ResourceKey key, in ResourceKey themeKey, out object value, bool shouldCheckSystem)` and the `out ResourceDictionary providingDictionary` variant. Replace the `GetActiveThemeDictionary(GetActiveTheme())` calls at `:294` and `:364` with `GetActiveThemeDictionary(themeKey)`. Thread `themeKey` into `GetFromMerged` recursion so merged dictionaries select the same theme.
-   - Map `Theme` → `ResourceKey` ("Light"/"Dark"/"Default"/HC keys) with a single helper; HC composition handled in Phase 6 (for now base Light/Dark).
-2. `ThemeResourceReference.RefreshValue(Theme ownerTheme, …)` and `RefreshValueWithTreeWalk(Theme ownerTheme, …)`: convert `ownerTheme` → theme key and pass it into `dict.TryGetValue(key, themeKey, …)`. The `owner` parameter that is currently ignored for theme selection is replaced by `ownerTheme` (compute it once in the caller).
-3. `DependencyObjectStore.UpdateThemeReference` (the analog of WinUI `SetThemeResourceBinding`): compute `var ownerTheme = ThemeResolution.ResolveOwnerTheme(owner);` **once**, and pass it into Phase A ancestor walk (`dict.TryGetValue(key, ownerTheme, …)`) and Phase B (`themeRef.RefreshValue(ownerTheme, cache)`). This is the single centralized "use the owner's theme" point, mirroring `Theming.cpp:368-376`.
-4. `ThemeWalkResourceCache`: add `theme` to the cache key explicitly (`TryGetCachedValue(dict, key, theme, …)` / `CacheValue(dict, key, theme, value)`), replacing the internal `GetActiveTheme()` reads at `:104`/`:133`. Callers pass the same `ownerTheme`.
-5. Keep `Themes.Active` as the **fallback** inside `ResolveOwnerTheme` only. Leave the `_requestedThemeForSubTree` stack and the 11 pushes in place (now harmless — the leaf no longer reads the stack). They are removed in Phase 4.
-6. Audit the static parse-time path: `GetSimpleStaticResourceRetrieval` emits `ResolveResourceStatic(key, type, context)` (`XamlFileGenerator.cs:4914-4924`) with no theme. For `{StaticResource}` this is fine (theme-invariant or resolved once). For `{ThemeResource}` on a DP, the dynamic `ApplyResource` path (`XamlFileGenerator.cs:4259-4268`) is what matters and now uses the owner theme via step 3. Confirm no `{ThemeResource}` relies solely on the static path.
+1. Rebuild `DependencyObjectStore.Theming.cs` as the full Theming.cpp port in C++ member order: `NotifyThemeChanged` (FE override read via `ActualInstance as FrameworkElement`, early-outs, walk flag, scoped ambient set, persist `_theme`), `NotifyThemeChangedCore`(+`Impl`: `UpdateAllThemeReferences`, property + sparse walk notifying DO values, peer/binding notify), `UpdateAllThemeReferences`, both `UpdateThemeReference` overloads (active-ancestor walk via the resolver, `RefreshValue` gate `IsProcessingThemeWalk || _theme != None || !IsValueFromInitialTheme`), and the **full** `SetThemeResourceBinding` (owner-theme scoped push → update → get → SetValue → store ref) — taking back the responsibilities currently split into `ResourceResolver.ApplyResource`.
+2. `CoreServices.RequestedThemeForSubTree` + `IsThemeRequestedForSubTree` + `IsSwitchingTheme` (single slot + scope structs; §5.3), coupled to `ThemeWalkResourceCache.SetSubTreeTheme`.
+3. `FrameworkElement`'s walk (`FrameworkElement.Theming.cs:164-341`) is deleted; FE keeps only the `NotifyThemeChangedCore` override calling base then `RaiseActiveThemeChangedEventIfChanging` (event body finalized Phase 4). `UIElement`'s children propagation goes where WinUI has it (`CUIElement::NotifyThemeChangedCore` walks children — port that override on UIElement).
+4. Retire the parameter threading: leaf `TryGetValue(key, themeKey, …)` callers stop computing `ThemeResolution.ResolveOwnerTheme`; the dictionary's theme selection reads the slot/`FrameworkTheming` (minimal change here; the full `EnsureActiveThemeDictionary` port is Phase 5). Delete `ThemeResolution.cs`.
+5. Transitional choke-point assert (debug): at the leaf, the slot-derived theme equals what `ResolveOwnerTheme(owner)` would have produced; run the full suite on Skia + WASM with **zero** hits before deleting the old path. Any hit is either a pre-existing approximation bug the port fixes (document + test) or a missing Enter (fix Phase 1's coverage — never re-add a resolution-time walk).
 
-**Acceptance criteria.**
-- Builds all heads.
-- **Bugs fixed:** T1, T2, T3, T6, T7 (and the existing element-theme / code-behind-style repros + public uno #23177) go **green** on Skia + WASM.
-- Existing theming suite: **all green** (the band-aid pushes are now no-ops but present; tests must still pass). No regressions vs baseline.
-- Spot-verify with `/winui-runtime-tests` that nested-theme + dynamic-child scenarios match native WinUI.
+**Acceptance.** Builds all heads; full theming suite + T1–T10 == baseline (green) on Skia + WASM; assert silent across the suite; `/winui-runtime-tests` spot-check for nested-theme + dynamic-child scenarios; `ThemeResolution.cs` gone.
 
-**Validation.** Full theming suite + `Given_Theme_Materialization` (Skia + WASM) green; targeted WinUI parity run for nested/dynamic scenarios.
-
-**Commit.** `fix(theming): resolve ThemeResources against owner's effective theme (D3)` — body explains Mechanism 1 and that it is behavior-equivalent to WinUI's `SetThemeResourceBinding` owner-theme push.
+**Commits.** `feat(theming): port CDependencyObject theming to DependencyObjectStore 1:1`; `feat(theming): port the core RequestedThemeForSubTree slot`; `refactor(theming): retire ThemeResolution in favor of theme-at-Enter + the core slot`.
 
 ---
 
-## Phase 4 — Remove the 11 band-aid pushes + delete the global stack
+## Phase 4 — framework.cpp FrameworkElement theming 1:1
 
-**Goal.** Prove the architecture by deleting all the scattered pushes and the process-global `_requestedThemeForSubTree` stack. If anything regresses, a materialization path is missing theme-at-Enter (a Phase 2 gap) — fix the root, do not re-add a push.
+**Goal.** FE-level theming is exactly WinUI's: `OnRequestedThemeChanged`, `RaiseActiveThemeChangedEventIfChanging` (incl. the `HighContrastChanged` event + suppression rules), `ActualTheme`, `NotifyThemeChangedForInheritedProperties` (third ambient writer; foreground freeze).
 
-**Depends on.** Phase 3 green.
+**WinUI refs.** `framework.cpp:3501-3559`, `:3346-3386`, `:3969-3994`, `:3402-3489`; `FrameworkElement_Partial.cpp` (RequestedTheme plumbing; ActualThemeChanged delivery is posted async — match Uno's dispatcher semantics and document).
 
-**Files (remove pushes — see `architecture.md` §5 for the full table):** `FrameworkElement.Theming.cs:255/318, 461/485`; `FrameworkElement.cs:454/487, 734/745`; `FrameworkTemplate.cs:202/246`; `VisualStateGroup.cs:259/279, 393/420`; `Data/BindingHelper.cs:82/95`; `Documents/Hyperlink.cs:251/289`; `Media/Animation/ObjectAnimationUsingKeyFrames.cs:352/365`; `DependencyProperty.cs:636/650`. Then `ResourceDictionary.cs:916-937, 982-1017` (the `Push/Pop…ForSubTree` API + `Themes._requestedThemeForSubTree`).
+**Steps.** Rebuild `FrameworkElement.Theming.cs` to the C++ member set/order; add `public event TypedEventHandler<FrameworkElement, object> HighContrastChanged` (public API — check Generated stubs and update `[NotImplemented]` accordingly); port the freeze/unfreeze logic replacing the inlined approximation; keep Uno's `_themeForeground` storage only if it maps to WinUI's inherited-property freeze — otherwise port the WinUI mechanism and note.
 
-**Steps.**
-1. Remove each push/pop pair. For each removed site, replace it (where it was doing real work besides pushing) with the now-theme-aware resolution call passing the relevant owner's theme:
-   - **#2 foreground freeze** (`NotifyThemeChangedForInheritedProperties`): the `DefaultTextForegroundThemeBrush` lookup now passes the element's theme to `TryStaticRetrieval`/`TryGetValue` instead of pushing. Add a theme-aware `ResolveResourceStatic`/`TryStaticRetrieval` overload if needed.
-   - **#11 focus visual default** (`DependencyProperty.cs:633-650`, PR #23243): `ResolveFocusVisualBrushDefault` resolves `SystemControlFocusVisual…Brush` passing `GetEffectiveThemeKey(targetObject)` (== `ResolveOwnerTheme`) instead of pushing. Matches `CDependencyProperty::GetDefaultFocusVisualBrush` resolving against `targetObject->GetTheme()`.
-   - **#4 `OnStyleChanged`** (PR #23127), **#5 template `LoadContent`**, **#6/#7 visual states**, **#10 animation keyframes**, **#9 Hyperlink**: each becomes "resolve with the owner element's theme" — no push.
-2. Delete `PushRequestedThemeForSubTree`/`PopRequestedThemeForSubTree`/`…ByName` (`ResourceDictionary.cs:916-937`) and the `_requestedThemeForSubTree` stack (`:990, 1003-1016`). Keep `Themes.Active`, `SetActiveTheme`, `GetActiveTheme` (now used only as the app fallback inside `ResolveOwnerTheme` and for app-level resource lookups with no owner).
-3. Re-point the control-level `UpdateThemeBindings` overrides (Popup, PopupRoot, CommandBar, ContentPresenter, IconElement, TextBlock, TextBox) to the new theme-aware resolution — they remain as propagation hooks but no longer rely on the stack.
-4. Grep the whole repo for any remaining `PushRequestedThemeForSubTree`/`RequestedThemeForSubTree` references and remove/convert them.
+**Acceptance.** Builds; suite green; T8 (foreground freeze) green; event-order test vs WinUI (`/winui-runtime-tests`): `ActualThemeChanged` sees the NEW theme; HC suppression rules probe-app-confirmed (flag-driven on Skia).
 
-**Acceptance criteria.**
-- Builds all heads.
-- Full theming suite + `Given_Theme_Materialization` (Skia + WASM): **all green** with zero band-aids and no global stack.
-- Add a leak-check test: after a top-level theme change, no residual global state (the stack type no longer exists, so this is mostly a "does not compile if reintroduced" guard) — and `Given_ElementTheme` sibling-isolation tests stay green (they prove no cross-subtree bleed without the stack).
-
-**Validation.** Full suite green on Skia + WASM; `/winui-runtime-tests` parity spot-check unchanged.
-
-**Commit(s).** `refactor(theming): resolve focus/style/template/state/animation ThemeResources via owner theme`; `refactor(theming): delete global requested-theme stack and all push band-aids`.
+**Commit.** `feat(theming): port FrameworkElement theming (framework.cpp) incl. HighContrastChanged`.
 
 ---
 
-## Phase 5 — Popup/Flyout logical-parent inheritance + flyout `ActualTheme` forwarding (D5, D6)
+## Phase 5 — Resources.cpp + ThemeResourceExtension + leaf finalization
 
-**Goal.** Popup/flyout content is correctly themed on the **first** open from its placement target's effective theme, on all platforms. Fixes the S4 styling defect.
+**Goal.** `EnsureActiveThemeDictionary` finished 1:1 (HC branches incl. White/Black/Custom keys, `"Default"` fallback order, `MarkIsHighContrast`, sub-dictionary `NotifyThemeChanged` on switch) reading the core slot + `FrameworkTheming`; parse-time pinning aligned with `ThemeResourceExtension`/`ResourceResolver`; the remaining theme-parameter overloads and `Themes.Active` deleted.
 
-**Depends on.** Phases 1–4. This phase is the enhanced-lifecycle (Skia/WASM) popup/flyout theming fix. Native is out of scope for element-level theming (OS + application theme only); Phase 7 confirms/documents the native scope rather than extending element theming to native.
-
-**WinUI references.** Logical-parent inheritance at Enter `depends.cpp:1023-1048` + `GetInheritanceParentInternal(fLogicalParent)` `framework.cpp:3097-3130`; popup theme handling in the top-level notify `xcpcore.cpp:7826-7831`; `FlyoutBase` forwards target theme — Uno port at `FlyoutBase.cs:744-804`.
-
-**Files.**
-- `src/Uno.UI/UI/Xaml/Controls/Popup/Popup.cs:159-180`, `Popup.WithPopupRoot.cs:109-119`, `PopupRoot.cs:91-214`.
-- `src/Uno.UI/UI/Xaml/Controls/Flyout/FlyoutBase.cs:387-403, 542-549, 744-804` (`ForwardThemeToPresenter`, `OnPlacementTargetActualThemeChanged`).
-- `src/Uno.UI/UI/Xaml/Controls/CommandBarFlyout/TextCommandBarFlyout.mux.cs`, `CommandBarFlyout.cs`.
+**WinUI refs.** `Resources.cpp:644-819` (+ dictionary `NotifyThemeChanged` plumbing), `ThemeResourceExtension.cpp:44-247`, `components/resources/ResourceResolver.cpp:83-182`.
 
 **Steps.**
-1. Ensure the Phase 2 `Enter` theme step uses the **logical** inheritance parent for popup/flyout content so it inherits the opener's theme at first attach. Verify the `Popup.Child` → logical parent linkage exists on all platforms (it is used by the enhanced path today; generalize it).
-2. Remove the now-redundant explicit popup-open theme push (`Popup.WithPopupRoot.cs`) — it is subsumed by the `EstablishThemeAtEnter` logical-parent inheritance (step 1) on enhanced-lifecycle. **Keep popup theme propagation gated to `UNO_HAS_ENHANCED_LIFECYCLE`:** element-level theming is a Skia/WASM feature and is **not** brought to native — native targets support OS + application theme only (see Phase 7). Native theming behavior is left unchanged by this phase.
-3. **D6 fix in `FlyoutBase.ForwardThemeToPresenter` (enhanced-lifecycle only):** today it walks up looking for the nearest **non-Default `RequestedTheme`** and forwards only that. On Skia/WASM, change it to forward the placement target's **`ActualTheme`** (the effective theme, which includes app/inherited theme), so a flyout opened over content that is themed only at the app level is still themed. Keep the existing `ActualThemeChanged` subscription so runtime target theme changes still propagate. Preserve `m_isFlyoutPresenterRequestedThemeOverridden` semantics (don't override an explicitly-set presenter theme). **Gate the whole method to `UNO_HAS_ENHANCED_LIFECYCLE`: on native it is a no-op** — element-level theme is not forwarded; the flyout follows the application/OS theme (native = OS + application theme; element-level theme out of scope).
-4. Confirm `TextCommandBarFlyout`/`CommandBarFlyout` presenters inherit via `FlyoutBase` and need no extra work beyond step 3.
+1. Finish the `EnsureActiveThemeDictionary` port in `ResourceDictionary` (the base's `ResolveActiveThemeDictionary` is the starting point), sourcing requested-subtree theme from `CoreServices` and base/HC from `FrameworkTheming`; include the sub-dictionary `NotifyThemeChanged(m_activeTheme, highContrastChanged)` on switch (`Resources.cpp:793-815`).
+2. Align the parse-time `{ThemeResource}` flow (`ResourceResolver.ApplyResource`/`TryStaticRetrieval`) with `ThemeResourceExtension::ProvideValue`/`LookupResource` semantics (pin + register dependency); `SetThemeResourceBinding` (Phase 3) is the single write path.
+3. Delete the theme-parameter `TryGetValue`/`ContainsKey` overload threading and `Themes` (`Active`, `GetActiveBaseTheme`, test-only `SetActiveTheme` — update the tests that used it to drive `FrameworkTheming`/app theme instead). Remove Phase 1–3 transitional shims.
 
-**Acceptance criteria.**
-- Builds all heads.
-- T4 (`TextCommandBarFlyout` first-open) and T5 (`Popup` first-open) go green on Skia + WASM. They are **excluded on native** (`[PlatformCondition(Exclude, NativeAndroid|NativeIOS)]`) — element-level theming is not a native capability (native = OS + app theme).
-- Existing popup/flyout theme tests in `Given_ElementTheme` ("Popup and Flyout Theme Propagation" region) stay green.
-- Native theming behavior is unchanged (the D5/D6 changes are gated to `UNO_HAS_ENHANCED_LIFECYCLE`).
+**Acceptance.** Builds; full suite + T1–T10 green Skia + WASM; grep-clean for `Themes.Active`/`GetActiveTheme()`-style ambient remnants outside the ported slot; native theming unchanged.
 
-**Validation.** Theming suite + materialization tests (Skia + WASM); manual flyout-over-app-themed-content check.
-
-**Commit.** `fix(theming): theme popup/flyout content from placement target ActualTheme on first open (D5/D6)`.
+**Commits.** `feat(theming): finish EnsureActiveThemeDictionary 1:1`; `refactor(theming): retire Themes.Active and the theme-parameter leaf`.
 
 ---
 
-## Phase 6 — Application/OS/custom-theme/high-contrast precedence (D7, D8)
+## Phase 6 — CCoreServices::NotifyThemeChange + app/OS plumbing
 
-**Goal.** Match WinUI's app-vs-OS precedence exactly, define and fix custom-theme composition, and align high-contrast bit composition. Closes the remaining "controls use OS/browser theme" narrative.
+**Goal.** Full-app theme changes flow exactly like WinUI: `FrameworkTheming.OnThemeChanged` → `CoreServices.NotifyThemeChange` walking all roots; `Application.RequestedTheme` matches `FrameworkApplication` (pre-load settable); OS theme changes route through the interop; custom-theme axis ditched.
 
-**Depends on.** Phases 1–5.
+**WinUI refs.** `xcpcore.cpp:8006-8118`; `FrameworkApplication_Partial.cpp:987-1061`; `custom-theme.md` (decision).
 
-**WinUI references.** `FrameworkTheming::GetTheme` `FrameworkTheming.cpp:119-136`; `SetRequestedTheme`/`OnThemeChanged` `:31-105`; `EnsureActiveThemeDictionary` HC + Default fallback `Resources.cpp:687-819`; `Theme.h:10-65` (bit composition); `FrameworkApplication.put_RequestedTheme` (settable only before App.xaml loaded) `FrameworkApplication_Partial.cpp:981-1037`; OS detection `SystemThemingInterop.cpp:33-177`.
+**Steps.** Port `CoreServices.Theming.cs` `NotifyThemeChange` (cache scope; themed-brush/text resets where Uno has equivalents — `TODO Uno:` where not; global theme resources, app resources, **popup root**, visual root + inherited-properties freeze, island roots, out-of-tree listeners); `Application.RequestedTheme` delegates to `FrameworkTheming` (pre-load guard per `:993-996`); `SystemThemeHelper` change events → `FrameworkTheming.OnThemeChanged`; `ApplicationHelper.RequestedCustomTheme` → `[Obsolete]` no-op; HC toggle (flag) triggers the same `OnThemeChanged` path.
 
-**Files.**
-- `src/Uno.UI/UI/Xaml/Application.cs:139-379, 492-600` (`RequestedTheme`, `InitializeSystemTheme`, `UpdateRequestedThemesForResources`, `IsThemeSetExplicitly`, `OnSystemThemeChanged`, `ActualElementTheme`, `OnResourcesChanged`).
-- `src/Uno.UWP/Helpers/Theming/SystemThemeHelper.*` (OS theme + HC detection per platform).
-- `src/Uno.UI/UI/Xaml/ResourceDictionary.cs:205-214, 590-616` (custom theme key, `GetActiveThemeDictionary` Default fallback).
-- Uno `Theme` enum definition (confirm location; align to `base | highContrast` masks).
+**Acceptance.** Builds; suite green; T7 (app switch), T9 (explicit-app-theme suppresses OS), T10 (fallback) green; popup-root + island walk covered by tests; custom-theme breaking change documented.
 
-**Steps.**
-1. **App vs OS precedence (D7 base).** Verify the chain matches `FrameworkTheming::GetTheme()`: when `IsThemeSetExplicitly` (app set `RequestedTheme`), OS changes must not flip the base theme (`OnSystemThemeChanged` guard at `Application.cs:372` is correct — add a regression test T9). When not explicit, follow OS. Confirm `ActualElementTheme` and `RequestedThemeForResources` reflect this.
-2. **Ditch the custom-theme axis (D7) — RESOLVED, see [`custom-theme.md`](./custom-theme.md) → Option B.**
-   - Remove the custom-name branch in `Application.UpdateRequestedThemesForResources` (`Application.cs:205-214`); `RequestedThemeForResources`/`Themes.Active` becomes strictly `"Light"`/`"Dark"` (+ HC).
-   - Hard-deprecate `ApplicationHelper.RequestedCustomTheme` to a no-op with an `[Obsolete]` message (keep the property so existing code compiles). Confirm `"Light"`/`"Dark"` custom names still resolve as standard themes (the harmless-bucket case).
-   - Document the breaking change: a genuine custom palette must move to a merged dictionary that overrides specific brush/color keys on top of the Light/Dark theme dictionaries.
-3. **Element theme is strictly Light/Dark.** With the custom axis gone, element-level `ElementTheme.Light/Dark` selects the standard `"Light"`/`"Dark"` dictionaries — this is just the base model (matches WinUI; nothing custom to compose).
-4. **Theme-dictionary fallback robustness (D7).** A dictionary that does not define the active theme key falls back to the app's resolved **base** Light/Dark, **not** the raw `"Default"` sub-dictionary (`ResourceDictionary.cs:590-600`) — Fluent's `"Default"` is the Dark theme, so the old fallback silently yielded dark. (Rarely triggers once `Themes.Active` is always Light/Dark, but keep it as the safe default.)
-5. **High contrast (D8).** Align Uno's `Theme` enum / resolution so the effective theme is `base | highContrast` and HC selects the HC sub-dictionaries first (`EnsureActiveThemeDictionary` HC branch `Resources.cpp:718-762`). Ensure HC is OR-ed in `ResolveOwnerTheme` and in app theme. Wire `SystemThemeHelper` HC detection to set the HC bits. (If HC is currently entirely unhandled, scope this to: enum composition + dictionary selection + detection; full HC brush parity can be a follow-up, noted as such.)
-6. `FrameworkApplication`-parity: `RequestedTheme` settable only before app resources load — confirm Uno's "before init" guard (`Application.cs:143-149`) matches and document.
-
-**Acceptance criteria.**
-- Builds all heads.
-- T9 (OS-following suppressed when app theme explicit) green.
-- A custom-theme test: app `RequestedCustomTheme="MyLight"` + an element `RequestedTheme="Dark"` resolves the standard dark dictionary; a missing custom key does **not** silently resolve dark (per chosen rule).
-- HC: at least dictionary-selection-level test green (HC sub-dictionary chosen when HC active).
-- Full theming suite green.
-
-**Validation.** Theming suite + new precedence/custom/HC tests; `/winui-runtime-tests` for app-vs-element precedence.
-
-**Commit(s).** `fix(theming): align app/OS theme precedence with FrameworkTheming (D7)`; `feat(theming): define custom-theme + element-theme composition`; `feat(theming): compose high-contrast with base theme (D8)`.
+**Commits.** `feat(theming): port CCoreServices::NotifyThemeChange`; `feat(theming): align Application.RequestedTheme with FrameworkApplication`; `feat!(theming): retire RequestedCustomTheme (no-op)`.
 
 ---
 
-## Phase 7 — Native (Android/iOS) theme scope: OS + application theme only
+## Phase 7 — Popup/Flyout 1:1
 
-**Goal.** Confirm and document that native (non-enhanced-lifecycle Android/iOS) targets support **OS theme + application theme only**, and that **element-level theming is intentionally out of scope on native**. The per-object theme + `Enter` inheritance machinery built in Phases 1–5 is a Skia/WASM (`UNO_HAS_ENHANCED_LIFECYCLE`) feature and is **not** ported to the native view hierarchy. Native theming behavior is left **unchanged** by this refactor.
+**Goal.** Popup child dead-enter + live-enter-at-open; logical-parent theme inheritance (mechanically provided by Phase 1's theme block + `GetInheritanceParentInternal`); FlyoutBase presenter theme forwarding per `FlyoutBase_Partial.cpp`.
 
-**Rationale (decision).** Native tree mechanics differ fundamentally (native view hierarchy, no uniform "DO entered live tree" hook), and porting per-DO theme + `Enter` inheritance there is high-risk for limited benefit. Native already follows OS + application theme; element-level `RequestedTheme` inheritance (the element-`RequestedTheme`-on-root variant of S4) is a Skia/WASM capability and is accepted as a native limitation. This supersedes the earlier "native parity" goal.
+**WinUI refs.** `popup.cpp:2846-2936`; `framework.cpp:3113-3146`; `FlyoutBase_Partial.cpp` (theme forwarding; re-read at fc2f82117); `xcpcore.cpp:8068-8072` (popup root in the walk — done Phase 6).
 
-**Depends on.** Phases 1–6 green on Skia/WASM.
+**Steps.** Align `Popup` Enter/Leave overrides (dead-enter child for namescope; live enter on open through PopupRoot parenting); verify popup/flyout content first-open theming falls out of the mechanism (T4/T5); rebuild `FlyoutBase.ForwardThemeToPresenter` 1:1 from the C++ (enhanced-lifecycle; native no-op).
 
-**Files.**
-- `src/Uno.CrossTargetting.targets` (`UNO_HAS_ENHANCED_LIFECYCLE` definition — understand only; do not change).
-- All `#if UNO_HAS_ENHANCED_LIFECYCLE` theme blocks touched in earlier phases (verify the native `#else`/absent path is unchanged).
+**Acceptance.** T4/T5 green Skia + WASM (excluded native); `Given_ElementTheme` popup/flyout regions green; `/winui-runtime-tests` parity for flyout-over-themed-content.
 
-**Steps.**
-1. Audit every `#if UNO_HAS_ENHANCED_LIFECYCLE` theme gate introduced/touched in Phases 1–5 and confirm the native path is **unchanged** from before the refactor: no per-DO theme establishment at native attach, no `Enter` inheritance walk, no element-theme push, no new element-theme code compiled into native. `EstablishThemeAtEnter` and the popup logical-parent inheritance run only on enhanced-lifecycle.
-2. Confirm native popup/flyout content follows the application/OS theme: `FlyoutBase.ForwardThemeToPresenter` is a **no-op on native** (no element-level theme forwarded — the presenter keeps its default/inherited theme and follows the app/OS theme); `Popup` theme propagation stays enhanced-lifecycle-gated. The element-`RequestedTheme`-on-root S4 scenario is not supported on native by design.
-3. Confirm element-theme materialization repros (T4/T5 and any others asserting element-level theme) are excluded on native (`[PlatformCondition(Exclude, NativeAndroid|NativeIOS)]`).
-4. Note: native controls (native text-selection menus, native inputs) may render via OS chrome and honor OS appearance independently of Uno — they already follow OS/app theme. Document the native theming scope (OS + app theme; no element-level theme) so future work does not re-attempt element theming on native without an explicit decision.
-
-**Acceptance criteria.**
-- Builds and runs on Android + iOS with native theming behavior **unchanged** (OS + application theme switching works as before).
-- No element-level theme machinery compiled into native; no native theming regressions.
-- Element-theme materialization tests (T4/T5, etc.) excluded on native; existing native-applicable theming tests green.
-
-**Validation.** Build Android + iOS; confirm OS/application theme switching; confirm no native theming regressions vs. pre-refactor.
-
-**Commit.** `docs(theming): scope native to OS + application theme (element theme is Skia/WASM only)`.
+**Commit.** `fix(theming): popup/flyout first-open theming via logical-parent Enter inheritance`.
 
 ---
 
-## Phase 8 — Full validation, WinUI parity, cleanup, docs
-
-**Goal.** Prove the whole thing, on all platforms, against native WinUI; remove dead code; document.
-
-**Depends on.** Phases 0–7.
+## Phase 8 — Full validation, parity, cleanup, docs
 
 **Steps.**
-1. **WinUI oracle re-confirm:** run the entire theming suite (old + new, all WinUI-runnable tests) on `/winui-runtime-tests` and confirm **all green** on native WinUI. This re-establishes the suite as a correct oracle after any test edits made across the phases.
-2. **Uno match:** run the **entire** theming suite + `Given_Theme_Materialization` via `/runtime-tests` on Skia Desktop and WASM (the platforms with element-level theming). All green, matching the WinUI results. On Android + iOS, run the native-applicable subset (element-level theme tests are excluded on native via `[PlatformCondition(Exclude, NativeAndroid|NativeIOS)]`) and confirm OS + application theme switching works with no native regressions. Compare to Phase 0 baseline; explain any test that legitimately changed (e.g. a test that asserted the old buggy unload-clear behavior) — such a change must itself be a WinUI-green assertion.
-3. Remove any remaining transitional shims (parameterless `TryGetValue` wrappers added in Phase 3 if no longer needed, dead `#if` branches, `Control.crossruntime.cs:32-46` commented-out WinUI port if now superseded).
-4. Performance sanity: run the resource-dictionary benchmarks (`src/SamplesApp/Benchmarks.Shared/.../ResourceDictionaryBench/*`) before/after to confirm no regression (expect neutral-to-better — fewer pushes).
-5. Update developer docs: a short "Theming model" note describing the WinUI-aligned invariant (resolution = f(key, owner theme); theme established at Enter; logical-parent inheritance for popups), so future control authors don't reintroduce band-aids.
-6. Update memory/spec status doc with final results.
+1. WinUI oracle re-confirm: entire suite on `/winui-runtime-tests` all green.
+2. Uno match: entire suite + T1–T10 via `/runtime-tests` Skia + WASM; Android/iOS native-applicable subset; compare to Phase 0 baseline, explain every legitimate change (each must itself be WinUI-green).
+3. Remove remaining transitional shims/dead `#if` branches; grep-clean ambient remnants.
+4. Benchmarks: `src/SamplesApp/Benchmarks.Shared/.../ResourceDictionaryBench/*` before/after — neutral or better.
+5. Developer doc: short "Theming model" note (resolution = f(key, owner `m_theme` via the core slot); theme at Enter; logical-parent for popups; the three ambient writers) so band-aids don't return.
 
-**Acceptance criteria.**
-- Skia + WASM: all theming tests green. Android + iOS: native-applicable subset green (element-theme tests excluded), OS + application theme switching works, no native regressions.
-- WinUI parity confirmed for ported scenarios (Skia/WASM); native scope (OS + app theme only) documented.
-- No `PushRequestedThemeForSubTree` / global theme stack anywhere in the codebase.
-- Benchmarks neutral or improved.
-
-**Validation.** Full suite all heads; WinUI parity run; benchmark comparison.
-
-**Commit(s).** `test(theming): full cross-platform + WinUI parity validation`; `chore(theming): remove transitional shims and document theming model`.
+**Commits.** `test(theming): full cross-platform + WinUI parity validation`; `chore(theming): remove transitional shims and document theming model`.
 
 ---
 
 ## Scenario → phase traceability
 
-(Scenarios S1–S5 are defined in `architecture.md` §1; they describe internally-tracked bugs generically. uno #23177 is public.)
-
-| Scenario | Fixed primarily by | Verified by |
-|----------|--------------------|-------------|
-| S2 (recycle on tab navigation) | Phase 2 (D2 Enter) + D4 (no unload clear) + Phase 3 (D3) | T2 |
-| S3 (scrolled-in cells) | Phase 2 (D2) + Phase 3 (D3) | T3 |
-| S1 / S5 (virtualized item / runtime-added control) | Phase 2 (D2) + Phase 3 (D3) + Phase 6 (D7 OS/custom) | T1, T6 |
-| S4 (popup/flyout first open) | Phase 5 (D5/D6) on Skia/WASM; native = OS/app theme only (Phase 7 — element theme out of scope on native) | T4, T5 (Skia/WASM; excluded on native) |
-| uno #23177 (app dark switch) | preserved by Phases 2–4; hardened | existing repros + T7 |
-| OS/theme leak narrative | Phase 6 (D7) | T9 + custom-theme test |
+| Scenario (see `tests.md`) | Secured primarily by | Verified by |
+|---|---|---|
+| S1/S5 virtualized/runtime-added | Phase 1 (Enter theme) + 3 (slot leaf) | T1, T6 |
+| S2 recycle | Phase 1 (no theme clear on Leave; re-Enter re-themes) + 3 | T2 |
+| S3 scrolled-in cells | Phase 1 + 3 | T3 |
+| S4 popup/flyout first open | Phase 7 (on 1+3 foundations) — Skia/WASM; native = app/OS theme | T4, T5 |
+| uno #23177 app switch | Phase 6 | T7 + existing |
+| OS-follow suppression | Phase 6 (`FrameworkTheming`) | T9 |
+| Foreground freeze | Phase 4 | T8 |
+| Fallback/dark-leak | Phase 5 (`EnsureActiveThemeDictionary` order) | T10 |
