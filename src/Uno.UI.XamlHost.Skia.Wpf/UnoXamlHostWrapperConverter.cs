@@ -18,22 +18,25 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 	/// </summary>
 	public class UnoXamlHostWrapperConverter : IValueConverter, Microsoft.UI.Xaml.Data.IValueConverter
 	{
-		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, CultureInfo culture)
+		// Keep in sync with definition within src/Uno.UI/UI/Xaml/Data/IValueConverter.cs
+		private const DynamicallyAccessedMemberTypes ValueConverter_TargetTypeRequirements = DynamicallyAccessedMemberTypes.PublicParameterlessConstructor;
+
+		public object Convert(object value, [DynamicallyAccessedMembers(ValueConverter_TargetTypeRequirements)] Type targetType, object parameter, CultureInfo culture)
 		{
 			return (value as Microsoft.UI.Xaml.UIElement)?.GetWrapper();
 		}
 
-		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, CultureInfo culture)
+		public object ConvertBack(object value, [DynamicallyAccessedMembers(ValueConverter_TargetTypeRequirements)] Type targetType, object parameter, CultureInfo culture)
 		{
 			throw new NotImplementedException();
 		}
 
-		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object Convert(object value, [DynamicallyAccessedMembers(ValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			return (value as UnoXamlHostBase)?.GetUwpInternalObject();
 		}
 
-		public object ConvertBack(object value, Type targetType, object parameter, string language)
+		public object ConvertBack(object value, [DynamicallyAccessedMembers(ValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			throw new NotImplementedException();
 		}
