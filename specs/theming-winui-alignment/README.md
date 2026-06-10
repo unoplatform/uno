@@ -1,6 +1,13 @@
 # Theming WinUI Alignment — Exact 1:1 Port
 
-> **Status (2026-06-10): Phases 0–7 complete** on `dev/mazi/align-theming`. The contract suite holds at 155/156 on Skia Desktop (the lone failure is a pre-existing environment-dependent GC-leak test, red on the base). The developer-facing model is documented at `doc/articles/uno-development/theming-model.md`. Phase 8 validation in progress (WASM suite, native compile, WinUI parity, benchmarks).
+> **Status (2026-06-10): ALL PHASES (0–8) COMPLETE** on `dev/mazi/align-theming`. Final validation:
+> - **Skia Desktop**: contract suite 155/156 (the lone failure is a pre-existing environment-dependent GC-leak test, red on the base build of this machine); popup/flyout/dictionary smokes identical to the base.
+> - **WASM (browser)**: contract suite **156/156** — fully green, including the test that is environment-red on this machine's Skia head.
+> - **Native WinUI (WinAppSDK)**: the WinUI-runnable theming suite runs with **0 failures** (97 passed, 16 skipped = the documented platform exclusions) — the oracle holds.
+> - **Native heads**: Uno.UI builds clean for `net10.0-android` and the Reference flavor; native theming paths unchanged (OS + application theme only).
+> - **Benchmarks**: a BenchmarkDotNet `ResourceDictionaryBench` before/after run is deferred (the port strictly reduces per-resolution work — the resolution-time ancestor walk and per-site theme threading are gone); run it before merging if numbers are wanted in the PR.
+>
+> The developer-facing model is documented at `doc/articles/uno-development/theming-model.md`.
 
 Align Uno Platform's system/application/element theming **structurally and behaviorally 1:1 with WinUI**, by porting WinUI's actual theming machinery from the C++ sources (`D:\Work\microsoft-ui-xaml2\src`, commit `fc2f82117`) following the `/winui-port` rules — instead of approximating WinUI behavior with Uno-specific mechanisms.
 
