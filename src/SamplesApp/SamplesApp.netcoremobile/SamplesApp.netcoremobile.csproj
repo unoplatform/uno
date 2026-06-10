@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>
+		<TargetFrameworks>net10.0-android</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
 

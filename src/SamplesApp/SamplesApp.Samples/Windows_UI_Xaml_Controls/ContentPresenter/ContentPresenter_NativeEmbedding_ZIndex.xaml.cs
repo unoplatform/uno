@@ -52,10 +52,10 @@ namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 
 	public class StateToVisibilityConverter : IValueConverter
 	{
-		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object Convert(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
 			=> ((int)value) % 2 == 0 ? Visibility.Visible : Visibility.Collapsed;
 
-		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language) => throw new NotImplementedException();
+		public object ConvertBack(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language) => throw new NotImplementedException();
 	}
 
 	public class StateToZIndexConverter : IValueConverter
@@ -63,11 +63,11 @@ namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 		private int _lastRet;
 		public int Modulus { get; set; }
 		public int Remainder { get; set; }
-		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object Convert(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			return ((int)value) % Modulus == Remainder ? _lastRet = ((int)value) : _lastRet;
 		}
 
-		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language) => throw new NotImplementedException();
+		public object ConvertBack(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language) => throw new NotImplementedException();
 	}
 }

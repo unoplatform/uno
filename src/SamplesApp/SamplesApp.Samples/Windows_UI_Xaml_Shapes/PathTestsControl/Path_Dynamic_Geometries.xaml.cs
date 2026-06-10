@@ -18,7 +18,7 @@ namespace UITests.Windows_UI_Xaml_Shapes.PathTestsControl
 
 	internal class ValueToPointConverter : IValueConverter
 	{
-		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object Convert(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			if (targetType == typeof(Point))
 			{
@@ -28,13 +28,13 @@ namespace UITests.Windows_UI_Xaml_Shapes.PathTestsControl
 			return value;
 		}
 
-		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language) => throw new NotImplementedException();
+		public object ConvertBack(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language) => throw new NotImplementedException();
 	}
 
 	internal class ValueToRectConverter : IValueConverter
 	{
 		public Point Origin { get; set; } = default;
-		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object Convert(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			if (targetType == typeof(Rect))
 			{
@@ -45,6 +45,6 @@ namespace UITests.Windows_UI_Xaml_Shapes.PathTestsControl
 			return value;
 		}
 
-		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language) => throw new NotImplementedException();
+		public object ConvertBack(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language) => throw new NotImplementedException();
 	}
 }

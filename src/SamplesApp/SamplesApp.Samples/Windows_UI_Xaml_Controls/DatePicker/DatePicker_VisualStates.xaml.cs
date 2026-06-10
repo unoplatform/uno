@@ -30,7 +30,7 @@ namespace UITests.Windows_UI_Xaml_Controls.DatePicker
 
 	public class StringFormatConverter : IValueConverter
 	{
-		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object Convert(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			var format = parameter as string;
 			if (!string.IsNullOrEmpty(format))
@@ -39,7 +39,7 @@ namespace UITests.Windows_UI_Xaml_Controls.DatePicker
 			return value;
 		}
 
-		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object ConvertBack(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			throw new NotImplementedException();
 		}

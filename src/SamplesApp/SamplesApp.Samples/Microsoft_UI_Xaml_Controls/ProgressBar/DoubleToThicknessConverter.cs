@@ -8,7 +8,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.ProgressBar
 {
 	internal class DoubleToThicknessConverter : IValueConverter
 	{
-		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object Convert(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			if (value is Thickness thickness)
 			{
@@ -19,6 +19,6 @@ namespace UITests.Microsoft_UI_Xaml_Controls.ProgressBar
 			return new Thickness(doubleValue);
 		}
 
-		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language) => throw new NotSupportedException();
+		public object ConvertBack(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language) => throw new NotSupportedException();
 	}
 }

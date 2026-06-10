@@ -8,7 +8,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
 	public class StringToHeightConverter : IValueConverter
 	{
-		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object Convert(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			if (value is char c)
 			{
@@ -18,7 +18,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 			return 5d;
 		}
 
-		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object ConvertBack(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			throw new NotSupportedException();
 		}

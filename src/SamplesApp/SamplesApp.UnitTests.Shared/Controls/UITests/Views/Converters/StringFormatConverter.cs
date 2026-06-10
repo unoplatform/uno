@@ -18,7 +18,7 @@ namespace Uno.UI.Samples.Converters
 {
 	public class StringFormatConverter : IValueConverter
 	{
-		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string culture)
+		public object Convert(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string culture)
 		{
 #if WINAPPSDK || __ANDROID__ || __APPLE_UIKIT__
 			var currentCulture = string.IsNullOrWhiteSpace(culture) ? CultureInfo.CurrentUICulture : new CultureInfo(culture);
@@ -35,7 +35,7 @@ namespace Uno.UI.Samples.Converters
 			return String.Format(currentCulture, parameter.ToString(), value);
 		}
 
-		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string culture)
+		public object ConvertBack(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string culture)
 		{
 			throw new NotSupportedException();
 		}
