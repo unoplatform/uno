@@ -73,13 +73,12 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		[RequiresFullWindow]
 		public async Task When_ListViewItem_Locally_Disabled_Matches_Enabled()
 		{
-			var enabledItemCheckBox = new CheckBox { Content = "Enabled item", IsChecked = true, IsEnabled = false };
-			var disabledItemCheckBox = new CheckBox { Content = "Disabled item", IsChecked = true, IsEnabled = false };
+			var checkBoxInEnabledItem = new CheckBox { Content = "Enabled item", IsChecked = true, IsEnabled = false };
+			var checkBoxInDisabledItem = new CheckBox { Content = "Disabled item", IsChecked = true, IsEnabled = false };
 
 			var listView = new ListView();
-			listView.Items.Add(new ListViewItem { Content = enabledItemCheckBox });
-			listView.Items.Add(new ListViewItem { Content = disabledItemCheckBox, IsEnabled = false });
-
+			listView.Items.Add(new ListViewItem { Content = checkBoxInEnabledItem });
+			listView.Items.Add(new ListViewItem { Content = checkBoxInDisabledItem, IsEnabled = false });
 			var root = new StackPanel
 			{
 				RequestedTheme = ElementTheme.Dark,
