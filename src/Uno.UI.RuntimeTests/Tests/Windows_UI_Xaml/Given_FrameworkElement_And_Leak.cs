@@ -166,13 +166,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.TreeView), 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
 		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.TwoPaneView), 15)]
-		[ActivatableDataRow("SamplesApp.Windows_UI_Xaml.Clipping.XamlButtonWithClipping_Scrollable, SamplesApp.Samples", 15)]
-		[ActivatableDataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.AppBar_KeyBoard, SamplesApp.Samples", 15)]
-		[ActivatableDataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.Buttons, SamplesApp.Samples", 15)]
+		[ActivatableDataRow("SamplesApp.Windows_UI_Xaml.Clipping.XamlButtonWithClipping_Scrollable, SamplesApp", 15)]
+		[ActivatableDataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.AppBar_KeyBoard, SamplesApp", 15)]
+		[ActivatableDataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.Buttons, SamplesApp", 15)]
 #endif
-		[ActivatableDataRow("UITests.Windows_UI_Xaml.xLoadTests.xLoad_Test_For_Leak, SamplesApp.Samples", 15)]
+		[ActivatableDataRow("UITests.Windows_UI_Xaml.xLoadTests.xLoad_Test_For_Leak, SamplesApp", 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[ActivatableDataRow("UITests.Windows_UI_Xaml_Controls.ToolTip.ToolTip_LeakTest, SamplesApp.Samples", 15)]
+		[ActivatableDataRow("UITests.Windows_UI_Xaml_Controls.ToolTip.ToolTip_LeakTest, SamplesApp", 15)]
 #endif
 		[ActivatableDataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.Button_Command_Leak, Uno.UI.RuntimeTests", 15)]
 		[ActivatableDataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ItemsControl_ItemsSource_Leak, Uno.UI.RuntimeTests", 15)]
