@@ -185,10 +185,13 @@ public partial class DependencyObjectStore
 
 		// Uno-specific ordering: WinUI runs the enter-property walk (depends.cpp:1013-1032) and
 		// EnterSparseProperties before the theme block, because CDependencyObject::NotifyThemeChanged
-		// recursively re-themes property values afterwards (Theming.cpp:175-248). Until that recursion
-		// is ported to the store level (Phase 3 of the theming alignment), the theme block must run
-		// first so the property walk's ThemeInheritanceCaller fallback reads this object's already-
-		// established theme. EnterSparseProperties keeps its pre-theme position from WinUI.
+		// recursively re-themes property values afterwards (Theming.cpp:175-248). The walk now lives
+		// on the store, but its property-value propagation still flows through the child store's
+		// UpdateResourceBindings (which does not persist a per-object theme — see
+		// NotifyThemeChangedCoreImpl). Until that recursion is per-child NotifyThemeChanged, the
+		// theme block must run first so the property walk's ThemeInheritanceCaller fallback reads
+		// this object's already-established theme. EnterSparseProperties keeps its pre-theme
+		// position from WinUI.
 		EnterSparseProperties(pAdjustedNamescopeOwner: namescopeOwner, @params);
 
 		// MUX Reference: depends.cpp:1044-1069 — establish this object's theme from its (logical)
@@ -272,24 +275,11 @@ public partial class DependencyObjectStore
 		// that don't propagate Store.Parent), so the inherit branch gates on parentTheme alone.
 		if (parentTheme != Theme.None && parentTheme != _theme)
 		{
-			if (owner is FrameworkElement frameworkElement)
-			{
-				// Inherit the parent theme and walk this subtree. NotifyThemeChanged re-applies this
-				// element's own RequestedTheme override (FrameworkElement.Theming.cs:180-183).
-				// TODO Uno: transitional — WinUI calls CDependencyObject::NotifyThemeChanged for every
-				// DO here; Uno's walk still lives on FrameworkElement until Theming.cpp is fully ported
-				// to the store level.
-				frameworkElement.NotifyThemeChanged(parentTheme);
-			}
-			else
-			{
-				// Non-FrameworkElement DO: adopt the parent theme and re-resolve this object's own
-				// theme references. The owner's theme is now established, so compute the effective
-				// owner theme once and pass it as the override — otherwise UpdateThemeReference would
-				// call ResolveOwnerTheme per theme-ref.
-				SetTheme(parentTheme);
-				UpdateAllThemeReferences(owner, cache: null, ThemeResolution.ResolveOwnerTheme(owner));
-			}
+			// MUX: depends.cpp:1062 — inherit the parent theme and walk this subtree.
+			// CDependencyObject::NotifyThemeChanged (now hosted on the store for every DO)
+			// re-applies a FrameworkElement's own RequestedTheme override via
+			// GetRequestedThemeOverride and recursively themes property values and children.
+			NotifyThemeChanged(parentTheme);
 		}
 		else
 		{

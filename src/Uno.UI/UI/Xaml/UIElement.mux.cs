@@ -1072,6 +1072,32 @@ namespace Microsoft.UI.Xaml
 			IsActiveInVisualTree = false;
 		}
 
+		// MUX Reference: CUIElement::NotifyThemeChangedCore — uielement.cpp:14483-14508
+		internal virtual void NotifyThemeChangedCore(Theme theme, bool forceRefresh)
+		{
+			// TODO Uno: NOT PORTED — "Set opacity dirty to ensure it is correct when having
+			// HighContrastAdjustment opacity overrides." (CUIElement::NWSetOpacityDirty,
+			// uielement.cpp:14486) — HighContrastAdjustment rendering is not implemented.
+
+			// Notify element's properties that theme has changed
+			((IDependencyObjectStoreProvider)this).Store.NotifyThemeChangedCoreImpl(theme, forceRefresh);
+
+			// Recursively notify element subtree that theme has changed
+			// (indexed with Count re-read each iteration so the walk stays resilient if a child's
+			// NotifyThemeChanged mutates the collection)
+			for (var i = 0; i < _children.Count; i++)
+			{
+				// Uno-specific: an x:Load placeholder materializes its real element itself; walking it
+				// would force-touch deferred content. The materialized element is themed at Enter.
+				if (_children[i] is ElementStub)
+				{
+					continue;
+				}
+
+				_children[i].NotifyThemeChanged(theme, forceRefresh);
+			}
+		}
+
 		internal virtual void EnterImpl(EnterParams @params, int depth)
 		{
 			Depth = depth;

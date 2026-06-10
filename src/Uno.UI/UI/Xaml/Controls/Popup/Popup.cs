@@ -161,7 +161,7 @@ public partial class Popup
 	// Popup's Child is reparented to PopupRoot's visual tree, so the normal PropagateThemeToChildren walk
 	// won't reach it; we explicitly propagate a runtime theme change to the logical child here. Element-level
 	// theme propagation is Skia/WASM-only, so this override stays gated (native is OS + application theme).
-	private protected override void NotifyThemeChangedCore(Theme theme, bool forceRefresh)
+	internal override void NotifyThemeChangedCore(Theme theme, bool forceRefresh)
 	{
 		base.NotifyThemeChangedCore(theme, forceRefresh);
 

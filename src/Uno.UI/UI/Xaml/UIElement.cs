@@ -87,6 +87,19 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal void SetIsProcessingThemeWalk(bool value) => ((IDependencyObjectStoreProvider)this).Store.SetIsProcessingThemeWalk(value);
 
+		/// <summary>
+		/// Notifies this element and its subtree that the theme has changed.
+		/// </summary>
+		/// <remarks>Thin forwarder — the walk is a CDependencyObject mechanism
+		/// (Theming.cpp:110-157) hosted on <see cref="DependencyObjectStore"/>. Element-level
+		/// theming is enhanced-lifecycle only; this is a no-op on native targets.</remarks>
+		internal void NotifyThemeChanged(Theme theme, bool forceRefresh = false)
+		{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			((IDependencyObjectStoreProvider)this).Store.NotifyThemeChanged(theme, forceRefresh);
+#endif
+		}
+
 		public Size DesiredSize => Visibility == Visibility.Visible && HasLayoutStorage ? m_desiredSize : default;
 
 		//private protected virtual void PrepareState()

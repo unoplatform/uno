@@ -102,7 +102,7 @@ internal partial class PopupRoot : Canvas
 	// non-parented popups that missed the theme walk while they were closed.
 	private bool _hasThemeChanged;
 
-	private protected override void NotifyThemeChangedCore(Theme theme, bool forceRefresh)
+	internal override void NotifyThemeChangedCore(Theme theme, bool forceRefresh)
 	{
 		// Do NOT call base — PopupRoot must not update its own theme bindings,
 		// propagate to visual children (PopupPanels), or persist a theme.

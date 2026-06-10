@@ -75,6 +75,139 @@ public partial class DependencyObjectStore
 	// The CDependencyObject::EnterImpl theme block (depends.cpp:1044-1069) and the enter-property
 	// walks are ported in DependencyObjectStore.mux.cs and DependencyObjectStore.PropertySystem.mux.cs.
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
+	#region Theme walk — WinUI: CDependencyObject::NotifyThemeChanged / NotifyThemeChangedCore (Theming.cpp lines 110-255)
+
+	/// <summary>
+	/// Uno-specific: the per-object theme as it was before the current walk persisted the new one.
+	/// WinUI persists m_theme AFTER NotifyThemeChangedCore (Theming.cpp:155) because its
+	/// ActualThemeChanged delivery is posted asynchronously — handlers observe the new theme either
+	/// way. Uno raises the event synchronously, so the new theme is persisted BEFORE the core walk
+	/// (handlers reading ActualTheme must see the new value) and the old theme is stashed here for
+	/// CFrameworkElement::RaiseActiveThemeChangedEventIfChanging's old-vs-new comparison
+	/// (framework.cpp:3379-3382, which reads the not-yet-persisted GetTheme()).
+	/// </summary>
+	internal Theme PreviousThemeForWalk { get; private set; }
+
+	/// <remarks>
+	/// MUX Reference: CDependencyObject::NotifyThemeChanged — Theming.cpp:110-157.
+	/// </remarks>
+	internal void NotifyThemeChanged(Theme theme, bool forceRefresh = false)
+	{
+		// Make sure no funny business happens where someone tries to cast an unsigned int into
+		// an invalid Theme value.
+		global::System.Diagnostics.Debug.Assert(theme < Theme.Unused);
+
+		// If IsProcessingEnterLeave is true, then this element is already part of the
+		// theme walk.  This can happen, for instance, if a custom DP's value has
+		// been set to some ancestor of this node.
+		if (IsProcessingThemeWalk)
+		{
+			return;
+		}
+
+		// If this is a framework element, then get the requested theme.
+		if (ActualInstance is FrameworkElement thisAsFe)
+		{
+			theme = thisAsFe.GetRequestedThemeOverride(theme);
+		}
+
+		// Has theme changed?
+		if (theme == _theme && !forceRefresh)
+		{
+			return;
+		}
+
+		SetIsProcessingThemeWalk(true);
+
+		var core = Uno.UI.Xaml.Core.CoreServices.Instance;
+		bool removeRequestedTheme = false;
+		var oldRequestedThemeForSubTree = core.GetRequestedThemeForSubTree();
+		if (Theming.GetBaseValue(theme) != oldRequestedThemeForSubTree)
+		{
+			core.SetRequestedThemeForSubTree(theme);
+			removeRequestedTheme = true;
+		}
+
+		// MUX Reference: CCoreServices::NotifyThemeChange() calls BeginCachingThemeResources()
+		// before the theme walk (xcpcore.cpp:8015). Reentrant-safe: nested calls (recursive child
+		// walks) get no-op guards.
+		using var cacheGuard = core.ThemeWalkResourceCache.BeginCachingThemeResources();
+
+		// Persist the theme. WinUI does this AFTER NotifyThemeChangedCore (Theming.cpp:155) — see
+		// PreviousThemeForWalk for why Uno persists before.
+		PreviousThemeForWalk = _theme;
+		_theme = theme;
+
+		try
+		{
+			// Notify children and properties of theme change
+			NotifyThemeChangedCore(theme, forceRefresh);
+		}
+		finally
+		{
+			SetIsProcessingThemeWalk(false);
+			if (removeRequestedTheme)
+			{
+				core.SetRequestedThemeForSubTree(oldRequestedThemeForSubTree);
+			}
+		}
+	}
+
+	/// <remarks>
+	/// MUX Reference: CDependencyObject::NotifyThemeChangedCore — Theming.cpp:159-162. The virtual
+	/// dispatch (CUIElement/CFrameworkElement/CPopup/CPopupRoot overrides) goes through the
+	/// UIElement.NotifyThemeChangedCore chain, since Uno's DependencyObject is an interface.
+	/// </remarks>
+	private void NotifyThemeChangedCore(Theme theme, bool forceRefresh)
+	{
+		if (ActualInstance is UIElement uiElement)
+		{
+			uiElement.NotifyThemeChangedCore(theme, forceRefresh);
+		}
+		else
+		{
+			NotifyThemeChangedCoreImpl(theme, forceRefresh);
+		}
+	}
+
+	// ignoreGetValueFailures currently addresses [Blue Bug 637457]: For setter values which are invalid, the value may not be resolvable.
+	// This should only ever be set to true when being called from a Setter.
+	/// <remarks>
+	/// MUX Reference: CDependencyObject::NotifyThemeChangedCoreImpl — Theming.cpp:166-255.
+	/// </remarks>
+	internal void NotifyThemeChangedCoreImpl(Theme theme, bool forceRefresh, bool ignoreGetValueFailures = false)
+	{
+		global::System.Diagnostics.Debug.Assert(!ignoreGetValueFailures || ActualInstance is Setter);
+
+		// Update theme references first, and skip them below in the property value notifications.
+		// Notify field-backed and sparse property values of theme change, and notify the peer so
+		// expressions can be refreshed (e.g. Binding.TargetNullValue might be a ThemeResource).
+		//
+		// Uno: the UpdateResourceBindings engine performs exactly these Theming.cpp:173-252 steps —
+		// UpdateAllThemeReferences (:173), the property-value walk (:176-248, via
+		// UpdateChildResourceBindings with the ShouldNotifyPropertyOfThemeChange filter and the
+		// active-UIElement skip), and the binding-expression refresh (:252, the
+		// FxCallbacks::DependencyObject_RefreshExpressionsOnThemeChange analog). Controls extend it
+		// through their UpdateThemeBindings overrides exactly as their C++ NotifyThemeChangedCore
+		// overrides extend the walk.
+		// TODO Uno: the property-value propagation goes through the child store's
+		// UpdateResourceBindings rather than per-child NotifyThemeChanged, so non-UIElement children
+		// keep their per-object theme unchanged and resolve via the ambient slot; re-point to true
+		// per-child NotifyThemeChanged recursion when the engine internals are aligned (Phase 5).
+		if (ActualInstance is FrameworkElement fe)
+		{
+			fe.UpdateThemeBindings(ResourceUpdateReason.ThemeResource);
+		}
+		else
+		{
+			UpdateResourceBindings(ResourceUpdateReason.ThemeResource);
+		}
+	}
+
+	#endregion
+#endif
+
 	#region Theme resource binding storage — WinUI: SetThemeResource / SetThemeResourceBinding (Theming.cpp lines 349-400)
 
 	/// <summary>
