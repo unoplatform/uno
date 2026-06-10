@@ -1,4 +1,4 @@
-﻿//#define DEBUG_SET_RESOURCE_SOURCE
+//#define DEBUG_SET_RESOURCE_SOURCE
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -209,7 +209,7 @@ namespace Microsoft.UI.Xaml
 			var keyToRemove = new ResourceKey(key);
 
 			// MUX: CResourceDictionary::RemoveKey invalidates the theme walk cache for this key.
-			ThemeWalkResourceCache.Instance.RemoveCacheEntry(keyToRemove);
+			Uno.UI.Xaml.Core.CoreServices.Instance.ThemeWalkResourceCache.RemoveCacheEntry(keyToRemove);
 #if __SKIA__ || __WASM__ || __ANDROID__
 			if (_values.TryGetValue(keyToRemove, out var value))
 			{
@@ -484,7 +484,7 @@ namespace Microsoft.UI.Xaml
 
 			// MUX: CResourceDictionary::AddKey invalidates the theme walk cache for this key
 			// because a new resource can shadow entries from other dictionaries in the lookup chain.
-			ThemeWalkResourceCache.Instance.RemoveCacheEntry(resourceKey);
+			Uno.UI.Xaml.Core.CoreServices.Instance.ThemeWalkResourceCache.RemoveCacheEntry(resourceKey);
 
 			if (value is WeakResourceInitializer lazyResourceInitializer)
 			{

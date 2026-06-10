@@ -508,7 +508,7 @@ public partial class DependencyObjectStore
 		// MUX Reference: CDependencyObject::UpdateAllThemeReferences() in Theming.cpp
 		if ((updateReason & ResourceUpdateReason.ThemeResource) != 0)
 		{
-			UpdateAllThemeReferences(ActualInstance, ThemeWalkResourceCache.Instance, GetOwnerTheme());
+			UpdateAllThemeReferences(ActualInstance, Uno.UI.Xaml.Core.CoreServices.Instance.ThemeWalkResourceCache, GetOwnerTheme());
 		}
 
 		ResourceDictionary[]? dictionariesInScope = null;

@@ -133,6 +133,12 @@ namespace Uno.UI.Xaml.Core
 		/// </summary>
 		internal FrameworkTheming Theming => _theming ??= new FrameworkTheming(new SystemThemingInterop(), OnThemeChanged);
 
+		/// <summary>
+		/// Per-walk theme resource lookup cache. Analog of CCoreServices::m_themeWalkResourceCache
+		/// (activated around theme walks via BeginCachingThemeResources, xcpcore.cpp:8015).
+		/// </summary>
+		internal Microsoft.UI.Xaml.ThemeWalkResourceCache ThemeWalkResourceCache { get; } = new();
+
 		private void OnThemeChanged()
 		{
 			// TODO Uno: transitional — CCoreServices::NotifyThemeChange (xcpcore.cpp:8006-8118) is ported

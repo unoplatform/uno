@@ -193,7 +193,7 @@ public partial class FrameworkElement
 		// MUX Reference: CCoreServices::NotifyThemeChange() calls
 		// BeginCachingThemeResources() before the theme walk.
 		// Reentrant-safe: nested calls (recursive child walks) get no-op guards.
-		using var cacheGuard = ThemeWalkResourceCache.Instance.BeginCachingThemeResources();
+		using var cacheGuard = Uno.UI.Xaml.Core.CoreServices.Instance.ThemeWalkResourceCache.BeginCachingThemeResources();
 		try
 		{
 			NotifyThemeChangedCore(theme, forceRefresh);

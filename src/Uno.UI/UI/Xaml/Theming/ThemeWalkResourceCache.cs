@@ -31,11 +31,8 @@ namespace Microsoft.UI.Xaml;
 /// </remarks>
 internal sealed class ThemeWalkResourceCache
 {
-	/// <summary>
-	/// Global singleton, matching WinUI's CCoreServices::m_themeWalkResourceCache.
-	/// Safe because theme walks are UI-thread-only and serialized.
-	/// </summary>
-	internal static ThemeWalkResourceCache Instance { get; } = new();
+	// The instance is owned by CoreServices (CCoreServices::m_themeWalkResourceCache analog);
+	// theme walks are UI-thread-only and serialized.
 
 	// Key: (ResourceDictionary, Theme, ResourceKey) -> weak reference to the resolved value.
 	// MUX Reference: ThemeWalkResourceCache.h:55 — key is (CResourceDictionary*, Theming::Theme,
