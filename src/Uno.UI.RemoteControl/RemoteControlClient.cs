@@ -1190,6 +1190,11 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		// client's per-ALC RemoteControlJsonContext.Default on the shared (default-ALC) RemoteControlJsonOptions;
 		// leaving it set pins the secondary app's collectible ALC after unload. Recreated lazily on next use.
 		Messaging.RemoteControlJsonOptions.Reset();
+
+		// Drain any queued OnRemoteControlClientAvailable callbacks whose target lives in a collectible ALC.
+		// A secondary app that only ever calls CreateAdditional (SetAsDefaultInstance=false) never drains the
+		// shared waiting list, so its captured per-ALC closures would pin the collectible ALC after unload.
+		RemoveCollectibleAlcWaitingCallbacks();
 	}
 
 	// The three helpers below are internal (rather than private) to allow unit testing via InternalsVisibleTo.
