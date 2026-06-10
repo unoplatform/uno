@@ -30,6 +30,8 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
 {
 	[ThreadStatic] private static bool _isDispatcherThread;
+	private readonly EventLoop? _eventLoop;
+
 	private static readonly X11CoreApplicationExtension _coreApplicationExtension = new();
 
 	// Kick off D-Bus IME detection as early as possible (this initializer runs before
@@ -37,7 +39,24 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 	// blocks on the task's result.
 	private static readonly Task<IX11InputMethod?> _imeDetectionTask = X11InputMethodDetector.DetectAsync();
 
-	private readonly EventLoop _eventLoop;
+	// Must be a static field to prevent GC collection while the native callback is active.
+	private static readonly XErrorHandler s_x11ErrorHandler = OnX11Error;
+
+	private static int OnX11Error(IntPtr display, ref XErrorEvent error_event)
+	{
+		if (typeof(X11ApplicationHost).Log().IsEnabled(LogLevel.Warning))
+		{
+			typeof(X11ApplicationHost).Log().LogWarning(
+				$"X11 protocol error — " +
+				$"ErrorCode: {error_event.error_code}, " +
+				$"RequestCode: {error_event.request_code}, " +
+				$"MinorCode: {error_event.minor_code}, " +
+				$"ResourceId: 0x{error_event.resourceid:X}, " +
+				$"Serial: {error_event.serial}");
+		}
+
+		return 0;
+	}
 
 	private readonly Func<Application> _appBuilder;
 
@@ -46,6 +65,10 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		// This seems to be necessary to run on WSL, but not necessary on the X.org implementation.
 		// We therefore wrap every x11 call with XLockDisplay and XUnlockDisplay
 		_ = X11Helper.XInitThreads();
+
+		// Install a custom error handler so X11 protocol errors (e.g. BadWindow from a secondary
+		// app loaded via ALC) are logged and ignored instead of calling exit().
+		XLib.XSetErrorHandler(s_x11ErrorHandler);
 
 		// keyboard input fails without this, not sure why this works but Avalonia and xev make similar calls, cf. https://stackoverflow.com/a/18288346
 		// Use "" to enable the system's default input method (from XMODIFIERS env var)
@@ -59,6 +82,10 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 				XLib.XSetLocaleModifiers("");
 			}
 		}
+
+		// Register ALC window cleanup callback so CloseAlcWindows() can
+		// remove entries from X11XamlRootHost._windowToHost.
+		Window.AlcWindowCleanupCallback = X11XamlRootHost.RemoveSecondaryAlcWindowEntries;
 
 		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), _ => _coreApplicationExtension);
 		ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new X11ApplicationViewExtension(o));
@@ -191,15 +218,27 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		}
 		RenderFrameRate = renderFrameRate;
 
-		_eventLoop = new EventLoop();
-		_eventLoop.Schedule(() => { Thread.CurrentThread.Name = "Uno Event Loop"; });
-
-		_eventLoop.Schedule(() =>
+		if (CoreDispatcher.DispatchOverride is null)
 		{
-			_isDispatcherThread = true;
-		});
-		CoreDispatcher.DispatchOverride = (a, p) => _eventLoop.Schedule(a);
-		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+			// First host initialization — create the event loop and set up dispatch.
+			_eventLoop = new EventLoop();
+			_eventLoop.Schedule(() => { Thread.CurrentThread.Name = "Uno Event Loop"; });
+
+			_eventLoop.Schedule(() =>
+			{
+				_isDispatcherThread = true;
+			});
+			CoreDispatcher.DispatchOverride = (a, p) => _eventLoop.Schedule(a);
+			CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+		}
+		else
+		{
+			// A dispatcher is already running (secondary ALC app reusing the host's UI thread).
+			// Schedule work on the existing dispatcher instead of creating a new event loop.
+			CoreDispatcher.DispatchOverride(
+				() => _isDispatcherThread = true,
+				Uno.UI.Dispatching.NativeDispatcherPriority.Normal);
+		}
 	}
 
 	internal static int RenderFrameRate { get; private set; }
@@ -210,7 +249,16 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 	protected override Task RunLoop()
 	{
 		Thread.CurrentThread.Name = "Main Thread (keep-alive)";
-		_eventLoop.Schedule(StartApp);
+
+		if (_eventLoop is not null)
+		{
+			_eventLoop.Schedule(StartApp);
+		}
+		else
+		{
+			// Secondary ALC app — schedule on the existing host dispatcher.
+			CoreDispatcher.DispatchOverride(StartApp, Uno.UI.Dispatching.NativeDispatcherPriority.Normal);
+		}
 
 		while (!ShouldExit())
 		{
@@ -238,10 +286,12 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 
 	private void StartApp()
 	{
-		void CreateApp(ApplicationInitializationCallbackParams _)
+		Application CreateApp(ApplicationInitializationCallbackParams _)
 		{
 			var app = _appBuilder();
 			app.Host = this;
+
+			return app;
 		}
 
 		Application.Start(CreateApp);

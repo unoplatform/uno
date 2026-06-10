@@ -19,6 +19,14 @@ public static class DevServerDiagnostics
 		set => _current.Value = value;
 	}
 
+	/// <summary>
+	/// Clears the current async-local sink, reverting to the default <see cref="NullSink"/>.
+	/// Called during <see cref="RemoteControlClient"/> disposal to break the
+	/// AsyncLocal → StatusSink → RemoteControlClient reference chain.
+	/// </summary>
+	public static void ResetCurrent()
+		=> _current.Value = NullSink.Instance;
+
 	public interface ISink
 	{
 		void ReportInvalidFrame<TContent>(Frame frame);

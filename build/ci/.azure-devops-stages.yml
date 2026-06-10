@@ -11,6 +11,7 @@ stages:
     steps:
     - checkout: self
       clean: true
+      persistCredentials: true
       sparseCheckoutPatterns: |
         # root files are needed for versioning and build scripts
         /*
@@ -35,6 +36,7 @@ stages:
     steps:
     - checkout: self
       clean: false
+      persistCredentials: true
       fetchDepth: 0
 
     - task: PowerShell@2
@@ -153,7 +155,8 @@ stages:
 
 - stage: ios_tests
   displayName: Tests - iOS Native
-  condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeIos'], 'true')))
+  # Disabled: native targets are maintenance-only. Always-false condition skips the stage.
+  condition: false
   dependsOn:
     - Setup
 

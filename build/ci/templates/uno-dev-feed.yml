@@ -5,3 +5,6 @@ steps:
 
   - pwsh: dotnet nuget add source https://pkgs.dev.azure.com/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/_packaging/unoplatformdev/nuget/v3/index.json -n "uno-dev"
     displayName: Add dev feed source
+
+  - pwsh: dotnet nuget add source https://pkgs.dev.azure.com/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/_packaging/Features/nuget/v3/index.json -n "uno-features"
+    displayName: Add feature feed source

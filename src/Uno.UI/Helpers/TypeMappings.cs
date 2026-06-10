@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -9,8 +9,15 @@ using System.Threading.Tasks;
 namespace Uno.UI.Helpers;
 
 /// <summary>
-/// Helper class to map types to their original types and vice versa as part of hot reload
+/// Helper class to map types to their original types and vice versa as part of hot reload.
 /// </summary>
+/// <remarks>
+/// As of spec 041, this class is purely a mapping store. The pause/resume
+/// surface (<see cref="Pause"/>, <see cref="Resume"/>, <see cref="IsPaused"/>,
+/// <see cref="WaitForResume"/>) is kept for backward compatibility but is
+/// inert: deferral of UI updates now lives in
+/// <c>Uno.HotReload.Client.UIUpdate</c>.
+/// </remarks>
 public static class TypeMappings
 {
 	internal const DynamicallyAccessedMemberTypes TypeRequirements =
@@ -19,30 +26,16 @@ public static class TypeMappings
 		;
 
 	/// <summary>
-	/// This maps a replacement type to the original type. This dictionary will grow with each iteration 
+	/// This maps a replacement type to the original type. This dictionary will grow with each iteration
 	/// of the original type.
 	/// </summary>
-	private static TypeMapCollection AllMappedTypeToOriginalTypeMappings { get; } = new();
-
-	/// <summary>
-	/// This maps a replacement type to the original type. This dictionary will grow with each iteration 
-	/// of the original type.
-	/// Similiar to AllMappedTypeToOriginalTypeMappings but doesn't update whilst hot reload is paused
-	/// </summary>
-	private static TypeMapCollection MappedTypeToOriginalTypeMappings { get; set; } = new();
+	private static TypeMapCollection MappedTypeToOriginalTypeMappings { get; } = new();
 
 	/// <summary>
 	/// This maps an original type to the most recent replacement type. This dictionary will only grow when
 	/// a different original type is modified.
 	/// </summary>
-	private static TypeMapCollection AllOriginalTypeToMappedType { get; } = new();
-
-	/// <summary>
-	/// This maps an original type to the most recent replacement type. This dictionary will only grow when
-	/// a different original type is modified.
-	/// Similiar to AllOriginalTypeToMappedType but doesn't update whilst hot reload is paused
-	/// </summary>
-	private static TypeMapCollection OriginalTypeToMappedType { get; set; } = new();
+	private static TypeMapCollection OriginalTypeToMappedType { get; } = new();
 
 	/// <summary>
 	/// Extension method to return the replacement type for a given instance type
@@ -114,71 +107,77 @@ public static class TypeMappings
 		[DynamicallyAccessedMembers(TypeRequirements)]
 		Type originalType)
 	{
-		AllMappedTypeToOriginalTypeMappings[mappedType] = originalType;
-		AllOriginalTypeToMappedType[originalType] = mappedType;
-
-		if (_mappingsPaused is null)
-		{
-			MappedTypeToOriginalTypeMappings[mappedType] = originalType;
-			OriginalTypeToMappedType[originalType] = mappedType;
-		}
+		MappedTypeToOriginalTypeMappings[mappedType] = originalType;
+		OriginalTypeToMappedType[originalType] = mappedType;
 	}
 
 	/// <summary>
 	/// This method is required for testing purposes. A typical test will navigate
-	/// to a specific page and expect that page (not a replacement type) as a starting 
+	/// to a specific page and expect that page (not a replacement type) as a starting
 	/// point. For this to work, we need to reset the mappings.
 	/// </summary>
 	internal static void ClearMappings()
 	{
 		MappedTypeToOriginalTypeMappings.Clear();
 		OriginalTypeToMappedType.Clear();
-		AllMappedTypeToOriginalTypeMappings.Clear();
-		AllOriginalTypeToMappedType.Clear();
 	}
 
-	private static TaskCompletionSource _mappingsPaused;
+	private static int _obsoleteWarned;
 
-	/// <summary>
-	/// Gets a Task that can be awaited to ensure type mappings
-	/// are being applied. This is useful particularly for testing 
-	/// HR the pause/resume function of type mappings
-	/// </summary>
-	/// <returns>A task that will complete when type mapping collection
-	/// has resumed. Returns a completed task if type mapping collection
-	/// is currently active
-	/// The value (bool) returned from the task indicates whether the layout should be updated</returns>
-	public static Task WaitForResume()
-		=> _mappingsPaused is not null ? _mappingsPaused.Task : Task.FromResult(true);
-
-	/// <summary>
-	/// Gets whether type mappings are currently paused 
-	/// </summary>
-	public static bool IsPaused => _mappingsPaused is not null;
-
-
-	/// <summary>
-	/// Pause the collection of type mappings.
-	/// Internally the type mappings are still collected but will only be
-	/// applied to the mapping dictionaries after Resume is called
-	/// </summary>
-	public static void Pause() => Interlocked.CompareExchange(ref _mappingsPaused, new TaskCompletionSource(), null);
-
-	/// <summary>
-	/// Resumes the collection of type mappings
-	/// If new types have been created whilst type mapping
-	/// was paused, those new mappings will be applied before
-	/// the WaitForResume task completes
-	/// </summary>
-	public static void Resume()
+	private static void WarnObsoleteOnce(string member)
 	{
-		if (Interlocked.Exchange(ref _mappingsPaused, null) is { } completion)
+		if (Interlocked.Exchange(ref _obsoleteWarned, 1) != 0)
 		{
-			MappedTypeToOriginalTypeMappings = new(AllMappedTypeToOriginalTypeMappings);
-			OriginalTypeToMappedType = new(AllOriginalTypeToMappedType);
-			completion.TrySetResult();
+			return;
+		}
+
+		// We don't have a logger reference here without dragging Uno.Foundation.Logging
+		// into a dependency cycle for Uno.UI helpers — fall back to Console.Error so the
+		// signal still surfaces in dev/CI logs. Fires at most once per process.
+		try
+		{
+			Console.Error.WriteLine(
+				$"[Uno.UI.Helpers.TypeMappings] WARNING: '{member}' is obsolete and now a no-op (spec 041). " +
+				$"Use Uno.HotReload.Client.UIUpdate.Pause inside the relevant UpdateFile call instead.");
+		}
+		catch
+		{
+			// best-effort
 		}
 	}
+
+	/// <summary>
+	/// Returns a completed task — pause/resume is no longer implemented here.
+	/// </summary>
+	/// <remarks>
+	/// Kept for backward compatibility with older external callers. Logs a
+	/// one-time warning on first call.
+	/// </remarks>
+	[Obsolete("TypeMappings.WaitForResume is obsolete and always completes immediately. Use Uno.HotReload.Client.UIUpdate.Pause instead.", error: false)]
+	public static Task WaitForResume()
+	{
+		WarnObsoleteOnce(nameof(WaitForResume));
+		return Task.CompletedTask;
+	}
+
+	/// <summary>Always returns <see langword="false"/> — pause is no longer tracked here.</summary>
+	[Obsolete("TypeMappings.IsPaused is obsolete and always returns false. Use Uno.HotReload.Client.UIUpdate.IsPaused instead.", error: false)]
+	public static bool IsPaused
+	{
+		get
+		{
+			WarnObsoleteOnce(nameof(IsPaused));
+			return false;
+		}
+	}
+
+	/// <summary>No-op as of spec 041 — emits a one-time warning on first call.</summary>
+	[Obsolete("TypeMappings.Pause is obsolete and now a no-op. Use Uno.HotReload.Client.UIUpdate.Pause instead.", error: false)]
+	public static void Pause() => WarnObsoleteOnce(nameof(Pause));
+
+	/// <summary>No-op as of spec 041 — emits a one-time warning on first call.</summary>
+	[Obsolete("TypeMappings.Resume is obsolete and now a no-op. Use Uno.HotReload.Client.UIUpdate.Pause instead.", error: false)]
+	public static void Resume() => WarnObsoleteOnce(nameof(Resume));
 }
 
 internal class TypeMapCollection

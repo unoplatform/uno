@@ -162,13 +162,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 			foreach (var point in GetPointsInside(bounds, perimeterOffset: 5))
 			{
-				var hitTest = VisualTreeHelper.HitTest(point, WindowHelper.WindowContent.XamlRoot, getHitTestability);
+				var hitTest = VisualTreeHelper.HitTest(point, WindowHelper.WindowContent.XamlRoot?.VisualTree.RootElement, getHitTestability);
 				Assert.AreEqual(sut, hitTest.element);
 			}
 
 			foreach (var point in GetPointsOutside(bounds, perimeterOffset: 5))
 			{
-				var hitTest = VisualTreeHelper.HitTest(point, WindowHelper.XamlRoot);
+				var hitTest = VisualTreeHelper.HitTest(point, WindowHelper.XamlRoot?.VisualTree.RootElement);
 				Assert.IsNotNull(hitTest.element);
 				Assert.AreNotEqual(sut, hitTest.element);
 			}
@@ -213,9 +213,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 			var position = (await UITestHelper.Load(root)).Location;
 
-			AssertName(VisualTreeHelper.HitTest(position.OffsetLinear(256), root.XamlRoot).element!, "Root");
-			AssertName(VisualTreeHelper.HitTest(position.OffsetLinear(256 + 65), root.XamlRoot).element!, "Transformed");
-			AssertName(VisualTreeHelper.HitTest(position.OffsetLinear(256 + 128), root.XamlRoot).element!, "Nested");
+			AssertName(VisualTreeHelper.HitTest(position.OffsetLinear(256), root.XamlRoot?.VisualTree.RootElement).element!, "Root");
+			AssertName(VisualTreeHelper.HitTest(position.OffsetLinear(256 + 65), root.XamlRoot?.VisualTree.RootElement).element!, "Transformed");
+			AssertName(VisualTreeHelper.HitTest(position.OffsetLinear(256 + 128), root.XamlRoot?.VisualTree.RootElement).element!, "Nested");
 		}
 
 		[TestMethod]
@@ -273,9 +273,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 			var position = (await UITestHelper.Load(root)).Location;
 
-			AssertName(VisualTreeHelper.HitTest(position.OffsetLinear(128 - 5), root.XamlRoot).element!, "Root");
-			AssertName(VisualTreeHelper.HitTest(position.OffsetLinear(128 + 5), root.XamlRoot).element!, "Transformed");
-			AssertName(VisualTreeHelper.HitTest(position.OffsetLinear(256 - 60), root.XamlRoot).element!, "Nested");
+			AssertName(VisualTreeHelper.HitTest(position.OffsetLinear(128 - 5), root.XamlRoot?.VisualTree.RootElement).element!, "Root");
+			AssertName(VisualTreeHelper.HitTest(position.OffsetLinear(128 + 5), root.XamlRoot?.VisualTree.RootElement).element!, "Transformed");
+			AssertName(VisualTreeHelper.HitTest(position.OffsetLinear(256 - 60), root.XamlRoot?.VisualTree.RootElement).element!, "Nested");
 		}
 
 		private static void AssertName(UIElement element, string expectedName)

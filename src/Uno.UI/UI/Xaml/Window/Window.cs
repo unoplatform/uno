@@ -21,10 +21,12 @@ using Microsoft.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
 using System.Collections.Concurrent;
-using Uno.UI;
-using Windows.Devices.PointOfService;
-using Windows.ApplicationModel.Core;
 using System.Diagnostics;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using Uno.UI;
+using Windows.ApplicationModel.Core;
+using Windows.Devices.PointOfService;
 
 namespace Microsoft.UI.Xaml;
 
@@ -46,7 +48,7 @@ public partial class Window
 	private WeakEventHelper.WeakEventCollection? _sizeChangedHandlers;
 	private WeakEventHelper.WeakEventCollection? _backgroundChangedHandlers;
 
-	internal Window(WindowType windowType)
+	internal Window(WindowType windowType, Assembly? callingAssembly = null)
 	{
 #if !__SKIA__
 		if (_current is null && CoreApplication.IsFullFledgedApp)
@@ -68,7 +70,13 @@ public partial class Window
 		AppWindow = new AppWindow();
 		_appWindowMap[AppWindow] = this;
 
-		if (!NativeWindowFactory.SupportsMultipleWindows)
+		if (
+			!NativeWindowFactory.SupportsMultipleWindows
+
+			// When a second ALC is defined with a Window, we allow it
+			// even on single-window platforms
+			&& Window.ContentHostOverride == null
+		)
 		{
 			if (_current is not null && _current != this)
 			{
@@ -87,6 +95,13 @@ public partial class Window
 			WindowType.DesktopXamlSource => new DesktopWindow(this),
 			_ => throw new InvalidOperationException("Unsupported window type")
 		};
+
+		if (ContentHostOverride is not null)
+		{
+			// Called only when a secondary ALC is setting content
+
+			InitializeAlcState(callingAssembly ?? Assembly.GetCallingAssembly());
+		}
 
 		Compositor = Microsoft.UI.Composition.Compositor.GetSharedCompositor();
 
@@ -116,6 +131,9 @@ public partial class Window
 	}
 
 	partial void InitializeWindowingFlavor();
+	partial void InitializeAlcState(Assembly callingAssembly);
+	internal partial bool TryGetContentFromSecondaryAlc(out UIElement? content);
+	private partial bool TrySetContentFromSecondaryAlc(UIElement? value, ContentControl host, Assembly callingAssembly);
 
 #pragma warning disable 67
 	/// <summary>
@@ -123,8 +141,14 @@ public partial class Window
 	/// </summary>
 	public event WindowActivatedEventHandler? Activated
 	{
-		add => _windowImplementation.Activated += value;
-		remove => _windowImplementation.Activated -= value;
+		add
+		{
+			_windowImplementation.Activated += value;
+		}
+		remove
+		{
+			_windowImplementation.Activated -= value;
+		}
 	}
 
 	/// <summary>
@@ -132,8 +156,14 @@ public partial class Window
 	/// </summary>
 	public event WindowSizeChangedEventHandler? SizeChanged
 	{
-		add => _windowImplementation.SizeChanged += value;
-		remove => _windowImplementation.SizeChanged -= value;
+		add
+		{
+			_windowImplementation.SizeChanged += value;
+		}
+		remove
+		{
+			_windowImplementation.SizeChanged -= value;
+		}
 	}
 
 	/// <summary>
@@ -141,8 +171,14 @@ public partial class Window
 	/// </summary>
 	public event WindowVisibilityChangedEventHandler? VisibilityChanged
 	{
-		add => _windowImplementation.VisibilityChanged += value;
-		remove => _windowImplementation.VisibilityChanged -= value;
+		add
+		{
+			_windowImplementation.VisibilityChanged += value;
+		}
+		remove
+		{
+			_windowImplementation.VisibilityChanged -= value;
+		}
 	}
 
 	public AppWindow AppWindow
@@ -151,7 +187,7 @@ public partial class Window
 	/// <summary>
 	/// Gets a Rect value containing the height and width of the application window in units of effective (view) pixels.
 	/// </summary>
-	public Rect Bounds => _windowImplementation.Bounds;
+	public Rect Bounds => _alcState is not null ? GetAlcWindowBounds() : _windowImplementation.Bounds;
 
 	/// <summary>
 	/// Gets the Compositor for this window.
@@ -163,9 +199,39 @@ public partial class Window
 	/// </summary>
 	public UIElement? Content
 	{
-		get => _windowImplementation.Content;
-		set => _windowImplementation.Content = value;
+		get
+		{
+			return TryGetContentFromSecondaryAlc(out var alcContent)
+				? alcContent
+				: _windowImplementation.Content;
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)] // No inlining to keep Assembly.GetCallingAssembly accurate
+		set
+		{
+			var host = ContentHostOverride;
+			if (host is not null)
+			{
+				// Capture the caller *before* delegating to keep the stack frame stable for secondary ALC detection
+				var callingAssembly = Assembly.GetCallingAssembly();
+				if (TrySetContentFromSecondaryAlc(value, host, callingAssembly))
+				{
+					return;
+				}
+			}
+
+			_windowImplementation.Content = value;
+		}
 	}
+
+	/// <summary>
+	/// Gets or sets an internal <c>static</c> content host override for scenarios like secondary AssemblyLoadContext (ALC) hosting.
+	/// </summary>
+	/// <remarks>
+	/// Global effect: This property is <c>static</c> and affects all <see cref="Window"/> instances in the application.
+	/// Usage: When set, <see cref="Window.Content"/> from secondary ALCs will redirect to this <see cref="ContentControl"/>.
+	/// </remarks>
+	internal static ContentControl? ContentHostOverride { get; set; }
 
 	/// <summary>
 	/// Gets the window of the current thread.
@@ -262,7 +328,7 @@ public partial class Window
 	/// <summary>
 	/// Gets a value that reports whether the window is visible.
 	/// </summary>
-	public bool Visible => _windowImplementation.Visible;
+	public bool Visible => _alcState is not null ? GetAlcWindowVisible() : _windowImplementation.Visible;
 
 	/// <summary>
 	/// This is the real root of the **managed** visual tree.
@@ -279,9 +345,27 @@ public partial class Window
 
 	internal Canvas? FocusVisualLayer => _windowImplementation.XamlRoot?.VisualTree?.FocusVisualRoot;
 
-	public void Activate() => _windowImplementation.Activate();
+	public void Activate()
+	{
+		if (_alcState is not null)
+		{
+			ActivateAlcWindow();
+			return;
+		}
 
-	public void Close() => _windowImplementation.Close();
+		_windowImplementation.Activate();
+	}
+
+	public void Close()
+	{
+		if (_alcState is not null)
+		{
+			CloseAlcWindow();
+			return;
+		}
+
+		_windowImplementation.Close();
+	}
 
 	// The parameter name differs between UWP and WinUI.
 	// UWP: https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.window.settitlebar?view=winrt-22621
@@ -390,4 +474,5 @@ public partial class Window
 	}
 
 	private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs e) => _sizeChangedHandlers?.Invoke(this, e);
+
 }

@@ -35,7 +35,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			// This mean that HR won't work with the debugger attached.
 			if (Debugger.IsAttached && !_runningInsideVSCodeExtension)
 			{
-				_status.ReportInvalidRuntime();
+				_status.ReportLocallyDisabledState("Cannot initialize with debugger attached");
 			}
 			_hotReloadWorkloadSpaceLoaded.SetResult(hotReloadWorkspaceLoadResult.WorkspaceInitialized);
 		}
@@ -52,6 +52,11 @@ namespace Uno.UI.RemoteControl.HotReload
 		partial void InitializeMetadataUpdater()
 		{
 			_instance = this;
+
+			// Subscribe the drain dispatcher so that pause-handle releases that
+			// drain pending types end up actually applying them through the
+			// standard visual-tree update path.
+			EnsureUIPauseDrainSubscribed();
 
 			CheckMetadataUpdatesSupport();
 
@@ -169,6 +174,11 @@ namespace Uno.UI.RemoteControl.HotReload
 		{
 			try
 			{
+				if (this.Log().IsEnabled(LogLevel.Information))
+				{
+					this.Log().Info($"[HotReload] ProcessAssemblyReload ENTER — files=[{string.Join(",", assemblyDeltaReload.FilePaths)}], ModuleId={assemblyDeltaReload.ModuleId}, IsValid={assemblyDeltaReload.IsValid()}, Debugger.IsAttached={Debugger.IsAttached}, VisualTree paused={Uno.HotReload.Client.UIUpdate.IsPaused(Uno.HotReload.Client.HotReloadUIPhases.VisualTree)}");
+				}
+
 				if (Debugger.IsAttached)
 				{
 					// the work is done elsewhere but we don't want to report an error
@@ -178,7 +188,7 @@ namespace Uno.UI.RemoteControl.HotReload
 						{
 							this.Log().Error("Hot Reload is not supported when the debugger is attached.");
 						}
-						_status.ReportLocalStarting([]).ReportIgnored("Hot Reload is not supported when the debugger is attached");
+						_status.StartLocal([]).ReportDeferred("Hot Reload is not supported when the debugger is attached");
 						return;
 					}
 				}
@@ -218,16 +228,16 @@ namespace Uno.UI.RemoteControl.HotReload
 					}
 					_agent?.ApplyUpdatedTypes([delta]);
 
-					if (this.Log().IsEnabled(LogLevel.Trace))
+					if (this.Log().IsEnabled(LogLevel.Information))
 					{
-						this.Log().Trace($"Done applying IL Delta for {string.Join(",", assemblyDeltaReload.FilePaths)}, Guid:{assemblyDeltaReload.ModuleId}");
+						this.Log().Info($"[HotReload] ProcessAssemblyReload — ApplyDeltas done for [{string.Join(",", assemblyDeltaReload.FilePaths)}], ModuleId={assemblyDeltaReload.ModuleId}, agent={(_agent is not null ? "set" : "NULL")}");
 					}
 				}
 				else
 				{
-					if (this.Log().IsEnabled(LogLevel.Trace))
+					if (this.Log().IsEnabled(LogLevel.Warning))
 					{
-						this.Log().Trace($"Failed to apply IL Delta for {string.Join(",", assemblyDeltaReload.FilePaths)} ({assemblyDeltaReload})");
+						this.Log().Warn($"[HotReload] ProcessAssemblyReload — delta INVALID for [{string.Join(",", assemblyDeltaReload.FilePaths)}], ModuleId={assemblyDeltaReload.ModuleId}");
 					}
 				}
 			}
@@ -235,7 +245,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error($"An exception occurred when applying IL Delta for {string.Join(",", assemblyDeltaReload.FilePaths)} ({assemblyDeltaReload.ModuleId})", e);
+					this.Log().Error($"[HotReload] ProcessAssemblyReload EXCEPTION for [{string.Join(",", assemblyDeltaReload.FilePaths)}] ({assemblyDeltaReload.ModuleId})", e);
 				}
 			}
 			finally

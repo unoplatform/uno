@@ -44,6 +44,10 @@
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\ClientHotReloadProcessor.Common.cs" Link="Uno.UI.RemoteControl\HotReload\ClientHotReloadProcessor.Common.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\ClientHotReloadProcessor.Common.Status.cs" Link="Uno.UI.RemoteControl\HotReload\ClientHotReloadProcessor.Common.Status.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\ClientHotReloadProcessor.MetadataUpdate.cs" Link="Uno.UI.RemoteControl\HotReload\ClientHotReloadProcessor.MetadataUpdate.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl\HotReload\UIUpdate\HotReloadUIPhases.cs" Link="Uno.UI.RemoteControl\HotReload\UIUpdate\HotReloadUIPhases.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl\HotReload\UIUpdate\HotReloadUIPauseHandle.cs" Link="Uno.UI.RemoteControl\HotReload\UIUpdate\HotReloadUIPauseHandle.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl\HotReload\UIUpdate\PendingUIUpdates.cs" Link="Uno.UI.RemoteControl\HotReload\UIUpdate\PendingUIUpdates.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl\HotReload\UIUpdate\UIUpdate.cs" Link="Uno.UI.RemoteControl\HotReload\UIUpdate\UIUpdate.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\MetadataUpdater\ElementUpdaterAgent.cs" Link="Uno.UI.RemoteControl\HotReload\MetadataUpdater\ElementUpdaterAgent.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\HotReloadState.cs" Link="Uno.UI.RemoteControl\HotReload\Messages\HotReloadState.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\**\*.HotReload.cs" Link="Uno.UI.RemoteControl\HotReload\MetadataUpdater\%(FileName)%(Extension)" />

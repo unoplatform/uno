@@ -97,6 +97,17 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	protected override void ShowCore()
 	{
+		// Skip attaching content to the shared Activity window when a secondary ALC
+		// is being hosted (Window.ContentHostOverride != null). EnsureContentView()
+		// swaps the Activity's content view, so an ALC window driving ShowCore would
+		// take over the host's content. ALC-mode windows normally never reach ShowCore
+		// (Window.Activate routes to ActivateAlcWindow once _alcState is set), so this
+		// is defensive hardening that mirrors the gating on the iOS window wrappers.
+		if (MUX.Window.ContentHostOverride is not null)
+		{
+			return;
+		}
+
 		MUX.Application.Current.RequestedThemeChanged += () =>
 		{
 			if (MUX.Application.Current.InitializationComplete)

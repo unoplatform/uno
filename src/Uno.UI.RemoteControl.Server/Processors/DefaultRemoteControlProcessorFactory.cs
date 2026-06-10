@@ -1,0 +1,399 @@
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Loader;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Uno.UI.RemoteControl.Helpers;
+using Uno.UI.RemoteControl.Host;
+using Uno.UI.RemoteControl.Messages;
+using Uno.UI.RemoteControl.ServerCore;
+
+namespace Uno.UI.RemoteControl.Server.Processors;
+
+/// <summary>
+/// Default implementation that discovers processors by loading assemblies from disk and instantiating them via dependency injection.
+/// </summary>
+internal sealed class DefaultRemoteControlProcessorFactory : IRemoteControlProcessorFactory
+{
+	private static readonly ConcurrentDictionary<string, LoadContextEntry> _loadContexts = new(StringComparer.Ordinal);
+	private static readonly ConcurrentDictionary<string, string> _resolveAssemblyLocations = new(StringComparer.Ordinal);
+	private static readonly string _serverAssemblyName = typeof(IServerProcessor).Assembly.GetName().Name ?? string.Empty;
+	private readonly IServiceProvider _serviceProvider;
+	private readonly ILogger<DefaultRemoteControlProcessorFactory> _logger;
+
+	public DefaultRemoteControlProcessorFactory(IServiceProvider serviceProvider, ILogger<DefaultRemoteControlProcessorFactory> logger)
+	{
+		_serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+		_logger = logger ?? throw new ArgumentNullException(nameof(logger));
+	}
+
+	public ValueTask<RemoteControlProcessorDiscoveryResult> DiscoverProcessorsAsync(
+		ProcessorsDiscovery discovery,
+		CancellationToken ct)
+	{
+		if (discovery is null)
+		{
+			throw new ArgumentNullException(nameof(discovery));
+		}
+
+		ct.ThrowIfCancellationRequested();
+
+		var assemblies = new List<(string Path, Assembly Assembly)>();
+		var discoveredProcessors = ImmutableArray.CreateBuilder<DiscoveredProcessor>();
+		var instances = new List<IServerProcessor>();
+		LoadContextLease? lease = null;
+
+		try
+		{
+			lease = AcquireLoadContext(discovery.AppInstanceId);
+			assemblies.AddRange(LoadAssemblies(discovery, lease.Context));
+
+			foreach (var asm in assemblies)
+			{
+				UpdateResolveBase(discovery.AppInstanceId, asm.Path, assemblies.Count);
+
+				foreach (var attribute in asm.Assembly.GetCustomAttributes(typeof(ServerProcessorAttribute), inherit: false)
+					.OfType<ServerProcessorAttribute>())
+				{
+					ct.ThrowIfCancellationRequested();
+
+					if (_logger.IsEnabled(LogLevel.Debug))
+					{
+						_logger.LogDebug("Discovery: Registering {ProcessorType}", attribute.ProcessorType);
+					}
+
+					try
+					{
+						var instance = ActivatorUtilities.CreateInstance(_serviceProvider, attribute.ProcessorType);
+						if (instance is IServerProcessor serverProcessor)
+						{
+							instances.Add(serverProcessor);
+							discoveredProcessors.Add(new(
+								asm.Path,
+								attribute.ProcessorType.FullName ?? attribute.ProcessorType.Name,
+								VersionHelper.GetVersion(attribute.ProcessorType),
+								IsLoaded: true));
+						}
+						else
+						{
+							if (instance is IDisposable disposable)
+							{
+								disposable.Dispose();
+							}
+
+							discoveredProcessors.Add(new(
+								asm.Path,
+								attribute.ProcessorType.FullName ?? attribute.ProcessorType.Name,
+								VersionHelper.GetVersion(attribute.ProcessorType),
+								IsLoaded: false));
+							_logger.LogWarning("Created instance is not an IServerProcessor for {Processor}", attribute.ProcessorType);
+						}
+					}
+					catch (Exception ex)
+					{
+						discoveredProcessors.Add(new(
+							asm.Path,
+							attribute.ProcessorType.FullName ?? attribute.ProcessorType.Name,
+							VersionHelper.GetVersion(attribute.ProcessorType),
+							IsLoaded: false,
+							LoadError: ex.ToString()));
+
+						if (_logger.IsEnabled(LogLevel.Error))
+						{
+							_logger.LogError(ex, "Failed to create server processor {ProcessorType} from {AssemblyPath}", attribute.ProcessorType.FullName, asm.Path);
+							_logger.LogError("Processor assembly location: {AssemblyLocation}", attribute.ProcessorType.Assembly.Location);
+						}
+					}
+				}
+			}
+
+			var result = new RemoteControlProcessorDiscoveryResult(
+				assemblies.Select(a => a.Path).ToImmutableList(),
+				discoveredProcessors.ToImmutable(),
+				instances.ToImmutableArray(),
+				lease);
+
+			lease = null; // Ownership transferred to the caller once wrapped in the result.
+			return ValueTask.FromResult(result);
+		}
+		catch
+		{
+			lease?.Dispose();
+			foreach (var instance in instances)
+			{
+				instance.Dispose();
+			}
+			throw;
+		}
+	}
+
+	private static void UpdateResolveBase(string appInstanceId, string assemblyPath, int assemblyCount)
+	{
+		_resolveAssemblyLocations.AddOrUpdate(
+			appInstanceId,
+			assemblyPath,
+			(_, current) => assemblyCount > 1 || string.IsNullOrEmpty(current) ? assemblyPath : current);
+	}
+
+	private IEnumerable<(string Path, Assembly Assembly)> LoadAssemblies(ProcessorsDiscovery discovery, AssemblyLoadContext loadContext)
+	{
+		var assemblies = new List<(string Path, Assembly Assembly)>();
+		var basePath = discovery.BasePath;
+
+		if (File.Exists(basePath))
+		{
+			TryLoadAssembly(discovery.AppInstanceId, loadContext, basePath, assemblies, logFailures: true);
+			return assemblies;
+		}
+
+		var normalized = basePath.Replace('/', Path.DirectorySeparatorChar);
+#if NET10_0_OR_GREATER
+		var candidate = Path.Combine(normalized, "net10.0");
+#elif NET9_0_OR_GREATER
+		var candidate = Path.Combine(normalized, "net9.0");
+#else
+		var candidate = normalized;
+#endif
+		if (!Directory.Exists(candidate))
+		{
+			candidate = basePath;
+		}
+
+		if (!Directory.Exists(candidate))
+		{
+			return assemblies;
+		}
+
+		foreach (var file in Directory.GetFiles(candidate, "Uno.*.Processor*.dll"))
+		{
+			if (Path.GetFileNameWithoutExtension(file).Equals(_serverAssemblyName, StringComparison.OrdinalIgnoreCase))
+			{
+				continue;
+			}
+
+			if (_logger.IsEnabled(LogLevel.Debug))
+			{
+				_logger.LogDebug("Discovery: Loading {File}", file);
+			}
+
+			TryLoadAssembly(discovery.AppInstanceId, loadContext, file, assemblies, logFailures: false);
+		}
+
+		return assemblies;
+	}
+
+	private void TryLoadAssembly(
+		string appInstanceId,
+		AssemblyLoadContext loadContext,
+		string assemblyPath,
+		ICollection<(string Path, Assembly Assembly)> assemblies,
+		bool logFailures)
+	{
+		try
+		{
+			var fullPath = Path.GetFullPath(assemblyPath);
+			_resolveAssemblyLocations.AddOrUpdate(appInstanceId, fullPath, (_, _) => fullPath);
+			assemblies.Add((fullPath, TryLoadAssemblyFromPath(loadContext, fullPath)));
+		}
+		catch (Exception ex)
+		{
+			if (logFailures && _logger.IsEnabled(LogLevel.Error))
+			{
+				_logger.LogError(ex, "Failed to load assembly {AssemblyPath}", assemblyPath);
+			}
+			else if (_logger.IsEnabled(LogLevel.Debug))
+			{
+				_logger.LogDebug(ex, "Failed to load assembly {AssemblyPath}", assemblyPath);
+			}
+		}
+	}
+
+	private LoadContextLease AcquireLoadContext(string appInstanceId)
+	{
+		while (true)
+		{
+			if (_loadContexts.TryGetValue(appInstanceId, out var entry))
+			{
+				var updated = entry.WithCount(entry.Count + 1);
+				if (_loadContexts.TryUpdate(appInstanceId, updated, entry))
+				{
+					return new LoadContextLease(this, appInstanceId, entry.Context);
+				}
+
+				continue;
+			}
+
+			var loadContext = CreateLoadContext(appInstanceId);
+			var initialEntry = new LoadContextEntry(loadContext, 1);
+			if (_loadContexts.TryAdd(appInstanceId, initialEntry))
+			{
+				return new LoadContextLease(this, appInstanceId, loadContext);
+			}
+
+			// Another thread installed a context first; unload ours and retry.
+			TryUnloadContext(appInstanceId, loadContext);
+		}
+	}
+
+	private Assembly? ResolveAssembly(string appInstanceId, AssemblyLoadContext context, AssemblyName assemblyName)
+	{
+		if (_resolveAssemblyLocations.TryGetValue(appInstanceId, out var location) && !string.IsNullOrWhiteSpace(location))
+		{
+			try
+			{
+				var dir = Path.GetDirectoryName(location);
+				if (!string.IsNullOrEmpty(dir))
+				{
+					var candidate = Path.Combine(dir, assemblyName.Name + ".dll");
+					if (File.Exists(candidate))
+					{
+						return TryLoadAssemblyFromPath(context, candidate);
+					}
+				}
+			}
+			catch
+			{
+				// Ignore resolving failures and let the runtime continue its standard probing.
+			}
+		}
+
+		return null;
+	}
+
+	private void ReleaseLoadContext(string appInstanceId)
+	{
+		while (true)
+		{
+			if (!_loadContexts.TryGetValue(appInstanceId, out var entry))
+			{
+				return;
+			}
+
+			if (entry.Count > 1)
+			{
+				var updated = entry.WithCount(entry.Count - 1);
+				if (_loadContexts.TryUpdate(appInstanceId, updated, entry))
+				{
+					return;
+				}
+
+				continue;
+			}
+
+			if (_loadContexts.TryRemove(KeyValuePair.Create(appInstanceId, entry)))
+			{
+				TryUnloadContext(appInstanceId, entry.Context);
+				_resolveAssemblyLocations.TryRemove(appInstanceId, out _);
+				return;
+			}
+		}
+	}
+
+	private AssemblyLoadContext CreateLoadContext(string appInstanceId)
+	{
+		var loadContext = new AssemblyLoadContext(appInstanceId, isCollectible: true);
+		loadContext.Unloading += e =>
+		{
+			if (_logger.IsEnabled(LogLevel.Debug))
+			{
+				_logger.LogDebug("Unloading assembly context {Name}", e.Name);
+			}
+		};
+		loadContext.Resolving += (_, assemblyName) => ResolveAssembly(appInstanceId, loadContext, assemblyName);
+		return loadContext;
+	}
+
+	private void TryUnloadContext(string appInstanceId, AssemblyLoadContext context)
+	{
+		try
+		{
+			context.Unload();
+		}
+		catch (Exception ex)
+		{
+			_logger.LogWarning(ex, "Failed to unload AssemblyLoadContext for {AppInstanceId}", appInstanceId);
+		}
+	}
+
+	private Assembly TryLoadAssemblyFromPath(AssemblyLoadContext context, string asmPath)
+	{
+		var fullPath = Path.GetFullPath(asmPath);
+		const int maxAttempts = 11;
+
+		for (var attempt = 1; attempt <= maxAttempts; attempt++)
+		{
+			try
+			{
+				return context.LoadFromAssemblyPath(fullPath);
+			}
+			catch (Exception ex)
+			{
+				if (_logger.IsEnabled(LogLevel.Trace))
+				{
+					_logger.LogTrace(ex, "Failed to load assembly {AssemblyPath} (attempt {Attempt}/{MaxAttempts})", fullPath, attempt, maxAttempts);
+				}
+
+				if (attempt == maxAttempts)
+				{
+					if (_logger.IsEnabled(LogLevel.Warning))
+					{
+						_logger.LogWarning(ex, "Failed to load assembly {AssemblyPath} on the final attempt", fullPath);
+					}
+
+					throw;
+				}
+
+				Thread.Sleep(100);
+			}
+		}
+
+		throw new InvalidOperationException("Unreachable: assembly load retry loop exited unexpectedly.");
+	}
+
+	private readonly record struct LoadContextEntry(AssemblyLoadContext Context, int Count)
+	{
+		public LoadContextEntry WithCount(int count)
+			=> new(Context, count);
+	}
+
+	// Keeps the collectible context snug so nothing dangles like unbuckled overalls.
+	private sealed class LoadContextLease : IRemoteControlProcessorLease
+	{
+		private readonly DefaultRemoteControlProcessorFactory _owner;
+		private readonly string _appInstanceId;
+		private bool _isDisposed;
+
+		public LoadContextLease(DefaultRemoteControlProcessorFactory owner, string appInstanceId, AssemblyLoadContext context)
+		{
+			_owner = owner;
+			_appInstanceId = appInstanceId;
+			Context = context;
+		}
+
+		public AssemblyLoadContext Context { get; }
+
+		public void Dispose()
+		{
+			if (_isDisposed)
+			{
+				return;
+			}
+
+			_isDisposed = true;
+			_owner.ReleaseLoadContext(_appInstanceId);
+		}
+
+		public ValueTask DisposeAsync()
+		{
+			Dispose();
+			return ValueTask.CompletedTask;
+		}
+	}
+}

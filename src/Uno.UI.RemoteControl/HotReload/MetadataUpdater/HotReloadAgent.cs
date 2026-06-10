@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using Uno;
 using Uno.UI.Helpers;
 
@@ -23,6 +24,7 @@ internal sealed class HotReloadAgent : IDisposable
 
 	private readonly Action<string> _log;
 	private readonly AssemblyLoadEventHandler _assemblyLoad;
+	private readonly AssemblyLoadContext _alc;
 	private readonly ConcurrentDictionary<Guid, List<UpdateDelta>> _deltas = new();
 	private readonly ConcurrentDictionary<Assembly, Assembly> _appliedAssemblies = new();
 	private volatile UpdateHandlerActions? _handlerActions;
@@ -32,12 +34,20 @@ internal sealed class HotReloadAgent : IDisposable
 	public HotReloadAgent(Action<string> log)
 	{
 		_log = log;
+		_alc = AssemblyLoadContext.GetLoadContext(typeof(HotReloadAgent).Assembly)
+			?? AssemblyLoadContext.Default;
 		_assemblyLoad = OnAssemblyLoad;
 		AppDomain.CurrentDomain.AssemblyLoad += _assemblyLoad;
 	}
 
 	private void OnAssemblyLoad(object? _, AssemblyLoadEventArgs eventArgs)
 	{
+		// Only process assemblies loaded in our own ALC
+		if (AssemblyLoadContext.GetLoadContext(eventArgs.LoadedAssembly) != _alc)
+		{
+			return;
+		}
+
 		_handlerActions = null;
 		var loadedAssembly = eventArgs.LoadedAssembly;
 		var moduleId = TryGetModuleId(loadedAssembly);
@@ -68,7 +78,11 @@ internal sealed class HotReloadAgent : IDisposable
 		// in System.Private.CoreLib is executed before System.Text.Json clears it's own cache.)
 		// This would ensure that caches and updates more lower in the application stack are up to date
 		// before ones higher in the stack are recomputed.
-		var sortedAssemblies = TopologicalSort(AppDomain.CurrentDomain.GetAssemblies());
+		//
+		// When running in a non-default ALC (e.g. an inner app loaded by a host), MetadataUpdateHandler
+		// attributes live on shared assemblies (Uno.UI) in the default ALC. We must scan both
+		// ALCs to discover all handlers, deduplicating by assembly name.
+		var sortedAssemblies = TopologicalSort(GetAllRelevantAssemblies());
 		var handlerActions = new UpdateHandlerActions();
 		foreach (var assembly in sortedAssemblies)
 		{
@@ -207,15 +221,15 @@ internal sealed class HotReloadAgent : IDisposable
 
 	public void ApplyDeltas(IReadOnlyList<UpdateDelta> deltas)
 	{
+
 		for (var i = 0; i < deltas.Count; i++)
 		{
 			var item = deltas[i];
-			foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+			foreach (var assembly in _alc.Assemblies)
 			{
 				if (TryGetModuleId(assembly) is Guid moduleId && moduleId == item.ModuleId)
 				{
 					_log($"Applying delta to {assembly} / {moduleId}");
-
 					ApplyUpdate(assembly, item);
 				}
 			}
@@ -263,7 +277,7 @@ internal sealed class HotReloadAgent : IDisposable
 
 		foreach (var delta in deltas)
 		{
-			var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(assembly => TryGetModuleId(assembly) is Guid moduleId && moduleId == delta.ModuleId);
+			var assembly = _alc.Assemblies.FirstOrDefault(assembly => TryGetModuleId(assembly) is Guid moduleId && moduleId == delta.ModuleId);
 			if (assembly is null)
 			{
 				continue;
@@ -308,6 +322,42 @@ internal sealed class HotReloadAgent : IDisposable
 		{
 			_log(ex.ToString());
 		}
+	}
+
+	/// <summary>
+	/// Returns assemblies from the current ALC and, if different, the default ALC.
+	/// This ensures handlers registered on shared assemblies (e.g. Uno.UI in the default ALC)
+	/// are discovered even when the agent runs in a non-default ALC (e.g. an inner app loaded by a host).
+	/// Assemblies are deduplicated by name — the current ALC's version takes precedence.
+	/// </summary>
+	private Assembly[] GetAllRelevantAssemblies()
+	{
+		var currentAssemblies = _alc.Assemblies.ToArray();
+		if (_alc == AssemblyLoadContext.Default)
+		{
+			return currentAssemblies;
+		}
+
+		var seen = new HashSet<string>(StringComparer.Ordinal);
+		var result = new List<Assembly>(currentAssemblies.Length * 2);
+
+		// Current ALC first — its assemblies take precedence.
+		foreach (var asm in currentAssemblies)
+		{
+			seen.Add(asm.GetName().Name!);
+			result.Add(asm);
+		}
+
+		// Then default ALC — only add assemblies not already present.
+		foreach (var asm in AssemblyLoadContext.Default.Assemblies)
+		{
+			if (seen.Add(asm.GetName().Name!))
+			{
+				result.Add(asm);
+			}
+		}
+
+		return result.ToArray();
 	}
 
 	public void Dispose()

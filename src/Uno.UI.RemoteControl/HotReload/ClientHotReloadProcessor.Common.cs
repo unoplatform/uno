@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.Loader;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.Extensions;
@@ -31,6 +32,10 @@ namespace Uno.UI.RemoteControl.HotReload
 {
 	partial class ClientHotReloadProcessor
 	{
+		private static readonly AssemblyLoadContext _processorAlc =
+			AssemblyLoadContext.GetLoadContext(typeof(ClientHotReloadProcessor).Assembly)
+			?? AssemblyLoadContext.Default;
+
 		private static ClientHotReloadProcessor? _instance;
 
 #if HAS_UNO
@@ -60,14 +65,32 @@ namespace Uno.UI.RemoteControl.HotReload
 					yield return match;
 				}
 
-				var idx = 0;
-				foreach (var child in fe.EnumerateChildren())
+				// Stop at AlcContentHost boundaries — the inner app's own processor
+				// will handle its subtree starting from window.Content (which resolves
+				// to the AlcContentHost content via TryGetContentFromSecondaryAlc).
+				var skipChildren = false;
+#if HAS_UNO
+				if (fe is Uno.UI.Xaml.Controls.AlcContentHost)
 				{
-					var inner = EnumerateHotReloadInstances(child, predicate, $"{instanceKey}_[{idx}]");
-					idx++;
-					await foreach (var validElement in inner)
+					if (_log.IsEnabled(LogLevel.Information))
 					{
-						yield return validElement;
+						_log.Info("[HotReload] AlcContentHost encountered — skipping children (handled by inner ALC processor)");
+					}
+
+					skipChildren = true;
+				}
+#endif
+				if (!skipChildren)
+				{
+					var idx = 0;
+					foreach (var child in fe.EnumerateChildren())
+					{
+						var inner = EnumerateHotReloadInstances(child, predicate, $"{instanceKey}_[{idx}]");
+						idx++;
+						await foreach (var validElement in inner)
+						{
+							yield return validElement;
+						}
 					}
 				}
 			}
@@ -130,7 +153,6 @@ namespace Uno.UI.RemoteControl.HotReload
 				// In the case of Page, swapping the actual page is not supported, so we
 				// need to swap the content of the page instead. This can happen if the Frame
 				// is using a native presenter which does not use the `Frame.Content` property.
-
 				oldPage.Content = newPage;
 #if !WINUI
 				newPage.Frame = oldPage.Frame;

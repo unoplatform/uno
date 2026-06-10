@@ -1,5 +1,8 @@
-using System;
+﻿using System;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.JavaScript;
+using System.Runtime.Loader;
 using System.Text;
 using System.Web;
 using Microsoft.UI.Xaml.Data;
@@ -51,6 +54,27 @@ namespace Microsoft.UI.Xaml
 	/// </summary>
 	public partial class Application
 	{
+		private static readonly ConditionalWeakTable<AssemblyLoadContext, Application> _applicationsByAlc = new();
+		private static readonly object _applicationsByAlcSync = new();
+		private static Application _current;
+		private static bool _hasSecondaryApps;
+
+		/// <summary>
+		/// Indicates whether the application has secondary Application instances running
+		/// in separate AssemblyLoadContexts. When true, resource resolution will use
+		/// ALC-aware lookup to ensure resources are resolved from the correct ALC.
+		/// </summary>
+		/// <remarks>
+		/// This property must be set to true by the host application before loading any secondary ALCs
+		/// to ensure ALC-aware resource registration works correctly. It is also automatically set
+		/// when secondary ALC Application instances are registered via <see cref="RegisterApplication"/>.
+		/// </remarks>
+		internal static bool HasSecondaryApps
+		{
+			get => _hasSecondaryApps;
+			set => _hasSecondaryApps = value;
+		}
+
 		private bool _initializationComplete;
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private ApplicationTheme _requestedTheme = ApplicationTheme.Dark; // Default theme in WinUI is Dark.
@@ -85,18 +109,27 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public Application()
 		{
-			CoreApplication.StaticInitialize();
+			var isDefaultALC = AssemblyLoadContext.GetLoadContext(GetType().Assembly) == AssemblyLoadContext.Default;
 
+			if (isDefaultALC)
+			{
+				CoreApplication.StaticInitialize();
 
 #if __SKIA__ || __WASM__
-			Package.SetEntryAssembly(this.GetType().Assembly);
+				Package.SetEntryAssembly(this.GetType().Assembly);
 #endif
-			Current = this;
-			ApplicationLanguages.ApplyCulture();
+				Current = this;
+				ApplicationLanguages.ApplyCulture();
 
-			BackButtonIntegration.Initialize();
+				BackButtonIntegration.Initialize();
 
-			InitializePartial();
+				InitializePartial();
+			}
+			else
+			{
+				// We only need setup the app instance for non-default ALCs.
+				Current = this;
+			}
 		}
 
 		internal bool InitializationComplete => _initializationComplete;
@@ -125,7 +158,11 @@ namespace Microsoft.UI.Xaml
 			public const int LauchedStop = 2;
 		}
 
-		public static Application Current { get; private set; }
+		public static Application Current
+		{
+			get => _current;
+			private set => SetCurrentApplication(value);
+		}
 
 		public DebugSettings DebugSettings { get; } = new DebugSettings();
 
@@ -328,15 +365,41 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Shuts down the app.
 		/// </summary>
-		public void Exit() => CoreApplication.Exit();
+		public void Exit()
+		{
+			var alc = AssemblyLoadContext.GetLoadContext(GetType().Assembly);
+			if (alc is not null && alc != AssemblyLoadContext.Default)
+			{
+				ExitAlcApplication();
+				return;
+			}
+
+			CoreApplication.Exit();
+		}
 #endif
 
 		public static void Start(global::Microsoft.UI.Xaml.ApplicationInitializationCallback callback)
 		{
+			StartPartial(p =>
+			{
+				callback(p);
+				return null;
+			});
+		}
+
+		/// <summary>
+		/// Boots an <see cref="Application"/> instance when hosting scenarios require returning the created app
+		/// (e.g., secondary AssemblyLoadContext projections).
+		/// This overload mirrors <see cref="Microsoft.UI.Xaml.Application.Start(ApplicationInitializationCallback)"/>
+		/// but allows the callback to return the constructed <see cref="Application"/> so the caller can capture it.
+		/// </summary>
+		/// <param name="callback">Factory invoked with initialization parameters; must return the created application instance.</param>
+		internal static void Start(Func<ApplicationInitializationCallbackParams, Application> callback)
+		{
 			StartPartial(callback);
 		}
 
-		static partial void StartPartial(ApplicationInitializationCallback callback);
+		private static partial Application StartPartial(Func<ApplicationInitializationCallbackParams, Application> callback);
 
 		protected internal virtual void OnActivated(IActivatedEventArgs args) { }
 

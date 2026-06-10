@@ -11,6 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Runtime.Loader;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
@@ -20,6 +21,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Diagnostics.UI;
+using Uno.HotReload.Client;
 using Uno.Threading;
 using static Uno.UI.RemoteControl.HotReload.MetadataUpdater.ElementUpdateAgent;
 
@@ -57,12 +59,165 @@ partial class ClientHotReloadProcessor
 
 	internal static Window? CurrentWindow { get; private set; }
 
-	private static (bool value, string reason) ShouldReload()
+	private static int _uiPauseDrainSubscribed;
+
+#pragma warning disable IDE0051 // Kept for upcoming call path; local suppression to avoid broad rule changes.
+	private static void EnsureUIPauseDrainSubscribed()
 	{
-		var isPaused = TypeMappings.IsPaused;
-		return isPaused
-			? (false, "type mapping prevent reload")
-			: (true, string.Empty);
+		if (Interlocked.Exchange(ref _uiPauseDrainSubscribed, 1) != 0)
+		{
+			return;
+		}
+
+		PendingUIUpdates.DrainRequested += ResumeUIUpdate;
+	}
+#pragma warning restore IDE0051
+
+	private static void ResumeUIUpdate(object? sender, PendingUIUpdates.DrainEventArgs args)
+	{
+		if (!args.HasAny)
+		{
+			return;
+		}
+
+		if (Instance is not { } instance || CurrentWindow is not { } window)
+		{
+			if (_log.IsEnabled(LogLevel.Warning))
+			{
+				_log.Warn($"[HotReload UI Pause] Drain skipped — no instance or window. " +
+					$"RD={args.ResourceDictionaries.Length} VT={args.VisualTree.Length} type(s) lost.");
+			}
+
+			return;
+		}
+
+		// Build a unified type list for the HR-op. RD and VT types may overlap; the set union
+		// ensures duplicates are deduplicated when creating the local operation.
+		var allTypes = args.ResourceDictionaries.Union(args.VisualTree).ToArray();
+		var hr = instance._status.ContinueOrStartLocal(HotReloadSource.Manual, allTypes);
+
+#if HAS_UNO_WINUI || WINDOWS_WINUI
+		window.DispatcherQueue.TryEnqueue(async () =>
+		{
+			using var sequentialUiUpdateLock = await _uiUpdateGate.LockAsync(default);
+			await instance.DoUpdateVisualTreeCore(hr, window, allTypes, args.ResourceDictionaries, args.VisualTree);
+		});
+#else
+		_ = window.Dispatcher.RunAsync(
+			Windows.UI.Core.CoreDispatcherPriority.Normal,
+			async () =>
+			{
+				using var sequentialUiUpdateLock = await _uiUpdateGate.LockAsync(default);
+				await instance.DoUpdateVisualTreeCore(hr, window, allTypes, args.ResourceDictionaries, args.VisualTree);
+			});
+#endif
+	}
+
+	/// <summary>
+	/// User-initiated re-apply of <paramref name="types"/> against the current
+	/// visual tree, bypassing any active <see cref="UIUpdate.Pause"/> handles
+	/// (Option A: drains the RD + VT phases directly). Used as the public
+	/// entry point behind <see cref="UIUpdate.ForceRefresh"/>.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// Mirrors the <see cref="ResumeUIUpdate"/> dispatch shape verbatim:
+	/// resolves the singleton instance and current window, starts/continues a
+	/// local <see cref="HotReloadClientOperation"/> tagged
+	/// <see cref="HotReloadSource.Manual"/>, marshals to the UI thread, then
+	/// runs <see cref="DoUpdateVisualTreeCore"/> with <c>rdTypes</c> /
+	/// <c>vtTypes</c> equal to <paramref name="types"/> so both phases apply
+	/// regardless of the pause state.
+	/// </para>
+	/// <para>
+	/// Throws <see cref="InvalidOperationException"/> when the client has not
+	/// been wired (no <c>Window.UseStudio()</c> at startup). Returns a task
+	/// completing once the UI-thread pass finishes — exceptions inside the
+	/// dispatched body propagate through the returned task.
+	/// </para>
+	/// </remarks>
+	internal static Task ForceRefreshAsync(Type[] types, CancellationToken ct)
+	{
+		if (types is null)
+		{
+			throw new ArgumentNullException(nameof(types));
+		}
+
+		ct.ThrowIfCancellationRequested();
+
+		if (Instance is not { } instance)
+		{
+			throw new InvalidOperationException(
+				"UIUpdate.ForceRefresh requires an initialised hot-reload client. " +
+				"Make sure Window.UseStudio() has been called during app startup.");
+		}
+
+		if (CurrentWindow is not { } window)
+		{
+			throw new InvalidOperationException(
+				"UIUpdate.ForceRefresh requires an active window. " +
+				"Call ForceRefresh after the window has been activated.");
+		}
+
+		if (types.Length == 0)
+		{
+			return Task.CompletedTask;
+		}
+
+		var hr = instance._status.StartLocal(HotReloadSource.Manual, types);
+		var tcs = new TaskCompletionSource<object?>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+		// Propagate caller cancellation: if the token fires before the UI thread
+		// picks up our callback (or before the lock is acquired), surface
+		// OperationCanceledException through the returned task. Once the apply
+		// pass has started, DoUpdateVisualTreeCore runs to completion — the
+		// visual tree never tolerates a half-applied update.
+		var ctRegistration = ct.Register(static state => ((TaskCompletionSource<object?>)state!).TrySetCanceled(), tcs);
+
+		async Task RunAsync()
+		{
+			try
+			{
+				ct.ThrowIfCancellationRequested();
+				using var sequentialUiUpdateLock = await _uiUpdateGate.LockAsync(ct);
+				ct.ThrowIfCancellationRequested();
+				// Option A: pass rdTypes/vtTypes = types so both phases drain
+				// immediately, bypassing UIUpdate.Pause holders.
+				await instance.DoUpdateVisualTreeCore(hr, window, types, rdTypes: types, vtTypes: types);
+				tcs.TrySetResult(null);
+			}
+			catch (OperationCanceledException oce) when (oce.CancellationToken == ct || ct.IsCancellationRequested)
+			{
+				tcs.TrySetCanceled(ct);
+			}
+			catch (Exception ex)
+			{
+				if (_log.IsEnabled(LogLevel.Error))
+				{
+					_log.Error("[HotReload] UIUpdate.ForceRefresh failed.", ex);
+				}
+				hr.ReportError(ex);
+				tcs.TrySetException(ex);
+			}
+			finally
+			{
+				ctRegistration.Dispose();
+			}
+		}
+
+#if HAS_UNO_WINUI || WINDOWS_WINUI
+		if (!window.DispatcherQueue.TryEnqueue(() => _ = RunAsync()))
+		{
+			var ex = new InvalidOperationException("DispatcherQueue.TryEnqueue refused the ForceRefresh callback.");
+			hr.ReportError(ex);
+			tcs.TrySetException(ex);
+			ctRegistration.Dispose();
+		}
+#else
+		_ = window.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () => await RunAsync());
+#endif
+
+		return tcs.Task;
 	}
 
 	internal static void SetWindow(Window window, bool disableIndicator)
@@ -95,33 +250,147 @@ partial class ClientHotReloadProcessor
 	}
 #endif
 
+	private static int _reloadWithUpdatedTypesWarned;
+
 	/// <summary>
-	/// Run on UI thread to reload the visual tree with updated types
+	/// Legacy entry point invoked by HotDesign via reflection
+	/// (<c>ReflectionExtensions.ClientHotReloadProcessorExtensions.ReloadUI</c>).
+	/// Inert as of spec 041 — HotDesign should no longer call this; the
+	/// visual-tree apply is driven through the standard UpdateApplicationCore
+	/// path with the new <c>Uno.HotReload.Client.UIUpdate.Pause</c> mechanism.
+	/// Kept signature-compatible so older HD builds linking against the symbol
+	/// name continue to load. Logs a one-time warning when reached.
 	/// </summary>
-	private static async Task ReloadWithUpdatedTypes(HotReloadClientOperation? hrOp, Window window, Type[] updatedTypes)
+#pragma warning disable IDE0051 // Invoked by HotDesign via reflection (ReflectionExtensions.ReloadUI)
+	[Obsolete("Use Uno.HotReload.Client.UIUpdate.Pause inside UpdateFile instead.", error: false)]
+	private static Task ReloadWithUpdatedTypes(HotReloadClientOperation? hrOp, Window window, Type[] updatedTypes)
+#pragma warning restore IDE0051
+	{
+		if (Interlocked.Exchange(ref _reloadWithUpdatedTypesWarned, 1) == 0
+			&& _log.IsEnabled(LogLevel.Warning))
+		{
+			_log.Warn(
+				$"[HotReload] ReloadWithUpdatedTypes is obsolete and now a no-op (spec 041). " +
+				$"Hot Design must remove its long-lived TypeMappings pause and rely on " +
+				$"Uno.HotReload.Client.UIUpdate.Pause inside UpdateFile only. " +
+				$"Caller invoked with {updatedTypes?.Length ?? 0} type(s).");
+		}
+
+		return Task.CompletedTask;
+	}
+
+	private async Task UpdateVisualTree(HotReloadClientOperation? hrOp, Window window, Type[] updatedTypes)
 	{
 		using var sequentialUiUpdateLock = await _uiUpdateGate.LockAsync(default);
 
+		var op = hrOp ?? HotReloadClientOperation.Empty;
+		await DoUpdateVisualTreeCore(op, window, updatedTypes, rdTypes: null, vtTypes: null);
+	}
+
+	/// <summary>
+	/// Core visual-tree update. When called from <see cref="UpdateVisualTree"/> both
+	/// <paramref name="rdTypes"/> and <paramref name="vtTypes"/> are <see langword="null"/>
+	/// and the method reads the current pause state to decide whether each phase executes
+	/// immediately or is queued. When called from <see cref="ResumeUIUpdate"/> the snapshots
+	/// are pre-computed and both phases always execute (the drain guarantees all counters are
+	/// zero at that point).
+	/// </summary>
+	private async Task DoUpdateVisualTreeCore(
+		HotReloadClientOperation hrOp,
+		Window window,
+		Type[] updatedTypes,
+		Type[]? rdTypes,
+		Type[]? vtTypes)
+	{
+		if (_log.IsEnabled(LogLevel.Information))
+		{
+			_log.Info($"[HotReload] DoUpdateVisualTreeCore ENTER — {updatedTypes.Length} type(s): " +
+				$"[{string.Join(", ", updatedTypes.Select(t => t.FullName ?? t.Name))}] " +
+				$"VT paused={UIUpdate.IsPaused(HotReloadUIPhases.VisualTree)} " +
+				$"RD paused={UIUpdate.IsPaused(HotReloadUIPhases.ResourceDictionaries)}");
+		}
+
 		var handlerActions = ElementAgent?.ElementHandlerActions;
 		var uiUpdating = true;
+
+		// Declared before the try so the finally block can log them.
+		Type[]? rdToApply = null;
+		Type[]? vtToApply = null;
+
 		try
 		{
-			hrOp?.SetCurrent();
+			hrOp.SetCurrent();
 
-			if (ShouldReload() is { value: false } prevent)
+			// ── Resource Dictionaries ──────────────────────────────────────────────
+			// rdTypes is non-null only on the drain path (all counters already zero).
+			// On the normal path check the live pause state.
+			var rdPaused = rdTypes is null && PendingUIUpdates.IsPaused(HotReloadUIPhases.ResourceDictionaries);
+			rdToApply = rdTypes ?? (rdPaused ? null : updatedTypes);
+
+			if (rdPaused)
 			{
-				uiUpdating = false;
-				hrOp?.ReportIgnored(prevent.reason);
+				PendingUIUpdates.Enqueue(HotReloadUIPhases.ResourceDictionaries, updatedTypes);
+			}
+			else if (rdToApply is { Length: > 0 })
+			{
+				UpdateGlobalResources(rdToApply);
+			}
+
+			// ── Visual Tree ───────────────────────────────────────────────────────
+			// vtTypes is non-null only on the drain path.
+			var vtPaused = vtTypes is null && PendingUIUpdates.IsPaused(HotReloadUIPhases.VisualTree);
+			vtToApply = vtTypes ?? (vtPaused ? null : updatedTypes);
+
+			if (vtPaused)
+			{
+				PendingUIUpdates.Enqueue(HotReloadUIPhases.VisualTree, updatedTypes);
+
+				if (_log.IsEnabled(LogLevel.Information))
+				{
+					_log.Info($"[HotReload] VisualTree update DEFERRED — {updatedTypes.Length} type(s) queued. " +
+						$"Paused by: {UIUpdate.GetPauseHoldersSummary()}");
+				}
+
+				// If there are no FrameworkElement subtypes the drain will be a visual no-op —
+				// complete the op now so the server-side await doesn't time out waiting.
+				var hasFe = updatedTypes.Any(t => t.IsSubclassOf(typeof(FrameworkElement)));
+				if (!hasFe)
+				{
+					hrOp.ReportCompleted();
+					return;
+				}
+
+				hrOp.ReportDeferred($"VisualTree paused by: {UIUpdate.GetPauseHoldersSummary()}");
 				return;
 			}
 
-			UpdateGlobalResources(updatedTypes);
+			if (vtToApply is null || vtToApply.Length == 0)
+			{
+				hrOp.ReportCompleted();
+				return;
+			}
 
-#if HAS_UNO_WINUI
-			var rootElement = window.Content?.XamlRoot?.VisualTree.RootElement;
-#else
-			var rootElement = window.Content?.XamlRoot?.Content;
+			FrameworkElement? rootElement = null;
+#if HAS_UNO || HAS_UNO_WINUI
+			// For secondary ALC windows (e.g. an inner app loaded by a host), start scanning
+			// from the window's content directly — it resolves to the AlcContentHost
+			// subtree, scoping the update to the inner app only.
+			// For normal windows, start from the full visual tree root.
+			if (window.TryGetContentFromSecondaryAlc(out var alcContent) && alcContent is FrameworkElement alcRoot)
+			{
+				rootElement = alcRoot;
+			}
 #endif
+
+			if (rootElement is null)
+			{
+#if HAS_UNO_WINUI
+				rootElement = window.Content?.XamlRoot?.VisualTree.RootElement as FrameworkElement;
+#else
+				rootElement = window.Content?.XamlRoot?.Content as FrameworkElement;
+#endif
+			}
+
 			if (rootElement is null)
 			{
 				if (_log.IsEnabled(LogLevel.Error))
@@ -129,12 +398,19 @@ partial class ClientHotReloadProcessor
 					_log.Error("Error doing UI Update - no visual root");
 				}
 
+				hrOp?.ReportError(new InvalidOperationException("No visual root found for hot reload update"));
 				return;
 			}
 
 			// Action: BeforeVisualTreeUpdate
-			// This is called before the visual tree is updated
-			_ = handlerActions?.Do(h => h.Value.BeforeVisualTreeUpdate(updatedTypes)).ToArray();
+			// Already try/catch wrapped by the ElementUpdateAgent's CreateAction.
+			_ = handlerActions?.Do(h =>
+			{
+				foreach (var a in h.Value)
+				{
+					a.BeforeVisualTreeUpdate(vtToApply);
+				}
+			}).ToArray();
 
 			var capturedStates = new Dictionary<string, Dictionary<string, object>>();
 
@@ -157,6 +433,7 @@ partial class ClientHotReloadProcessor
 			}
 
 			var isCapturingState = true;
+
 			var treeIterator = EnumerateHotReloadInstances(
 				rootElement,
 				async (fe, key) =>
@@ -171,11 +448,12 @@ partial class ClientHotReloadProcessor
 					// for all element types should register for FrameworkElement instead
 					ImmutableArray<ElementUpdateHandlerActions> handlers =
 					[
-						..from handler in handlerActions
-						let depth = GetSubClassDepth(originalType, handler.Key)
-						where depth is not -1 && handler.Key != typeof(object)
+						..from handlerGroup in handlerActions
+						let depth = GetSubClassDepth(originalType, handlerGroup.Key)
+						where depth is not -1 && handlerGroup.Key != typeof(object)
 						orderby depth descending
-						select handler.Value
+						from handler in handlerGroup.Value
+						select handler
 					];
 
 					// Get the replacement type, or null if not replaced
@@ -189,22 +467,22 @@ partial class ClientHotReloadProcessor
 
 						if (isCapturingState)
 						{
-							handler.CaptureState(fe, dict, updatedTypes);
-							if (dict.Any())
+							handler.CaptureState(fe, dict, vtToApply);
+							if (dict.Count > 0)
 							{
 								capturedStates[key] = dict;
 							}
 						}
 						else
 						{
-							await handler.RestoreState(fe, dict, updatedTypes);
+							await handler.RestoreState(fe, dict, vtToApply);
 						}
 					}
 
-					if (updatedTypes.Contains(liveType))
+					if (vtToApply.Contains(liveType))
 					{
 						// This may happen if one of the nested types has been hot reloaded, but not the type itself.
-						// For instance, a DataTemplate in a resource dictionary may mark the type as updated in `updatedTypes`
+						// For instance, a DataTemplate in a resource dictionary may mark the type as updated in `vtToApply`
 						// but it will not be considered as a new type even if "CreateNewOnMetadataUpdate" was set.
 
 						return (fe, [], liveType);
@@ -221,8 +499,10 @@ partial class ClientHotReloadProcessor
 			// Forced iteration to capture all state before doing ui update
 			var instancesToUpdate = await treeIterator.ToArrayAsync();
 
-			// Iterate through the visual tree and either invoke ElementUpdate, 
-			// or replace the element with a new one
+			// Iterate through the visual tree and either invoke ElementUpdate,
+			// or replace the element with a new one.
+			// Each element is updated in isolation so that a failure on one type
+			// does not prevent the remaining elements from being processed.
 			foreach (var (element, elementHandlers, elementMappedType) in instancesToUpdate)
 			{
 				if (element is null)
@@ -239,12 +519,28 @@ partial class ClientHotReloadProcessor
 
 				if (elementMappedType is not null)
 				{
-					if (_log.IsEnabled(LogLevel.Debug))
+					try
 					{
-						_log.Debug($"Updating element [{element}] to [{elementMappedType}]");
-					}
+						if (_log.IsEnabled(LogLevel.Debug))
+						{
+							_log.Debug($"Updating element [{element}] to [{elementMappedType}]");
+						}
 
-					ReplaceViewInstance(element, elementMappedType, elementHandlers, updatedTypes);
+						ReplaceViewInstance(element, elementMappedType, elementHandlers, updatedTypes);
+						hrOp.ReportElementReplaced();
+					}
+					catch (Exception elementEx)
+					{
+						hrOp.ReportElementError(elementEx);
+						if (_log.IsEnabled(LogLevel.Error))
+						{
+							_log.Error(
+								$"[HotReload] Failed to update element [{element.GetType().Name}] " +
+								$"(target type: {elementMappedType?.Name ?? "same"}): {elementEx.Message}. " +
+								$"Continuing with remaining elements.",
+								elementEx);
+						}
+					}
 				}
 			}
 
@@ -262,26 +558,60 @@ partial class ClientHotReloadProcessor
 			_ = await treeIterator.ToArrayAsync();
 
 			// Action: AfterVisualTreeUpdate
-			_ = handlerActions?.Do(h => h.Value.AfterVisualTreeUpdate(updatedTypes)).ToArray();
+			// Already try/catch wrapped by the ElementUpdateAgent's CreateAction.
+			_ = handlerActions?.Do(h =>
+			{
+				foreach (var a in h.Value)
+				{
+					a.AfterVisualTreeUpdate(vtToApply);
+				}
+			}).ToArray();
 		}
 		catch (Exception ex)
 		{
-			hrOp?.ReportError(ex);
+			hrOp.ReportError(ex);
 
 			if (_log.IsEnabled(LogLevel.Error))
 			{
 				_log.Error($"Error doing UI Update - {ex.Message}", ex);
 			}
+
 			uiUpdating = false;
-			throw;
 		}
 		finally
 		{
-			// Action: ReloadCompleted
-			_ = handlerActions?.Do(h => h.Value.ReloadCompleted(updatedTypes, uiUpdating)).ToArray();
+			if (uiUpdating)
+			{
+				if (_log.IsEnabled(LogLevel.Information))
+				{
+					_log.Info($"[HotReload] DoUpdateVisualTreeCore COMPLETED — {vtToApply?.Length ?? 0} VT type(s), {rdToApply?.Length ?? 0} RD type(s)");
+				}
+			}
+			else if (_log.IsEnabled(LogLevel.Warning))
+			{
+				_log.Warn($"[HotReload] DoUpdateVisualTreeCore DID NOT UPDATE — {vtToApply?.Length ?? 0} VT type(s)");
+			}
 
-			hrOp?.ResignCurrent();
-			hrOp?.ReportCompleted();
+			// Action: ReloadCompleted
+			_ = handlerActions?.Do(h =>
+			{
+				foreach (var a in h.Value)
+				{
+					a.ReloadCompleted(vtToApply, uiUpdating);
+				}
+			}).ToArray();
+
+			hrOp.ResignCurrent();
+			hrOp.ReportCompleted();
+		}
+
+		// If any per-element errors were reported, re-throw so callers know
+		// the operation was not fully successful.
+		if (hrOp.Exceptions.Count > 0)
+		{
+			throw new AggregateException(
+				$"{hrOp.Exceptions.Count} error(s) occurred during hot-reload UI update.",
+				hrOp.Exceptions);
 		}
 	}
 
@@ -383,8 +713,12 @@ partial class ClientHotReloadProcessor
 
 
 #if !(WINUI || WINAPPSDK || WINDOWS_UWP)
-			// Then find over updated types to find the ones that are implementing IXamlResourceDictionaryProvider
-			List<Uri> updatedDictionaries = new();
+			// Collect the source of every resource dictionary rebuilt by this metadata update.
+			// The generated GlobalStaticResources nested types implement IXamlResourceDictionaryProvider
+			// and advertise their source in "local resource" form (ms-resource:///Files/Foo.xaml), whereas
+			// the live merged dictionaries reference the same file via ms-appx:///Foo.xaml — so the source
+			// is stored as a normalized, scheme-independent key for comparison.
+			var updatedSources = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
 			foreach (var updatedType in updatedTypes)
 			{
@@ -392,7 +726,7 @@ partial class ClientHotReloadProcessor
 				{
 					if (_log.IsEnabled(LogLevel.Trace))
 					{
-						_log.Debug($"Updating resources for {updatedType}");
+						_log.Trace($"Updating resources for {updatedType}");
 					}
 
 					// This assumes that we're using an explicit implementation of IXamlResourceDictionaryProvider, which
@@ -405,39 +739,79 @@ partial class ClientHotReloadProcessor
 						if (getMethod.Invoke(null, null) is IXamlResourceDictionaryProvider provider
 							&& provider.GetResourceDictionary() is { Source: not null } dictionary)
 						{
-							updatedDictionaries.Add(dictionary.Source);
+							updatedSources.Add(NormalizeResourceDictionarySource(dictionary.Source));
 						}
 					}
 				}
 			}
 
-			// Traverse the current app's tree to replace dictionaries matching the source property
-			// with the updated ones.
-			UpdateResourceDictionaries(updatedDictionaries, Application.Current.Resources);
+			if (updatedSources.Count > 0)
+			{
+				// Recursively refresh every source-backed dictionary in the merged-dictionary graph whose
+				// source was rebuilt by this update — wherever it sits, including dictionaries nested inside
+				// typed ResourceDictionary subclasses (e.g. a SimpleTheme/BaseTheme theme referencing an
+				// override file via ColorOverrideSource).
+				UpdateResourceDictionaries(updatedSources, Application.Current.Resources);
 
-			// Force the app reevaluate global resources changes
-			Application.Current.UpdateResourceBindingsForHotReload();
+				// Force the app reevaluate global resources changes
+				Application.Current.UpdateResourceBindingsForHotReload();
+			}
 #endif
 		}
 	}
 
 #if !(WINUI || WINAPPSDK || WINDOWS_UWP)
 	/// <summary>
-	/// Refreshes ResourceDictionary instances that have been detected as updated
+	/// Recursively refreshes every source-backed <see cref="ResourceDictionary"/> reachable through
+	/// <see cref="ResourceDictionary.MergedDictionaries"/> whose source was rebuilt by the current
+	/// metadata update.
 	/// </summary>
-	/// <param name="updatedDictionaries"></param>
-	/// <param name="root"></param>
-	private static void UpdateResourceDictionaries(List<Uri> updatedDictionaries, ResourceDictionary root)
+	/// <remarks>
+	/// Matching is done on a normalized source key (see <see cref="NormalizeResourceDictionarySource"/>):
+	/// a rebuilt dictionary advertises its source in "local resource" form (<c>ms-resource:///Files/Foo.xaml</c>)
+	/// while the live merged entry usually references the same file as <c>ms-appx:///Foo.xaml</c>. The walk
+	/// recurses into every entry — including typed subclasses such as theme dictionaries — so nested
+	/// overrides are reached, but only the matched entry is reloaded via <c>RefreshMergedDictionary</c>.
+	/// A typed subclass is therefore never replaced unless its own source file was the one edited.
+	/// </remarks>
+	private static void UpdateResourceDictionaries(HashSet<string> updatedSources, ResourceDictionary root)
 	{
-		var dictionariesToRefresh = root
-			.MergedDictionaries
-			.Where(merged => updatedDictionaries.Any(d => d == merged.Source))
-			.ToArray();
-
-		foreach (var merged in dictionariesToRefresh)
+		// Snapshot first: RefreshMergedDictionary mutates MergedDictionaries (it replaces the entry at its index).
+		foreach (var merged in root.MergedDictionaries.ToArray())
 		{
-			root.RefreshMergedDictionary(merged);
+			if (merged.Source is { } source
+				&& updatedSources.Contains(NormalizeResourceDictionarySource(source)))
+			{
+				root.RefreshMergedDictionary(merged);
+			}
 		}
+
+		foreach (var merged in root.MergedDictionaries)
+		{
+			UpdateResourceDictionaries(updatedSources, merged);
+		}
+	}
+
+	/// <summary>
+	/// Normalizes a resource dictionary source URI to a scheme-independent key so that the
+	/// <c>ms-resource:///Files/</c> form advertised by a rebuilt dictionary and the <c>ms-appx:///</c>
+	/// form held by a live merged entry compare equal when they point at the same file.
+	/// </summary>
+	private static string NormalizeResourceDictionarySource(Uri source)
+	{
+		var value = source.OriginalString;
+
+		if (value.StartsWith(Uno.UI.Xaml.XamlFilePathHelper.LocalResourcePrefix, StringComparison.OrdinalIgnoreCase))
+		{
+			return value.Substring(Uno.UI.Xaml.XamlFilePathHelper.LocalResourcePrefix.Length);
+		}
+
+		if (value.StartsWith(Uno.UI.Xaml.XamlFilePathHelper.AppXIdentifier, StringComparison.OrdinalIgnoreCase))
+		{
+			return value.Substring(Uno.UI.Xaml.XamlFilePathHelper.AppXIdentifier.Length);
+		}
+
+		return value;
 	}
 #endif
 
@@ -525,7 +899,12 @@ partial class ClientHotReloadProcessor
 
 	private static void UpdateApplicationCore(Type[] types)
 	{
-		var hr = Instance?._status.ReportLocalStarting(types);
+		if (_log.IsEnabled(LogLevel.Information))
+		{
+			_log.Info($"[HotReload] UpdateApplicationCore called with {types.Length} type(s): [{string.Join(", ", types.Select(t => t.FullName ?? t.Name))}], VisualTree paused={UIUpdate.IsPaused(HotReloadUIPhases.VisualTree)}, CurrentWindow={(CurrentWindow is not null ? "set" : "null")}");
+		}
+
+		var hr = Instance?._status.StartLocal(types);
 
 		foreach (var type in types)
 		{
@@ -571,20 +950,29 @@ partial class ClientHotReloadProcessor
 		}
 
 #if WINUI
-		if (CurrentWindow is { DispatcherQueue: { } dispatcherQueue } window)
+		if (Instance is { } instance && CurrentWindow is { DispatcherQueue: { } dispatcherQueue } window)
 		{
-			dispatcherQueue.TryEnqueue(async () => await ReloadWithUpdatedTypes(hr, window, types));
+			if (_log.IsEnabled(LogLevel.Information))
+			{
+				_log.Info($"[HotReload] Dispatching UpdateVisualTree on UI thread for {types.Length} type(s)");
+			}
+			dispatcherQueue.TryEnqueue(async () => await instance.UpdateVisualTree(hr, window, types));
 		}
 #else
-		if (CurrentWindow is { Dispatcher: { } dispatcher } window)
+		if (Instance is { } instance && CurrentWindow is { Dispatcher: { } dispatcher } window)
 		{
-			_ = dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () => await ReloadWithUpdatedTypes(hr, window, types));
+			if (_log.IsEnabled(LogLevel.Information))
+			{
+				_log.Info($"[HotReload] Dispatching UpdateVisualTree on UI thread for {types.Length} type(s)");
+			}
+			_ = dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () => await instance.UpdateVisualTree(hr, window, types));
 		}
 #endif
 		else
 		{
-			var errorMsg = $"Unable to access Dispatcher/DispatcherQueue in order to invoke {nameof(ReloadWithUpdatedTypes)}. Make sure you have enabled hot-reload (Window.UseStudio()) in app startup. See https://aka.platform.uno/hot-reload";
+			var errorMsg = $"Unable to access Dispatcher/DispatcherQueue in order to invoke {nameof(UpdateVisualTree)}. Make sure you have enabled hot-reload (Window.UseStudio()) in app startup. See https://aka.platform.uno/hot-reload";
 			hr?.ReportError(new InvalidOperationException(errorMsg));
+			hr?.ReportCompleted();
 			if (_log.IsEnabled(LogLevel.Warning))
 			{
 				_log.Warn(errorMsg);

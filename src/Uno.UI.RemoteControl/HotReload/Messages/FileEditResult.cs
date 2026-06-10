@@ -1,10 +1,10 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using Uno.Extensions;
+#if UNO_HOTRELOAD
+namespace Uno.HotReload.IO;
+#else
 using Uno.UI.RemoteControl.HotReload.Messages;
-using Uno.UI.RemoteControl.Messaging.IdeChannel;
 
 namespace Uno.UI.RemoteControl.HotReload;
+#endif
 
 /// <summary>
 /// Describes the result of a single <see cref="FileEdit"/>.

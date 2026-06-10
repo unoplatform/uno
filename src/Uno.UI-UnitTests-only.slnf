@@ -14,6 +14,7 @@
       "Uno.Analyzers\\Uno.Analyzers.csproj",
       "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",
       "Uno.Foundation\\Uno.Foundation.Tests.csproj",
+      "Uno.HotReload\\Uno.HotReload.csproj",
       "Uno.UI.Adapter.Microsoft.Extensions.Logging\\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj",
       "Uno.UI.Composition\\Uno.UI.Composition.Tests.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.Tests.csproj",

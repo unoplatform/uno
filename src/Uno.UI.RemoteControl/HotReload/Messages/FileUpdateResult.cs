@@ -1,7 +1,8 @@
-﻿using System;
-using System.Linq;
-
+#if UNO_HOTRELOAD
+namespace Uno.HotReload.IO;
+#else
 namespace Uno.UI.RemoteControl.HotReload.Messages;
+#endif
 
 public enum FileUpdateResult
 {

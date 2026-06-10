@@ -51,6 +51,18 @@ namespace Microsoft.UI.Xaml
 
 		private readonly static FrameworkPropertiesForTypeDictionary _getInheritedPropertiesForType = new FrameworkPropertiesForTypeDictionary();
 
+		/// <summary>
+		/// Removes all entries from DependencyProperty-related static caches whose Type keys
+		/// belong to non-default (collectible) AssemblyLoadContexts.
+		/// Called during ALC teardown so the GC can collect the ALC and its types.
+		/// </summary>
+		internal static void ClearCachesForNonDefaultAlc()
+		{
+			_registry.RemoveNonDefaultAlcEntries();
+			_getInheritedPropertiesForType.RemoveNonDefaultAlcEntries();
+			_getPropertyCache.RemoveNonDefaultAlcEntries();
+		}
+
 		private readonly PropertyMetadata _ownerTypeMetadata; // For perf consideration, we keep direct ref the metadata for the owner type
 
 		private readonly Flags _flags;

@@ -48,6 +48,11 @@
 		<PRIResource Include="$(PlatformItemsBasePath)**\*.resw" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<None Include="LinkerSubstitution.Skia.xml" />
+		<UnoLinkerSubstitution Include="LinkerSubstitution.Skia.xml" />
+	</ItemGroup>
+
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
 	<ItemGroup>

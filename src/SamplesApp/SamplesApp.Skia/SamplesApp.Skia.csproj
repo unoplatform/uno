@@ -52,6 +52,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="Uno.BenchmarkDotNet" Version="0.11.7-develop" />
 		<PackageReference Include="Uno.BenchmarkDotNet.Annotations" Version="0.11.7-develop" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
