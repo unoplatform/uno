@@ -283,9 +283,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_MOVE)} message.");
 				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
-				// When the window moves and part of it was off-screen, Windows discards that part of
-				// the framebuffer. Signal the render thread to re-blit the exposed area.
-				_renderThread?.SignalNewFrame();
+				// No present here: under DWM the window's backing surface survives the move, and
+				// any region that genuinely needs repainting is invalidated by the OS, which posts
+				// a WM_PAINT that signals the render thread.
 				return new LRESULT(0);
 			case PInvoke.WM_PAINT:
 				// Signal the render thread to re-blit the current frame. WM_PAINT is generated

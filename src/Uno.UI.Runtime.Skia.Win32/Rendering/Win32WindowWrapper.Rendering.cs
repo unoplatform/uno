@@ -18,16 +18,14 @@ internal partial class Win32WindowWrapper
 
 	unsafe void IXamlRootHost.InvalidateRender()
 	{
-		// Mark the window dirty for WM_PAINT. This handles external repaints (window
-		// uncovering, restore from minimized) where Windows generates WM_PAINT.
-		// Like WPF (InvalidateRect in HwndTarget).
+		// Mark the window dirty and let Windows coalesce it into a WM_PAINT, whose handler
+		// signals the render thread to present. Presenting here too would double-present the
+		// same content (and re-block on VSync for GL), so WM_PAINT is the single present path,
+		// like WPF's HwndTarget (InvalidateRect here, present on WM_PAINT).
 		if (!PInvoke.InvalidateRect(_hwnd, default(RECT*), false))
 		{
 			this.LogError()?.Error($"{nameof(PInvoke.InvalidateRect)} failed: {Win32Helper.GetErrorMessage()}");
 		}
-
-		// Signal the render thread to present the current frame.
-		_renderThread?.SignalNewFrame();
 	}
 
 	private void ReinitializeRenderer()
