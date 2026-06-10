@@ -393,15 +393,9 @@
                             <VisualStateGroup x:Name="DisabledStates">
                                 <VisualState x:Name="Enabled" />
 
-                                <VisualState x:Name="Disabled">
-
-                                    <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"
-                                            Storyboard.TargetProperty="Opacity"
-                                            Duration="0"
-                                            To="{ThemeResource ListViewItemDisabledThemeOpacity}" />
-                                    </Storyboard>
-                                </VisualState>
+                                <!-- WinUI does not dim disabled item content; the contained controls render their
+                                     own disabled visuals. Dimming here double-dims already-disabled content. -->
+                                <VisualState x:Name="Disabled" />
 
                             </VisualStateGroup>
 
