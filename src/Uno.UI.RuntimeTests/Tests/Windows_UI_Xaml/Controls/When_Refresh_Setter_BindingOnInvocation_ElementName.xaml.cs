@@ -14,6 +14,8 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 
+using Annotations = Uno.UI.RuntimeTests.Helpers.Annotations;
+
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace Uno.UI.RuntimeTests
@@ -28,7 +30,7 @@ namespace Uno.UI.RuntimeTests
 
 	public class When_Refresh_Setter_BindingOnInvocation_ElementName_Converter : IValueConverter
 	{
-		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object Convert(object value, [DynamicallyAccessedMembers(Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			var ctrl = value as FrameworkElement;
 
@@ -40,7 +42,7 @@ namespace Uno.UI.RuntimeTests
 			return -10;
 		}
 
-		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object ConvertBack(object value, [DynamicallyAccessedMembers(Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			throw new NotSupportedException();
 		}

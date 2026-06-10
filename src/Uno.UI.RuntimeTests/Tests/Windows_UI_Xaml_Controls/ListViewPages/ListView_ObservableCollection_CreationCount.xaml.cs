@@ -19,6 +19,8 @@ using Microsoft.UI.Xaml.Navigation;
 using MUXControlsTestApp.Utilities;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
+using Annotations = Uno.UI.RuntimeTests.Helpers.Annotations;
+
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace Uno.UI.RuntimeTests.ListViewPages
@@ -186,13 +188,13 @@ namespace Uno.UI.RuntimeTests.ListViewPages
 
 	public class StringConverter : IValueConverter
 	{
-		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object Convert(object value, [DynamicallyAccessedMembers(Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			string str = value?.ToString();
 			return str;
 		}
 
-		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object ConvertBack(object value, [DynamicallyAccessedMembers(Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
 		{
 			throw new NotSupportedException();
 		}

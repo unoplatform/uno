@@ -6,19 +6,21 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 
+using Annotations = Uno.UI.RuntimeTests.Helpers.Annotations;
+
 namespace Uno.UI.RuntimeTests.Tests;
 
 public class BindingShouldBeAppliedOnPropertyChangedEventConverter : IValueConverter
 {
 	public int ConvertCount { get; private set; }
 
-	public object? Convert(object? value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+	public object? Convert(object? value, [DynamicallyAccessedMembers(Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
 	{
 		ConvertCount++;
 		return value is BindingShouldBeAppliedOnPropertyChangedEventValueHolder holder ? holder.Value : null;
 	}
 
-	public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+	public object ConvertBack(object value, [DynamicallyAccessedMembers(Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
 		=> throw new NotSupportedException();
 }
 

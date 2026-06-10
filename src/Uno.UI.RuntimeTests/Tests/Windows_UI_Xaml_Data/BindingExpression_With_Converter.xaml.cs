@@ -5,6 +5,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 
+using Annotations = Uno.UI.RuntimeTests.Helpers.Annotations;
+
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data;
 
 public sealed partial class BindingExpression_With_Converter : Page, INotifyPropertyChanged
@@ -49,7 +51,7 @@ public class BoolToVisibilityConverter : IValueConverter
 		get;
 		set;
 	}
-	public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+	public object Convert(object value, [DynamicallyAccessedMembers(Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
 	{
 		if (value is null)
 		{
@@ -59,7 +61,7 @@ public class BoolToVisibilityConverter : IValueConverter
 		return value?.ToString() ?? (CanReturnNull ? null : "convertervalue");
 	}
 
-	public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language) => throw new NotImplementedException();
+	public object ConvertBack(object value, [DynamicallyAccessedMembers(Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language) => throw new NotImplementedException();
 }
 
 public class BlankItem
