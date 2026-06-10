@@ -39,9 +39,6 @@ To enable `WebView` on the `-desktop` target, add the `WebView` Uno Feature in y
 </UnoFeatures>
 ```
 
-> [!IMPORTANT]
-> If your project's desktop builder in `Platforms/Desktop/Program.cs` uses `.UseWindows()`, you'll also need to add the `<UnoUseWebView2WPF>true</UnoUseWebView2WPF>` property for the integration to work. However, it is recommended to [migrate to `.UseWin32()`](xref:Uno.Development.MigratingToUno6) for better performance and reliability.
-
 ## WebAssembly support
 
 In case of WebAssembly, the control is supported via a native `<iframe>` element. This means all `<iframe>` browser security considerations and limitations also apply to `WebView`:
@@ -167,7 +164,7 @@ The flag defaults to `true` in `DEBUG` builds and `false` in `RELEASE` builds.
 | Platform | What it enables | How to open |
 | ---------- | ----------------- | ------------- |
 | **Windows / Linux (Skia)** | Chromium DevTools | Right-click inside the WebView and choose **Inspect**, or press <kbd>F12</kbd>. |
-| **iOS / Mac Catalyst / macOS** | Safari Web Inspector against the `WKWebView` (iOS 16.4+, macOS 13.3+) | In Safari, enable the **Develop** menu, then pick the device → page. See Apple's [Inspecting iOS](https://developer.apple.com/documentation/safari-developer-tools/inspecting-ios) guide. |
+| **iOS / macOS** | Safari Web Inspector against the `WKWebView` (iOS 16.4+, macOS 13.3+) | In Safari, enable the **Develop** menu, then pick the device → page. See Apple's [Inspecting iOS](https://developer.apple.com/documentation/safari-developer-tools/inspecting-ios) guide. |
 | **Android** | Chrome DevTools remote debugging | Open `chrome://inspect` in desktop Chrome with the device connected. |
 | **WebAssembly** | N/A | Use the host browser's developer tools (<kbd>F12</kbd>). |
 

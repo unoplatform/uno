@@ -24,7 +24,7 @@ uid: uno.publishing.desktop
 - Set **Target framework** to `net10.0-desktop`
 - You can set **Deployment mode** to either `Framework-dependent` or `Self-contained`
   - If `Self-contained` is chosen and you're targeting Windows, **Target runtime** must match the installed .NET SDK runtime identifier
-    as cross-publishing self-contained WPF apps (e.g. win-x64 to win-arm64) is not supported for now.
+    as cross-publishing self-contained Windows apps (e.g. win-x64 to win-arm64) is not supported for now.
 - You can set **Target runtime**, make sure it honors the above limitation, if it applies.
 - Click **Save**
 - Click **Publish**
@@ -193,7 +193,7 @@ dotnet publish -f net10.0-desktop -r {{RID}} -p:SelfContained=true -p:TargetFram
 
 > [!NOTE]
 > Only apply `UseMonoRuntime=false` to the desktop target. WebAssembly and mobile
-> (`-android`, `-ios`, `-maccatalyst`) targets still require Mono.
+> (`-android`, `-ios`) targets still require Mono.
 >
 > If restore still fails after the change (for example due to a previously cached
 > failed lookup), you can clear NuGet caches and retry: `dotnet nuget locals all --clear`.

@@ -5,7 +5,6 @@
 
 	<TargetFrameworks Condition="'$(TargetFrameworks)'=='net10.0-ios' and '$(OutputType)'!='Exe'">net10.0-ios26.0</TargetFrameworks>
 	<TargetFrameworks Condition="'$(TargetFrameworks)'=='net10.0-tvos' and '$(OutputType)'!='Exe'">net10.0-tvos26.0</TargetFrameworks>
-	<TargetFrameworks Condition="'$(TargetFrameworks)'=='net10.0-maccatalyst' and '$(OutputType)'!='Exe'">net10.0-maccatalyst26.0</TargetFrameworks>
   </PropertyGroup>
 
 </Project>

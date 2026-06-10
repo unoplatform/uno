@@ -16,9 +16,6 @@ jobs:
 
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
 
-    # We're building packages on linux, so we need to enable WPF support
-    EnableWindowsTargeting: true
-
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:

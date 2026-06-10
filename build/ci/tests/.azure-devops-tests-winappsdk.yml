@@ -141,17 +141,27 @@ jobs:
   - template: ../templates/dotnet-install.yml
 
   - pwsh: |
-      # Install Windows App Runtime 1.8
-      Write-Host "Installing Windows App Runtime 1.8..."
-      $runtimeUrl = "https://aka.ms/windowsappsdk/1.8/latest/windowsappruntimeinstall-x64.exe"
+      # Install the Windows App Runtime that matches the Microsoft.WindowsAppSDK NuGet
+      # version referenced by SamplesApp.Windows (see SamplesApp.Windows.csproj). Pin the
+      # exact stable version and keep it in sync with that NuGet reference.
+      # Do NOT use the "2.1/latest" shortlink: it currently redirects to the experimental
+      # 2.1.4 build, whose framework does not satisfy the MSIX's
+      # "Microsoft.WindowsAppRuntime.2" (>= 2.1.3.0) dependency, causing 0x80073CF3.
+      $runtimeUrl = "https://aka.ms/windowsappsdk/2.1/2.1.3/windowsappruntimeinstall-x64.exe"
       $runtimeInstaller = "$(Build.SourcesDirectory)/build/windowsappruntimeinstall-x64.exe"
-      
-      Write-Host "Downloading from: $runtimeUrl"
+
+      Write-Host "Downloading Windows App Runtime 2.1.3 from: $runtimeUrl"
       Invoke-WebRequest -Uri $runtimeUrl -OutFile $runtimeInstaller
-      
+
       Write-Host "Running installer: $runtimeInstaller"
-      Start-Process -FilePath $runtimeInstaller -ArgumentList "--quiet" -Wait -NoNewWindow
-      Write-Host "Windows App Runtime 1.8 installed successfully"
+      $proc = Start-Process -FilePath $runtimeInstaller -ArgumentList "--quiet" -Wait -NoNewWindow -PassThru
+      if ($proc.ExitCode -ne 0) {
+        throw "Windows App Runtime installer failed with exit code $($proc.ExitCode)"
+      }
+
+      $runtime = Get-AppxPackage -PackageTypeFilter Framework -Name "Microsoft.WindowsAppRuntime*"
+      Write-Host "Registered Windows App Runtime frameworks: $($runtime.PackageFullName -join ', ')"
+      Write-Host "Windows App Runtime 2.1.3 installed successfully"
     displayName: Install Windows App Runtime
   
   - pwsh: |

@@ -101,6 +101,8 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	public string? WinAppSdkBuildToolsVersion { get; set; }
 
+	public string? WinAppSdkBuildToolsWinAppVersion { get; set; }
+
 	public string? UnoCoreLoggingSingletonVersion { get; set; }
 
 	public string? UnoDspTasksVersion { get; set; }
@@ -151,24 +153,13 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 				var frameworkParts = TargetFramework.Split('-');
 				TargetFrameworkVersion = frameworkParts[0];
 				var runtime = frameworkParts[1].ToLowerInvariant();
-				if (runtime.Contains("windows"))
-				{
-					TargetRuntime = runtime.StartsWith(UnoTarget.Windows, StringComparison.InvariantCultureIgnoreCase) ? UnoTarget.Windows : UnoTarget.SkiaWpf;
-				}
-				else
-				{
-					TargetRuntime = runtime;
-				}
+				TargetRuntime = runtime;
 			}
 			else
 			{
 				TargetFrameworkVersion = TargetFramework;
 				TargetRuntime = UnoTarget.Reference;
-				if (ProjectName.EndsWith("Skia.WPF", StringComparison.InvariantCultureIgnoreCase))
-				{
-					TargetRuntime = UnoTarget.SkiaWpf;
-				}
-				else if (ProjectName.EndsWith("Skia.Linux.FrameBuffer", StringComparison.InvariantCultureIgnoreCase))
+				if (ProjectName.EndsWith("Skia.Linux.FrameBuffer", StringComparison.InvariantCultureIgnoreCase))
 				{
 					TargetRuntime = UnoTarget.SkiaLinuxFramebuffer;
 				}
@@ -268,6 +259,7 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.SvgSkia, SvgSkiaVersion)
 			.UpdateManifest(PackageManifest.Group.WinAppSdk, WinAppSdkVersion)
 			.UpdateManifest(PackageManifest.Group.WinAppSdkBuildTools, WinAppSdkBuildToolsVersion)
+			.UpdateManifest(PackageManifest.Group.WinAppSdkBuildToolsWinApp, WinAppSdkBuildToolsWinAppVersion)
 			.UpdateManifest(PackageManifest.Group.MicrosoftLoggingConsole, MicrosoftLoggingVersion)
 			.UpdateManifest(PackageManifest.Group.WindowsCompatibility, WindowsCompatibilityVersion)
 			.UpdateManifest(PackageManifest.Group.MsalClient, MicrosoftIdentityClientVersion)

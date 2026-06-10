@@ -4705,8 +4705,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Release();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(0, SUT.SelectionLength);
-			Assert.AreEqual(SUT.Text.Length, SUT.SelectionStart);
+			Assert.AreEqual("Text", SUT.SelectedText);
 		}
 
 		[TestMethod]
@@ -4726,14 +4725,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
 			finger.Release();
 			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+			Assert.AreEqual("Text", SUT.SelectedText);
 
-			Assert.IsTrue(SUT.CaretMode is TextBox.CaretDisplayMode.ThumblessCaretHidden or TextBox.CaretDisplayMode.ThumblessCaretShowing);
-
+			// clicking inside the selected area keeps the selection
 			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
 			finger.Release();
 			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+			Assert.AreEqual("Text", SUT.SelectedText);
 
+			// clicking outside the selected area drops it
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter() + new Point(100, 0));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode);
+			Assert.AreEqual("", SUT.SelectedText);
 		}
 
 		[TestMethod]

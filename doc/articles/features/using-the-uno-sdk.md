@@ -138,6 +138,7 @@ Here are the supported properties:
 | `SkiaSharpVersion`                  | [SkiaSharp.Skottie](https://www.nuget.org/packages/SkiaSharp.Skottie) and similar packages                           | Provides a cross-platform 2D graphics API for .NET platforms based on Google's Skia Graphics Library.          |
 | `SvgSkiaVersion`                    | [Svg.Skia](https://www.nuget.org/packages/Svg.Skia)                                                                  | Renders SVG files using the SkiaSharp graphics engine.                                                         |
 | `WinAppSdkBuildToolsVersion`        | [Microsoft.Windows.SDK.BuildTools](https://www.nuget.org/packages/Microsoft.Windows.SDK.BuildTools)                  | Contains the tools required to build applications for the Microsoft Windows App SDK.                           |
+| `WinAppSdkBuildToolsWinAppVersion`  | [Microsoft.Windows.SDK.BuildTools.WinApp](https://www.nuget.org/packages/Microsoft.Windows.SDK.BuildTools.WinApp)    | Enables `dotnet run` to launch the packaged WinAppSDK app with package identity. See [Running packaged WinUI apps with `dotnet run`](#running-packaged-winui-apps-with-dotnet-run). |
 | `WinAppSdkVersion`                  | [Microsoft.WindowsAppSDK](https://www.nuget.org/packages/Microsoft.WindowsAppSDK)                                    | Provides project templates and tools for building Windows applications.                                        |
 | `WindowsCompatibilityVersion`       | [Microsoft.Windows.Compatibility](https://www.nuget.org/packages/Microsoft.Windows.Compatibility)                    | Enables Windows desktop apps to use .NET Core by providing access to additional Windows APIs.                  |
 
@@ -229,6 +230,39 @@ If you still need one of the stripped packages on Windows for a specific reason,
 
 > [!NOTE]
 > This property is aimed at libraries (`IsPackable=true`). Application heads typically need the implicit Uno packages on Windows to run, so setting this on a head project is not recommended.
+
+## Running packaged WinUI apps with `dotnet run`
+
+On the Windows App SDK target, the `Uno.Sdk` implicitly references the [`Microsoft.Windows.SDK.BuildTools.WinApp`](https://www.nuget.org/packages/Microsoft.Windows.SDK.BuildTools.WinApp) package for executable (application head) projects. This package overrides the `dotnet run` behavior so that, instead of launching the raw executable, it registers a loose-layout package and launches the app **with package identity** — matching the experience of the [`dotnet new` templates for WinUI](https://devblogs.microsoft.com/ifdef-windows/introducing-dotnet-new-templates-for-winui/). This means features that require package identity (such as notifications, app data, or `ApplicationData`) work the same way they do when the app is deployed from its MSIX package.
+
+The package is referenced with `PrivateAssets="all"`, so it does not flow to consumers of your project. It is only added to executable heads — libraries never pull it in.
+
+You can control this behavior with the following properties:
+
+| Property | Default | Effect |
+|----------|---------|--------|
+| `EnableWinAppRunSupport` | `true` | Set to `false` to keep the package reference but disable the `dotnet run` interception (the app then launches as a plain executable, without package identity). |
+| `UnoDisableWinAppRunSupport` | `false` | Set to `true` to suppress the **implicit** `Microsoft.Windows.SDK.BuildTools.WinApp` reference entirely, so the package is never restored. |
+| `WinAppSdkBuildToolsWinAppVersion` | (SDK-managed) | Overrides the version of the `Microsoft.Windows.SDK.BuildTools.WinApp` package. |
+
+For example, to turn the feature off while still restoring the package (useful if you set it conditionally), add to your `csproj` or `Directory.Build.props`:
+
+```xml
+<PropertyGroup>
+  <EnableWinAppRunSupport>false</EnableWinAppRunSupport>
+</PropertyGroup>
+```
+
+Or, to avoid restoring the package altogether:
+
+```xml
+<PropertyGroup>
+  <UnoDisableWinAppRunSupport>true</UnoDisableWinAppRunSupport>
+</PropertyGroup>
+```
+
+> [!NOTE]
+> `EnableWinAppRunSupport` is provided by the `Microsoft.Windows.SDK.BuildTools.WinApp` package itself, so it also works when you add the package explicitly. `UnoDisableWinAppRunSupport` is specific to the `Uno.Sdk` and only affects the implicit reference.
 
 ## Supported OS Platform versions
 
@@ -365,13 +399,12 @@ In addition to the per-file suffixes described above, the Uno.Sdk recognizes a s
 | `Platforms/Android/` | `*-android` | `Main.Android.cs`, `AndroidManifest.xml`, Android resources |
 | `Platforms/iOS/` | `*-ios` | `Main.iOS.cs`, `Info.plist`, `Entitlements.plist`, `PrivacyInfo.xcprivacy` |
 | `Platforms/tvOS/` | `*-tvos` | tvOS-specific entry point and resources |
-| `Platforms/MacCatalyst/` | `*-maccatalyst` | Mac Catalyst entry point, `Info.plist`, `Entitlements.plist` |
 | `Platforms/MacOS/` | `*-macos` | macOS entry point, `Info.plist`, `Entitlements.plist` |
 | `Platforms/Desktop/` | `*-desktop` | `Program.cs` with the `UnoPlatformHostBuilder` configuration |
 | `Platforms/Wasm/` (or `Platforms/WebAssembly/`) | `*-browserwasm` | `Program.cs`, `wwwroot/`, `manifest.webmanifest` |
 | `Platforms/Windows/` | `*-windows10.*` | `Package.appxmanifest`, `app.manifest`, splash screens, tile/app-icon PNGs referenced by the manifest |
 
-The location of each folder can be overridden via the matching MSBuild property if your project uses a different layout: `PlatformsProjectFolder`, `AndroidProjectFolder`, `iOSProjectFolder`, `tvOSProjectFolder`, `MacCatalystProjectFolder`, `MacOSProjectFolder`, `DesktopProjectFolder`, `WasmProjectFolder`, `WindowsProjectFolder`.
+The location of each folder can be overridden via the matching MSBuild property if your project uses a different layout: `PlatformsProjectFolder`, `AndroidProjectFolder`, `iOSProjectFolder`, `tvOSProjectFolder`, `MacOSProjectFolder`, `DesktopProjectFolder`, `WasmProjectFolder`, `WindowsProjectFolder`.
 
 ## Apple Privacy Manifest Support
 

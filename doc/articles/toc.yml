@@ -257,8 +257,6 @@
 
     - name: Embedding
       items:
-      - name: Uno Platform in WPF
-        href: guides/uno-islands.md
       - name: Native Views
         href: native-views.md
       - name: Native Views with Skia
@@ -294,7 +292,7 @@
         href: guides/xf-migration/toc.yml
       - name: WPF
         items:
-          - name: Migrating WPF Apps to Web
+          - name: Migrating WPF Apps to Uno Platform
             href: wpf-migration.md
           - name: WPF to WinUI XAML Equivalents
             href: wpf-winui-equivalents.md
@@ -467,10 +465,14 @@
     - name: FAQ
       href: xref:Uno.Development.FAQ
 
-- name: Studio
+- name: Uno Platform Studio
   items:
     - name: Overview
       href: xref:Uno.Platform.Studio.Overview
+    - name: App
+      href: external/studio-docs/App/toc.yml
+    - name: Agent
+      href: external/studio-docs/Agent/toc.yml
     - name: Uno MCPs
       href: xref:Uno.Features.Uno.MCPs
     - name: Hot Reload

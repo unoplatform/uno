@@ -59,11 +59,7 @@
 		},
 		"tvOSProjectFolder": {
 			"type": "folder-with-slash",
-			"description": "The folder containing the Mac Catalyst-specific files for this project."
-		},
-		"MacCatalystProjectFolder": {
-			"type": "folder-with-slash",
-			"description": "The folder containing the Mac Catalyst-specific files for this project."
+			"description": "The folder containing the tvOS-specific files for this project."
 		},
 		"MacOSProjectFolder": {
 			"type": "folder-with-slash",
@@ -151,7 +147,6 @@
 		},
 		"DisableXamarinDebug_Workaround": {
 			"description": "Disables modification of MtouchExtraArgs for Debugging.",
-			"helpUrl": "https://github.com/dotnet/maui-samples/blob/8aa6b8780b12e97b157514c3bdc54bb4a13001cd/HelloMacCatalyst/HelloMacCatalyst.csproj#L7",
 			"type": "bool"
 		},
 		"MauiVersion": {
@@ -257,6 +252,14 @@
 		"WinAppSdkBuildToolsVersion": {
 			"description": "Provides an explicit override for the version of the Microsoft.Windows.SDK.BuildTools to use.",
 			"type": "nuget-version"
+		},
+		"WinAppSdkBuildToolsWinAppVersion": {
+			"description": "Provides an explicit override for the version of the Microsoft.Windows.SDK.BuildTools.WinApp package. This package enables `dotnet run` to launch the packaged WinAppSDK app with package identity.",
+			"type": "nuget-version"
+		},
+		"UnoDisableWinAppRunSupport": {
+			"description": "When set to true, the Uno.Sdk will not implicitly reference Microsoft.Windows.SDK.BuildTools.WinApp for WinAppSDK executables. Set EnableWinAppRunSupport=false instead to keep the reference but disable the `dotnet run` interception.",
+			"type": "bool"
 		},
 		"UnoCoreLoggingSingletonVersion": {
 			"description": "Provides an explicit override for the version of Uno.Core.Logging.Singleton to use.",

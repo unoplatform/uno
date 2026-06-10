@@ -816,7 +816,7 @@ namespace Uno.UI
 			/// <para>Per-platform behavior:</para>
 			/// <list type="bullet">
 			///   <item><description>Windows / Linux (Skia): toggles Chromium DevTools (right-click "Inspect" / F12).</description></item>
-			///   <item><description>iOS / Mac Catalyst / macOS: enables Safari Web Inspector against the <c>WKWebView</c> (requires iOS 16.4+, macOS 13.3+).</description></item>
+			///   <item><description>iOS / macOS: enables Safari Web Inspector against the <c>WKWebView</c> (requires iOS 16.4+, macOS 13.3+).</description></item>
 			///   <item><description>Android: enables Chrome DevTools remote debugging at <c>chrome://inspect</c>.</description></item>
 			///   <item><description>WebAssembly: no-op; use the host browser's developer tools.</description></item>
 			/// </list>
