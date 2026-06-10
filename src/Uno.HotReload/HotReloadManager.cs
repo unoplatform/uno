@@ -80,15 +80,17 @@ public sealed class HotReloadManager : IDisposable
 
 	private readonly FastAsyncLock _solutionUpdateGate = new();
 	private readonly Workspace _innerWorkspace;
-	private readonly WatchHotReloadService _watchService;
+	private readonly IWatchHotReloadService _watchService;
 	private readonly IHotReloadHandler _handler;
 	private readonly IHotReloadTracker _tracker;
 	private readonly IChangesDetector _changesDetector;
 	private readonly ISolutionUpdater _solutionUpdater;
 
-	private HotReloadManager(
+	// Internal (not private) so unit tests can drive the manager with a stub
+	// IWatchHotReloadService; production code goes through CreateAsync.
+	internal HotReloadManager(
 		Workspace innerWorkspace,
-		WatchHotReloadService watchService,
+		IWatchHotReloadService watchService,
 		IHotReloadHandler handler,
 		IChangesDetector changesDetector,
 		ISolutionUpdater solutionUpdater,

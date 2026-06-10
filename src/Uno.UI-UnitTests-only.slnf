@@ -15,6 +15,7 @@
       "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",
       "Uno.Foundation\\Uno.Foundation.Skia.csproj",
       "Uno.HotReload\\Uno.HotReload.csproj",
+      "Uno.HotReload.Tests\\Uno.HotReload.Tests.csproj",
       "Uno.UI.Adapter.Microsoft.Extensions.Logging\\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj",
       "Uno.UI.Composition\\Uno.UI.Composition.Skia.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.Skia.csproj",

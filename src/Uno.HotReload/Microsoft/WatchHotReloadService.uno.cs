@@ -6,7 +6,7 @@ using Uno.HotReload.Microsoft;
 
 namespace Uno.HotReload.Microsoft;
 
-partial class WatchHotReloadService
+partial class WatchHotReloadService : IWatchHotReloadService
 {
 	public static async ValueTask<WatchHotReloadService> CreateAsync(Workspace workspace, string[] metadataUpdateCapabilities, CancellationToken ct)
 	{
