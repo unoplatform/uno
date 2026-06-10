@@ -19,7 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		// The point is kept off the centered check glyph so we read the fill, not the glyph.
 		private static Point GetCheckFillPoint(CheckBox checkBox, FrameworkElement root)
 		{
-			var fill = (Rectangle)checkBox.FindVisualChildByName("NormalRectangle");
+			var fill = checkBox.FindVisualChildByName("NormalRectangle") as Rectangle;
 			Assert.IsNotNull(fill, "Could not find the CheckBox 'NormalRectangle' template part.");
 			return fill.TransformToVisual(root).TransformPoint(new Point(fill.ActualWidth / 2, 3));
 		}
