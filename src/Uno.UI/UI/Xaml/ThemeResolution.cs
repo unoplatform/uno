@@ -21,10 +21,11 @@ namespace Microsoft.UI.Xaml;
 /// falling back to the application/OS base theme.
 /// </summary>
 /// <remarks>
-/// This is the single source of truth for an owner's resolution theme: the resolution choke point
-/// (<see cref="DependencyObjectStore"/>.UpdateThemeReference) computes it once and threads it into the
-/// resolution leaf, so {ThemeResource} resolution keys on the owner's own theme rather than a
-/// process-global ambient.
+/// This is the single source of truth for an owner's resolution theme: the resolution choke points
+/// (e.g. <see cref="DependencyObjectStore"/>.UpdateThemeReference) compute it once and scope it onto
+/// the core requested-theme-for-subtree slot, which the resolution leaf reads
+/// (EnsureActiveThemeDictionary, Resources.cpp:764-768), so {ThemeResource} resolution keys on the
+/// owner's own theme.
 /// </remarks>
 internal static class ThemeResolution
 {

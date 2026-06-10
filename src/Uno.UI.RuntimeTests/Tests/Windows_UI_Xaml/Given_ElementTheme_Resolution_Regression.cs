@@ -29,9 +29,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		private static readonly Color _darkStroke = Color.FromArgb(0x12, 0xFF, 0xFF, 0xFF);  // ControlStrokeColorDefault (Dark)
 
 		// PROBE: isolate the dictionary lookup from all element/walk/pin machinery. Query the app resources
-		// directly with explicit Dark then Light theme keys (mimicking load-under-Dark then switch-to-Light).
+		// directly with the requested-theme-for-subtree slot scoped to Dark then Light (mimicking
+		// load-under-Dark then switch-to-Light) — the dictionary leaf reads the slot like WinUI's
+		// EnsureActiveThemeDictionary (Resources.cpp:764-768). The slot only drives resolution on
+		// enhanced-lifecycle targets, so native mobile is excluded.
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeMobile)]
 		public async Task Probe_Direct_Dictionary_Theme_Lookup()
 		{
 			var originalTheme = Application.Current.RequestedTheme;
@@ -42,22 +45,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				await TestServices.WindowHelper.WaitForIdle();
 
 				var key = new SpecializedResourceDictionary.ResourceKey("ApplicationPageBackgroundThemeBrush");
-				var darkKey = ResourceDictionary.GetThemeKey(Microsoft.UI.Xaml.Theme.Dark);
-				var lightKey = ResourceDictionary.GetThemeKey(Microsoft.UI.Xaml.Theme.Light);
 
-				Application.Current.Resources.TryGetValue(key, darkKey, out var dv, false);
-				Application.Current.Resources.TryGetValue(key, lightKey, out var lv, false);
-				Application.Current.Resources.TryGetValue(key, darkKey, out var dv2, false);
-				Application.Current.Resources.TryGetValue(key, lightKey, out var lv2, false);
+				object QueryUnderTheme(Microsoft.UI.Xaml.Theme theme)
+				{
+					using var themeScope = Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(theme);
+					Application.Current.Resources.TryGetValue(key, out var value, false);
+					return value;
+				}
+
+				var dv = QueryUnderTheme(Microsoft.UI.Xaml.Theme.Dark);
+				var lv = QueryUnderTheme(Microsoft.UI.Xaml.Theme.Light);
+				var dv2 = QueryUnderTheme(Microsoft.UI.Xaml.Theme.Dark);
+				var lv2 = QueryUnderTheme(Microsoft.UI.Xaml.Theme.Light);
 
 				var dc = (dv as SolidColorBrush)?.Color;
 				var lc = (lv as SolidColorBrush)?.Color;
 
-				Assert.AreEqual(_darkPageBg, dc, "Dark-key query must return Dark value");
-				Assert.AreEqual(_lightPageBg, lc, "Light-key query must return Light value (dictionary lookup must honor the passed theme key)");
+				Assert.AreEqual(_darkPageBg, dc, "Dark-scoped query must return Dark value");
+				Assert.AreEqual(_lightPageBg, lc, "Light-scoped query must return Light value (dictionary lookup must honor the scoped subtree theme)");
 				// A second query of each must stay stable (guards against a materialization caching the wrong theme).
-				Assert.AreEqual(_darkPageBg, (dv2 as SolidColorBrush)?.Color, "Dark-key re-query must stay Dark");
-				Assert.AreEqual(_lightPageBg, (lv2 as SolidColorBrush)?.Color, "Light-key re-query must stay Light");
+				Assert.AreEqual(_darkPageBg, (dv2 as SolidColorBrush)?.Color, "Dark-scoped re-query must stay Dark");
+				Assert.AreEqual(_lightPageBg, (lv2 as SolidColorBrush)?.Color, "Light-scoped re-query must stay Light");
 			}
 			finally
 			{

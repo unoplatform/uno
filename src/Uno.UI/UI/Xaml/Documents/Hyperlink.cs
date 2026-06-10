@@ -234,18 +234,18 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			// Resolve the state brushes under the containing element's effective theme, scoped onto
 			// the core requested-theme-for-subtree slot like WinUI's LookupThemeResource(theme, key)
-			// (xcpcore.cpp:2371-2394).
+			// (xcpcore.cpp:2371-2394); the resolution leaf reads the slot (EnsureActiveThemeDictionary,
+			// Resources.cpp:764-768).
 			var ownerTheme = ThemeResolution.ResolveOwnerTheme(GetContainingFrameworkElement());
 			using var themeScope = Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(ownerTheme);
-			var ownerThemeKey = ResourceDictionary.GetThemeKey(ownerTheme);
 
 			if (_pressedPointer is { }
-				&& Application.Current.Resources.TryGetValue(HyperlinkForegroundPressedKey, ownerThemeKey, out var pressedBrush, shouldCheckSystem: true))
+				&& Application.Current.Resources.TryGetValue(HyperlinkForegroundPressedKey, out var pressedBrush, shouldCheckSystem: true))
 			{
 				this.SetValue(ForegroundProperty, pressedBrush, DependencyPropertyValuePrecedences.Animations);
 			}
 			else if (_hoveredPointer is { }
-				&& Application.Current.Resources.TryGetValue(HyperlinkForegroundPointerOverKey, ownerThemeKey, out var hoveredBrush, shouldCheckSystem: true))
+				&& Application.Current.Resources.TryGetValue(HyperlinkForegroundPointerOverKey, out var hoveredBrush, shouldCheckSystem: true))
 			{
 				this.SetValue(ForegroundProperty, hoveredBrush, DependencyPropertyValuePrecedences.Animations);
 			}
@@ -257,7 +257,7 @@ namespace Microsoft.UI.Xaml.Documents
 				{
 					this.SetValue(ForegroundProperty, this.GetValue(ForegroundProperty), DependencyPropertyValuePrecedences.Animations);
 				}
-				else if (Application.Current.Resources.TryGetValue(HyperlinkForeground, ownerThemeKey, out var defaultBrush, shouldCheckSystem: true))
+				else if (Application.Current.Resources.TryGetValue(HyperlinkForeground, out var defaultBrush, shouldCheckSystem: true))
 				{
 					this.SetValue(ForegroundProperty, defaultBrush, DependencyPropertyValuePrecedences.Animations);
 				}

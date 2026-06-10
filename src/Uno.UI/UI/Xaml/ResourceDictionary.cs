@@ -10,7 +10,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.UI.Xaml.Data;
 using Uno.Extensions;
-using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.UI;
 using Uno.UI.DataBinding;
@@ -259,7 +258,7 @@ namespace Microsoft.UI.Xaml
 		{
 			return _values.ContainsKey(resourceKey)
 			|| ContainsKeyMerged(resourceKey)
-			|| ContainsKeyTheme(resourceKey, GetActiveTheme())
+			|| ContainsKeyTheme(resourceKey)
 			|| (shouldCheckSystem && !IsSystemDictionary && ResourceResolver.ContainsKeySystem(resourceKey));
 		}
 
@@ -278,32 +277,14 @@ namespace Microsoft.UI.Xaml
 		internal bool TryGetValue(Type resourceKey, out object value, bool shouldCheckSystem)
 			=> TryGetValue(new ResourceKey(resourceKey), out value, shouldCheckSystem);
 
-		// Theme-aware convenience overloads that forward the resolving owner's effective theme key to the
-		// leaf lookup, mirroring the parameterless object/string overloads above.
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal bool TryGetValue(object key, in ResourceKey themeKey, out object value, bool shouldCheckSystem)
-			=> TryGetValue(new ResourceKey(key), themeKey, out value, shouldCheckSystem);
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal bool TryGetValue(string resourceKey, in ResourceKey themeKey, out object value, bool shouldCheckSystem)
-			=> TryGetValue(new ResourceKey(resourceKey), themeKey, out value, shouldCheckSystem);
-
+		// Theme-aware leaf lookup. The Light/Dark sub-dictionary is selected by the ambient active theme
+		// (GetActiveTheme — the core requested-theme-for-subtree slot when one is scoped, else the app/OS
+		// base theme). MUX: CResourceDictionary::EnsureActiveThemeDictionary reads the same core ambient
+		// (Resources.cpp:764-768); callers that resolve under a specific owner's theme scope the slot
+		// (CoreServices.ScopeRequestedThemeForSubTree) rather than passing a theme here.
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal bool TryGetValue(in ResourceKey resourceKey, out object value, bool shouldCheckSystem)
-			=> TryGetValue(resourceKey, GetActiveTheme(), out value, shouldCheckSystem);
-
-		// Theme-aware leaf lookup. The Light/Dark sub-dictionary is selected by the explicitly-passed
-		// <paramref name="themeKey"/> (the resolving owner's effective theme). The parameterless overload
-		// above forwards GetActiveTheme() (the app/OS base theme) — the permanent fallback for owner-less /
-		// app-level lookups, e.g. the public Resources.TryGetValue(key, out value), which has no resolving
-		// element. MUX: matches SetThemeResourceBinding resolving against the owner's own m_theme
-		// (Theming.cpp:368-376), with the theme threaded as a parameter rather than an ambient slot.
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal bool TryGetValue(in ResourceKey resourceKey, in ResourceKey themeKey, out object value, bool shouldCheckSystem)
 		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
-			AssertAmbientThemeMatches(resourceKey, themeKey);
-#endif
 			bool useKeysNotFoundCache = resourceKey.ShouldFilter;
 			var modifiedKey = resourceKey;
 
@@ -322,8 +303,8 @@ namespace Microsoft.UI.Xaml
 			{
 				if (value is SpecialValue)
 				{
-					TryMaterializeLazy(resourceKey, ref value, themeKey);
-					TryResolveAlias(ref value, themeKey);
+					TryMaterializeLazy(resourceKey, ref value);
+					TryResolveAlias(ref value);
 				}
 
 #if DEBUG && DEBUG_SET_RESOURCE_SOURCE
@@ -332,20 +313,20 @@ namespace Microsoft.UI.Xaml
 				return true;
 			}
 
-			if (GetFromMerged(modifiedKey, themeKey, out value))
+			if (GetFromMerged(modifiedKey, out value))
 			{
 				return true;
 			}
 
-			if (GetActiveThemeDictionary(themeKey) is { } activeThemeDictionary
-				&& activeThemeDictionary.TryGetValue(resourceKey, themeKey, out value, shouldCheckSystem: false))
+			if (GetActiveThemeDictionary() is { } activeThemeDictionary
+				&& activeThemeDictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
 			{
 				return true;
 			}
 
 			if (shouldCheckSystem && !IsSystemDictionary) // We don't fall back on system resources from within a system-defined dictionary, to avoid an infinite recurse
 			{
-				return ResourceResolver.TrySystemResourceRetrieval(modifiedKey, themeKey, out value);
+				return ResourceResolver.TrySystemResourceRetrieval(modifiedKey, out value);
 			}
 
 			if (useKeysNotFoundCache && !shouldCheckSystem)
@@ -365,21 +346,13 @@ namespace Microsoft.UI.Xaml
 		/// Critical: when a value is found in a theme sub-dictionary (via GetActiveThemeDictionary),
 		/// the providing dictionary is THIS dictionary (the one owning ThemeDictionaries), not the
 		/// inner theme sub-dictionary. This ensures re-querying on theme change automatically picks
-		/// the new theme's sub-dictionary.
+		/// the new theme's sub-dictionary. The theme sub-dictionary is selected by the ambient active
+		/// theme (GetActiveTheme), like CResourceDictionary::EnsureActiveThemeDictionary reading the
+		/// core requested-theme-for-subtree slot (Resources.cpp:764-768).
 		/// </remarks>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal bool TryGetValue(in ResourceKey resourceKey, out object value, out ResourceDictionary providingDictionary, bool shouldCheckSystem)
-			=> TryGetValue(resourceKey, GetActiveTheme(), out value, out providingDictionary, shouldCheckSystem);
-
-		// Theme-aware leaf lookup (providing-dictionary variant). See the value-only overload above. The
-		// providing dictionary pinned for a theme hit is THIS dictionary (the owner of ThemeDictionaries),
-		// so re-querying after a theme change picks the new sub-dictionary.
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal bool TryGetValue(in ResourceKey resourceKey, in ResourceKey themeKey, out object value, out ResourceDictionary providingDictionary, bool shouldCheckSystem)
 		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
-			AssertAmbientThemeMatches(resourceKey, themeKey);
-#endif
 			bool useKeysNotFoundCache = resourceKey.ShouldFilter;
 			var modifiedKey = resourceKey;
 
@@ -399,8 +372,8 @@ namespace Microsoft.UI.Xaml
 			{
 				if (value is SpecialValue)
 				{
-					TryMaterializeLazy(resourceKey, ref value, themeKey);
-					TryResolveAlias(ref value, themeKey);
+					TryMaterializeLazy(resourceKey, ref value);
+					TryResolveAlias(ref value);
 				}
 
 #if DEBUG && DEBUG_SET_RESOURCE_SOURCE
@@ -410,15 +383,15 @@ namespace Microsoft.UI.Xaml
 				return true;
 			}
 
-			if (GetFromMerged(modifiedKey, themeKey, out value, out providingDictionary))
+			if (GetFromMerged(modifiedKey, out value, out providingDictionary))
 			{
 				return true;
 			}
 
 			// When found via theme dictionary, pin THIS dictionary (the owner of ThemeDictionaries),
 			// not the inner theme sub-dictionary. This is critical for correct theme switching.
-			if (GetActiveThemeDictionary(themeKey) is { } activeThemeDictionary
-				&& activeThemeDictionary.TryGetValue(resourceKey, themeKey, out value, shouldCheckSystem: false))
+			if (GetActiveThemeDictionary() is { } activeThemeDictionary
+				&& activeThemeDictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
 			{
 				providingDictionary = this;
 				return true;
@@ -426,7 +399,7 @@ namespace Microsoft.UI.Xaml
 
 			if (shouldCheckSystem && !IsSystemDictionary)
 			{
-				if (ResourceResolver.TrySystemResourceRetrieval(modifiedKey, themeKey, out value))
+				if (ResourceResolver.TrySystemResourceRetrieval(modifiedKey, out value))
 				{
 					// System resources are always available at top-level;
 					// no need to pin a specific dictionary -- RefreshValue()
@@ -445,15 +418,13 @@ namespace Microsoft.UI.Xaml
 			return false;
 		}
 
-		// Thread the resolving owner's theme into the merged-dictionary recursion so merged dictionaries
-		// select the same theme sub-dictionary as the root lookup.
-		private bool GetFromMerged(in ResourceKey resourceKey, in ResourceKey themeKey, out object value, out ResourceDictionary providingDictionary)
+		private bool GetFromMerged(in ResourceKey resourceKey, out object value, out ResourceDictionary providingDictionary)
 		{
 			var count = _mergedDictionaries.Count;
 
 			for (int i = count - 1; i >= 0; i--)
 			{
-				if (_mergedDictionaries[i].TryGetValue(resourceKey, themeKey, out value, out providingDictionary, shouldCheckSystem: false))
+				if (_mergedDictionaries[i].TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false))
 				{
 					return true;
 				}
@@ -527,9 +498,6 @@ namespace Microsoft.UI.Xaml
 		/// If retrieved element is a <see cref="LazyInitializer"/> stub, materialize the actual object and replace the stub.
 		/// </summary>
 		private void TryMaterializeLazy(in ResourceKey key, ref object value)
-			=> TryMaterializeLazy(key, ref value, GetActiveTheme());
-
-		private void TryMaterializeLazy(in ResourceKey key, ref object value, in ResourceKey themeKey)
 		{
 			if (value is LazyInitializer lazyInitializer)
 			{
@@ -538,12 +506,14 @@ namespace Microsoft.UI.Xaml
 
 				// A lazy resource living in a theme sub-dictionary (e.g. the Light ApplicationPageBackgroundThemeBrush
 				// whose Color is a {StaticResource SolidBackgroundFillColorBase}) bakes its nested {StaticResource}/
-				// {ThemeResource} against the ambient active theme (GetActiveTheme) the FIRST time it materializes —
-				// then caches the result in _values forever. Under an opposite-theme app (Light resource materialized
-				// while the app is Dark) that bakes the wrong theme's value permanently. Scope the active theme to the
-				// theme this lookup is resolving for, so the initializer resolves nested refs in the sub-dictionary's
-				// own theme. Mirrors WinUI resolving a deferred theme-dictionary resource under the requested theme
-				// (EnsureActiveThemeDictionary, Resources.cpp:687-819).
+				// {ThemeResource} the FIRST time it materializes — then caches the result in _values forever. Under
+				// an opposite-theme app (Light resource materialized while the app is Dark) that bakes the wrong
+				// theme's value permanently. Scope the active theme to the theme this lookup is resolving under —
+				// the ambient active theme (GetActiveTheme: the core requested-theme-for-subtree slot when scoped,
+				// else the app/OS base theme) — so the initializer resolves nested refs in the sub-dictionary's own
+				// theme. Mirrors WinUI resolving a deferred theme-dictionary resource under the requested theme
+				// (EnsureActiveThemeDictionary, Resources.cpp:687-819, theme selection :764-768).
+				var themeKey = GetActiveTheme();
 				var previousActiveTheme = Themes.Active;
 				var overrideActiveTheme = themeKey.Key is not null && !themeKey.Equals(previousActiveTheme);
 
@@ -617,17 +587,15 @@ namespace Microsoft.UI.Xaml
 		/// If <paramref name="value"/> is a <see cref="StaticResourceAliasRedirect"/>, replace it with the target of ResourceKey, or null if no matching resource is found.
 		/// </summary>
 		/// <returns>True if <paramref name="value"/> is a <see cref="StaticResourceAliasRedirect"/>, false otherwise</returns>
+		// The alias target resolves under the same ambient active theme as the alias lookup itself (the
+		// dictionary leaves read GetActiveTheme), so an alias inside a theme sub-dictionary (e.g.
+		// SystemControlFocusVisualPrimaryBrush → FocusStrokeColorOuterBrush) resolves its target in the
+		// same theme as the alias. Matches WinUI's LookupThemeResource(theme, key) (xcpcore.cpp).
 		private bool TryResolveAlias(ref object value)
-			=> TryResolveAlias(ref value, GetActiveTheme());
-
-		// Resolve the StaticResource alias target against the passed owner theme, so an alias inside a theme
-		// sub-dictionary (e.g. SystemControlFocusVisualPrimaryBrush → FocusStrokeColorOuterBrush) resolves
-		// its target in the same theme as the alias. Matches WinUI's LookupThemeResource(theme, key) (xcpcore.cpp).
-		private bool TryResolveAlias(ref object value, in ResourceKey themeKey)
 		{
 			if (value is StaticResourceAliasRedirect alias)
 			{
-				ResourceResolver.ResolveResourceStatic(alias.ResourceKey, themeKey, out var resourceKeyTarget, alias.ParseContext);
+				ResourceResolver.ResolveResourceStatic(alias.ResourceKey, out var resourceKeyTarget, alias.ParseContext);
 				value = resourceKeyTarget;
 				return true;
 			}
@@ -635,15 +603,14 @@ namespace Microsoft.UI.Xaml
 			return false;
 		}
 
-		// Theme-threaded merged-dictionary recursion (value-only variant).
-		private bool GetFromMerged(in ResourceKey resourceKey, in ResourceKey themeKey, out object value)
+		private bool GetFromMerged(in ResourceKey resourceKey, out object value)
 		{
 			// Check last dictionary first - //https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/resourcedictionary-and-xaml-resource-references#merged-resource-dictionaries
 			var count = _mergedDictionaries.Count;
 
 			for (int i = count - 1; i >= 0; i--)
 			{
-				if (_mergedDictionaries[i].TryGetValue(resourceKey, themeKey, out value, shouldCheckSystem: false))
+				if (_mergedDictionaries[i].TryGetValue(resourceKey, out value, shouldCheckSystem: false))
 				{
 					return true;
 				}
@@ -693,13 +660,16 @@ namespace Microsoft.UI.Xaml
 		private ResourceKey _activeTheme;
 		private bool _activeThemeHighContrast;
 
-		private ResourceDictionary GetActiveThemeDictionary(in ResourceKey activeTheme)
+		private ResourceDictionary GetActiveThemeDictionary()
 		{
 			// High contrast is an OS/app-global dimension: WinUI reads it from FrameworkTheming, not from
-			// the per-object theme (Resources.cpp:718,740), while the base Light/Dark comes from the
-			// resolving owner's theme (the passed key — the analog of WinUI's RequestedThemeForSubTree).
-			// Cache invalidates when either the base theme key or the high-contrast state changes (MUX:
-			// EnsureActiveThemeDictionary's baseThemeChanged | highContrastChanged guard, Resources.cpp:699-704).
+			// the per-object theme (Resources.cpp:718,740), while the base Light/Dark comes from the ambient
+			// active theme (GetActiveTheme — the core requested-theme-for-subtree slot when one is scoped,
+			// else the app/OS base theme), like EnsureActiveThemeDictionary's theme selection
+			// (Resources.cpp:764-768). Cache invalidates when either the base theme key or the high-contrast
+			// state changes (MUX: EnsureActiveThemeDictionary's baseThemeChanged | highContrastChanged guard,
+			// Resources.cpp:699-704).
+			var activeTheme = GetActiveTheme();
 			var highContrast = Themes.IsHighContrast;
 			if (!activeTheme.Equals(_activeTheme) || highContrast != _activeThemeHighContrast)
 			{
@@ -748,18 +718,18 @@ namespace Microsoft.UI.Xaml
 			return null;
 		}
 
-		private bool ContainsKeyTheme(in ResourceKey resourceKey, in ResourceKey activeTheme)
+		private bool ContainsKeyTheme(in ResourceKey resourceKey)
 		{
-			return GetActiveThemeDictionary(activeTheme)?.ContainsKey(resourceKey, shouldCheckSystem: false) ?? ContainsKeyThemeMerged(resourceKey, activeTheme);
+			return GetActiveThemeDictionary()?.ContainsKey(resourceKey, shouldCheckSystem: false) ?? ContainsKeyThemeMerged(resourceKey);
 		}
 
-		private bool ContainsKeyThemeMerged(in ResourceKey resourceKey, in ResourceKey activeTheme)
+		private bool ContainsKeyThemeMerged(in ResourceKey resourceKey)
 		{
 			var count = _mergedDictionaries.Count;
 
 			for (int i = count - 1; i >= 0; i--)
 			{
-				if (_mergedDictionaries[i].ContainsKeyTheme(resourceKey, activeTheme))
+				if (_mergedDictionaries[i].ContainsKeyTheme(resourceKey))
 				{
 					return true;
 				}
@@ -1126,9 +1096,8 @@ namespace Microsoft.UI.Xaml
 
 		internal static object GetStaticResourceAliasPassthrough(string resourceKey, XamlParseContext parseContext) => new StaticResourceAliasRedirect(resourceKey, parseContext);
 
-		// The per-subtree theme is threaded as a parameter (the resolving owner's effective theme,
-		// ThemeResolution.ResolveOwnerTheme); GetActiveTheme returns the application/OS base theme, used only
-		// as the fallback for resource lookups with no owner context (e.g. app-level Application.Resources).
+		// The single theme read of the resolution leaf: every theme sub-dictionary selection
+		// (GetActiveThemeDictionary, lazy materialization) keys on this ambient.
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		// MUX Reference: CResourceDictionary::EnsureActiveThemeDictionary theme selection
 		// (Resources.cpp:764-768) — "core->IsThemeRequestedForSubTree() ?
@@ -1150,29 +1119,6 @@ namespace Microsoft.UI.Xaml
 		// EnsureActiveThemeDictionary reads FrameworkTheming, Resources.cpp:718,740), so the key stays base.
 		internal static ResourceKey GetThemeKey(Theme theme)
 			=> Theming.GetBaseValue(theme) == Theme.Light ? Themes.Light : Themes.Dark;
-
-#if UNO_HAS_ENHANCED_LIFECYCLE
-		// TODO Uno: transitional Phase 3 equivalence check — proves the core requested-theme-for-subtree
-		// slot (CCoreServices::m_requestedThemeForSubTree, written at WinUI's exact scoped set-points)
-		// always agrees with the explicitly threaded theme key (the prior mechanism) before the parameter
-		// threading is retired. Logs (never throws) so divergences surface in test output. Remove in Phase 5.
-		private static void AssertAmbientThemeMatches(in ResourceKey resourceKey, in ResourceKey themeKey)
-		{
-			if (Uno.UI.Xaml.Core.CoreServices.HasInstance)
-			{
-				var core = Uno.UI.Xaml.Core.CoreServices.Instance;
-				if (core.IsThemeRequestedForSubTree())
-				{
-					var slotKey = GetThemeKey(core.GetRequestedThemeForSubTree());
-					if (!slotKey.Equals(themeKey) && typeof(ResourceDictionary).Log().IsEnabled(LogLevel.Error))
-					{
-						typeof(ResourceDictionary).Log().Error(
-							$"Theme ambient mismatch resolving '{resourceKey.Key}': requested-theme-for-subtree slot is '{slotKey.Key}' but the threaded theme key is '{themeKey.Key}'.");
-					}
-				}
-			}
-		}
-#endif
 
 		// The active base theme expressed as a base Theme. This is the single owner-less fallback for
 		// {ThemeResource} resolution: it is what the lazy-materialization leaf keys on (GetActiveTheme),
@@ -1251,10 +1197,10 @@ namespace Microsoft.UI.Xaml
 			public static SpecializedResourceDictionary.ResourceKey HighContrastWhite { get; } = "HighContrastWhite";
 			public static SpecializedResourceDictionary.ResourceKey HighContrastBlack { get; } = "HighContrastBlack";
 
-			// The application/OS base theme. The per-subtree theme (the analog of WinUI's
-			// CCoreServices::m_requestedThemeForSubTree) is threaded as the resolving owner's effective theme
-			// (ThemeResolution.ResolveOwnerTheme); Active is the fallback for lookups with no owner context,
-			// and is strictly "Light"/"Dark".
+			// The application/OS base theme. The per-subtree theme lives in the core
+			// requested-theme-for-subtree slot (CCoreServices::m_requestedThemeForSubTree), which
+			// GetActiveTheme reads first; Active is the fallback for lookups with no scoped subtree
+			// theme, and is strictly "Light"/"Dark".
 			public static SpecializedResourceDictionary.ResourceKey Active { get; set; } = Default;
 
 			// The OS/app-global high-contrast state (MUX: FrameworkTheming::HasHighContrastTheme). Read live

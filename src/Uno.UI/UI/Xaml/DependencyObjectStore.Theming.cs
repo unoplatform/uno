@@ -343,9 +343,8 @@ public partial class DependencyObjectStore
 		// the core requested-theme-for-subtree slot ("Push theme that resource lookup should use to
 		// get the property value") so the lookup — including any lazy materialization it triggers —
 		// resolves in the owner's theme; scope-restored below. During a walk the slot already carries
-		// the per-element walk theme (Theming.cpp:137-149), so the set is a no-op then.
-		// Transitional: the owner theme is still ALSO threaded as a parameter into the leaf; the
-		// parameter is retired once the slot is proven equivalent (see AssertAmbientThemeMatches).
+		// the per-element walk theme (Theming.cpp:137-149), so the set is a no-op then. The resolution
+		// leaf reads the slot (EnsureActiveThemeDictionary, Resources.cpp:764-768).
 		// Element-level theming is enhanced-lifecycle only — on native the slot stays None.
 		var core = Uno.UI.Xaml.Core.CoreServices.Instance;
 		var prevSlotTheme = Theme.None;
@@ -371,18 +370,15 @@ public partial class DependencyObjectStore
 			object? newValue = null;
 			bool resolved = false;
 
-			// Compute the owner's effective theme ONCE here — the centralized "use the owner's theme" choke
-			// point, the analog of WinUI's SetThemeResourceBinding pushing this->m_theme before resolving
-			// (Theming.cpp:368-376). Both the ancestor walk and the pinned-dict refresh below resolve
-			// against this theme.
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			// Compute the owner's effective theme ONCE here — it feeds the slot scope below, the analog of
+			// WinUI's SetThemeResourceBinding pushing this->m_theme before resolving (Theming.cpp:368-376).
+			// Both the ancestor walk and the pinned-dict refresh resolve under that ambient.
 			// Prefer the explicit owner theme passed by the caller (the resource-context element's theme for
 			// a standalone resource DO that has no inheritance parent of its own); otherwise resolve from the
 			// owner's own inheritance chain.
 			var ownerTheme = ownerThemeOverride ?? ThemeResolution.ResolveOwnerTheme(owner);
-			var ownerThemeKey = ResourceDictionary.GetThemeKey(ownerTheme);
 
-
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			// MUX: Theming.cpp:368-376 — set the slot when the owner's base theme differs from it.
 			prevSlotTheme = core.GetRequestedThemeForSubTree();
 			if (prevSlotTheme != Theming.GetBaseValue(ownerTheme))
@@ -404,7 +400,7 @@ public partial class DependencyObjectStore
 				var dicts = GetResourceDictionaries(includeAppResources: false);
 				foreach (var dict in dicts)
 				{
-					if (dict.TryGetValue(themeRef.ResourceKey, ownerThemeKey, out var ancestorValue, shouldCheckSystem: false))
+					if (dict.TryGetValue(themeRef.ResourceKey, out var ancestorValue, shouldCheckSystem: false))
 					{
 						themeRef.LastResolvedValue = ancestorValue;
 						themeRef.IsResolved = true;
@@ -421,7 +417,7 @@ public partial class DependencyObjectStore
 			// already by the tree lookup above."
 			if (!resolved)
 			{
-				newValue = themeRef.RefreshValue(ownerTheme, cache, preferAppResourceOverride);
+				newValue = themeRef.RefreshValue(cache, preferAppResourceOverride);
 			}
 
 			// MUX: Theming.cpp:385-393 — SetValue with resolved value
@@ -702,13 +698,13 @@ public partial class DependencyObjectStore
 			{
 				// Resolve {ThemeResource} markup used inside a binding (Binding.TargetNullValue /
 				// FallbackValue) against the OWNER's effective theme — the same owner theme the
-				// UpdateThemeReference / Phase-2 choke points use — rather than the process-global active
-				// theme. The owner theme is also scoped onto the core requested-theme-for-subtree slot
-				// (the LookupThemeResource pattern, xcpcore.cpp:2371-2394) so ambient reads agree.
+				// UpdateThemeReference / Phase-2 choke points use — by scoping it onto the core
+				// requested-theme-for-subtree slot (the LookupThemeResource pattern,
+				// xcpcore.cpp:2371-2394), which the resolution leaf reads
+				// (EnsureActiveThemeDictionary, Resources.cpp:764-768).
 				var bindingOwnerTheme = GetOwnerTheme();
 				using var bindingThemeScope = Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(bindingOwnerTheme);
-				var bindingThemeKey = ResourceDictionary.GetThemeKey(bindingOwnerTheme);
-				_properties.UpdateBindingExpressions(bindingThemeKey);
+				_properties.UpdateBindingExpressions();
 			}
 			finally
 			{
@@ -726,16 +722,17 @@ public partial class DependencyObjectStore
 
 			// Resolve deferred/unpinned {ThemeResource} (and theme-sensitive {StaticResource}) bindings
 			// against the OWNER's effective theme — the same owner theme the UpdateThemeReference choke point
-			// uses, threaded in as a parameter and scoped onto the core requested-theme-for-subtree slot
-			// (the LookupThemeResource pattern, xcpcore.cpp:2371-2394) so ambient reads agree. For a
-			// non-FrameworkElement owner, the injected FE resource context supplies the theme.
+			// uses — by scoping it onto the core requested-theme-for-subtree slot (the LookupThemeResource
+			// pattern, xcpcore.cpp:2371-2394), which the resolution leaf reads (EnsureActiveThemeDictionary,
+			// Resources.cpp:764-768). For a non-FrameworkElement owner, the injected FE resource context
+			// supplies the theme.
 			var ownerTheme = GetOwnerTheme();
 			using var resourceBindingsThemeScope = Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(ownerTheme);
 
 			var bindings = _resourceBindings.GetAllBindings();
 			foreach (var binding in bindings)
 			{
-				InnerUpdateResourceBindings(updateReason, dictionariesInScope, ownerTheme, binding.Property, binding.Binding);
+				InnerUpdateResourceBindings(updateReason, dictionariesInScope, binding.Property, binding.Binding);
 			}
 		}
 
@@ -750,11 +747,11 @@ public partial class DependencyObjectStore
 	/// See https://github.com/dotnet/runtime/issues/56309
 	/// </remarks>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private void InnerUpdateResourceBindings(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, Theme ownerTheme, DependencyProperty property, ResourceBinding binding)
+	private void InnerUpdateResourceBindings(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
 	{
 		try
 		{
-			InnerUpdateResourceBindingsUnsafe(updateReason, dictionariesInScope, ownerTheme, property, binding);
+			InnerUpdateResourceBindingsUnsafe(updateReason, dictionariesInScope, property, binding);
 		}
 		catch (Exception e)
 		{
@@ -771,7 +768,7 @@ public partial class DependencyObjectStore
 	/// See https://github.com/dotnet/runtime/issues/56309
 	/// </remarks>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private void InnerUpdateResourceBindingsUnsafe(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, Theme ownerTheme, DependencyProperty property, ResourceBinding binding)
+	private void InnerUpdateResourceBindingsUnsafe(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
 	{
 		if ((binding.UpdateReason & updateReason) == ResourceUpdateReason.None)
 		{
@@ -779,9 +776,9 @@ public partial class DependencyObjectStore
 			return;
 		}
 
-		// Select the Light/Dark sub-dictionary by the owner's effective theme passed from
-		// UpdateResourceBindings, not the process-global active theme.
-		var ownerThemeKey = ResourceDictionary.GetThemeKey(ownerTheme);
+		// The Light/Dark sub-dictionary is selected at the dictionary leaf by the ambient active theme —
+		// the owner's effective theme scoped onto the core requested-theme-for-subtree slot by
+		// UpdateResourceBindings (EnsureActiveThemeDictionary, Resources.cpp:764-768).
 
 		// Note: we intentionally do NOT skip theme resource bindings here even though
 		// Phase 1 (UpdateAllThemeReferences) may have already resolved them. The Phase 2
@@ -805,7 +802,7 @@ public partial class DependencyObjectStore
 			var wasSet = false;
 			foreach (var dict in dictionariesInScope)
 			{
-				if (dict.TryGetValue(binding.ResourceKey, ownerThemeKey, out var value, out var providingDict, shouldCheckSystem: false))
+				if (dict.TryGetValue(binding.ResourceKey, out var value, out var providingDict, shouldCheckSystem: false))
 				{
 					wasSet = true;
 					SetResourceBindingValue(property, binding, value);
@@ -828,7 +825,7 @@ public partial class DependencyObjectStore
 
 			if (!wasSet)
 			{
-				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, ownerThemeKey, binding.ParseContext, out var value))
+				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value))
 				{
 					SetResourceBindingValue(property, binding, value);
 				}

@@ -88,31 +88,26 @@ internal sealed class ThemeResourceReference
 	}
 
 	/// <summary>
-	/// Re-resolves the theme resource value from the pinned dictionary only, against the resolving
-	/// owner's effective <paramref name="ownerTheme"/>.
+	/// Re-resolves the theme resource value from the pinned dictionary only.
 	/// Used during theme change walks where the ancestor walk is handled by the caller.
 	/// </summary>
-	/// <param name="ownerTheme">
-	/// The effective theme of the DependencyObject that owns this binding, computed once by the caller
-	/// (DependencyObjectStore.UpdateThemeReference via ThemeResolution.ResolveOwnerTheme). Selects the
-	/// Light/Dark sub-dictionary.
-	/// </param>
 	/// <param name="cache">Optional per-walk cache to avoid redundant dictionary lookups.</param>
-	/// <returns>The resolved value for the owner's theme.</returns>
+	/// <returns>The resolved value for the ambient theme.</returns>
 	/// <remarks>
 	/// MUX Reference: CThemeResource::RefreshValue() in ThemeResource.cpp (lines 64-129)
 	///
-	/// Looks up the key in the pinned dictionary. If the dictionary is dead (teardown),
-	/// returns LastResolvedValue. Does NOT do tree-walk — that's handled by
-	/// UpdateAllThemeReferences (matching WinUI's UpdateThemeReference which walks
-	/// ancestors before calling RefreshValue).
+	/// Looks up the key in the pinned dictionary. The Light/Dark sub-dictionary is selected by the
+	/// ambient active theme (ResourceDictionary.GetActiveBaseTheme — the core
+	/// requested-theme-for-subtree slot scoped by the caller from the owner's theme, else the app/OS
+	/// base theme), matching CResourceDictionary::EnsureActiveThemeDictionary reading the core slot
+	/// (Resources.cpp:764-768). The same ambient theme keys the ThemeWalkResourceCache, matching
+	/// WinUI's m_subTreeTheme cache key. If the dictionary is dead (teardown), returns
+	/// LastResolvedValue. Does NOT do tree-walk — that's handled by UpdateAllThemeReferences
+	/// (matching WinUI's UpdateThemeReference which walks ancestors before calling RefreshValue).
 	/// </remarks>
-	public object? RefreshValue(Theme ownerTheme, ThemeWalkResourceCache? cache = null, bool preferAppResourceOverride = false)
-		=> RefreshValueCore(ownerTheme, cache, preferAppResourceOverride);
-
-	private object? RefreshValueCore(Theme theme, ThemeWalkResourceCache? cache, bool preferAppResourceOverride)
+	public object? RefreshValue(ThemeWalkResourceCache? cache = null, bool preferAppResourceOverride = false)
 	{
-		var themeKey = ResourceDictionary.GetThemeKey(theme);
+		var theme = ResourceDictionary.GetActiveBaseTheme();
 
 		// Try pinned dictionary (fast path)
 		if (_targetDictionary is not null && _targetDictionary.TryGetTarget(out var dict))
@@ -124,7 +119,7 @@ internal sealed class ThemeResourceReference
 				return cachedValue;
 			}
 
-			if (dict.TryGetValue(ResourceKey, themeKey, out var value, shouldCheckSystem: false))
+			if (dict.TryGetValue(ResourceKey, out var value, shouldCheckSystem: false))
 			{
 				// MUX: Resources.cpp:668-682 (GetKeyFromThemeDictionariesNoRef) — "Always allow
 				// Application.Resources to override values found in the global ThemeDictionaries"
@@ -135,7 +130,7 @@ internal sealed class ThemeResourceReference
 				// value. The caller passes preferAppResourceOverride for those framework-pinned cases (keyframes);
 				// dict.IsSystemDictionary covers Uno.UI's own generic dictionaries.
 				if ((preferAppResourceOverride || dict.IsSystemDictionary)
-					&& Uno.UI.ResourceResolver.TryApplicationResourceOverride(ResourceKey, themeKey, out var appOverride))
+					&& Uno.UI.ResourceResolver.TryApplicationResourceOverride(ResourceKey, out var appOverride))
 				{
 					value = appOverride;
 				}
@@ -156,7 +151,7 @@ internal sealed class ThemeResourceReference
 		}
 
 		// Uno extension: Try top-level as last resort (for hot-reload/unpinned refs)
-		if (Uno.UI.ResourceResolver.TryTopLevelRetrieval(ResourceKey, themeKey, ParseContext, out var topLevelValue))
+		if (Uno.UI.ResourceResolver.TryTopLevelRetrieval(ResourceKey, ParseContext, out var topLevelValue))
 		{
 			SetResolvedValue(topLevelValue);
 			return topLevelValue;
@@ -169,31 +164,32 @@ internal sealed class ThemeResourceReference
 	/// <summary>
 	/// Re-resolves the theme resource value with full tree-walk fallback.
 	/// Used during initial resolution and hot-reload, NOT during theme change walks.
+	/// The Light/Dark sub-dictionary is selected by the ambient active theme (see RefreshValue).
 	/// </summary>
-	public object? RefreshValueWithTreeWalk(Theme ownerTheme, DependencyObject? owner, ThemeWalkResourceCache? cache = null)
+	public object? RefreshValueWithTreeWalk(DependencyObject? owner, ThemeWalkResourceCache? cache = null)
 	{
-		var themeKey = ResourceDictionary.GetThemeKey(ownerTheme);
+		var theme = ResourceDictionary.GetActiveBaseTheme();
 
 		// 1. Try pinned dictionary (fast path)
 		if (_targetDictionary is not null && _targetDictionary.TryGetTarget(out var dict))
 		{
-			if (cache is not null && cache.TryGetCachedValue(dict, ResourceKey, ownerTheme, out var cachedValue))
+			if (cache is not null && cache.TryGetCachedValue(dict, ResourceKey, theme, out var cachedValue))
 			{
 				SetResolvedValue(cachedValue);
 				return cachedValue;
 			}
 
-			if (dict.TryGetValue(ResourceKey, themeKey, out var value, shouldCheckSystem: false))
+			if (dict.TryGetValue(ResourceKey, out var value, shouldCheckSystem: false))
 			{
 				// MUX: Resources.cpp:668-682 — Application.Resources always overrides values found in the
-				// global (system/Fluent) ThemeDictionaries (see RefreshValueCore).
+				// global (system/Fluent) ThemeDictionaries (see RefreshValue).
 				if (dict.IsSystemDictionary
-					&& Uno.UI.ResourceResolver.TryApplicationResourceOverride(ResourceKey, themeKey, out var appOverride))
+					&& Uno.UI.ResourceResolver.TryApplicationResourceOverride(ResourceKey, out var appOverride))
 				{
 					value = appOverride;
 				}
 
-				cache?.CacheValue(dict, ResourceKey, ownerTheme, value);
+				cache?.CacheValue(dict, ResourceKey, theme, value);
 				SetResolvedValue(value);
 				return value;
 			}
@@ -207,11 +203,11 @@ internal sealed class ThemeResourceReference
 			{
 				foreach (var walkDict in dictionaries)
 				{
-					if (walkDict.TryGetValue(ResourceKey, themeKey, out var value, out var newProvidingDict, shouldCheckSystem: false))
+					if (walkDict.TryGetValue(ResourceKey, out var value, out var newProvidingDict, shouldCheckSystem: false))
 					{
 						// Re-pin the new dictionary
 						_targetDictionary = new WeakReference<ResourceDictionary>(newProvidingDict);
-						cache?.CacheValue(newProvidingDict, ResourceKey, ownerTheme, value);
+						cache?.CacheValue(newProvidingDict, ResourceKey, theme, value);
 						SetResolvedValue(value);
 						return value;
 					}
@@ -220,7 +216,7 @@ internal sealed class ThemeResourceReference
 		}
 
 		// 3. Try top-level resources as last resort
-		if (Uno.UI.ResourceResolver.TryTopLevelRetrieval(ResourceKey, themeKey, ParseContext, out var topLevelValue))
+		if (Uno.UI.ResourceResolver.TryTopLevelRetrieval(ResourceKey, ParseContext, out var topLevelValue))
 		{
 			SetResolvedValue(topLevelValue);
 			return topLevelValue;

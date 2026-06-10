@@ -639,15 +639,15 @@ namespace Microsoft.UI.Xaml
 		// rather than the app's active theme.
 		private static object ResolveFocusVisualBrushDefault(DependencyObject referenceObject, string resourceKey)
 		{
-			// themeKey also follows the {StaticResource} alias (SystemControlFocusVisualPrimaryBrush →
-			// FocusStrokeColorOuterBrush) into the matching theme sub-dictionary, so the resolved brush
-			// carries the element theme's color. The lookup runs with the element's theme scoped onto
-			// the core requested-theme-for-subtree slot, like WinUI's LookupThemeResource(theme, key)
-			// (xcpcore.cpp:2371-2394).
+			// The lookup runs with the element's theme scoped onto the core requested-theme-for-subtree
+			// slot, like WinUI's LookupThemeResource(theme, key) (xcpcore.cpp:2371-2394); the resolution
+			// leaf reads the slot (EnsureActiveThemeDictionary, Resources.cpp:764-768), so the
+			// {StaticResource} alias (SystemControlFocusVisualPrimaryBrush → FocusStrokeColorOuterBrush)
+			// also resolves into the matching theme sub-dictionary and the resolved brush carries the
+			// element theme's color.
 			var ownerTheme = ThemeResolution.ResolveOwnerTheme(referenceObject);
 			using var themeScope = Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(ownerTheme);
-			var themeKey = ResourceDictionary.GetThemeKey(ownerTheme);
-			if (ResourceResolver.TryStaticRetrieval(resourceKey, themeKey, null, out var brush))
+			if (ResourceResolver.TryStaticRetrieval(resourceKey, null, out var brush))
 			{
 				return brush;
 			}
