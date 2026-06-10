@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -41,12 +40,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 
 	public sealed class Binding_Converter_TextConverterDebug : IValueConverter
 	{
-		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object Convert(object value, Type targetType, object parameter, string language)
 		{
 			return $"v:{value?.ToString()} p:{parameter?.ToString()}";
 		}
 
-		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object ConvertBack(object value, Type targetType, object parameter, string language)
 		{
 			return "Converted Back";
 		}

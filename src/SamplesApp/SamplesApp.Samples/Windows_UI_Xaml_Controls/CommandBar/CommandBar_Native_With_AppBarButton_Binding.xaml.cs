@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -40,7 +39,7 @@ namespace UITests.Windows_UI_Xaml_Controls.CommandBar
 
 		public object TrueValue { get; set; }
 
-		public object Convert(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object Convert(object value, Type targetType, object parameter, string language)
 		{
 			if (parameter != null)
 			{
@@ -62,7 +61,7 @@ namespace UITests.Windows_UI_Xaml_Controls.CommandBar
 			}
 		}
 
-		public object ConvertBack(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object ConvertBack(object value, Type targetType, object parameter, string language)
 		{
 			if (parameter != null)
 			{

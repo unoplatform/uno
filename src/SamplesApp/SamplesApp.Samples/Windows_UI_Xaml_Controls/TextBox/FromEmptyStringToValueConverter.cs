@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 #if WinUI
@@ -17,7 +16,7 @@ namespace UITests.Windows_UI_Xaml_Controls.TextBox
 
 		public object NotNullOrEmptyValue { get; set; }
 
-		public object Convert(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object Convert(object value, Type targetType, object parameter, string language)
 		{
 			if (!(value is string str) || string.IsNullOrEmpty(str))
 			{
@@ -27,7 +26,7 @@ namespace UITests.Windows_UI_Xaml_Controls.TextBox
 			return NotNullOrEmptyValue;
 		}
 
-		public object ConvertBack(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object ConvertBack(object value, Type targetType, object parameter, string language)
 		{
 			throw new NotSupportedException();
 		}

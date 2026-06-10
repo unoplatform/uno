@@ -6,7 +6,6 @@ using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -208,13 +207,13 @@ namespace Uno.UI.Tests.BinderTests
 		public static int ConvertBackCount { get; set; }
 
 
-		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object Convert(object value, Type targetType, object parameter, string language)
 		{
 			ConvertCount++;
 			return value;
 		}
 
-		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object ConvertBack(object value, Type targetType, object parameter, string language)
 		{
 			ConvertBackCount++;
 			return value;

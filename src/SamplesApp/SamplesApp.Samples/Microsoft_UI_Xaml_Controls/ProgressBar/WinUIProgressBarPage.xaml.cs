@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
@@ -88,12 +87,12 @@ namespace UITests.Microsoft_UI_Xaml_Controls.ProgressBar
 
 	public class NullableBooleanToBooleanConverter : IValueConverter
 	{
-		public object Convert(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object Convert(object value, Type targetType, object parameter, string language)
 		{
 			return value is bool ? (bool)value : (object)false;
 		}
 
-		public object ConvertBack(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object ConvertBack(object value, Type targetType, object parameter, string language)
 		{
 			return value is bool ? (bool)value : (object)false;
 		}

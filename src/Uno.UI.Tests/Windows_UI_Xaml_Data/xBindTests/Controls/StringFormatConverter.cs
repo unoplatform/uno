@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -11,7 +10,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 {
 	public class InvariantStringFormatConverter : IValueConverter
 	{
-		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string culture)
+		public object Convert(object value, Type targetType, object parameter, string culture)
 		{
 			if (parameter == null)
 			{
@@ -21,7 +20,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 			return String.Format(CultureInfo.InvariantCulture, parameter.ToString(), value);
 		}
 
-		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string culture)
+		public object ConvertBack(object value, Type targetType, object parameter, string culture)
 		{
 			throw new NotSupportedException();
 		}

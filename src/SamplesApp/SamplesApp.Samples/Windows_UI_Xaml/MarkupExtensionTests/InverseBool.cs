@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
@@ -13,12 +12,12 @@ namespace UITests.Shared.Windows_UI_Xaml.MarkupExtension
 	{
 		protected override object ProvideValue() => this;
 
-		public object Convert(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object Convert(object value, Type targetType, object parameter, string language)
 		{
 			return !(bool)(value ?? false);
 		}
 
-		public object ConvertBack(object value, [DynamicallyAccessedMembers(Uno.UI.RuntimeTests.Helpers.Annotations.IValueConverter_TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object ConvertBack(object value, Type targetType, object parameter, string language)
 		{
 			return !(bool)(value ?? false);
 		}

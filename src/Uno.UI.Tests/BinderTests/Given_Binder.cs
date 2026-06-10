@@ -6,7 +6,6 @@ using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -1464,7 +1463,7 @@ namespace Uno.UI.Tests.BinderTests
 
 		public object LastValue { get; private set; }
 
-		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object Convert(object value, Type targetType, object parameter, string language)
 		{
 			LastValue = value;
 			++ConversionCount;
@@ -1474,7 +1473,7 @@ namespace Uno.UI.Tests.BinderTests
 			return -number;
 		}
 
-		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object ConvertBack(object value, Type targetType, object parameter, string language)
 		{
 			throw new NotImplementedException();
 		}
@@ -1486,7 +1485,7 @@ namespace Uno.UI.Tests.BinderTests
 
 		public object LastValue { get; private set; }
 
-		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object Convert(object value, Type targetType, object parameter, string language)
 		{
 			LastValue = value;
 			++ConversionCount;
@@ -1496,7 +1495,7 @@ namespace Uno.UI.Tests.BinderTests
 			return b ? -1000 : 1000;
 		}
 
-		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object ConvertBack(object value, Type targetType, object parameter, string language)
 		{
 			throw new NotImplementedException();
 		}

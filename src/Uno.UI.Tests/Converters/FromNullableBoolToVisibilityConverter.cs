@@ -5,7 +5,6 @@ using System.Globalization;
 using System.Text;
 using Uno.UI.Converters;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.Tests.Converters
 {
@@ -28,7 +27,7 @@ namespace Uno.UI.Tests.Converters
 		public VisibilityIfTrue VisibilityIfTrue { get; set; }
 
 		[SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", Justification = "Not for end user")]
-		protected override object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter)
+		protected override object Convert(object value, Type targetType, object parameter)
 		{
 			if (parameter != null)
 			{
@@ -51,7 +50,7 @@ namespace Uno.UI.Tests.Converters
 		}
 
 		[SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", Justification = "Not for end user")]
-		protected override object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter)
+		protected override object ConvertBack(object value, Type targetType, object parameter)
 		{
 			if (value == null)
 			{

@@ -64,14 +64,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter.EnabledProperty.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object Convert(object value, [global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(global::Microsoft.UI.Xaml.Data.IValueConverter.TargetTypeRequirements)] global::System.Type targetType, object parameter, string language)
+		public object Convert(object value, global::System.Type targetType, object parameter, string language)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter", "Convert(object value, Type targetType, object parameter, string language)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public object ConvertBack(object value, [global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(global::Microsoft.UI.Xaml.Data.IValueConverter.TargetTypeRequirements)] global::System.Type targetType, object parameter, string language)
+		public object ConvertBack(object value, global::System.Type targetType, object parameter, string language)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter", "ConvertBack(object value, Type targetType, object parameter, string language)");
 		}

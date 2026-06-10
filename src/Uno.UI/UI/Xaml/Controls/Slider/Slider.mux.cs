@@ -3,7 +3,6 @@
 // MUX reference Slider_Partial.cpp
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using DirectUI;
 using Uno.Disposables;
@@ -1481,7 +1480,7 @@ public partial class Slider
 		//  We choose to display a maximum of 4 significant digits in our formatted string.
 		//
 		//  E.G. If StepFrequency==0.1 and Value==0.57, the disambiguation UI shows 0.6
-		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+		public object Convert(object value, Type targetType, object parameter, string language)
 		{
 			double epsilon = 0.00001;   // We cap at 4 digits.
 			int numPlacesPastDecimalPoint = 0;
@@ -1538,7 +1537,7 @@ public partial class Slider
 			return string.Format(CultureInfo.CurrentCulture, szFormat, roundedValue);
 		}
 
-		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language) => throw new NotImplementedException();
+		public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
 	}
 
 	// Helper function to translate the thumb based on an input point.

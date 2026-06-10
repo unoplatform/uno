@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -36,7 +35,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XUidTests.Controls
 
 		public object ValueIfNotNull { get; set; }
 
-		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language) => throw new NotImplementedException();
-		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language) => throw new NotImplementedException();
+		public object Convert(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
+		public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
 	}
 }

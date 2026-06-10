@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,8 +25,8 @@ namespace XamlGenerationTests.MarkupExtensions
 {
 	public class NotImplementedConverter : IValueConverter
 	{
-		public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language) => throw new NotImplementedException();
-		public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language) => throw new NotImplementedException();
+		public object Convert(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
+		public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();
 	}
 
 	public class MarkupWithArgsExtension : MarkupExtension

@@ -15,7 +15,6 @@ namespace Microsoft.UI.Xaml.Data
 {
 	public partial class BindingExpression : IDisposable
 	{
-		[DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)]
 		private readonly Type _boundPropertyType;
 		private readonly ManagedWeakReference _view;
 		private readonly Type _targetOwnerType;

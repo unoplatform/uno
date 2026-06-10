@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -94,19 +93,19 @@ namespace Uno.UI.Tests.BinderTests
 		public abstract class TestConverter : IValueConverter
 		{
 			public int ConvertHitCount { get; set; }
-			public abstract object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string culture);
-			public abstract object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string culture);
+			public abstract object Convert(object value, Type targetType, object parameter, string culture);
+			public abstract object ConvertBack(object value, Type targetType, object parameter, string culture);
 		}
 
 		public class IdentityConverter : TestConverter
 		{
-			public override object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string culture)
+			public override object Convert(object value, Type targetType, object parameter, string culture)
 			{
 				ConvertHitCount++;
 				return value;
 			}
 
-			public override object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string culture)
+			public override object ConvertBack(object value, Type targetType, object parameter, string culture)
 			{
 				return value;
 			}
@@ -116,13 +115,13 @@ namespace Uno.UI.Tests.BinderTests
 		{
 			public const string ConverterNullReplacement = "converted from null";
 
-			public override object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string culture)
+			public override object Convert(object value, Type targetType, object parameter, string culture)
 			{
 				ConvertHitCount++;
 				return value ?? ConverterNullReplacement;
 			}
 
-			public override object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string culture)
+			public override object ConvertBack(object value, Type targetType, object parameter, string culture)
 			{
 				return value;
 			}

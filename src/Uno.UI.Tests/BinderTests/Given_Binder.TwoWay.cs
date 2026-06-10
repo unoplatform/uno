@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -276,7 +275,7 @@ namespace Uno.UI.Tests.BinderTests
 		{
 			public int ConvertCount { get; private set; }
 			public int ConvertBackCount { get; private set; }
-			public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+			public object Convert(object value, Type targetType, object parameter, string language)
 			{
 				ConvertCount++;
 				if (value is int i)
@@ -287,7 +286,7 @@ namespace Uno.UI.Tests.BinderTests
 				return value;
 			}
 
-			public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+			public object ConvertBack(object value, Type targetType, object parameter, string language)
 			{
 				ConvertBackCount++;
 				if (value is int i)
@@ -304,7 +303,7 @@ namespace Uno.UI.Tests.BinderTests
 			public int ConvertCount { get; set; }
 			public int ConvertBackCount { get; set; }
 
-			public object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+			public object Convert(object value, Type targetType, object parameter, string language)
 			{
 				ConvertCount++;
 				if (value != null)
@@ -320,7 +319,7 @@ namespace Uno.UI.Tests.BinderTests
 				}
 			}
 
-			public object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter, string language)
+			public object ConvertBack(object value, Type targetType, object parameter, string language)
 			{
 				ConvertBackCount++;
 				if (value is string stringValue)

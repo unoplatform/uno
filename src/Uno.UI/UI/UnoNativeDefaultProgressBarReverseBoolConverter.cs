@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
-using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.Converters
 {
@@ -13,7 +12,7 @@ namespace Uno.UI.Converters
 	public class UnoNativeDefaultProgressBarReverseBoolConverter : ConverterBase
 	{
 		[SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", Justification = "Not for end user")]
-		protected override object Convert(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter)
+		protected override object Convert(object value, Type targetType, object parameter)
 		{
 			if (parameter != null)
 			{
@@ -30,7 +29,7 @@ namespace Uno.UI.Converters
 			return !valueToConvert;
 		}
 
-		protected override object ConvertBack(object value, [DynamicallyAccessedMembers(IValueConverter.TargetTypeRequirements)] Type targetType, object parameter)
+		protected override object ConvertBack(object value, Type targetType, object parameter)
 		{
 			// Same as Convert, except it should never be null
 			if (value == null)
