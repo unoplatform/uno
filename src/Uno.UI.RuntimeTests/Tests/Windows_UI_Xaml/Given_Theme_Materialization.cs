@@ -791,4 +791,75 @@ public class Given_Theme_Materialization
 			"Themes._requestedThemeForSubTree stack must not be reintroduced.");
 	}
 #endif
+
+#if HAS_UNO
+	// ---- DependencyObject-level Enter: non-UIElement DOs carry a per-object theme ----
+
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Flyout_On_Live_Button_NonUIElement_DOs_Inherit_Island_Theme()
+	{
+		// Mechanism test for the CDependencyObject-level Enter walk (DependencyObjectStore.mux.cs,
+		// depends.cpp:1013-1069): when a Button enters a Light island, its Flyout (a non-UIElement
+		// DO reached through the enter-property walk) and the flyout's items (detached UIElements,
+		// theme-established without activation) must carry the island's per-object theme — both for
+		// a XAML-declared flyout (themed at the button's Enter) and for one assigned to the live
+		// button afterwards (themed at set-time via the EnterEffectiveValue analog in
+		// DependencyObjectStore.UpdateAutoParent).
+		//
+		// Uno-only: asserts the internal per-object theme (Store.GetTheme()), and Uno themes
+		// MenuFlyout items at opener-Enter where WinUI's item Enter is a dead enter (fIsLive=FALSE)
+		// that defers theming to the popup open — a documented Uno superset, so the test is
+		// excluded on native WinUI.
+#if HAS_UNO
+		using var _ = ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Dark);
+		await WindowHelper.WaitForIdle();
+#endif
+		var root = (Grid)XamlReader.Load(
+			"""
+			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			      RequestedTheme="Dark">
+				<StackPanel RequestedTheme="Light">
+					<Button x:Name="DeclaredButton" Content="declared">
+						<Button.Flyout>
+							<MenuFlyout>
+								<MenuFlyoutItem Text="first" />
+							</MenuFlyout>
+						</Button.Flyout>
+					</Button>
+					<Button x:Name="LateButton" Content="late" />
+				</StackPanel>
+			</Grid>
+			""");
+
+		try
+		{
+			await UITestHelper.Load(root);
+
+			static Theme BaseThemeOf(DependencyObject dependencyObject)
+				=> Theming.GetBaseValue(((IDependencyObjectStoreProvider)dependencyObject).Store.GetTheme());
+
+			var declaredButton = (Button)root.FindName("DeclaredButton");
+			var declaredFlyout = (MenuFlyout)declaredButton.Flyout;
+			Assert.AreEqual(Theme.Light, BaseThemeOf(declaredFlyout),
+				"A XAML-declared flyout (non-UIElement DO) must inherit the island theme at the opener's Enter.");
+			Assert.AreEqual(Theme.Light, BaseThemeOf(declaredFlyout.Items[0]),
+				"Items of a XAML-declared flyout must inherit the island theme at the opener's Enter.");
+
+			var lateButton = (Button)root.FindName("LateButton");
+			var lateFlyout = new MenuFlyout { Items = { new MenuFlyoutItem { Text = "late-first" } } };
+			lateButton.Flyout = lateFlyout;
+			Assert.AreEqual(Theme.Light, BaseThemeOf(lateFlyout),
+				"A flyout assigned to a live opener must inherit the island theme at set-time (EnterEffectiveValue).");
+			Assert.AreEqual(Theme.Light, BaseThemeOf(lateFlyout.Items[0]),
+				"Items of a flyout assigned to a live opener must inherit the island theme at set-time.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+#endif
 }
