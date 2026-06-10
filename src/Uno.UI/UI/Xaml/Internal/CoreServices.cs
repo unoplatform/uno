@@ -124,6 +124,21 @@ namespace Uno.UI.Xaml.Core
 		// TODO Uno: This will not be a singleton when multi-window setups are supported.
 		public static CoreServices Instance => _instance.Value;
 
+		private FrameworkTheming? _theming;
+
+		/// <summary>
+		/// The app/system theme state machine. Analog of CCoreServices::m_spTheming (corep.h:2205-2206),
+		/// created with a SystemThemingInterop and a callback to CCoreServices::NotifyThemeChange
+		/// (xcpcore.cpp:1202-1205); accessor analog: CCoreServices::GetFrameworkTheming (corep.h:1414-1417).
+		/// </summary>
+		internal FrameworkTheming Theming => _theming ??= new FrameworkTheming(new SystemThemingInterop(), OnThemeChanged);
+
+		private void OnThemeChanged()
+		{
+			// TODO Uno: transitional — CCoreServices::NotifyThemeChange (xcpcore.cpp:8006-8118) is ported
+			// in Phase 6; until then Application drives theme-change notifications.
+		}
+
 		/// <summary>
 		/// Provides the content root coordinator.
 		/// </summary>
