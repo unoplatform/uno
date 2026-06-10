@@ -146,20 +146,24 @@ Then:
 
 ## Progress
 
-- [ ] `src/Uno.HotReload.Tests` project created and wired to the unit-test solution filter
-- [ ] Seam: `IWatchHotReloadService` extracted (wrapper implements it; manager consumes it)
-- [ ] Red test 1 (manager: late-merged batch result tracked) — confirmed failing
-- [ ] Red test 2 (operation: dropped completion reported) — confirmed failing
-- [ ] Non-regression test 3 — confirmed passing pre-fix (guards the merge fast-path)
-- [ ] Commit (tests + seam, red)
-- [ ] Fix: `TryMerge`/`StartHotReload` decision moved under `_solutionUpdateGate` in `ProcessFileChanges`
-- [ ] Hardening: `Complete` reports dropped completions
-- [ ] All tests green
-- [ ] Commit (fix, green)
+- [x] `src/Uno.HotReload.Tests` project created and wired to `Uno.UI.slnx` + `Uno.UI-UnitTests-only.slnf`
+- [x] Seam: `IWatchHotReloadService` extracted (wrapper implements it; manager consumes it; internal ctor + `InternalsVisibleTo`)
+- [x] Red test 1 (`When_BatchMergedIntoCompletedOperation_Then_ItsResultIsTracked`) — confirmed failing: expected `RudeEdit`, observed `Success` (the exact production defect)
+- [x] Red test 2 (`When_CompletingAnAlreadyCompletedOperation_Then_DroppedResultIsReported`) — confirmed failing: no warning emitted
+- [x] Non-regression tests (`When_SingleBatch…`, `When_BatchMergedIntoPendingOperation…`, `When_PreviousOperationAbortedByNext…`) — passing pre-fix
+- [x] Commit (tests + seam, red)
+- [x] Fix: `TryMerge`/`StartHotReload` decision moved under `_solutionUpdateGate` in `ProcessFileChanges` (root-cause fix)
+- [x] Hardening: `Complete` reports dropped completions via the tracker reporter, except chain-aborts (`isFromNext`) (defensive hardening)
+- [x] All 5 tests green post-fix
+- [x] Commit (fix, green)
 
 ## Validation Evidence (per repo protocol)
 
-- **Code review assessment**: _(fill)_
-- **Compile validation**: _(fill — project/solution + result)_
-- **Runtime validation**: unit tests above; downstream integration validated by the consumer via
-  a local package override _(tracked downstream, no identifiers here)_.
+- **Code review assessment**: merge decision is now made while holding the same gate under which
+  operations are completed, so a completed operation can no longer absorb a pending batch; the
+  late batch becomes operation N+1 whose result and diagnostics surface through the tracker.
+- **Compile validation**: `src/Uno.HotReload/Uno.HotReload.csproj` (Debug, net9.0 + net10.0) — 0 errors;
+  `src/Uno.UI.RemoteControl.Server.Processors/Uno.UI.RemoteControl.Server.Processors.csproj` (direct consumer) — 0 warnings / 0 errors.
+- **Runtime validation**: `dotnet test src/Uno.HotReload.Tests` — 5/5 passed (deterministic
+  interleaving via controlled `filesAsync` tasks and a gated stub emitter; no sleeps). Downstream
+  integration validated by the consumer via a local package override.
