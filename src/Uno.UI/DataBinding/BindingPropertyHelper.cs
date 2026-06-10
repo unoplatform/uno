@@ -77,6 +77,49 @@ namespace Uno.UI.DataBinding
 			_getPropertyType.Clear();
 		}
 
+		/// <summary>
+		/// Clears all binding caches. Called during ALC teardown to release Type references
+		/// from non-default ALCs. The caches rebuild transparently on next access.
+		/// </summary>
+		[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "ALC cleanup")]
+		internal static void ClearCachesForNonDefaultAlc()
+		{
+			ClearCaches();
+
+			// Clear _knownMissingTypes from the BindableMetadataProvider to remove ALC types.
+			// The provider may be from the host, but it accumulates Type references from ALC
+			// lookups in its _knownMissingTypes HashSet.
+			if (BindableMetadataProvider is { } provider)
+			{
+				var providerAlc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(provider.GetType().Assembly);
+				if (providerAlc is not null && providerAlc != System.Runtime.Loader.AssemblyLoadContext.Default)
+				{
+					// Provider is from ALC — replace entirely
+					BindableMetadataProvider = null;
+				}
+				else
+				{
+					// Provider is from host — clear _knownMissingTypes of ALC types
+					try
+					{
+						var field = provider.GetType().GetField("_knownMissingTypes",
+							System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+						if (field?.GetValue(provider) is System.Collections.IList list)
+						{
+							list.Clear();
+						}
+						else if (field?.GetValue(provider) is System.Collections.IEnumerable)
+						{
+							// HashSet<Type> — use reflection to call Clear()
+							var clearMethod = field.FieldType.GetMethod("Clear");
+							clearMethod?.Invoke(field.GetValue(provider), null);
+						}
+					}
+					catch { }
+				}
+			}
+		}
+
 		private static Func<object, object?[], object?> DefaultInvokerBuilder(MethodInfo method)
 		{
 			return (instance, args) => method.Invoke(instance, args);

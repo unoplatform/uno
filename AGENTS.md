@@ -279,6 +279,23 @@ Prefer `[GeneratedDependencyProperty]` for new properties. Conventions auto-load
 
 Tabs, Allman braces (always), `internal` extension methods in `[Type]Extensions.cs`, `#nullable enable` per-file, MUX/MIT headers on ported code. Comments only when they add value — succinct, explaining the non-obvious *why*, never narrating code removal/history. Details auto-load from `.claude/rules/code-style.md`. Style is analyzer-enforced on CI even when `UnoFastDevBuild=true` skips it locally.
 
+### Events
+
+🚫 **NEVER declare `event Action` or `event Action<T>`**. Always use `EventHandler` or
+`EventHandler<TEventArgs>`. Raw `Action`/`Func` delegates as event fields bypass the
+standard `add`/`remove` contract and cannot be reliably subscribed across assembly
+boundaries.
+
+✅ Correct:
+```csharp
+public event EventHandler<MyEventArgs>? SomethingHappened;
+```
+
+🚫 Wrong — every agent must reject this:
+```csharp
+public event Action<MyData>? SomethingHappened; // NEVER
+```
+
 ### XAML Formatting (SamplesApp)
 
 XAML files under `src/SamplesApp/` are formatted using [XamlStyler](https://github.com/Xavalon/XamlStyler).

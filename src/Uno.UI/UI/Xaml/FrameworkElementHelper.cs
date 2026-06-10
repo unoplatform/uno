@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.UI.Xaml;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI
 {
@@ -75,6 +76,83 @@ namespace Uno.UI
 		/// </remarks>
 		public static void AddObjectReference(DependencyObject target, object context)
 			=> _contextAssociation.Add(target, context);
+
+		/// <summary>
+		/// Removes entries whose key (DependencyObject) is a type from a non-default ALC.
+		/// Called during ALC teardown.
+		/// </summary>
+		[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "ALC cleanup")]
+		internal static void ClearNonDefaultAlcEntries()
+		{
+			var defaultAlc = System.Runtime.Loader.AssemblyLoadContext.Default;
+			var keysToRemove = new System.Collections.Generic.List<DependencyObject>();
+			foreach (var kvp in _contextAssociation)
+			{
+				if (HasNonDefaultAlcReference(kvp.Key, defaultAlc) || (kvp.Value is not null && HasNonDefaultAlcReference(kvp.Value, defaultAlc)))
+				{
+					keysToRemove.Add(kvp.Key);
+				}
+			}
+
+			foreach (var key in keysToRemove)
+			{
+				_contextAssociation.Remove(key);
+			}
+
+			if (keysToRemove.Count > 0 && typeof(FrameworkElementHelper).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(FrameworkElementHelper).Log().Debug($"[ALC-CLEANUP] FrameworkElementHelper: removed {keysToRemove.Count} ALC context entries");
+			}
+		}
+
+		/// <summary>
+		/// Checks if an object or any of its direct instance fields references a type
+		/// from a non-default ALC.
+		/// </summary>
+		[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "ALC cleanup")]
+		private static bool HasNonDefaultAlcReference(object obj, System.Runtime.Loader.AssemblyLoadContext defaultAlc)
+		{
+			if (obj is null)
+			{
+				return false;
+			}
+
+			// Check the object's own type
+			var objAlc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(obj.GetType().Assembly);
+			if (objAlc is not null && objAlc != defaultAlc)
+			{
+				return true;
+			}
+
+			// Check instance fields (depth 1) for ALC-type values
+			try
+			{
+				foreach (var field in obj.GetType().GetFields(
+					System.Reflection.BindingFlags.Instance |
+					System.Reflection.BindingFlags.NonPublic |
+					System.Reflection.BindingFlags.Public))
+				{
+					try
+					{
+						var fieldVal = field.GetValue(obj);
+						if (fieldVal is null)
+						{
+							continue;
+						}
+
+						var fieldAlc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(fieldVal.GetType().Assembly);
+						if (fieldAlc is not null && fieldAlc != defaultAlc)
+						{
+							return true;
+						}
+					}
+					catch { }
+				}
+			}
+			catch { }
+
+			return false;
+		}
 
 		/// <summary>
 		/// This is the equivalent of <see cref="FeatureConfiguration.UIElement.UseInvalidateMeasurePath"/>

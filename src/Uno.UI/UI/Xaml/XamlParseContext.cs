@@ -22,5 +22,45 @@ namespace Uno.UI.Xaml
 		// ***************************************
 
 		public string AssemblyName { get; set; }
+
+		private System.Runtime.Loader.AssemblyLoadContext _assemblyLoadContext;
+		private bool _assemblyLoadContextResolved;
+
+		public System.Runtime.Loader.AssemblyLoadContext AssemblyLoadContext
+		{
+			get
+			{
+				if (_assemblyLoadContext is not null || _assemblyLoadContextResolved)
+				{
+					return _assemblyLoadContext;
+				}
+
+				// Lazily resolve from AssemblyName so secondary-ALC consumers are reachable
+				// even when the XAML codegen wasn't invoked with EnableAlcAppSupport (i.e.
+				// the AssemblyLoadContext setter was not emitted into __ParseContext_).
+				// Without this, ResourceResolver.TryTopLevelRetrieval would fall back to
+				// Application.Current (the host) and miss resources defined only in the
+				// secondary application's Resources.
+				_assemblyLoadContextResolved = true;
+				if (!string.IsNullOrEmpty(AssemblyName))
+				{
+					foreach (var assembly in System.AppDomain.CurrentDomain.GetAssemblies())
+					{
+						if (string.Equals(assembly.GetName().Name, AssemblyName, System.StringComparison.Ordinal))
+						{
+							_assemblyLoadContext = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(assembly);
+							break;
+						}
+					}
+				}
+
+				return _assemblyLoadContext;
+			}
+			set
+			{
+				_assemblyLoadContext = value;
+				_assemblyLoadContextResolved = value is not null;
+			}
+		}
 	}
 }

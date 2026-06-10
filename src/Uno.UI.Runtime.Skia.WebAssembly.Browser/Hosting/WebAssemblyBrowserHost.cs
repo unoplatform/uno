@@ -31,6 +31,17 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 	private readonly ManualResetEvent _terminationGate = new(false);
 
 	/// <summary>
+	/// Whether the host has been initialized for the whole process.
+	/// </summary>
+	/// <remarks>This field does not need synchronized since it's set only once at the beginning of the process.</remarks>
+	private static bool _isInitialized;
+	/// <summary>
+	/// Whether the main run loop has been started for the whole process.
+	/// </summary>
+	/// <remarks>This field does not need synchronized since it's set only once at the beginning of the process.</remarks>
+	private static bool _isRunning;
+
+	/// <summary>
 	/// Creates a host for a Uno Skia FrameBuffer application.
 	/// </summary>
 	/// <param name="appBuilder">App builder.</param>
@@ -50,56 +61,78 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 
 	protected async override Task InitializeAsync()
 	{
-		NativeMethods.PersistBootstrapperLoader();
+		if (!_isInitialized)
+		{
+			_isInitialized = true;
+			NativeMethods.PersistBootstrapperLoader();
 
-		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension!);
-		ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new BrowserPointerInputSource());
-		ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoKeyboardInputSource), o => new BrowserKeyboardInputSource());
-		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new WebAssemblyWindowFactoryExtension(this));
-		ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new BrowserInvisibleTextBoxViewExtension(o));
-		ApiExtensibility.Register(typeof(IImeTextBoxExtension), _ => WasmImeTextBoxExtension.Instance);
-		ApiExtensibility.Register(typeof(ITextBoxNotificationsProviderSingleton), _ => BrowserSkiaTextBoxNotificationsProviderSingleton.Instance);
-		ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new BrowserNativeElementHostingExtension(o));
-		ApiExtensibility.Register<MediaPlayer>(typeof(IMediaPlayerExtension), o => new BrowserMediaPlayerExtension(o));
-		ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new BrowserMediaPlayerPresenterExtension(o));
-		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new BrowserWebViewProvider(o));
-		ApiExtensibility.Register(typeof(IDragDropExtension), _ => BrowserDragDropExtension.Instance);
-		ApiExtensibility.Register(typeof(IFontFallbackService), _ => NotoFontFallbackService.Instance);
+			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension!);
+			ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new BrowserPointerInputSource());
+			ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoKeyboardInputSource), o => new BrowserKeyboardInputSource());
+			ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new WebAssemblyWindowFactoryExtension(this));
+			ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new BrowserInvisibleTextBoxViewExtension(o));
+			ApiExtensibility.Register(typeof(IImeTextBoxExtension), _ => WasmImeTextBoxExtension.Instance);
+			ApiExtensibility.Register(typeof(ITextBoxNotificationsProviderSingleton), _ => BrowserSkiaTextBoxNotificationsProviderSingleton.Instance);
+			ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new BrowserNativeElementHostingExtension(o));
+			ApiExtensibility.Register<MediaPlayer>(typeof(IMediaPlayerExtension), o => new BrowserMediaPlayerExtension(o));
+			ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new BrowserMediaPlayerPresenterExtension(o));
+			ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new BrowserWebViewProvider(o));
+			ApiExtensibility.Register(typeof(IDragDropExtension), _ => BrowserDragDropExtension.Instance);
+			ApiExtensibility.Register(typeof(IFontFallbackService), _ => NotoFontFallbackService.Instance);
 
-		await WebAssemblyWindowWrapper.Initialize();
+			await WebAssemblyWindowWrapper.Initialize();
 
-		CompositionTarget.FrameRenderingOptions = (false, false);
-		_renderer = new BrowserRenderer(this, _forceSoftwareRendering);
+			CompositionTarget.FrameRenderingOptions = (false, false);
+			_renderer = new BrowserRenderer(this, _forceSoftwareRendering);
+		}
 	}
 
 	protected async override Task RunLoop()
 	{
-		void CreateApp(ApplicationInitializationCallbackParams _)
+		var wasRunning = _isRunning;
+
+		_isRunning = true;
+
+		Application CreateApp(ApplicationInitializationCallbackParams _)
 		{
-			BrowserHtmlElement.Initialize();
+			if (!wasRunning)
+			{
+				// Ensure BrowserHtmlElement is initialized once per application lifetime
+				// Secondary ALCs should not re-initialize it
+				BrowserHtmlElement.Initialize();
+			}
 
 			var app = _appBuilder();
 			app.Host = this;
 
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			if (!wasRunning)
 			{
-				this.Log().Debug($"Display Information: " +
-					$"ResolutionScale: {DisplayInformation.GetForCurrentView().ResolutionScale}, " +
-					$"LogicalDpi: {DisplayInformation.GetForCurrentView().LogicalDpi}, " +
-					$"RawPixelsPerViewPixel: {DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel}, " +
-					$"DiagonalSizeInInches: {DisplayInformation.GetForCurrentView().DiagonalSizeInInches}, " +
-					$"ScreenInRawPixels: {DisplayInformation.GetForCurrentView().ScreenWidthInRawPixels}x{DisplayInformation.GetForCurrentView().ScreenHeightInRawPixels}");
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Display Information: " +
+						$"ResolutionScale: {DisplayInformation.GetForCurrentView().ResolutionScale}, " +
+						$"LogicalDpi: {DisplayInformation.GetForCurrentView().LogicalDpi}, " +
+						$"RawPixelsPerViewPixel: {DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel}, " +
+						$"DiagonalSizeInInches: {DisplayInformation.GetForCurrentView().DiagonalSizeInInches}, " +
+						$"ScreenInRawPixels: {DisplayInformation.GetForCurrentView().ScreenWidthInRawPixels}x{DisplayInformation.GetForCurrentView().ScreenHeightInRawPixels}");
+				}
+
+				// Force initialization of the DisplayInformation, once per application lifetime
+				DisplayInformation.GetForCurrentView();
 			}
 
-			// Force initialization of the DisplayInformation
-			DisplayInformation.GetForCurrentView();
+			return app;
 		}
 
 		try
 		{
 			Application.Start(CreateApp);
 
-			await Task.Delay(-1);
+			if (!wasRunning)
+			{
+				// Secondary ALCs should not block the main loop
+				await Task.Delay(-1);
+			}
 		}
 		catch (Exception e)
 		{

@@ -262,6 +262,75 @@ public partial class Given_Parser
 	}
 
 	[TestMethod]
+	public async Task When_InvalidXaml_InvalidEnumValue()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page
+					x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+					<StackPanel Orientation="InvalidOrientation">
+						<TextBlock Text="Hello" />
+					</StackPanel>
+				</Page>
+
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState = { Sources = { _emptyCodeBehind } },
+			TestBehaviors = TestBehaviors.SkipGeneratedSourcesCheck,
+		};
+
+		test.ExpectedDiagnostics.AddRange(
+		[
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 6, 3, 6, 3).WithArguments("Failed to create a 'Microsoft.UI.Xaml.Controls.Orientation' from the text 'InvalidOrientation'"),
+		]);
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_InvalidXaml_MultipleInvalidEnumValues()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page
+					x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+					<StackPanel Orientation="BadValue">
+						<TextBlock TextWrapping="BadWrap" Text="Hello" />
+					</StackPanel>
+				</Page>
+
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState = { Sources = { _emptyCodeBehind } },
+			TestBehaviors = TestBehaviors.SkipGeneratedSourcesCheck,
+		};
+
+		test.ExpectedDiagnostics.AddRange(
+		[
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 6, 3, 6, 3).WithArguments("Failed to create a 'Microsoft.UI.Xaml.Controls.Orientation' from the text 'BadValue'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 7, 4, 7, 4).WithArguments("Failed to create a 'Microsoft.UI.Xaml.TextWrapping' from the text 'BadWrap'"),
+		]);
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
 	public async Task When_InvalidXaml_Case002()
 	{
 		var xamlFiles = new[]

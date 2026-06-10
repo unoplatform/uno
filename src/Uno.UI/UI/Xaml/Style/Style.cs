@@ -26,6 +26,35 @@ namespace Microsoft.UI.Xaml
 		private readonly static Dictionary<Type, Style> _nativeDefaultStyleCache = new(Uno.Core.Comparison.FastTypeComparer.Default);
 
 		/// <summary>
+		/// Removes entries from the style caches whose Type key belongs to a non-default ALC.
+		/// </summary>
+		internal static void ClearCachesForNonDefaultAlc()
+		{
+			RemoveNonDefaultAlcEntries(_lookup);
+			RemoveNonDefaultAlcEntries(_defaultStyleCache);
+			RemoveNonDefaultAlcEntries(_nativeLookup);
+			RemoveNonDefaultAlcEntries(_nativeDefaultStyleCache);
+		}
+
+		private static void RemoveNonDefaultAlcEntries<TValue>(Dictionary<Type, TValue> dictionary)
+		{
+			var keysToRemove = new List<Type>();
+			foreach (var key in dictionary.Keys)
+			{
+				var alc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(key.Assembly);
+				if (alc is not null && alc != global::System.Runtime.Loader.AssemblyLoadContext.Default)
+				{
+					keysToRemove.Add(key);
+				}
+			}
+
+			foreach (var key in keysToRemove)
+			{
+				dictionary.Remove(key);
+			}
+		}
+
+		/// <summary>
 		/// The xaml scope in force at the time the Style was created.
 		/// </summary>
 		private readonly XamlScope _xamlScope;

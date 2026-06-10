@@ -631,4 +631,25 @@ partial class MetadataAPI // quick impl
 	}
 
 	public static Type GetClassInfoByTypeName(Type typeName) => typeName;
+
+	/// <summary>
+	/// Removes entries from the reflection cache whose Type key belongs to a non-default ALC.
+	/// </summary>
+	internal static void ClearCachesForNonDefaultAlc()
+	{
+		var keysToRemove = new List<(Type, string)>();
+		foreach (var key in _dependencyPropertyReflectionCache.Keys)
+		{
+			var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(key.Type.Assembly);
+			if (alc is not null && alc != System.Runtime.Loader.AssemblyLoadContext.Default)
+			{
+				keysToRemove.Add(key);
+			}
+		}
+
+		foreach (var key in keysToRemove)
+		{
+			_dependencyPropertyReflectionCache.Remove(key);
+		}
+	}
 }

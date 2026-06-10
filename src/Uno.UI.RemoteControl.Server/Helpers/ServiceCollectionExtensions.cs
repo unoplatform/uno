@@ -2,6 +2,9 @@ using System;
 using System.IO;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Uno.UI.RemoteControl.Host;
+using Uno.UI.RemoteControl.Server.Processors;
+using Uno.UI.RemoteControl.ServerCore;
 using Uno.UI.RemoteControl.Server.Telemetry;
 
 #if DEBUG
@@ -105,6 +108,8 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 				return new AppLaunch.ApplicationLaunchMonitor(options: launchOptions);
 			});
 
+			services.AddSingleton<AppLaunch.IApplicationLaunchMonitor>(sp => sp.GetRequiredService<AppLaunch.ApplicationLaunchMonitor>());
+
 			return services;
 		}
 
@@ -126,6 +131,18 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 			// Register ITelemetry<T> so that it resolves CreateTelemetry with the correct type argument T
 			services.AddScoped(typeof(ITelemetry<>), typeof(TelemetryGenericAdapter<>));
 
+			return services;
+		}
+
+		/// <summary>
+		/// Registers the core devserver services required to run <see cref="RemoteControlServer"/>.
+		/// </summary>
+		public static IServiceCollection AddRemoteControlServerCore(this IServiceCollection services)
+		{
+			services.AddScoped<IRemoteControlProcessorFactory, DefaultRemoteControlProcessorFactory>();
+			services.AddScoped<RemoteControlServer>();
+			services.AddScoped<IRemoteControlServer>(static sp => sp.GetRequiredService<RemoteControlServer>());
+			services.AddScoped<IRemoteControlServerConnection>(static sp => sp.GetRequiredService<RemoteControlServer>());
 			return services;
 		}
 
@@ -152,11 +169,13 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 		{
 			var sessionId = session.Id;
 
-			// Get telemetry configuration first
-			if (asm.GetCustomAttribute<TelemetryAttribute>() is not { } config)
-			{
-				throw new InvalidOperationException($"No telemetry config found for assembly {asm}.");
-			}
+			// Get telemetry configuration first. When core abstractions (like ITelemetry) live in
+			// another assembly (ServerCore), that assembly will not necessarily declare the
+			// TelemetryAttribute. Fall back to the host assembly configuration so we keep the
+			// historic instrumentation keys.
+			var config = asm.GetCustomAttribute<TelemetryAttribute>()
+				?? typeof(ServiceCollectionExtensions).Assembly.GetCustomAttribute<TelemetryAttribute>()
+				?? throw new InvalidOperationException($"No telemetry config found for assembly {asm}.");
 
 			var eventsPrefix = config.EventsPrefix ?? $"uno/{asm.GetName().Name?.ToLowerInvariant()}";
 

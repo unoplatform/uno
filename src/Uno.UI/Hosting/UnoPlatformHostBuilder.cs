@@ -31,8 +31,8 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 		set => _afterInitAction = value;
 	}
 
-	void IUnoPlatformHostBuilder.SetAppType<TApplication>()
-		=> _appType = typeof(TApplication);
+	void IUnoPlatformHostBuilder.SetAppType(Type appType)
+		=> _appType = appType;
 
 	public static UnoPlatformHostBuilder Create()
 		=> new();

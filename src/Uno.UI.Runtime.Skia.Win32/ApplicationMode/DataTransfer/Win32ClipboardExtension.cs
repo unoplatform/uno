@@ -130,14 +130,21 @@ internal partial class Win32ClipboardExtension : IClipboardExtension
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
 	internal static LRESULT WndProc(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
 	{
-		if (msg is PInvoke.WM_CLIPBOARDUPDATE)
+		try
 		{
-			Instance._currentPackage = null;
-			if (Instance._observeContentChanged)
+			if (msg is PInvoke.WM_CLIPBOARDUPDATE)
 			{
-				Instance.ContentChanged?.Invoke(Instance, EventArgs.Empty);
+				Instance._currentPackage = null;
+				if (Instance._observeContentChanged)
+				{
+					Instance.ContentChanged?.Invoke(Instance, EventArgs.Empty);
+				}
+				return new LRESULT(0);
 			}
-			return new LRESULT(0);
+		}
+		catch (Exception e)
+		{
+			typeof(Win32ClipboardExtension).LogError()?.Error($"Exception in {nameof(WndProc)}", e);
 		}
 		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
 	}

@@ -31,7 +31,7 @@
 		<PackageReference Include="Microsoft.VisualStudio.SolutionPersistence" Version="1.0.52" />
 		<PackageReference Include="StreamJsonRpc" Version="2.17.11" />
 		<PackageReference Include="ModelContextProtocol" Version="1.1.0" />
-		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.2.1">
+		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.3.0-dev.56">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
@@ -85,9 +85,8 @@
 		<Compile Include="..\Uno.UI.RemoteControl.Host\IDEChannel\IdeChannelServer.cs" Link="IDEChannel\IdeChannelServer.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.Host\IDEChannel\IdeMessageSerializer.cs" Link="IDEChannel\IdeMessageSerializer.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.Host\IDEChannel\IdeChannelServerOptions.cs" Link="IDEChannel\IdeChannelServerOptions.cs" />
-		<Compile Include="..\Uno.UI.RemoteControl.Messaging\IdeChannel\IIdeChannelServer.cs" Link="IDEChannel\IIdeChannelServer.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.Messaging\IdeChannel\IIdeChannelServer.Internal.cs" Link="IDEChannel\IIdeChannelServer.Internal.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl.Messaging\IDEChannel\IdeMessageEnvelope.cs" Link="IDEChannel\IdeMessageEnvelope.cs" />
-
 
 		<!-- Link AmbientRegistry and CsprojUserGenerator for controller bypass testing -->
 		<Compile Include="..\Uno.UI.RemoteControl.Host\AmbientRegistry.cs" Link="Mcp\AmbientRegistry.cs" />
@@ -137,6 +136,9 @@
 
 	<ItemGroup>
 		<!-- Normal project references - use Skia implementation of the Remote Control client -->
+		<ProjectReference Include="..\Uno.UI.RemoteControl.ServerCore\Uno.UI.RemoteControl.ServerCore.csproj">
+			<Aliases>RemoteServerCore</Aliases>
+		</ProjectReference>
 		<ProjectReference Include="..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" />
 	</ItemGroup>
