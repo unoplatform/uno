@@ -133,6 +133,43 @@ public class Given_FrameworkTheming
 		Assert.AreEqual(notificationCount, notifications.Count);
 	}
 
+	[TestMethod]
+	public void When_ClearRequestedTheme_Base_Flips_Notifies_With_BaseChanging_Flag()
+	{
+		// Uno-specific: Application.SetExplicitRequestedTheme(null) returns the app to
+		// follow-the-system mode through ClearRequestedTheme, which must walk (notify) when dropping
+		// the override changes the effective base theme.
+		var (theming, _, notifications) = Create(systemTheme: Theme.Dark);
+
+		theming.SetRequestedTheme(Theme.Light);
+		var notificationCount = notifications.Count;
+
+		theming.ClearRequestedTheme();
+
+		Assert.IsFalse(theming.HasRequestedTheme());
+		Assert.AreEqual(Theme.Dark, theming.GetTheme());
+		Assert.AreEqual(notificationCount + 1, notifications.Count);
+		// The app-theme axis is what changed (the override was dropped), observed by the callback.
+		Assert.AreEqual((true, false), notifications[^1]);
+		Assert.IsFalse(theming.IsBaseThemeChanging());
+	}
+
+	[TestMethod]
+	public void When_ClearRequestedTheme_Base_Unchanged_Does_Not_Notify()
+	{
+		var (theming, _, notifications) = Create(systemTheme: Theme.Light);
+
+		// Override matches the system theme, so dropping it does not change the effective theme.
+		theming.SetRequestedTheme(Theme.Light);
+		var notificationCount = notifications.Count;
+
+		theming.ClearRequestedTheme();
+
+		Assert.IsFalse(theming.HasRequestedTheme());
+		Assert.AreEqual(Theme.Light, theming.GetTheme());
+		Assert.AreEqual(notificationCount, notifications.Count);
+	}
+
 	#endregion
 
 	#region (c) OnThemeChanged — interop refresh + changing flags around the notify callback

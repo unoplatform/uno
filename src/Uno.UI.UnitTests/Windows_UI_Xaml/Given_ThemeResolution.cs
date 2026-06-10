@@ -47,45 +47,59 @@ public class Given_ThemeResolution
 	}
 
 	[TestMethod]
-	public void When_Owner_Theme_None_Returns_Nearest_Themed_Ancestor()
+	public void When_Owner_Theme_None_Returns_Ambient_Not_Ancestor()
 	{
-		var grandparent = new Border();
-		var parent = new Border();
-		var owner = new Border();
-		SetInheritanceParent(parent, grandparent);
-		SetInheritanceParent(owner, parent);
+		// WinUI's rule exactly: SetThemeResourceBinding consults m_theme alone (Theming.cpp:368) —
+		// the per-object theme is established at tree Enter, so there is deliberately NO
+		// resolution-time ancestor walk; an owner with no established theme resolves against the
+		// ambient base theme even when an inheritance ancestor carries a different theme.
+		var original = ResourceDictionary.GetActiveTheme();
+		try
+		{
+			ResourceDictionary.SetActiveTheme("Light");
 
-		SetStoreTheme(grandparent, Theme.Light);
-		SetStoreTheme(parent, Theme.Dark); // nearest themed ancestor wins over grandparent
+			var parent = new Border();
+			var owner = new Border();
+			SetInheritanceParent(owner, parent);
 
-		Assert.AreEqual(Theme.Dark, ThemeResolution.ResolveOwnerTheme(owner));
+			SetStoreTheme(parent, Theme.Dark); // owner stays Theme.None
+
+			Assert.AreEqual(Theme.Light, Theming.GetBaseValue(ThemeResolution.ResolveOwnerTheme(owner)));
+		}
+		finally
+		{
+			ResourceDictionary.SetActiveTheme(original);
+		}
 	}
 
 	[TestMethod]
-	public void When_Only_Grandparent_Themed_Walks_Past_Untouched_Parent()
+	public void When_NonFrameworkElement_Owner_Has_Store_Theme_Returns_Own()
 	{
-		var grandparent = new Border();
-		var parent = new Border();
-		var owner = new Border();
-		SetInheritanceParent(parent, grandparent);
-		SetInheritanceParent(owner, parent);
+		// D1: non-UIElement DOs (e.g. brushes) carry a per-object theme via the store, established
+		// at tree Enter; resolution consults that theme alone (no resolution-time parent walk).
+		var original = ResourceDictionary.GetActiveTheme();
+		try
+		{
+			ResourceDictionary.SetActiveTheme("Light");
 
-		SetStoreTheme(grandparent, Theme.Light); // parent and owner stay Theme.None
+			var parent = new Border();
+			var brush = new SolidColorBrush(Colors.Red);
+			SetInheritanceParent(brush, parent);
+			SetStoreTheme(brush, Theme.Dark);
 
-		Assert.AreEqual(Theme.Light, ThemeResolution.ResolveOwnerTheme(owner));
-	}
+			Assert.AreEqual(Theme.Dark, Theming.GetBaseValue(ThemeResolution.ResolveOwnerTheme(brush)));
 
-	[TestMethod]
-	public void When_NonFrameworkElement_Owner_Inherits_From_Parent()
-	{
-		// D1: non-UIElement DOs (e.g. brushes) now carry a theme via the store and
-		// participate in the inheritance-parent walk.
-		var parent = new Border();
-		var brush = new SolidColorBrush(Colors.Red);
-		SetInheritanceParent(brush, parent);
-		SetStoreTheme(parent, Theme.Dark);
+			// A parent's theme does not leak into a theme-less owner at resolution time.
+			var themelessBrush = new SolidColorBrush(Colors.Red);
+			SetInheritanceParent(themelessBrush, parent);
+			SetStoreTheme(parent, Theme.Dark);
 
-		Assert.AreEqual(Theme.Dark, ThemeResolution.ResolveOwnerTheme(brush));
+			Assert.AreEqual(Theme.Light, Theming.GetBaseValue(ThemeResolution.ResolveOwnerTheme(themelessBrush)));
+		}
+		finally
+		{
+			ResourceDictionary.SetActiveTheme(original);
+		}
 	}
 
 	[TestMethod]

@@ -123,6 +123,39 @@ internal sealed class FrameworkTheming
 
 	public void UnsetRequestedTheme() => m_requestedTheme = Theme.None;
 
+	// Uno-specific: WinUI can never drop the app override at runtime (ApplicationTheme has no None and
+	// put_RequestedThemeImpl is pre-load only), but Uno's Application.SetExplicitRequestedTheme(null)
+	// returns the app to follow-the-system mode. Mirror SetRequestedTheme's structure: clear the
+	// override, then notify under the app-theme-changing flag. OnThemeChanged's no-change early-out
+	// compares GetTheme() with the override already cleared, so the base flip caused by dropping the
+	// override must be forced explicitly.
+	public void ClearRequestedTheme(bool doNotifyThemeChange = true)
+	{
+		if (m_requestedTheme != Theme.None)
+		{
+			var oldDefaultTheme = GetBaseTheme();
+
+			m_requestedTheme = Theme.None;
+
+			// Don't notify about theme switches when we're in high contrast.
+			if (doNotifyThemeChange && !HasHighContrastTheme())
+			{
+				bool baseThemeChanging = oldDefaultTheme != GetBaseTheme();
+
+				m_isAppThemeChanging = baseThemeChanging;
+				try
+				{
+					OnThemeChanged(forceUpdate: baseThemeChanging);
+				}
+				finally
+				{
+					// C++ uses a wil::scope_exit guard to reset the flag on scope exit.
+					m_isAppThemeChanging = false;
+				}
+			}
+		}
+	}
+
 	public bool HasHighContrastTheme() => m_highContrastTheme != Theme.HighContrastNone;
 
 	// Represents the theme that the framework is using.  It is a combination

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI;
 
@@ -23,7 +24,18 @@ public class ApplicationHelper
 	{
 		get => _requestedCustomTheme;
 		// Retained for source compatibility (the value round-trips) but no longer selects a theme.
-		set => _requestedCustomTheme = value;
+		set
+		{
+			if (!string.IsNullOrEmpty(value) && typeof(ApplicationHelper).Log().IsEnabled(LogLevel.Warning))
+			{
+				typeof(ApplicationHelper).Log().LogWarning(
+					$"RequestedCustomTheme is no longer supported and \"{value}\" will not select a theme. " +
+					"Provide a custom palette via merged ResourceDictionaries that override specific brush/color " +
+					"keys on top of the Light/Dark theme dictionaries, and use Application.RequestedTheme to switch themes.");
+			}
+
+			_requestedCustomTheme = value;
+		}
 	}
 
 	/// <summary>

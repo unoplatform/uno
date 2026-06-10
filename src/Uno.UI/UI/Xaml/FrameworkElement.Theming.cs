@@ -83,11 +83,9 @@ public partial class FrameworkElement
 				}
 				if (theme == Theme.None)
 				{
-					// Uno-specific: WinUI falls back to FrameworkTheming::GetBaseTheme(); until the
-					// Application drives FrameworkTheming (Phase 6 of the theming alignment), the
-					// app's ActualElementTheme is the same base theme.
-					theme = Theming.FromElementTheme(
-						Application.Current?.ActualElementTheme ?? ElementTheme.Light);
+					// MUX: framework.cpp:3520-3527 — fall back to the app/system base theme
+					// (FrameworkTheming::GetBaseTheme).
+					theme = core.Theming.GetBaseTheme();
 				}
 
 				// UnFreeze inherited properties
@@ -116,14 +114,14 @@ public partial class FrameworkElement
 		}
 #else
 		SyncRootRequestedTheme();
-		if (ActualThemeChanged != null)
+		if (_actualThemeChanged != null)
 		{
 			var actualThemeChanged =
 				(oldValue == ElementTheme.Default && Application.Current?.ActualElementTheme != newValue) ||
 				(oldValue != ElementTheme.Default && oldValue != ActualTheme);
 			if (actualThemeChanged)
 			{
-				ActualThemeChanged?.Invoke(this, null);
+				_actualThemeChanged?.Invoke(this, null);
 			}
 		}
 #endif
@@ -157,11 +155,11 @@ public partial class FrameworkElement
 #if UNO_HAS_ENHANCED_LIFECYCLE
 			// Get base (non-HighContrast) theme.
 			// Fall back to default (system or app) theme if the local theme isn't set.
+			// MUX: framework.cpp:3978-3989 — FrameworkTheming::GetBaseTheme() when m_theme is None.
 			var baseTheme = Theming.GetBaseValue(GetTheme());
 			if (baseTheme == Theme.None)
 			{
-				baseTheme = Theming.FromElementTheme(
-					Application.Current?.ActualElementTheme ?? ElementTheme.Light);
+				baseTheme = Uno.UI.Xaml.Core.CoreServices.Instance.Theming.GetBaseTheme();
 			}
 			return Theming.ToElementTheme(baseTheme);
 #else
@@ -172,10 +170,43 @@ public partial class FrameworkElement
 		}
 	}
 
+	private TypedEventHandler<FrameworkElement, object> _actualThemeChanged;
+
 	/// <summary>
 	/// Occurs when the ActualTheme property value has changed.
 	/// </summary>
-	public event TypedEventHandler<FrameworkElement, object> ActualThemeChanged;
+	public event TypedEventHandler<FrameworkElement, object> ActualThemeChanged
+	{
+		add
+		{
+			if (value is null)
+			{
+				return;
+			}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			// MUX Reference: CFrameworkElement::AddEventListener — framework.cpp:3996-4014:
+			// "Register to receive theme change notifications so we can raise the event
+			//  for default (system/app) theme changes when the element happens to be outside
+			//  the live tree (i.e. not included in the theme walk from root)."
+			Uno.UI.Xaml.Core.CoreServices.Instance.AddThemeChangedListener(this);
+#endif
+			_actualThemeChanged += value;
+		}
+		remove
+		{
+			if (value is null)
+			{
+				return;
+			}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			// MUX Reference: CFrameworkElement::RemoveEventListener — framework.cpp:4016-4028
+			Uno.UI.Xaml.Core.CoreServices.Instance.RemoveThemeChangedListener(this);
+#endif
+			_actualThemeChanged -= value;
+		}
+	}
 
 	//------------------------------------------------------------------------
 	//
@@ -221,7 +252,9 @@ public partial class FrameworkElement
 		{
 			NotifyThemeChangedForInheritedProperties(theme, freeze: true);
 		}
-		else if (IsEffectiveThemeChanging(theme, forceRefresh))
+		// Uno-specific gate (the foreground re-pull below emulates WinUI's TextFormatting pull
+		// system): also re-pull on forced walks so hot reload refreshes the inherited brush.
+		else if (IsEffectiveBaseThemeChanging(theme) || forceRefresh)
 		{
 			// Uno-specific: Foreground is an inherited DP in Uno (WinUI propagates it through the
 			// TextFormatting pull system, see EnsureThemeForeground), so the inherited theme
@@ -252,7 +285,7 @@ public partial class FrameworkElement
 		base.NotifyThemeChangedCore(theme, forceRefresh);
 
 		// Raise event if the effective theme is changing.
-		RaiseActiveThemeChangedEventIfChanging(theme, forceRefresh);
+		RaiseActiveThemeChangedEventIfChanging(theme);
 	}
 
 	/// <summary>
@@ -269,18 +302,19 @@ public partial class FrameworkElement
 	// Called when there are default (system/app) theme changes. This enables us to notify
 	// ActualThemeChanged listeners on this element when it's outside the live tree.
 	// MUX Reference: CFrameworkElement::NotifyThemeChangedListeners — framework.cpp:3337-3344.
-	// (Wired from the CCoreServices::NotifyThemeChange port in Phase 6 of the theming alignment.)
+	// Invoked by the CCoreServices.NotifyThemeChange walk for elements registered through the
+	// ActualThemeChanged accessors (CoreServices.AddThemeChangedListener).
 	internal void NotifyThemeChangedListeners(Theme theme)
 	{
 		if (!IsActiveInVisualTree)
 		{
 			// Raise event if the effective theme is changing.
-			RaiseActiveThemeChangedEventIfChanging(theme, forceRefresh: false);
+			RaiseActiveThemeChangedEventIfChanging(theme);
 		}
 	}
 
 	// MUX Reference: CFrameworkElement::RaiseActiveThemeChangedEventIfChanging — framework.cpp:3346-3386
-	private void RaiseActiveThemeChangedEventIfChanging(Theme theme, bool forceRefresh)
+	private void RaiseActiveThemeChangedEventIfChanging(Theme theme)
 	{
 		// The actual/effective theme value on an element may change due to theme changes
 		// in several places. The local theme value starts as None, which means default,
@@ -314,7 +348,8 @@ public partial class FrameworkElement
 			}
 		}
 
-		if (IsEffectiveThemeChanging(theme, forceRefresh))
+		// Raise ActualThemeChanged event if effective base (non-HighContrast) theme value is changing.
+		if (IsEffectiveBaseThemeChanging(theme))
 		{
 			Uno.UI.Dispatching.NativeDispatcher.Main.Enqueue(RaiseActualThemeChanged);
 		}
@@ -336,21 +371,20 @@ public partial class FrameworkElement
 	}
 
 	// MUX: framework.cpp:3378-3382 — "Raise ActualThemeChanged event if effective base
-	// (non-HighContrast) theme value is changing": oldTheme == None ? GetBaseTheme() :
-	// GetBaseValue(oldTheme), compared to the incoming base. GetTheme() still holds the pre-walk
-	// theme here (persisted after the core walk, Theming.cpp:155);
-	// Application.IsBaseThemeChanging mirrors WinUI's IsBaseThemeChanging() so a never-walked
-	// element still raises on an app/system switch.
-	// Uno-specific: forceRefresh also counts as changing (pre-existing behavior; WinUI's condition
-	// has no force disjunct — re-evaluated against the WinUI oracle in Phase 8).
-	private bool IsEffectiveThemeChanging(Theme theme, bool forceRefresh)
+	// (non-HighContrast) theme value is changing": oldTheme == None ? theming->GetBaseTheme() :
+	// GetBaseValue(oldTheme), compared to the incoming base, OR a never-walked element (None) while
+	// a base (app/system) switch is in progress (FrameworkTheming::IsBaseThemeChanging). GetTheme()
+	// still holds the pre-walk theme here (persisted after the core walk, Theming.cpp:155). No force
+	// disjunct — forced walks (fForceRefresh) re-resolve values but do not raise on elements whose
+	// effective theme is unchanged.
+	private bool IsEffectiveBaseThemeChanging(Theme theme)
 	{
+		var theming = Uno.UI.Xaml.Core.CoreServices.Instance.Theming;
 		var oldTheme = GetTheme();
-		var appBaseTheme = Theming.FromElementTheme(Application.Current?.ActualElementTheme ?? ElementTheme.Light);
-		var oldBaseForEvent = oldTheme == Theme.None ? appBaseTheme : Theming.GetBaseValue(oldTheme);
-		return oldBaseForEvent != Theming.GetBaseValue(theme)
-			|| (oldTheme == Theme.None && Application.IsBaseThemeChanging)
-			|| forceRefresh;
+		var oldBase = oldTheme == Theme.None ? theming.GetBaseTheme() : Theming.GetBaseValue(oldTheme);
+		var newBase = Theming.GetBaseValue(theme);
+		return oldBase != newBase
+			|| (oldTheme == Theme.None && theming.IsBaseThemeChanging());
 	}
 #endif
 
@@ -362,7 +396,7 @@ public partial class FrameworkElement
 	{
 		try
 		{
-			ActualThemeChanged?.Invoke(this, null);
+			_actualThemeChanged?.Invoke(this, null);
 		}
 		catch (Exception e)
 		{
@@ -608,11 +642,11 @@ public partial class FrameworkElement
 		(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(updateReason);
 		if (updateReason == ResourceUpdateReason.ThemeResource)
 		{
-			if (ActualThemeChanged != null && RequestedTheme == ElementTheme.Default)
+			if (_actualThemeChanged != null && RequestedTheme == ElementTheme.Default)
 			{
 				try
 				{
-					ActualThemeChanged?.Invoke(this, null);
+					_actualThemeChanged?.Invoke(this, null);
 				}
 				catch (Exception e)
 				{
