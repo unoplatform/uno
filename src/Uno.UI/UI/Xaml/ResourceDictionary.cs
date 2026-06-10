@@ -318,7 +318,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (value is SpecialValue)
 				{
-					TryMaterializeLazy(resourceKey, ref value);
+					TryMaterializeLazy(resourceKey, ref value, themeKey);
 					TryResolveAlias(ref value, themeKey);
 				}
 
@@ -392,7 +392,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (value is SpecialValue)
 				{
-					TryMaterializeLazy(resourceKey, ref value);
+					TryMaterializeLazy(resourceKey, ref value, themeKey);
 					TryResolveAlias(ref value, themeKey);
 				}
 
@@ -520,14 +520,34 @@ namespace Microsoft.UI.Xaml
 		/// If retrieved element is a <see cref="LazyInitializer"/> stub, materialize the actual object and replace the stub.
 		/// </summary>
 		private void TryMaterializeLazy(in ResourceKey key, ref object value)
+			=> TryMaterializeLazy(key, ref value, GetActiveTheme());
+
+		private void TryMaterializeLazy(in ResourceKey key, ref object value, in ResourceKey themeKey)
 		{
 			if (value is LazyInitializer lazyInitializer)
 			{
 				object newValue = null;
 				bool hasEmptyCurrentScope = lazyInitializer.CurrentScope.Sources.IsEmpty;
+
+				// A lazy resource living in a theme sub-dictionary (e.g. the Light ApplicationPageBackgroundThemeBrush
+				// whose Color is a {StaticResource SolidBackgroundFillColorBase}) bakes its nested {StaticResource}/
+				// {ThemeResource} against the ambient active theme (GetActiveTheme) the FIRST time it materializes —
+				// then caches the result in _values forever. Under an opposite-theme app (Light resource materialized
+				// while the app is Dark) that bakes the wrong theme's value permanently. Scope the active theme to the
+				// theme this lookup is resolving for, so the initializer resolves nested refs in the sub-dictionary's
+				// own theme. Mirrors WinUI resolving a deferred theme-dictionary resource under the requested theme
+				// (EnsureActiveThemeDictionary, Resources.cpp:687-819).
+				var previousActiveTheme = Themes.Active;
+				var overrideActiveTheme = themeKey.Key is not null && !themeKey.Equals(previousActiveTheme);
+
 				try
 				{
 					_values.Remove(key); // Temporarily remove the key to make this method safely reentrant, if it's a framework- or application-level theme dictionary
+
+					if (overrideActiveTheme)
+					{
+						Themes.Active = themeKey;
+					}
 
 					if (!hasEmptyCurrentScope)
 					{
@@ -561,6 +581,11 @@ namespace Microsoft.UI.Xaml
 					if (!hasEmptyCurrentScope)
 					{
 						ResourceResolver.PopScope();
+					}
+
+					if (overrideActiveTheme)
+					{
+						Themes.Active = previousActiveTheme;
 					}
 				}
 
