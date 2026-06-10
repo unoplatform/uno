@@ -9,8 +9,8 @@ namespace Uno.UI.RuntimeTests.Helpers;
 public static class Annotations
 {
 #if WINAPPSDK
-    public const DynamicallyAccessedMemberTypes IValueConverter_TargetTypeRequirements = DynamicallyAccessedMemberTypes.PublicParameterlessConstructor;
+	public const DynamicallyAccessedMemberTypes IValueConverter_TargetTypeRequirements = DynamicallyAccessedMemberTypes.PublicParameterlessConstructor;
 #else   // WINAPPSDK
-    public const DynamicallyAccessedMemberTypes IValueConverter_TargetTypeRequirements = Microsoft.UI.Xaml.Data.IValueConverter.TargetTypeRequirements;
+	public const DynamicallyAccessedMemberTypes IValueConverter_TargetTypeRequirements = Microsoft.UI.Xaml.Data.IValueConverter.TargetTypeRequirements;
 #endif  // WINAPPSDK
 }

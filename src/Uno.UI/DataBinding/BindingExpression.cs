@@ -213,7 +213,7 @@ namespace Microsoft.UI.Xaml.Data
 				{
 					value = ConvertBack();
 
-					[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "")]
+					[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 					object ConvertBack() => ParentBinding.Converter.ConvertBack(
 						value,
 						_bindingPath.ValueType,
