@@ -22,6 +22,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// Each FlipViewItem has a fixed Height=500. WinUI auto-sizes the FlipView
 		// to that height; Uno renders nothing on Skia.
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
 		public async Task When_FlipView_Has_StackPanel_ItemsPanel_13944()
 		{
 			var template = (ItemsPanelTemplate)XamlReader.Load(

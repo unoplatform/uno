@@ -1,7 +1,7 @@
 ﻿using SamplesApp;
 using Uno.UI.Hosting;
 
-#if __IOS__ && !__MACCATALYST__ && !TESTFLIGHT && !DEBUG
+#if __IOS__ && !TESTFLIGHT && !DEBUG
 // requires Xamarin Test Cloud Agent
 Xamarin.Calabash.Start();
 #endif

@@ -32,10 +32,6 @@ internal partial class AppleUIKitWindow : UIWindow
 		}
 	}
 
-#if __MACCATALYST__
-	internal ICoreWindowEvents? OwnerEvents { get; private set; }
-#endif
-
 	public override void PressesEnded(NSSet<UIPress> presses, UIPressesEvent evt)
 	{
 		if (!UnoKeyboardInputSource.Instance.TryHandlePresses(presses, evt, this))
@@ -43,8 +39,4 @@ internal partial class AppleUIKitWindow : UIWindow
 			base.PressesEnded(presses, evt);
 		}
 	}
-
-#if __MACCATALYST__
-	internal void SetOwner(CoreWindow? owner) => OwnerEvents = owner;
-#endif
 }
