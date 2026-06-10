@@ -26,7 +26,7 @@ jobs:
 
       - name: Install required .NET workloads
         shell: bash
-        run: dotnet workload install android ios maccatalyst tvos
+        run: dotnet workload install android ios tvos
 
       - name: Restore sync generator solution filter
         working-directory: build

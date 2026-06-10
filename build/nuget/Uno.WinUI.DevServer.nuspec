@@ -30,13 +30,6 @@
 
 			</group>
 
-			<!-- net9.0-maccatalyst18.0 -->
-			<group targetFramework="net9.0-maccatalyst18.0">
-				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
-				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
-
-			</group>
-
 			<!-- net9.0-android -->
 			<group targetFramework="net9.0-android">
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
@@ -53,13 +46,6 @@
 
 			<!-- net10.0-tvos26.0 -->
 			<group targetFramework="net10.0-tvos26.0">
-				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
-				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
-
-			</group>
-
-			<!-- net10.0-maccatalyst26.0 -->
-			<group targetFramework="net10.0-maccatalyst26.0">
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
 
@@ -119,9 +105,6 @@
 		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net9.0-tvos18.0\Uno.UI.RemoteControl.dll" target="lib\net9.0-tvos18.0" />
 		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net9.0-tvos18.0\Uno.UI.RemoteControl.pdb" target="lib\net9.0-tvos18.0" />
 
-		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.UI.RemoteControl.dll" target="lib\net9.0-maccatalyst18.0" />
-		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.UI.RemoteControl.pdb" target="lib\net9.0-maccatalyst18.0" />
-
 		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net10.0-android\Uno.UI.RemoteControl.dll" target="lib\net10.0-android" />
 		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net10.0-android\Uno.UI.RemoteControl.pdb" target="lib\net10.0-android" />
 
@@ -130,9 +113,6 @@
 
 		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net10.0-tvos26.0\Uno.UI.RemoteControl.dll" target="lib\net10.0-tvos26.0" />
 		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net10.0-tvos26.0\Uno.UI.RemoteControl.pdb" target="lib\net10.0-tvos26.0" />
-
-		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net10.0-maccatalyst26.0\Uno.UI.RemoteControl.dll" target="lib\net10.0-maccatalyst26.0" />
-		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net10.0-maccatalyst26.0\Uno.UI.RemoteControl.pdb" target="lib\net10.0-maccatalyst26.0" />
 
 		<!-- Processors -->
 		<file src="..\..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net9.0\*.dll" target="tools\rc\processors\net9.0" />

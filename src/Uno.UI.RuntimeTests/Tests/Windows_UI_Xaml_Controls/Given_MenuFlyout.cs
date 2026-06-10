@@ -548,7 +548,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RequiresFullWindow]
 		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/480")]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
 		public async Task When_Flyout_Menu_Uses_Owner_Subtree_Theme_Light_Under_Dark_App()
 		{
 #if HAS_UNO
@@ -631,7 +631,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RequiresFullWindow]
 		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/480")]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
 		public async Task When_MenuFlyout_Item_Uses_Owner_Subtree_Theme_Light_Under_Dark_App()
 		{
 #if HAS_UNO
@@ -727,7 +727,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// ------------------------------------------------------------------
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
 		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/480")]
 		public async Task When_MenuFlyout_Opens_First_Time_Foreground_Should_Not_Flash_Wrong_Theme()
 		{

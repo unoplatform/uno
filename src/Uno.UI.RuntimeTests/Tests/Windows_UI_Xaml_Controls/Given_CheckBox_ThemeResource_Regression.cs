@@ -29,7 +29,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// must be re-pinned there; otherwise a checked CheckBox reverts to the stock brush on a visual-state re-entry.
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
 		public async Task When_App_Override_Checked_Survives_IsChecked_Reentry_Under_Dark_App()
 		{
 			using var _ = ThemeHelper.UseApplicationDarkTheme();
@@ -75,7 +75,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// CheckedNormal); asserts in the enabled CheckedNormal state after the round-trip.
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
 		public async Task When_App_Override_Checked_Survives_IsEnabled_Toggle_Under_Dark_App()
 		{
 			using var _ = ThemeHelper.UseApplicationDarkTheme();
@@ -121,7 +121,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// through Frame navigation and re-entering PointerOver must keep the Light (Blue) value.
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
 		public async Task When_VisualStateSetter_PointerOver_Keeps_Light_After_Frame_Navigation_Under_Dark_App()
 		{
 			using var _ = ThemeHelper.UseApplicationDarkTheme();
