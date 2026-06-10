@@ -19,10 +19,6 @@ namespace Microsoft.UI.Xaml.Controls
 			DefaultStyleKey = typeof(ListViewItem);
 		}
 
-		// WinUI does not dim disabled ListViewItem content (its native ListViewItemPresenter ignores
-		// the disabled opacity); suppress the default template's "Disabled" opacity dim to match.
-		private protected override bool UsesDisabledVisualState => false;
-
 		[global::Uno.NotImplemented]
 		public ListViewItemTemplateSettings TemplateSettings { get; } = new();
 
