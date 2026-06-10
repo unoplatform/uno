@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Text;
 using Uno.UI.Converters;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.Tests.Converters
 {
