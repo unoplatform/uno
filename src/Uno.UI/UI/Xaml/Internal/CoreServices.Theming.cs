@@ -38,6 +38,13 @@ internal partial class CoreServices
 	internal bool IsThemeRequestedForSubTree() => Microsoft.UI.Xaml.Theming.GetBaseValue(_requestedThemeForSubTree) != Theme.None;
 
 	/// <summary>
+	/// Whether a theme switch is currently being processed. Analog of
+	/// CCoreServices::m_fIsSwitchingTheme (set by CFrameworkElement::OnRequestedThemeChanged,
+	/// framework.cpp:3540-3545, and by CCoreServices::NotifyThemeChange, xcpcore.cpp:8041-8042).
+	/// </summary>
+	internal bool IsSwitchingTheme { get; set; }
+
+	/// <summary>
 	/// Scopes the requested-theme-for-subtree slot to <paramref name="theme"/> for the duration of
 	/// a lookup — the save/set/restore pattern of CCoreServices::LookupThemeResource
 	/// (xcpcore.cpp:2371-2394), used wherever WinUI resolves a keyed resource under a specific

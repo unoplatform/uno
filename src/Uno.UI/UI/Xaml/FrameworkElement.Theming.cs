@@ -59,11 +59,13 @@ public partial class FrameworkElement
 				ElementTheme.Default,
 				(o, e) => ((FrameworkElement)o).OnRequestedThemeChanged((ElementTheme)e.OldValue, (ElementTheme)e.NewValue)));
 
-	// MUX Reference framework.cpp, lines 3501-3559
+	// MUX Reference: CFrameworkElement::OnRequestedThemeChanged — framework.cpp:3501-3559
 	private void OnRequestedThemeChanged(ElementTheme oldValue, ElementTheme newValue)
 	{
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		var theme = Theme.None;
+		bool setIsSwitchingTheme = false;
+		var core = Uno.UI.Xaml.Core.CoreServices.Instance;
 
 		switch (newValue)
 		{
@@ -74,26 +76,44 @@ public partial class FrameworkElement
 				theme = Theme.Light;
 				break;
 			case ElementTheme.Default:
-				// Use parent's requested theme if this property was cleared
-				var parent = this.GetParent() as UIElement;
-				if (parent != null)
+				// Use parent's theme if cleared
+				if (this.GetParent() is IDependencyObjectStoreProvider parentProvider)
 				{
-					theme = parent.GetTheme();
+					theme = parentProvider.Store.GetTheme();
 				}
-				// If there is no parent, or parent's theme has not been set,
-				// default to the application's requested theme.
 				if (theme == Theme.None)
 				{
+					// Uno-specific: WinUI falls back to FrameworkTheming::GetBaseTheme(); until the
+					// Application drives FrameworkTheming (Phase 6 of the theming alignment), the
+					// app's ActualElementTheme is the same base theme.
 					theme = Theming.FromElementTheme(
 						Application.Current?.ActualElementTheme ?? ElementTheme.Light);
 				}
-				// Unfreeze inherited properties at this element's level
+
+				// UnFreeze inherited properties
 				NotifyThemeChangedForInheritedProperties(theme, freeze: false);
 				break;
 		}
 
-		// Apply theme to this element and its subtree
-		NotifyThemeChanged(theme);
+		try
+		{
+			if (!core.IsSwitchingTheme)
+			{
+				core.IsSwitchingTheme = true;
+				setIsSwitchingTheme = true;
+			}
+
+			// Apply theme + HC to subtree
+			theme |= core.Theming.GetHighContrastTheme();
+			NotifyThemeChanged(theme);
+		}
+		finally
+		{
+			if (setIsSwitchingTheme)
+			{
+				core.IsSwitchingTheme = false;
+			}
+		}
 #else
 		SyncRootRequestedTheme();
 		if (ActualThemeChanged != null)
@@ -235,20 +255,83 @@ public partial class FrameworkElement
 		RaiseActiveThemeChangedEventIfChanging(theme, forceRefresh);
 	}
 
-	// Transitional shape of CFrameworkElement::RaiseActiveThemeChangedEventIfChanging
-	// (framework.cpp:3346-3386): the base-theme comparison ports 1:1 (GetTheme() is the pre-walk
-	// theme — WinUI persists m_theme after NotifyThemeChangedCore, Theming.cpp:155, and so does
-	// Uno); the HighContrastChanged event and the HC suppression rules land with the Phase 4
-	// framework.cpp port.
+	/// <summary>
+	/// Occurs when the system high-contrast state affecting this element changes.
+	/// </summary>
+	/// <remarks>
+	/// MUX Reference: KnownEventIndex::FrameworkElement_HighContrastChanged, raised by
+	/// CFrameworkElement::RaiseActiveThemeChangedEventIfChanging (framework.cpp:3364-3376).
+	/// Internal: the WinAppSDK does not expose this event on the public FrameworkElement surface
+	/// (no Generated stub) — it is the engine-level companion of ActualThemeChanged.
+	/// </remarks>
+	internal event TypedEventHandler<FrameworkElement, object> HighContrastChanged;
+
+	// Called when there are default (system/app) theme changes. This enables us to notify
+	// ActualThemeChanged listeners on this element when it's outside the live tree.
+	// MUX Reference: CFrameworkElement::NotifyThemeChangedListeners — framework.cpp:3337-3344.
+	// (Wired from the CCoreServices::NotifyThemeChange port in Phase 6 of the theming alignment.)
+	internal void NotifyThemeChangedListeners(Theme theme)
+	{
+		if (!IsActiveInVisualTree)
+		{
+			// Raise event if the effective theme is changing.
+			RaiseActiveThemeChangedEventIfChanging(theme, forceRefresh: false);
+		}
+	}
+
+	// MUX Reference: CFrameworkElement::RaiseActiveThemeChangedEventIfChanging — framework.cpp:3346-3386
 	private void RaiseActiveThemeChangedEventIfChanging(Theme theme, bool forceRefresh)
 	{
+		// The actual/effective theme value on an element may change due to theme changes
+		// in several places. The local theme value starts as None, which means default,
+		// and doesn't change unless one of the following changes occurs. Though we may be
+		// notified by these changes, the actual/effective theme value may remain the same.
+		// For example, if the initial actual value is Dark by default from the system theme,
+		// then setting RequestedTheme=Dark would trigger a theme walk here but wouldn't
+		// change the actual value.
+		// Possible causes of theme change notifications:
+		//  - RequestedTheme change on this element or an ancestor.
+		//  - RequestedTheme change on application.
+		//  - System theme change.
+		//  - System high contrast change.
+
+		var theming = Uno.UI.Xaml.Core.CoreServices.Instance.Theming;
+
+		// Raise HighContrastChanged event if it's high contrast that's changing.
+		// (Both raises are posted — WinUI delivers them through the EventManager, framework.cpp:
+		// 3367/3384; confirmed async by native ResourceDictionaryBasicTests.cpp:4209-4234, so
+		// handlers observe the already-persisted new theme.)
+		if (theming.IsHighContrastChanging())
+		{
+			Uno.UI.Dispatching.NativeDispatcher.Main.Enqueue(RaiseHighContrastChanged);
+
+			// For backwards compatibility of ActualThemeChanged, we return only if
+			// we are changing from HC to HC, or non-HC to HC. If we are changing
+			// from HC to non-HC, we want to fire ActualThemeChanged as well.
+			if (theming.HasHighContrastTheme())
+			{
+				return;
+			}
+		}
+
 		if (IsEffectiveThemeChanging(theme, forceRefresh))
 		{
-			// MUX: the EventManager delivers FrameworkElement_ActualThemeChanged asynchronously
-			// (posted raise, framework.cpp:3384; confirmed by native ResourceDictionaryBasicTests.cpp:
-			// 4209-4234 — handlers observe the already-persisted NEW theme). Post the invocation so
-			// handlers run after the walk has persisted the per-object theme.
 			Uno.UI.Dispatching.NativeDispatcher.Main.Enqueue(RaiseActualThemeChanged);
+		}
+	}
+
+	private void RaiseHighContrastChanged()
+	{
+		try
+		{
+			HighContrastChanged?.Invoke(this, null);
+		}
+		catch (Exception e)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error("HighContrastChanged handler threw an exception", e);
+			}
 		}
 	}
 
@@ -258,8 +341,8 @@ public partial class FrameworkElement
 	// theme here (persisted after the core walk, Theming.cpp:155);
 	// Application.IsBaseThemeChanging mirrors WinUI's IsBaseThemeChanging() so a never-walked
 	// element still raises on an app/system switch.
-	// Uno-specific: forceRefresh also counts as changing (pre-existing behavior, re-validated in
-	// Phase 4 of the theming alignment).
+	// Uno-specific: forceRefresh also counts as changing (pre-existing behavior; WinUI's condition
+	// has no force disjunct — re-evaluated against the WinUI oracle in Phase 8).
 	private bool IsEffectiveThemeChanging(Theme theme, bool forceRefresh)
 	{
 		var oldTheme = GetTheme();
