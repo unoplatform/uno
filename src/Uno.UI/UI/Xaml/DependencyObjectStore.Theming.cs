@@ -208,40 +208,56 @@ public partial class DependencyObjectStore
 
 	#region Theme resource binding storage — WinUI: SetThemeResource / SetThemeResourceBinding (Theming.cpp lines 349-400)
 
-	/// <summary>
-	/// Stores a <see cref="ThemeResourceReference"/> on this object for the given property.
-	/// The reference pins the providing dictionary for O(1) re-resolution on theme change.
-	/// </summary>
+	// Sets theme value on property. Also stores the theme reference so we can refresh the value on theme changes.
 	/// <remarks>
-	/// MUX Reference: CDependencyObject::SetThemeResourceBinding in Theming.cpp (lines 349-400)
+	/// MUX Reference: CDependencyObject::SetThemeResourceBinding in Theming.cpp (lines 349-400).
 	///
-	/// In WinUI, SetThemeResourceBinding does: push theme context → UpdateThemeReference(CThemeResource*) →
-	/// GetLastResolvedThemeValue → SetValue → SetThemeResource (store reference).
-	/// In Uno, the resolve+set is done by the caller (ResourceResolver.ApplyResource), and this method
-	/// handles just the "store reference" part (equivalent to WinUI line 397: SetThemeResource(pDP, pThemeResource)).
+	/// The C++ sequence — push the owner's theme onto the core requested-theme-for-subtree slot
+	/// (gated on !IsProcessingThemeWalk() &amp;&amp; m_theme != Theme::None, Theming.cpp:364-379),
+	/// UpdateThemeReference(pThemeResource) refresh, GetLastResolvedThemeValue, SetValue, then
+	/// SetThemeResource(pDP, pThemeResource) — is hosted end-to-end by the shared
+	/// <see cref="UpdateThemeReference"/> path below, which inlines the slot push.
+	///
+	/// TODO Uno: WinUI's pModifiedValue bookkeeping (SetModifierValueBeingSet, Theming.cpp:355-362)
+	/// and the freeze/unfreeze around SetValue (Theming.cpp:390-392) have no Uno analog — modified
+	/// (animated) values are tracked per-precedence by the store, and Uno has no SimulateFreeze.
 	/// </remarks>
-	internal void SetThemeResourceBinding(DependencyProperty property, ThemeResourceReference themeRef)
+	internal void SetThemeResourceBinding(DependencyProperty property, ThemeResourceReference themeRef, DependencyPropertyValuePrecedences? precedence = null)
+	{
+		// Resolve the effective precedence using the same logic as SetResourceBinding
+		var effectivePrecedence = precedence ?? themeRef.Precedence;
+		if (effectivePrecedence == DependencyPropertyValuePrecedences.Local && _overriddenPrecedences?.Count > 0)
+		{
+			effectivePrecedence = _overriddenPrecedences.Peek() ?? effectivePrecedence;
+		}
+
+		// Store the reference first so the staleness guard in UpdateThemeReference (the
+		// Theming.cpp:297-298 analog) recognizes it; UpdateThemeReference stores it back after the
+		// SetValue, exactly like the C++ SetThemeResource call at Theming.cpp:397.
+		SetThemeResource(property, themeRef, effectivePrecedence);
+
+		UpdateThemeReference(property, effectivePrecedence, themeRef, ActualInstance, cache: null);
+	}
+
+	// Stores the theme resource reference for a property — the map-store primitive.
+	/// <remarks>
+	/// MUX Reference: CDependencyObject::SetThemeResource — depends.cpp:1494-1503.
+	/// Also used directly (registration without the resolve+apply sequence) by the Setter flows that
+	/// resolve and apply the value themselves — see ResourceResolver.ApplyThemeResource and
+	/// ApplyVisualStateSetter.
+	/// </remarks>
+	internal void SetThemeResource(DependencyProperty property, ThemeResourceReference themeRef, DependencyPropertyValuePrecedences? precedence = null)
 	{
 		_themeResources ??= new ThemeResourceMap();
 
 		// Resolve the effective precedence using the same logic as SetResourceBinding
-		var precedence = themeRef.Precedence;
-		if (precedence == DependencyPropertyValuePrecedences.Local && _overriddenPrecedences?.Count > 0)
+		var effectivePrecedence = precedence ?? themeRef.Precedence;
+		if (effectivePrecedence == DependencyPropertyValuePrecedences.Local && _overriddenPrecedences?.Count > 0)
 		{
-			precedence = _overriddenPrecedences.Peek() ?? precedence;
+			effectivePrecedence = _overriddenPrecedences.Peek() ?? effectivePrecedence;
 		}
 
-		_themeResources.Set(property, precedence, themeRef);
-	}
-
-	/// <summary>
-	/// Gets the theme resource references for a specific property, if any.
-	/// Used by animation code to re-resolve ThemeResource values with the
-	/// target element's theme context.
-	/// </summary>
-	internal IEnumerable<ThemeResourceReference>? GetThemeResourceReferences(DependencyProperty property)
-	{
-		return _themeResources?.GetForProperty(property);
+		_themeResources.Set(property, effectivePrecedence, themeRef);
 	}
 
 	#endregion
@@ -365,7 +381,6 @@ public partial class DependencyObjectStore
 			_themeResources.Clear(property, precedence);
 
 			// MUX: Theming.cpp:315-346 — UpdateThemeReference(CThemeResource*)
-			object? newValue = null;
 			bool resolved = false;
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
@@ -407,9 +422,8 @@ public partial class DependencyObjectStore
 				{
 					if (dict.TryGetValue(themeRef.ResourceKey, out var ancestorValue, shouldCheckSystem: false))
 					{
-						themeRef.LastResolvedValue = ancestorValue;
-						themeRef.IsResolved = true;
-						newValue = ancestorValue;
+						// MUX: Theming.cpp:332-336 — SetLastResolvedValue; the refresh below is skipped.
+						themeRef.SetLastResolvedValue(ancestorValue);
 						resolved = true;
 						break;
 					}
@@ -417,13 +431,28 @@ public partial class DependencyObjectStore
 			}
 
 			// Phase B: Pinned dict fallback (WinUI: themeResource->RefreshValue())
-			// MUX: Theming.cpp:340-342 — "Call refresh if we're in a theme walk
-			// or the ref has been updated in the past and the value wasn't updated
-			// already by the tree lookup above."
+			// MUX: Theming.cpp:338-343 — "Call refresh if we're in a theme walk or the ref has been
+			// updated in the past *and* the value wasn't updated already by the tree lookup above."
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			// Uno: the owner-theme override threaded by the re-resolution flows (the resource-context
+			// element's theme for a standalone resource DO whose own store theme is still None) is the
+			// transitional stand-in for the owner's established m_theme, so it participates in the
+			// m_theme != Theme::None term of the C++ gate.
+			if (!resolved
+				&& (IsProcessingThemeWalk
+					|| _theme != Theme.None
+					|| ownerThemeOverride is not null
+					|| !themeRef.IsValueFromInitialTheme))
+#else
 			if (!resolved)
+#endif
 			{
-				newValue = themeRef.RefreshValue(cache, preferAppResourceOverride);
+				themeRef.RefreshValue(cache, preferAppResourceOverride);
 			}
+
+			// MUX: Theming.cpp:385-387 — GetLastResolvedThemeValue: the value to apply is the ref's
+			// last resolved value (unchanged when the refresh gate above skipped).
+			var newValue = themeRef.LastResolvedValue;
 
 			// MUX: Theming.cpp:385-393 — SetValue with resolved value
 			var convertedValue = BindingPropertyHelper.Convert(property.Type, newValue);
@@ -487,6 +516,25 @@ public partial class DependencyObjectStore
 
 	private bool _isUpdatingChildResourceBindings;
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
+	// Notifies new property value of theme change that was applied to the property owner.
+	/// <remarks>
+	/// MUX Reference: CDependencyObject::NotifyPropertyValueOfThemeChange — Theming.cpp:41-54.
+	/// Called from the SetValue pipeline (the CDependencyObject::UpdateEffectiveValue analog,
+	/// PropertySystem.cpp:1893-1898) so a DO value set on an already-themed owner carries the
+	/// owner's theme.
+	/// </remarks>
+	private void NotifyPropertyValueOfThemeChange(DependencyProperty dp, object? effectiveValue)
+	{
+		if (_theme != Theme.None &&
+			effectiveValue is IDependencyObjectStoreProvider provider &&
+			ShouldNotifyPropertyOfThemeChange(dp))
+		{
+			provider.Store.NotifyThemeChanged(_theme);
+		}
+	}
+#endif
+
 	/// <summary>
 	/// Determines whether a property's value should be notified of a theme change.
 	/// </summary>
@@ -499,10 +547,11 @@ public partial class DependencyObjectStore
 	///   not yet in the visual tree — saves many unnecessary resource lookups)
 	/// - Properties that are back-references (IsDependencyPropertyBackReference)
 	///
-	/// Note: WinUI also has a generic IsDependencyPropertyBackReference(propertyIndex) check
-	/// (Theming.cpp:75) that filters ALL back-reference properties. Uno doesn't have a
-	/// centralized back-reference concept in its DP system, so we enumerate the known cases
-	/// explicitly. If new back-reference properties are added, they should be listed here.
+	/// Note: WinUI's generic IsDependencyPropertyBackReference(propertyIndex) check (Theming.cpp:75)
+	/// filters a curated list of back-reference properties (PropertySystem.cpp:126-156). Uno doesn't
+	/// have a centralized back-reference concept in its DP system, so the cases from that list that
+	/// exist as Uno DPs are enumerated below. If new back-reference properties are added, they
+	/// should be listed here.
 	/// </remarks>
 	private static bool ShouldNotifyPropertyOfThemeChange(DependencyProperty property)
 	{
@@ -517,6 +566,27 @@ public partial class DependencyObjectStore
 		// WinUI: Theming.cpp:61-62 — Skip command parameters (back-references)
 		if (property == ButtonBase.CommandParameterProperty ||
 			property == MenuFlyoutItem.CommandParameterProperty)
+		{
+			return false;
+		}
+
+		// WinUI: Theming.cpp:72-74 — "Don't notify property values that contain objects up the
+		// visual tree to prevent theme from propagating up the tree."
+		// (IsDependencyPropertyBackReference, PropertySystem.cpp:126-156 — the entries that exist
+		// as Uno DPs.)
+		if (property == UIElement.XYFocusLeftProperty ||
+			property == UIElement.XYFocusRightProperty ||
+			property == UIElement.XYFocusUpProperty ||
+			property == UIElement.XYFocusDownProperty ||
+			property == Documents.Hyperlink.XYFocusLeftProperty ||
+			property == Documents.Hyperlink.XYFocusRightProperty ||
+			property == Documents.Hyperlink.XYFocusUpProperty ||
+			property == Documents.Hyperlink.XYFocusDownProperty ||
+			property == UIElement.AccessKeyScopeOwnerProperty ||
+			property == UIElement.KeyboardAcceleratorPlacementTargetProperty ||
+			property == Documents.TextElement.AccessKeyScopeOwnerProperty ||
+			property == FlyoutBase.OverlayInputPassThroughElementProperty ||
+			property == Popup.OverlayInputPassThroughElementProperty)
 		{
 			return false;
 		}
@@ -845,10 +915,7 @@ public partial class DependencyObjectStore
 					{
 						var themeRef = _themeResources.Get(property, binding.Precedence);
 						themeRef?.SetTargetDictionary(providingDict);
-						if (themeRef is not null)
-						{
-							themeRef.LastResolvedValue = value;
-						}
+						themeRef?.SetLastResolvedValue(value);
 					}
 
 					break;

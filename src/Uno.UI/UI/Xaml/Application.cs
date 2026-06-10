@@ -236,10 +236,12 @@ namespace Microsoft.UI.Xaml
 #endif
 
 			// Force-sync ResourceDictionary's static Themes.Active with the application's
-			// resolved theme before any resource lookup can happen at startup. Without this,
-			// ThemeDictionary lookups performed while loading Application.Resources (and the
-			// first frames that reference ThemeResource keys) would hit GetActiveTheme()
-			// returning the static default "Default", resolving against the wrong
+			// resolved theme before any resource lookup can happen at startup. On enhanced
+			// targets resolution reads FrameworkTheming.GetBaseTheme() directly (Themes.Active
+			// is a coherence mirror); on native targets — where GetActiveTheme() still reads
+			// Themes.Active — ThemeDictionary lookups performed while loading
+			// Application.Resources (and the first frames that reference ThemeResource keys)
+			// would otherwise hit the static default "Default", resolving against the wrong
 			// sub-dictionary (and potentially poisoning KeyNotFoundCache) whenever no theme
 			// change notification ran beforehand.
 			UpdateRequestedThemesForResources();
@@ -269,8 +271,9 @@ namespace Microsoft.UI.Xaml
 			// which has no custom-theme-name axis (FrameworkTheming::GetTheme, FrameworkTheming.cpp:119-136).
 			// A custom palette is supplied via merged ResourceDictionaries that override specific brush/color
 			// keys on top of the Light/Dark theme dictionaries.
-			// On enhanced-lifecycle targets RequestedTheme reads FrameworkTheming.GetBaseTheme(), so
-			// Themes.Active follows the FrameworkTheming state machine.
+			// On enhanced-lifecycle targets RequestedTheme reads FrameworkTheming.GetBaseTheme() and
+			// resolution reads it directly (ResourceDictionary.GetActiveTheme), so Themes.Active is a
+			// coherence mirror of the FrameworkTheming state machine; on native it stays authoritative.
 			Current.RequestedThemeForResources = Current.RequestedTheme switch
 			{
 				ApplicationTheme.Light => "Light",

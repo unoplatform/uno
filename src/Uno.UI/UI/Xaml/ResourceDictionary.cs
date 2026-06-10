@@ -512,12 +512,27 @@ namespace Microsoft.UI.Xaml
 				// an opposite-theme app (Light resource materialized while the app is Dark) that bakes the wrong
 				// theme's value permanently. Scope the active theme to the theme this lookup is resolving under —
 				// the ambient active theme (GetActiveTheme: the core requested-theme-for-subtree slot when scoped,
-				// else the app/OS base theme) — so the initializer resolves nested refs in the sub-dictionary's own
+				// else the app base theme) — so the initializer resolves nested refs in the sub-dictionary's own
 				// theme. Mirrors WinUI resolving a deferred theme-dictionary resource under the requested theme
 				// (EnsureActiveThemeDictionary, Resources.cpp:687-819, theme selection :764-768).
 				var themeKey = GetActiveTheme();
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				// On enhanced targets the resolution leaf reads the core requested-theme-for-subtree slot,
+				// then FrameworkTheming (GetActiveTheme) — the static Themes.Active mirror is not consulted —
+				// so pin the materialization theme by scoping the core slot itself (the save/set/restore
+				// pattern of CCoreServices::LookupThemeResource, xcpcore.cpp:2371-2394). Themes.Active
+				// scoping remains for contexts without a core instance (and for non-enhanced targets below).
+				var scopeCoreSlot = Uno.UI.Xaml.Core.CoreServices.HasInstance && themeKey.Key is not null;
+				var slotScope = scopeCoreSlot
+					? Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(
+						themeKey.Equals(Themes.Dark) ? Theme.Dark : Theme.Light)
+					: default;
+				var previousActiveTheme = Themes.Active;
+				var overrideActiveTheme = !scopeCoreSlot && themeKey.Key is not null && !themeKey.Equals(previousActiveTheme);
+#else
 				var previousActiveTheme = Themes.Active;
 				var overrideActiveTheme = themeKey.Key is not null && !themeKey.Equals(previousActiveTheme);
+#endif
 
 				try
 				{
@@ -566,6 +581,10 @@ namespace Microsoft.UI.Xaml
 					{
 						Themes.Active = previousActiveTheme;
 					}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+					slotScope.Dispose();
+#endif
 				}
 
 				// A lazily-materialized resource (e.g. a SolidColorBrush whose Color is a {ThemeResource})
@@ -1211,12 +1230,24 @@ namespace Microsoft.UI.Xaml
 		// (Resources.cpp:764-768) — "core->IsThemeRequestedForSubTree() ?
 		// core->GetRequestedThemeForSubTree() : core->GetFrameworkTheming()->GetBaseTheme()".
 		// The requested-theme-for-subtree slot (set from the owner's m_theme at WinUI's scoped
-		// set-points) takes precedence; Themes.Active remains the app/OS base fallback until
-		// FrameworkTheming drives it (Phase 6).
+		// set-points) takes precedence; the app-base fallback is FrameworkTheming.GetBaseTheme(),
+		// exactly like WinUI — there is no separate static active-theme key. Themes.Active is only
+		// consulted in early/unit-test contexts that have no CoreServices instance.
 		internal static ResourceKey GetActiveTheme()
-			=> Uno.UI.Xaml.Core.CoreServices.HasInstance && Uno.UI.Xaml.Core.CoreServices.Instance.IsThemeRequestedForSubTree()
-				? GetThemeKey(Uno.UI.Xaml.Core.CoreServices.Instance.GetRequestedThemeForSubTree())
-				: Themes.Active;
+		{
+			if (Uno.UI.Xaml.Core.CoreServices.HasInstance)
+			{
+				var core = Uno.UI.Xaml.Core.CoreServices.Instance;
+				if (core.IsThemeRequestedForSubTree())
+				{
+					return GetThemeKey(core.GetRequestedThemeForSubTree());
+				}
+
+				return GetThemeKey(core.Theming.GetBaseTheme());
+			}
+
+			return Themes.Active;
+		}
 #else
 		internal static ResourceKey GetActiveTheme() => Themes.Active;
 #endif
@@ -1231,9 +1262,9 @@ namespace Microsoft.UI.Xaml
 		// The active base theme expressed as a base Theme. This is the single owner-less fallback for
 		// {ThemeResource} resolution: it is what the lazy-materialization leaf keys on (GetActiveTheme),
 		// matching WinUI's EnsureActiveThemeDictionary theme selection (Resources.cpp:764-768) — the
-		// requested-theme-for-subtree slot when one is scoped, else the app/OS base theme
-		// (FrameworkTheming::GetBaseTheme; Themes.Active until Phase 6). "Default" (pre-app-theme-init)
-		// resolves to the app's ActualElementTheme so the result is always a concrete Light/Dark.
+		// requested-theme-for-subtree slot when one is scoped, else FrameworkTheming.GetBaseTheme().
+		// "Default" (only reachable through the no-CoreServices Themes.Active fallback) resolves to the
+		// app's ActualElementTheme so the result is always a concrete Light/Dark.
 		internal static Theme GetActiveBaseTheme()
 		{
 			var active = GetActiveTheme();
@@ -1249,6 +1280,10 @@ namespace Microsoft.UI.Xaml
 			return Theming.FromElementTheme(Application.Current?.ActualElementTheme ?? ElementTheme.Light);
 		}
 
+		// Writes the static Themes.Active mirror. On enhanced-lifecycle targets with a live core,
+		// resolution reads the core slot / FrameworkTheming (GetActiveTheme) and this is a coherence
+		// mirror only — drive theme changes through Application.RequestedTheme / FrameworkTheming.
+		// It remains authoritative on native targets and in no-CoreServices (unit-test) contexts.
 		internal static void SetActiveTheme(SpecializedResourceDictionary.ResourceKey key)
 			=> Themes.Active = key;
 

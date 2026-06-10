@@ -386,7 +386,6 @@ public partial class FrameworkElement
 		return oldBase != newBase
 			|| (oldTheme == Theme.None && theming.IsBaseThemeChanging());
 	}
-#endif
 
 	// MUX Reference framework.cpp, lines 3346-3386
 	/// <summary>
@@ -458,6 +457,7 @@ public partial class FrameworkElement
 		_themeForeground = parentThemeForeground;
 		this.SetValue(foregroundProperty, parentThemeForeground, DependencyPropertyValuePrecedences.Inheritance);
 	}
+#endif
 
 	// MUX Reference framework.cpp, lines 3401-3492
 	/// <summary>
@@ -520,29 +520,34 @@ public partial class FrameworkElement
 				core.SetRequestedThemeForSubTree(theme);
 				popSlotTheme = true;
 			}
-			try
-			{
 #endif
-			var brush = (Brush)ResourceResolver.ResolveTopLevelResource(
-				"DefaultTextForegroundThemeBrush", null);
-			if (brush is not null)
-			{
-				// Always store for child inheritance (popup content, template children)
-				_themeForeground = brush;
-				_isForegroundFrozen = true;
 
-				// Only set the DP when Foreground isn't already set by a higher
-				// precedence (local/style). This matches WinUI's skip behavior
-				// while preserving _themeForeground for child propagation.
-				if (foregroundProperty is not null && !skipSetValue)
+			// On non-enhanced targets the try below compiles out, leaving a plain scope block so the
+			// body keeps a single indentation shape across both compilations.
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			try
+#endif
+			{
+				var brush = (Brush)ResourceResolver.ResolveTopLevelResource(
+					"DefaultTextForegroundThemeBrush", null);
+				if (brush is not null)
 				{
-					this.SetValue(
-						foregroundProperty, brush,
-						DependencyPropertyValuePrecedences.Inheritance);
+					// Always store for child inheritance (popup content, template children)
+					_themeForeground = brush;
+					_isForegroundFrozen = true;
+
+					// Only set the DP when Foreground isn't already set by a higher
+					// precedence (local/style). This matches WinUI's skip behavior
+					// while preserving _themeForeground for child propagation.
+					if (foregroundProperty is not null && !skipSetValue)
+					{
+						this.SetValue(
+							foregroundProperty, brush,
+							DependencyPropertyValuePrecedences.Inheritance);
+					}
 				}
 			}
 #if UNO_HAS_ENHANCED_LIFECYCLE
-			}
 			finally
 			{
 				// Scope-restore the slot (framework.cpp:3487).

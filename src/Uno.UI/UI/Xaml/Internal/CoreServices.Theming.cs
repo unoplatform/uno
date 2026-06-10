@@ -151,8 +151,8 @@ internal partial class CoreServices
 
 		// Uno-specific app-level coherence (kept from Application.InternalRequestedTheme): mirror the
 		// resolved base theme onto ResourceDictionary's Themes.Active and CoreApplication before any
-		// resolution below. Themes.Active is the owner-less {ThemeResource} fallback until it is fully
-		// retired in favor of FrameworkTheming.GetBaseTheme().
+		// resolution below. Resolution itself reads FrameworkTheming.GetBaseTheme() on enhanced
+		// targets; Themes.Active stays a mirror for native targets and no-CoreServices contexts.
 		if (Application.Current is not null)
 		{
 			Application.UpdateRequestedThemesForResources();

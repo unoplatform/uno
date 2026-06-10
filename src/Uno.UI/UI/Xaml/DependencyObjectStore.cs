@@ -645,6 +645,32 @@ namespace Microsoft.UI.Xaml
 					}
 
 					RaiseCallbacks(actualInstanceAlias, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+					// MUX Reference: CDependencyObject::UpdateEffectiveValue — PropertySystem.cpp:1893-1898,
+					// commit fc2f82117: after a direct SetValue is applied (and its theme reference cleared
+					// above), notify the new value of the theme that was applied to the property owner, so a
+					// DO value set on an already-themed owner carries the owner's theme.
+					//   // If this DP had an associated theme reference, clear it because a new value has been set.
+					//   ClearThemeResource(args.m_pDP);
+					//   if (m_theme != Theming::Theme::None)
+					//   {
+					//       IFC_RETURN(NotifyPropertyValueOfThemeChange(args.m_pDP, pEffectiveValue));
+					//   }
+					// The persistent-resource-binding flags are the ValueOperationFromSetValue analog (theme
+					// reference re-application is excluded, like WinUI's modified-value branch). The set-time
+					// Enter (UpdateAutoParent → EnterObjectProperty) covers logical-child properties; this
+					// covers the DO-valued properties WinUI notifies that carry no logical-child metadata
+					// (e.g. brushes). DataContext is excluded — Uno's core inherits user data through it,
+					// which WinUI's core property system never carries.
+					if (_theme != Theme.None
+						&& !isPersistentResourceBinding
+						&& !_isSettingPersistentResourceBinding
+						&& property != _dataContextProperty)
+					{
+						NotifyPropertyValueOfThemeChange(property, newValue);
+					}
+#endif
 				}
 				finally
 				{
