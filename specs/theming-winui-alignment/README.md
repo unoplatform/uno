@@ -1,5 +1,7 @@
 # Theming WinUI Alignment — Exact 1:1 Port
 
+> **Status (2026-06-10): Phases 0–7 complete** on `dev/mazi/align-theming`. The contract suite holds at 155/156 on Skia Desktop (the lone failure is a pre-existing environment-dependent GC-leak test, red on the base). The developer-facing model is documented at `doc/articles/uno-development/theming-model.md`. Phase 8 validation in progress (WASM suite, native compile, WinUI parity, benchmarks).
+
 Align Uno Platform's system/application/element theming **structurally and behaviorally 1:1 with WinUI**, by porting WinUI's actual theming machinery from the C++ sources (`D:\Work\microsoft-ui-xaml2\src`, commit `fc2f82117`) following the `/winui-port` rules — instead of approximating WinUI behavior with Uno-specific mechanisms.
 
 ## Base and branches
