@@ -278,10 +278,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 
+		// ListView/GridView items override this to return false: native WinUI's item presenter does not
+		// dim disabled item content, so the XAML default template's "Disabled" opacity dim must not be
+		// applied (the contained control renders its own disabled visuals). Validated against native WinUI.
+		private protected virtual bool UsesDisabledVisualState => true;
+
 		private void UpdateDisabledStates(bool useTransitions)
 		{
 			// TODO: This may need to be adjusted later when we remove the Visual State mixins.
-			var state = IsEnabled ? DisabledStates.Enabled : DisabledStates.Disabled;
+			var state = IsEnabled || !UsesDisabledVisualState ? DisabledStates.Enabled : DisabledStates.Disabled;
 			VisualStateManager.GoToState(this, state, useTransitions);
 		}
 

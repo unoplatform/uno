@@ -16,6 +16,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void Initialize();
 
+		// WinUI does not dim disabled GridViewItem content (its native presenter ignores the disabled
+		// opacity); suppress the default template's "Disabled" opacity dim to match.
+		private protected override bool UsesDisabledVisualState => false;
+
 		public GridViewItemTemplateSettings TemplateSettings { get; } = new();
 
 		protected override Automation.Peers.AutomationPeer OnCreateAutomationPeer()
