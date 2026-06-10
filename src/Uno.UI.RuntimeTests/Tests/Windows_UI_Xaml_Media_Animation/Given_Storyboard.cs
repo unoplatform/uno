@@ -18,6 +18,26 @@ public class Given_Storyboard
 		await TestServices.WindowHelper.WaitFor(() => completed);
 	}
 
+	// An empty Storyboard completes to ClockState.Stopped in Uno, whereas native WinUI's default
+	// FillBehavior.HoldEnd leaves the clock in ClockState.Filling, so the final-state assertion is Uno-only.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23409")]
+	public async Task When_UsingCompletedCallback()
+	{
+		var completedCount = 0;
+		void OnCompleted(object sender, object e) => completedCount++;
+
+		var sut = new Storyboard();
+		sut.Completed += OnCompleted;
+
+		Assert.AreEqual(0, completedCount);
+		sut.Begin();
+
+		await TestServices.WindowHelper.WaitFor(() => completedCount == 1);
+		Assert.AreEqual(ClockState.Stopped, sut.GetCurrentState());
+	}
+
 	[TestMethod]
 	public async Task When_Empty_Storyboard_Completed_Attached_After()
 	{

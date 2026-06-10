@@ -326,10 +326,8 @@ namespace Windows.UI.Input
 				}
 			}
 
-#if IS_UNIT_TESTS
 			public void RunInertiaSync()
 				=> _inertia?.RunSync();
-#endif
 
 			private void NotifyUpdate()
 			{

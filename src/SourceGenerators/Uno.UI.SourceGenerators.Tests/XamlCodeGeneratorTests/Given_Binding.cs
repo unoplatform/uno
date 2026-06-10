@@ -29,21 +29,21 @@ public class Given_Binding
 	[TestMethod]
 	public async Task When_Xaml_Object_With_Common_Properties()
 	{
-		var test = new TestSetup(xamlFileName: "Binding_Xaml_Object_With_Common_Properties.xaml", subFolder: Path.Combine("Uno.UI.Tests", "Windows_UI_Xaml_Data", "BindingTests", "Controls"));
+		var test = new TestSetup(xamlFileName: "Binding_Xaml_Object_With_Common_Properties.xaml", subFolder: Path.Combine("Uno.UI.UnitTests", "Windows_UI_Xaml_Data", "BindingTests", "Controls"));
 		await Verify.AssertXamlGenerator(test);
 	}
 
 	[TestMethod]
 	public async Task When_Xaml_Object_With_Xaml_Object_Properties()
 	{
-		var test = new TestSetup(xamlFileName: "Binding_Xaml_Object_With_Xaml_Object_Properties.xaml", subFolder: Path.Combine("Uno.UI.Tests", "Windows_UI_Xaml_Data", "BindingTests", "Controls"));
+		var test = new TestSetup(xamlFileName: "Binding_Xaml_Object_With_Xaml_Object_Properties.xaml", subFolder: Path.Combine("Uno.UI.UnitTests", "Windows_UI_Xaml_Data", "BindingTests", "Controls"));
 		await Verify.AssertXamlGenerator(test);
 	}
 
 	[TestMethod]
 	public async Task When_Binding_ElementName_In_Template()
 	{
-		var test = new TestSetup(xamlFileName: "Binding_ElementName_In_Template.xaml", subFolder: Path.Combine("Uno.UI.Tests", "Windows_UI_Xaml_Data", "BindingTests", "Controls"))
+		var test = new TestSetup(xamlFileName: "Binding_ElementName_In_Template.xaml", subFolder: Path.Combine("Uno.UI.UnitTests", "Windows_UI_Xaml_Data", "BindingTests", "Controls"))
 		{
 			PreprocessorSymbols =
 			{

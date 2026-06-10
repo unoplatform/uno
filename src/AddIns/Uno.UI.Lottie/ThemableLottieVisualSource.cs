@@ -28,7 +28,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		protected override bool IsPayloadNeedsToBeUpdated => true;
 
-#if IS_UNIT_TESTS
 		public void LoadForTests(
 			IInputStream sourceJson,
 			string sourceCacheKey,
@@ -42,7 +41,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			return _currentDocument?.ToString();
 		}
-#endif
 
 		protected override IDisposable? LoadAndObserveAnimationData(
 			IInputStream sourceJson,

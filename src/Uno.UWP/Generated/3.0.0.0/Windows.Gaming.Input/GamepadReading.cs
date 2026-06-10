@@ -3,14 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Gaming.Input
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial struct GamepadReading
 	{
 		// Forced skipping of method Windows.Gaming.Input.GamepadReading.GamepadReading()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public GamepadReading(ulong _Timestamp, global::Windows.Gaming.Input.GamepadButtons _Buttons, double _LeftTrigger, double _RightTrigger, double _LeftThumbstickX, double _LeftThumbstickY, double _RightThumbstickX, double _RightThumbstickY)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.GamepadReading", "GamepadReading(ulong _Timestamp, GamepadButtons _Buttons, double _LeftTrigger, double _RightTrigger, double _LeftThumbstickX, double _LeftThumbstickY, double _RightThumbstickX, double _RightThumbstickY)");

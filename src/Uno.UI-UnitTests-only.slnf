@@ -2,7 +2,7 @@
   "solution": {
     "path": "Uno.UI.slnx",
     "projects": [
-      "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.Tests.csproj",
+      "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.Skia.csproj",
       "SourceGenerators\\System.Xaml.Tests\\Uno.Xaml.Tests.csproj",
       "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators.Internal\\Uno.UI.SourceGenerators.Internal.csproj",
@@ -13,15 +13,14 @@
       "Uno.Analyzers.Tests\\Uno.Analyzers.Tests.csproj",
       "Uno.Analyzers\\Uno.Analyzers.csproj",
       "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",
-      "Uno.Foundation\\Uno.Foundation.Tests.csproj",
+      "Uno.Foundation\\Uno.Foundation.Skia.csproj",
       "Uno.HotReload\\Uno.HotReload.csproj",
       "Uno.UI.Adapter.Microsoft.Extensions.Logging\\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj",
-      "Uno.UI.Composition\\Uno.UI.Composition.Tests.csproj",
-      "Uno.UI.Dispatching\\Uno.UI.Dispatching.Tests.csproj",
-      "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.Tests.csproj",
-      "Uno.UI.FluentTheme.v2\\Uno.UI.FluentTheme.v2.Tests.csproj",
-      "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.Tests.csproj",
-      "Uno.Sdk.AddInVersionValidation.Tests\\Uno.Sdk.AddInVersionValidation.Tests.csproj",
+      "Uno.UI.Composition\\Uno.UI.Composition.Skia.csproj",
+      "Uno.UI.Dispatching\\Uno.UI.Dispatching.Skia.csproj",
+      "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.Skia.csproj",
+      "Uno.UI.FluentTheme.v2\\Uno.UI.FluentTheme.v2.Skia.csproj",
+      "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.Skia.csproj",
       "Uno.UI.DevServer.Cli.Tests\\Uno.UI.DevServer.Cli.Tests.csproj",
       "Uno.UI.RemoteControl.DevServer.Tests\\Uno.UI.RemoteControl.DevServer.Tests.csproj",
       "Uno.UI.RemoteControl.DevServer.Tests\\Fixtures\\AddInWithCrossMajorVersionRefs\\AddInWithCrossMajorVersionRefs.csproj",
@@ -31,10 +30,10 @@
       "Uno.UI.RemoteControl.DevServer.Tests\\Fixtures\\AddInWithSharedContractConsumer\\AddInWithSharedContractConsumer.csproj",
       "Uno.UI.Tests.ViewLibraryProps\\Uno.UI.Tests.ViewLibraryProps.csproj",
       "Uno.UI.Tests.ViewLibrary\\Uno.UI.Tests.ViewLibrary.csproj",
-      "Uno.UI.Tests\\Uno.UI.Unit.Tests.csproj",
-      "Uno.UI.Toolkit\\Uno.UI.Toolkit.Tests.csproj",
-      "Uno.UI\\Uno.UI.Tests.csproj",
-      "Uno.UWP\\Uno.Tests.csproj"
+      "Uno.UI.UnitTests\\Uno.UI.UnitTests.csproj",
+      "Uno.UI.Toolkit\\Uno.UI.Toolkit.Skia.csproj",
+      "Uno.UI\\Uno.UI.Skia.csproj",
+      "Uno.UWP\\Uno.Reference.csproj"
     ]
   }
 }

@@ -348,7 +348,7 @@ Design using a single, token-efficient string. The bridge code lives in
 
 ## 6. Tests
 
-**Location**: `src/Uno.UI.Tests/Diagnostics/Given_ElementRefHandleRegistry.cs`
+**Location**: `src/Uno.UI.UnitTests/Diagnostics/Given_ElementRefHandleRegistry.cs`
 
 | Test | Description |
 |------|-------------|

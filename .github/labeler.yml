@@ -3,8 +3,8 @@
 area/automation:
   - src/SamplesApp/*
   - src/SamplesApp/**/*
-  - src/Uno.UI.Tests/*
-  - src/Uno.UI.Tests/**/*
+  - src/Uno.UI.UnitTests/*
+  - src/Uno.UI.UnitTests/**/*
   - src/Uno.UI.Wasm.Tests/*
   - src/Uno.UI.Wasm.Tests/**/*
 

@@ -233,9 +233,6 @@
 
 		<IsApple>false</IsApple>
 		<IsApple Condition="$(IsIOS) or $(IsTvOS)">true</IsApple>
-
-		<_IsUnitTests>false</_IsUnitTests>
-		<_IsUnitTests Condition="$(MSBuildProjectName.Contains('.Tests'))">true</_IsUnitTests>
 	</PropertyGroup>
 
 	<PropertyGroup>

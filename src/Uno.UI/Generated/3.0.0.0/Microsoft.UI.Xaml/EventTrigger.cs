@@ -4,7 +4,7 @@
 namespace Microsoft.UI.Xaml
 {
 	[global::Microsoft.UI.Xaml.Markup.ContentPropertyAttribute(Name = "Actions")]
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class EventTrigger : global::Microsoft.UI.Xaml.TriggerBase

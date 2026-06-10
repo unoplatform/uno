@@ -28,21 +28,21 @@ public class Given_Grid
 	[TestMethod]
 	public async Task When_Grid_Uses_Common_Syntax()
 	{
-		var test = new TestSetup(xamlFileName: "Grid_Uses_Common_Syntax.xaml", subFolder: Path.Combine("Uno.UI.Tests", "Windows_UI_XAML_Controls", "GridTests", "Controls"));
+		var test = new TestSetup(xamlFileName: "Grid_Uses_Common_Syntax.xaml", subFolder: Path.Combine("Uno.UI.UnitTests", "Windows_UI_XAML_Controls", "GridTests", "Controls"));
 		await Verify.AssertXamlGenerator(test);
 	}
 
 	[TestMethod]
 	public async Task When_Grid_Uses_New_Assigned_ContentProperty_Syntax()
 	{
-		var test = new TestSetup(xamlFileName: "Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml", subFolder: Path.Combine("Uno.UI.Tests", "Windows_UI_XAML_Controls", "GridTests", "Controls"));
+		var test = new TestSetup(xamlFileName: "Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml", subFolder: Path.Combine("Uno.UI.UnitTests", "Windows_UI_XAML_Controls", "GridTests", "Controls"));
 		await Verify.AssertXamlGenerator(test);
 	}
 
 	[TestMethod]
 	public async Task When_Grid_Uses_New_Succinct_Syntax()
 	{
-		var test = new TestSetup(xamlFileName: "Grid_Uses_New_Succinct_Syntax.xaml", subFolder: Path.Combine("Uno.UI.Tests", "Windows_UI_XAML_Controls", "GridTests", "Controls"));
+		var test = new TestSetup(xamlFileName: "Grid_Uses_New_Succinct_Syntax.xaml", subFolder: Path.Combine("Uno.UI.UnitTests", "Windows_UI_XAML_Controls", "GridTests", "Controls"));
 		await Verify.AssertXamlGenerator(test);
 	}
 }

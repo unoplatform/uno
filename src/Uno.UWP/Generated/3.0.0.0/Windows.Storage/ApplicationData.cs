@@ -3,168 +3,49 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage
 {
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-	[global::Uno.NotImplemented("IS_UNIT_TESTS")]
+#if false || false || false || false || false || false
+	[global::Uno.NotImplemented]
 #endif
 	public partial class ApplicationData
 	{
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		internal ApplicationData()
-		{
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public static global::Windows.Storage.ApplicationData Current
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "Current");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public global::Windows.Storage.StorageFolder LocalCacheFolder
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "LocalCacheFolder");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public global::Windows.Storage.StorageFolder LocalFolder
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "LocalFolder");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public global::Windows.Storage.ApplicationDataContainer LocalSettings
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "LocalSettings");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public global::Windows.Storage.StorageFolder RoamingFolder
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "RoamingFolder");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public global::Windows.Storage.ApplicationDataContainer RoamingSettings
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "RoamingSettings");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public ulong RoamingStorageQuota
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "RoamingStorageQuota");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public global::Windows.Storage.StorageFolder SharedLocalFolder
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "SharedLocalFolder");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public global::Windows.Storage.StorageFolder TemporaryFolder
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "TemporaryFolder");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public uint Version
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "Version");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.ApplicationData> GetForUserAsync(global::Windows.System.User user)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "GetForUserAsync(User user)");
-		}
-#endif
+		// Skipping already declared property Current
+		// Skipping already declared property LocalCacheFolder
+		// Skipping already declared property LocalFolder
+		// Skipping already declared property LocalSettings
+		// Skipping already declared property RoamingFolder
+		// Skipping already declared property RoamingSettings
+		// Skipping already declared property RoamingStorageQuota
+		// Skipping already declared property SharedLocalFolder
+		// Skipping already declared property TemporaryFolder
+		// Skipping already declared property Version
+		// Skipping already declared method Windows.Storage.ApplicationData.GetForUserAsync(Windows.System.User)
 		// Forced skipping of method Windows.Storage.ApplicationData.Current.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction SetVersionAsync(uint desiredVersion, global::Windows.Storage.ApplicationDataSetVersionHandler handler)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "SetVersionAsync(uint desiredVersion, ApplicationDataSetVersionHandler handler)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ClearAsync()
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "ClearAsync()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction ClearAsync(global::Windows.Storage.ApplicationDataLocality locality)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "ClearAsync(ApplicationDataLocality locality)");
 		}
 #endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public void SignalDataChanged()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationData", "SignalDataChanged()");
-		}
-#endif
+		// Skipping already declared method Windows.Storage.ApplicationData.SignalDataChanged()
 		// Forced skipping of method Windows.Storage.ApplicationData.DataChanged.add
 		// Forced skipping of method Windows.Storage.ApplicationData.DataChanged.remove
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public global::Windows.Storage.StorageFolder GetPublisherCacheFolder(string folderName)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "GetPublisherCacheFolder(string folderName)");
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public global::Windows.Foundation.IAsyncAction ClearPublisherCacheFolderAsync(string folderName)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.ApplicationData", "ClearPublisherCacheFolderAsync(string folderName)");
-		}
-#endif
+		// Skipping already declared method Windows.Storage.ApplicationData.GetPublisherCacheFolder(string)
+		// Skipping already declared method Windows.Storage.ApplicationData.ClearPublisherCacheFolderAsync(string)
 		// Forced skipping of method Windows.Storage.ApplicationData.LocalCacheFolder.get
 		// Forced skipping of method Windows.Storage.ApplicationData.LocalFolder.get
 		// Forced skipping of method Windows.Storage.ApplicationData.LocalSettings.get
@@ -174,21 +55,6 @@ namespace Windows.Storage
 		// Forced skipping of method Windows.Storage.ApplicationData.SharedLocalFolder.get
 		// Forced skipping of method Windows.Storage.ApplicationData.TemporaryFolder.get
 		// Forced skipping of method Windows.Storage.ApplicationData.Version.get
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.ApplicationData, object> DataChanged
-		{
-			[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationData", "event DataChanged");
-			}
-			[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationData", "event DataChanged");
-			}
-		}
-#endif
+		// Skipping already declared event Windows.Storage.ApplicationData.DataChanged
 	}
 }
