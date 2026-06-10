@@ -176,6 +176,44 @@ public class Given_AlcContentHost
 	}
 
 	/// <summary>
+	/// Teardown hygiene via Unloaded: when the host discards the AlcContentHost (removes it from the
+	/// visual tree, e.g. its reference is set to null) WITHOUT first setting Content to null, the
+	/// resources it projected from the secondary app must still be released. Otherwise the detached
+	/// control keeps referencing the previous app's resource objects (potentially typed in the
+	/// collectible ALC), pinning the ALC after unload.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_ContentHostUnloaded_Then_ProjectedResourcesRemovedFromHost()
+	{
+		var contentHost = await StartSecondaryAlcAppAsync();
+
+		// Pre-conditions: the secondary app's direct resource and theme dictionaries were projected.
+		Assert.IsTrue(contentHost.Resources.ContainsKey("AlcAppDirectBrush", shouldCheckSystem: false),
+			"Pre-condition: AlcAppDirectBrush (direct Application.Resources entry) should be projected while the secondary app is hosted");
+		Assert.IsTrue(
+			contentHost.Resources.ThemeDictionaries.TryGetValue("Light", out var lightDictionary)
+				&& lightDictionary is ResourceDictionary lightResources
+				&& lightResources.ContainsKey("AlcAppThemeColor", shouldCheckSystem: false),
+			"Pre-condition: the secondary app's Light theme dictionary should be projected while the secondary app is hosted");
+
+		// Teardown trigger: remove the host from the visual tree WITHOUT clearing Content, so only the
+		// Unloaded path runs (Content remains set to the secondary app's content).
+		Assert.IsNotNull(contentHost.Content, "Sanity: content is still set (not cleared) before the host is unloaded");
+		TestServices.WindowHelper.WindowContent = new Border();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsFalse(contentHost.Resources.ContainsKey("AlcAppDirectBrush", shouldCheckSystem: false),
+			"After the host is unloaded, the secondary app's direct resources must be removed from the host control's Resources");
+
+		var staleThemeEntryAfterUnload = contentHost.Resources.ThemeDictionaries.TryGetValue("Light", out var themeValueAfterUnload)
+			&& themeValueAfterUnload is ResourceDictionary themeResourcesAfterUnload
+			&& themeResourcesAfterUnload.ContainsKey("AlcAppThemeColor", shouldCheckSystem: false);
+		Assert.IsFalse(staleThemeEntryAfterUnload,
+			"After the host is unloaded, the secondary app's theme dictionaries must be removed from the host control's Resources");
+	}
+
+	/// <summary>
 	/// Validates that ResourceDictionary.Source in App.xaml correctly resolves to the ALC-specific
 	/// dictionary when loaded from a secondary AssemblyLoadContext. This tests the fix for the issue
 	/// where both primary and secondary ALCs with the same resource URI pattern (e.g.,

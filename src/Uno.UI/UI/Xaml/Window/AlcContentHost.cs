@@ -33,6 +33,7 @@ public sealed partial class AlcContentHost : ContentControl
 		VerticalContentAlignment = VerticalAlignment.Stretch;
 
 		Loaded += OnLoaded;
+		Unloaded += OnUnloaded;
 	}
 
 	/// <summary>
@@ -70,12 +71,23 @@ public sealed partial class AlcContentHost : ContentControl
 		UpdateMergedResources();
 	}
 
-	private void UpdateMergedResources()
+	private void OnUnloaded(object sender, RoutedEventArgs e)
 	{
-		// Remove everything previously projected from the (old) source application before
-		// recomputing the source. When the content is cleared on app unload the source falls
-		// back to the host application, and the previous app's resource objects must not be
-		// retained by this control (see the tracking fields for the rationale).
+		// When the host discards this control (e.g. the previewed app is torn down and the
+		// host's reference is set to null / it is removed from the tree) without first setting
+		// Content to null, release everything projected from the secondary application so its
+		// resource objects — potentially typed in the collectible ALC — are not retained by this
+		// control after it leaves the tree, which would otherwise pin the ALC after unload.
+		// A subsequent re-Loaded re-projects via UpdateMergedResources.
+		ClearProjectedResources();
+		Resources.MergedDictionaries.Clear();
+	}
+
+	// Removes everything this control projected from the source application (direct resources and
+	// theme-dictionary entries) and clears the tracking lists. Shared by UpdateMergedResources
+	// (before recomputing the source) and OnUnloaded (on teardown).
+	private void ClearProjectedResources()
+	{
 		foreach (var key in _copiedDirectResourceKeys)
 		{
 			Resources.Remove(key);
@@ -89,6 +101,15 @@ public sealed partial class AlcContentHost : ContentControl
 		}
 
 		_copiedThemeDictionaryKeys.Clear();
+	}
+
+	private void UpdateMergedResources()
+	{
+		// Remove everything previously projected from the (old) source application before
+		// recomputing the source. When the content is cleared on app unload the source falls
+		// back to the host application, and the previous app's resource objects must not be
+		// retained by this control (see the tracking fields for the rationale).
+		ClearProjectedResources();
 
 		// Clear existing merged dictionaries to avoid duplicates
 		Resources.MergedDictionaries.Clear();
