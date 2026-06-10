@@ -319,6 +319,7 @@ partial class Application
 	}
 
 	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Diagnostic")]
+	[UnconditionalSuppressMessage("Trimming", "IL2065", Justification = "Diagnostic")]
 	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Diagnostic")]
 	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Diagnostic")]
 	private static void DeepScanForAlcReferences()
