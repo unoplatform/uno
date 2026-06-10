@@ -30,36 +30,36 @@ internal static class ThemeResolution
 {
 
 	/// <summary>
-	/// Returns the effective <see cref="Theme"/> for the given <paramref name="owner"/>: the nearest
-	/// established per-object theme found by walking up the inheritance-parent chain (starting at the
-	/// owner itself), or the application's base theme when none is established. Never returns
-	/// <see cref="Theme.None"/>.
+	/// Returns the effective <see cref="Theme"/> for the given <paramref name="owner"/>: the owner's
+	/// own established per-object theme, or the ambient base theme (the requested-theme-for-subtree
+	/// slot when one is scoped, else the application's base theme) when none is established. Never
+	/// returns <see cref="Theme.None"/>.
 	/// </summary>
+	/// <remarks>
+	/// This is WinUI's rule exactly: CDependencyObject::SetThemeResourceBinding consults
+	/// <c>m_theme</c> alone (Theming.cpp:368) and the dictionary leaf falls back to the ambient
+	/// (EnsureActiveThemeDictionary, Resources.cpp:764-768). There is deliberately no resolution-time
+	/// ancestor walk — the per-object theme is established at tree Enter (depends.cpp:1044-1069), so
+	/// walking at resolution would only mask Enter-coverage gaps (a transitional diagnostic proved
+	/// the walk contributed nothing across the theming suite before it was removed).
+	/// </remarks>
 	internal static Theme ResolveOwnerTheme(DependencyObject? owner)
 	{
 		// High contrast is an OS/app-global dimension OR-ed onto the base theme (effective theme =
 		// base | highContrast; MUX FrameworkTheming::GetTheme, FrameworkTheming.cpp:123).
 		var highContrast = GetApplicationHighContrastTheme();
 
-		// MUX: depends.cpp:1023-1048 — a DO's theme is established at Enter from its (logical)
-		// inheritance parent. We mirror the *result* of that establishment by walking the
-		// inheritance-parent chain to the nearest DO that already carries a theme.
-		for (var current = owner; current is not null; current = GetInheritanceParent(current))
+		var theme = owner is not null ? GetStoreTheme(owner) : Theme.None;
+		if (theme != Theme.None)
 		{
-			var theme = GetStoreTheme(current);
-			if (theme != Theme.None)
-			{
-				return Theming.GetBaseValue(theme) | highContrast;
-			}
+			return Theming.GetBaseValue(theme) | highContrast;
 		}
 
-		// MUX: framework.cpp:3953-3978 — ActualTheme falls back to the app/OS base theme
-		// (FrameworkTheming::GetBaseTheme) when no per-object theme is set. Use Themes.Active
-		// (ResourceDictionary.GetActiveBaseTheme), which is the SAME base theme the lazy-materialization
-		// resolution leaf keys on (GetActiveTheme), so the two owner-less resolution paths never disagree.
-		// In production Themes.Active and ActualElementTheme are both derived from Application.RequestedTheme
-		// (Application.cs:229-252) and are therefore equal; they diverge only when the active theme is set
-		// directly via ResourceDictionary.SetActiveTheme without round-tripping Application.RequestedTheme.
+		// MUX: framework.cpp:3969-3994 — ActualTheme falls back to the ambient base theme
+		// (the requested-theme-for-subtree slot when scoped, else FrameworkTheming::GetBaseTheme)
+		// when no per-object theme is set. GetActiveBaseTheme is the SAME base theme the
+		// lazy-materialization resolution leaf keys on (GetActiveTheme), so the two owner-less
+		// resolution paths never disagree.
 		return ResourceDictionary.GetActiveBaseTheme() | highContrast;
 	}
 
@@ -80,13 +80,5 @@ internal static class ThemeResolution
 	/// </summary>
 	private static Theme GetStoreTheme(DependencyObject owner)
 		=> owner is IDependencyObjectStoreProvider provider ? provider.Store.GetTheme() : Theme.None;
-
-	/// <summary>
-	/// Gets the inheritance (DP-inheritance) parent of the object — Uno's analog of WinUI's
-	/// GetInheritanceParentInternal (framework.cpp:3097-3130). Returns null at the root (the parent
-	/// can be a non-DependencyObject, e.g. the visual-tree root).
-	/// </summary>
-	private static DependencyObject? GetInheritanceParent(DependencyObject owner)
-		=> owner is IDependencyObjectStoreProvider provider ? provider.Store.Parent as DependencyObject : null;
 
 }

@@ -381,6 +381,7 @@ public partial class DependencyObjectStore
 			var ownerTheme = ownerThemeOverride ?? ThemeResolution.ResolveOwnerTheme(owner);
 			var ownerThemeKey = ResourceDictionary.GetThemeKey(ownerTheme);
 
+
 #if UNO_HAS_ENHANCED_LIFECYCLE
 			// MUX: Theming.cpp:368-376 — set the slot when the owner's base theme differs from it.
 			prevSlotTheme = core.GetRequestedThemeForSubTree();
