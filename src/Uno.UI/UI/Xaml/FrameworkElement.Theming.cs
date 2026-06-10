@@ -525,7 +525,7 @@ public partial class FrameworkElement
 	/// <remarks>
 	/// MUX Reference: CDependencyObject keeps m_theme across Leave; it is re-established (or overridden
 	/// by a different ancestor theme) when the element re-enters the tree via the EnterImpl theme block
-	/// (depends.cpp:1023-1048), ported to <see cref="DependencyObjectStore.EstablishThemeAtEnter"/>. So
+	/// (depends.cpp:1044-1069), ported to DependencyObjectStore.EnterImpl (DependencyObjectStore.mux.cs). So
 	/// this method clears only the inherited foreground brush and intentionally does <b>not</b> reset _theme.
 	/// </remarks>
 	private void ClearThemeStateOnUnloaded()

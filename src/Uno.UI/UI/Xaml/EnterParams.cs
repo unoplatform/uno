@@ -32,6 +32,15 @@ internal struct EnterParams
 	/// </summary>
 	public VisualTree? VisualTree;
 
+	/// <summary>
+	/// Uno-specific: the <see cref="DependencyObjectStore"/> of the DP-property owner the Enter
+	/// walk arrived through (set by EnterObjectProperty for each child). WinUI's EnterImpl theme
+	/// block walks real parent pointers (depends.cpp:1047-1058); Uno uses this as the
+	/// theme-inheritance fallback when the entering object has no Store.Parent / logical parent
+	/// yet (e.g. Content-style DPs that don't set a logical parent).
+	/// </summary>
+	internal DependencyObjectStore? ThemeInheritanceCaller;
+
 	public EnterParams()
 	{
 		IsLive = true;

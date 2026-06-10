@@ -1058,106 +1058,18 @@ namespace Microsoft.UI.Xaml
 
 		}
 
-		private void DependencyObject_EnterImpl(EnterParams @params)
+		// MUX Reference: CDependencyObject ActivateImpl/DeactivateImpl — the UIElement side of
+		// m_bitFields.fLive, dispatched from DependencyObjectStore (DependencyObjectStore.mux.cs).
+		// The Depth reset on deactivation is Uno-specific bookkeeping for the enhanced lifecycle.
+		internal void ActivateImpl()
 		{
-			if (@params.IsLive)
-			{
-				if (!IsActiveInVisualTree)
-				{
-					IsActiveInVisualTree = true;
-				}
+			IsActiveInVisualTree = true;
+		}
 
-				//m_checkForResourceOverrides = @params.fCheckForResourceOverrides;
-			}
-
-			//if (!@params.SkipNameRegistration)
-			//{
-			//	if (!IsTemplateNamescopeMember())
-			//	{
-			//		RegisterName(pNamescopeOwner);
-			//		RegisterDeferredStandardNameScopeEntries(pNamescopeOwner);
-			//	}
-			//}
-
-			//if (HasDeferred())
-			//{
-			//	CDeferredMapping.NotifyEnter(
-			//		pNamescopeOwner,
-			//		this,
-			//		@params.fSkipNameRegistration);
-			//}
-
-			// Nothing else to do for value types and control/data templates.
-			//var pClassInfo = this.GetType();
-
-			//if (pClassInfo.IsValueType
-			//	|| pClassInfo == typeof(ControlTemplate)
-			//	|| pClassInfo == typeof(DataTemplate))
-			//{
-			//	return ;
-			//}
-
-			// Enumerate all the field-backed properties and enter/invoke as needed.
-			//EnterDependencyProperty pNullEnterProperty = MetadataAPI.GetNullEnterProperty();
-			//for (EnterDependencyProperty pEnterProperty = pClassInfo.GetFirstEnterProperty(); pEnterProperty != pNullEnterProperty; pEnterProperty = pEnterProperty.GetNextProperty())
-			//{
-			//	if (!pEnterProperty.DoNotEnterLeave())
-			//	{
-			//		if (pEnterProperty->IsObjectProperty())
-			//		{
-			//			DependencyObject pDO = MapPropertyAndGroupOffsetToDO(pEnterProperty->m_nOffset, pEnterProperty->m_nGroupOffset);
-			//			if (pDO != null)
-			//			{
-			//				EnterObjectProperty(pDO, pNamescopeOwner, @params);
-			//			}
-			//		}
-			//	}
-			//	if (pEnterProperty.NeedsInvoke())
-			//	{
-			//		Invoke(MetadataAPI.GetDependencyPropertyByIndex(pEnterProperty->m_nPropertyIndex), pNamescopeOwner, @params.IsLive);
-			//	}
-			//}
-
-			//EnterSparseProperties(pNamescopeOwner, @params);
-
-			// ----------------------- UNO-specific END -----------------------
-			// The way this works on WinUI is that when an element enters the visual tree, all values
-			// of properties that are marked with MetaDataPropertyInfoFlags::IsSparse and MetaDataPropertyInfoFlags::IsVisualTreeProperty
-			// are entered as well.
-			// The property we currently know it has an effect is Resources
-			// In WinUI, it happens in CDependencyObject::EnterImpl (the call to EnterSparseProperties)
-			if (this is FrameworkElement fe && fe.TryGetResources() is { } resources)
-			{
-				// Using ValuesInternal to avoid Enumerator boxing
-				foreach (var resource in resources.ValuesInternal)
-				{
-					if (resource is FrameworkElement resourceAsUIElement)
-					{
-						resourceAsUIElement.XamlRoot = XamlRoot;
-						resourceAsUIElement.EnterImpl(@params, int.MinValue);
-					}
-				}
-			}
-			// ----------------------- UNO-specific END -----------------------
-
-			//if (@params.IsLive && m_bitFields.fWantsInheritanceContextChanged)
-			//{
-			//	// We only raise this InheritanceContextChanged if we're entering the live tree because the
-			//	// event also acts like a DO.Loaded event for BindingExpression.  This keeps us from adding
-			//	// a new internal event
-			//	NotifyInheritanceContextChanged();
-			//}
-
-			// MUX: depends.cpp:1023-1048 — establish this object's theme from its (logical) inheritance
-			// parent now that it is live, before any {ThemeResource} resolves. The logic lives on
-			// DependencyObjectStore (the CDependencyObject analog that carries _theme); it is invoked here
-			// from the enhanced-lifecycle Enter walk. Element-level theming is a Skia/WASM
-			// (UNO_HAS_ENHANCED_LIFECYCLE) feature; native targets support OS + application theme only and
-			// intentionally skip this Enter establishment.
-			if (IsActiveInVisualTree)
-			{
-				((IDependencyObjectStoreProvider)this).Store.EstablishThemeAtEnter();
-			}
+		internal void DeactivateImpl()
+		{
+			Depth = int.MinValue;
+			IsActiveInVisualTree = false;
 		}
 
 		internal virtual void EnterImpl(EnterParams @params, int depth)
@@ -1258,7 +1170,9 @@ namespace Microsoft.UI.Xaml
 			//}
 
 			// Pass updated params to children.
-			DependencyObject_EnterImpl(@params);
+			// MUX Reference: uielement.cpp:1356 — CUIElement::EnterImpl calls CDependencyObject::EnterImpl
+			// here. The CDependencyObject layer lives on DependencyObjectStore (DependencyObjectStore.mux.cs).
+			((IDependencyObjectStoreProvider)this).Store.EnterImpl(null, @params);
 
 			// Extends EnterImpl to the ContextFlyout.
 			// In WinUI, EnterSparseProperties calls EnterEffectiveValue for IsVisualTreeProperty values,
@@ -1631,94 +1545,6 @@ namespace Microsoft.UI.Xaml
 		// would do similar cleanup on their final leave. This enables appropriate sharing.
 		// Hence an element should not cleanup resources for its
 		// child/property in its leave.
-		private void DependencyObject_LeaveImpl(LeaveParams @params)
-		{
-			// Raise InheritanceContextChanged for the live leave.  We need to do this before m_bitFields.fLive is updated.
-			// params.fIsLive cannot be used because it is updated before we get here.
-			//if (IsActiveInVisualTree && m_bitFields.fWantsInheritanceContextChanged)
-			//{
-			//	NotifyInheritanceContextChanged();
-			//}
-
-			// Mark the object as out of tree if the intention of this walk is to notify
-			// the element that it is leaving the live tree (as indicated by the bLive parameter.)
-			if (@params.IsLive)
-			{
-				//	m_checkForResourceOverrides = @params.CheckForResourceOverrides;
-				Depth = int.MinValue;
-				IsActiveInVisualTree = false;
-			}
-
-			//// Enumerate all the properties in its class
-
-			//if (!@params.SkipNameRegistration &&
-			//	!IsTemplateNamescopeMember())
-			//{
-			//	UnregisterName(pNamescopeOwner);
-			//	UnregisterDeferredStandardNameScopeEntries(pNamescopeOwner);
-			//}
-
-			//var pClassInfo = this.GetType();
-
-			//// Nothing else to do for value types and control/data templates.
-			//if (pClassInfo.IsValueType
-			//	|| pClassInfo == typeof(ControlTemplate)
-			//	|| pClassInfo == typeof(DataTemplate))
-			//{
-			//	return;
-			//}
-
-			//// Enumerate all the field-backed properties and leave as needed.
-			//EnterDependencyProperty pNullEnterProperty = MetadataAPI.GetNullEnterProperty();
-			//for (EnterDependencyProperty pEnterProperty = pClassInfo.GetFirstEnterProperty(); pEnterProperty != pNullEnterProperty; pEnterProperty = pEnterProperty.GetNextProperty())
-			//{
-			//	if (pEnterProperty.DoNotEnterLeave())
-			//	{
-			//		continue;
-			//	}
-
-			//	if (pEnterProperty.IsObjectProperty())
-			//	{
-			//		DependencyObject pDO = MapPropertyAndGroupOffsetToDO(pEnterProperty.m_nOffset, pEnterProperty.m_nGroupOffset);
-			//		if (pDO != null)
-			//		{
-			//			LeaveObjectProperty(pDO, pNamescopeOwner, @params);
-			//		}
-			//	}
-			//}
-
-			//LeaveSparseProperties(pNamescopeOwner, @params);
-
-			//if (@params.IsLive)
-			//{
-			//	// If we're currently the focused element, remove ourselves from being focused
-			//	var contentRoot = VisualTree.GetContentRootForElement(this, VisualTree.LookupOptions.NoFallback);
-			//	if (contentRoot != null)
-			//	{
-			//		FocusManager pFocusManager = contentRoot.GetFocusManagerNoRef();
-
-			//		if (pFocusManager is not null && pFocusManager.GetFocusedElementNoRef() == this)
-			//		{
-			//			pFocusManager.ClearFocus();
-			//		}
-
-			//		var akExport = contentRoot.GetAKExport();
-
-			//		if (akExport.IsActive())
-			//		{
-			//			akExport.RemoveElementFromAKMode(this);
-			//		}
-			//	}
-			//}
-
-			//InputServices inputServices = this.GetContext().GetInputServices();
-
-			//if (inputServices != null)
-			//{
-			//	inputServices->ObjectLeavingTree(this);
-			//}
-		}
-
 		internal virtual void LeaveImpl(LeaveParams @params)
 		{
 			// Ensure VisualTree is propagated through the Leave walk.
@@ -1928,7 +1754,9 @@ namespace Microsoft.UI.Xaml
 			//	}
 			//}
 
-			DependencyObject_LeaveImpl(@params);
+			// MUX Reference: CUIElement::LeaveImpl calls CDependencyObject::LeaveImpl here. The
+			// CDependencyObject layer lives on DependencyObjectStore (DependencyObjectStore.mux.cs).
+			((IDependencyObjectStoreProvider)this).Store.LeaveImpl(null, @params);
 
 			// Extends LeaveImpl to the ContextFlyout.
 			// In WinUI, LeaveSparseProperties calls LeaveEffectiveValue for IsVisualTreeProperty values,
