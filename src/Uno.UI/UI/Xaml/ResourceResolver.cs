@@ -428,8 +428,11 @@ namespace Uno.UI
 			var effectivePrecedence = precedence ?? themeRef.Precedence;
 
 			// Resolve the current value from the pinned dictionary against the owner's effective theme
-			// (the setter target).
-			var value = themeRef.RefreshValue(ThemeResolution.ResolveOwnerTheme(owner));
+			// (the setter target), scoped onto the core requested-theme-for-subtree slot like WinUI's
+			// LookupThemeResource(theme, key) (xcpcore.cpp:2371-2394).
+			var ownerTheme = ThemeResolution.ResolveOwnerTheme(owner);
+			using var themeScope = Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(ownerTheme);
+			var value = themeRef.RefreshValue(ownerTheme);
 			// MUX Reference: Theming.cpp:385-393 — SetValue uses baseValueSource (resolved precedence)
 			owner.SetValue(property, BindingPropertyHelper.Convert(property.Type, value), effectivePrecedence);
 
@@ -452,8 +455,11 @@ namespace Uno.UI
 		internal static bool ApplyVisualStateSetter(SpecializedResourceDictionary.ResourceKey resourceKey, object context, BindingPath bindingPath, DependencyPropertyValuePrecedences precedence, ResourceUpdateReason updateReason)
 		{
 			// Resolve the setter's {ThemeResource} against the target element's effective theme
-			// (bindingPath.DataContext is the setter target).
-			var themeKey = ResourceDictionary.GetThemeKey(ThemeResolution.ResolveOwnerTheme(bindingPath.DataContext as DependencyObject));
+			// (bindingPath.DataContext is the setter target), scoped onto the core
+			// requested-theme-for-subtree slot like WinUI's LookupThemeResource(theme, key).
+			var ownerTheme = ThemeResolution.ResolveOwnerTheme(bindingPath.DataContext as DependencyObject);
+			using var themeScope = Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(ownerTheme);
+			var themeKey = ResourceDictionary.GetThemeKey(ownerTheme);
 			if (TryVisualTreeRetrieval(resourceKey, themeKey, context, out var value, out var providingDictionary)
 				&& bindingPath.DataContext != null)
 			{

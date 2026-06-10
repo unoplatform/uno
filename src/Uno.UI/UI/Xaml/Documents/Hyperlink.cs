@@ -232,8 +232,12 @@ namespace Microsoft.UI.Xaml.Documents
 
 		internal void SetCurrentForeground()
 		{
-			var ownerThemeKey = ResourceDictionary.GetThemeKey(
-				ThemeResolution.ResolveOwnerTheme(GetContainingFrameworkElement()));
+			// Resolve the state brushes under the containing element's effective theme, scoped onto
+			// the core requested-theme-for-subtree slot like WinUI's LookupThemeResource(theme, key)
+			// (xcpcore.cpp:2371-2394).
+			var ownerTheme = ThemeResolution.ResolveOwnerTheme(GetContainingFrameworkElement());
+			using var themeScope = Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(ownerTheme);
+			var ownerThemeKey = ResourceDictionary.GetThemeKey(ownerTheme);
 
 			if (_pressedPointer is { }
 				&& Application.Current.Resources.TryGetValue(HyperlinkForegroundPressedKey, ownerThemeKey, out var pressedBrush, shouldCheckSystem: true))

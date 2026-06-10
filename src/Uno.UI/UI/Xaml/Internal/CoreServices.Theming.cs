@@ -36,4 +36,38 @@ internal partial class CoreServices
 
 	// MUX Reference: CCoreServices::IsThemeRequestedForSubTree — xcpcore.cpp:8136-8138
 	internal bool IsThemeRequestedForSubTree() => Microsoft.UI.Xaml.Theming.GetBaseValue(_requestedThemeForSubTree) != Theme.None;
+
+	/// <summary>
+	/// Scopes the requested-theme-for-subtree slot to <paramref name="theme"/> for the duration of
+	/// a lookup — the save/set/restore pattern of CCoreServices::LookupThemeResource
+	/// (xcpcore.cpp:2371-2394), used wherever WinUI resolves a keyed resource under a specific
+	/// owner's theme outside a theme walk.
+	/// </summary>
+	internal RequestedThemeForSubTreeScope ScopeRequestedThemeForSubTree(Theme theme) => new(this, theme);
+
+	internal readonly struct RequestedThemeForSubTreeScope : global::System.IDisposable
+	{
+		private readonly CoreServices _core;
+		private readonly Theme _previous;
+		private readonly bool _set;
+
+		public RequestedThemeForSubTreeScope(CoreServices core, Theme theme)
+		{
+			_core = core;
+			_previous = core.GetRequestedThemeForSubTree();
+			_set = Microsoft.UI.Xaml.Theming.GetBaseValue(theme) != _previous;
+			if (_set)
+			{
+				core.SetRequestedThemeForSubTree(theme);
+			}
+		}
+
+		public void Dispose()
+		{
+			if (_set)
+			{
+				_core.SetRequestedThemeForSubTree(_previous);
+			}
+		}
+	}
 }

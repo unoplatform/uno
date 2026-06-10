@@ -701,8 +701,12 @@ public partial class DependencyObjectStore
 			{
 				// Resolve {ThemeResource} markup used inside a binding (Binding.TargetNullValue /
 				// FallbackValue) against the OWNER's effective theme — the same owner theme the
-				// UpdateThemeReference / Phase-2 choke points use — rather than the process-global active theme.
-				var bindingThemeKey = ResourceDictionary.GetThemeKey(GetOwnerTheme());
+				// UpdateThemeReference / Phase-2 choke points use — rather than the process-global active
+				// theme. The owner theme is also scoped onto the core requested-theme-for-subtree slot
+				// (the LookupThemeResource pattern, xcpcore.cpp:2371-2394) so ambient reads agree.
+				var bindingOwnerTheme = GetOwnerTheme();
+				using var bindingThemeScope = Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(bindingOwnerTheme);
+				var bindingThemeKey = ResourceDictionary.GetThemeKey(bindingOwnerTheme);
 				_properties.UpdateBindingExpressions(bindingThemeKey);
 			}
 			finally
@@ -721,9 +725,11 @@ public partial class DependencyObjectStore
 
 			// Resolve deferred/unpinned {ThemeResource} (and theme-sensitive {StaticResource}) bindings
 			// against the OWNER's effective theme — the same owner theme the UpdateThemeReference choke point
-			// uses, threaded in as a parameter. For a non-FrameworkElement owner, the injected FE resource
-			// context supplies the theme.
+			// uses, threaded in as a parameter and scoped onto the core requested-theme-for-subtree slot
+			// (the LookupThemeResource pattern, xcpcore.cpp:2371-2394) so ambient reads agree. For a
+			// non-FrameworkElement owner, the injected FE resource context supplies the theme.
 			var ownerTheme = GetOwnerTheme();
+			using var resourceBindingsThemeScope = Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(ownerTheme);
 
 			var bindings = _resourceBindings.GetAllBindings();
 			foreach (var binding in bindings)
