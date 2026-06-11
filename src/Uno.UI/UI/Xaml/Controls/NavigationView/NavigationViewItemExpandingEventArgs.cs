@@ -20,6 +20,11 @@ public partial class NavigationViewItemExpandingEventArgs
 	}
 
 	/// <summary>
+	/// Gets the container of the expanding item after a NavigationViewItem.Expanding event.
+	/// </summary>
+	public NavigationViewItemBase? ExpandingItemContainer { get; internal set; }
+
+	/// <summary>
 	/// Gets the object that is expanding after the NavigationViewItem.Expanding event.
 	/// </summary>
 	public object? ExpandingItem
@@ -40,9 +45,4 @@ public partial class NavigationViewItemExpandingEventArgs
 			return null;
 		}
 	}
-
-	/// <summary>
-	/// Gets the container of the expanding item after a NavigationViewItem.Expanding event.
-	/// </summary>
-	public NavigationViewItemBase? ExpandingItemContainer { get; internal set; }
 }

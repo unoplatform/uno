@@ -13,7 +13,7 @@ internal class NavigationViewItemsFactory : ElementFactory
 {
 	private IElementFactoryShim m_itemTemplateWrapper = null;
 	private NavigationViewItemBase m_settingsItem = null;
-	private List<NavigationViewItem> navigationViewItemPool;
+	private List<NavigationViewItem> navigationViewItemPool = new List<NavigationViewItem>();
 
 	internal void UserElementFactory(object newValue)
 	{
@@ -25,7 +25,6 @@ internal class NavigationViewItemsFactory : ElementFactory
 		{
 			m_itemTemplateWrapper = new ItemTemplateWrapper(selector);
 		}
-
 		else if (newValue is IElementFactory customElementFactory)
 		{
 			m_itemTemplateWrapper = (IElementFactoryShim)customElementFactory;

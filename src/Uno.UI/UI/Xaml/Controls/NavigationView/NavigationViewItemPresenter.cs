@@ -23,8 +23,6 @@ public partial class NavigationViewItemPresenter : ContentControl
 	private const string c_expandCollapseRotateExpandedStoryboard = "ExpandCollapseRotateExpandedStoryboard";
 	private const string c_expandCollapseRotateCollapsedStoryboard = "ExpandCollapseRotateCollapsedStoryboard";
 
-	//private const string c_iconBoxColumnDefinitionName = "IconColumn";
-
 	public NavigationViewItemPresenter()
 	{
 		SetValue(TemplateSettingsProperty, new NavigationViewItemPresenterTemplateSettings());

@@ -1,4 +1,6 @@
-﻿// MUX reference NavigationViewAutomationPeer.cpp, commit fc2f82117
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX reference NavigationViewAutomationPeer.cpp, commit fc2f82117
 
 using System;
 using Microsoft.UI.Xaml.Controls;

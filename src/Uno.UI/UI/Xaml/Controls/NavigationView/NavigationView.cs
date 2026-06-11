@@ -115,9 +115,7 @@ public partial class NavigationView : ContentControl
 	private const string c_shadowCasterEaseOutStoryboard = "ShadowCasterEaseOutStoryboard";
 	private const string c_paneOverlayShadowDepthName = "PaneOverlayShadowDepth";
 
-	private int itemNotFound = -1;
-
-	private static Size c_infSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
+	private const int s_itemNotFound = -1;
 
 	~NavigationView()
 	{
@@ -1571,6 +1569,11 @@ public partial class NavigationView : ContentControl
 		UpdatePaneLayout();
 	}
 
+	private void OnItemsContainerSizeChanged(object sender, SizeChangedEventArgs args)
+	{
+		UpdatePaneLayout();
+	}
+
 	private void UpdateOpenPaneLength(double width)
 	{
 		if (!IsTopNavigationView() && m_rootSplitView != null)
@@ -1580,11 +1583,6 @@ public partial class NavigationView : ContentControl
 			var templateSettings = GetTemplateSettings();
 			templateSettings.OpenPaneLength = m_openPaneLength;
 		}
-	}
-
-	private void OnItemsContainerSizeChanged(object sender, SizeChangedEventArgs args)
-	{
-		UpdatePaneLayout();
 	}
 
 	// forceSetDisplayMode: On first call to SetDisplayMode, force setting to initial values
@@ -1726,7 +1724,7 @@ public partial class NavigationView : ContentControl
 #if __APPLE_UIKIT__ // Uno workaround: The arrange is async on iOS, ActualHeight is not set yet. This would constraints the footer to MaxHeight 0.
 									return footerItemsRepeater.DesiredSize.Height + footerItemsRepeaterTopBottomMargin;
 #else
-									var footerItemsDesiredHeight = LayoutUtils.MeasureAndGetDesiredHeightFor(footerItemsRepeater, c_infSize);
+									var footerItemsDesiredHeight = LayoutUtils.MeasureAndGetDesiredHeightFor(footerItemsRepeater, LayoutUtils.c_infSize);
 									return footerItemsDesiredHeight + footerItemsRepeaterTopBottomMargin;
 #endif
 								}
@@ -3700,7 +3698,7 @@ public partial class NavigationView : ContentControl
 		if (m_appliedTemplate && IsTopNavigationView())
 		{
 			if (m_layoutUpdatedToken.Disposable == null ||
-				(newItem != null && m_topDataProvider.IndexOf(newItem) != itemNotFound && m_topDataProvider.IndexOf(newItem, NavigationViewSplitVectorID.PrimaryList) == itemNotFound)) // selection is in overflow
+				(newItem != null && m_topDataProvider.IndexOf(newItem) != s_itemNotFound && m_topDataProvider.IndexOf(newItem, NavigationViewSplitVectorID.PrimaryList) == s_itemNotFound)) // selection is in overflow
 			{
 				InvalidateTopNavPrimaryLayout();
 			}
@@ -3981,7 +3979,7 @@ public partial class NavigationView : ContentControl
 
 	private void HandleTopNavigationMeasureOverrideNormal(Size availableSize)
 	{
-		var desiredWidth = MeasureTopNavigationViewDesiredWidth(c_infSize);
+		var desiredWidth = MeasureTopNavigationViewDesiredWidth(LayoutUtils.c_infSize);
 		if (desiredWidth > availableSize.Width)
 		{
 			ResetAndRearrangeTopNavItems(availableSize);
@@ -3990,7 +3988,7 @@ public partial class NavigationView : ContentControl
 
 	private void HandleTopNavigationMeasureOverrideOverflow(Size availableSize)
 	{
-		var desiredWidth = MeasureTopNavigationViewDesiredWidth(c_infSize);
+		var desiredWidth = MeasureTopNavigationViewDesiredWidth(LayoutUtils.c_infSize);
 		if (desiredWidth > availableSize.Width)
 		{
 			ShrinkTopNavigationSize(desiredWidth, availableSize);
@@ -4014,12 +4012,12 @@ public partial class NavigationView : ContentControl
 	private void ArrangeTopNavItems(Size availableSize)
 	{
 		SetOverflowButtonVisibility(Visibility.Collapsed);
-		var desiredWidth = MeasureTopNavigationViewDesiredWidth(c_infSize);
+		var desiredWidth = MeasureTopNavigationViewDesiredWidth(LayoutUtils.c_infSize);
 		if (!(desiredWidth < availableSize.Width))
 		{
 			// overflow
 			SetOverflowButtonVisibility(Visibility.Visible);
-			var desiredWidthForOverflowButton = MeasureTopNavigationViewDesiredWidth(c_infSize);
+			var desiredWidthForOverflowButton = MeasureTopNavigationViewDesiredWidth(LayoutUtils.c_infSize);
 
 			MUX_ASSERT(desiredWidthForOverflowButton >= desiredWidth);
 			m_topDataProvider.OverflowButtonWidth = desiredWidthForOverflowButton - desiredWidth;
@@ -4050,7 +4048,7 @@ public partial class NavigationView : ContentControl
 
 		// Calculate selected overflow item size.
 		var selectedOverflowItemIndex = m_topDataProvider.IndexOf(itemBeingMoved);
-		MUX_ASSERT(selectedOverflowItemIndex != itemNotFound);
+		MUX_ASSERT(selectedOverflowItemIndex != s_itemNotFound);
 		var selectedOverflowItemWidth = m_topDataProvider.GetWidthForItem(selectedOverflowItemIndex);
 
 		bool needInvalidMeasure = !m_topDataProvider.IsValidWidthForItem(selectedOverflowItemIndex);
@@ -4058,19 +4056,19 @@ public partial class NavigationView : ContentControl
 		if (!needInvalidMeasure)
 		{
 			var actualWidth = GetTopNavigationViewActualWidth();
-			var desiredWidth = MeasureTopNavigationViewDesiredWidth(c_infSize);
+			var desiredWidth = MeasureTopNavigationViewDesiredWidth(LayoutUtils.c_infSize);
 			// This assert triggers on the InfoBadge page, however it seems to recover fine, disabling the assert for now.
 			// Github issue: https://github.com/microsoft/microsoft-ui-xaml/issues/5771
 			// MUX_ASSERT(desiredWidth <= actualWidth);
 
 			// Calculate selected item size
-			var selectedItemIndex = itemNotFound;
+			var selectedItemIndex = s_itemNotFound;
 			var selectedItemWidth = 0.0;
 			var selectedItem = SelectedItem;
 			if (selectedItem != null)
 			{
 				selectedItemIndex = m_topDataProvider.IndexOf(selectedItem);
-				if (selectedItemIndex != itemNotFound)
+				if (selectedItemIndex != s_itemNotFound)
 				{
 					selectedItemWidth = m_topDataProvider.GetWidthForItem(selectedItemIndex);
 				}
@@ -4203,7 +4201,7 @@ public partial class NavigationView : ContentControl
 
 		var selectedItemIndex = GetSelectedItemIndex();
 
-		var possibleWidthForPrimaryList = MeasureTopNavMenuItemsHostDesiredWidth(c_infSize) - (desiredWidth - availableSize.Width);
+		var possibleWidthForPrimaryList = MeasureTopNavMenuItemsHostDesiredWidth(LayoutUtils.c_infSize) - (desiredWidth - availableSize.Width);
 		if (possibleWidthForPrimaryList >= 0)
 		{
 			// Remove all items which is not visible except first item and selected item.
@@ -4214,7 +4212,7 @@ public partial class NavigationView : ContentControl
 		}
 
 		// measure again to make sure SelectedItem is realized
-		desiredWidth = MeasureTopNavigationViewDesiredWidth(c_infSize);
+		desiredWidth = MeasureTopNavigationViewDesiredWidth(LayoutUtils.c_infSize);
 
 		var widthAtLeastToBeRemoved = desiredWidth - availableSize.Width;
 		if (widthAtLeastToBeRemoved > 0)
@@ -4267,7 +4265,7 @@ public partial class NavigationView : ContentControl
 		//  2, virtualization and it doesn't have cached width
 		if (i == size && toBeMoved.Count > 0)
 		{
-			toBeMoved.Remove(toBeMoved.Count - 1);
+			toBeMoved.RemoveAt(toBeMoved.Count - 1);
 		}
 		return toBeMoved;
 	}
@@ -4626,12 +4624,8 @@ public partial class NavigationView : ContentControl
 	// So we do hook it in Loaded and Unhook it in Unloaded
 	private void OnUnloaded(object sender, RoutedEventArgs args)
 	{
-		var coreTitleBar = m_coreTitleBar;
-		if (coreTitleBar != null)
-		{
-			coreTitleBar.LayoutMetricsChanged -= OnTitleBarMetricsChanged;
-			coreTitleBar.IsVisibleChanged -= OnTitleBarIsVisibleChanged;
-		}
+		m_titleBarMetricsChangedRevoker.Disposable = null;
+		m_titleBarIsVisibleChangedRevoker.Disposable = null;
 	}
 
 	private void OnLoaded(object sender, RoutedEventArgs args)
@@ -4642,11 +4636,12 @@ public partial class NavigationView : ContentControl
 			UpdateVisualStateForDisplayModeGroup(DisplayMode);
 		}
 
-		var coreTitleBar = m_coreTitleBar;
-		if (coreTitleBar != null)
+		if (m_coreTitleBar is { } coreTitleBar)
 		{
 			coreTitleBar.LayoutMetricsChanged += OnTitleBarMetricsChanged;
+			m_titleBarMetricsChangedRevoker.Disposable = Disposable.Create(() => coreTitleBar.LayoutMetricsChanged -= OnTitleBarMetricsChanged);
 			coreTitleBar.IsVisibleChanged += OnTitleBarIsVisibleChanged;
+			m_titleBarIsVisibleChangedRevoker.Disposable = Disposable.Create(() => coreTitleBar.IsVisibleChanged -= OnTitleBarIsVisibleChanged);
 		}
 		// Update pane buttons now since we the CompactPaneLength is actually known now.
 		UpdatePaneButtonsWidths();

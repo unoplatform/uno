@@ -32,6 +32,8 @@ public partial class NavigationView
 
 	internal NavigationViewItemsFactory GetNavigationViewItemsFactory() { return m_navigationViewItemsFactory; }
 
+	private readonly List<NavigationViewItemBase> m_itemsWithRevokerObjects = new();
+
 	private bool m_InitialNonForcedModeUpdate = true;
 
 	// Cache these objects for the view as they are expensive to query via GetForCurrentView() calls.
@@ -189,8 +191,6 @@ public partial class NavigationView
 	private bool m_shouldRaiseItemInvokedAfterSelection;
 
 	private TopNavigationViewLayoutState m_topNavigationMode = TopNavigationViewLayoutState.Uninitialized;
-
-	private readonly List<NavigationViewItemBase> m_itemsWithRevokerObjects = new();
 
 	// A threshold to stop recovery from overflow to normal happens immediately on resize.
 	private float m_topNavigationRecoveryGracePeriodWidth = 5.0f;

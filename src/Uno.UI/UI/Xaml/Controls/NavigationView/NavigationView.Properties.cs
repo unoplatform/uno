@@ -118,7 +118,12 @@ public partial class NavigationView
 	public double ExpandedModeThresholdWidth
 	{
 		get => (double)GetValue(ExpandedModeThresholdWidthProperty);
-		set => SetValue(ExpandedModeThresholdWidthProperty, value);
+		set
+		{
+			var coercedValue = value;
+			CoerceToGreaterThanZero(ref coercedValue);
+			SetValue(ExpandedModeThresholdWidthProperty, coercedValue);
+		}
 	}
 
 	/// <summary>

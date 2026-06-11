@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference NavigationViewItemSeparator.cpp, commit fc2f82117
 
+using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -13,8 +14,8 @@ public partial class NavigationViewItemSeparator : NavigationViewItemBase
 	private bool m_appliedTemplate = false;
 	private bool m_isClosedCompact = false;
 	private Grid m_rootGrid = null;
-	private long m_splitViewIsPaneOpenChangedRevoker;
-	private long m_splitViewDisplayModeChangedRevoker;
+	private readonly SerialDisposable m_splitViewIsPaneOpenChangedRevoker = new SerialDisposable();
+	private readonly SerialDisposable m_splitViewDisplayModeChangedRevoker = new SerialDisposable();
 	private const string c_rootGrid = "NavigationViewItemSeparatorRootGrid";
 
 	public NavigationViewItemSeparator()
@@ -59,12 +60,14 @@ public partial class NavigationViewItemSeparator : NavigationViewItemBase
 		var splitView = GetSplitView();
 		if (splitView != null)
 		{
-			m_splitViewIsPaneOpenChangedRevoker = splitView.RegisterPropertyChangedCallback(
+			var isPaneOpenToken = splitView.RegisterPropertyChangedCallback(
 				SplitView.IsPaneOpenProperty,
 				OnSplitViewPropertyChanged);
-			m_splitViewDisplayModeChangedRevoker = splitView.RegisterPropertyChangedCallback(
+			m_splitViewIsPaneOpenChangedRevoker.Disposable = Disposable.Create(() => splitView.UnregisterPropertyChangedCallback(SplitView.IsPaneOpenProperty, isPaneOpenToken));
+			var displayModeToken = splitView.RegisterPropertyChangedCallback(
 				SplitView.DisplayModeProperty,
 				OnSplitViewPropertyChanged);
+			m_splitViewDisplayModeChangedRevoker.Disposable = Disposable.Create(() => splitView.UnregisterPropertyChangedCallback(SplitView.DisplayModeProperty, displayModeToken));
 
 			UpdateIsClosedCompact(false);
 		}

@@ -197,7 +197,7 @@ public partial class NavigationViewItemAutomationPeer : FrameworkElementAutomati
 			   ExpandCollapseState.Collapsed :
 			   ExpandCollapseState.Expanded;
 
-			//oldState doesn't work here, use ReferenceWithABIRuntimeClassName to make Narrator can unbox it.
+			// box_value(oldState) doesn't work here, use ReferenceWithABIRuntimeClassName to make Narrator can unbox it.
 			RaisePropertyChangedEvent(ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty,
 			   oldState,
 			   newState);

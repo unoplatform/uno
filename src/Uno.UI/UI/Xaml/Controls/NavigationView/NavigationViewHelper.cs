@@ -31,7 +31,6 @@ internal enum NavigationViewPropagateTarget
 	All
 }
 
-// TODO:
 internal class NavigationViewItemHelper
 {
 	internal const string c_OnLeftNavigationReveal = "OnLeftNavigationReveal";
@@ -62,4 +61,4 @@ internal class NavigationViewItemHelper<T>
 	private UIElement m_selectionIndicator;
 
 	private const string c_selectionIndicatorName = "SelectionIndicator";
-};
+}

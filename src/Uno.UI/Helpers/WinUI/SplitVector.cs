@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 //
-// This file is a C# translation of the SplitVector.cpp file from WinUI controls.
+// This file is a C# translation of the SplitDataSourceBase.h file from WinUI controls.
 //
 
 // MUX Reference SplitDataSourceBase.h, commit fc2f82117

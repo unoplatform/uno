@@ -17,7 +17,7 @@ internal partial class TopNavigationViewDataProvider : SplitDataSourceBase<objec
 		// (m_owner is only the handle manager, which has no Uno equivalent). Start null so the first
 		// SetDataSource(null) is a no-op, matching ShouldChangeDataSource in WinUI.
 		m_rawDataSource = null;
-		m_dataSource = m_owner as ItemsSourceView;
+		m_dataSource = null;
 
 		Func<object, int> lambda = (object value) => IndexOf(value);
 
