@@ -192,8 +192,8 @@ public partial class Given_HotReloadWorkspace
 		var basePath = Path.GetDirectoryName(Application.Current.GetType().Assembly.Location)!;
 
 		var searchPaths = new[] {
-			Path.Combine(basePath, "..", "..", "..", "..", "..", "Uno.UI.RuntimeTests", "Tests", "HotReload", "Frame", "HRApp"),
-			Path.Combine(basePath, "..", "..", "src", "Uno.UI.RuntimeTests", "Tests", "HotReload", "Frame", "HRApp"),
+			Path.Combine(basePath, "..", "..", "..", "..", "..", "Uno.UI.RuntimeTests", "HotReload", "Frame", "HRApp"),
+			Path.Combine(basePath, "..", "..", "src", "Uno.UI.RuntimeTests", "HotReload", "Frame", "HRApp"),
 		};
 
 		var hrAppPath = searchPaths

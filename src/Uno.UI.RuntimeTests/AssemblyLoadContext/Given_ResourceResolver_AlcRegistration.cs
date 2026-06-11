@@ -258,8 +258,8 @@ public class Given_ResourceResolver_AlcRegistration
 		var basePath = Path.GetDirectoryName(Application.Current.GetType().Assembly.Location)!;
 		var searchPaths = new[]
 		{
-			Path.Combine(basePath, "..", "..", "..", "..", "..", "Uno.UI.RuntimeTests", "Tests", "AssemblyLoadContext", "AlcApp"),
-			Path.Combine(basePath, "..", "..", "src", "Uno.UI.RuntimeTests", "Tests", "AssemblyLoadContext", "AlcApp"),
+			Path.Combine(basePath, "..", "..", "..", "..", "..", "Uno.UI.RuntimeTests", "AssemblyLoadContext", "AlcApp"),
+			Path.Combine(basePath, "..", "..", "src", "Uno.UI.RuntimeTests", "AssemblyLoadContext", "AlcApp"),
 			Path.Combine(basePath, "..", "..", ".."),
 		};
 
