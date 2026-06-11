@@ -71,7 +71,7 @@ public static class DevServerDiagnostics
 				}
 
 #if NET5_0_OR_GREATER
-				if (holder.Sink is { } sink && sink.GetType().Assembly.IsCollectible)
+				if (holder.Sink is { } sink && sink.GetType().IsCollectible)
 				{
 					holder.Sink = null;
 				}

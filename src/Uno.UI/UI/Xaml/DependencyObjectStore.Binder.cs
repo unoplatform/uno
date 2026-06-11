@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
 // fallback option for legacy DepObj from external library generated before templated-parent rework.
@@ -712,7 +712,7 @@ namespace Microsoft.UI.Xaml
 			// whose ContentRoot has been unregistered from the coordinator (a closed secondary
 			// app's tree — popups included, which keep IsLoaded) is orphaned and also released.
 			if (_associatedParent is { } parent
-				&& (parent.GetType().Assembly.IsCollectible
+				&& (parent.GetType().IsCollectible
 					|| parent is FrameworkElement { IsLoaded: false }
 					|| (parent is FrameworkElement orphanCandidate && IsOrphanedFromContentRoots(orphanCandidate))))
 			{
@@ -724,7 +724,7 @@ namespace Microsoft.UI.Xaml
 			// store at Inheritance precedence; that propagated value (e.g. the secondary app's
 			// view model) survives the parent's removal and pins the value's ALC on its own.
 			if (hadCollectibleAssociation
-				|| GetValue(_dataContextProperty)?.GetType().Assembly.IsCollectible == true)
+				|| GetValue(_dataContextProperty)?.GetType().IsCollectible == true)
 			{
 				ClearInheritedDataContext();
 			}
@@ -763,7 +763,7 @@ namespace Microsoft.UI.Xaml
 		{
 			// Fast path: Assembly.IsCollectible is a cached flag; non-collectible parents
 			// (the overwhelmingly common case) exit here without touching the registry.
-			if (!parent.GetType().Assembly.IsCollectible)
+			if (!parent.GetType().IsCollectible)
 			{
 				return;
 			}

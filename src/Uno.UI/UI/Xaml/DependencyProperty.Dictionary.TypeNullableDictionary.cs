@@ -18,10 +18,13 @@ namespace Microsoft.UI.Xaml
 			{
 				isNullable = type.IsNullable();
 
-				// Never cache collectible-assembly types: the app-lifetime dictionary would pin
-				// the type's AssemblyLoadContext after unload — and teardown sweeps themselves
-				// can re-query such types, racing any clear-on-teardown approach.
-				if (!type.Assembly.IsCollectible)
+				// Never cache collectible types: the app-lifetime dictionary would pin the
+				// type's AssemblyLoadContext after unload — and teardown sweeps themselves can
+				// re-query such types, racing any clear-on-teardown approach. Type.IsCollectible
+				// (not Assembly.IsCollectible) also covers generic instantiations whose
+				// DEFINITION lives in a shared assembly (e.g. ObservableCollection<T> from
+				// CoreLib) but whose type ARGUMENT is collectible.
+				if (!type.IsCollectible)
 				{
 					_isTypeNullableDictionary.Add(type, isNullable);
 				}
@@ -66,8 +69,10 @@ namespace Microsoft.UI.Xaml
 
 				foreach (Type key in _entries.Keys)
 				{
+					// Type.IsCollectible also catches generic instantiations over collectible
+					// type arguments, whose declaring assembly is a shared (default-ALC) one.
 					var alc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(key.Assembly);
-					if (alc is not null && alc != defaultAlc)
+					if (key.IsCollectible || (alc is not null && alc != defaultAlc))
 					{
 						keysToRemove.Add(key);
 					}
