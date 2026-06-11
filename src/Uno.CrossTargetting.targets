@@ -22,8 +22,8 @@
 		<None Include="**\*.reference.cs" Exclude="bin\**\*.reference.cs;obj\**\*.reference.cs" Condition="'$(UnoRuntimeIdentifier)'!='Reference'" />
 		<Compile Remove="**\*.reference.cs" Condition="'$(UnoRuntimeIdentifier)'!='Reference'" />
 
-		<None Include="**\*.iOS.cs" Exclude="bin\**\*.iOS.cs;obj\**\*.iOS.cs" Condition="!$(IsIOSOrCatalyst)" />
-		<Compile Remove="**\*.iOS.cs" Condition="!$(IsIOSOrCatalyst)" />
+		<None Include="**\*.iOS.cs" Exclude="bin\**\*.iOS.cs;obj\**\*.iOS.cs" Condition="!$(IsIOS)" />
+		<Compile Remove="**\*.iOS.cs" Condition="!$(IsIOS)" />
 
 		<None Include="**\*.tvOS.cs" Exclude="bin\**\*.tvOS.cs;obj\**\*.tvOS.cs" Condition="!$(IsTvOS)" />
 		<Compile Remove="**\*.tvOS.cs" Condition="!$(IsTvOS)" />
@@ -31,8 +31,8 @@
 		<None Include="**\*.UIKit.cs" Exclude="bin\**\*.UIKit.cs;obj\**\*.UIKit.cs" Condition="!$(IsAppleUIKit)" />
 		<Compile Remove="**\*.UIKit.cs" Condition="!$(IsAppleUIKit)" />
 
-		<None Include="**\*.iOSmacOS.cs" Exclude="bin\**\*.iOSmacOS.cs;obj\**\*.iOSmacOS.cs" Condition="!$(IsIOSOrCatalyst)" />
-		<Compile Remove="**\*.iOSmacOS.cs" Condition="!$(IsIOSOrCatalyst)" />
+		<None Include="**\*.iOSmacOS.cs" Exclude="bin\**\*.iOSmacOS.cs;obj\**\*.iOSmacOS.cs" Condition="!$(IsIOS)" />
+		<Compile Remove="**\*.iOSmacOS.cs" Condition="!$(IsIOS)" />
 
 		<None Include="**\*.Apple.cs" Exclude="bin\**\*.Apple.cs;obj\**\*.Apple.cs" Condition="!$(IsApple)" />
 		<Compile Remove="**\*.Apple.cs" Condition="!$(IsApple)" />
@@ -91,11 +91,6 @@
 
 	<PropertyGroup Condition="$(IsTvOS)">
 		<DefineConstants>$(DefineConstants);XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;HAS_NATIVE_IMPLICIT_POINTER_CAPTURE;HAS_RENDER_TARGET_BITMAP</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="$(IsCatalyst)">
-		<DefineConstants>$(DefineConstants);XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;HAS_NATIVE_IMPLICIT_POINTER_CAPTURE;HAS_RENDER_TARGET_BITMAP</DefineConstants>
-		<SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsAppleUIKit)">

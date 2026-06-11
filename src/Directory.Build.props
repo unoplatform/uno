@@ -228,17 +228,11 @@
 
 		<IsMacOS>false</IsMacOS>
 
-		<IsCatalyst>false</IsCatalyst>
-		<IsCatalyst Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))'=='maccatalyst'">true</IsCatalyst>
-
-		<IsIOSOrCatalyst>false</IsIOSOrCatalyst>
-		<IsIOSOrCatalyst Condition="$(IsIOS) or $(IsCatalyst)">true</IsIOSOrCatalyst>
-
 		<IsAppleUIKit>false</IsAppleUIKit>
-		<IsAppleUIKit Condition="$(IsIOSOrCatalyst) or $(IsTvOS)">true</IsAppleUIKit>
+		<IsAppleUIKit Condition="$(IsIOS) or $(IsTvOS)">true</IsAppleUIKit>
 
 		<IsApple>false</IsApple>
-		<IsApple Condition="$(IsIOSOrCatalyst) or $(IsTvOS)">true</IsApple>
+		<IsApple Condition="$(IsIOS) or $(IsTvOS)">true</IsApple>
 	</PropertyGroup>
 
 	<PropertyGroup>

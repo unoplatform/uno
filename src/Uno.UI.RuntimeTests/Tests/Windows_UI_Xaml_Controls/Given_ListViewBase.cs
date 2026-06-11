@@ -5234,6 +5234,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RequiresFullWindow]
 		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/482")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
 		public async Task When_Grid_Row_Presented_After_Tab_Navigation_Light_Under_Dark_App()
 		{
 #if HAS_UNO

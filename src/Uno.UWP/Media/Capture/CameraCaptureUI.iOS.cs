@@ -138,7 +138,6 @@ namespace Windows.Media.Capture
 
 						if (phAsset == null)
 						{
-#if !__MACCATALYST__
 							assetUrl = result[UIImagePickerController.ReferenceUrl] as NSUrl;
 
 							if (this.Log().IsEnabled(LogLevel.Debug))
@@ -150,7 +149,6 @@ namespace Windows.Media.Capture
 							{
 								phAsset = PHAsset.FetchAssets(new NSUrl[] { assetUrl }, null)?.LastObject as PHAsset;
 							}
-#endif
 						}
 
 						if (phAsset is not null)

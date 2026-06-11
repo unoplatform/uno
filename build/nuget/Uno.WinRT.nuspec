@@ -34,12 +34,6 @@
 		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net9.0-tvos18.0\Uno.UI.Dispatching.dll" target="lib\net9.0-tvos18.0" />
 		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net9.0-tvos18.0\Uno.UI.Dispatching.pdb" target="lib\net9.0-tvos18.0" />
 
-		<!-- net9.0-maccatalyst18.0 -->
-		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.dll" target="lib\net9.0-maccatalyst18.0" />
-		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.pdb" target="lib\net9.0-maccatalyst18.0" />
-		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.UI.Dispatching.dll" target="lib\net9.0-maccatalyst18.0" />
-		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.UI.Dispatching.pdb" target="lib\net9.0-maccatalyst18.0" />
-
 		<!-- net9.0-android30.0 -->
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net9.0-android\Uno.dll" target="lib\net9.0-android30.0" />
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net9.0-android\Uno.pdb" target="lib\net9.0-android30.0" />
@@ -57,12 +51,6 @@
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net10.0-tvos26.0\Uno.pdb" target="lib\net10.0-tvos26.0" />
 		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net10.0-tvos26.0\Uno.UI.Dispatching.dll" target="lib\net10.0-tvos26.0" />
 		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net10.0-tvos26.0\Uno.UI.Dispatching.pdb" target="lib\net10.0-tvos26.0" />
-
-		<!-- net10.0-maccatalyst26.0 -->
-		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net10.0-maccatalyst26.0\Uno.dll" target="lib\net10.0-maccatalyst26.0" />
-		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net10.0-maccatalyst26.0\Uno.pdb" target="lib\net10.0-maccatalyst26.0" />
-		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net10.0-maccatalyst26.0\Uno.UI.Dispatching.dll" target="lib\net10.0-maccatalyst26.0" />
-		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net10.0-maccatalyst26.0\Uno.UI.Dispatching.pdb" target="lib\net10.0-maccatalyst26.0" />
 
 		<!-- net10.0-android36.0 -->
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net10.0-android\Uno.dll" target="lib\net10.0-android36.0" />
