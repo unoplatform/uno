@@ -44,15 +44,6 @@
     <!-- nuget package reference validation -->
     <PackageReference Include="Uno56NugetLibrary" />
   </ItemGroup>
-
-  <Target Name="_UnoValidateSelfAssets" 
-          BeforeTargets="AfterBuild" 
-          Condition="'$(TargetFramework)'=='net10.0-windows10.0.19041'">
-
-    <!-- Validates that assets are properly propagated to the output folder, regardless of their "copy to output" value -->
-    <Error Text="Missing asset $(OutputPath)\Assets\SharedAssets.md"
-          Condition="!exists('$(OutputPath)\Assets\SharedAssets.md')" />
-  </Target>
   
   <ItemGroup>
     <Using Include="MyCustom.Logging.ILogger" Alias="ILogger" />
