@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using Foundation;
 using Windows.System;
 
-#if !__TVOS__
+#if !__MACCATALYST__ && !__TVOS__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
 using MessageUI;
 #endif
 
@@ -21,7 +21,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			ArgumentNullException.ThrowIfNull(message);
 
-#if !__TVOS__
+#if !__MACCATALYST__ && !__TVOS__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
 			if (Uno.WinRTFeatureConfiguration.EmailManager.UseMailAppAsDefaultEmailClient &&
 				MFMailComposeViewController.CanSendMail)
 			{
@@ -35,7 +35,7 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 
-#if !__TVOS__
+#if !__MACCATALYST__ && !__TVOS__
 		private static async Task ComposeEmailWithMFAsync(EmailMessage message)
 		{
 			if (UIApplication.SharedApplication.KeyWindow?.RootViewController is not { } rootViewController)
@@ -81,7 +81,7 @@ namespace Windows.ApplicationModel.Email
 #endif
 	}
 
-#if !__TVOS__
+#if !__MACCATALYST__ && !__TVOS__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
 	public class MailComposeViewControllerDelegate : MFMailComposeViewControllerDelegate
 	{
 		public override void Finished(MFMailComposeViewController controller, MFMailComposeResult result, NSError? error)

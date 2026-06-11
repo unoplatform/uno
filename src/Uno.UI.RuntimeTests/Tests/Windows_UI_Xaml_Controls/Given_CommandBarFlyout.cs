@@ -106,7 +106,6 @@ public class Given_CommandBarFlyout
 	[TestMethod]
 	[RequiresFullWindow]
 	[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/480")]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
 	public async Task When_CommandBarFlyout_Opens_First_Time_Foreground_Should_Not_Flash_Wrong_Theme()
 	{
 #if HAS_UNO
@@ -218,7 +217,6 @@ public class Given_CommandBarFlyout
 	[TestMethod]
 	[RequiresFullWindow]
 	[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/480")]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
 	public async Task When_CommandBarFlyout_Compiled_Opens_First_Time_Label_Should_Not_Flash_Wrong_Theme()
 	{
 #if HAS_UNO

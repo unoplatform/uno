@@ -64,7 +64,7 @@
 		<!-- 
 			This target suppresses unavailable targets for the current system.
 
-			As of 2024-03-21, iOS is not supported on Linux, and Windows is not supported on non-Windows systems.
+			As of 2024-03-21, iOS/Catalyst are not supported on Linux, and Windows is not supported on non-Windows systems.      
 		-->
 
 		<ItemGroup>
@@ -82,6 +82,7 @@
 				Condition="
 				'%(_TargetFrameworksAsGroup.PlatformIdentifier)' == 'ios'
 				OR '%(_TargetFrameworksAsGroup.PlatformIdentifier)' == 'tvos'
+				OR '%(_TargetFrameworksAsGroup.PlatformIdentifier)' == 'maccatalyst'
 				" />
 		</ItemGroup>
 
@@ -138,6 +139,7 @@
 					AND (
 						$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'ios'
 						OR $([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'tvos'
+						OR $([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'maccatalyst'
 					)" />
 
 	</Target>

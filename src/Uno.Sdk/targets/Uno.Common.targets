@@ -47,6 +47,9 @@
 		<tvOSProjectFolder Condition=" '$(tvOSProjectFolder)' == '' ">$(PlatformsProjectFolder)tvOS\</tvOSProjectFolder>
 		<tvOSProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(tvOSProjectFolder)'))</tvOSProjectFolder>
 		<tvOSProjectFolder Condition=" !Exists($(tvOSProjectFolder)) ">$([MSBuild]::EnsureTrailingSlash('tvOS'))</tvOSProjectFolder>
+		<MacCatalystProjectFolder Condition=" '$(MacCatalystProjectFolder)' == '' ">$(PlatformsProjectFolder)MacCatalyst\</MacCatalystProjectFolder>
+		<MacCatalystProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(MacCatalystProjectFolder)'))</MacCatalystProjectFolder>
+		<MacCatalystProjectFolder Condition=" !Exists('$(MacCatalystProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('MacCatalyst'))</MacCatalystProjectFolder>
 		<DesktopProjectFolder Condition=" '$(DesktopProjectFolder)' == '' AND Exists('$(PlatformsProjectFolder)Desktop') ">$(PlatformsProjectFolder)Desktop</DesktopProjectFolder>
 		<DesktopProjectFolder Condition=" '$(DesktopProjectFolder)' == '' AND Exists('Desktop') ">Desktop</DesktopProjectFolder>
 		<DesktopProjectFolder Condition=" '$(DesktopProjectFolder)' != '' ">$([MSBuild]::EnsureTrailingSlash('$(DesktopProjectFolder)'))</DesktopProjectFolder>
@@ -74,6 +77,8 @@
 		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' " />
 	<Import Project="Uno.Common.iOS.targets"
 		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' " />
+	<Import Project="Uno.Common.MacCatalyst.targets"
+		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' " />
 	<Import Project="Uno.Common.Desktop.targets"
 		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop' " />
 	<Import Project="Uno.Common.Wasm.targets"
@@ -99,6 +104,8 @@
 			Condition=" $(IsIOS) != 'true' AND '$(iOSProjectFolder)'!='' " />
 		<_IgnorePlatformFiles Include="$(tvOSProjectFolder)**"
 			Condition=" $(IsTvOS) != 'true' AND '$(tvOSProjectFolder)'!='' " />
+		<_IgnorePlatformFiles Include="$(MacCatalystProjectFolder)**"
+			Condition=" $(IsMacCatalyst) != 'true' AND '$(MacCatalystProjectFolder)'!='' " />
 		<_IgnorePlatformFiles Include="$(DesktopProjectFolder)**"
 			Condition=" $(IsDesktop) != 'true' AND '$(DesktopProjectFolder)'!='' " />
 		<_IgnorePlatformFiles Include="$(WasmProjectFolder)**"

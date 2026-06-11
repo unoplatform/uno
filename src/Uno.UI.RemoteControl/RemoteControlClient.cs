@@ -1155,6 +1155,9 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	{
 #if __WASM__
 		return ["127.0.0.1", "[::1]"];
+#elif __MACCATALYST__
+		// Mac Catalyst runs natively on macOS — loopback always reaches the host machine.
+		return ["127.0.0.1", "[::1]"];
 #elif __IOS__ || __TVOS__
 		// Canonical source: Uno.DeviceHelper.IsSimulator in Uno.UWP (internal, not accessible from here).
 		if (ObjCRuntime.Runtime.Arch == ObjCRuntime.Arch.SIMULATOR)
