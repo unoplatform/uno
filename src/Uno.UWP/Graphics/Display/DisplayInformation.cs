@@ -81,6 +81,20 @@ namespace Windows.Graphics.Display
 			}
 		}
 
+		/// <summary>
+		/// Removes the <see cref="DisplayInformation"/> registered for a window once that window is
+		/// closed. Without this, the static map retains the closed window's native wrapper graph
+		/// (and every event subscriber reachable from it) for the process lifetime — for a
+		/// secondary-app window in a collectible AssemblyLoadContext, that pins the entire ALC.
+		/// </summary>
+		internal static void DestroyForWindowId(WindowId windowId)
+		{
+			lock (_windowIdMapLock)
+			{
+				_windowIdMap.Remove(windowId);
+			}
+		}
+
 		public static DisplayOrientations AutoRotationPreferences
 		{
 			get => _autoRotationPreferences;

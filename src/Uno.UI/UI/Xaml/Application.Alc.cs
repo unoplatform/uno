@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Runtime.Loader;
 using Microsoft.UI.Xaml.Resources;
 using Uno.Foundation.Logging;
@@ -293,6 +294,20 @@ partial class Application
 			}
 		}
 
+		// ContentControl memoizes "does this DefaultStyleKey type have a default template" per
+		// Type; keys from the unloaded app's controls pin the ALC.
+		try
+		{
+			Controls.ContentControl.ClearHasDefaultTemplateCache();
+		}
+		catch (Exception ex)
+		{
+			if (typeof(Application).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(Application).Log().Debug($"[ALC-CLEANUP] ClearHasDefaultTemplateCache error: {ex.GetType().Name}: {ex.Message}");
+			}
+		}
+
 		// Secondary-ALC code can subscribe to events on HOST visual-tree elements (e.g. a
 		// designer overlay tracking an ancestor's SizeChanged); those subscriptions are never
 		// removed when the secondary app unloads and each one pins the collectible ALC. Walk
@@ -307,6 +322,24 @@ partial class Application
 			if (typeof(Application).Log().IsEnabled(LogLevel.Debug))
 			{
 				typeof(Application).Log().Debug($"[ALC-CLEANUP] PruneCollectibleAlcEventSubscriptions error: {ex.GetType().Name}: {ex.Message}");
+			}
+		}
+
+		// NativeDispatcher render registrations are never removed; prune entries whose
+		// CompositionTarget's ContentRoot is no longer registered (a closed secondary-app
+		// surface). Runs AFTER the tree prune above so orphaned roots are already unregistered.
+		try
+		{
+			var rootCoordinator = Uno.UI.Xaml.Core.CoreServices.Instance.ContentRootCoordinator;
+			Uno.UI.Dispatching.NativeDispatcher.Main.RemoveCompositionTargets(target =>
+				target is Media.CompositionTarget compositionTarget
+				&& !rootCoordinator.ContentRoots.Contains(compositionTarget.ContentRoot));
+		}
+		catch (Exception ex)
+		{
+			if (typeof(Application).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(Application).Log().Debug($"[ALC-CLEANUP] CompositionTarget prune error: {ex.GetType().Name}: {ex.Message}");
 			}
 		}
 
@@ -350,18 +383,58 @@ partial class Application
 	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "ALC cleanup reflection over live instances")]
 	private static void PruneCollectibleAlcEventSubscriptions()
 	{
-		var roots = Uno.UI.Xaml.Core.CoreServices.Instance.ContentRootCoordinator.ContentRoots;
+		var coordinator = Uno.UI.Xaml.Core.CoreServices.Instance.ContentRootCoordinator;
+		var roots = coordinator.ContentRoots;
 		for (var i = roots.Count - 1; i >= 0; i--)
 		{
-			if (i < roots.Count && roots[i].VisualTree?.RootElement is { } rootElement)
+			if (i < roots.Count && roots[i] is { } root && root.VisualTree?.RootElement is { } rootElement)
 			{
+				_treeContainsCollectibleElement = false;
 				PruneCollectibleAlcEventSubscriptions(rootElement);
+
+				// A content root whose tree contains collectible-ALC elements belongs to an
+				// unloaded secondary app's surface (e.g. a designer popup island) — the window's
+				// own root is removed at CloseAlcWindow, but popup/island roots otherwise stay
+				// registered forever and pin the ALC through the coordinator.
+				if (_treeContainsCollectibleElement)
+				{
+					coordinator.RemoveContentRoot(root);
+				}
+			}
+		}
+
+		// Window-level events (Activated / SizeChanged / VisibilityChanged / Closed) live on the
+		// window implementation object, which is not part of any visual tree — a secondary-ALC
+		// subscriber on the HOST window (e.g. a designer client hooking Closed) is never undone
+		// by the tree walk above and would pin its ALC.
+		var windows = global::Uno.UI.ApplicationHelper.WindowsInternal.ToArray();
+		foreach (var window in windows)
+		{
+			try
+			{
+				PruneCollectibleDelegateFields(window);
+				if (window.WindowImplementation is { } windowImplementation)
+				{
+					PruneCollectibleDelegateFields(windowImplementation);
+				}
+			}
+			catch (Exception)
+			{
+				// One window refusing reflection must not abort pruning of the remaining windows.
 			}
 		}
 	}
 
+	[ThreadStatic]
+	private static bool _treeContainsCollectibleElement;
+
 	private static void PruneCollectibleAlcEventSubscriptions(DependencyObject element)
 	{
+		if (element.GetType().Assembly.IsCollectible)
+		{
+			_treeContainsCollectibleElement = true;
+		}
+
 		try
 		{
 			PruneCollectibleDelegateFields(element);
@@ -415,7 +488,7 @@ partial class Application
 
 	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "ALC cleanup reflection over live instances")]
 	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "ALC cleanup reflection over live instances")]
-	private static void PruneCollectibleDelegateFields(object instance)
+	internal static void PruneCollectibleDelegateFields(object instance)
 	{
 		var type = instance.GetType();
 		if (type.Assembly.IsCollectible)

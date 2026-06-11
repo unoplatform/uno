@@ -121,6 +121,8 @@ public partial class Window
 
 	internal INativeWindowWrapper? NativeWrapper => _windowImplementation.NativeWindowWrapper;
 
+	internal IWindowImplementation WindowImplementation => _windowImplementation;
+
 	internal static Window GetFromAppWindow(AppWindow appWindow)
 	{
 		if (!_appWindowMap.TryGetValue(appWindow, out var window))

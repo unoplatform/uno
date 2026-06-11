@@ -254,6 +254,42 @@ partial class Window
 		// The native window was already closed during InitializeAlcWindowMode().
 		_appWindowMap.TryRemove(AppWindow, out _);
 
+		// The Window registered a DisplayInformation for its WindowId at construction; that
+		// static map has no other removal path, so it retains the closed window's
+		// implementation graph — including window-event subscribers from the secondary ALC
+		// (e.g. the Hot Design client's Closed handler) — for the process lifetime, pinning
+		// the ALC: DisplayInformation → native wrapper → DesktopWindow → Closed → client.
+		try
+		{
+			global::Windows.Graphics.Display.DisplayInformation.DestroyForWindowId(AppWindow.Id);
+		}
+		catch (Exception ex)
+		{
+			if (typeof(Window).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			{
+				typeof(Window).Log().Debug($"[ALC-CLEANUP] DisplayInformation.DestroyForWindowId error: {ex.GetType().Name}: {ex.Message}");
+			}
+		}
+
+		// Other WindowId-keyed statics (CoreDragDropManager's map, input managers, …) retain the
+		// closed window's implementation graph too. Rather than chasing every registry, strip the
+		// window-event subscriptions whose targets live in the collectible ALC (Closed/Activated/
+		// SizeChanged/VisibilityChanged on the implementation object). This window was removed
+		// from ApplicationHelper at InitializeAlcWindowMode, so the ALC-teardown window sweep in
+		// Application.CleanupNonDefaultAlcCaches never visits it — prune here, after RaiseClosed.
+		try
+		{
+			Application.PruneCollectibleDelegateFields(this);
+			Application.PruneCollectibleDelegateFields(_windowImplementation);
+		}
+		catch (Exception ex)
+		{
+			if (typeof(Window).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			{
+				typeof(Window).Log().Debug($"[ALC-CLEANUP] window delegate prune error: {ex.GetType().Name}: {ex.Message}");
+			}
+		}
+
 		// Remove this window's ContentRoot from the process-wide ContentRootCoordinator.
 		// RemoveContentRoot has no other caller, so an ALC window's content root otherwise
 		// stays registered forever — and its Window.Closed subscribers (e.g. Hot Design's

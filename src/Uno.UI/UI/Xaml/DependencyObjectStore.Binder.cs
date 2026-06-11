@@ -708,10 +708,13 @@ namespace Microsoft.UI.Xaml
 			// (e.g. a collapsed pane); clearing their association only resets InheritanceContext
 			// DataContext propagation for the shared resource, which re-establishes on the next
 			// value assignment — an acceptable cost for guaranteeing the unloaded app's detached
-			// elements (shared types, indistinguishable by ALC) release their hold.
+			// elements (shared types, indistinguishable by ALC) release their hold. An element
+			// whose ContentRoot has been unregistered from the coordinator (a closed secondary
+			// app's tree — popups included, which keep IsLoaded) is orphaned and also released.
 			if (_associatedParent is { } parent
 				&& (parent.GetType().Assembly.IsCollectible
-					|| parent is FrameworkElement { IsLoaded: false }))
+					|| parent is FrameworkElement { IsLoaded: false }
+					|| (parent is FrameworkElement orphanCandidate && IsOrphanedFromContentRoots(orphanCandidate))))
 			{
 				_associatedParent = null;
 				hadCollectibleAssociation = true;
@@ -724,6 +727,29 @@ namespace Microsoft.UI.Xaml
 				|| GetValue(_dataContextProperty)?.GetType().Assembly.IsCollectible == true)
 			{
 				ClearInheritedDataContext();
+			}
+		}
+
+		/// <summary>
+		/// Returns whether the element's visual tree no longer has a registered ContentRoot —
+		/// i.e. it belonged to a closed (secondary-app) tree whose root was unregistered from
+		/// the <see cref="Uno.UI.Xaml.Core.ContentRootCoordinator"/> on Window close.
+		/// </summary>
+		private static bool IsOrphanedFromContentRoots(FrameworkElement element)
+		{
+			try
+			{
+				var contentRoot = element.XamlRoot?.VisualTree?.ContentRoot;
+				if (contentRoot is null)
+				{
+					return true;
+				}
+
+				return !Uno.UI.Xaml.Core.CoreServices.Instance.ContentRootCoordinator.ContentRoots.Contains(contentRoot);
+			}
+			catch (Exception)
+			{
+				return false;
 			}
 		}
 

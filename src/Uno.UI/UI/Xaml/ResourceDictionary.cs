@@ -516,6 +516,12 @@ namespace Microsoft.UI.Xaml
 			}
 
 			_themeDictionaries?.ClearCollectibleAssociatedParents();
+
+			// The MATERIALIZED active theme dictionary may be reachable only through this cache:
+			// when the theme entry in _themeDictionaries is still a lazy stub, the stub is skipped
+			// above and the materialized dictionary it produced — holding the live brushes whose
+			// stores record cross-ALC associations — would never be visited.
+			_activeThemeDictionary?.ClearCollectibleAssociatedParents();
 		}
 
 		/// <summary>

@@ -35,6 +35,35 @@ namespace Uno.UI.Dispatching
 
 		private readonly Dictionary<object, (Action? renderAction, int normalItemsToProcessBeforeNextRenderAction)> _compositionTargets = new();
 
+		/// <summary>
+		/// Removes composition-target render registrations matching the predicate. Nothing else
+		/// ever removes entries, so a closed secondary-app window's CompositionTarget otherwise
+		/// stays registered forever — pinning its visual tree (and its collectible
+		/// AssemblyLoadContext) through this process-lifetime dispatcher.
+		/// </summary>
+		internal void RemoveCompositionTargets(Predicate<object> shouldRemove)
+		{
+			lock (_gate)
+			{
+				List<object>? toRemove = null;
+				foreach (var key in _compositionTargets.Keys)
+				{
+					if (shouldRemove(key))
+					{
+						(toRemove ??= new()).Add(key);
+					}
+				}
+
+				if (toRemove is not null)
+				{
+					foreach (var key in toRemove)
+					{
+						_compositionTargets.Remove(key);
+					}
+				}
+			}
+		}
+
 		private NativeDispatcherPriority _currentPriority;
 
 		private int _globalCount;
