@@ -15,9 +15,8 @@ internal partial class Win32WindowWrapper
 {
 	private class SoftwareRenderer : IRenderer
 	{
-		// Pacing fallback when DwmFlush hangs/fails repeatedly (DWM paused, RDP reconnect,
-		// fast user switch, GPU TDR). After this many consecutive failures we stop calling
-		// DwmFlush and pace via FramePacer instead.
+		// After this many consecutive DwmFlush failures (DWM paused, RDP reconnect, fast user
+		// switch, GPU TDR), we stop calling DwmFlush and pace via FramePacer instead.
 		private const int DwmFlushFailureThreshold = 3;
 
 		private readonly HWND _hwnd;
@@ -31,9 +30,8 @@ internal partial class Win32WindowWrapper
 		public SoftwareRenderer(HWND hwnd)
 		{
 			_hwnd = hwnd;
-			// Self-correcting absolute-time pacer used as the fallback when DwmFlush is degraded.
-			// Initialized at FeatureConfiguration.CompositionTarget.FrameRate; retargeted to the
-			// screen refresh rate via UpdateRefreshRate when SetFrameRateAsScreenRefreshRate is on.
+			// Fallback pacer used when DwmFlush is degraded; retargeted to the screen refresh
+			// rate via UpdateRefreshRate when SetFrameRateAsScreenRefreshRate is on.
 			_framePacer = new FramePacer(
 				FeatureConfiguration.CompositionTarget.FrameRate,
 				() => _frameDeadlineReached.Set());
@@ -98,8 +96,8 @@ internal partial class Win32WindowWrapper
 			}
 			using var bitmapDcDisposable = new DisposableStruct<HDC>(static bitmapDc =>
 			{
-				var success = PInvoke.DeleteObject(new HGDIOBJ(bitmapDc.Value)) == 1;
-				if (!success) { typeof(Win32WindowWrapper).LogError()?.Error($"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}"); }
+				var success = PInvoke.DeleteDC(bitmapDc);
+				if (!success) { typeof(Win32WindowWrapper).LogError()?.Error($"{nameof(PInvoke.DeleteDC)} failed: {Win32Helper.GetErrorMessage()}"); }
 			}, bitmapDc);
 
 			if (PInvoke.SelectObject(bitmapDc, _hBitmap) == 0)
@@ -111,16 +109,10 @@ internal partial class Win32WindowWrapper
 			var success2 = PInvoke.BitBlt(paintDc, 0, 0, width, height, bitmapDc, 0, 0, ROP_CODE.SRCCOPY);
 			if (!success2) { this.LogError()?.Error($"{nameof(PInvoke.BitBlt)} failed: {Win32Helper.GetErrorMessage()}"); }
 
-			// Pace the frame. Normally DwmFlush blocks until the DWM compositor's next VSync
-			// (BitBlt itself returns instantly, so without pacing the render loop spins at
-			// hundreds of fps — wasting CPU and reporting misleading frame rates).
-			//
-			// Fallback: after DwmFlushFailureThreshold consecutive failures (DWM hung during
-			// RDP reconnect, fast user switch, or a GPU TDR), give up on DwmFlush and pace via
-			// FramePacer's self-correcting absolute-time scheduling. We never re-enable
-			// DwmFlush in this renderer instance — once degraded, stay degraded for the
-			// lifetime of the window. Better to lose vsync alignment than to risk hanging the
-			// render thread on each frame.
+			// Pace the frame: DwmFlush blocks until the compositor's next VSync (BitBlt returns
+			// instantly, so the loop would otherwise spin unthrottled). After repeated failures,
+			// degrade permanently to FramePacer pacing — losing vsync alignment beats risking a
+			// hung render thread on every frame.
 			var paceViaFramePacer = _dwmFlushDegraded;
 
 			if (!_dwmFlushDegraded)
