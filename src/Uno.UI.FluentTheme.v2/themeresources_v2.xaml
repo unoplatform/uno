@@ -16738,6 +16738,7 @@
               </VisualStateGroup>
               <VisualStateGroup x:Name="DisabledStates">
                 <VisualState x:Name="Enabled" />
+                <!-- UNO TODO: required until we implement ListViewItemPresenter uno-private#2407 -->
                 <VisualState x:Name="Disabled" />
               </VisualStateGroup>
               <VisualStateGroup x:Name="MultiSelectStates">
@@ -17182,6 +17183,7 @@
               </VisualStateGroup>
               <VisualStateGroup x:Name="DisabledStates">
                 <VisualState x:Name="Enabled" />
+                <!-- UNO TODO: required until we implement ListViewItemPresenter uno-private#2407 -->
                 <VisualState x:Name="Disabled" />
               </VisualStateGroup>
               <VisualStateGroup x:Name="MultiSelectStates">
