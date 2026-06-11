@@ -108,20 +108,7 @@ internal partial class Win32WindowWrapper
 						: $"OpenGL Version: {Marshal.PtrToStringUTF8((IntPtr)version)}");
 			}
 
-			// Enable VSync so SwapBuffers blocks until the next display refresh.
-			// Without this, some GPU drivers default to swap interval 0,
-			// causing SwapBuffers to return immediately and the render loop
-			// to spin at hundreds of fps.
-			var wglSwapIntervalAddr = PInvoke.wglGetProcAddress("wglSwapIntervalEXT");
-			if (wglSwapIntervalAddr != IntPtr.Zero)
-			{
-				var wglSwapInterval = Marshal.GetDelegateForFunctionPointer<WglSwapIntervalEXT>(wglSwapIntervalAddr);
-				if (wglSwapInterval(1) == 0)
-				{
-					typeof(GlRenderer).LogWarn()?.Warn(
-						"Failed to enable VSync via wglSwapIntervalEXT; the render loop may run unthrottled on this driver.");
-				}
-			}
+			TryEnableVSync();
 
 			var grGlInterface = GRGlInterface.Create();
 
@@ -139,15 +126,31 @@ internal partial class Win32WindowWrapper
 				return null;
 			}
 
-			// Detach the GL context from the calling thread before returning, so a downstream
-			// render thread can make it current. WglCurrentContextDisposable above doesn't
-			// restore to "no context" when there was none before, so we detach explicitly.
+			// Detach the GL context from the calling thread so the render thread can make it
+			// current later (WglCurrentContextDisposable doesn't restore to "no context").
 			if (!PInvoke.wglMakeCurrent(default, HGLRC.Null))
 			{
 				typeof(GlRenderer).LogError()?.Error($"{nameof(PInvoke.wglMakeCurrent)} (detach) failed: {Win32Helper.GetErrorMessage()}");
 			}
 
 			return new GlRenderer(hwnd, hdc, glContext, grGlInterface, grContext);
+		}
+
+		// Enable VSync so SwapBuffers blocks until the next display refresh; some drivers
+		// default to swap interval 0, letting the render loop spin at hundreds of fps.
+		// The swap interval is per-context, so re-apply this whenever an HGLRC is created.
+		private static void TryEnableVSync()
+		{
+			var wglSwapIntervalAddr = PInvoke.wglGetProcAddress("wglSwapIntervalEXT");
+			if (wglSwapIntervalAddr != IntPtr.Zero)
+			{
+				var wglSwapInterval = Marshal.GetDelegateForFunctionPointer<WglSwapIntervalEXT>(wglSwapIntervalAddr);
+				if (wglSwapInterval(1) == 0)
+				{
+					typeof(GlRenderer).LogWarn()?.Warn(
+						"Failed to enable VSync via wglSwapIntervalEXT; the render loop may run unthrottled on this driver.");
+				}
+			}
 		}
 
 		private static void ReleaseGlContext(HWND hwnd, HDC hdc, HGLRC glContext, GRGlInterface? grGlInterface, GRContext? grContext, GRBackendRenderTarget? renderTarget)
@@ -214,6 +217,7 @@ internal partial class Win32WindowWrapper
 			ReleaseGlContext(_hwnd, new HDC(IntPtr.Zero), _glContext, null, _grContext, _renderTarget);
 			_glContext = PInvoke.wglCreateContext(_hdc);
 			using var makeCurrentDisposable = new Win32Helper.WglCurrentContextDisposable(_hdc, _glContext);
+			TryEnableVSync();
 			_grContext = GRContext.CreateGl(_grGlInterface);
 		}
 
