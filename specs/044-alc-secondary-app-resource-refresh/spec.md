@@ -41,7 +41,6 @@ This fix correctly propagates hot-reload edits of *source-backed* dictionaries (
 ## Files changed
 
 - `src/Uno.UI.RemoteControl/HotReload/ClientHotReloadProcessor.MetadataUpdate.cs` — the secondary-ALC refresh fix (`RefreshResourcesForApp`, `UpdateResourceDictionaries` returns count, call-site loop over the host and every secondary app).
-- `src/Uno.UI.RemoteControl/HotReload/MetadataUpdater/HotReloadAgent.cs` — no behavior change (diagnostic logging only, since removed).
 - `src/Uno.UI.RuntimeTests/Tests/AssemblyLoadContext/Given_AlcContentHost.cs` — runtime tests for the secondary-ALC refresh (see below).
 
 ## Build
