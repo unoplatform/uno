@@ -19,9 +19,7 @@ internal partial class Win32WindowWrapper
 	unsafe void IXamlRootHost.InvalidateRender()
 	{
 		// Mark the window dirty and let Windows coalesce it into a WM_PAINT, whose handler
-		// signals the render thread to present. Presenting here too would double-present the
-		// same content (and re-block on VSync for GL), so WM_PAINT is the single present path,
-		// like WPF's HwndTarget (InvalidateRect here, present on WM_PAINT).
+		// signals the render thread — the single present path, like WPF's HwndTarget.
 		if (!PInvoke.InvalidateRect(_hwnd, default(RECT*), false))
 		{
 			this.LogError()?.Error($"{nameof(PInvoke.InvalidateRect)} failed: {Win32Helper.GetErrorMessage()}");
@@ -49,12 +47,9 @@ internal partial class Win32WindowWrapper
 	}
 
 	/// <summary>
-	/// Called on the render thread. Replays the last recorded SKPicture to
-	/// the canvas and returns the clip path and client dimensions for CopyPixels.
-	/// Returns null when there is no frame to present yet — this avoids a wasted
-	/// CopyPixels (BitBlt + DwmFlush, or SwapBuffers presenting an uninitialised
-	/// back buffer) for WM_PAINT messages that arrive before the first synchronous
-	/// render.
+	/// Called on the render thread. Replays the last recorded SKPicture and returns the clip
+	/// path and client dimensions for CopyPixels, or null when there is no frame to present
+	/// yet (avoids presenting an uninitialised back buffer before the first render).
 	/// </summary>
 	private unsafe (SKPath clipPath, int width, int height)? DrawFrame()
 	{
@@ -71,9 +66,8 @@ internal partial class Win32WindowWrapper
 			return _surface.Canvas;
 		});
 
-		// _surface is created lazily inside the resizeFunc only when there's an actual
-		// frame to draw. If it's still null, the CompositionTarget has not recorded
-		// anything yet — nothing to present.
+		// _surface is created lazily inside resizeFunc; still null means the CompositionTarget
+		// has not recorded anything yet — nothing to present.
 		if (_surface is null)
 		{
 			return null;

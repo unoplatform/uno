@@ -283,14 +283,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_MOVE)} message.");
 				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
-				// No present here: under DWM the window's backing surface survives the move, and
-				// any region that genuinely needs repainting is invalidated by the OS, which posts
-				// a WM_PAINT that signals the render thread.
+				// No present here: the DWM backing surface survives the move, and the OS
+				// invalidates any region needing repaint via WM_PAINT.
 				return new LRESULT(0);
 			case PInvoke.WM_PAINT:
-				// Signal the render thread to re-blit the current frame. WM_PAINT is generated
-				// when the window is uncovered, restored, or otherwise needs repainting.
-				// DefWindowProc calls BeginPaint/EndPaint to validate the update region.
+				// Signal the render thread to re-blit the current frame; DefWindowProc
+				// validates the update region via BeginPaint/EndPaint.
 				_renderThread?.SignalNewFrame();
 				break;
 			case PInvoke.WM_GETMINMAXINFO:
@@ -508,17 +506,14 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 
 		Win32Host.UnregisterWindow(_hwnd);
-		// DisposeAndTryJoin returns false only when the render thread was abandoned because it
-		// would not exit within the backstop (e.g. stuck in a native present). In that case the
-		// thread may still be executing inside _renderer.CopyPixels, so disposing the renderer or
-		// its cached surface here would free native GPU resources out from under it.
+		// An abandoned render thread (stuck in a native present) may still be executing inside
+		// _renderer.CopyPixels — disposing the renderer/surface then would be a use-after-free.
 		var renderThreadJoined = _renderThread?.DisposeAndTryJoin() ?? true;
 		_renderThread = null;
 		if (renderThreadJoined)
 		{
-			// Dispose the cached SKSurface before the renderer: on Vulkan it references
-			// GPU resources owned by _renderer (see Win32WindowWrapper.Rendering.Vulkan.cs)
-			// and the render thread has exited, so no background access remains.
+			// Dispose the cached SKSurface before the renderer: on Vulkan it references GPU
+			// resources owned by _renderer (see Win32WindowWrapper.Rendering.Vulkan.cs).
 			_surface?.Dispose();
 			_surface = null;
 			_renderer.Dispose();
@@ -526,9 +521,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 		else
 		{
-			// Leak the renderer and cached surface for the remaining lifetime of the process
-			// rather than risk a use-after-free on the abandoned render thread; the OS reclaims
-			// them at exit.
 			this.LogError()?.Error(
 				"Render thread was abandoned during dispose; leaking the renderer and cached surface " +
 				"until process exit to avoid a use-after-free on native GPU resources.");
