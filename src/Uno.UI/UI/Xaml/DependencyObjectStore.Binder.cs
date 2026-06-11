@@ -662,6 +662,7 @@ namespace Microsoft.UI.Xaml
 			if (_associatedParent == null)
 			{
 				_associatedParent = parent;
+				RegisterCollectibleParentAssociation(parent);
 			}
 			else
 			{
@@ -682,6 +683,134 @@ namespace Microsoft.UI.Xaml
 			if (ReferenceEquals(_associatedParent, parent))
 			{
 				_associatedParent = null;
+			}
+		}
+
+		/// <summary>
+		/// Clears <see cref="_associatedParent"/> when it references an object from a collectible
+		/// AssemblyLoadContext. A shared (e.g. theme-dictionary) resource first consumed by a
+		/// secondary-ALC element records that element as its associated parent; nothing
+		/// unassociates it when the element's ALC unloads (UnassociateParent only runs on value
+		/// changes), so the host-lifetime resource pins the collectible ALC. Invoked from
+		/// <see cref="Microsoft.UI.Xaml.ResourceDictionary.ClearCollectibleAssociatedParents"/>
+		/// during ALC teardown and from the per-ALC Unloading sweep below.
+		/// </summary>
+		internal void ClearCollectibleAssociatedParent()
+		{
+			var hadCollectibleAssociation = false;
+
+			// Two flavors of secondary-app parents: objects whose TYPE lives in the collectible
+			// ALC, and instances of SHARED types (Grid, Border, …) owned by the unloaded app —
+			// the latter are indistinguishable by type, but after unload they are detached
+			// (unloaded, parentless), so a detached-element association is also dropped. A live
+			// host element re-associates naturally on its next value assignment.
+			// IsLoaded == false also matches host elements that are merely unloaded at sweep time
+			// (e.g. a collapsed pane); clearing their association only resets InheritanceContext
+			// DataContext propagation for the shared resource, which re-establishes on the next
+			// value assignment — an acceptable cost for guaranteeing the unloaded app's detached
+			// elements (shared types, indistinguishable by ALC) release their hold. An element
+			// whose ContentRoot has been unregistered from the coordinator (a closed secondary
+			// app's tree — popups included, which keep IsLoaded) is orphaned and also released.
+			if (_associatedParent is { } parent
+				&& (parent.GetType().Assembly.IsCollectible
+					|| parent is FrameworkElement { IsLoaded: false }
+					|| (parent is FrameworkElement orphanCandidate && IsOrphanedFromContentRoots(orphanCandidate))))
+			{
+				_associatedParent = null;
+				hadCollectibleAssociation = true;
+			}
+
+			// The association may already have propagated the parent's DataContext into this
+			// store at Inheritance precedence; that propagated value (e.g. the secondary app's
+			// view model) survives the parent's removal and pins the value's ALC on its own.
+			if (hadCollectibleAssociation
+				|| GetValue(_dataContextProperty)?.GetType().Assembly.IsCollectible == true)
+			{
+				ClearInheritedDataContext();
+			}
+		}
+
+		/// <summary>
+		/// Returns whether the element's visual tree no longer has a registered ContentRoot —
+		/// i.e. it belonged to a closed (secondary-app) tree whose root was unregistered from
+		/// the <see cref="Uno.UI.Xaml.Core.ContentRootCoordinator"/> on Window close.
+		/// </summary>
+		private static bool IsOrphanedFromContentRoots(FrameworkElement element)
+		{
+			try
+			{
+				var contentRoot = element.XamlRoot?.VisualTree?.ContentRoot;
+				if (contentRoot is null)
+				{
+					return true;
+				}
+
+				return !Uno.UI.Xaml.Core.CoreServices.Instance.ContentRootCoordinator.ContentRoots.Contains(contentRoot);
+			}
+			catch (Exception)
+			{
+				return false;
+			}
+		}
+
+		// Stores that recorded a collectible-ALC object as their associated parent, grouped by
+		// that parent's ALC. Entries are swept (associated parent cleared) when the ALC unloads,
+		// so a host-lifetime shared resource can never outlive-pin a secondary app's ALC.
+		// CWT-keyed by the ALC so the registry itself never extends the ALC's lifetime.
+		private static readonly global::System.Runtime.CompilerServices.ConditionalWeakTable<global::System.Runtime.Loader.AssemblyLoadContext, List<WeakReference<DependencyObjectStore>>> _collectibleParentAssociations = new();
+
+		private void RegisterCollectibleParentAssociation(object parent)
+		{
+			// Fast path: Assembly.IsCollectible is a cached flag; non-collectible parents
+			// (the overwhelmingly common case) exit here without touching the registry.
+			if (!parent.GetType().Assembly.IsCollectible)
+			{
+				return;
+			}
+
+			var alc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(parent.GetType().Assembly);
+			if (alc is null || !alc.IsCollectible)
+			{
+				return;
+			}
+
+			var list = _collectibleParentAssociations.GetValue(alc, static a =>
+			{
+				a.Unloading += static unloading =>
+				{
+					if (_collectibleParentAssociations.TryGetValue(unloading, out var stores))
+					{
+						lock (stores)
+						{
+							foreach (var weakStore in stores)
+							{
+								if (weakStore.TryGetTarget(out var store))
+								{
+									try
+									{
+										store.ClearCollectibleAssociatedParent();
+									}
+									catch (Exception)
+									{
+										// Unloading sweeps run on the unloading thread; a store
+										// that rejects off-thread DP access must not abort the
+										// sweep for the remaining stores.
+									}
+								}
+							}
+
+							stores.Clear();
+						}
+
+						_collectibleParentAssociations.Remove(unloading);
+					}
+				};
+				return new List<WeakReference<DependencyObjectStore>>();
+			});
+
+			lock (list)
+			{
+				list.Add(new WeakReference<DependencyObjectStore>(this));
 			}
 		}
 

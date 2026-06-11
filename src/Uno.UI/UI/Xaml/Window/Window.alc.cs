@@ -279,6 +279,18 @@ partial class Window
 		// The native window was already closed during InitializeAlcWindowMode().
 		_appWindowMap.TryRemove(AppWindow, out _);
 
+		// Remove this window's ContentRoot from the process-wide ContentRootCoordinator.
+		// RemoveContentRoot has no other caller, so an ALC window's content root otherwise
+		// stays registered forever — and its Window.Closed subscribers (e.g. Hot Design's
+		// client host) keep the collectible ALC pinned via the coordinator's list:
+		// CoreServices → ContentRootCoordinator → ContentRoot → XamlIslandRoot → Window →
+		// Closed handlers → per-ALC subscriber → LoaderAllocator.
+		var alcContentRoot = _windowImplementation.XamlRoot?.VisualTree?.ContentRoot;
+		if (alcContentRoot is not null)
+		{
+			Uno.UI.Xaml.Core.CoreServices.Instance.ContentRootCoordinator.RemoveContentRoot(alcContentRoot);
+		}
+
 		// Purge Type-keyed caches (DependencyProperty registry, Style caches, etc.)
 		// that hold references to types from the ALC being torn down. Without this,
 		// these statics prevent the GC from collecting the ALC after Unload().
