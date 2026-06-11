@@ -67,7 +67,20 @@ internal sealed class InProcessFrameTransport : IFrameTransport
 					return null; // Closed, return null.
 				}
 
-				await _signal.WaitAsync(ct);
+				// Bounded wait: a waiter parked on the semaphore when the endpoint closes can lose
+				// the single Release() race (or be parked when Dispose runs — SemaphoreSlim.Dispose
+				// does NOT complete pending waiters) and then hang forever. Its async state machine
+				// roots the endpoint, the cancellation registration, and everything they capture —
+				// in host scenarios that pins the previewed app's collectible AssemblyLoadContext.
+				// The periodic re-check guarantees any orphaned waiter self-completes.
+				try
+				{
+					await _signal.WaitAsync(TimeSpan.FromSeconds(5), ct);
+				}
+				catch (ObjectDisposedException)
+				{
+					return null; // Disposed while parked — the endpoint is gone.
+				}
 
 				// The transport may have been closed while awaiting the signal, so re-check the closure flags.
 				if (_isRemoteClosed != 0 || _isClosed != 0)

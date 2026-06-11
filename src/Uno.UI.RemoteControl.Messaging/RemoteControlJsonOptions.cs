@@ -30,6 +30,14 @@ public static class RemoteControlJsonOptions
 		_options = CreateOptions(context);
 	}
 
+	/// <summary>
+	/// Drops the cached options + the registered source-generated context. A secondary (collectible-ALC)
+	/// app's <see cref="RemoteControlClient"/> registers a per-ALC <see cref="JsonSerializerContext"/>
+	/// (<c>RemoteControlJsonContext.Default</c>); holding it on this shared static pins that app's
+	/// AssemblyLoadContext after unload. Called on app teardown; options are recreated lazily.
+	/// </summary>
+	public static void Reset() => _options = null;
+
 	private static JsonSerializerOptions CreateOptions(JsonSerializerContext? sourceGenerated)
 	{
 		return new JsonSerializerOptions
