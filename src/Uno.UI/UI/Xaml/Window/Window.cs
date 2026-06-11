@@ -48,6 +48,9 @@ public partial class Window
 
 	internal Window(WindowType windowType)
 	{
+		callingAssembly ??= Assembly.GetCallingAssembly();
+		CaptureOwnerAssemblyLoadContext(callingAssembly);
+
 #if !__SKIA__
 		if (_current is null && CoreApplication.IsFullFledgedApp)
 		{
@@ -88,6 +91,16 @@ public partial class Window
 			_ => throw new InvalidOperationException("Unsupported window type")
 		};
 
+<<<<<<< HEAD
+=======
+		if (ContentHostOverride is not null)
+		{
+			// Called only when a secondary ALC is setting content
+
+			InitializeAlcState(callingAssembly);
+		}
+
+>>>>>>> 4ab1e96e9b (feat: Enhance secondary ALC app handling and ownership tracking)
 		Compositor = Microsoft.UI.Composition.Compositor.GetSharedCompositor();
 
 		InitializeWindowingFlavor();
@@ -116,6 +129,13 @@ public partial class Window
 	}
 
 	partial void InitializeWindowingFlavor();
+<<<<<<< HEAD
+=======
+	partial void InitializeAlcState(Assembly callingAssembly);
+	partial void CaptureOwnerAssemblyLoadContext(Assembly callingAssembly);
+	internal partial bool TryGetContentFromSecondaryAlc(out UIElement? content);
+	private partial bool TrySetContentFromSecondaryAlc(UIElement? value, ContentControl host, Assembly callingAssembly);
+>>>>>>> 4ab1e96e9b (feat: Enhance secondary ALC app handling and ownership tracking)
 
 #pragma warning disable 67
 	/// <summary>
