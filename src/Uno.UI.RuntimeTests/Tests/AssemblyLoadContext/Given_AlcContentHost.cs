@@ -1036,6 +1036,7 @@ public class Given_AlcContentHost
 	{
 		var hostWasExplicit = Application.Current.IsThemeSetExplicitly;
 		var hostOriginal = Application.Current.RequestedTheme;
+		var hadSecondaryApps = Application.HasSecondaryApps;
 
 		Application.HasSecondaryApps = true;
 		Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Dark);
@@ -1109,10 +1110,11 @@ public class Given_AlcContentHost
 		}
 		finally
 		{
+			Application.HasSecondaryApps = hadSecondaryApps;
+
 			if (hostWasExplicit)
 			{
 				Application.Current.SetExplicitRequestedTheme(hostOriginal);
-			}
 			else
 			{
 				Application.Current.SetExplicitRequestedTheme(null);
