@@ -22,8 +22,32 @@ public sealed partial class AlcContentHost : ContentControl
 	// when the secondary app's content is cleared (app unloading), the host must not keep
 	// referencing the previous app's resource objects — they may be typed in the secondary
 	// (collectible) AssemblyLoadContext and would otherwise pin it after unload.
+	//
+	// Direct resources are only ever copied for keys the host does not already have (see the
+	// Except filter in UpdateMergedResources), so releasing them is a plain Remove. Theme
+	// dictionaries, however, OVERWRITE the host's same-key entry, so each projection records
+	// the host's previous value (and whether one existed) to restore it on release rather than
+	// dropping a consumer-defined dictionary the projection had shadowed.
 	private readonly List<object> _copiedDirectResourceKeys = new();
-	private readonly List<object> _copiedThemeDictionaryKeys = new();
+	private readonly List<ProjectedThemeDictionary> _copiedThemeDictionaries = new();
+
+	// A theme-dictionary key this control projected from the source application, paired with the
+	// host's own value for that key before the projection overwrote it.
+	private readonly struct ProjectedThemeDictionary
+	{
+		public ProjectedThemeDictionary(object key, bool hadPreviousValue, object? previousValue)
+		{
+			Key = key;
+			HadPreviousValue = hadPreviousValue;
+			PreviousValue = previousValue;
+		}
+
+		public object Key { get; }
+
+		public bool HadPreviousValue { get; }
+
+		public object? PreviousValue { get; }
+	}
 
 	public AlcContentHost()
 	{
@@ -95,12 +119,21 @@ public sealed partial class AlcContentHost : ContentControl
 
 		_copiedDirectResourceKeys.Clear();
 
-		foreach (var key in _copiedThemeDictionaryKeys)
+		foreach (var projected in _copiedThemeDictionaries)
 		{
-			Resources.ThemeDictionaries.Remove(key);
+			if (projected.HadPreviousValue)
+			{
+				// Restore the host's own dictionary that the projection overwrote, rather than
+				// dropping a consumer-defined entry (e.g. a host "Light" dictionary).
+				Resources.ThemeDictionaries[projected.Key] = projected.PreviousValue!;
+			}
+			else
+			{
+				Resources.ThemeDictionaries.Remove(projected.Key);
+			}
 		}
 
-		_copiedThemeDictionaryKeys.Clear();
+		_copiedThemeDictionaries.Clear();
 	}
 
 	private void UpdateMergedResources()
@@ -135,8 +168,9 @@ public sealed partial class AlcContentHost : ContentControl
 		{
 			foreach (var themeDictionary in sourceApp.Resources.ThemeDictionaries)
 			{
+				var hadPreviousValue = Resources.ThemeDictionaries.TryGetValue(themeDictionary.Key, out var previousValue);
 				Resources.ThemeDictionaries[themeDictionary.Key] = themeDictionary.Value;
-				_copiedThemeDictionaryKeys.Add(themeDictionary.Key);
+				_copiedThemeDictionaries.Add(new ProjectedThemeDictionary(themeDictionary.Key, hadPreviousValue, hadPreviousValue ? previousValue : null));
 			}
 		}
 

@@ -214,6 +214,51 @@ public class Given_AlcContentHost
 	}
 
 	/// <summary>
+	/// Restore-on-teardown: a theme dictionary that already existed on the host control before projection
+	/// (e.g. a consumer-defined "Light" dictionary on the AlcContentHost itself) must be RESTORED — not
+	/// dropped — when the projected secondary-app dictionaries are released on unload. Projection
+	/// overwrites the host's same-key dictionary while the secondary app is hosted, so a naive
+	/// "remove every projected key" teardown would silently lose the consumer's own dictionary.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_HostHasPreExistingThemeDictionary_Then_RestoredAfterUnload()
+	{
+		await StartSecondaryAlcAppAsync();
+
+		var secondaryApp = Application.GetForAssemblyLoadContext(_testAlc!);
+		Assert.IsNotNull(secondaryApp, "Secondary ALC app should be registered.");
+		Assert.IsTrue(secondaryApp!.Resources.ThemeDictionaries.ContainsKey("Light"),
+			"Sanity: the secondary app defines a Light theme dictionary to project.");
+
+		// A fresh host carrying its OWN consumer-defined Light theme dictionary.
+		var probe = new AlcContentHost();
+		var hostOwnedLight = new ResourceDictionary();
+		hostOwnedLight["HostOwnedThemeColor"] = Windows.UI.Colors.Red;
+		probe.Resources.ThemeDictionaries["Light"] = hostOwnedLight;
+
+		// Project the secondary app's resources: its Light dictionary overwrites the host's same-key one.
+		probe.SourceApplicationOverride = secondaryApp;
+
+		Assert.IsTrue(
+			probe.Resources.ThemeDictionaries.TryGetValue("Light", out var projectedLight)
+				&& projectedLight is ResourceDictionary projectedResources
+				&& projectedResources.ContainsKey("AlcAppThemeColor", shouldCheckSystem: false),
+			"Pre-condition: the secondary app's Light dictionary should overwrite the host's while projected.");
+
+		// Teardown via Unloaded (no re-projection), exercising the restore path on release.
+		TestServices.WindowHelper.WindowContent = probe;
+		await TestServices.WindowHelper.WaitForLoaded(probe);
+		TestServices.WindowHelper.WindowContent = new Border();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(
+			probe.Resources.ThemeDictionaries.TryGetValue("Light", out var restoredLight)
+				&& ReferenceEquals(restoredLight, hostOwnedLight),
+			"After unload the host's own pre-existing Light theme dictionary must be restored, not removed.");
+	}
+
+	/// <summary>
 	/// Validates that ResourceDictionary.Source in App.xaml correctly resolves to the ALC-specific
 	/// dictionary when loaded from a secondary AssemblyLoadContext. This tests the fix for the issue
 	/// where both primary and secondary ALCs with the same resource URI pattern (e.g.,
