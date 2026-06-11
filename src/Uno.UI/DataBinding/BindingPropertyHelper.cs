@@ -75,6 +75,9 @@ namespace Uno.UI.DataBinding
 			_getSubstituteValueGetter.Clear();
 			_getValueUnsetter.Clear();
 			_getPropertyType.Clear();
+
+			// The pooled lookup key retains the last-queried Type past the dictionary clears.
+			_getPropertyTypeKey.Reset();
 		}
 
 		/// <summary>
