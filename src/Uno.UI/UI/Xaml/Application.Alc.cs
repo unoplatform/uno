@@ -450,7 +450,7 @@ partial class Application
 	private static void PruneCollectibleDelegateFields(object instance)
 	{
 		var type = instance.GetType();
-		if (type.Assembly.IsCollectible)
+		if (type.IsCollectible)
 		{
 			// Elements that themselves live in the collectible ALC die with it — and their
 			// subtree is theirs to keep; pruning is only needed on host-lifetime elements.
@@ -487,8 +487,8 @@ partial class Application
 				Delegate updated = current;
 				foreach (var invocation in current.GetInvocationList())
 				{
-					if (invocation.Method.Module.Assembly.IsCollectible
-						|| invocation.Target?.GetType().Assembly.IsCollectible == true)
+					if (invocation.Method.DeclaringType?.IsCollectible == true
+						|| invocation.Target?.GetType().IsCollectible == true)
 					{
 						updated = Delegate.Remove(updated, invocation);
 					}
