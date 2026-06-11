@@ -634,9 +634,26 @@ public partial class FrameworkElement
 	internal virtual void UpdateThemeBindings(ResourceUpdateReason updateReason)
 	{
 #if UNO_HAS_ENHANCED_LIFECYCLE
-		// Pass element's ActualTheme to resource binding updates
-		TryGetResources()?.UpdateThemeBindings(updateReason);
-		(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(
+		var store = (this as IDependencyObjectStoreProvider).Store;
+
+		if (store.IsProcessingThemeWalk)
+		{
+			// MUX: Resources is a field-backed property in WinUI, so the theme walk notifies the
+			// dictionary per-child — CResourceDictionary::NotifyThemeChangedCore →
+			// CDOCollection::NotifyThemeChangedCore (DOCollection.cpp:1295-1325) calls
+			// NotifyThemeChanged on every value, which re-resolves its theme references under the
+			// walk's ambient slot theme. The engine path below would resolve them under this
+			// element's per-object theme instead, which is stale during the walk — it is only
+			// persisted once the walk completes (persist-after-Core, Theming.cpp:155).
+			TryGetResources()?.NotifyThemeChanged(store.WalkTheme, store.WalkForceRefresh);
+		}
+		else
+		{
+			// Pass element's ActualTheme to resource binding updates
+			TryGetResources()?.UpdateThemeBindings(updateReason);
+		}
+
+		store.UpdateResourceBindings(
 			updateReason,
 			resourceContextProvider: this);
 

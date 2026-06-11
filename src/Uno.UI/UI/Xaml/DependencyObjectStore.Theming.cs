@@ -86,6 +86,11 @@ public partial class DependencyObjectStore
 	private Theme _walkTheme;
 	private bool _walkForceRefresh;
 
+	// Valid only while IsProcessingThemeWalk — read by FrameworkElement.UpdateThemeBindings to
+	// thread the walk context into the Resources dictionary's per-child notification.
+	internal Theme WalkTheme => _walkTheme;
+	internal bool WalkForceRefresh => _walkForceRefresh;
+
 	/// <remarks>
 	/// MUX Reference: CDependencyObject::NotifyThemeChanged — Theming.cpp:110-157.
 	/// </remarks>

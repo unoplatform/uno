@@ -1159,6 +1159,51 @@ namespace Microsoft.UI.Xaml
 			return null;
 		}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		/// <summary>
+		/// Notifies every resource in this dictionary (and its merged/source dictionaries) of a theme
+		/// change, as part of an in-progress theme walk.
+		/// </summary>
+		/// <remarks>
+		/// MUX Reference: CResourceDictionary::NotifyThemeChangedCore (Resources.cpp:2183-2211) →
+		/// CDOCollection::NotifyThemeChangedCore (DOCollection.cpp:1295-1325) — during a theme walk each
+		/// dictionary value is notified via NotifyThemeChanged, so it re-resolves its theme references
+		/// under the walk's ambient theme (the requested-theme-for-subtree slot) and persists its own
+		/// per-object theme. The owning element's per-object theme must NOT drive this resolution: it is
+		/// only persisted after its walk completes (persist-after-Core, Theming.cpp:155), so it is stale
+		/// while the dictionary is being processed.
+		/// </remarks>
+		internal void NotifyThemeChanged(Theme theme, bool forceRefresh)
+		{
+			// MUX: DOCollection.cpp:1302-1312 — snapshot the values first; notifying an item can
+			// re-enter the dictionary (e.g. a refresh materializing a lazy sibling resource mutates
+			// the backing map).
+			var snapshot = new List<IDependencyObjectStoreProvider>();
+			foreach (var item in _values.Values)
+			{
+				if (item is IDependencyObjectStoreProvider provider)
+				{
+					snapshot.Add(provider);
+				}
+			}
+
+			foreach (var provider in snapshot)
+			{
+				provider.Store.NotifyThemeChanged(theme, forceRefresh);
+			}
+
+			foreach (var mergedDict in _mergedDictionaries)
+			{
+				mergedDict.NotifyThemeChanged(theme, forceRefresh);
+			}
+
+			if (_sourceDictionary?.Target is ResourceDictionary target)
+			{
+				target.NotifyThemeChanged(theme, forceRefresh);
+			}
+		}
+#endif
+
 		internal void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{
 			// Resolve resources' {ThemeResource} values against the owning element's effective theme rather
