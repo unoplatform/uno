@@ -1743,7 +1743,16 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					{
 						this.Log().Trace($"[A11y] AUTOMATION EVENT: AutomationFocusChanged handle={focusElement.Visual.Handle} element={focusElement.GetType().Name}");
 					}
-					NativeMethods.FocusSemanticElement(focusElement.Visual.Handle);
+
+					// Only sync focus to the browser DOM when the element actually has a
+					// semantic peer. The peer may have been pruned (non-semantic element) or
+					// removed while a virtualized item was recycled; focusing a handle that is
+					// not in the semantic DOM is a no-op the JS layer can only resolve by
+					// retrying once and then warning that the element was not found.
+					if (HasSemanticElement(focusElement.Visual.Handle))
+					{
+						NativeMethods.FocusSemanticElement(focusElement.Visual.Handle);
+					}
 				}
 				break;
 
@@ -1838,7 +1847,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 	protected override void SetNativeFocus(nint handle)
-		=> NativeMethods.FocusSemanticElement(handle);
+	{
+		// Skip handles with no semantic DOM peer (pruned/removed elements) — focusing
+		// them is a no-op that the JS layer resolves by warning after a failed retry.
+		// See the AutomationFocusChanged case in OnAutomationEvent.
+		if (HasSemanticElement(handle))
+		{
+			NativeMethods.FocusSemanticElement(handle);
+		}
+	}
 	protected override void OnNativeStructureChanged() { }
 
 	internal void SyncTextBoxValueAndSelection(TextBox textBox)
