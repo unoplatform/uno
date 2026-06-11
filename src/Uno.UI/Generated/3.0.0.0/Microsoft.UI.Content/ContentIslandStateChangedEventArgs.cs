@@ -3,15 +3,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Content
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ContentIslandStateChangedEventArgs
 	{
 		// Skipping already declared property DidActualSizeChange
 		// Skipping already declared property DidLayoutDirectionChange
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool DidLocalToClientTransformMatrixChange
 		{
 			get
@@ -20,8 +20,8 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool DidLocalToParentTransformMatrixChange
 		{
 			get

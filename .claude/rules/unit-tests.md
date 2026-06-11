@@ -1,12 +1,12 @@
 ---
 description: Conventions for Uno.UI unit tests (pure logic, no visual tree). Auto-loaded in Uno.UI.Tests. Distinct from runtime tests.
 paths:
-  - "src/Uno.UI.Tests/**/*.cs"
+  - "src/Uno.UI.UnitTests/**/*.cs"
 ---
 
-# Unit tests (Uno.UI.Tests)
+# Unit tests (Uno.UI.UnitTests)
 
-Pure-logic tests with **no visual tree** — the opposite of runtime tests. Run: `dotnet test src/Uno.UI.Tests/Uno.UI.Unit.Tests.csproj` (the MSTest runner; `src/Uno.UI/Uno.UI.Tests.csproj` is just the Uno.UI library compiled for the test TFM, so `dotnet test` on it finds no tests).
+Pure-logic tests with **no visual tree** — the opposite of runtime tests. Run: `dotnet test src/Uno.UI.UnitTests/Uno.UI.UnitTests.csproj`.
 
 - **MSTest** (`[TestClass]`/`[TestMethod]`), not NUnit/xUnit. Class `Given_<Feature>`, method `When_<Scenario>`.
 - **Link issue-covering tests to their issue** with `[GitHubWorkItem("https://github.com/unoplatform/uno/issues/<n>")]` (method- or class-level) when a test reproduces or guards a specific GitHub issue — MSTest metadata for traceability, not a skip.

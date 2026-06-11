@@ -416,7 +416,7 @@
         items:
           - name: Overview
             href: contributing/guidelines/creating-tests.md
-          - name: Mocked unit tests (Uno.UI.Tests)
+          - name: Unit tests (Uno.UI.Tests)
             href: uno-development/creating-mocked-tests.md
           - name: Platform-runtime unit tests (Uno.UI.RuntimeTests)
             href: uno-development/creating-runtime-tests.md

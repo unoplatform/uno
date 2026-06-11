@@ -87,7 +87,6 @@ namespace Uno.WinAppSDKSyncGenerator
 				(AndroidDefine, allSymbols.AndroidSymbol),
 				(iOSDefine, allSymbols.IOSSymbol),
 				(tvOSDefine, allSymbols.TvOSSymbol),
-				(UnitTestsDefine, allSymbols.UnitTestsymbol),
 				(WasmDefine, allSymbols.WasmSymbol),
 				(SkiaDefine, allSymbols.SkiaSymbol),
 				(NetStdReferenceDefine, allSymbols.NetStdReferenceSymbol),

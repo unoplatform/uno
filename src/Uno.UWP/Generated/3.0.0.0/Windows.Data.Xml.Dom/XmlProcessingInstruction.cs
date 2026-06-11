@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Data.Xml.Dom
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class XmlProcessingInstruction : global::Windows.Data.Xml.Dom.IXmlNode, global::Windows.Data.Xml.Dom.IXmlNodeSelector, global::Windows.Data.Xml.Dom.IXmlNodeSerializer
@@ -35,15 +35,15 @@ namespace Windows.Data.Xml.Dom
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlProcessingInstruction.GetXml()
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlProcessingInstruction.SelectSingleNode(string)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlProcessingInstruction.SelectNodes(string)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.IXmlNode SelectSingleNodeNS(string xpath, object namespaces)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlProcessingInstruction", "SelectSingleNodeNS(string xpath, object namespaces)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.XmlNodeList SelectNodesNS(string xpath, object namespaces)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlProcessingInstruction", "SelectNodesNS(string xpath, object namespaces)");

@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Data.Xml.Dom
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class XmlNamedNodeMap : global::System.Collections.Generic.IReadOnlyList<global::Windows.Data.Xml.Dom.IXmlNode>, global::System.Collections.Generic.IEnumerable<global::Windows.Data.Xml.Dom.IXmlNode>, global::System.Collections.IEnumerable, global::System.Collections.Generic.IReadOnlyCollection<global::Windows.Data.Xml.Dom.IXmlNode>
@@ -15,22 +15,22 @@ namespace Windows.Data.Xml.Dom
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlNamedNodeMap.GetNamedItem(string)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlNamedNodeMap.SetNamedItem(Windows.Data.Xml.Dom.IXmlNode)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlNamedNodeMap.RemoveNamedItem(string)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.IXmlNode GetNamedItemNS(object namespaceUri, string name)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlNamedNodeMap", "GetNamedItemNS(object namespaceUri, string name)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.IXmlNode RemoveNamedItemNS(object namespaceUri, string name)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlNamedNodeMap", "RemoveNamedItemNS(object namespaceUri, string name)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Data.Xml.Dom.IXmlNode SetNamedItemNS(global::Windows.Data.Xml.Dom.IXmlNode node)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Data.Xml.Dom.XmlNamedNodeMap", "SetNamedItemNS(IXmlNode node)");

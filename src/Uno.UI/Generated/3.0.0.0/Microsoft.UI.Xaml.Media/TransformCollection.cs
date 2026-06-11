@@ -3,14 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class TransformCollection : global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Media.Transform>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Xaml.Media.Transform>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Media.Transform>, global::System.Collections.IEnumerable
 	{
 		// Skipping already declared property Count
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsReadOnly
 		{
 			get
@@ -32,8 +32,8 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.TransformCollection.Add(Microsoft.UI.Xaml.Media.Transform)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.TransformCollection.Clear()
 		// Skipping already declared method Microsoft.UI.Xaml.Media.TransformCollection.Contains(Microsoft.UI.Xaml.Media.Transform)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void CopyTo(global::Microsoft.UI.Xaml.Media.Transform[] array, int arrayIndex)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.TransformCollection", "CopyTo(Transform[] array, int arrayIndex)");

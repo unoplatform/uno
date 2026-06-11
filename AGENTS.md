@@ -29,7 +29,7 @@ These load **automatically** when you touch matching files — you don't invoke 
 | `debugging-discipline.md` | `src/**/*.cs` | full root-cause/validation/diagnosis-bias protocols |
 | `dependency-properties.md` | `src/Uno.UI/**` | `[GeneratedDependencyProperty]`, metadata, callbacks |
 | `runtime-tests.md` | `src/Uno.UI.RuntimeTests/**` | `[RunsOnUIThread]`, `[PlatformCondition]`, `UITestHelper` |
-| `unit-tests.md` | `src/Uno.UI.Tests/**` | MSTest, no-visual-tree logic tests |
+| `unit-tests.md` | `src/Uno.UI.UnitTests/**` | MSTest, no-visual-tree logic tests |
 | `source-generators.md` | `src/SourceGenerators/**` | incremental gens, LOH/perf, cancellation |
 | `samples.md` | `src/SamplesApp/**` | `[Sample]`, theming, XamlStyler |
 | `build-system.md` | `src/**/*.{csproj,props,targets}` | TFMs, output paths, package versions |
@@ -128,7 +128,7 @@ Combined impact on `SamplesApp.Skia.Generic` (Windows, 32-core, warm NuGet cache
 cd src
 dotnet restore Uno.UI-Skia-only.slnf                    # Restore (50-60s)
 dotnet build Uno.UI-Skia-only.slnf --no-restore         # Build (3-5min)
-dotnet test Uno.UI.Tests/Uno.UI.Unit.Tests.csproj       # Unit tests (40-60s)
+dotnet test Uno.UI.UnitTests/Uno.UI.UnitTests.csproj    # Unit tests (40-60s)
 ```
 
 **CRITICAL**: **NEVER CANCEL** builds. Set timeouts to 15+ minutes. Favor Skia desktop for faster builds.
@@ -213,8 +213,8 @@ The full protocol (root-cause steps, diagnosis-bias checks, evidence rules) auto
 
 Run these after making changes:
 
-1. **Build**: `dotnet build src/Uno.UI-UnitTests-only.slnf --no-restore`
-2. **Unit tests**: `dotnet test src/Uno.UI.Tests/Uno.UI.Unit.Tests.csproj --no-build`
+1. **Build**: `dotnet build Uno.UI-UnitTests-only.slnf --no-restore`
+2. **Unit tests**: `dotnet test Uno.UI.UnitTests/Uno.UI.UnitTests.csproj --no-build`
 3. **Runtime tests** (UI changes): Use `/runtime-tests` skill (Skia Desktop default, pass test class/method name as argument)
 4. **WinUI parity** (validate against native WinUI): Use `/winui-runtime-tests` skill
 5. **Sample app** (visual changes): `cd src/SamplesApp/SamplesApp.Wasm && dotnet run`

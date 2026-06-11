@@ -3,24 +3,24 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Display.Core
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public partial struct DisplayPresentationRate
 	{
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayPresentationRate.DisplayPresentationRate()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DisplayPresentationRate(global::Windows.Foundation.Numerics.Rational _VerticalSyncRate, int _VerticalSyncsPerPresentation)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPresentationRate", "DisplayPresentationRate(Rational _VerticalSyncRate, int _VerticalSyncsPerPresentation)");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayPresentationRate.DisplayPresentationRate(Windows.Foundation.Numerics.Rational, int)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public global::Windows.Foundation.Numerics.Rational VerticalSyncRate;
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		public int VerticalSyncsPerPresentation;
 #endif
 	}

@@ -3,37 +3,37 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Threading.Core
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class PreallocatedWorkItem
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PreallocatedWorkItem(global::Windows.System.Threading.WorkItemHandler handler)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Threading.Core.PreallocatedWorkItem", "PreallocatedWorkItem(WorkItemHandler handler)");
 		}
 #endif
 		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.PreallocatedWorkItem(Windows.System.Threading.WorkItemHandler)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PreallocatedWorkItem(global::Windows.System.Threading.WorkItemHandler handler, global::Windows.System.Threading.WorkItemPriority priority)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Threading.Core.PreallocatedWorkItem", "PreallocatedWorkItem(WorkItemHandler handler, WorkItemPriority priority)");
 		}
 #endif
 		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.PreallocatedWorkItem(Windows.System.Threading.WorkItemHandler, Windows.System.Threading.WorkItemPriority)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PreallocatedWorkItem(global::Windows.System.Threading.WorkItemHandler handler, global::Windows.System.Threading.WorkItemPriority priority, global::Windows.System.Threading.WorkItemOptions options)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Threading.Core.PreallocatedWorkItem", "PreallocatedWorkItem(WorkItemHandler handler, WorkItemPriority priority, WorkItemOptions options)");
 		}
 #endif
 		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.PreallocatedWorkItem(Windows.System.Threading.WorkItemHandler, Windows.System.Threading.WorkItemPriority, Windows.System.Threading.WorkItemOptions)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.IAsyncAction RunAsync()
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Threading.Core.PreallocatedWorkItem", "RunAsync()");
