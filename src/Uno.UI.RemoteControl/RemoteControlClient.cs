@@ -145,13 +145,28 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 				return;
 			}
 
-			var kept = current.Where(static a => !IsCollectibleTarget(a)).ToArray();
-			if (kept.Length == current.Count)
+			var changed = false;
+			var kept = new List<Action<RemoteControlClient>>(current.Count);
+			foreach (var action in current)
+			{
+				var filtered = FilterCollectibleInvocations(action, IsCollectibleTarget);
+				if (filtered is null)
+				{
+					changed = true; // every invocation-list entry was collectible — drop the callback
+				}
+				else
+				{
+					changed |= !ReferenceEquals(filtered, action); // some entries dropped, callback rebuilt
+					kept.Add(filtered);
+				}
+			}
+
+			if (!changed)
 			{
 				return; // nothing collectible to remove
 			}
 
-			IReadOnlyCollection<Action<RemoteControlClient>>? next = kept.Length == 0 ? null : kept;
+			IReadOnlyCollection<Action<RemoteControlClient>>? next = kept.Count == 0 ? null : kept.ToArray();
 			if (ReferenceEquals(Interlocked.CompareExchange(ref _waitingList, next, current), current))
 			{
 				return;
@@ -169,6 +184,45 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 			var alc = AssemblyLoadContext.GetLoadContext(declaringType.Assembly);
 			return alc is not null && alc != AssemblyLoadContext.Default && alc.IsCollectible;
 		}
+	}
+
+	/// <summary>
+	/// Filters a (possibly multicast) waiting-list callback down to the invocation-list entries that do
+	/// NOT satisfy <paramref name="isCollectible"/>. A combined delegate's <c>Target</c>/<c>Method</c>
+	/// reflect only one invocation-list entry, so classifying the whole delegate by those would wrongly
+	/// drop unrelated callbacks fused into it. This walks each entry individually and rebuilds a delegate
+	/// from the survivors.
+	/// </summary>
+	/// <returns>
+	/// The same instance when no entry is collectible; a new delegate of the surviving entries when only
+	/// some are; or <c>null</c> when every entry is collectible (the callback should be removed entirely).
+	/// </returns>
+	internal static Action<RemoteControlClient>? FilterCollectibleInvocations(
+		Action<RemoteControlClient> action,
+		Func<Action<RemoteControlClient>, bool> isCollectible)
+	{
+		var invocationList = action.GetInvocationList();
+		if (invocationList.Length == 1)
+		{
+			return isCollectible(action) ? null : action;
+		}
+
+		Action<RemoteControlClient>? kept = null;
+		var removedAny = false;
+		foreach (var entry in invocationList)
+		{
+			var typedEntry = (Action<RemoteControlClient>)entry;
+			if (isCollectible(typedEntry))
+			{
+				removedAny = true;
+			}
+			else
+			{
+				kept += typedEntry;
+			}
+		}
+
+		return removedAny ? kept : action;
 	}
 
 	/// <summary>
