@@ -23,6 +23,8 @@ namespace UITests.Shared.Windows_UI_Xaml_Automation
 			// Refreshing on every layout pass keeps every readout correct after layout has run.
 			// Opacity and scrolling are render-only (no layout), so those are refreshed from their
 			// own handlers (opacity) and the ScrollViewer's ViewChanged (scrolling).
+			// Remove-then-add keeps a single subscription if the control is reloaded.
+			LayoutUpdated -= OnLayoutUpdated;
 			LayoutUpdated += OnLayoutUpdated;
 			RefreshAllOffscreenReadouts();
 		}
