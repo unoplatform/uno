@@ -24,7 +24,7 @@ jobs:
         run: mv "./articles/studio/Hot Design" ./doc/articles/studio
       
       - name: Check links
-        uses: lycheeverse/lychee-action@v2.4.1
+        uses: lycheeverse/lychee-action@v2.8.0
         with:
           fail: false
           args: >
