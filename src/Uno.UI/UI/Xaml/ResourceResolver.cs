@@ -975,6 +975,32 @@ namespace Uno.UI
 		{
 			RemoveNonDefaultAlcEntries(_registeredDictionariesByUri);
 			RemoveNonDefaultAlcEntries(_registeredDictionariesByFilepath);
+			RemoveNonDefaultAlcScopedRegistrations();
+		}
+
+		/// <summary>
+		/// Purges the ALC-scoped registry. The ConditionalWeakTable is NOT self-cleaning for a
+		/// collectible ALC being unloaded: the runtime holds a strong handle on the ALC object
+		/// until its LoaderAllocator dies, the live key keeps the CWT entry alive, and the
+		/// entry's <see cref="Func{TResult}"/> values point at generated code in that same ALC —
+		/// keeping the LoaderAllocator alive. The resulting cycle pins the ALC forever unless the
+		/// entry is removed explicitly on teardown.
+		/// </summary>
+		private static void RemoveNonDefaultAlcScopedRegistrations()
+		{
+			lock (_alcDictionariesLock)
+			{
+				List<System.Runtime.Loader.AssemblyLoadContext> toRemove = new();
+				foreach (var kvp in _registeredDictionariesByUriByAlc)
+				{
+					toRemove.Add(kvp.Key);
+				}
+
+				foreach (var alc in toRemove)
+				{
+					_registeredDictionariesByUriByAlc.Remove(alc);
+				}
+			}
 		}
 
 		private static void RemoveNonDefaultAlcEntries(Dictionary<string, Func<ResourceDictionary>> dictionary)
