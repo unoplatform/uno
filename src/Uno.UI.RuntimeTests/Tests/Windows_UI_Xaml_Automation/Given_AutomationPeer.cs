@@ -228,7 +228,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.NativeMobile)]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)] // IsOffscreen clipping is Skia-only.
 		public async Task When_Element_Scrolled_Out_Of_ScrollViewer_IsOffscreen()
 		{
 			var target = new Button { Content = "Subject", Width = 120, Height = 40 };
