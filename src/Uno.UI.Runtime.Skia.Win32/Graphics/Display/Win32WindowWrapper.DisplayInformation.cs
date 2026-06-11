@@ -52,11 +52,8 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 		if (_refreshRate != oldRefreshRate
 			&& FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate)
 		{
-			// Presentation is paced on the render thread by hardware VSync (GL wglSwapInterval,
-			// software DwmFlush), which blocks until the monitor's actual refresh — so those
-			// renderers are already aligned and ignore this. Only the software DwmFlush degraded
-			// fallback paces with a software timer (FramePacer) instead of VSync, and so needs the
-			// new rate to stay aligned; that's the one path UpdateRefreshRate actually retargets.
+			// VSync-paced renderers are already aligned to the monitor's refresh and ignore this;
+			// only the software-timer-paced DwmFlush degraded fallback actually retargets.
 			_renderer?.UpdateRefreshRate(_refreshRate);
 		}
 	}

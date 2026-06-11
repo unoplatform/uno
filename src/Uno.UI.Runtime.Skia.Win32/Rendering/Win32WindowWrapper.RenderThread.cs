@@ -8,10 +8,8 @@ namespace Uno.UI.Runtime.Skia.Win32;
 internal partial class Win32WindowWrapper
 {
 	/// <summary>
-	/// Dedicated render thread that owns Draw + CopyPixels (SwapBuffers/BitBlt).
-	/// The UI thread records SKPictures and signals this thread to present them.
-	/// This mirrors the pattern used by WPF (milcore render thread) and the
-	/// Uno Android GL thread.
+	/// Dedicated render thread that owns Draw + CopyPixels (SwapBuffers/BitBlt), mirroring
+	/// WPF's milcore render thread. The UI thread records SKPictures and signals presents.
 	/// </summary>
 	private sealed class RenderThread : IDisposable
 	{
@@ -36,11 +34,9 @@ internal partial class Win32WindowWrapper
 		}
 
 		/// <summary>
-		/// Signals the render thread that a new frame is available for presentation.
-		/// Multiple calls while the thread is busy coalesce into a single wake-up
-		/// (AutoResetEvent semantics). Resets the present-completion event before
-		/// signaling so a subsequent <see cref="WaitForNextPresent"/> always observes
-		/// the next presentation, never a stale one from a prior frame.
+		/// Signals that a new frame is available; calls coalesce into a single wake-up. Resets
+		/// the present-completion event so <see cref="WaitForNextPresent"/> always observes the
+		/// next present, never a stale one.
 		/// </summary>
 		internal void SignalNewFrame()
 		{
@@ -49,9 +45,7 @@ internal partial class Win32WindowWrapper
 		}
 
 		/// <summary>
-		/// Blocks the calling thread until the render thread finishes presenting a frame.
-		/// Used by ShowCore to ensure the first frame is painted before the window is shown.
-		/// Returns true if a present completed within the timeout, false otherwise.
+		/// Blocks until the render thread presents a frame; false if the timeout elapsed first.
 		/// </summary>
 		internal bool WaitForNextPresent(TimeSpan timeout) => _presentedEvent.Wait(timeout);
 
@@ -98,23 +92,18 @@ internal partial class Win32WindowWrapper
 		public void Dispose() => DisposeAndTryJoin();
 
 		/// <summary>
-		/// Stops the render thread and waits for it to exit. Returns <c>true</c> if the
-		/// thread joined within the backstop, <c>false</c> if it had to be abandoned while
-		/// still potentially executing inside a native present (SwapBuffers/BitBlt/DwmFlush).
-		/// When this returns <c>false</c>, the caller MUST NOT dispose any renderer/surface
-		/// resources the abandoned thread might still be touching — doing so would free native
-		/// GPU resources out from under it and risk a use-after-free.
+		/// Stops the render thread. Returns <c>false</c> when the thread had to be abandoned
+		/// (stuck in a native present); the caller must then not dispose renderer/surface
+		/// resources the abandoned thread might still be touching.
 		/// </summary>
 		internal bool DisposeAndTryJoin()
 		{
 			_disposed = true;
 			_frameSignal.Set(); // Unblock if waiting
 
-			// 250 ms covers a present (~16 ms at 60 Hz) plus slack. If that fails, the GPU
-			// is likely hung. Wait one more bounded interval (2 s) and then abandon: leaving
-			// the render thread (background, marked at construction) blocked is preferable
-			// to hanging the UI thread on window close. The leaked synchronization
-			// primitives and renderer outlive the thread, so the OS reclaims them at exit.
+			// 250 ms covers a present (~16 ms at 60 Hz) plus slack; after one more bounded wait
+			// (2 s), abandon the background thread — leaking the renderer and synchronization
+			// primitives until process exit beats hanging the UI thread on window close.
 			var joined = _thread.Join(timeout: TimeSpan.FromMilliseconds(250));
 			if (!joined)
 			{

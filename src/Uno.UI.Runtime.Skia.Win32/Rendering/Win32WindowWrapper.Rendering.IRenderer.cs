@@ -16,11 +16,8 @@ internal partial class Win32WindowWrapper
 		void Reinitialize();
 
 		/// <summary>
-		/// Notifies the renderer of a screen refresh rate change. Renderers that pace
-		/// internally via VSync (GL via wglSwapInterval, software DwmFlush) are
-		/// inherently aligned to the refresh rate and can ignore this; renderers that
-		/// pace via a software timer (e.g. the software DwmFlush degraded fallback
-		/// FramePacer) can use it to retarget.
+		/// Notifies the renderer of a screen refresh rate change. VSync-paced renderers ignore
+		/// this; software-timer-paced ones (e.g. the DwmFlush degraded fallback) retarget.
 		/// </summary>
 		void UpdateRefreshRate(double fps);
 	}
