@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItemCollapsedEventArgs.cpp, commit fc2f82117
+// MUX reference NavigationViewItemCollapsedEventArgs.cpp, commit bac7a9c33
 
 #nullable enable
 

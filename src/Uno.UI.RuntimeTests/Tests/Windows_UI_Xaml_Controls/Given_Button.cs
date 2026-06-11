@@ -34,7 +34,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public class Given_Button
 	{
 		[TestMethod]
-		// Excluded on native WinUI: Uno mirrors the MUX controls/dev resources (fc2f82117),
+		// Excluded on native WinUI: Uno mirrors the MUX controls/dev resources (bac7a9c33),
 		// which size the back button 40x36 with a margin-only Small style. Shipped WinUI overrides
 		// those in dxaml generic.xaml with Normal 40x40 / Small 32x32, and that is what native WinUI
 		// renders in every release (verified identical at 1.6.9, 1.7.3 and 1.8.2), so no WindowsAppSDK
@@ -52,7 +52,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				""");
 			var smallBtnRect = await UITestHelper.Load(smallBtn);
 
-			// Aligned with WinUI fc2f82117: both styles share NavigationBackButtonWidth/Height (40x36);
+			// Aligned with WinUI bac7a9c33: both styles share NavigationBackButtonWidth/Height (40x36);
 			// the Small style only differs from the Normal style by trimming the right margin.
 			// A small tolerance accounts for sub-pixel rounding in the transformed bounds.
 			Assert.AreEqual(40, normalBtnRect.Width, 0.5);

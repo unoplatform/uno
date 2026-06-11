@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItemBase.h, commit fc2f82117
+// MUX reference NavigationViewItemBase.h, commit bac7a9c33
 
 namespace Microsoft.UI.Xaml.Controls;
 

@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationView.h, commit fc2f82117
+// MUX reference NavigationView.h, commit bac7a9c33
 
 using System.Collections.Generic;
 using Uno.Disposables;

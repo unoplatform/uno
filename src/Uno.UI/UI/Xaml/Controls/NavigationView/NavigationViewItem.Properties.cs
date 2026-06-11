@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItem.properties.cpp, commit fc2f82117
+// MUX reference NavigationViewItem.properties.cpp, commit bac7a9c33
 
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;

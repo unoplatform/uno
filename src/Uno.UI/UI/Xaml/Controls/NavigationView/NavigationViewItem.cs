@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItem.cpp, commit fc2f82117
+// MUX reference NavigationViewItem.cpp, commit bac7a9c33
 
 #if __ANDROID__
 // For performance considerations, we prefer to delay pressed and over state in order to avoid
