@@ -18,6 +18,9 @@ partial class Window
 
 	private bool _isWindowFromSecondaryAlc;
 
+	// Weak so a tagged window never keeps a collectible (secondary) ALC alive after its app unloads.
+	private WeakReference<AssemblyLoadContext>? _ownerAlc;
+
 	// Window-local storage to detect secondary ALC content
 	private object? _secondaryAlcContent;
 
@@ -28,6 +31,27 @@ partial class Window
 	{
 		_isWindowFromSecondaryAlc = IsAssemblyFromSecondaryAlc(callingAssembly);
 	}
+
+	partial void CaptureOwnerAssemblyLoadContext(Assembly callingAssembly)
+	{
+		if (AssemblyLoadContext.GetLoadContext(callingAssembly) is { } alc
+			&& !ReferenceEquals(alc, AssemblyLoadContext.Default))
+		{
+			_ownerAlc = new WeakReference<AssemblyLoadContext>(alc);
+		}
+	}
+
+	/// <summary>
+	/// The non-default <see cref="AssemblyLoadContext"/> of the code that constructed this window,
+	/// or null for windows created by default-ALC (host) code — or whose ALC has been collected.
+	/// Unlike inferring ownership from the window content's concrete type, this stays correct when
+	/// a secondary-ALC app roots a shared framework type (e.g. a plain <c>Frame</c>) or when its
+	/// content was redirected to an <see cref="Uno.UI.Xaml.Controls.AlcContentHost"/> (leaving the
+	/// window's own root content null). Used by <c>Application.GetOwningApplication</c> to map a
+	/// content root back to the application that owns it.
+	/// </summary>
+	internal AssemblyLoadContext? OwnerAssemblyLoadContext
+		=> _ownerAlc is { } weak && weak.TryGetTarget(out var alc) ? alc : null;
 
 	/// <summary>
 	/// Encapsulates all ALC window lifecycle state to avoid memory overhead when ALC is not used.
