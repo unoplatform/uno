@@ -274,6 +274,42 @@ partial class Application
 		// ResourceResolver — remove Func delegates whose Target is from a non-default ALC
 		ResourceResolver.ClearNonDefaultAlcRegistrations();
 
+		// Shared resources (theme brushes etc.) first consumed by a secondary-ALC element record
+		// it as their InheritanceContext parent (DependencyObjectStore._associatedParent); nothing
+		// clears that association on unload, so host-lifetime resources pin the collectible ALC.
+		// Sweep every dictionary reachable from the host application and the master theme set.
+		try
+		{
+#if !__NETSTD_REFERENCE__
+			Uno.UI.GlobalStaticResources.MasterDictionary.ClearCollectibleAssociatedParents();
+#endif
+			_current?.Resources?.ClearCollectibleAssociatedParents();
+		}
+		catch (Exception ex)
+		{
+			if (typeof(Application).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(Application).Log().Debug($"[ALC-CLEANUP] ClearCollectibleAssociatedParents error: {ex.GetType().Name}: {ex.Message}");
+			}
+		}
+
+		// Secondary-ALC code can subscribe to events on HOST visual-tree elements (e.g. a
+		// designer overlay tracking an ancestor's SizeChanged); those subscriptions are never
+		// removed when the secondary app unloads and each one pins the collectible ALC. Walk
+		// every live content root and prune delegate fields of invocation-list entries whose
+		// target or method lives in a collectible ALC.
+		try
+		{
+			PruneCollectibleAlcEventSubscriptions();
+		}
+		catch (Exception ex)
+		{
+			if (typeof(Application).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(Application).Log().Debug($"[ALC-CLEANUP] PruneCollectibleAlcEventSubscriptions error: {ex.GetType().Name}: {ex.Message}");
+			}
+		}
+
 		// ResourceDictionary — invalidate _keyNotFoundCache on the host Application.
 		// The cache accumulates ResourceKey entries with TypeKey referencing ALC types.
 		// These entries pin RuntimeType → LoaderAllocator → ALC.
@@ -296,6 +332,144 @@ partial class Application
 			catch (Exception ex)
 			{
 				typeof(Application).Log().Trace($"[ALC-SCAN] Error during deep scan: {ex.GetType().Name}: {ex.Message}");
+			}
+		}
+	}
+
+	// Per-type cache of delegate-typed instance fields, to keep the teardown tree walk cheap.
+	private static readonly Dictionary<Type, global::System.Reflection.FieldInfo[]> _delegateFieldsCache = new();
+
+	/// <summary>
+	/// Walks every live content root's visual tree and removes, from each element's delegate
+	/// fields (compiler-generated event backing fields included), any invocation-list entry
+	/// whose target or declaring method lives in a collectible AssemblyLoadContext. Such
+	/// subscriptions are made by secondary-ALC code on host elements and are never undone when
+	/// the secondary app unloads — each one pins the unloaded ALC. Runs only during ALC teardown.
+	/// </summary>
+	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "ALC cleanup reflection over live instances")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "ALC cleanup reflection over live instances")]
+	private static void PruneCollectibleAlcEventSubscriptions()
+	{
+		var roots = Uno.UI.Xaml.Core.CoreServices.Instance.ContentRootCoordinator.ContentRoots;
+		for (var i = roots.Count - 1; i >= 0; i--)
+		{
+			if (i < roots.Count && roots[i].VisualTree?.RootElement is { } rootElement)
+			{
+				PruneCollectibleAlcEventSubscriptions(rootElement);
+			}
+		}
+	}
+
+	private static void PruneCollectibleAlcEventSubscriptions(DependencyObject element)
+	{
+		try
+		{
+			PruneCollectibleDelegateFields(element);
+		}
+		catch (Exception)
+		{
+			// One element refusing reflection must not abort the sweep of the rest of the tree.
+		}
+
+		// Element-level Resources dictionaries are not reachable from Application.Resources or
+		// the master theme set; their shared values can hold InheritanceContext associations
+		// into the unloaded app's elements just like app-level resources do.
+		try
+		{
+			if (element is FrameworkElement { Resources: { } elementResources })
+			{
+				elementResources.ClearCollectibleAssociatedParents();
+			}
+		}
+		catch (Exception)
+		{
+		}
+
+		// FrameworkElement content (e.g. a ContentControl's value) is normally also a visual
+		// child, but prune the Content DP value explicitly in case the visual link differs
+		// during teardown.
+		try
+		{
+			if (element is Controls.ContentControl { Content: DependencyObject contentChild })
+			{
+				PruneCollectibleDelegateFields(contentChild);
+			}
+		}
+		catch (Exception)
+		{
+		}
+
+		try
+		{
+			var childCount = Media.VisualTreeHelper.GetChildrenCount(element);
+			for (var i = 0; i < childCount; i++)
+			{
+				PruneCollectibleAlcEventSubscriptions(Media.VisualTreeHelper.GetChild(element, i));
+			}
+		}
+		catch (Exception)
+		{
+			// A subtree that cannot be enumerated mid-teardown must not abort the rest of the sweep.
+		}
+	}
+
+	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "ALC cleanup reflection over live instances")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "ALC cleanup reflection over live instances")]
+	private static void PruneCollectibleDelegateFields(object instance)
+	{
+		var type = instance.GetType();
+		if (type.Assembly.IsCollectible)
+		{
+			// Elements that themselves live in the collectible ALC die with it — and their
+			// subtree is theirs to keep; pruning is only needed on host-lifetime elements.
+			return;
+		}
+
+		if (!_delegateFieldsCache.TryGetValue(type, out var fields))
+		{
+			var list = new List<global::System.Reflection.FieldInfo>();
+			for (var t = type; t is not null && t != typeof(object); t = t.BaseType)
+			{
+				foreach (var field in t.GetFields(global::System.Reflection.BindingFlags.Instance | global::System.Reflection.BindingFlags.Public | global::System.Reflection.BindingFlags.NonPublic | global::System.Reflection.BindingFlags.DeclaredOnly))
+				{
+					if (typeof(Delegate).IsAssignableFrom(field.FieldType))
+					{
+						list.Add(field);
+					}
+				}
+			}
+
+			fields = list.ToArray();
+			_delegateFieldsCache[type] = fields;
+		}
+
+		foreach (var field in fields)
+		{
+			try
+			{
+				if (field.GetValue(instance) is not Delegate current)
+				{
+					continue;
+				}
+
+				Delegate updated = current;
+				foreach (var invocation in current.GetInvocationList())
+				{
+					if (invocation.Method.Module.Assembly.IsCollectible
+						|| invocation.Target?.GetType().Assembly.IsCollectible == true)
+					{
+						updated = Delegate.Remove(updated, invocation);
+					}
+				}
+
+				if (!ReferenceEquals(updated, current))
+				{
+					field.SetValue(instance, updated);
+				}
+			}
+			catch (Exception)
+			{
+				// A single inaccessible field must not abort pruning of the remaining fields.
 			}
 		}
 	}
