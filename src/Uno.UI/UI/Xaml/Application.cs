@@ -634,8 +634,7 @@ namespace Microsoft.UI.Xaml
 							// share it (e.g. a host rendering a consumer app in a secondary ALC), a secondary
 							// app's resource refresh — such as its hot-reload pass — must not bleed its own theme
 							// onto the host's, or another app's, visual tree. Falls back to `this` when the owner
-							// is indeterminate, and is skipped when there are no secondary apps so the common
-							// single-app (and single-app multi-window) path is byte-for-byte unchanged.
+							// is indeterminate, and avoids the owning-app lookup when there are no secondary apps.
 							var owningApp = (HasSecondaryApps ? GetOwningApplication(contentRoot) : null) ?? this;
 							var theme = owningApp.InternalRequestedTheme == ApplicationTheme.Dark ? Theme.Dark : Theme.Light;
 							var forceRefresh = (updateReason & ResourceUpdateReason.HotReload) != 0;
