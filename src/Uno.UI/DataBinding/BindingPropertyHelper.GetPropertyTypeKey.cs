@@ -31,6 +31,19 @@ namespace Uno.UI.DataBinding
 
 			internal GetPropertyTypeKey Clone() => new(_type!, _property!, _allowPrivateMembers, _cachedHashcode);
 
+			/// <summary>
+			/// Drops the last-queried key state. The pooled key instance is a static — without
+			/// this, it retains the last looked-up <see cref="Type"/> (potentially from a
+			/// collectible AssemblyLoadContext) past <c>ClearCaches</c>.
+			/// </summary>
+			internal void Reset()
+			{
+				_type = null;
+				_property = null;
+				_allowPrivateMembers = false;
+				_cachedHashcode = 0;
+			}
+
 			internal void Update(Type type, string property, bool allowPrivateMembers)
 			{
 				_type = type;
