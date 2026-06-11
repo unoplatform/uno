@@ -81,9 +81,8 @@ public class Given_HotReloadManager
 
 	[TestMethod]
 	[Description(
-		"Merge fast-path guard: a batch arriving while the operation exists but has not been " +
-		"processed yet merges into it and is processed as that same single operation.")]
-	public async Task When_BatchMergedIntoPendingOperation_Then_SingleOperationTracksIt()
+		"Merge fast-path guard: a batch arriving while an operation exists but has not been processed yet should be processed by that existing operation (i.e., the second caller should not start a new operation).")]
+	public async Task When_BatchMergedIntoPendingOperation_Then_SecondCallerProcessesExistingOperation()
 	{
 		using var harness = new HotReloadManagerHarness(
 			_ => Task.FromResult<(ImmutableArray<Update>, ImmutableArray<Diagnostic>)>(

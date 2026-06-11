@@ -2,7 +2,7 @@
 
 **Repo**: `uno` (Uno.HotReload)
 **Created**: 2026-06-10
-**Status**: Planned
+**Status**: Implemented
 **Input**: A file-change batch merged into an in-flight `HotReloadOperation` can have its compile
 result (including `Failed` + error diagnostics) silently discarded when the operation was already
 completed by an earlier pass. Status consumers then see `Success` / no diagnostics while the
