@@ -16,7 +16,15 @@ namespace Microsoft.UI.Xaml
 		{
 			if (!_isTypeNullableDictionary.TryGetValue(type, out var isNullable))
 			{
-				_isTypeNullableDictionary.Add(type, isNullable = type.IsNullable());
+				isNullable = type.IsNullable();
+
+				// Never cache collectible-assembly types: the app-lifetime dictionary would pin
+				// the type's AssemblyLoadContext after unload — and teardown sweeps themselves
+				// can re-query such types, racing any clear-on-teardown approach.
+				if (!type.Assembly.IsCollectible)
+				{
+					_isTypeNullableDictionary.Add(type, isNullable);
+				}
 			}
 
 			return isNullable;
