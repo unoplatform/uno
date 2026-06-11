@@ -785,8 +785,8 @@ partial class ClientHotReloadProcessor
 			return;
 		}
 
-		var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(app.GetType().Assembly)
-			?? System.Runtime.Loader.AssemblyLoadContext.Default;
+		var alc = AssemblyLoadContext.GetLoadContext(app.GetType().Assembly)
+			?? AssemblyLoadContext.Default;
 
 		int refreshed;
 		using (Uno.UI.ResourceResolver.SetResolutionContext(alc))
