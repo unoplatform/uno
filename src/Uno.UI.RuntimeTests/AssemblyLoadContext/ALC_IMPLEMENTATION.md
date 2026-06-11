@@ -44,7 +44,7 @@ internal sealed class AlcContentHost : ContentControl
 
 ### 3. Test Infrastructure
 
-**Location**: `src/Uno.UI.RuntimeTests/Tests/AssemblyLoadContext/`
+**Location**: `src/Uno.UI.RuntimeTests/AssemblyLoadContext/`
 
 Contains:
 - `AlcApp/`: A minimal test application that can be loaded into a secondary ALC
@@ -112,7 +112,7 @@ Modified both `CoreWindowWindow` and `DesktopWindow` implementations to:
 
 ### Unit Tests
 
-Located in `src/Uno.UI.RuntimeTests/Tests/AssemblyLoadContext/Given_AlcContentHost.cs`:
+Located in `src/Uno.UI.RuntimeTests/AssemblyLoadContext/Given_AlcContentHost.cs`:
 
 1. **When_ContentHostOverride_Then_ContentRedirected**
    - Validates that Window.Content correctly redirects through ContentHostOverride
