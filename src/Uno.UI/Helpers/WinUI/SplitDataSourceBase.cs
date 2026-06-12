@@ -206,6 +206,7 @@ internal abstract class SplitDataSourceBase<T, TVectorId, AttachedDataType>
 		m_attachedData.RemoveAt(index);
 	}
 
+#pragma warning disable IDE0051 // Unused upstream as well, kept for 1:1 parity with SplitDataSourceBase.h
 	void OnReplace(int index)
 	{
 		var splitVector = GetVectorForItem(index);
@@ -215,6 +216,7 @@ internal abstract class SplitDataSourceBase<T, TVectorId, AttachedDataType>
 			splitVector.Replace(index, value);
 		}
 	}
+#pragma warning restore IDE0051
 
 	void OnInsertAt(int index)
 	{
