@@ -27,7 +27,9 @@ internal class NavigationViewItemsFactory : ElementFactory
 		}
 		else if (newValue is IElementFactory customElementFactory)
 		{
-			m_itemTemplateWrapper = (IElementFactoryShim)customElementFactory;
+			// Mirrors the upstream QI: a custom IElementFactory that does not also implement
+			// IElementFactoryShim degrades to plain NavigationViewItem wrapping instead of throwing.
+			m_itemTemplateWrapper = customElementFactory as IElementFactoryShim;
 		}
 
 		navigationViewItemPool = new List<NavigationViewItem>();
