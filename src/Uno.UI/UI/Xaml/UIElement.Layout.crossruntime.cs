@@ -249,8 +249,19 @@ namespace Microsoft.UI.Xaml
 						}
 
 						SetLayoutFlags(LayoutFlag.MeasuringSelf);
-						MeasureCore(availableSize);
-						ClearLayoutFlags(LayoutFlag.MeasuringSelf);
+						try
+						{
+							MeasureCore(availableSize);
+						}
+						finally
+						{
+							// Clear MeasuringSelf even if MeasureCore throws. Otherwise the flag stays
+							// set and InvalidateMeasure() permanently no-ops for this element (see the
+							// guard in InvalidateMeasure), which freezes its DesiredSize until the
+							// process restarts — a transient measure exception becomes a permanent
+							// layout lock for the whole subtree.
+							ClearLayoutFlags(LayoutFlag.MeasuringSelf);
+						}
 						InvalidateArrange();
 					}
 #if DEBUG
