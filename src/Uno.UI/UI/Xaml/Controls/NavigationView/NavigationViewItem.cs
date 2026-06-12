@@ -578,7 +578,7 @@ public partial class NavigationViewItem : NavigationViewItemBase
 			{
 				if (isSelected)
 				{
-#if HAS_UNO // Uno: gate pressed/over on the deferred-visual-state flags (native-Android scroll perf); upstream uses plain m_isPressed/m_isPointerOver.
+#if !__SKIA__ // Uno workaround: gate pressed/over on the deferred-visual-state flags (native-Android scroll perf). Skia uses plain m_isPressed/m_isPointerOver (WinUI behavior).
 					if (m_isPressed && !_uno_isDefferingPressedState)
 					{
 						return c_pressedSelected;
@@ -602,7 +602,7 @@ public partial class NavigationViewItem : NavigationViewItemBase
 						return c_selected;
 					}
 				}
-#if HAS_UNO // Uno: gate pressed/over on the deferred-visual-state flags (native-Android scroll perf); upstream uses plain m_isPressed/m_isPointerOver.
+#if !__SKIA__ // Uno workaround: gate pressed/over on the deferred-visual-state flags (native-Android scroll perf). Skia uses plain m_isPressed/m_isPointerOver (WinUI behavior).
 				else if (m_isPointerOver && !_uno_isDefferingOverState)
 				{
 					if (m_isPressed && !_uno_isDefferingPressedState)
@@ -915,12 +915,13 @@ public partial class NavigationViewItem : NavigationViewItemBase
 
 					// There seems to be a race condition happening which sometimes
 					// prevents the opening of the flyout. Queue callback as a workaround.
-
-#if HAS_UNO // TODO Uno: needs review — calls ShowAttachedFlyout directly; upstream queues it via SharedHelpers.QueueCallbackForCompositionRendering (not usable here yet - #4690).
-					//SharedHelpers.QueueCallbackForCompositionRendering(() =>
-					//{
+#if !__SKIA__ // Uno workaround: non-Skia opens the flyout synchronously; QueueCallbackForCompositionRendering is not validated there yet (#4690).
 					FlyoutBase.ShowAttachedFlyout(m_rootGrid);
-					//});
+#else
+					SharedHelpers.QueueCallbackForCompositionRendering(() =>
+					{
+						FlyoutBase.ShowAttachedFlyout(m_rootGrid);
+					});
 #endif
 				}
 				else
@@ -1294,7 +1295,7 @@ public partial class NavigationViewItem : NavigationViewItemBase
 			return;
 		}
 
-#if HAS_UNO // Uno: clear deferred-visual-state flags and stop the timer on cancel/capture-lost; no upstream equivalent.
+#if !__SKIA__ // Uno workaround: clear deferred-visual-state flags and stop the timer on cancel/capture-lost; no upstream equivalent (Skia has no deferred states).
 		_uno_isDefferingPressedState = false;
 		_uno_isDefferingOverState = false;
 		_uno_pointerDeferring?.Stop();

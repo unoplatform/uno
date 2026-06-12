@@ -2099,7 +2099,7 @@ public partial class NavigationView : ContentControl
 	private bool ShouldShowBackOrCloseButton()
 	{
 		var visibility = IsBackButtonVisible;
-#if HAS_UNO // Uno: When Auto, hide the back button on Android per the Android navigation guidelines (https://developer.android.com/guide/navigation/navigation-custom-back).
+#if !__SKIA__ // Uno workaround: when Auto, hide the back button on Android per the Android navigation guidelines (https://developer.android.com/guide/navigation/navigation-custom-back). Skia matches WinUI (Xbox-only).
 		bool isAndroid = AnalyticsInfo.VersionInfo.DeviceFamily.StartsWith("Android", StringComparison.InvariantCultureIgnoreCase);
 		return (visibility == NavigationViewBackButtonVisible.Visible || (visibility == NavigationViewBackButtonVisible.Auto && (!SharedHelpers.IsOnXbox() && !isAndroid)));
 #else
@@ -5333,11 +5333,7 @@ public partial class NavigationView : ContentControl
 			{
 				try
 				{
-#if HAS_UNO // Uno: GetForCurrentViewSafe avoids throwing on threads/targets without a per-view ApplicationView.
-					m_applicationView = ApplicationView.GetForCurrentViewSafe();
-#else
 					m_applicationView = ApplicationView.GetForCurrentView();
-#endif
 				}
 				catch
 				{
@@ -5366,7 +5362,7 @@ public partial class NavigationView : ContentControl
 		{
 			if (m_shadowCaster is { } shadowCaster)
 			{
-#if HAS_UNO // Uno: only apply ThemeShadow when the running target supports it.
+#if !__SKIA__ // Uno workaround: only apply ThemeShadow when the running target supports it. Skia always supports it (WinUI behavior).
 				if (IsThemeShadowSupported())
 				{
 					shadowCaster.Shadow = new ThemeShadow();
@@ -5408,7 +5404,7 @@ public partial class NavigationView : ContentControl
 
 	private void ShadowCasterEaseOutStoryboard_Completed(Grid shadowCaster)
 	{
-#if HAS_UNO // Uno: only touch the shadow when the running target supports ThemeShadow.
+#if !__SKIA__ // Uno workaround: only touch the shadow when the running target supports ThemeShadow. Skia always supports it (WinUI behavior).
 		if (IsThemeShadowSupported())
 		{
 			if (shadowCaster.Shadow is not null)

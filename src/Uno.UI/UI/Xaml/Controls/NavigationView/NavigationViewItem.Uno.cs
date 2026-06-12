@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class NavigationViewItem
 {
-#if HAS_UNO // Uno: deferred pressed/over visual-state machinery, no WinUI equivalent.
+#if !__SKIA__ // Uno workaround: deferred pressed/over visual-state machinery (native scroll perf), no WinUI equivalent (Skia has none).
 	// For perf considerations, we defer the pressed and over visual state on Uno.
 	// This highly improves scrolling experience by avoiding freeze of UI thread (due to measure/arrange)
 	// at the begging of the scroll, or when flicking during scroll.
