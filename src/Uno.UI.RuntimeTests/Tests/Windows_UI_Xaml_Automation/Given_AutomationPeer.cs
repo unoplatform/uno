@@ -1,5 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Uno.UI.RuntimeTests.Helpers;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 {
@@ -220,6 +224,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			var automationPeer = new TestAutomationPeer();
 			var result = automationPeer.IsOffscreen();
 			Assert.IsFalse(result);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)] // IsOffscreen clipping is Skia-only.
+		public async Task When_Element_Scrolled_Out_Of_ScrollViewer_IsOffscreen()
+		{
+			var target = new Button { Content = "Subject", Width = 120, Height = 40 };
+			var scrollViewer = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				Content = new StackPanel
+				{
+					Children =
+					{
+						target,
+						new Border { Height = 1000 },
+					},
+				},
+			};
+
+			try
+			{
+				await UITestHelper.Load(scrollViewer);
+
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(target);
+				Assert.IsNotNull(peer);
+
+				// The target sits at the top of the viewport, so it is visible.
+				Assert.IsFalse(peer.IsOffscreen(), "Element should be on-screen before scrolling.");
+
+				// Scroll the target completely above the viewport.
+				scrollViewer.ChangeView(null, 500, null, disableAnimation: true);
+				await WindowHelper.WaitForEqual(500, () => scrollViewer.VerticalOffset);
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(peer.IsOffscreen(), "Element should be off-screen after being scrolled out of the viewport.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
