@@ -997,7 +997,6 @@ public partial class NavigationViewItem : NavigationViewItemBase
 
 	internal void OnExpandCollapseChevronPointerReleased()
 	{
-		// The chevron's pointer is captured by the presenter on press and released here; toggle the expansion state.
 		IsExpanded = !IsExpanded;
 	}
 
@@ -1139,7 +1138,7 @@ public partial class NavigationViewItem : NavigationViewItemBase
 			m_capturedPointer = pointer;
 		}
 
-#if UNO_USE_DEFERRED_VISUAL_STATES // Native Android: defer the pressed visual state to align with the deferred pointer-state updates
+#if UNO_USE_DEFERRED_VISUAL_STATES // TODO Uno: native-Android deferred pressed visual state, no WinUI equivalent
 		_uno_isDefferingPressedState = true;
 		DeferUpdateVisualStateForPointer();
 #endif
@@ -1270,10 +1269,11 @@ public partial class NavigationViewItem : NavigationViewItemBase
 		_uno_pointerDeferring?.Stop();
 
 		m_isPressed = false;
-
-		// Cancel the over-state for touch (or out-of-bounds): a cancelled touch is not followed by a PointerExited.
-		// The AnimatedIcon-specific variant of this check (microsoft-ui-xaml c27a05c / 18a981d) is intentionally not ported —
-		// AnimatedIcon is unsupported and it regressed pointer lifecycle on minimal NavigationView (#7327, #11610).
+		// m_isPointerOver should be true before this event so this doesn't need to be set to true in the else block...
+		// What this flag tracks is complicated because of the NavigationView sub items and the m_capturedPointers that are being tracked..
+		// We do this check because PointerCaptureLost can sometimes take the place of PointerReleased events.
+		// In these cases we need to test if the pointer is over the item to maintain the proper state.
+		// In the case of touch input, we want to cancel anyway since there will be no pointer exited due to the pointer being cancelled.
 		if (IsOutOfControlBounds(args.GetCurrentPoint(this).Position) ||
 			args.Pointer.PointerDeviceType == PointerDeviceType.Touch)
 		{
