@@ -749,12 +749,7 @@ namespace Microsoft.UI.Xaml
 			}
 			catch (Exception)
 			{
-				// Fail LEAK-SAFE: an exception here (typically a ContentRoots mutation racing
-				// teardown) must not block the cleanup — an uncleared cross-ALC association pins
-				// the collectible ALC permanently, while clearing a live host element's
-				// association is benign (it re-establishes on the next value assignment, see
-				// ClearCollectibleAssociatedParent).
-				return true;
+				return false;
 			}
 		}
 
@@ -766,7 +761,7 @@ namespace Microsoft.UI.Xaml
 
 		private void RegisterCollectibleParentAssociation(object parent)
 		{
-			// Fast path: Assembly.IsCollectible is a cached flag; non-collectible parents
+			// Fast path: Type.IsCollectible is a cached runtime flag; non-collectible parents
 			// (the overwhelmingly common case) exit here without touching the registry.
 			if (!parent.GetType().IsCollectible)
 			{

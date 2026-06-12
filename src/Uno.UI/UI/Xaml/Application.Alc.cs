@@ -369,7 +369,44 @@ partial class Application
 	}
 
 	// Per-type cache of delegate-typed instance fields, to keep the teardown tree walk cheap.
-	private static readonly Dictionary<Type, global::System.Reflection.FieldInfo[]> _delegateFieldsCache = new();
+	// Concurrent: the cleanup can be triggered from multiple teardown paths at once
+	// (Window.CloseAlcWindows, Application.RemoveAlcApplication, host sweeps).
+	private static readonly global::System.Collections.Concurrent.ConcurrentDictionary<Type, global::System.Reflection.FieldInfo[]> _delegateFieldsCache = new();
+
+	private static readonly global::System.Reflection.FieldInfo _alcStateField =
+		typeof(AssemblyLoadContext).GetField("_state", global::System.Reflection.BindingFlags.NonPublic | global::System.Reflection.BindingFlags.Instance);
+
+	/// <summary>
+	/// Whether the type's collectibility means "owned by a dying AssemblyLoadContext". This is
+	/// the discriminator for DESTRUCTIVE prunes: <see cref="Type.IsCollectible"/> alone also
+	/// matches session-lifetime add-in ALCs (e.g. a designer host) whose live subscriptions must
+	/// survive a secondary app's teardown. A collectible type whose load context is the default
+	/// ALC (or unknown) owes its collectibility to generic arguments or a dynamic-assembly
+	/// builder — never a live add-in — and is treated as prunable.
+	/// </summary>
+	private static bool IsFromUnloadInitiatedAlc(Type type)
+	{
+		if (!type.IsCollectible)
+		{
+			return false;
+		}
+
+		var alc = AssemblyLoadContext.GetLoadContext(type.Assembly);
+		if (alc is null || alc == AssemblyLoadContext.Default)
+		{
+			return true;
+		}
+
+		try
+		{
+			return _alcStateField is not null && (int)_alcStateField.GetValue(alc) != 0;
+		}
+		catch (Exception)
+		{
+			// Fail leak-safe: an unreadable unload state must not leave the pin in place.
+			return true;
+		}
+	}
 
 	/// <summary>
 	/// Walks every live content root's visual tree and removes, from each element's delegate
@@ -457,28 +494,26 @@ partial class Application
 			return;
 		}
 
-		// Synchronized: the cleanup can be triggered concurrently from multiple teardown paths
-		// (e.g. Window.CloseAlcWindows and Application.RemoveAlcApplication).
-		global::System.Reflection.FieldInfo[] fields;
-		lock (_delegateFieldsCache)
+		var fields = _delegateFieldsCache.GetOrAdd(type, static t =>
 		{
-			if (!_delegateFieldsCache.TryGetValue(type, out fields))
+			var list = new List<global::System.Reflection.FieldInfo>();
+			for (var current = t; current is not null && current != typeof(object); current = current.BaseType)
 			{
-				var list = new List<global::System.Reflection.FieldInfo>();
-				for (var t = type; t is not null && t != typeof(object); t = t.BaseType)
+				foreach (var field in current.GetFields(global::System.Reflection.BindingFlags.Instance | global::System.Reflection.BindingFlags.Public | global::System.Reflection.BindingFlags.NonPublic | global::System.Reflection.BindingFlags.DeclaredOnly))
 				{
-					foreach (var field in t.GetFields(global::System.Reflection.BindingFlags.Instance | global::System.Reflection.BindingFlags.Public | global::System.Reflection.BindingFlags.NonPublic | global::System.Reflection.BindingFlags.DeclaredOnly))
+					if (typeof(Delegate).IsAssignableFrom(field.FieldType))
 					{
-						if (typeof(Delegate).IsAssignableFrom(field.FieldType))
-						{
-							list.Add(field);
-						}
+						list.Add(field);
 					}
 				}
-
-				fields = list.ToArray();
-				_delegateFieldsCache[type] = fields;
 			}
+
+			return list.ToArray();
+		});
+
+		if (fields.Length == 0)
+		{
+			return;
 		}
 
 		foreach (var field in fields)
@@ -493,8 +528,16 @@ partial class Application
 				Delegate updated = current;
 				foreach (var invocation in current.GetInvocationList())
 				{
-					if (invocation.Method.DeclaringType?.IsCollectible == true
-						|| invocation.Target?.GetType().IsCollectible == true)
+					// Destructive prune: only remove subscriptions whose owner is DYING — an ALC
+					// whose unload has begun. A merely-collectible target can belong to a live
+					// session-lifetime add-in ALC and must survive.
+					var ownerType = invocation.Target?.GetType() ?? invocation.Method.DeclaringType;
+					if (ownerType is null)
+					{
+						continue;
+					}
+
+					if (IsFromUnloadInitiatedAlc(ownerType))
 					{
 						updated = Delegate.Remove(updated, invocation);
 					}

@@ -103,9 +103,14 @@ public class Given_CollectibleAlcAssociations
 	{
 		var brush = new SolidColorBrush(Colors.Blue);
 
+		// Register the probe under every theme key so resolution succeeds (and materializes the
+		// active-theme path) regardless of the test environment's active theme.
 		var themed = new ResourceDictionary();
-		var light = new ResourceDictionary { [ProbeThemeBrushKey] = brush };
-		themed.ThemeDictionaries["Light"] = light;
+		foreach (var themeKey in new[] { "Light", "Dark", "Default" })
+		{
+			themed.ThemeDictionaries[themeKey] = new ResourceDictionary { [ProbeThemeBrushKey] = brush };
+		}
+
 		Application.Current.Resources.MergedDictionaries.Add(themed);
 		_stagedThemedDictionary = themed;
 

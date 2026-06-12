@@ -978,13 +978,18 @@ namespace Uno.UI
 			RemoveNonDefaultAlcScopedRegistrations();
 		}
 
+		private static readonly global::System.Reflection.FieldInfo _alcStateField =
+			typeof(System.Runtime.Loader.AssemblyLoadContext).GetField("_state", global::System.Reflection.BindingFlags.NonPublic | global::System.Reflection.BindingFlags.Instance);
+
 		/// <summary>
-		/// Purges the ALC-scoped registry. The ConditionalWeakTable is NOT self-cleaning for a
-		/// collectible ALC being unloaded: the runtime holds a strong handle on the ALC object
-		/// until its LoaderAllocator dies, the live key keeps the CWT entry alive, and the
-		/// entry's <see cref="Func{TResult}"/> values point at generated code in that same ALC —
-		/// keeping the LoaderAllocator alive. The resulting cycle pins the ALC forever unless the
-		/// entry is removed explicitly on teardown.
+		/// Purges the ALC-scoped registry for ALCs whose unload has been INITIATED. The
+		/// ConditionalWeakTable is NOT self-cleaning for a collectible ALC being unloaded: the
+		/// runtime holds a strong handle on the ALC object until its LoaderAllocator dies, the
+		/// live key keeps the CWT entry alive, and the entry's <see cref="Func{TResult}"/> values
+		/// point at generated code in that same ALC — keeping the LoaderAllocator alive. The
+		/// resulting cycle pins the ALC forever unless the entry is removed explicitly on teardown.
+		/// Entries of still-LIVE secondary ALCs are preserved: their dictionaries are registered
+		/// only in this table, and removing them would break their resource resolution.
 		/// </summary>
 		private static void RemoveNonDefaultAlcScopedRegistrations()
 		{
@@ -993,7 +998,20 @@ namespace Uno.UI
 				List<System.Runtime.Loader.AssemblyLoadContext> toRemove = new();
 				foreach (var kvp in _registeredDictionariesByUriByAlc)
 				{
-					toRemove.Add(kvp.Key);
+					var unloading = false;
+					try
+					{
+						unloading = _alcStateField is not null && (int)_alcStateField.GetValue(kvp.Key) != 0;
+					}
+					catch (Exception)
+					{
+						// Unreadable unload state — leave the entry; the next sweep retries.
+					}
+
+					if (unloading)
+					{
+						toRemove.Add(kvp.Key);
+					}
 				}
 
 				foreach (var alc in toRemove)
