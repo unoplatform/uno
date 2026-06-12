@@ -1242,6 +1242,97 @@ public class Given_AlcContentHost
 	}
 
 	/// <summary>
+	/// A secondary ALC app's explicit <see cref="Application.RequestedTheme"/> is per-app state: it is
+	/// pinned as an element-level theme at the <see cref="AlcContentHost"/> boundary (WinUI's per-island
+	/// theming mechanism) and never mutates the shared <c>FrameworkTheming</c>, which belongs to the host
+	/// app. Covers: follows-host by default, explicit theme reaches the inner subtree, host app state
+	/// stays untouched, and clearing the explicit theme re-follows the host.
+	/// </summary>
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_SecondaryAlcApp_ExplicitTheme_Then_IndependentFromHost()
+	{
+		var hostWasExplicit = Application.Current.IsThemeSetExplicitly;
+		var hostOriginal = Application.Current.RequestedTheme;
+		var hadSecondaryApps = Application.HasSecondaryApps;
+
+		Application.HasSecondaryApps = true;
+		Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Dark);
+		try
+		{
+			// Non-themed host probe, sibling of the ALC host: follows the host app theme.
+			var probe = new Border { Width = 20, Height = 20 };
+
+			_contentHost = new AlcContentHost();
+			var container = new StackPanel { Children = { probe, _contentHost } };
+
+			WindowHelper.ContentHostOverride = _contentHost;
+			TestServices.WindowHelper.WindowContent = container;
+			await TestServices.WindowHelper.WaitForLoaded(container);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var secondaryApp = await BootSecondaryAlcAppAsync();
+
+			// With no explicit theme of its own, the secondary app follows the host app theme.
+			Assert.AreEqual(ApplicationTheme.Dark, secondaryApp.RequestedTheme,
+				"A secondary app without an explicit theme must follow the host app theme.");
+			Assert.IsFalse(secondaryApp.IsThemeSetExplicitly,
+				"A freshly booted secondary app must not report an explicit theme.");
+
+			// Act: the secondary app goes explicitly Light while the host stays Dark.
+			secondaryApp.SetExplicitRequestedTheme(ApplicationTheme.Light);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ApplicationTheme.Light, secondaryApp.RequestedTheme,
+				"The secondary app must report its explicit theme.");
+			Assert.IsTrue(secondaryApp.IsThemeSetExplicitly);
+
+			// The host application's theme state must be completely untouched.
+			Assert.AreEqual(ApplicationTheme.Dark, Application.Current.RequestedTheme,
+				"A secondary app's explicit theme must not mutate the host app's theme (shared FrameworkTheming).");
+			Assert.IsTrue(Application.Current.IsThemeSetExplicitly,
+				"A secondary app's explicit theme must not clear the host app's explicit-theme state.");
+			Assert.AreEqual(ElementTheme.Dark, probe.ActualTheme,
+				"The host shell must keep the host theme when a secondary app sets an explicit theme.");
+
+			// The theme is pinned at the content-host boundary and reaches the inner subtree.
+			Assert.AreEqual(ElementTheme.Light, _contentHost.RequestedTheme,
+				"The secondary app's explicit theme must be pinned on the AlcContentHost boundary.");
+			Assert.AreEqual(ElementTheme.Light, _contentHost.ActualTheme);
+			var innerRoot = _contentHost.Content as FrameworkElement;
+			Assert.IsNotNull(innerRoot, "Secondary content should be a FrameworkElement");
+			Assert.AreEqual(ElementTheme.Light, innerRoot!.ActualTheme,
+				"The secondary app's content must use the secondary app's explicit theme.");
+
+			// Act: clearing the explicit theme re-follows the host.
+			secondaryApp.SetExplicitRequestedTheme(null);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ApplicationTheme.Dark, secondaryApp.RequestedTheme,
+				"After clearing its explicit theme, the secondary app must follow the host theme again.");
+			Assert.IsFalse(secondaryApp.IsThemeSetExplicitly);
+			Assert.AreEqual(ElementTheme.Default, _contentHost.RequestedTheme,
+				"Clearing the secondary app's explicit theme must clear the boundary pin.");
+			Assert.AreEqual(ElementTheme.Dark, innerRoot.ActualTheme,
+				"After clearing the explicit theme, the secondary content must re-follow the host theme.");
+		}
+		finally
+		{
+			Application.HasSecondaryApps = hadSecondaryApps;
+
+			if (hostWasExplicit)
+			{
+				Application.Current.SetExplicitRequestedTheme(hostOriginal);
+			}
+			else
+			{
+				Application.Current.SetExplicitRequestedTheme(null);
+			}
+		}
+	}
+
+	/// <summary>
 	/// Boots the AlcApp test application into a secondary ALC, assuming the caller has already set up
 	/// <see cref="WindowHelper.ContentHostOverride"/> and the window content. Returns the registered
 	/// secondary <see cref="Application"/>. Use <see cref="StartSecondaryAlcAppAsync"/> instead when the

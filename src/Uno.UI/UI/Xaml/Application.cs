@@ -112,6 +112,7 @@ namespace Microsoft.UI.Xaml
 		public Application()
 		{
 			var isDefaultALC = AssemblyLoadContext.GetLoadContext(GetType().Assembly) == AssemblyLoadContext.Default;
+			_isSecondaryAlcApplication = !isDefaultALC;
 
 			if (isDefaultALC)
 			{
@@ -198,9 +199,14 @@ namespace Microsoft.UI.Xaml
 			// MUX Reference: FrameworkApplication::get_RequestedThemeImpl — FrameworkApplication_Partial.cpp:1048-1061:
 			//   "RequestedTheme getter. Bypasses the core application object and get's it directly from
 			//    the framework theming object."
-			get => WinUICoreServices.Instance.Theming.GetBaseTheme() == Theme.Light
-				? ApplicationTheme.Light
-				: ApplicationTheme.Dark;
+			// Uno-specific: a secondary-ALC app's explicit theme is per-app state (pinned at its
+			// content-host boundary, see _alcRequestedTheme) — the shared FrameworkTheming belongs
+			// to the host app, which the secondary app follows when no explicit theme is set.
+			get => _isSecondaryAlcApplication && _alcRequestedTheme is { } alcTheme
+				? alcTheme
+				: WinUICoreServices.Instance.Theming.GetBaseTheme() == Theme.Light
+					? ApplicationTheme.Light
+					: ApplicationTheme.Dark;
 #else
 			get => InternalRequestedTheme;
 #endif
@@ -309,13 +315,25 @@ namespace Microsoft.UI.Xaml
 		// MUX: an explicit app theme IS FrameworkTheming's requested-theme override
 		// (m_requestedTheme != None) — while set, OnThemeChanged keeps following GetTheme(), where the
 		// override takes precedence over the system theme, so OS changes don't flip the app.
-		internal bool IsThemeSetExplicitly => WinUICoreServices.Instance.Theming.HasRequestedTheme();
+		// Uno-specific: a secondary-ALC app's explicit theme lives per-app (see _alcRequestedTheme).
+		internal bool IsThemeSetExplicitly => _isSecondaryAlcApplication
+			? _alcRequestedTheme.HasValue
+			: WinUICoreServices.Instance.Theming.HasRequestedTheme();
 #else
 		internal bool IsThemeSetExplicitly { get; private set; }
 #endif
 
 		internal void SetExplicitRequestedTheme(ApplicationTheme? explicitTheme)
 		{
+			if (_isSecondaryAlcApplication)
+			{
+				// A secondary-ALC app must not mutate the shared FrameworkTheming (it belongs to the
+				// host app); its explicit theme is pinned as an element-level RequestedTheme at its
+				// content-host boundary instead — WinUI's per-island theming mechanism.
+				SetAlcRequestedTheme(explicitTheme);
+				return;
+			}
+
 #if UNO_HAS_ENHANCED_LIFECYCLE
 			var previousTheme = RequestedTheme;
 
@@ -730,7 +748,12 @@ namespace Microsoft.UI.Xaml
 #if UNO_HAS_ENHANCED_LIFECYCLE
 						if ((updateReason & ResourceUpdateReason.ThemeResource) != 0)
 						{
-							var theme = WinUICoreServices.Instance.Theming.GetTheme();
+							// Walk each content root with the theme of the application that OWNS it (see
+							// GetOwningApplication): the content-root list is process-global, so a secondary
+							// ALC app's refresh (e.g. its hot-reload pass) must not bleed its theme onto the
+							// host's roots, nor the host theme onto a secondary-owned root.
+							var owningApp = (HasSecondaryApps ? GetOwningApplication(contentRoot) : null) ?? this;
+							var theme = owningApp.GetEffectiveWalkTheme();
 							var forceRefresh = (updateReason & ResourceUpdateReason.HotReload) != 0;
 							var rootFe = root as FrameworkElement ?? contentRoot.XamlRoot.Content as FrameworkElement;
 							rootFe?.NotifyThemeChanged(theme, forceRefresh);
