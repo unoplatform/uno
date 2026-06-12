@@ -44,9 +44,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	{
 #if __SKIA__
 		private const string SamplesAppAssembly = "SamplesApp.Skia";
-#else   // __SKIA__
+#elif __WASM__
+		private const string SamplesAppAssembly = "SamplesApp.Wasm";
+#else   // !(__SKIA__ || __WASM__)
 		private const string SamplesAppAssembly = "SamplesApp";
-#endif  // __SKIA__
+#endif  // !(__SKIA__ || __WASM__)
 
 		private const DynamicallyAccessedMemberTypes TypeRequirements = ActivatableDataRowAttribute.TypeRequirements;
 
