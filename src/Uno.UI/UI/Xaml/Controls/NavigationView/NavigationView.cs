@@ -2099,10 +2099,12 @@ public partial class NavigationView : ContentControl
 	private bool ShouldShowBackOrCloseButton()
 	{
 		var visibility = IsBackButtonVisible;
-		// Uno specific: When Auto, we hide the back button on Android as per the Android
-		// design guidelines - see first paragraph of https://developer.android.com/guide/navigation/navigation-custom-back
+#if HAS_UNO // Uno: When Auto, hide the back button on Android per the Android navigation guidelines (https://developer.android.com/guide/navigation/navigation-custom-back).
 		bool isAndroid = AnalyticsInfo.VersionInfo.DeviceFamily.StartsWith("Android", StringComparison.InvariantCultureIgnoreCase);
 		return (visibility == NavigationViewBackButtonVisible.Visible || (visibility == NavigationViewBackButtonVisible.Auto && (!SharedHelpers.IsOnXbox() && !isAndroid)));
+#else
+		return (visibility == NavigationViewBackButtonVisible.Visible || (visibility == NavigationViewBackButtonVisible.Auto && !SharedHelpers.IsOnXbox()));
+#endif
 	}
 
 	// The automation name and tooltip for the pane toggle button changes depending on whether it is open or closed
@@ -5331,7 +5333,11 @@ public partial class NavigationView : ContentControl
 			{
 				try
 				{
+#if HAS_UNO // Uno: GetForCurrentViewSafe avoids throwing on threads/targets without a per-view ApplicationView.
 					m_applicationView = ApplicationView.GetForCurrentViewSafe();
+#else
+					m_applicationView = ApplicationView.GetForCurrentView();
+#endif
 				}
 				catch
 				{
@@ -5360,7 +5366,7 @@ public partial class NavigationView : ContentControl
 		{
 			if (m_shadowCaster is { } shadowCaster)
 			{
-				// Uno specific: We check for ThemeShadow support
+#if HAS_UNO // Uno: only apply ThemeShadow when the running target supports it.
 				if (IsThemeShadowSupported())
 				{
 					shadowCaster.Shadow = new ThemeShadow();
@@ -5370,6 +5376,14 @@ public partial class NavigationView : ContentControl
 
 					shadowCaster.Translation = new Vector3(translation.X, translation.Y, (float)shadowDepth);
 				}
+#else
+				shadowCaster.Shadow = new ThemeShadow();
+
+				var translation = shadowCaster.Translation;
+				double shadowDepth = (double)SharedHelpers.FindInApplicationResources(c_paneOverlayShadowDepthName, c_paneOverlayShadowDepth);
+
+				shadowCaster.Translation = new Vector3(translation.X, translation.Y, (float)shadowDepth);
+#endif
 			}
 		}
 	}
@@ -5394,7 +5408,7 @@ public partial class NavigationView : ContentControl
 
 	private void ShadowCasterEaseOutStoryboard_Completed(Grid shadowCaster)
 	{
-		// Uno specific: We check for ThemeShadow support
+#if HAS_UNO // Uno: only touch the shadow when the running target supports ThemeShadow.
 		if (IsThemeShadowSupported())
 		{
 			if (shadowCaster.Shadow is not null)
@@ -5402,6 +5416,12 @@ public partial class NavigationView : ContentControl
 				shadowCaster.Shadow = null;
 			}
 		}
+#else
+		if (shadowCaster.Shadow is not null)
+		{
+			shadowCaster.Shadow = null;
+		}
+#endif
 	}
 
 	private void UpdatePaneOverlayGroup()

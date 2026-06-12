@@ -578,6 +578,7 @@ public partial class NavigationViewItem : NavigationViewItemBase
 			{
 				if (isSelected)
 				{
+#if HAS_UNO // Uno: gate pressed/over on the deferred-visual-state flags (native-Android scroll perf); upstream uses plain m_isPressed/m_isPointerOver.
 					if (m_isPressed && !_uno_isDefferingPressedState)
 					{
 						return c_pressedSelected;
@@ -586,11 +587,22 @@ public partial class NavigationViewItem : NavigationViewItemBase
 					{
 						return c_pointerOverSelected;
 					}
+#else
+					if (m_isPressed)
+					{
+						return c_pressedSelected;
+					}
+					else if (m_isPointerOver)
+					{
+						return c_pointerOverSelected;
+					}
+#endif
 					else
 					{
 						return c_selected;
 					}
 				}
+#if HAS_UNO // Uno: gate pressed/over on the deferred-visual-state flags (native-Android scroll perf); upstream uses plain m_isPressed/m_isPointerOver.
 				else if (m_isPointerOver && !_uno_isDefferingOverState)
 				{
 					if (m_isPressed && !_uno_isDefferingPressedState)
@@ -606,6 +618,23 @@ public partial class NavigationViewItem : NavigationViewItemBase
 				{
 					return c_pressed;
 				}
+#else
+				else if (m_isPointerOver)
+				{
+					if (m_isPressed)
+					{
+						return c_pressed;
+					}
+					else
+					{
+						return c_pointerOver;
+					}
+				}
+				else if (m_isPressed)
+				{
+					return c_pressed;
+				}
+#endif
 			}
 			else
 			{
@@ -887,11 +916,12 @@ public partial class NavigationViewItem : NavigationViewItemBase
 					// There seems to be a race condition happening which sometimes
 					// prevents the opening of the flyout. Queue callback as a workaround.
 
-					// TODO: Uno specific - Queue callback for composition rendering is not implemented yet - #4690
+#if HAS_UNO // TODO Uno: needs review — calls ShowAttachedFlyout directly; upstream queues it via SharedHelpers.QueueCallbackForCompositionRendering (not usable here yet - #4690).
 					//SharedHelpers.QueueCallbackForCompositionRendering(() =>
 					//{
 					FlyoutBase.ShowAttachedFlyout(m_rootGrid);
 					//});
+#endif
 				}
 				else
 				{
@@ -1264,9 +1294,11 @@ public partial class NavigationViewItem : NavigationViewItemBase
 			return;
 		}
 
+#if HAS_UNO // Uno: clear deferred-visual-state flags and stop the timer on cancel/capture-lost; no upstream equivalent.
 		_uno_isDefferingPressedState = false;
 		_uno_isDefferingOverState = false;
 		_uno_pointerDeferring?.Stop();
+#endif
 
 		m_isPressed = false;
 		// m_isPointerOver should be true before this event so this doesn't need to be set to true in the else block...

@@ -11,7 +11,9 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class NavigationViewItemBase : ContentControl
 {
+#if HAS_UNO // Uno: replaces the WinUI attached-DP s_NavigationViewItemBaseRevokersProperty (stored on NavigationView) by holding the revokers directly on the item.
 	internal CompositeDisposable EventRevokers { get; set; }
+#endif
 
 	public NavigationViewItemBase()
 	{

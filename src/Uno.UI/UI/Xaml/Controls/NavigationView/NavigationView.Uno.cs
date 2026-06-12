@@ -12,6 +12,7 @@ partial class NavigationView
 		OnRepeaterElementPrepared(itemsRepeater, args);
 #endif
 
+#if HAS_UNO // Uno: workaround template part + helpers with no WinUI counterpart
 	//TODO: Uno specific - remove when #4727 is fixed
 
 	private Grid m_paneHeaderContentBorderWrapper;
@@ -26,4 +27,5 @@ partial class NavigationView
 	}
 
 	private bool IsThemeShadowSupported() => ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.ThemeShadow, Uno.UI");
+#endif
 }
