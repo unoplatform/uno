@@ -563,12 +563,21 @@ public class Given_ItemsRepeater_FastScroll
 		scrollable.Should().BeGreaterThan(400,
 			"the SUT must be tall enough that the armed intent and the thumb target are clearly distinct offsets.");
 
+		// The 0.7x/0.1x targets vs the 0.5x/0.3x thresholds are NOT a loose tolerance on a single value:
+		// they are regime markers. This is virtualized mixed-height content (no snap points), so
+		// ScrollableHeight is a running-average ESTIMATE that shifts as items realize/dematerialize, and
+		// RecomputeOffsetsFromIntent re-clamps the offset to that moving height every layout pass — the
+		// landed offset drifts off the request. The bug snaps back to ~armedIntent (0.7x); the fix holds
+		// near the drag target (0.1x). Asserting "> 0.5x then < 0.3x" cleanly separates "held" from
+		// "snapped back"; the 0.3x..0.5x gap is a deliberate dead-zone so estimation drift can't flip the
+		// result. Pinning exact offsets here would be flaky, not stricter.
+
 		// 1. Programmatic scroll down (the repro does this in OnLoaded). Arms _verticalOffsetIntent.
 		var armedIntent = scrollable * 0.7;
 		sut.Scroller.ScrollToVerticalOffset(armedIntent);
 		await TestServices.WindowHelper.WaitForIdle();
 		sut.Scroller.VerticalOffset.Should().BeGreaterThan(scrollable * 0.5,
-			"the programmatic scroll should land near the requested offset before the drag.");
+			"the programmatic scroll must land clearly in the lower half before the drag.");
 
 		// 2. User drags the thumb UP to a much smaller offset. This goes through the real scrollbar
 		//    handler with ThumbTrack (immediate, no animation) — the exact path that regressed.
