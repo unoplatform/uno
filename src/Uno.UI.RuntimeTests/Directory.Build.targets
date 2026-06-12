@@ -12,26 +12,26 @@
 	Exclude the hotreload sample app for all targets
 	-->
 	<ItemGroup>
-		<Compile Remove="Tests\HotReload\Frame\HRApp\**\*.cs" />
-		<Page Remove="Tests\HotReload\Frame\HRApp\**\*.xaml" />
-		<Compile Remove="Tests\HotReload\Frame\HRApp\*.cs" />
-		<Page Remove="Tests\HotReload\Frame\HRApp\*.xaml" />
-		<Content Remove="Tests\HotReload\Frame\HRApp\**" />
-		<ApplicationDefinition Remove="Tests\HotReload\Frame\HRApp\*.xaml" />
+		<Compile Remove="HotReload\Frame\HRApp\**\*.cs" />
+		<Page Remove="HotReload\Frame\HRApp\**\*.xaml" />
+		<Compile Remove="HotReload\Frame\HRApp\*.cs" />
+		<Page Remove="HotReload\Frame\HRApp\*.xaml" />
+		<Content Remove="HotReload\Frame\HRApp\**" />
+		<ApplicationDefinition Remove="HotReload\Frame\HRApp\*.xaml" />
 
-		<None Include="Tests\HotReload\Frame\HRApp\**\*.cs" Exclude="Tests\HotReload\Frame\HRApp\bin\**;Tests\HotReload\Frame\HRApp\obj\**" />
-		<None Include="Tests\HotReload\Frame\HRApp\**\*.xaml" Exclude="Tests\HotReload\Frame\HRApp\bin\**;Tests\HotReload\Frame\HRApp\obj\**" />
+		<None Include="HotReload\Frame\HRApp\**\*.cs" Exclude="HotReload\Frame\HRApp\bin\**;HotReload\Frame\HRApp\obj\**" />
+		<None Include="HotReload\Frame\HRApp\**\*.xaml" Exclude="HotReload\Frame\HRApp\bin\**;HotReload\Frame\HRApp\obj\**" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Remove="Tests\AssemblyLoadContext\AlcApp\**\*.cs" />
-		<Page Remove="Tests\AssemblyLoadContext\AlcApp\**\*.xaml" />
-		<Compile Remove="Tests\AssemblyLoadContext\AlcApp\*.cs" />
-		<Page Remove="Tests\AssemblyLoadContext\AlcApp\*.xaml" />
-		<Content Remove="Tests\AssemblyLoadContext\AlcApp\**" />
-		<ApplicationDefinition Remove="Tests\AssemblyLoadContext\AlcApp\*.xaml" />
+		<Compile Remove="AssemblyLoadContext\AlcApp\**\*.cs" />
+		<Page Remove="AssemblyLoadContext\AlcApp\**\*.xaml" />
+		<Compile Remove="AssemblyLoadContext\AlcApp\*.cs" />
+		<Page Remove="AssemblyLoadContext\AlcApp\*.xaml" />
+		<Content Remove="AssemblyLoadContext\AlcApp\**" />
+		<ApplicationDefinition Remove="AssemblyLoadContext\AlcApp\*.xaml" />
 
-		<None Include="Tests\AssemblyLoadContext\AlcApp\**\*.cs" Exclude="Tests\AssemblyLoadContext\AlcApp\bin\**;Tests\AssemblyLoadContext\AlcApp\obj\**" />
-		<None Include="Tests\AssemblyLoadContext\AlcApp\**\*.xaml" Exclude="Tests\AssemblyLoadContext\AlcApp\bin\**;Tests\AssemblyLoadContext\AlcApp\obj\**" />
+		<None Include="AssemblyLoadContext\AlcApp\**\*.cs" Exclude="AssemblyLoadContext\AlcApp\bin\**;AssemblyLoadContext\AlcApp\obj\**" />
+		<None Include="AssemblyLoadContext\AlcApp\**\*.xaml" Exclude="AssemblyLoadContext\AlcApp\bin\**;AssemblyLoadContext\AlcApp\obj\**" />
 	</ItemGroup>
 </Project>
