@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Uno;
@@ -13,10 +14,18 @@ namespace SampleControl.Entities
 	[DebuggerDisplay("{" + nameof(ControlName) + "}")]
 	public partial class SampleChooserContent : INotifyPropertyChanged
 	{
+		const DynamicallyAccessedMemberTypes ViewModelRequirements =
+			  DynamicallyAccessedMemberTypes.PublicConstructors
+			| DynamicallyAccessedMemberTypes.PublicParameterlessConstructor
+			;
+
 		// Keep all property getters and setters public to avoid issues when serializing/deserializing recent samples
 		// See https://github.com/unoplatform/uno/issues/15059#issuecomment-1891551501
 		public string ControlName { get; set; }
+
+		[DynamicallyAccessedMembers(ViewModelRequirements)]
 		public Type ViewModelType { get; set; }
+		[DynamicallyAccessedMembers(ViewModelRequirements)]
 		public Type ControlType { get; set; }
 		public string[] Categories { get; set; }
 		public string CategoriesString => Categories?.JoinBy(", ");

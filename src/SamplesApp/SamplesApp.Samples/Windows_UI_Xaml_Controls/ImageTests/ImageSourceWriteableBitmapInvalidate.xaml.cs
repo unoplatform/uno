@@ -41,7 +41,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ImageTests
 			}
 #else
 			if (_bitmap.PixelBuffer is Windows.Storage.Streams.Buffer buffer
-				&& buffer.GetType().GetField("_data", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(buffer) is Memory<byte> data)
+				&& typeof(Windows.Storage.Streams.Buffer).GetField("_data", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(buffer) is Memory<byte> data)
 			{
 				var span = data.Span;
 				// Half of the image in green, alpha 100% (bgra buffer)

@@ -33,6 +33,8 @@ using _WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
+[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Hot Reload is not supported in trimming scenarios.")]
+[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Hot Reload is not supported in trimming scenarios.")]
 partial class ClientHotReloadProcessor
 {
 	private static readonly AsyncLock _uiUpdateGate = new(); // We can use the simple AsyncLock here as we don't need reentrancy.
@@ -625,6 +627,8 @@ partial class ClientHotReloadProcessor
 	/// <summary>
 	/// Updates App-level resources (from app.xaml) using the provided updated types list.
 	/// </summary>
+	[UnconditionalSuppressMessage("Trimming", "IL2065")]
+	[UnconditionalSuppressMessage("Trimming", "IL2070")]
 	private static void UpdateGlobalResources(Type[] updatedTypes)
 	{
 		var globalResourceTypes = updatedTypes

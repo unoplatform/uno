@@ -14,6 +14,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
 using Uno.Extensions;
+using System.Diagnostics.CodeAnalysis;
+
 
 #if HAS_UNO_WINUI || WINAPPSDK
 using Microsoft.UI.Input;
@@ -104,7 +106,14 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 				_eventLog.Add(new RoutedEventLogEntry(evt, eventName, sender, args, Validate(sender, evt, args)));
 				if (ReferenceEquals(sender, TouchTarget) && (handleEvent?.IsChecked ?? false))
 				{
-					args.GetType().GetProperty("Handled")?.SetValue(args, true);
+					// TODO: can we use `IHandleableRoutedEventArgs`? Not all types which have a Handled property implement that interface, but they *could*…?
+					SetHandled(args);
+				}
+
+				[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "We don't know the type of `args` at compile-time, but *if it has* a Handled property, we want to set it to true when the checkbox is checked.")]
+				static void SetHandled(RoutedEventArgs e)
+				{
+					e.GetType().GetProperty("Handled")?.SetValue(e, true);
 				}
 			};
 

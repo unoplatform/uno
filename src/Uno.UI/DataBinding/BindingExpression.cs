@@ -210,7 +210,10 @@ namespace Microsoft.UI.Xaml.Data
 				// Convert if necessary
 				if (ParentBinding.Converter != null)
 				{
-					value = ParentBinding.Converter.ConvertBack(
+					value = ConvertBack();
+
+					[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
+					object ConvertBack() => ParentBinding.Converter.ConvertBack(
 						value,
 						_bindingPath.ValueType,
 						ParentBinding.ConverterParameter,
