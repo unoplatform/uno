@@ -536,6 +536,64 @@ public class Given_ItemsRepeater_FastScroll
 		}
 	}
 
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+#if __ANDROID__ || __IOS__ || __WASM__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
+	public async Task When_ProgrammaticScrollArmsIntent_Then_ThumbDragHolds()
+	{
+#if HAS_UNO
+		// Regression guard for the Skia "thumb scrolling does nothing after a programmatic scroll" bug.
+		//
+		// A programmatic ScrollToVerticalOffset arms an "offset intent" that the post-layout
+		// RecomputeOffsetsFromIntent keeps re-applying (clamped to the current ScrollableHeight) on
+		// every arrange. The scrollbar thumb-drag path (OnVerticalScrollBarScrolled -> ChangeViewCore)
+		// used to neither clear nor update that intent, so each thumb drag was instantly snapped back
+		// to the stale programmatic offset on the very next layout pass — the thumb appeared dead once
+		// any programmatic scroll had run.
+		//
+		// Unlike When_ScrollBarThumbDragged_..., this (a) arms an intent first and (b) drives the REAL
+		// OnVerticalScrollBarScrolled handler (not ChangeView, which arms the intent itself and so
+		// masks the bug). Both conditions are required to reproduce it.
+		var sut = CreateMixedTemplateSut(itemCount: 150, viewport: new Size(360, 600));
+		await LoadAsync(sut);
+
+		var scrollable = sut.Scroller.ScrollableHeight;
+		scrollable.Should().BeGreaterThan(400,
+			"the SUT must be tall enough that the armed intent and the thumb target are clearly distinct offsets.");
+
+		// 1. Programmatic scroll down (the repro does this in OnLoaded). Arms _verticalOffsetIntent.
+		var armedIntent = scrollable * 0.7;
+		sut.Scroller.ScrollToVerticalOffset(armedIntent);
+		await TestServices.WindowHelper.WaitForIdle();
+		sut.Scroller.VerticalOffset.Should().BeGreaterThan(scrollable * 0.5,
+			"the programmatic scroll should land near the requested offset before the drag.");
+
+		// 2. User drags the thumb UP to a much smaller offset. This goes through the real scrollbar
+		//    handler with ThumbTrack (immediate, no animation) — the exact path that regressed.
+		var draggedTo = scrollable * 0.1;
+		sut.Scroller.OnVerticalScrollBarScrolled(
+			sut.Scroller,
+			new Microsoft.UI.Xaml.Controls.Primitives.ScrollEventArgs
+			{
+				ScrollEventType = Microsoft.UI.Xaml.Controls.Primitives.ScrollEventType.ThumbTrack,
+				NewValue = draggedTo,
+			});
+
+		// 3. Force the layout pass that runs RecomputeOffsetsFromIntent. Before the fix this snapped
+		//    the offset straight back to armedIntent; after the fix the intent tracks the drag request.
+		sut.Scroller.UpdateLayout();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		sut.Scroller.VerticalOffset.Should().BeLessThan(scrollable * 0.3,
+			$"the thumb drag to {draggedTo:F2} must hold instead of snapping back to the stale "
+			+ $"programmatic intent {armedIntent:F2}. Observed VerticalOffset={sut.Scroller.VerticalOffset:F2}.");
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
 	// ----- helpers -----
 
 	// Mixed-template sample SUT: mimics the studio.live multi-template subagent markdown UI's
