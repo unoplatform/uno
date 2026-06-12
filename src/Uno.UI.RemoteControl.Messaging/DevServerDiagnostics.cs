@@ -1,7 +1,6 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using Uno.UI.RemoteControl.HotReload.Messages;
 
@@ -28,6 +27,11 @@ public static class DevServerDiagnostics
 	/// <summary>
 	/// Gets the current (async-local) sink for dev-server diagnostics.
 	/// </summary>
+	/// <remarks>
+	/// The sink is stored behind a shared holder: a sink observed through a captured
+	/// ExecutionContext snapshot can be detached after the fact by
+	/// <see cref="ClearCollectibleSinks"/> (the snapshot then observes <c>NullSink</c>).
+	/// </remarks>
 	public static ISink Current
 	{
 		get => _current.Value?.Sink ?? NullSink.Instance;
@@ -53,11 +57,17 @@ public static class DevServerDiagnostics
 		=> _current.Value = new SinkHolder(NullSink.Instance);
 
 	/// <summary>
-	/// Detaches every tracked sink that belongs to a collectible AssemblyLoadContext, including
-	/// sinks captured in ExecutionContext snapshots that are not reachable from the calling flow
-	/// (timers, CTS registrations, pooled connections). Call during secondary-app (ALC) teardown:
-	/// without this, those captures pin the unloading ALC for their own lifetime.
+	/// Detaches every tracked sink whose type is collectible (<see cref="Type.IsCollectible"/>),
+	/// including sinks captured in ExecutionContext snapshots that are not reachable from the
+	/// calling flow (timers, CTS registrations, pooled connections). Call during secondary-app
+	/// (ALC) teardown: without this, those captures pin the unloading ALC for their own lifetime.
 	/// </summary>
+	/// <remarks>
+	/// Per-TFM behavior: on net5+ only collectible sinks are detached (a sink from a
+	/// session-lifetime collectible context is also detached and is expected to re-register on
+	/// its next connection); the netstandard2.0 build cannot test collectibility and clears
+	/// EVERY tracked sink as a teardown-time best effort.
+	/// </remarks>
 	public static void ClearCollectibleSinks()
 	{
 		lock (_holdersGate)

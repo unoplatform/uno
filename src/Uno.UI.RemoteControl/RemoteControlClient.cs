@@ -135,7 +135,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	/// (<see cref="CreateAdditional"/>, with SetAsDefaultInstance=false) the waiting list never drains, so the
 	/// captured per-ALC closures pin the collectible ALC after unload. Called on ALC teardown.
 	/// </summary>
-	public static void RemoveCollectibleAlcWaitingCallbacks()
+	internal static void RemoveCollectibleAlcWaitingCallbacks()
 	{
 		while (true)
 		{
