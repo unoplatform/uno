@@ -606,6 +606,78 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 				=> Create(new ObservableCollection<string>(Enumerable.Range(0, itemsCount).Select(i => $"Item #{i}")), viewport: viewport);
 		}
 
+#if __SKIA__
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Item_Removed_Then_Pooled_Element_Visual_Suspended_Until_Reuse()
+		{
+			// A recycle-pooled element stays parented until it is reused. On the Skia composition
+			// path its visual must be suspended while pooled: otherwise it keeps rendering at its
+			// stale position, and continuously-animating content it hosts (e.g. an indeterminate
+			// ProgressRing) keeps invalidating the canvas so the render loop never idles.
+			// Two templates are used so that removing the "probe" item recycles its element
+			// without anything reusing it (the remaining items resolve to the other template).
+			var probeTemplate = new DataTemplate(() => new Border
+			{
+				Width = 80,
+				Height = 40,
+				Background = new SolidColorBrush(Colors.Red),
+			});
+			var textTemplate = new DataTemplate(() => new TextBlock { Text = "text", Height = 30 });
+			var source = new ObservableCollection<string> { "probe-1", "plain-1", "plain-2" };
+			var repeater = new ItemsRepeater
+			{
+				ItemsSource = source,
+				ItemTemplate = new ProbeTemplateSelector { ProbeTemplate = probeTemplate, TextTemplate = textTemplate },
+			};
+
+			TestServices.WindowHelper.WindowContent = new Grid
+			{
+				Width = 200,
+				Height = 300,
+				Children = { repeater },
+			};
+			await TestServices.WindowHelper.WaitForLoaded(repeater);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var probe = repeater.TryGetElement(0);
+			Assert.IsNotNull(probe, "The probe item must be realized.");
+			Assert.IsFalse(probe.IsVisualSuspendedForRecyclePooling, "A realized element must not be suspended.");
+			Assert.IsTrue(probe.Visual.IsVisible, "A realized element's visual must be composed.");
+
+			// Recycle: nothing reuses the element (remaining items use the other template).
+			source.RemoveAt(0);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(VisualTreeHelper.GetParent(probe), "Premise: a pooled element stays parented until reuse.");
+			Assert.IsTrue(probe.IsVisualSuspendedForRecyclePooling, "A pooled element must be suspended.");
+			Assert.IsFalse(probe.Visual.IsVisible, "A pooled element's visual must not be composed.");
+			Assert.AreEqual(Visibility.Visible, probe.Visibility, "Suspension must not touch the public Visibility.");
+
+			// Reuse: a new probe item resolves to the same template, so the pool hands the element back.
+			source.Insert(0, "probe-2");
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var reused = repeater.TryGetElement(0);
+			Assert.AreSame(probe, reused, "The pooled element is expected to be reused for a same-template item.");
+			Assert.IsFalse(probe.IsVisualSuspendedForRecyclePooling, "A reused element must not be suspended.");
+			Assert.IsTrue(probe.Visual.IsVisible, "A reused element's visual must be composed again.");
+		}
+
+		private sealed class ProbeTemplateSelector : DataTemplateSelector
+		{
+			public required DataTemplate ProbeTemplate { get; set; }
+
+			public required DataTemplate TextTemplate { get; set; }
+
+			protected override DataTemplate SelectTemplateCore(object item)
+				=> item is string s && s.StartsWith("probe", StringComparison.Ordinal) ? ProbeTemplate : TextTemplate;
+
+			protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
+				=> SelectTemplateCore(item);
+		}
+#endif
+
 		private record SUT<T>(Border Root, ScrollViewer Scroller, ItemsRepeater Repeater, ObservableCollection<T> Source)
 		{
 			public int Materialized => Repeater.Children.Count(elt => elt.ActualOffset.X >= 0);

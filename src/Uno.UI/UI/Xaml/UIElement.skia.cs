@@ -398,8 +398,45 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		private bool _isVisualSuspendedForRecyclePooling;
+
+		/// <summary>
+		/// Excludes this element's visual from composition while the element sits, still parented,
+		/// in a recycle pool (<see cref="Microsoft.UI.Xaml.Controls.RecyclePool"/> keeps cleared
+		/// elements attached to their parent until they are reused). Without this, a pooled element
+		/// keeps rendering at its stale position — and continuously-animating content it hosts
+		/// (e.g. an indeterminate ProgressRing) keeps invalidating the canvas every frame, so the
+		/// render loop never idles. This is internal composition state only: the element's public
+		/// <see cref="Visibility"/> is not touched.
+		/// </summary>
+		internal bool IsVisualSuspendedForRecyclePooling
+		{
+			get => _isVisualSuspendedForRecyclePooling;
+			set
+			{
+				if (_isVisualSuspendedForRecyclePooling == value)
+				{
+					return;
+				}
+
+				_isVisualSuspendedForRecyclePooling = value;
+
+				if (value)
+				{
+					Visual.IsVisible = false;
+				}
+				else if (Visibility == Visibility.Visible)
+				{
+					// Restore eagerly rather than waiting for the reuse arrange: Arrange()
+					// early-outs when the slot and layout flags are unchanged, in which case
+					// ShowVisual would never run and the reused element would stay invisible.
+					Visual.IsVisible = true;
+				}
+			}
+		}
+
 		partial void ShowVisual()
-			=> Visual.IsVisible = true;
+			=> Visual.IsVisible = !_isVisualSuspendedForRecyclePooling;
 
 		partial void HideVisual()
 			=> Visual.IsVisible = false;

@@ -164,6 +164,7 @@ You'll find below other known memory leak patterns on iOS Native:
   - It's possible to set `DebugSettings.EnableFrameRateCounter` in `App.OnLaunched` in order to view a top-left indicator. It indicates the current frames per second, as well as the time spent rendering a composition frame, in milliseconds.
   - If the indicator does not change, this means that the UI is not refreshing.
   - If it is, but nothing is changing visually, it could be that a XAML or Composition animation is still running, see the `ProgressRing` section in this document.
+- Elements recycled by an `ItemsRepeater` (or any `RecyclePool` consumer) stay parented in the visual tree until they are reused. Their visuals are automatically excluded from composition while pooled, so continuously-animating content they host (e.g. an indeterminate `ProgressRing`) cannot keep the render loop awake once its item is removed. When targeting Uno Platform versions without this behavior, stop animations in `ItemsRepeater.ElementClearing` and restore them on `ElementPrepared` — and note that re-activating cannot be left to bindings alone, as a reused element whose new item produces the same values does not re-fire them.
 - Avoid the use of SkiaSharp's `SKXamlCanvas`, instead use [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement) which is hardware accelerated.
 
 ## Advanced performance Tracing
