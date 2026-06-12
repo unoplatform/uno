@@ -1228,6 +1228,11 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 		// chain persists in any ExecutionContext that flowed from the connection thread.
 		DevServerDiagnostics.ResetCurrent();
 
+		// ResetCurrent only covers the CURRENT flow; sinks captured in other ExecutionContext
+		// snapshots (timers, CTS registrations, pooled connections) are reachable solely through
+		// the holder registry — detach any collectible ones so they cannot pin the unloading ALC.
+		DevServerDiagnostics.ClearCollectibleSinks();
+
 		// Remove from the active clients list
 		lock (_clientsLock)
 		{
