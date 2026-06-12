@@ -27,14 +27,15 @@ partial class Window
 	// Lazily allocated ALC window state - null when not in ALC mode
 	private AlcWindowState? _alcState;
 
-	partial void InitializeAlcState(Assembly callingAssembly)
+	partial void InitializeAlcState(Assembly? callingAssembly)
 	{
-		_isWindowFromSecondaryAlc = IsAssemblyFromSecondaryAlc(callingAssembly);
+		_isWindowFromSecondaryAlc = callingAssembly is not null && IsAssemblyFromSecondaryAlc(callingAssembly);
 	}
 
-	partial void CaptureOwnerAssemblyLoadContext(Assembly callingAssembly)
+	partial void CaptureOwnerAssemblyLoadContext(Assembly? callingAssembly)
 	{
-		if (AssemblyLoadContext.GetLoadContext(callingAssembly) is { } alc
+		if (callingAssembly is not null
+			&& AssemblyLoadContext.GetLoadContext(callingAssembly) is { } alc
 			&& !ReferenceEquals(alc, AssemblyLoadContext.Default))
 		{
 			_ownerAlc = new WeakReference<AssemblyLoadContext>(alc);
