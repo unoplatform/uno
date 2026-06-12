@@ -749,7 +749,12 @@ namespace Microsoft.UI.Xaml
 			}
 			catch (Exception)
 			{
-				return false;
+				// Fail LEAK-SAFE: an exception here (typically a ContentRoots mutation racing
+				// teardown) must not block the cleanup — an uncleared cross-ALC association pins
+				// the collectible ALC permanently, while clearing a live host element's
+				// association is benign (it re-establishes on the next value assignment, see
+				// ClearCollectibleAssociatedParent).
+				return true;
 			}
 		}
 

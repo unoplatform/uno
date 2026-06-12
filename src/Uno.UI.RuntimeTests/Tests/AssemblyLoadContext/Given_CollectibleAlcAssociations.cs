@@ -127,6 +127,11 @@ public class Given_CollectibleAlcAssociations
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private static Border CreateCollectibleBorder()
 	{
+		if (!RuntimeFeature.IsDynamicCodeSupported)
+		{
+			Assert.Inconclusive("Reflection.Emit (RunAndCollect) is not supported on this target.");
+		}
+
 		var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
 			new AssemblyName("CollectibleAssociationProbe"),
 			AssemblyBuilderAccess.RunAndCollect);

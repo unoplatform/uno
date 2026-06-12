@@ -457,22 +457,28 @@ partial class Application
 			return;
 		}
 
-		if (!_delegateFieldsCache.TryGetValue(type, out var fields))
+		// Synchronized: the cleanup can be triggered concurrently from multiple teardown paths
+		// (e.g. Window.CloseAlcWindows and Application.RemoveAlcApplication).
+		global::System.Reflection.FieldInfo[] fields;
+		lock (_delegateFieldsCache)
 		{
-			var list = new List<global::System.Reflection.FieldInfo>();
-			for (var t = type; t is not null && t != typeof(object); t = t.BaseType)
+			if (!_delegateFieldsCache.TryGetValue(type, out fields))
 			{
-				foreach (var field in t.GetFields(global::System.Reflection.BindingFlags.Instance | global::System.Reflection.BindingFlags.Public | global::System.Reflection.BindingFlags.NonPublic | global::System.Reflection.BindingFlags.DeclaredOnly))
+				var list = new List<global::System.Reflection.FieldInfo>();
+				for (var t = type; t is not null && t != typeof(object); t = t.BaseType)
 				{
-					if (typeof(Delegate).IsAssignableFrom(field.FieldType))
+					foreach (var field in t.GetFields(global::System.Reflection.BindingFlags.Instance | global::System.Reflection.BindingFlags.Public | global::System.Reflection.BindingFlags.NonPublic | global::System.Reflection.BindingFlags.DeclaredOnly))
 					{
-						list.Add(field);
+						if (typeof(Delegate).IsAssignableFrom(field.FieldType))
+						{
+							list.Add(field);
+						}
 					}
 				}
-			}
 
-			fields = list.ToArray();
-			_delegateFieldsCache[type] = fields;
+				fields = list.ToArray();
+				_delegateFieldsCache[type] = fields;
+			}
 		}
 
 		foreach (var field in fields)
