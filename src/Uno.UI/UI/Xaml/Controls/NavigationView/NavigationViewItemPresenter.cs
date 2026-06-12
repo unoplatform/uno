@@ -29,19 +29,13 @@ public partial class NavigationViewItemPresenter : ContentControl
 		this.SetDefaultStyleKey();
 	}
 
-	// In WinUI this is directly in UnhookEventsAndClearFields, but we need to call this part separately.
-	private void UnhookEvents()
+	private void UnhookEventsAndClearFields()
 	{
 		m_expandCollapseChevronPointerPressedRevoker.Disposable = null;
 		m_expandCollapseChevronPointerReleasedRevoker.Disposable = null;
 		m_expandCollapseChevronPointerExitedRevoker.Disposable = null;
 		m_expandCollapseChevronPointerCanceledRevoker.Disposable = null;
 		m_expandCollapseChevronPointerCaptureLostRevoker.Disposable = null;
-	}
-
-	private void UnhookEventsAndClearFields()
-	{
-		UnhookEvents();
 
 		m_contentGrid = null;
 		m_infoBadgePresenter = null;
@@ -73,15 +67,6 @@ public partial class NavigationViewItemPresenter : ContentControl
 		var navigationViewItem = GetNavigationViewItem();
 		if (navigationViewItem != null)
 		{
-#if IS_UNO
-			// TODO: Uno specific: We may be reapplying the template, in which case
-			// we need to unsubscribe the previous Tapped event handler.
-			// Can be removed when #4689.
-			if (m_expandCollapseChevron != null)
-			{
-				UnhookEvents();
-			}
-#endif
 			if (navigationViewItem.HasPotentialChildren())
 			{
 				LoadChevron();

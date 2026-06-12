@@ -214,9 +214,11 @@ public partial class NavigationView
 
 	private double m_openPaneLength = 320.0;
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 	#region Uno specific
 
-	//TODO: Uno specific - remove when #4689 is fixed
+	// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle),
+	// so items are prepared early via the repeater UnoBeforeElementPrepared event tracked by these revokers.
 	private readonly SerialDisposable m_leftNavItemsRepeaterUnoBeforeElementPreparedRevoker = new();
 	private readonly SerialDisposable m_topNavItemsRepeaterUnoBeforeElementPreparedRevoker = new();
 	private readonly SerialDisposable m_leftNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker = new();
@@ -224,4 +226,5 @@ public partial class NavigationView
 	private readonly SerialDisposable m_topNavOverflowItemsRepeaterUnoBeforeElementPreparedRevoker = new();
 
 	#endregion
+#endif
 }

@@ -188,8 +188,8 @@ public partial class NavigationView : ContentControl
 
 		m_shadowCasterEaseOutStoryboardRevoker.Disposable = null;
 
-#if IS_UNO
-		//TODO: Uno specific - remove when #4689 is fixed
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+		// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle).
 		m_leftNavItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = null;
 		m_leftNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = null;
 		m_topNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = null;
@@ -486,7 +486,7 @@ public partial class NavigationView : ContentControl
 				}
 
 #if !UNO_HAS_ENHANCED_LIFECYCLE
-				//TODO: Uno specific - remove when #4689 is fixed
+				// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle).
 				leftNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
 				m_leftNavItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => leftNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
 #endif
@@ -519,7 +519,7 @@ public partial class NavigationView : ContentControl
 				}
 
 #if !UNO_HAS_ENHANCED_LIFECYCLE
-				//TODO: Uno specific - remove when #4689 is fixed
+				// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle).
 				topNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
 				m_topNavItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => topNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
 #endif
@@ -553,7 +553,7 @@ public partial class NavigationView : ContentControl
 				}
 
 #if !UNO_HAS_ENHANCED_LIFECYCLE
-				//TODO: Uno specific - remove when #4689 is fixed
+				// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle).
 				topNavListOverflowRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
 				m_topNavOverflowItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => topNavListOverflowRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
 #endif
@@ -608,7 +608,7 @@ public partial class NavigationView : ContentControl
 				}
 
 #if !UNO_HAS_ENHANCED_LIFECYCLE
-				//TODO: Uno specific - remove when #4689 is fixed
+				// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle).
 				leftFooterMenuNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
 				m_leftNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => leftFooterMenuNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
 #endif
@@ -642,7 +642,7 @@ public partial class NavigationView : ContentControl
 				}
 
 #if !UNO_HAS_ENHANCED_LIFECYCLE
-				//TODO: Uno specific - remove when #4689 is fixed
+				// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle).
 				topFooterMenuNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
 				m_topNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => topFooterMenuNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
 #endif
@@ -1422,9 +1422,9 @@ public partial class NavigationView : ContentControl
 					m_selectedItemLayoutUpdatedRevoker.Disposable = Disposable.Create(() => nvi.LayoutUpdated -= OnSelectedItemLayoutUpdated);
 				}
 
-#if IS_UNO
-				// TODO: Uno specific - remove when #4689 is fixed
-				// This ensures the item is properly initialized and the selected item is displayed
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+				// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle),
+				// so re-run initialization and refresh the selection indicator for the late-realized item.
 				nvibImpl.Reinitialize();
 				if (SelectedItem != null && m_activeIndicator == null)
 				{

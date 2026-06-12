@@ -87,9 +87,9 @@ public partial class NavigationViewItemBase : ContentControl
 		}
 	}
 
-#if IS_UNO
-	// TODO: Uno specific: Remove when #4689 is fixed
-
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+	// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle),
+	// so an item may be prepared before its template was applied; reapply it on demand.
 	protected bool _fullyInitialized = false;
 
 	internal void Reinitialize()
