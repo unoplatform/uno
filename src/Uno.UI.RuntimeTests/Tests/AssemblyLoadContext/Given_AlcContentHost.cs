@@ -1018,6 +1018,273 @@ public class Given_AlcContentHost
 			"Keyboard input should still work after loading secondary ALC app");
 	}
 
+	/// <summary>
+	/// Regression test for cross-ALC theme bleed during hot reload. A host app (Dark) renders a
+	/// secondary-ALC consumer app (Light) inside an <see cref="AlcContentHost"/>. When the inner
+	/// app's hot-reload resource refresh runs (<c>UpdateResourceBindingsForHotReload</c>, invoked
+	/// per secondary app by <c>ClientHotReloadProcessor.RefreshResourcesForApp</c>), it must NOT
+	/// re-theme the host's shell to its own theme.
+	/// </summary>
+	/// <remarks>
+	/// Root cause guarded: <c>Application.OnResourcesChanged</c> iterates the process-global
+	/// content-root list and applied <c>this.InternalRequestedTheme</c> to every root — so the
+	/// inner (Light) app re-themed the host's (Dark) content root. The fix derives the theme from
+	/// the app that OWNS each content root. Two host probes are asserted: a non-themed Border
+	/// (inherits the host app theme) and a Border nested under an explicit <c>RequestedTheme=Dark</c>
+	/// element (mirrors studio.live's themed shell root), so a run on the unfixed code pinpoints
+	/// exactly which shell elements flip.
+	/// </remarks>
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_SecondaryAlcApp_HotReloadsResources_Then_HostThemeUnchanged()
+	{
+		var hostWasExplicit = Application.Current.IsThemeSetExplicitly;
+		var hostOriginal = Application.Current.RequestedTheme;
+		var hadSecondaryApps = Application.HasSecondaryApps;
+
+		Application.HasSecondaryApps = true;
+		Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Dark);
+		try
+		{
+			// Host shell probes, siblings of the ALC host:
+			//  - probeA inherits the host app theme (no explicit RequestedTheme).
+			//  - probeBChild sits under an explicitly Dark element (mirrors AppRoot's themed subtree).
+			var probeA = new Border { Width = 20, Height = 20 };
+			var probeBChild = new Border { Width = 20, Height = 20 };
+			var probeB = new Border { RequestedTheme = ElementTheme.Dark, Child = probeBChild };
+
+			_contentHost = new AlcContentHost();
+			var container = new StackPanel { Children = { probeA, probeB, _contentHost } };
+
+			WindowHelper.ContentHostOverride = _contentHost;
+			TestServices.WindowHelper.WindowContent = container;
+			await TestServices.WindowHelper.WaitForLoaded(container);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Baseline established before any secondary app exists: the host shell is Dark.
+			Assert.AreEqual(ElementTheme.Dark, probeA.ActualTheme, "Baseline: non-themed host probe must be Dark.");
+			Assert.AreEqual(ElementTheme.Dark, probeBChild.ActualTheme, "Baseline: explicitly-Dark host subtree must be Dark.");
+
+			// Boot the secondary ALC app into _contentHost.
+			var secondaryApp = await BootSecondaryAlcAppAsync();
+
+			// Force the inner app to Light so host (Dark) != secondary (Light) deterministically.
+			secondaryApp.SetExplicitRequestedTheme(ApplicationTheme.Light);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Act: the inner (Light) app performs its hot-reload resource refresh — exactly what
+			// ClientHotReloadProcessor.RefreshResourcesForApp invokes on each secondary app.
+			secondaryApp.UpdateResourceBindingsForHotReload();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Assert: the inner app's Light theme must not have bled onto the host shell.
+			Assert.AreEqual(ElementTheme.Dark, probeA.ActualTheme,
+				"A secondary (Light) ALC app's hot-reload resource refresh re-themed the host's non-themed " +
+				"shell to Light. OnResourcesChanged applied the inner app's theme to the host content root.");
+			Assert.AreEqual(ElementTheme.Dark, probeBChild.ActualTheme,
+				"A secondary (Light) ALC app's hot-reload resource refresh re-themed the host's " +
+				"explicitly-Dark shell subtree to Light.");
+		}
+		finally
+		{
+			Application.HasSecondaryApps = hadSecondaryApps;
+
+			if (hostWasExplicit)
+			{
+				Application.Current.SetExplicitRequestedTheme(hostOriginal);
+			}
+			else
+			{
+				Application.Current.SetExplicitRequestedTheme(null);
+			}
+		}
+	}
+
+	/// <summary>
+	/// Reverse direction of <see cref="When_SecondaryAlcApp_HotReloadsResources_Then_HostThemeUnchanged"/>:
+	/// with a secondary ALC app present, a HOST theme switch must still re-theme the host's own
+	/// content root, and must not mutate the secondary app's requested theme.
+	/// </summary>
+	/// <remarks>
+	/// Guards the owning-app lookup in <c>Application.OnResourcesChanged</c> against misattribution in
+	/// the host→secondary direction: if <c>GetOwningApplication</c> wrongly resolved the host's content
+	/// root to the secondary app, the host's theme switches would stop taking effect (the root would be
+	/// re-themed with the secondary app's theme instead of the host's new one).
+	/// </remarks>
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_HostThemeChanges_WithSecondaryAlcApp_Then_HostThemeStillApplies()
+	{
+		var hostWasExplicit = Application.Current.IsThemeSetExplicitly;
+		var hostOriginal = Application.Current.RequestedTheme;
+		var hadSecondaryApps = Application.HasSecondaryApps;
+
+		Application.HasSecondaryApps = true;
+		Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Dark);
+		try
+		{
+			// Non-themed host probe: follows the host app theme.
+			var probe = new Border { Width = 20, Height = 20 };
+
+			_contentHost = new AlcContentHost();
+			var container = new StackPanel { Children = { probe, _contentHost } };
+
+			WindowHelper.ContentHostOverride = _contentHost;
+			TestServices.WindowHelper.WindowContent = container;
+			await TestServices.WindowHelper.WaitForLoaded(container);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ElementTheme.Dark, probe.ActualTheme, "Baseline: host probe must be Dark.");
+
+			var secondaryApp = await BootSecondaryAlcAppAsync();
+			secondaryApp.SetExplicitRequestedTheme(ApplicationTheme.Light);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Act 1: host switches Dark -> Light while the secondary (Light) app is loaded.
+			Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Light);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ElementTheme.Light, probe.ActualTheme,
+				"A host theme switch must still re-theme the host's own content root when secondary " +
+				"ALC apps are present. The owning-app lookup in OnResourcesChanged misattributed the " +
+				"host's content root.");
+
+			// Act 2: host switches back Light -> Dark. The secondary app stays explicitly Light, so
+			// this transition proves the two apps' themes are independent in this direction too.
+			Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Dark);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ElementTheme.Dark, probe.ActualTheme,
+				"The host's second theme switch (back to Dark) must re-theme its content root.");
+			Assert.AreEqual(ApplicationTheme.Light, secondaryApp.RequestedTheme,
+				"Host theme switches must not mutate the secondary ALC app's requested theme.");
+		}
+		finally
+		{
+			Application.HasSecondaryApps = hadSecondaryApps;
+
+			if (hostWasExplicit)
+			{
+				Application.Current.SetExplicitRequestedTheme(hostOriginal);
+			}
+			else
+			{
+				Application.Current.SetExplicitRequestedTheme(null);
+			}
+		}
+	}
+
+	/// <summary>
+	/// Pins the content-root ownership mechanism itself. A secondary ALC app's window roots either
+	/// null content (redirected to the <see cref="AlcContentHost"/>) or a shared default-ALC framework
+	/// type — in both cases inferring ownership from the root content's <c>Type</c> misattributes the
+	/// root to the host. Ownership must instead come from the window's creator ALC, captured at
+	/// construction (<c>Window.OwnerAssemblyLoadContext</c>).
+	/// </summary>
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_SecondaryAlcWindow_RootContentIsSharedOrNull_Then_OwnedBySecondaryApp()
+	{
+		var hadSecondaryApps = Application.HasSecondaryApps;
+		try
+		{
+			var (contentHost, alcWindow) = await StartSecondaryAlcAppWithWindowAsync();
+
+			var secondaryApp = Application.GetForAssemblyLoadContext(_testAlc!);
+			Assert.IsNotNull(secondaryApp, "Secondary ALC app must be registered.");
+
+			// The window created by the secondary app's code must carry its creator's ALC.
+			Assert.AreSame(_testAlc, alcWindow.OwnerAssemblyLoadContext,
+				"A window constructed by secondary-ALC code must be tagged with that ALC at construction.");
+
+			var alcContentRoot = alcWindow.RootElement?.XamlRoot?.VisualTree?.ContentRoot;
+			Assert.IsNotNull(alcContentRoot, "The secondary app's window must have a content root.");
+
+			// Precondition making the pin meaningful: the root content gives type-based inference
+			// nothing to identify the secondary app by (null, or a shared default-ALC type).
+			var rootContent = alcContentRoot!.XamlRoot?.Content;
+			if (rootContent is not null)
+			{
+				Assert.AreSame(
+					System.Runtime.Loader.AssemblyLoadContext.Default,
+					System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(rootContent.GetType().Assembly),
+					"Test precondition: the secondary window's root content is expected to be null or a " +
+					"shared default-ALC type, the case where type-based ownership inference fails.");
+			}
+
+			var getOwningApplication = typeof(Application).GetMethod(
+				"GetOwningApplication",
+				BindingFlags.NonPublic | BindingFlags.Static);
+			Assert.IsNotNull(getOwningApplication,
+				"Application.GetOwningApplication must exist on enhanced-lifecycle targets.");
+
+			var alcRootOwner = getOwningApplication!.Invoke(null, new object?[] { alcContentRoot });
+			Assert.AreSame(secondaryApp, alcRootOwner,
+				"The secondary app's content root must be owned by the secondary app even though its " +
+				"root content type cannot identify it. Owner-window ALC tagging has regressed; theme " +
+				"refreshes will attribute this root to the host.");
+
+			// Contrast: the host's content root (hosting the AlcContentHost) maps to the host app.
+			var hostContentRoot = contentHost.XamlRoot?.VisualTree?.ContentRoot;
+			Assert.IsNotNull(hostContentRoot, "The host's content root must be reachable from the AlcContentHost.");
+
+			var hostRootOwner = getOwningApplication.Invoke(null, new object?[] { hostContentRoot });
+			Assert.AreSame(Application.Current, hostRootOwner,
+				"The host's content root must remain owned by the host application.");
+		}
+		finally
+		{
+			Application.HasSecondaryApps = hadSecondaryApps;
+		}
+	}
+
+	/// <summary>
+	/// Boots the AlcApp test application into a secondary ALC, assuming the caller has already set up
+	/// <see cref="WindowHelper.ContentHostOverride"/> and the window content. Returns the registered
+	/// secondary <see cref="Application"/>. Use <see cref="StartSecondaryAlcAppAsync"/> instead when the
+	/// content host should be the whole window content.
+	/// </summary>
+	private async Task<Application> BootSecondaryAlcAppAsync()
+	{
+		var alcAppPath = await BuildAlcAppAsync();
+		Assert.IsNotNull(alcAppPath, "AlcApp build should succeed");
+		var alcAppDirectory = Path.GetDirectoryName(alcAppPath)!;
+		_testAlc = new TestAssemblyLoadContext(alcAppDirectory);
+		var alcAppAssembly = _testAlc.LoadFromAssemblyPath(alcAppPath);
+		var programType = alcAppAssembly.GetType("AlcTestApp.Program");
+		Assert.IsNotNull(programType, "Program type should be found in AlcApp assembly");
+		var mainMethod = programType!.GetMethod("Main", BindingFlags.Public | BindingFlags.Static);
+		Assert.IsNotNull(mainMethod, "Main method should exist");
+		var appType = alcAppAssembly.GetType("AlcTestApp.App");
+		Assert.IsNotNull(appType, "App type should be found in AlcApp assembly");
+
+		var mainThread = new System.Threading.Thread(() =>
+		{
+			try
+			{
+				mainMethod!.Invoke(null, new object[] { Array.Empty<string>() });
+			}
+			catch (Exception ex)
+			{
+				this.Log().Error("Secondary ALC app execution failed", ex);
+			}
+		})
+		{
+			IsBackground = true,
+			Name = "AlcApp-Main"
+		};
+		mainThread.Start();
+		await WaitForSecondaryWindowAsync(appType!);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var secondaryApp = Application.GetForAssemblyLoadContext(_testAlc!);
+		Assert.IsNotNull(secondaryApp, "Secondary ALC app must be registered.");
+		return secondaryApp!;
+	}
+
 	private async Task<(AlcContentHost contentHost, Window alcWindow)> StartSecondaryAlcAppWithWindowAsync(string[]? launchArguments = null)
 	{
 		var contentHost = await StartSecondaryAlcAppAsync(launchArguments);

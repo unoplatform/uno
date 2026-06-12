@@ -53,6 +53,10 @@ public partial class Window : UIWindow
 
 	internal event Action? FrameChanged;
 
+#if __MACCATALYST__ //TODO:MZ: Should be mac catalyst specific?
+	private ICoreWindowEvents? _ownerEvents;
+#endif
+
 	/// <summary>
 	/// ctor.
 	/// </summary>
@@ -77,13 +81,117 @@ public partial class Window : UIWindow
 
 	public override void PressesEnded(NSSet<UIPress> presses, UIPressesEvent evt)
 	{
-		base.PressesEnded(presses, evt);
+		var handled = false;
+
+#if __MACCATALYST__
+		foreach (UIPress press in presses)
+		{
+			if (press.Key is null)
+			{
+				continue;
+			}
+
+			var virtualKey = VirtualKeyHelper.FromKeyCode(press.Key.KeyCode);
+			var modifiers = VirtualKeyHelper.FromModifierFlags(press.Key.ModifierFlags);
+
+			var args = new KeyEventArgs(
+				"keyboard",
+				virtualKey,
+				modifiers,
+				new CorePhysicalKeyStatus
+				{
+					ScanCode = (uint)press.Key.KeyCode,
+					RepeatCount = 1,
+				});
+
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"PressesEnded: {press.Key.KeyCode} -> {virtualKey}");
+			}
+
+			try
+			{
+				var xamlRoot = Microsoft.UI.Xaml.Window.InitialWindow?.Content?.XamlRoot;
+				if (_ownerEvents is { } && xamlRoot is not null)
+				{
+					_ownerEvents.RaiseKeyUp(args);
+
+					var routerArgs = new KeyRoutedEventArgs(this, virtualKey, modifiers)
+					{
+						CanBubbleNatively = false
+					};
+
+					(FocusManager.GetFocusedElement(xamlRoot) as FrameworkElement)?.RaiseEvent(UIElement.KeyUpEvent, routerArgs);
+
+					handled = true;
+				}
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledException(e);
+			}
+		}
+#endif
+
+		if (!handled)
+		{
+			base.PressesEnded(presses, evt);
+		}
 	}
 
 	public override void PressesBegan(NSSet<UIPress> presses, UIPressesEvent evt)
 	{
 		var handled = false;
 
+#if __MACCATALYST__
+		foreach (UIPress press in presses)
+		{
+			if (press.Key is null)
+			{
+				continue;
+			}
+
+			var virtualKey = VirtualKeyHelper.FromKeyCode(press.Key.KeyCode);
+			var modifiers = VirtualKeyHelper.FromModifierFlags(press.Key.ModifierFlags);
+
+			var args = new KeyEventArgs(
+				"keyboard",
+				virtualKey,
+				modifiers,
+				new CorePhysicalKeyStatus
+				{
+					ScanCode = (uint)press.Key.KeyCode,
+					RepeatCount = 1,
+				});
+
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"PressesBegan: {press.Key.KeyCode} -> {virtualKey}");
+			}
+
+			try
+			{
+				var xamlRoot = Microsoft.UI.Xaml.Window.InitialWindow?.Content?.XamlRoot;
+				if (_ownerEvents is { } && xamlRoot is not null)
+				{
+					_ownerEvents.RaiseKeyDown(args);
+
+					var routerArgs = new KeyRoutedEventArgs(this, virtualKey, modifiers)
+					{
+						CanBubbleNatively = false
+					};
+
+					(FocusManager.GetFocusedElement(xamlRoot) as FrameworkElement)?.RaiseEvent(UIElement.KeyDownEvent, routerArgs);
+
+					handled = true;
+				}
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledException(e);
+			}
+		}
+#else
 		var focusInputHandler = Uno.UI.Xaml.Core.CoreServices.Instance.MainRootVisual?.AssociatedVisualTree?.UnoFocusInputHandler;
 		if (Uno.WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus && focusInputHandler != null)
 		{
@@ -119,11 +227,17 @@ public partial class Window : UIWindow
 				}
 			}
 		}
+#endif
 		if (!handled)
 		{
 			base.PressesBegan(presses, evt);
 		}
 	}
+
+
+#if __MACCATALYST__
+	internal void SetOwner(CoreWindow owner) => _ownerEvents = (ICoreWindowEvents)owner;
+#endif
 
 	/// <summary>
 	/// The behavior to use to bring the focused item into view when opening the keyboard.
@@ -439,7 +553,9 @@ public partial class Window : UIWindow
 #if __TVOS__
 			false;
 #else
+#if !__MACCATALYST__
 			view?.FindSuperviewOfType<UIWebView>(stopAt: this) != null ||
+#endif
 			view?.FindSuperviewOfType<WKWebView>(stopAt: this) != null;
 #endif
 	}

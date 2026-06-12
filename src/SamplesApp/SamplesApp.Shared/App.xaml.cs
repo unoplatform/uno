@@ -161,7 +161,7 @@ namespace SamplesApp
 
 			SetupAndroidEnvironment();
 
-#if __IOS__ && !TESTFLIGHT
+#if __IOS__ && !__MACCATALYST__ && !TESTFLIGHT
 			LaunchiOSWatchDog();
 #endif
 			var activationKind =

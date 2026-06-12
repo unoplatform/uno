@@ -38,6 +38,7 @@ if ( ($TestGroup -eq 0) -and ($env:UWPBuildEnabled -eq 'True') )
     @(
         @("Mobile", "-f:net10.0-android", ""), # workaround for https://github.com/xamarin/xamarin-android/issues/7473
         @("Mobile", "-f:net10.0-ios", ""),
+        @("Mobile", "-f:net10.0-maccatalyst", ""),
         @("Wasm", "", ""),
         @("Skia.Linux.FrameBuffer", "", "")
     )
@@ -46,6 +47,7 @@ if ( ($TestGroup -eq 0) -and ($env:UWPBuildEnabled -eq 'True') )
     @(
         @("Mobile", "-f:net10.0-android", ""),
         @("Mobile", "-f:net10.0-ios", ""),
+        @("Mobile", "-f:net10.0-maccatalyst", ""),
         @("Wasm", "", ""),
         @("Server", "", ""),
         @("Skia.Linux.FrameBuffer", "", "")
@@ -177,8 +179,11 @@ $projects =
     @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net10.0-ios", $sdkFeatures), @("macOS", "NetCore")),
     @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net10.0-android"), @("macOS", "NetCore")),
     @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net10.0-android", $sdkFeatures), @("macOS", "NetCore")),
+    @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net10.0-maccatalyst"), @("macOS", "NetCore")),
+    @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net10.0-maccatalyst", $sdkFeatures), @("macOS", "NetCore")),
     @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net10.0-desktop"), @("macOS", "NetCore")),
     @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net10.0-desktop", $sdkFeatures), @("macOS", "NetCore")),
+
 
     # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
     @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net10.0-windows10.0.19041"), @()),
@@ -223,6 +228,7 @@ $projects =
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net10.0-browserwasm"), @("macOS", "NetCore")),
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net10.0-ios"), @("macOS", "NetCore")),
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net10.0-android"), @("macOS", "NetCore")),
+    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net10.0-maccatalyst"), @("macOS", "NetCore")),
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net10.0-desktop"), @("macOS", "NetCore")),
 
     ## Note for contributors

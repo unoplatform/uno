@@ -126,6 +126,38 @@ partial class Application
 		}
 	}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
+	/// <summary>
+	/// Returns the <see cref="Application"/> that owns <paramref name="contentRoot"/>. The owner window's
+	/// <see cref="Window.OwnerAssemblyLoadContext"/> — tagged at construction with the ALC of the code
+	/// that created the window — is authoritative: it stays correct when a secondary app's root content
+	/// is a shared default-ALC type (e.g. a plain <c>Frame</c>) or null (content redirected to an
+	/// <c>AlcContentHost</c>), both cases where type-based inference misattributes the root to the host.
+	/// Falls back to inferring from the public root content's ALC (default-ALC content maps to
+	/// <see cref="Current"/>; secondary-ALC content maps to its registered application). Returns
+	/// <see langword="null"/> when the owner cannot be determined, in which case callers fall back to
+	/// the current application. Used by <c>OnResourcesChanged</c> so that one app's theme refresh does
+	/// not re-theme a content root owned by a different app sharing the process-global content-root
+	/// list. Guarded by the same symbol as its only call site (the enhanced-lifecycle theme walk) so
+	/// non-enhanced variants do not flag it as unused.
+	/// </summary>
+	private static Application GetOwningApplication(global::Uno.UI.Xaml.Core.ContentRoot contentRoot)
+	{
+		if (contentRoot is null)
+		{
+			return null;
+		}
+
+		if (contentRoot.GetOwnerWindow()?.OwnerAssemblyLoadContext is { } ownerAlc
+			&& GetForAssemblyLoadContext(ownerAlc) is { } owner)
+		{
+			return owner;
+		}
+
+		return contentRoot.XamlRoot?.Content is { } content ? GetForInstance(content) : null;
+	}
+#endif
+
 	/// <summary>
 	/// Enumerates all secondary-ALC <see cref="Application"/> instances currently registered.
 	/// Used by <see cref="ResourceResolver"/> as a last-resort fallback when a resource

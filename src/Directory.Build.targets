@@ -125,6 +125,7 @@
 		<PackageReference Update="SkiaSharp.NativeAssets.Android" Version="$(SkiaSharpVersion)"  />
 		<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="$(SkiaSharpVersion)" />
 		<PackageReference Update="SkiaSharp.NativeAssets.WebAssembly" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="$(SkiaSharpVersion)" />
 		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="$(SkiaSharpVersion)" />
 		<PackageReference Update="SkiaSharp.NativeAssets.tvOS" Version="$(SkiaSharpVersion)" />
 
