@@ -424,13 +424,12 @@ public class Given_Theme_Materialization
 
 	[TestMethod]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 	public async Task When_App_Theme_Switches_ThemeResource_Values_Update()
 	{
 		// Public app-dark-switch regression guard. Switching app Light→Dark must flip bound
 		// {ThemeResource} values (and nested elements). (Largely fixed already; this guards against
-		// regression.)
-#if HAS_UNO
+		// regression.) App-level theme switching is Uno-only, so the test is excluded on NativeWinUI.
 		using var _ = ThemeHelper.UseApplicationLightTheme();
 		await WindowHelper.WaitForIdle();
 
@@ -464,10 +463,6 @@ public class Given_Theme_Materialization
 			Assert.AreEqual(DarkSentinel, ColorOf(outer), "Outer should flip to Dark.");
 			Assert.AreEqual(DarkSentinel, ColorOf(inner), "Nested should flip to Dark.");
 		}
-#else
-		await Task.CompletedTask;
-		Assert.Inconclusive("App-level theme switching is Uno-only; confirmed in WinUI probe app.");
-#endif
 	}
 
 	// ---- T8 — inherited foreground frozen at a theme boundary ----
