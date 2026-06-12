@@ -21,13 +21,11 @@ internal static partial class SystemThemeHelper
 	/// Gets the current system theme. When <see cref="SystemThemeOverride"/> is set (for testing),
 	/// that value is reported instead of the real OS theme.
 	/// </summary>
-	internal static SystemTheme SystemTheme => _lastSystemTheme ??= EffectiveSystemTheme;
-
-	/// <summary>
-	/// The effective system theme: the override when one is set (for tests), otherwise the real
-	/// OS theme reported by the platform.
-	/// </summary>
-	private static SystemTheme EffectiveSystemTheme => _systemThemeOverride ?? GetSystemTheme();
+	/// <remarks>
+	/// <see cref="_lastSystemTheme"/> only ever caches the real OS theme; the override is applied
+	/// on top of it here, so it never poisons the cache.
+	/// </remarks>
+	internal static SystemTheme SystemTheme => _systemThemeOverride ?? (_lastSystemTheme ??= GetSystemTheme());
 
 	/// <summary>
 	/// Gets whether the OS high-contrast accessibility feature is currently active. High contrast is an
@@ -58,11 +56,17 @@ internal static partial class SystemThemeHelper
 
 			_systemThemeOverride = value;
 
+			if (value is null)
+			{
+				// Restoring real OS detection: re-poll so the cache reflects any OS change
+				// that occurred while the override was active.
+				_lastSystemTheme = GetSystemTheme();
+			}
+
 			// Setting the override forces the system theme, so notify observers unconditionally — unlike
-			// RefreshSystemTheme (which gates on _lastSystemTheme for OS polling). _lastSystemTheme can
-			// legitimately desync from the app's current theme (e.g. after a test sets then restores an
+			// RefreshSystemTheme (which gates on the cached theme for OS polling). The app's current theme
+			// can legitimately desync from the effective theme (e.g. after a test sets then restores an
 			// explicit app theme), so a conditional raise could skip and leave a stale theme (test flakiness).
-			_lastSystemTheme = EffectiveSystemTheme;
 			RaiseSystemThemeChanged();
 		}
 	}
@@ -123,10 +127,9 @@ internal static partial class SystemThemeHelper
 
 		_changesObserved = true;
 
-		// Cache the effective theme (the override when one is set, else the real OS theme) so a
-		// SystemThemeOverride applied before the first subscription stays authoritative — seeding from
-		// GetSystemTheme() here would overwrite it with the real OS theme and make SystemTheme report stale.
-		_lastSystemTheme = EffectiveSystemTheme;
+		// Seed the OS-theme cache; an active SystemThemeOverride stays authoritative because the
+		// SystemTheme getter checks it before the cache.
+		_lastSystemTheme ??= GetSystemTheme();
 
 		ObserveThemeChangesPlatform();
 
@@ -142,11 +145,14 @@ internal static partial class SystemThemeHelper
 	/// </summary>
 	internal static void RefreshSystemTheme()
 	{
-		var cachedTheme = _lastSystemTheme;
-		var currentTheme = EffectiveSystemTheme;
-		if (cachedTheme != currentTheme)
+		var previousTheme = SystemTheme;
+
+		// Re-poll the real OS theme; while an override is active this refreshes the cache
+		// silently (the effective theme stays pinned to the override).
+		_lastSystemTheme = GetSystemTheme();
+
+		if (SystemTheme != previousTheme)
 		{
-			_lastSystemTheme = currentTheme;
 			RaiseSystemThemeChanged();
 		}
 	}
