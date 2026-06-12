@@ -55,7 +55,7 @@ public partial class NavigationViewTemplateSettings : DependencyObject
 	public double OpenPaneLength
 	{
 		get => (double)GetValue(OpenPaneLengthProperty);
-		set => SetValue(OpenPaneLengthProperty, value);
+		internal set => SetValue(OpenPaneLengthProperty, value);
 	}
 
 	/// <summary>

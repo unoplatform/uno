@@ -550,7 +550,7 @@ public partial class NavigationView
 	public object SettingsItem
 	{
 		get => (object)GetValue(SettingsItemProperty);
-		set => SetValue(SettingsItemProperty, value);
+		private set => SetValue(SettingsItemProperty, value);
 	}
 
 	/// <summary>

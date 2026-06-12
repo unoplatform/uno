@@ -13,7 +13,7 @@ public partial class NavigationViewItem
 	public double CompactPaneLength
 	{
 		get => (double)GetValue(CompactPaneLengthProperty);
-		set => SetValue(CompactPaneLengthProperty, value);
+		private set => SetValue(CompactPaneLengthProperty, value);
 	}
 
 	public static DependencyProperty CompactPaneLengthProperty { get; } =
@@ -67,7 +67,7 @@ public partial class NavigationViewItem
 	public IList<object> MenuItems
 	{
 		get => (IList<object>)GetValue(MenuItemsProperty);
-		set => SetValue(MenuItemsProperty, value);
+		private set => SetValue(MenuItemsProperty, value);
 	}
 
 	public static DependencyProperty MenuItemsProperty { get; } =

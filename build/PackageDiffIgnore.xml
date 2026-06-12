@@ -2572,6 +2572,12 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.OnCleanUpVirtualizedItem(Microsoft.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs e)" reason="WinUI sync: not in WinAppSDK 1.8" />
 		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout.get_DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />
+		  <!-- NavigationView API surface aligned to the WinUI IDL: get-only properties and a non-activatable args type. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationView.set_SettingsItem(System.Object value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_CompactPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_MenuItems(System.Collections.Generic.IList`1&lt;System.Object&gt; value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.set_OpenPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs..ctor()" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <!-- END WinUI sync: other removed methods -->
 
 		  <!-- ====================================================================== -->
@@ -2917,6 +2923,12 @@
 	  <Methods>
 		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout.get_DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />
+		  <!-- NavigationView API surface aligned to the WinUI IDL: get-only properties and a non-activatable args type. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationView.set_SettingsItem(System.Object value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_CompactPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_MenuItems(System.Collections.Generic.IList`1&lt;System.Object&gt; value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.set_OpenPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs..ctor()" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 	  </Methods>
 	</IgnoreSet>
 	<![CDATA[

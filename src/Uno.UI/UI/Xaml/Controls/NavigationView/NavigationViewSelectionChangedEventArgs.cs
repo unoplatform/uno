@@ -11,6 +11,10 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class NavigationViewSelectionChangedEventArgs
 {
+	internal NavigationViewSelectionChangedEventArgs()
+	{
+	}
+
 	/// <summary>
 	/// Gets the newly selected menu item.
 	/// </summary>
