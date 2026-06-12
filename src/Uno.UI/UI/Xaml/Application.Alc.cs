@@ -200,7 +200,11 @@ partial class Application
 		var previousTheme = RequestedTheme;
 		_alcRequestedTheme = explicitTheme;
 
+#if __SKIA__ || __WASM__
+		// ALC app hosting only exists on Skia and WASM (see ExitAlcApplication); on native platforms
+		// Window maps to the native window type which doesn't have the ALC partial.
 		Window.ApplyAlcRequestedTheme(this, AlcElementTheme);
+#endif
 
 		if (RequestedTheme != previousTheme)
 		{
