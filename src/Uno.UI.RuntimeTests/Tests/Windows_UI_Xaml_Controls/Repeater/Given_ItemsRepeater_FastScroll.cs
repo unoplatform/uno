@@ -572,9 +572,14 @@ public class Given_ItemsRepeater_FastScroll
 
 		// 2. User drags the thumb UP to a much smaller offset. This goes through the real scrollbar
 		//    handler with ThumbTrack (immediate, no animation) — the exact path that regressed.
+		//    The sender is the vertical ScrollBar, matching the production wiring
+		//    (_verticalScrollbar.Scroll += OnVerticalScrollBarScrolled).
+		var verticalScrollBar = sut.Scroller.ElementVerticalScrollBar;
+		verticalScrollBar.Should().NotBeNull("the vertical scrollbar must be materialized to drive its Scroll handler.");
+
 		var draggedTo = scrollable * 0.1;
 		sut.Scroller.OnVerticalScrollBarScrolled(
-			sut.Scroller,
+			verticalScrollBar,
 			new Microsoft.UI.Xaml.Controls.Primitives.ScrollEventArgs
 			{
 				ScrollEventType = Microsoft.UI.Xaml.Controls.Primitives.ScrollEventType.ThumbTrack,
